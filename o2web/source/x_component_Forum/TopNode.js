@@ -346,11 +346,35 @@ MWF.xApplication.Forum.TopNode = new Class({
         });
     },
     logout: function(){
-        MWF.Actions.get("x_organization_assemble_authentication").logout( function(){
-            layout.desktop.session.user.distinguishedName = "anonymous";
-            this.app.clearContent();
-            this.app.loadApplicationContent();
-            this.openLoginForm();
-        }.bind(this))
+        MWF.Actions.get("x_organization_assemble_authentication").logout(function () {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+            Cookie.dispose("x-token");
+            delete layout.desktop.session.user.token;
+            delete layout.desktop.session.user.tokenType;
+            layout.desktop.session.user = {
+                distinguishedName : "anonymous",
+                name : "anonymous",
+                tokenType : "anonymous"
+            }
+
+            if( window.location.href.indexOf("/app.html") > 0 ){
+                window.location.reload();
+            }else{
+                this.app.clearContent();
+                this.app.loadApplicationContent();
+                this.openLoginForm();
+            }
+            //window.location.reload();
+        }.bind(this));
+
+        // MWF.Actions.get("x_organization_assemble_authentication").logout( function(){
+        //     layout.desktop.session.user.distinguishedName = "anonymous";
+        //     this.app.clearContent();
+        //     this.app.loadApplicationContent();
+        //     this.openLoginForm();
+        // }.bind(this))
     }
 });
