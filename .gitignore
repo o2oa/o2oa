@@ -8,7 +8,7 @@
 /o2server/servers/
 /o2server/store/jars/*.jar
 /o2server/store/*.war
-/o2server/*/config/
+/o2server/config/
 /o2server/store/
 /o2server/commons/
 /o2server/jvm/
