@@ -1177,7 +1177,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         if (pro.name.indexOf(key)!==-1){
                             var data = Object.clone(pro);
                             data.applicationName = app.name;
-                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this}, {"name": app}, proListNode);
+                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this.app, "starter": this}, {"name": app}, proListNode);
                         }
                     }.bind(this));
                 }.bind(this));
