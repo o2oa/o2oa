@@ -49,20 +49,19 @@ public class DingdingAttendanceAction extends StandardJaxrsAction {
     }
 
 
-    //获取一年的数据 ？？？不知道是否能成 接口限制
-
-    //获取7天数据   可以做定时每天晚上更新
+    //
     @JaxrsMethodDescribe(value = "同步钉钉考勤结果", action = ActionSyncData.class)
     @GET
-    @Path("sync/{way}/start")
+    @Path("sync/from/{dateFrom}/to/{dateTo}/start")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void syncData(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                         @JaxrsParameterDescribe("同步方式") @PathParam("way") String way) {
+                         @JaxrsParameterDescribe("开始时间: yyyy-MM-dd") @PathParam("dateFrom") String dateFrom,
+                         @JaxrsParameterDescribe("结束时间: yyyy-MM-dd") @PathParam("dateTo") String dateTo) {
         ActionResult<WrapBoolean> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionSyncData().execute(effectivePerson, way);
+            result = new ActionSyncData().execute(effectivePerson, dateFrom, dateTo);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

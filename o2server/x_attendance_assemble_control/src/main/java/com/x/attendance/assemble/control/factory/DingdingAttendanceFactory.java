@@ -39,6 +39,25 @@ public class DingdingAttendanceFactory extends AbstractFactory {
     }
 
     /**
+     * 查询冲突的钉钉同步记录
+     * @param fromTime
+     * @param toTime
+     * @return
+     * @throws Exception
+     */
+    public  List<DingdingQywxSyncRecord> findConflictSyncRecord(long fromTime, long toTime) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(DingdingQywxSyncRecord.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<DingdingQywxSyncRecord> query = cb.createQuery(DingdingQywxSyncRecord.class);
+        Root<DingdingQywxSyncRecord> root = query.from(DingdingQywxSyncRecord.class);
+        Predicate p = cb.equal(root.get(DingdingQywxSyncRecord_.type), DingdingQywxSyncRecord.syncType_dingding);
+        Predicate p1  = cb.or(cb.between(root.get(DingdingQywxSyncRecord_.dateFrom), fromTime, toTime), cb.between(root.get(DingdingQywxSyncRecord_.dateTo), fromTime, toTime));
+        p = cb.and(p, p1);
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
      * 根据用户查询一段时间内的打开数据
      * @param startTime
      * @param endTime
@@ -60,7 +79,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
             long end = endTime.getTime();
             p = cb.between(root.get(AttendanceDingtalkDetail_.userCheckTime), start, end);
         }
-        if (userId != null) {
+        if (userId != null && !userId.isEmpty()) {
             if (p != null) {
                 p = cb.and(p, cb.equal(root.get(AttendanceDingtalkDetail_.userId), userId));
             }else {
