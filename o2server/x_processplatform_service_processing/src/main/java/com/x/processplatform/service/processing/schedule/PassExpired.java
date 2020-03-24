@@ -105,7 +105,7 @@ public class PassExpired extends AbstractJob {
 			this.updateTask(task, newTasks);
 			this.updateTaskCompleted(taskCompletedId, record);
 		} catch (Exception e) {
-			throw new ExceptionPassExpired(e, task.getId(), task.getTitle();
+			throw new ExceptionPassExpired(e, task.getId(), task.getTitle());
 		}
 	}
 
