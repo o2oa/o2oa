@@ -1,13 +1,11 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -26,7 +24,8 @@ import com.x.processplatform.service.processing.WorkDataHelper;
  * 创建处于start状态的work
  * 
  * @author Rui
- *
+ * 
+ * 此方法不需要推入线程池运行
  */
 class ActionCreate extends BaseAction {
 
