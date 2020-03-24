@@ -62,7 +62,7 @@ public class PassExpired extends AbstractJob {
 			Map<String, Route> manualToRoute = null;
 			AtomicInteger count = new AtomicInteger(0);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					manualToRoute = this.linkPassExpiredManualToRoute(emc);
+				manualToRoute = this.linkPassExpiredManualToRoute(emc);
 			}
 			if (!manualToRoute.isEmpty()) {
 				do {
@@ -73,7 +73,7 @@ public class PassExpired extends AbstractJob {
 						sequence = targets.get(targets.size() - 1).getSequence();
 						for (Task task : targets) {
 							try {
-								logger.print("执行超时工作默认路由流转:{}, id:{}.", task.getTitle(),task.getId());
+								logger.print("执行超时工作默认路由流转:{}, id:{}.", task.getTitle(), task.getId());
 								this.execute(task);
 								count.incrementAndGet();
 							} catch (Exception e) {
@@ -105,7 +105,7 @@ public class PassExpired extends AbstractJob {
 			this.updateTask(task, newTasks);
 			this.updateTaskCompleted(taskCompletedId, record);
 		} catch (Exception e) {
-			throw new ExceptionPassExpired(e, task.getId(), task.getTitle(), task.getSequence());
+			throw new ExceptionPassExpired(e, task.getId(), task.getTitle();
 		}
 	}
 
@@ -293,7 +293,7 @@ public class PassExpired extends AbstractJob {
 		if (StringUtils.isNotEmpty(sequence)) {
 			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path,work_path).where(p).orderBy(cb.asc(sequence_path));
+		cq.multiselect(id_path, job_path, sequence_path, work_path).where(p).orderBy(cb.asc(sequence_path));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Task> list = new ArrayList<>();
 		for (Tuple o : os) {
