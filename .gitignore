@@ -1,10 +1,27 @@
-/o2cloud/
+#o2oa
+**/src/test/
+**/command.swap
+**/version.o2
+**/bin/
+**/target/
+/target/**
+/o2server/servers/
+/o2server/store/jars/*.jar
+/o2server/store/*.war
+/o2server/*/config/
+/o2server/store/
+/o2server/commons/
+/o2server/jvm/
+/o2server/local/
+/o2server/*/src/main/webapp/describe/
 **/.settings/
-.classpath
-.project
-/target/
+**/.classpath
+**/.project
 /o2custom/
+/o2cloud/
 /.svn/
+/o2web/gulpconfig.js
+/node_modules/
 /o2web/ftpconfig.js
 **/.DS_Store
 .DS_Store
@@ -50,25 +67,6 @@ hs_err_pid*
 #jpa enhance class
 *_.java
 *.iml
-#ignore mvn test directory
-**/src/test/
-command.swap
-**/bin/
-**/src/main/webapp/describe/
-**/target/
-/target/**
-/o2server/servers/
-
-#ignore folder
-version.o2
-/node_modules/
-/jvm/
-/commons/
-/config/
-/store/
-/servers/
-/describe/
-
 # for node
 package-lock.json
 # Logs
@@ -151,8 +149,5 @@ typings/
 .dynamodb/
 
 #vscode
-.factorypath
-/o2server/commons/
-/o2server/jvm/
-/o2web/ftpconfig.js
-/o2web/gulpconfig.js
+**/.factorypath
+**/.vscode/
