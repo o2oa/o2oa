@@ -18,7 +18,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.x_organization_assemble_control;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -69,36 +71,38 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
             List<Person> list = ThisApplication.context().applications().getQuery(false, app, uri).getDataAsList(Person.class);
             if (list != null && list.size() > 0) {
                 //钉钉用户id
-                List<String> ddUsers = list.stream().map(Person::getDingdingId).collect(Collectors.toList());
-                //分页查询
-                int page = 0;
-                boolean hasMoreResult = true;
-                while (hasMoreResult) {
-                    DingdingAttendancePost post = new DingdingAttendancePost();
-                    //post传入 时间（时间间隔不能超过7天） 人员（人员数量不能超过50个）
-                    post.setLimit(50L);
-                    post.setOffset(page * 50L);//从0开始翻页
-                    //这里的开始时间和结束时间 查询的是钉钉返回结果中的workDate
-                    //查询考勤打卡记录的起始工作日
-                    post.setWorkDateFrom(DateTools.format(fromDate));
-                    //查询考勤打卡记录的结束工作日
-                    post.setWorkDateTo(DateTools.format(toDate));
-                    post.setUserIdList(ddUsers);
-                    DingdingAttendanceResult result = HttpConnection.postAsObject(dingdingUrl, null, post.toString(), DingdingAttendanceResult.class);
-                    if (result.errcode != null && result.errcode == 0) {
-                        List<DingdingAttendanceResultItem> resultList = result.getRecordresult();
-                        saveDingdingAttendance(resultList);
-                        saveNumber += resultList.size();
-                        if (result.hasMore) {
-                            page++;
+                List<String> ddUsers = list.stream().filter(person -> StringUtils.isNotEmpty(person.getDingdingId()))
+                        .map(Person::getDingdingId).collect(Collectors.toList());
+                if (ListTools.isNotEmpty(ddUsers)) {
+                    //分页查询
+                    int page = 0;
+                    boolean hasMoreResult = true;
+                    while (hasMoreResult) {
+                        DingdingAttendancePost post = new DingdingAttendancePost();
+                        //post传入 时间（时间间隔不能超过7天） 人员（人员数量不能超过50个）
+                        post.setLimit(50L);
+                        post.setOffset(page * 50L);//从0开始翻页
+                        //这里的开始时间和结束时间 查询的是钉钉返回结果中的workDate
+                        //查询考勤打卡记录的起始工作日
+                        post.setWorkDateFrom(DateTools.format(fromDate));
+                        //查询考勤打卡记录的结束工作日
+                        post.setWorkDateTo(DateTools.format(toDate));
+                        post.setUserIdList(ddUsers);
+                        DingdingAttendanceResult result = HttpConnection.postAsObject(dingdingUrl, null, post.toString(), DingdingAttendanceResult.class);
+                        if (result.errcode != null && result.errcode == 0) {
+                            List<DingdingAttendanceResultItem> resultList = result.getRecordresult();
+                            saveDingdingAttendance(resultList);
+                            saveNumber += resultList.size();
+                            if (result.hasMore) {
+                                page++;
+                            } else {
+                                logger.info("同步钉钉考勤结束。。。。。。。。。。。。。。。。");
+                                hasMoreResult = false;
+                            }
                         } else {
-                            logger.info("同步钉钉考勤结束。。。。。。。。。。。。。。。。");
-                            hasMoreResult = false;
+                            //请求结果异常 结束
+                            throw new DingDingRequestException(result.errmsg);
                         }
-                    } else {
-                        //请求结果异常 结束
-                        logger.error(new DingDingRequestException(result.errmsg));
-                        hasMoreResult = false;
                     }
                 }
                 //是否还有更多用户
