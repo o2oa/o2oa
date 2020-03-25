@@ -52,7 +52,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 创建处于start状态的work
+ * 创建处于start状态的work 此方法不需要进入队列运行
  * 
  * @author Rui
  *
@@ -132,6 +132,7 @@ class ActionAssignCreate extends BaseAction {
 			Processing p = new Processing(processingAttributes);
 			p.processing(work.getId());
 		}
+ 
 		wo.setId(work.getId());
 		result.setData(wo);
 		return result;
