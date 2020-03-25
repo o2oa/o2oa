@@ -278,11 +278,12 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				throw exception;
 			}
 		}
+
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				logService.log(emc, wi.getCreatorIdentity(),
 						document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(),
-						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
+						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布" );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
