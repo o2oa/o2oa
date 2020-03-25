@@ -114,7 +114,7 @@ public class BBSSubjectInfoServiceAdv {
 	 * 3、论坛主题数量-1
 	 * 4、版块回复数量-n，如果有主版块，主版块回复数量-n
 	 * 5、论坛回复数量-n
-	 * @param id
+	 * @param subjectId
 	 * @throws Exception
 	 */
 	public void delete( String subjectId ) throws Exception {
