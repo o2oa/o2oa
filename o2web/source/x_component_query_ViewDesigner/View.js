@@ -121,16 +121,20 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
         this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
 
-        this.loadActionbar();
+        this.loadTemplateStyle( function () {
 
-        this.loadView();
+            this.loadActionbar();
 
-        this.selected();
-        this.setEvent();
+            this.loadView();
 
-        //if (this.options.showTab) this.page.showTabIm();
-        this.setViewWidth();
-        this.designer.addEvent("resize", this.setViewWidth.bind(this));
+            this.selected();
+            this.setEvent();
+
+            //if (this.options.showTab) this.page.showTabIm();
+            this.setViewWidth();
+
+            this.designer.addEvent("resize", this.setViewWidth.bind(this));
+        }.bind(this))
     },
     setEvent: function(){
         this.areaNode.addEvent("click", this.selected.bind(this));
@@ -619,6 +623,38 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 this.viewContentTableNode.getElements(".viewContentCheckboxTd").setStyle("display","none");
             }
         }
+        if (name=="data.viewStyleType"){
+
+            var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
+            var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
+            this.loadTemplateStyles( file, extendFile, function( templateStyles ){
+                this.templateStyles = templateStyles;
+
+                var oldFile, oldExtendFile;
+                if( oldValue && this.stylesList[oldValue] ){
+                    oldFile = this.stylesList[oldValue].file;
+                    oldExtendFile = this.stylesList[oldValue].extendFile;
+                }
+                this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
+
+                    this.json.data.styleConfig = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType] : null;
+
+                    if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
+                    if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
+
+                    // this.setAllStyles();
+
+                    // this.moduleList.each(function(module){
+                    //     if (oldTemplateStyles[module.moduleName]){
+                    //         module.clearTemplateStyles(oldTemplateStyles[module.moduleName]);
+                    //     }
+                    //     module.setStyleTemplate();
+                    //     module.setAllStyles();
+                    // }.bind(this));
+                }.bind(this))
+
+            }.bind(this))
+        }
     },
 
     saveAs: function(){
@@ -679,6 +715,147 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
             if (callback) callback();
         }.bind(this));
+    },
+
+
+    loadTemplateStyle : function( callback ){
+        this.loadStylesList(function(){
+            var oldStyleValue = "";
+            if ((!this.json.data.viewStyleType) || !this.stylesList[this.json.data.viewStyleType]) this.json.data.viewStyleType="default";
+            // if (this.options.mode=="Mobile"){
+            //     if (this.json.viewStyleType != "defaultMobile"){
+            //         var styles = this.stylesList[this.json.viewStyleType];
+            //         if( !styles || typeOf(styles.mode)!=="array" || !styles.mode.contains( "mobile" ) ){
+            //             oldStyleValue = this.json.viewStyleType;
+            //             this.json.viewStyleType = "defaultMobile";
+            //         }
+            //     }
+            // }
+
+            this.loadTemplateStyles( this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
+                function( templateStyles ){
+                    this.templateStyles = templateStyles;
+                    // this.loadDomModules();
+
+                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["form"]){
+                        this.setTemplateStyles(this.templateStyles["form"]);
+                    }
+
+                    // this.setCustomStyles();
+                    this.node.setProperties(this.json.data.properties);
+
+                    if(callback)callback();
+
+                    // this.setNodeEvents();
+
+                    // if (this.options.mode=="Mobile"){
+                    //     if (oldStyleValue) this._setEditStyle("viewStyleType", null, oldStyleValue);
+                    // }
+                }.bind(this)
+            );
+        }.bind(this));
+    },
+    removeStyles: function(from, to){
+        if (this.json.data[to]){
+            Object.each(from, function(style, key){
+                if (this.json.data[to][key] && this.json.data[to][key]==style){
+                    delete this.json.data[to][key];
+                }
+            }.bind(this));
+        }
+    },
+    copyStyles: function(from, to){
+        if (!this.json.data[to]) this.json.data[to] = {};
+        Object.each(from, function(style, key){
+            if (!this.json.data[to][key]) this.json.data[to][key] = style;
+        }.bind(this));
+    },
+    clearTemplateStyles: function(styles){
+        if (styles){
+            if (styles.styles) this.removeStyles(styles.styles, "styles");
+            if (styles.properties) this.removeStyles(styles.properties, "properties");
+        }
+    },
+    setTemplateStyles: function(styles){
+        if (styles.styles) this.copyStyles(styles.styles, "styles");
+        if (styles.properties) this.copyStyles(styles.properties, "properties");
+    },
+
+    loadTemplateStyles : function( file, extendFile, callback ){
+        if( !file ){
+            if (callback) callback({});
+            return;
+        }
+        this.templateStylesList = this.templateStylesList || {};
+        if( this.templateStylesList[file] ){
+            if (callback) callback(this.templateStylesList[file]);
+            return;
+        }
+        this.loadTemplateStyleFile( file, function( json_file ){
+            this.loadTemplateExtendStyleFile( extendFile, function( json_extend ){
+                this.templateStylesList[file] = Object.merge( json_file, json_extend );
+                if (callback) callback(this.templateStylesList[file]);
+            }.bind(this))
+        }.bind(this))
+
+    },
+    loadTemplateStyleFile : function(file, callback ){
+        if( !file ){
+            if (callback) callback({});
+            return;
+        }
+        var stylesUrl = "/x_component_query_ViewDesigner/$View/skin/"+file;
+        MWF.getJSON(stylesUrl,{
+                "onSuccess": function(responseJSON){
+                    //this.templateStylesList[file] = responseJSON;
+                    if (callback) callback(responseJSON);
+                }.bind(this),
+                "onRequestFailure": function(){
+                    if (callback) callback({});
+                }.bind(this),
+                "onError": function(){
+                    if (callback) callback({});
+                }.bind(this)
+            }
+        );
+    },
+    loadTemplateExtendStyleFile : function(extendFile, callback ){
+        if( !extendFile ){
+            if (callback) callback({});
+            return;
+        }
+        var stylesUrl = "/x_component_query_ViewDesigner/$View/skin/"+extendFile;
+        MWF.getJSON(stylesUrl,{
+                "onSuccess": function(responseJSON){
+                    //this.templateStylesList[file] = responseJSON;
+                    if (callback) callback(responseJSON);
+                }.bind(this),
+                "onRequestFailure": function(){
+                    if (callback) callback({});
+                }.bind(this),
+                "onError": function(){
+                    if (callback) callback({});
+                }.bind(this)
+            }
+        );
+    },
+    loadStylesList: function(callback){
+        var configUrl = "/x_component_query_ViewDesigner/$View/skin/config.json";
+        MWF.getJSON(configUrl,{
+                "onSuccess": function(responseJSON){
+                    this.stylesList = responseJSON;
+                    if (callback) callback(this.stylesList);
+                }.bind(this),
+                "onRequestFailure": function(){
+                    this.stylesList = {};
+                    if (callback) callback(this.stylesList);
+                }.bind(this),
+                "onError": function(){
+                    this.stylesList = {};
+                    if (callback) callback(this.stylesList);
+                }.bind(this)
+            }
+        );
     }
 
 });
