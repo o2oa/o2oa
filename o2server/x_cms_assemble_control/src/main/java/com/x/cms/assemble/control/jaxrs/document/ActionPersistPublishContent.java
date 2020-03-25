@@ -1,12 +1,16 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.processplatform.core.entity.content.Attachment;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -216,15 +220,57 @@ public class ActionPersistPublishContent extends BaseAction {
 			try {
 				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData(), Map.class);
 				wi.setDocStatus("published");
-				if( wi.getPublishTime() == null ) {
-					wi.setPublishTime(new Date());
-				}
-				document = documentPersistService.save(wi.copier.copy(wi), docData );
+				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
+				document =  wi.copier.copy(wi);
+				document.setId( wi.getId() );
+				document = documentPersistService.save( document, docData );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
+			}
+		}
+
+		//从流程管理中复制所有的附件到CMS
+		if (check) {
+			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
+				FileInfo fileInfo = null;
+				Attachment attachment = null;
+				StorageMapping mapping_attachment = null;
+				StorageMapping mapping_fileInfo = null;
+				InputStream input = null;
+				byte[] attachment_content = null;
+				for (String attachmentId : wi.getWf_attachmentIds()) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						document = emc.find(document.getId(), Document.class, ExceptionWhen.not_found);
+						attachment = emc.find(attachmentId, Attachment.class, ExceptionWhen.not_found);
+						if (attachment != null) {
+							emc.beginTransaction(FileInfo.class);
+							emc.beginTransaction(Document.class);
+
+							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
+							attachment_content = attachment.readContent(mapping_attachment);
+
+							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, attachment.getName(), attachment.getSite());
+							input = new ByteArrayInputStream(attachment_content);
+							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
+							fileInfo.setName(attachment.getName());
+							emc.check(document, CheckPersistType.all);
+							emc.persist(fileInfo, CheckPersistType.all);
+
+							emc.commit();
+						}
+					} catch (Throwable th) {
+						th.printStackTrace();
+						result.error(th);
+					} finally {
+						if (input != null) {
+							input.close();
+						}
+					}
+				}
 			}
 		}
 
@@ -240,6 +286,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				throw exception;
 			}
 		}
+
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				logService.log(emc, wi.getCreatorIdentity(),
@@ -358,16 +405,50 @@ public class ActionPersistPublishContent extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-				
+
+		ApplicationCache.notify(FileInfo.class);
 		ApplicationCache.notify(Document.class);
 		return result;
 	}
 
+	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name, String site) throws Exception {
+		String fileName = UUID.randomUUID().toString();
+		String extension = FilenameUtils.getExtension(name);
+		FileInfo attachment = new FileInfo();
+		if (StringUtils.isEmpty(extension)) {
+			throw new Exception("file extension is empty.");
+		} else {
+			fileName = fileName + "." + extension;
+		}
+		if (name.indexOf("\\") > 0) {
+			name = StringUtils.substringAfterLast(name, "\\");
+		}
+		if (name.indexOf("/") > 0) {
+			name = StringUtils.substringAfterLast(name, "/");
+		}
+		attachment.setCreateTime(new Date());
+		attachment.setLastUpdateTime(new Date());
+		attachment.setExtension(extension);
+		attachment.setName(name);
+		attachment.setFileName(fileName);
+		attachment.setStorage(storage.getName());
+		attachment.setAppId(document.getAppId());
+		attachment.setCategoryId(document.getCategoryId());
+		attachment.setDocumentId(document.getId());
+		attachment.setCreatorUid(person);
+		attachment.setSite(site);
+		attachment.setFileHost("");
+		attachment.setFilePath("");
+		attachment.setFileType("ATTACHMENT");
+
+		return attachment;
+	}
+
 	public static class Wi {
 		
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-		
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
+
+		private String id = null;
 
 		@FieldDescribe( "文档操作者身份." )
 		private String identity = null;
@@ -491,9 +572,23 @@ public class ActionPersistPublishContent extends BaseAction {
 		private List<String> managerList;
 
 		private List<String> pictureList;
-		
-		
-		
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public Boolean getTop() {
+			return isTop;
+		}
+
+		public void setTop(Boolean top) {
+			isTop = top;
+		}
+
 		public String getSummary() {
 			return summary;
 		}
