@@ -40,7 +40,7 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                             if (this.identitys.length==1){
                                 var data = {
                                     "title": this.data.name+"-"+this.lp.unnamed,
-                                    "identity": this.identitys[0].name,
+                                    "identity": this.identitys[0].distinguishedName,
                                     "latest": this.options.latest
                                 };
                                 if( this.options.workData ){
