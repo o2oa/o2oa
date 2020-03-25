@@ -92,7 +92,7 @@ AIX : http://download.o2oa.net/download/o2server_20200316073520_aix.zip
 
 银河麒麟（飞腾）：http://download.o2oa.net/download/o2server_20200316073520_kylinos_phytium.zip
 
-raspberrypi(树莓派)：http://download.o2oa.net/download/o2server_20200316073520_raspberrypi.zip
+raspberrypi（树莓派）：http://download.o2oa.net/download/o2server_20200316073520_raspberrypi.zip
 
 
 

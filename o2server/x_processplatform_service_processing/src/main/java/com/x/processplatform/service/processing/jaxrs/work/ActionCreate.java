@@ -40,7 +40,6 @@ class ActionCreate extends BaseAction {
 			Process process = business.element().get(processId, Process.class);
 			Application application = business.element().get(process.getApplication(), Application.class);
 			Begin begin = business.element().getBeginWithProcess(process.getId());
-
 			work = create(application, process, begin);
 			emc.beginTransaction(Work.class);
 			if ((null != jsonElement) && jsonElement.isJsonObject()) {
