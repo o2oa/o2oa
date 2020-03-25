@@ -44,6 +44,13 @@ public class Qiyeweixin extends ConfigObject {
 	private Boolean messageEnable;
 	@FieldDescribe("企业微信扫码登录")
 	private Boolean scanLoginEnable;
+	@FieldDescribe("是否启用考勤信息")
+	private Boolean attendanceSyncEnable;
+
+	@FieldDescribe("企业微信考勤打卡应用id")
+	private String attendanceSyncAgentId;
+	@FieldDescribe("企业微信考勤打卡应用secret")
+	private String attendanceSyncSecret;
 
 	public static Qiyeweixin defaultInstance() {
 		return new Qiyeweixin();
@@ -61,6 +68,7 @@ public class Qiyeweixin extends ConfigObject {
 	public static final String default_messageRedirectPortal = "";
 	public static final Boolean default_messageEanble = false;
 	public static final Boolean default_scanLoginEnable = false;
+	public static final Boolean default_attendanceSyncEnable = false;
 
 	public Qiyeweixin() {
 		this.enable = default_enable;
@@ -75,8 +83,13 @@ public class Qiyeweixin extends ConfigObject {
 		this.workUrl = default_workUrl;
 		this.messageRedirectPortal = default_messageRedirectPortal;
 		this.scanLoginEnable = default_scanLoginEnable;
-
+		this.attendanceSyncEnable = default_attendanceSyncEnable;
+		this.attendanceSyncAgentId = "";
+		this.attendanceSyncSecret = "";
 	}
+
+	private static String cacheAttendanceAccessToken;
+	private static Date cacheAttendanceAccessTokenDate;
 
 	private static String cachedCorpAccessToken;
 	private static Date cachedCorpAccessTokenDate;
@@ -139,6 +152,26 @@ public class Qiyeweixin extends ConfigObject {
 			cal.add(Calendar.MINUTE, 90);
 			cachedCorpAccessTokenDate = cal.getTime();
 			return cachedCorpAccessToken;
+		}
+	}
+
+	public String attendanceAccessToken() throws Exception {
+		if ((StringUtils.isNotEmpty(cacheAttendanceAccessToken) && (null != cacheAttendanceAccessTokenDate))
+				&& (cacheAttendanceAccessTokenDate.after(new Date()))) {
+			return cacheAttendanceAccessToken;
+		} else {
+			String address = default_apiAddress + "/cgi-bin/gettoken?corpid=" + this.getCorpId() + "&corpsecret="
+					+ this.getAttendanceSyncSecret();
+			CorpAccessTokenResp resp = HttpConnection.getAsObject(address, null, CorpAccessTokenResp.class);
+			if (resp.getErrcode() != 0) {
+				throw new ExceptionQiyeweixinCorpAccessToken(resp.getErrcode(), resp.getErrmsg());
+			}
+			cacheAttendanceAccessToken = resp.getAccess_token();
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.MINUTE, 90);
+
+			cacheAttendanceAccessTokenDate = cal.getTime();
+			return cacheAttendanceAccessToken;
 		}
 	}
 
@@ -384,6 +417,31 @@ public class Qiyeweixin extends ConfigObject {
 
 	public void setScanLoginEnable(Boolean scanLoginEnable) {
 		this.scanLoginEnable = scanLoginEnable;
+	}
+
+
+	public Boolean getAttendanceSyncEnable() {
+		return attendanceSyncEnable;
+	}
+
+	public void setAttendanceSyncEnable(Boolean attendanceSyncEnable) {
+		this.attendanceSyncEnable = attendanceSyncEnable;
+	}
+
+	public String getAttendanceSyncAgentId() {
+		return attendanceSyncAgentId;
+	}
+
+	public void setAttendanceSyncAgentId(String attendanceSyncAgentId) {
+		this.attendanceSyncAgentId = attendanceSyncAgentId;
+	}
+
+	public String getAttendanceSyncSecret() {
+		return attendanceSyncSecret;
+	}
+
+	public void setAttendanceSyncSecret(String attendanceSyncSecret) {
+		this.attendanceSyncSecret = attendanceSyncSecret;
 	}
 
 	public void save() throws Exception {

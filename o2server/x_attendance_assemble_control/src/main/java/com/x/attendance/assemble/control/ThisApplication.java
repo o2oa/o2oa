@@ -18,6 +18,7 @@ public class ThisApplication {
 	}
 
 	public static DingdingAttendanceQueue dingdingQueue = new DingdingAttendanceQueue();
+	public static QywxAttendanceSyncQueue qywxQueue = new QywxAttendanceSyncQueue();
 
 	public static void init() throws Exception {
 		try {
@@ -26,6 +27,9 @@ public class ThisApplication {
 			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
 			if (BooleanUtils.isTrue(Config.dingding().getAttendanceSyncEnable())) {
 				dingdingQueue.start();
+			}
+			if (BooleanUtils.isTrue(Config.qiyeweixin().getAttendanceSyncEnable())) {
+				qywxQueue.start();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,6 +49,11 @@ public class ThisApplication {
 		}
 		try {
 			dingdingQueue.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			qywxQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

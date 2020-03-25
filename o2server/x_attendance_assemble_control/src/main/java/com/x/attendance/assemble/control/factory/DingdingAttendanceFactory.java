@@ -3,10 +3,8 @@ package com.x.attendance.assemble.control.factory;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.exception.DingdingFindNoArgumentError;
-import com.x.attendance.entity.AttendanceDingtalkDetail;
-import com.x.attendance.entity.AttendanceDingtalkDetail_;
-import com.x.attendance.entity.DingdingQywxSyncRecord;
-import com.x.attendance.entity.DingdingQywxSyncRecord_;
+import com.x.attendance.assemble.control.exception.QywxFindNoArgumentError;
+import com.x.attendance.entity.*;
 import com.x.base.core.project.tools.StringTools;
 
 import javax.persistence.EntityManager;
@@ -23,17 +21,20 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         super(business);
     }
 
+
+
     /**
-     * 查询所有钉钉同步记录
+     * 查询所有同步记录
+     * @param type  DingdingQywxSyncRecord.syncType_dingding DingdingQywxSyncRecord.syncType_qywx
      * @return
      * @throws Exception
      */
-    public List<DingdingQywxSyncRecord> findAllDingdingSyncRecord() throws Exception {
+    public List<DingdingQywxSyncRecord> findAllSyncRecordWithType(String type) throws Exception {
         EntityManager em = this.entityManagerContainer().get(DingdingQywxSyncRecord.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<DingdingQywxSyncRecord> query = cb.createQuery(DingdingQywxSyncRecord.class);
         Root<DingdingQywxSyncRecord> root = query.from(DingdingQywxSyncRecord.class);
-        Predicate p = cb.equal(root.get(DingdingQywxSyncRecord_.type), DingdingQywxSyncRecord.syncType_dingding);
+        Predicate p = cb.equal(root.get(DingdingQywxSyncRecord_.type), type);
         query.select(root).where(p).orderBy(cb.desc(root.get(DingdingQywxSyncRecord_.startTime)));
         return em.createQuery(query).getResultList();
     }
@@ -88,5 +89,40 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         }
         query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceDingtalkDetail_.userCheckTime)));
         return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 企业微信 打卡数据查询
+     * @param startTime
+     * @param endTime
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceQywxDetail> findQywxAttendanceDetail(Date startTime, Date endTime, String userId) throws Exception {
+        if (startTime == null && endTime == null && userId == null) {
+            throw new QywxFindNoArgumentError();
+        }
+        EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
+        Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
+
+        Predicate p = null;
+        if (startTime != null && endTime != null) {
+            long start = startTime.getTime();
+            long end = endTime.getTime();
+            p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start, end);
+        }
+        if (userId != null && !userId.isEmpty()) {
+            if (p != null) {
+                p = cb.and(p, cb.equal(root.get(AttendanceQywxDetail_.userid), userId));
+            }else {
+                p = cb.equal(root.get(AttendanceQywxDetail_.userid), userId);
+            }
+        }
+        query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceQywxDetail_.checkin_time)));
+        return em.createQuery(query).getResultList();
+
     }
 }
