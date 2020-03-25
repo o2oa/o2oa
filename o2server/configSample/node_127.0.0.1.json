@@ -166,6 +166,7 @@
   "nodeAgentPort": 20010.0,
   "nodeAgentEncrypt": true,
   "quickStartWebApp": false,
+  "autoStart": true,
   "###enable": "是否启用###",
   "###isPrimaryCenter": "是否是center节点,仅允许存在一个center节点###",
   "###center": "Center服务器配置###",
