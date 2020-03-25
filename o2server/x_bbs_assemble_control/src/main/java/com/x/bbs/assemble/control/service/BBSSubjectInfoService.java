@@ -245,6 +245,7 @@ public class BBSSubjectInfoService {
 		emc.beginTransaction( BBSSectionInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectContent.class );
+		emc.beginTransaction( BBSReplyInfo.class );
 		emc.beginTransaction( BBSVoteOption.class );
 		emc.beginTransaction( BBSVoteOptionGroup.class );
 		emc.beginTransaction( BBSVoteRecord.class );
