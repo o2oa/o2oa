@@ -27,6 +27,7 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.core.entity.element.ActivityType;
 
 @Path("work")
 @JaxrsDescribe("工作")

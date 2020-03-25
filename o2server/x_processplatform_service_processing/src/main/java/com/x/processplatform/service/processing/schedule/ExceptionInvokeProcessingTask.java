@@ -2,12 +2,12 @@ package com.x.processplatform.service.processing.schedule;
 
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionPassExpired extends PromptException {
+class ExceptionInvokeProcessingTask extends PromptException {
 
 	private static final long serialVersionUID = -7038279889683420366L;
 
-	ExceptionPassExpired(Exception e, String id, String title) {
-		super(e, "超时工作默认路由流转失败, id:{}, title:{}.", id, title);
+	ExceptionInvokeProcessingTask(String id) {
+		super("调用待办流转失败, id:{}.", id);
 	}
 
 }
