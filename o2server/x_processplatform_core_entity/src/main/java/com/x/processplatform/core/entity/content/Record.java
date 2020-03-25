@@ -77,6 +77,9 @@ public class Record extends SliceJpaObject {
 	/* 授权 */
 	public final static String TYPE_EMPOWER = "empower";
 
+	/* 超时自动流转 */
+	public final static String TYPE_PASSEXPIRED = "passExpired";
+
 	/* 定制意见 */
 	public final static String TYPE_CUSTOM = "custom";
 
@@ -101,12 +104,12 @@ public class Record extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 		switch (Objects.toString(this.type)) {
-		case TYPE_URGE:
-		case TYPE_EXPIRE:
-			this.display = false;
-			break;
-		default:
-			this.display = true;
+			case TYPE_URGE:
+			case TYPE_EXPIRE:
+				this.display = false;
+				break;
+			default:
+				this.display = true;
 		}
 	}
 	/* 更新运行方法 */
@@ -130,23 +133,23 @@ public class Record extends SliceJpaObject {
 		this.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
 	}
 
-//	public Record(Work work) {
-//		this();
-//		this.setApplication(work.getApplication());
-//		this.setProcess(work.getProcess());
-//		this.setWork(work.getId());
-//		this.setJob(work.getJob());
-//		this.setDisplay(true);
-//		this.setCompleted(false);
-//		this.setFromActivity(work.getActivity());
-//		this.setFromActivityType(work.getActivityType());
-//		this.setFromActivityName(work.getActivityName());
-//		this.setFromActivityAlias(work.getActivityAlias());
-//		this.setFromActivityToken(work.getActivityToken());
-////		this.getProperties().setOpinion("");
-////		this.getProperties().setRouteName(task.getRouteName());
-////		this.getProperties().setMediaOpinion(task.getMediaOpinion());
-//	}
+	// public Record(Work work) {
+	// this();
+	// this.setApplication(work.getApplication());
+	// this.setProcess(work.getProcess());
+	// this.setWork(work.getId());
+	// this.setJob(work.getJob());
+	// this.setDisplay(true);
+	// this.setCompleted(false);
+	// this.setFromActivity(work.getActivity());
+	// this.setFromActivityType(work.getActivityType());
+	// this.setFromActivityName(work.getActivityName());
+	// this.setFromActivityAlias(work.getActivityAlias());
+	// this.setFromActivityToken(work.getActivityToken());
+	//// this.getProperties().setOpinion("");
+	//// this.getProperties().setRouteName(task.getRouteName());
+	//// this.getProperties().setMediaOpinion(task.getMediaOpinion());
+	// }
 
 	public Record(WorkLog workLog) {
 		this();
