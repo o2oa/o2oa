@@ -44,7 +44,6 @@ import com.x.processplatform.core.entity.element.Process_;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkDataHelper;
 
@@ -56,7 +55,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Rui
  *
- *         此方法不需要推入线程池运行
+ * 此方法不需要推入线程池运行
  */
 class ActionAssignCreate extends BaseAction {
 
@@ -70,6 +69,7 @@ class ActionAssignCreate extends BaseAction {
 		Boolean processing = wi.getProcessing();
 
 		Work work = null;
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			List<String> applicationIds = listApplication(business, wi.getApplication());
@@ -122,15 +122,11 @@ class ActionAssignCreate extends BaseAction {
 			emc.commit();
 		}
 		MessageFactory.work_create(work);
-		// if (BooleanUtils.isTrue(processing)) {
-		// ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-		// Applications.joinQueryUri("work", work.getId(), "processing"), null,
-		// work.getJob());
-		// }
 		if (BooleanUtils.isTrue(processing)) {
-			ProcessingAttributes processingAttributes = new ProcessingAttributes();
-			Processing p = new Processing(processingAttributes);
-			p.processing(work.getId());
+			// ProcessingAttributes req = new ProcessingAttributes();
+			// req.setType(ProcessingAttributes.TYPE_BEGIN);
+			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
 		}
  
 		wo.setId(work.getId());

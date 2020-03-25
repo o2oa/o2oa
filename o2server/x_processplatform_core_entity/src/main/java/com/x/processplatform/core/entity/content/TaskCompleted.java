@@ -70,7 +70,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	/* 智能流转 */
 	public static final String PROCESSINGTYPE_SAMETARGET = "sameTarget";
 	/* 超时流转 */
-	public static final String PROCESSINGTYPE_PASSEXPIRED = "passExpired";
+	public static final String PROCESSINGTYPE_EXPIRE = "expire";
 	/* 管理员流转 */
 	public static final String PROCESSINGTYPE_CONTROL = "control";
 	/* 添加处理人 */

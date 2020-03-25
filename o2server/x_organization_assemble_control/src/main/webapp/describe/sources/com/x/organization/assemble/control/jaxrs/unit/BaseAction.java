@@ -45,14 +45,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return count > 0;
 	}
 
-	protected boolean checkNameInvalid(Business business, Unit unit) throws Exception {
-		if (StringUtils.containsAny(unit.getName(), new String[] { "\\","/"})) {
-			return true;
-		}
-		return false;
-
-	}
-
 	public static class Control extends GsonPropertyObject {
 
 		private Boolean allowEdit = false;
