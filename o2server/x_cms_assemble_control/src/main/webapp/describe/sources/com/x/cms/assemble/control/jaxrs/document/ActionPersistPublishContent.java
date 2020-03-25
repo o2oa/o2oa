@@ -216,10 +216,10 @@ public class ActionPersistPublishContent extends BaseAction {
 			try {
 				JsonElement docData = XGsonBuilder.instance().toJsonTree(wi.getDocData(), Map.class);
 				wi.setDocStatus("published");
-				if( wi.getPublishTime() == null ) {
-					wi.setPublishTime(new Date());
-				}
-				document = documentPersistService.save(wi.copier.copy(wi), docData );
+				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
+				document =  wi.copier.copy(wi);
+				document.setId( wi.getId() );
+				document = documentPersistService.save( document, docData );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
@@ -365,9 +365,9 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	public static class Wi {
 		
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-		
 		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, null);
+
+		private String id = null;
 
 		@FieldDescribe( "文档操作者身份." )
 		private String identity = null;
@@ -491,9 +491,23 @@ public class ActionPersistPublishContent extends BaseAction {
 		private List<String> managerList;
 
 		private List<String> pictureList;
-		
-		
-		
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public Boolean getTop() {
+			return isTop;
+		}
+
+		public void setTop(Boolean top) {
+			isTop = top;
+		}
+
 		public String getSummary() {
 			return summary;
 		}
