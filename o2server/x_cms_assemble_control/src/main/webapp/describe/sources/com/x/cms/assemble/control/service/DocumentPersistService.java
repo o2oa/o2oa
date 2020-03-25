@@ -319,5 +319,9 @@ public class DocumentPersistService {
 			throw new Exception("docId is empty!");
 		}
 		permissionService.refreshDocumentPermission(docId, permissionList);
+
+		new CmsBatchOperationPersistService().addOperation(
+				CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT,
+				CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "单独刷新文档权限：ID=" +  docId );
 	}
 }
