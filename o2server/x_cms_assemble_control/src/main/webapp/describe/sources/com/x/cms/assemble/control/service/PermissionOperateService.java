@@ -22,7 +22,7 @@ public class PermissionOperateService {
 	private static Logger logger = LoggerFactory.getLogger(PermissionOperateService.class);
 	/**
 	 * 根据文档ID，为文档设置用户访问和管理权限
-	 * @param docId
+	 * @param document
 	 * @param readerList
 	 * @param authorList
 	 * @throws Exception
@@ -131,7 +131,7 @@ public class PermissionOperateService {
 	
 	/**
 	 * 根据文档ID，为文档设置用户访问和管理权限
-	 * @param docId
+	 * @param docmentId
 	 * @param permissionList
 	 * @throws Exception 
 	 */
@@ -154,11 +154,7 @@ public class PermissionOperateService {
 				document.setAuthorGroupList( null );
 				
 				if( ListTools.isNotEmpty( permissionList ) ){
-					for( PermissionInfo permission : permissionList ){
-						//如果Code为空，则使用Nameg来填充
-						if( StringUtils.isEmpty( permission.getPermissionObjectCode() )){
-							permission.setPermissionObjectCode( permission.getPermissionObjectName() );
-						}
+					for( PermissionInfo permission : permissionList ){					
 						if( "管理".equals( permission.getPermission() )) {
 							document.addManagerList(permission.getPermissionObjectCode());
 						}else if( "读者".equals( permission.getPermission() ) || "阅读".equals( permission.getPermission() )) {
