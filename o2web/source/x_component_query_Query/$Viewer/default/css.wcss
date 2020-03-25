@@ -288,8 +288,7 @@
         "float": "left"
     },
     "viewSearchFilterNode_over": {
-        "border": "1px solid #fe9145",
-        //"color": "#fe9145",
+        "border": "1px solid #fe9145"
     },
     "viewSearchFilterSelectAreaNode": {
         "height": "17px",
@@ -313,7 +312,7 @@
         "width": "13px",
         "margin": "2px 0px",
         "border-radius": "6px",
-        "background-color": "#666666",
+        "background-color": "#666666"
     },
     "viewSearchFilterSelectButtonNode_over": {
         "background-color": "#fe9145"
@@ -416,7 +415,7 @@
         "z-index": "200"
     },
     "worksAreaTitleNode": {
-        "height": "20px",
+        "height": "20px"
     },
     "worksAreaTitleCloseNode": {
         "width": "20px",
@@ -437,7 +436,7 @@
     },
     "workAreaTitleNode": {
         "height": "20px",
-        "line-height": "20px",
+        "line-height": "20px"
     },
     "workAreaContentNode": {
         "height": "20px",

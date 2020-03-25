@@ -1160,12 +1160,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");
         if( column.clickCode ){
-            if( !this.view.Macro ){
-                MWF.require("MWF.xScript.Macro", function () {
-                    this.view.businessData = {};
-                    this.view.Macro = new MWF.Macro.PageContext(this.view);
-                }.bind(this), false);
-            }
+            // if( !this.view.Macro ){
+            //     MWF.require("MWF.xScript.Macro", function () {
+            //         this.view.businessData = {};
+            //         this.view.Macro = new MWF.Macro.PageContext(this.view);
+            //     }.bind(this), false);
+            // }
             td.addEvent("click", function( ev ){
                 var result = this.view.Macro.fire(column.clickCode, this, ev);
                 ev.stopPropagation();
