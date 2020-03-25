@@ -271,8 +271,6 @@ public class ActionPersistPublishContent extends BaseAction {
 						}
 					}
 				}
-				ApplicationCache.notify(FileInfo.class);
-				ApplicationCache.notify(Document.class);
 			}
 		}
 
@@ -407,7 +405,8 @@ public class ActionPersistPublishContent extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-				
+
+		ApplicationCache.notify(FileInfo.class);
 		ApplicationCache.notify(Document.class);
 		return result;
 	}
