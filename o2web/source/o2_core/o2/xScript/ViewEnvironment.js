@@ -748,7 +748,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     //仅前台对象-----------------------------------------
     //form
     this.page = this.form = this.queryView = {
-
+        "getParentEnvironment" : function () { return _form.parentEnvironment; }, //视图嵌入的表单或页面的上下文
         "getViewInfor" : function () { return _form.getViewInfor(); },
         "getPageInfor" : function () { return _form.getPageInfor(); },
         "getPageData" : function () { return _form.getPageData(); },

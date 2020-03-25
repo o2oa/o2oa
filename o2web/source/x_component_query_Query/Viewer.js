@@ -590,11 +590,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
-                this.selectTitleCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode
-                }).inject(this.viewTitleLine);
-                this.selectTitleCell.setStyle("width", "10px");
-                if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
+            this.selectTitleCell = new Element("td", {
+                "styles": this.css.viewTitleCellNode
+            }).inject(this.viewTitleLine);
+            this.selectTitleCell.setStyle("width", "10px");
+            if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
 
             //序号
@@ -859,9 +859,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     loadData: function(){
         if (this.gridJson.length){
             // if( !this.options.paging ){
-                this.gridJson.each(function(line, i){
-                    this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
-                }.bind(this));
+            this.gridJson.each(function(line, i){
+                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
+            }.bind(this));
             // }else{
             //     this.loadPaging();
             // }
@@ -1103,9 +1103,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-            this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-            this.selectTd.setStyles({"cursor": "pointer"});
-            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+        this.selectTd.setStyles({"cursor": "pointer"});
+        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //序号
@@ -1120,22 +1120,22 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
-                if (this.view.hideColumns.indexOf(k)===-1){
-                    var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-                    if (k!== this.view.viewJson.group.column){
-                        //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                        var v = cell;
-                        if (c.isHtml){
-                            td.set("html", v);
-                        }else{
-                            td.set("text", v);
-                        }
+            if (this.view.hideColumns.indexOf(k)===-1){
+                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                if (k!== this.view.viewJson.group.column){
+                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                    var v = cell;
+                    if (c.isHtml){
+                        td.set("html", v);
+                    }else{
+                        td.set("text", v);
                     }
-                    if (this.view.openColumns.indexOf(k)!==-1){
-                        this.setOpenWork(td, c)
-                    }
-                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                 }
+                if (this.view.openColumns.indexOf(k)!==-1){
+                    this.setOpenWork(td, c)
+                }
+                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+            }
             //}
         }.bind(this));
 
@@ -1403,8 +1403,8 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
 
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-            this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
-            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
         this.categoryTd = new Element("td", {
             "styles": this.css.viewContentCategoryTdNode,
@@ -1434,9 +1434,9 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     },
     setEvent: function(){
         //if (this.selectTd){
-            this.node.addEvents({
-                "click": function(){this.expandOrCollapse();}.bind(this)
-            });
+        this.node.addEvents({
+            "click": function(){this.expandOrCollapse();}.bind(this)
+        });
         //}
     },
     expandOrCollapse: function(){

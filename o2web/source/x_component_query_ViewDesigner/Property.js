@@ -66,6 +66,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadEventsEditor();
                     this.loadActionStylesArea();
                     this.loadActionArea();
+                    this.loadStylesList();
                 }
             }.bind(this));
         }else{
@@ -830,6 +831,27 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 
         }.bind(this));
 
+    },
+    loadStylesList: function(){
+        var styleSelNodes = this.propertyContent.getElements(".MWFViewStyle");
+        styleSelNodes.each(function(node){
+            debugger;
+            if (this.module.stylesList){
+                if (!this.data.data.viewStyleType) this.data.data.viewStyleType = "default";
+                // var mode = ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc";
+                Object.each(this.module.stylesList, function(s, key){
+                    // if( s.mode.contains( mode ) ){
+                        new Element("option", {
+                            "text": s.name,
+                            "value": key,
+                            "selected": ((!this.data.data.viewStyleType && key=="default") || (this.data.data.viewStyleType==key))
+                        }).inject(node)
+                    // }
+                }.bind(this));
+            }else{
+                node.getParent("tr").setStyle("display", "none");
+            }
+        }.bind(this));
     }
     //initWhereEntryData: function(){
     //    if (!this.data.data.restrictWhereEntry) this.data.data.restrictWhereEntry = {
