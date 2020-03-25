@@ -36,7 +36,7 @@
 }
 .o2_profile_configNode {
     min-height: 640px;
-   /* position: relative;*/
+    position: relative;
 }
 .o2_profile_inforConfigArea {
     height: 360px;

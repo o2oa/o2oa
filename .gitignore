@@ -25,7 +25,8 @@
 /o2web/ftpconfig.js
 **/.DS_Store
 .DS_Store
-**/.idea/
+**/.idea
+/.idea/
 # Windows thumbnail cache files
 Thumbs.db
 Thumbs.db:encryptable
@@ -150,4 +151,3 @@ typings/
 #vscode
 **/.factorypath
 **/.vscode/
-*.swp
