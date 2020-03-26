@@ -683,7 +683,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
             "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
             "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
-            "click": click,
+            "click": click
         });
     },
     _loadPageNode: function(){
@@ -1043,6 +1043,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }
         }
         return (filterData.length) ? filterData : null;
+    },
+    getSelectedData : function(){
+        return this.getData();
     },
     getData: function(){
         if (this.selectedItems.length){
