@@ -7791,46 +7791,6 @@
           ]
         },
         {
-          "name": "transformAsSubTask",
-          "className": "com.x.teamwork.assemble.control.jaxrs.task.ActionTransformAsSubTask",
-          "description": "将指定的工作转换为子工作.",
-          "type": "GET",
-          "path": "jaxrs/task/transform/{tid}/parent/{pid}",
-          "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
-          "useJsonElementParameter": false,
-          "useStringParameter": false,
-          "pathParameters": [
-            {
-              "name": "tid",
-              "type": "String",
-              "description": "指定任务ID"
-            },
-            {
-              "name": "pid",
-              "type": "String",
-              "description": "上级任务ID"
-            }
-          ],
-          "formParameters": [],
-          "queryParameters": [],
-          "ins": [],
-          "outs": [
-            {
-              "name": "dynamics",
-              "type": "List\u003cWoDynamic\u003e",
-              "isCollection": true,
-              "description": "操作引起的动态内容"
-            },
-            {
-              "name": "id",
-              "type": "String",
-              "isCollection": false,
-              "description": "id"
-            }
-          ]
-        },
-        {
           "name": "updateManager",
           "className": "com.x.teamwork.assemble.control.jaxrs.task.ActionManagerUpdate",
           "description": "为工作任务信息添加新的管理者.",

@@ -103,6 +103,8 @@ class DynamicService {
 	 * @param maxCount
 	 * @param orderField
 	 * @param orderType
+	 * @param projectIds
+	 * @param taskIds
 	 * @return
 	 * @throws Exception
 	 */
@@ -114,7 +116,7 @@ class DynamicService {
 	/**
 	 * 向数据库持久化动态信息
 	 * @param emc
-	 * @param object
+	 * @param dynamic
 	 * @return
 	 * @throws Exception 
 	 */
@@ -478,6 +480,7 @@ class DynamicService {
 	 * 保存和根据项目组信息操作动态
 	 * @param object_old
 	 * @param object
+	 * @param optType
 	 * @param effectivePerson
 	 * @return
 	 */
@@ -731,7 +734,7 @@ class DynamicService {
 	
 	/**
 	 * 更新工作任务管理者信息操作动态
-	 * @param object
+	 * @param task
 	 * @param addManagers
 	 * @param removeManagers
 	 * @param effectivePerson
@@ -765,7 +768,7 @@ class DynamicService {
 	
 	/**
 	 * 更新工作任务参与者操作动态
-	 * @param object
+	 * @param task
 	 * @param addParticipants
 	 * @param removeParticipants
 	 * @param effectivePerson
@@ -802,20 +805,9 @@ class DynamicService {
 		String title =  "工作任务分解";
 		String viewUrl = task.getId();
 		String optType =  "SPLIT";
-		String description = effectivePerson.getName() +"为工作添加了一个子任务：[" + task.getName() + "]";
+		String description = effectivePerson.getName() +"为工作添加了一个子任务：" + task.getName();
 		Dynamic dynamic =  composeNewDynamic( objectType, title, description, viewUrl, optType, parentTask, effectivePerson, false );
 		dynamic.setTarget( parentTask.getExecutor() );		
-		return dynamic;
-	}
-
-	public Dynamic getTaskTransformDynamic(Task parentTask, Task task, EffectivePerson effectivePerson) {
-		String objectType =  "TASK";
-		String title =  "转换为子工作";
-		String viewUrl = task.getId();
-		String optType =  "TRANSFORM";
-		String description = effectivePerson.getName() +"将工作转换为工作[" +parentTask.getName() + "]的一个子任务。";
-		Dynamic dynamic =  composeNewDynamic( objectType, title, description, viewUrl, optType, task, effectivePerson, false );
-		dynamic.setTarget( task.getExecutor() );
 		return dynamic;
 	}
 	
@@ -896,7 +888,7 @@ class DynamicService {
 	
 	/**
 	 * 工作任务附件上传操作动态信息
-	 * @param object
+	 * @param attachment
 	 * @param effectivePerson
 	 * @return
 	 */
@@ -911,7 +903,7 @@ class DynamicService {
 	
 	/**
 	 * 工作任务附件下载操作动态信息
-	 * @param object
+	 * @param attachment
 	 * @param effectivePerson
 	 * @return
 	 */
@@ -926,7 +918,7 @@ class DynamicService {
 
 	/**
 	 * 工作任务附件删除操作动态信息
-	 * @param object
+	 * @param attachment
 	 * @param effectivePerson
 	 * @return
 	 */
