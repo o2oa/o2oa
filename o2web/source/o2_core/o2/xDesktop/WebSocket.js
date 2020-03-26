@@ -150,6 +150,9 @@ MWF.xDesktop.WebSocket = new Class({
                             case "calendar_alarm":
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
+                            case "teamwork_taskCreate":
+                                this.receiveTeamWorkMessage(data);
+                                break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
                                 break;
