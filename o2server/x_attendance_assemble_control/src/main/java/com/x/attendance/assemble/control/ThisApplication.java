@@ -3,7 +3,9 @@ package com.x.attendance.assemble.control;
 import com.x.attendance.assemble.control.processor.monitor.MonitorFileDataOpt;
 import com.x.attendance.assemble.control.processor.thread.DataProcessThreadFactory;
 import com.x.attendance.assemble.control.schedule.AttendanceStatisticTask;
+import com.x.attendance.assemble.control.schedule.DingdingAttendanceSyncScheduleTask;
 import com.x.attendance.assemble.control.schedule.MobileRecordAnalyseTask;
+import com.x.attendance.assemble.control.schedule.QywxAttendanceSyncScheduleTask;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
@@ -27,9 +29,11 @@ public class ThisApplication {
 			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
 			if (BooleanUtils.isTrue(Config.dingding().getAttendanceSyncEnable())) {
 				dingdingQueue.start();
+				context.schedule(DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
 			}
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getAttendanceSyncEnable())) {
 				qywxQueue.start();
+				context.schedule(QywxAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
