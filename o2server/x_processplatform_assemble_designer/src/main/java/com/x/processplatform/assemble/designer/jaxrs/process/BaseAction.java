@@ -205,8 +205,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapAgent w : wraps) {
 				Agent o = new Agent();
-				o.setProcess(process.getId());
 				WrapAgent.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -218,8 +218,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Begin o = null;
 		if (wrap != null) {
 			o = new Begin();
-			o.setProcess(process.getId());
 			WrapBegin.inCopier.copy(wrap, o);
+			o.setProcess(process.getId());
 			o.setDistributeFactor(process.getDistributeFactor());
 		}
 		return o;
@@ -230,8 +230,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapCancel w : wraps) {
 				Cancel o = new Cancel();
-				o.setProcess(process.getId());
 				WrapCancel.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -244,8 +244,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapChoice w : wraps) {
 				Choice o = new Choice();
-				o.setProcess(process.getId());
 				WrapChoice.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -258,8 +258,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapDelay w : wraps) {
 				Delay o = new Delay();
-				o.setProcess(process.getId());
 				WrapDelay.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -272,8 +272,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapEmbed w : wraps) {
 				Embed o = new Embed();
-				o.setProcess(process.getId());
 				WrapEmbed.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -286,8 +286,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapEnd w : wraps) {
 				End o = new End();
-				o.setProcess(process.getId());
 				WrapEnd.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -300,8 +300,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapInvoke w : wraps) {
 				Invoke o = new Invoke();
-				o.setProcess(process.getId());
 				WrapInvoke.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -314,8 +314,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapManual w : wraps) {
 				Manual o = new Manual();
-				o.setProcess(process.getId());
 				WrapManual.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -328,8 +328,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapMerge w : wraps) {
 				Merge o = new Merge();
-				o.setProcess(process.getId());
 				WrapMerge.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -342,8 +342,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapMessage w : wraps) {
 				Message o = new Message();
-				o.setProcess(process.getId());
 				WrapMessage.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -356,8 +356,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapParallel w : wraps) {
 				Parallel o = new Parallel();
-				o.setProcess(process.getId());
 				WrapParallel.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -370,8 +370,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (int i = 0; i < wraps.size(); i++) {
 				Route o = new Route();
-				o.setProcess(process.getId());
 				WrapRoute.inCopier.copy(wraps.get(i), o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}
@@ -399,8 +399,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (null != wraps) {
 			for (WrapSplit w : wraps) {
 				Split o = new Split();
-				o.setProcess(process.getId());
 				WrapSplit.inCopier.copy(w, o);
+				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
 			}

@@ -24,6 +24,10 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 class ActionDelete extends BaseAction {
 
@@ -43,6 +47,12 @@ class ActionDelete extends BaseAction {
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
+			}
+			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isTrue(process.getEditionEnable())){
+				List<String> list = business.process().listProcessEdition(process.getApplication(), process.getEdition());
+				if(list.size()>1){
+					throw new ExceptionProcessEnabled(id);
+				}
 			}
 			/* 先删除content内容 */
 			this.delete_task(business, process);
