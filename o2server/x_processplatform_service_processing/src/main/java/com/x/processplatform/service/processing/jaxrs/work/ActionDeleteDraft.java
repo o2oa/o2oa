@@ -2,12 +2,8 @@ package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -20,7 +16,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.service.processing.ThisApplication;
+import com.x.processplatform.service.processing.Business;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 
@@ -49,12 +47,12 @@ class ActionDeleteDraft extends BaseAction {
 				ActionResult<Wo> result = new ActionResult<>();
 				Wo wo = new Wo();
 				Work work = null;
-				boolean delete = false;
 				String workId = null;
 				String workTitle = null;
 				String workSequence = null;
 				try {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Business business = new Business(emc);
 						work = emc.find(id, Work.class);
 						if (null != work) {
 							workId = work.getId();
@@ -66,7 +64,8 @@ class ActionDeleteDraft extends BaseAction {
 											work.getJob()) == 0) {
 										if (emc.countEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
 												work.getJob()) == 0) {
-											delete = true;
+											cascadeDeleteWorkBeginButNotCommit(business, work);
+											logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId, workTitle, workSequence);
 										}
 									}
 								}
@@ -78,11 +77,11 @@ class ActionDeleteDraft extends BaseAction {
 				} catch (Exception e) {
 					logger.error(e);
 				}
-				if (delete && (null != work)) {
-					ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(WoId.class);
-					logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId, workTitle, workSequence);
-				}
+				// if (delete && (null != work)) {
+				// 	ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+				// 			Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(WoId.class);
+				// 	logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId, workTitle, workSequence);
+				// }
 				wo.setId(work.getId());
 				result.setData(wo);
 				return result;

@@ -55,29 +55,30 @@ class ActionDelete extends BaseAction {
 					if (null == work) {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
-					if (business.work().listWithJob(work.getJob()).size() > 1) {
-						List<String> taskIds = emc.idsEqual(Task.class, Task.work_FIELDNAME, work.getId());
-						if (ListTools.isNotEmpty(taskIds)) {
-							emc.beginTransaction(Task.class);
-							emc.delete(Task.class, taskIds);
-						}
-						emc.beginTransaction(Work.class);
-						emc.remove(work, CheckRemoveType.all);
-						emc.commit();
-					} else {
-						deleteTask(business, work.getJob());
-						deleteTaskCompleted(business, work.getJob());
-						deleteRead(business, work.getJob());
-						deleteReadCompleted(business, work.getJob());
-						deleteReview(business, work.getJob());
-						deleteAttachment(business, work.getJob());
-						deleteWorkLog(business, work.getJob());
-						deleteItem(business, work.getJob());
-						deleteDocumentVersion(business, work.getJob());
-						deleteRecord(business, work.getJob());
-						deleteWork(business, work);
-						emc.commit();
-					}
+					// if (business.work().listWithJob(work.getJob()).size() > 1) {
+					// 	List<String> taskIds = emc.idsEqual(Task.class, Task.work_FIELDNAME, work.getId());
+					// 	if (ListTools.isNotEmpty(taskIds)) {
+					// 		emc.beginTransaction(Task.class);
+					// 		emc.delete(Task.class, taskIds);
+					// 	}
+					// 	emc.beginTransaction(Work.class);
+					// 	emc.remove(work, CheckRemoveType.all);
+					// 	emc.commit();
+					// } else {
+					// 	deleteTask(business, work.getJob());
+					// 	deleteTaskCompleted(business, work.getJob());
+					// 	deleteRead(business, work.getJob());
+					// 	deleteReadCompleted(business, work.getJob());
+					// 	deleteReview(business, work.getJob());
+					// 	deleteAttachment(business, work.getJob());
+					// 	deleteWorkLog(business, work.getJob());
+					// 	deleteItem(business, work.getJob());
+					// 	deleteDocumentVersion(business, work.getJob());
+					// 	deleteRecord(business, work.getJob());
+					// 	deleteWork(business, work);
+					// }
+					cascadeDeleteWorkBeginButNotCommit(business, work);
+					emc.commit();
 					ActionResult<Wo> result = new ActionResult<>();
 					Wo wo = new Wo();
 					wo.setId(work.getId());

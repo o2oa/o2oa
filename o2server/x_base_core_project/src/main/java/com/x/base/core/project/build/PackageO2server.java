@@ -29,6 +29,7 @@ public class PackageO2server {
 		createO2Version(base.getAbsolutePath());
 		CreateConfigSample.main(base.getAbsolutePath());
 		CreateLocalSample.main(base.getAbsolutePath());
+		CreateVersion.main(base.getAbsolutePath());
 		File file = new File(base, "o2server.zip");
 		FileUtils.forceMkdir(new File(base.getAbsolutePath(), "servers"));
 		try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file))) {
