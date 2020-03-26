@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -209,6 +211,22 @@ class ActionCover extends BaseAction {
 						Process.class, process.getId()));
 			}
 			process.setApplication(application.getId());
+			if (StringUtils.isNotEmpty(process.getEdition())) {
+				if(BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
+							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
+							p.setLastUpdateTime(new Date());
+							p.setEditionEnable(false);
+						}
+					}
+				}
+			}else{
+				process.setEdition(process.getId());
+				process.setEditionEnable(true);
+				process.setEditionNumber(1.0);
+				process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
+			}
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapAgent.inCopier,
 					wrapProcess.getAgentList(), Agent.class));
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapBegin.inCopier,
