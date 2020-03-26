@@ -755,12 +755,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "toPage" : function ( pageNumber, callback ) { return _form.toPage(pageNumber, callback); },
         "selectAll" : function () { return _form.selectAll(); },
         "unSelectAll" : function () { return _form.unSelectAll(); },
+        "getSelectedData" : function () { return _form.getSelectedData(); },
         "switchView" : function ( options ) { return _form.switchView(options); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
-        "getApp": function () { return _form.app; },
-        "app": _form.app,
+        // "getApp": function () { return _form.app; },
+        // "app": _form.app,
         "node": function () { return _form.node; },
         // "get": function (name) { return (_form.all) ? _form.all[name] : null; },
         // "getWidgetModule": function (widget, moduleName) {
@@ -1057,15 +1058,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }.bind(this));
                 }
             });
-        },
-        "parameters": _form.options.parameters,
-        "getWidgetPrameters": function () {
-            if (!this.target) return null;
-            if (!this.target.widget) return null;
-            if (!this.widgetParameters) return null;
-            var pageId = this.target.widget.json.id;
-            return this.widgetParameters[pageId];
-        }.bind(this)
+        }
         //"app": _form.app
     };
     // this.form.currentRouteName = _form.json.currentRouteName;
