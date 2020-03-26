@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -21,6 +22,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("document/cipher")
+@JaxrsDescribe("信息发布信息文档管理(Cipher)")
 public class DocumentCipherAction extends StandardJaxrsAction{
 	
 	private static  Logger logger = LoggerFactory.getLogger( DocumentCipherAction.class );
@@ -30,7 +32,7 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 	@Path("publish/content")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void publishContent( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {		
+	public void publishContentByWorkFlow( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionPersistPublishByWorkFlow.Wo> result = new ActionResult<>();
 		Boolean check = true;
