@@ -76,7 +76,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>createVersionFile</id>
+						<id>packageO2server</id>
 						<phase>install</phase>
 						<goals>
 							<goal>java</goal>
@@ -85,7 +85,7 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CreateVersionFile
+							<mainClass>com.x.base.core.project.build.PackageO2server
 							</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>

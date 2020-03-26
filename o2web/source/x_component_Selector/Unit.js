@@ -555,13 +555,13 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 this.flatCategoryItemNode.setStyles(this.selector.css.flatCategoryItemNode);
                 this.isExpand = false;
             }else if( firstLoaded ){
-                this.children.setStyles({ "display": "block", "height" : "auto" });
+                this.children.setStyles({"display": "block"});
                 this.flatCategoryItemNode.setStyles( this.selector.css.flatCategoryItemNode_selected );
                 this.isExpand = true;
             }else {
                 var display = this.children.getStyle("display");
                 if (display === "none") {
-                    this.children.setStyles({ "display": "block" , "height" : "auto"});
+                    this.children.setStyles({ "display": "block" });
                     this.flatCategoryItemNode.setStyles(this.selector.css.flatCategoryItemNode_selected);
                     this.isExpand = true;
                 } else {
