@@ -353,12 +353,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 			if(StringUtils.isEmpty(extraParam)){
 				extraParam = this.request2Json(request);
 			}
-			logger.print("上传附件fileName={},extraParam={}", fileName, extraParam);
 			if(bytes==null){
 				Map<String, List<FormDataBodyPart>> map = form.getFields();
 				for(String key: map.keySet()){
 					FormDataBodyPart part = map.get(key).get(0);
-					if(StringUtils.isEmpty(key) && "application".equals(part.getMediaType().getType())){
+					if("application".equals(part.getMediaType().getType())){
 						bytes = part.getValueAs(byte[].class);
 						break;
 					}
@@ -396,7 +395,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 				Map<String, List<FormDataBodyPart>> map = form.getFields();
 				for(String key: map.keySet()){
 					FormDataBodyPart part = map.get(key).get(0);
-					if(StringUtils.isEmpty(key) && "application".equals(part.getMediaType().getType())){
+					if("application".equals(part.getMediaType().getType())){
 						bytes = part.getValueAs(byte[].class);
 						break;
 					}
@@ -458,7 +457,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 				Map<String, List<FormDataBodyPart>> map = form.getFields();
 				for(String key: map.keySet()){
 					FormDataBodyPart part = map.get(key).get(0);
-					if(StringUtils.isEmpty(key) && "application".equals(part.getMediaType().getType())){
+					if("application".equals(part.getMediaType().getType())){
 						bytes = part.getValueAs(byte[].class);
 						break;
 					}
@@ -521,18 +520,28 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("update/{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public void updatePost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void updatePost(FormDataMultiPart form, @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
-			@FormDataParam(FILE_FIELD) final byte[] bytes,
+			@FormDataParam(FILE_FIELD) byte[] bytes,
 			@JaxrsParameterDescribe("附件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			if(StringUtils.isEmpty(extraParam)){
 				extraParam = this.request2Json(request);
+			}
+			if(bytes==null){
+				Map<String, List<FormDataBodyPart>> map = form.getFields();
+				for(String key: map.keySet()){
+					FormDataBodyPart part = map.get(key).get(0);
+					if("application".equals(part.getMediaType().getType())){
+						bytes = part.getValueAs(byte[].class);
+						break;
+					}
+				}
 			}
 			result = new ActionUpdate().execute(effectivePerson, id, workId, fileName, bytes, disposition, extraParam);
 		} catch (Exception e) {
