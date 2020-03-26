@@ -16,8 +16,8 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 public class CreateVersion {
 	public static void main(String... args) throws Exception {
 		File base = new File(args[0]);
-		File file = new File(base, "../version.o2");
-		File pom = new File(base, "../pom.xml");
+		File file = new File(base, "version.o2");
+		File pom = new File(base, "pom.xml");
 
 		MavenXpp3Reader reader = new MavenXpp3Reader();
 		Model model = reader.read(new FileReader(pom));

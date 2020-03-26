@@ -13,6 +13,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
@@ -62,10 +63,14 @@ class ActionDeleteDraft extends BaseAction {
 								if (StringUtils.equals(work.getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)) {
 									if (emc.countEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 											work.getJob()) == 0) {
-										if (emc.countEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
-												work.getJob()) == 0) {
-											cascadeDeleteWorkBeginButNotCommit(business, work);
-											logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId, workTitle, workSequence);
+										if (emc.countEqual(Read.class, Read.job_FIELDNAME, work.getJob()) == 0) {
+											if (emc.countEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
+													work.getJob()) == 0) {
+												cascadeDeleteWorkBeginButNotCommit(business, work);
+												emc.commit();
+												logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId,
+														workTitle, workSequence);
+											}
 										}
 									}
 								}
@@ -78,9 +83,11 @@ class ActionDeleteDraft extends BaseAction {
 					logger.error(e);
 				}
 				// if (delete && (null != work)) {
-				// 	ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-				// 			Applications.joinQueryUri("work", work.getId()), work.getJob()).getData(WoId.class);
-				// 	logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId, workTitle, workSequence);
+				// ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+				// Applications.joinQueryUri("work", work.getId()),
+				// work.getJob()).getData(WoId.class);
+				// logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId,
+				// workTitle, workSequence);
 				// }
 				wo.setId(work.getId());
 				result.setData(wo);
