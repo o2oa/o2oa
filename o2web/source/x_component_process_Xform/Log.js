@@ -1044,7 +1044,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                         imgNode.setStyles(size);
                     }else{
                         var x = Math.min(nw, width);
-                        img.setStyles({"width": ""+ x +"px"}); //���յĿ��
+                        img.setStyles({"width": ""+ x +"px"});
                         imgNode.setStyles({"width": ""+ x +"px"});
                     }
                 }.bind(this)
@@ -1550,7 +1550,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         atts.each(function(att){
             if (!att.type) att.type = "image";
             if (att.type.indexOf("image")!==-1){
-                if( type === "table" && !layout.mobile ){
+                if( this.json.handwritingExpanded ){
+                    this.loadMediaOpinion_image_show(att, null, node, true)
+                }else if( type === "table" && !layout.mobile ){
                     this.loadMediaOpinion_image_tooltip(att, node);
                 }else{
                     this.loadMediaOpinion_image(att, node);
@@ -1559,8 +1561,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                 this.loadMediaOpinion_video(att, node);
             }else if(att.type.indexOf("audio")!==-1){
                 this.loadMediaOpinion_voice(att, node);
-            }else{
-                if( type === "table" && !layout.mobile ){
+            }else {
+                if (this.json.handwritingExpanded){
+                    this.loadMediaOpinion_image_show(att, null, node, true)
+                }else if( type === "table" && !layout.mobile ){
                     this.loadMediaOpinion_image_tooltip(att, node);
                 }else{
                     this.loadMediaOpinion_image(att, node);
@@ -1651,7 +1655,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 var img = new Element("img", {
                     "src": url,
-                    "styles" : { width : width+"px" }, //�ʼ�޶�һ�¿�ȣ���Ҫ��ҳ�涶��
+                    "styles" : { width : width+"px" },
                     "events" : {
                         load : function(ev){
                             var nh = ev.target.naturalHeight;
@@ -1662,7 +1666,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                                 imgNode.setStyles(size);
                             }else{
                                 var x = Math.min(nw, width);
-                                img.setStyles({"width": ""+ x +"px"}); //���յĿ��
+                                img.setStyles({"width": ""+ x +"px"});
                                 imgNode.setStyles({"width": ""+ x +"px"});
                             }
                         }.bind(this)
