@@ -7,6 +7,6 @@ class ExceptionRetractNoneTaskCompleted extends PromptException {
 	private static final long serialVersionUID = 1040883405179987063L;
 
 	ExceptionRetractNoneTaskCompleted(String title, String id) {
-		super("工作已经经过处理无法召回, 工作:{}, id:{}.", title, id);
+		super("工作已经过处理无法召回, 工作:{}, id:{}.", title, id);
 	}
 }
