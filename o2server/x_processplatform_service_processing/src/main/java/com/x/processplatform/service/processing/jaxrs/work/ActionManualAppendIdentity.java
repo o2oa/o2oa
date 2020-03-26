@@ -59,8 +59,8 @@ class ActionManualAppendIdentity extends BaseAction {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
 
-					ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-							Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
+					// ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+					// 		Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
 
 					result.setData(wo);
 
