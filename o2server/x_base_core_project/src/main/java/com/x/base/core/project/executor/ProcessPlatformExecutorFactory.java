@@ -2,7 +2,6 @@ package com.x.base.core.project.executor;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.CRC32;
 
 import com.x.base.core.project.config.Config;
@@ -41,7 +40,7 @@ public class ProcessPlatformExecutorFactory {
 		}
 		CRC32 crc32 = new CRC32();
 		crc32.update(Objects.toString(seed, "").getBytes());
-		int idx = (int) (crc32.getValue() % executors.length);
+		int idx = (int) (Math.abs(crc32.getValue()) % executors.length);
 		return executors[idx];
 	}
 
