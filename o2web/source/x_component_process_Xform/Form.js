@@ -1352,6 +1352,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         return list;
     },
+    //saveDocumentEditor
     submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
         if (!this.businessData.control["allowProcessing"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -1383,6 +1384,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
+        // if (this.documenteditorList) {
+        //     this.documenteditorList.each(function (module) {
+        //         module.save(history);
+        //     });
+        // }
 
         //处理忽略授权
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
