@@ -89,6 +89,26 @@ public class ProcessFactory extends ElementFactory {
 		return o;
 	}
 
+	public Process pickEnabledEdition(String appId, String edition) throws Exception {
+		if (StringUtils.isEmpty(appId) || StringUtils.isEmpty(edition)) {
+			return null;
+		}
+		Process o = null;
+		String cacheKey = ApplicationCache.concreteCacheKey(appId, edition);
+		Element element = cache.get(cacheKey);
+		if (null != element) {
+			if (null != element.getObjectValue()) {
+				o = (Process) element.getObjectValue();
+			}
+		} else {
+			//code is hear
+			if (null != o) {
+				cache.put(new Element(cacheKey, o));
+			}
+		}
+		return o;
+	}
+
 	private Process pickObject(String flag) throws Exception {
 		Process o = this.business().entityManagerContainer().flag(flag, Process.class );
 		if (o != null) {
@@ -138,6 +158,8 @@ public class ProcessFactory extends ElementFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application.getId());
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root.get(Process_.id)).where(p).distinct(true);
 		list = em.createQuery(cq).getResultList();
 		return list;
@@ -165,6 +187,8 @@ public class ProcessFactory extends ElementFactory {
 			}
 		}
 		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root.get(Process_.id)).where(p).distinct(true);
 		list = em.createQuery(cq).getResultList();
 		return list;
