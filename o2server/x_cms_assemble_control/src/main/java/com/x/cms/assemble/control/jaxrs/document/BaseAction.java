@@ -3,11 +3,13 @@ package com.x.cms.assemble.control.jaxrs.document;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
@@ -29,7 +31,10 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 
+import com.x.cms.core.entity.FileInfo;
 import net.sf.ehcache.Ehcache;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class BaseAction extends StandardJaxrsAction {
 	protected Ehcache cache = ApplicationCache.instance().getCache( Document.class);
@@ -215,7 +220,9 @@ public class BaseAction extends StandardJaxrsAction {
 		}		
 		return false;
 	}
-	
+
+
+
 //	/**
 //	 * 将权限组，组织为一个整体集合
 //	 * @param personName
