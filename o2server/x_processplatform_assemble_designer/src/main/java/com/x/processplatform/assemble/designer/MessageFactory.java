@@ -42,10 +42,4 @@ public class MessageFactory {
 		title = StringTools.utf8SubString(title, JpaObject.length_255B);
 		MessageConnector.send(MessageConnector.TYPE_PROCESS_DELETE, title, "", process);
 	}
-
-	public static void process_upgrade(Process process) throws Exception {
-		String title = "升级流程平台流程:" + process.getName();
-		title = StringTools.utf8SubString(title, JpaObject.length_255B);
-		MessageConnector.send(MessageConnector.TYPE_PROCESS_UPDATE, title, "", process);
-	}
 }

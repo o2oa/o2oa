@@ -29,6 +29,7 @@ class ActionUpgradeAll extends BaseAction {
 					}
 				}
 				emc.commit();
+				cacheNotify();
 			}
 			wo.setValue(true);
 		}else{

@@ -79,7 +79,7 @@ public class ProcessFactory extends ElementFactory {
 				o = (Process) element.getObjectValue();
 			}
 		} else {
-			o = this.restrictEnabledProcess(application.getId(), flag);
+			o = this.restrictProcess(application.getId(), flag);
 			if (null != o) {
 				this.entityManagerContainer().get(Process.class).detach(o);
 				cache.put(new Element(cacheKey, o));
@@ -141,7 +141,7 @@ public class ProcessFactory extends ElementFactory {
 				o = (Process) element.getObjectValue();
 			}
 		} else {
-			o = this.restrictEnabledProcess(application.getId(), flag);
+			o = this.restrictProcess(application.getId(), flag);
 			if (null != o) {
 				cache.put(new Element(cacheKey, o));
 			}
@@ -226,7 +226,7 @@ public class ProcessFactory extends ElementFactory {
 		return null;
 	}
 
-	public Process restrictEnabledProcess(String application, String flag) throws Exception {
+	public Process restrictProcess(String application, String flag) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
@@ -235,8 +235,6 @@ public class ProcessFactory extends ElementFactory {
 		p = cb.and(p, cb.or(cb.equal(root.get(Process_.id), flag),
 				cb.equal(root.get(Process_.name), flag),
 				cb.equal(root.get(Process_.alias), flag)));
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
-				cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
 		List<Process> list = em.createQuery(cq).getResultList();
 		if(list!=null && !list.isEmpty()){
