@@ -20,14 +20,6 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.quartz.Scheduler;
-
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
@@ -35,9 +27,11 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.action.ActionCompactData;
 import com.x.server.console.action.ActionConfig;
 import com.x.server.console.action.ActionCreateEncryptKey;
+import com.x.server.console.action.ActionDebugDetailDisplay;
 import com.x.server.console.action.ActionDumpData;
 import com.x.server.console.action.ActionDumpStorage;
 import com.x.server.console.action.ActionEraseContentBbs;
@@ -58,6 +52,14 @@ import com.x.server.console.action.ActionUpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.deploy.App;
+import org.eclipse.jetty.deploy.DeploymentManager;
+import org.quartz.Scheduler;
 
 public class Main {
 
@@ -123,8 +125,9 @@ public class Main {
 						/** 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值 */
 						if (null != cmd) {
 							commandQueue.put(cmd);
+							continue;
 						}
-						Thread.sleep(4000);
+						Thread.sleep(5000);
 					}
 				} catch (Exception e) {
 					System.out.println("console input closed!");
@@ -366,6 +369,12 @@ public class Main {
 			matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
 			if (matcher.find()) {
 				createEncryptKey(matcher.group(1));
+				continue;
+			}
+
+			matcher = CommandFactory.debugDetailDisplay_pattern.matcher(cmd);
+			if (matcher.find()) {
+				debugDetailDisplay(cmd);
 				continue;
 			}
 
@@ -725,6 +734,18 @@ public class Main {
 			} else {
 				System.out.println("directory " + file.getAbsolutePath() + " not existed.");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	private static void debugDetailDisplay(String cmd) {
+		try {
+			String[] args = StringTools.translateCommandline(cmd);
+			args = Arrays.copyOfRange(args, 1, args.length);
+				ActionDebugDetailDisplay action = new ActionDebugDetailDisplay();
+				action.execute(args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
