@@ -21,7 +21,7 @@
     },
     "searchInput":{
         "outline":"none",
-        "height":"28px",
+        "height":"26px",
         "width":"95%",
         "text-indent":"5px",
         "border":"0px",
@@ -38,22 +38,22 @@
         "height":"20px",
         "background": "url(/x_component_TeamWork/$TaskSub/default/icon/icon_off.png) no-repeat center"
     },
-    taskListLayout:{
+    taskGroupLayout:{
         "width":"90%",
-        "height":"280px",
+        "height":"320px",
         "margin":"10px auto",
         "border":"1px solid #dedede",
         "overflow-y":"auto",
         "color":"#666666"
     },
-    taskItem:{
+    groupItem:{
         "height":"40px",
         "width":"100%",
         "font-size":"14px",
         "cursor":"pointer",
         "border-bottom":"1px solid #dedede"
     },
-    taskName:{
+    groupName:{
         "width":"450px",
         "height":"40px",
         "line-height":"40px",
