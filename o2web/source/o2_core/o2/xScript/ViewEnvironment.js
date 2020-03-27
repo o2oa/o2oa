@@ -660,7 +660,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     }
 
                     MWF.xDesktop.requireApp("query.Query", "Viewer", function () {
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, { "style": "select" }, _form.app);
+                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, { "style": "select" }, _form.app, _form.Macro);
                     }.bind(this));
                 }.bind(this));
             }
@@ -748,7 +748,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     //仅前台对象-----------------------------------------
     //form
     this.page = this.form = this.queryView = {
-        "getParentEnvironment" : function () { return _form.parentEnvironment; }, //视图嵌入的表单或页面的上下文
+        "getParentEnvironment" : function () { return _form.getParentEnvironment(); }, //视图嵌入的表单或页面的上下文
         "getViewInfor" : function () { return _form.getViewInfor(); },
         "getPageInfor" : function () { return _form.getPageInfor(); },
         "getPageData" : function () { return _form.getPageData(); },

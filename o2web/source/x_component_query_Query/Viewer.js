@@ -23,7 +23,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // },
         // "actionRoot": "x_query_assemble_surface"
     },
-    initialize: function(container, json, options, app){
+    initialize: function(container, json, options, app, parentMacro){
         //本类有三种事件，
         //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
         //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
@@ -40,6 +40,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.container = $(container);
         this.json = json;
+
+        this.parentMacro = parentMacro;
 
         debugger;
         this.originalJson = Object.clone(json);
@@ -736,6 +738,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
     //api 使用 开始
+    getParentEnvironment : function(){
+      return this.parentMacro ? this.parentMacro.environment : null;
+    },
     getViewInfor : function(){
         return this.json;
     },
@@ -1718,9 +1723,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
             }
             if (flag){
                 flag = true;
-                if (tool.control){
-                    flag = this.form.businessData.control[tool.control]
-                }
+                // if (tool.control){
+                //     flag = this.form.businessData.control[tool.control]
+                // }
                 if (tool.condition){
                     var hideFlag = this.form.Macro.exec(tool.condition, this);
                     flag = !hideFlag;
@@ -1756,9 +1761,9 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
         //var path = "/x_component_process_FormDesigner/Module/Actionbar/";
         var path = "/x_component_query_ViewDesigner/$View/";
         var flag = true;
-        if (tool.control){
-            flag = this.form.businessData.control[tool.control]
-        }
+        // if (tool.control){
+        //     flag = this.form.businessData.control[tool.control]
+        // }
         if (!noCondition) if (tool.condition){
             var hideFlag = this.form.Macro.exec(tool.condition, this);
             flag = flag && (!hideFlag);
