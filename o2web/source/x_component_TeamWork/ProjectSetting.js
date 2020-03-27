@@ -222,7 +222,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 this.setStyles({"background-color":"#f5f5f5"});
                 customExitItemRemove.show();
                 customExitItemEdit.show();
-                },
+            },
             mouseout:function(){
                 this.setStyles({"background-color":""});
                 customExitItemRemove.hide();
@@ -322,6 +322,14 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.projectSettingTitleText = new Element("div.projectSettingTitleText",{styles:this.css.projectSettingTitleText,text:this.lp.projectTitle}).inject(this.projectSettingTitleContainer);
         this.projectSettingTitleDiv = new Element("div.projectSettingTitleDiv",{styles:this.css.projectSettingTitleDiv}).inject(this.projectSettingTitleContainer);
         this.projectSettingTitleIn = new Element("input.projectSettingTitleIn",{styles:this.css.projectSettingTitleIn,value:this.projectData.title || ""}).inject(this.projectSettingTitleDiv);
+        this.projectSettingTitleIn.addEvents({
+            focus:function(){
+                this.projectSettingTitleIn.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.projectSettingTitleIn.setStyles({"border":"1px solid #A6A6A6"});
+            }.bind(this)
+        });
 
         // this.projectSettingContainer = new Element("div.projectSettingContainer",{styles:this.css.projectSettingContainer}).inject(this.formTableArea);
         this.projectSettingGroupContainer = new Element("div.projectSettingGroupContainer",{styles:this.css.projectSettingGroupContainer}).inject(this.projectSettingContainer);
@@ -338,6 +346,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                             "z-index" : "102"
                         },
                         onClose:function(d){
+                            this.projectSettingGroupDiv.setStyles({"border":"1px solid #A6A6A6"});
                             if(d){
                                 this.rootActions.ProjectGroupAction.listWithIds({ids:d},function(json){
                                     this.groups = json.data;
@@ -354,8 +363,9 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                             //this.newProjectGroupValue.set("text",d)
                         }.bind(this)
                     });
-                    gs.load()
+                    gs.load();
                 }.bind(this));
+                this.projectSettingGroupDiv.setStyles({"border":"1px solid #4A90E2"});
             }.bind(this)
         });
         this.projectSettingGroupValue = new Element("div.projectSettingGroupValue",{styles:this.css.projectSettingGroupValue}).inject(this.projectSettingGroupDiv);
@@ -374,6 +384,14 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
 
         this.projectSettingDesContainer = new Element("div.projectSettingDesContainer",{styles:this.css.projectSettingDesContainer}).inject(this.projectSettingContainer);
         this.projectSettingDesIn = new Element("textarea.projectSettingDesIn",{styles:this.css.projectSettingDesIn,value:this.projectData.description||""}).inject(this.projectSettingDesContainer);
+        this.projectSettingDesIn.addEvents({
+            focus:function(){
+                this.projectSettingDesIn.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.projectSettingDesIn.setStyles({"border":"1px solid #A6A6A6"});
+            }.bind(this)
+        });
 
         this.projectSettingContainer = new Element("div.projectSettingContainer",{styles:this.css.projectSettingContainer}).inject(this.projectSettingLayout);
         this.projectSettingConfirm = new Element("div.projectSettingConfirm",{styles:this.css.projectSettingConfirm,text:this.lp.confirm}).inject(this.projectSettingContainer);

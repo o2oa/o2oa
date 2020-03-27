@@ -71,33 +71,33 @@ MWF.xApplication.TeamWork.UploadImage = new Class({
         //     }
         //     this.hotPicData = (json.data && json.data.length > 0) ? json.data[0] : {};
 
-            var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
-                "<tr>" +
-                //"   <td styles='formTableTitle' lable='hotPicture'></td>" +
-                "   <td styles='formTableValue' item='hotPictureArea'></td>" +
-                "</tr>"+
-                "<tr>" +
-                //"   <td styles='formTableTitle'></td>" +
-                "   <td></td>" +
-                "</tr>"+
-                //"<tr>" +
-                //"   <td styles='formTableTitle'></td>" +
-                //"   <td styles='formTableValue' item='hotPictureActionArea'></td>" +
-                //"</tr>"
-                "</table>";
-            this.formTableArea.set("html", html);
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr>" +
+            //"   <td styles='formTableTitle' lable='hotPicture'></td>" +
+            "   <td styles='formTableValue' item='hotPictureArea'></td>" +
+            "</tr>"+
+            "<tr>" +
+            //"   <td styles='formTableTitle'></td>" +
+            "   <td></td>" +
+            "</tr>"+
+            //"<tr>" +
+            //"   <td styles='formTableTitle'></td>" +
+            //"   <td styles='formTableValue' item='hotPictureActionArea'></td>" +
+            //"</tr>"
+            "</table>";
+        this.formTableArea.set("html", html);
 
-            MWF.xDesktop.requireApp("Template", "MForm", function () {
-                this.form = new MForm(this.formTableArea, this.data, {
-                    style: "default",
-                    isEdited: true,
-                    itemTemplate: {
-                        hotPicture: { text: this.lp.hotPicture }
-                    }
-                }, this.app, this.css);
-                this.form.load();
-                this.createIconNode();
-            }.bind(this), true);
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: "default",
+                isEdited: true,
+                itemTemplate: {
+                    hotPicture: { text: this.lp.hotPicture }
+                }
+            }, this.app, this.css);
+            this.form.load();
+            this.createIconNode();
+        }.bind(this), true);
 
         // }.bind(this), null, false);
     },
