@@ -171,7 +171,7 @@
 	},
     naviTopSearchIn:{
         "width":"90%",
-        "margin":"0 10px",
+        "margin":"1px 10px",
         "border":"0px",
         "height":"32px",
         "line-height":"32px",
@@ -386,7 +386,8 @@
         //"padding-right":"10px",
         "width":"100%",
         "height":"99%",
-        "display":"flex"
+        "display":"flex",
+        "position":"relative"
 	},
 	taskGroupLayout:{
 	    //"display":"inline-table",
@@ -454,7 +455,7 @@
         "overflow":"hidden",
         "background-color":"#fff",
         "padding-bottom":"10px",
-        //"position":"absolute"
+        "position":"relative"
     },
     taskItemContainerDrag:{
         "width":"290px",
@@ -606,6 +607,48 @@
         "width":"100%",
         "height":"100%",
         "overflow-y":"auto"
+    },
+    viewSearchContainer:{
+        "width":"1000px",
+        "height":"60px",
+        "margin":"10px auto 0px auto",
+        "font-size":"14px",
+        "color":"#666666",
+        "border-radius":"2px",
+        "background-color":"#ffffff"
+    },
+    viewSearchContent:{
+        "float":"left",
+        "width":"700px",
+        "height":"40px",
+        "margin-left":"150px",
+        "margin-top":"10px",
+        "border":"1px solid #cccccc"
+    },
+    viewSearchInput:{
+        "float":"left",
+        "font-size":"16px",
+        "outline":"none",
+        "width":"620px",
+        "height":"30px",
+        "margin":"2px",
+        "text-indent":"5px",
+        "border":"0px"
+    },
+    viewSearchReset:{
+        "display":"none",
+        "float":"right",
+        "width":"30px",
+        "height":"100%",
+        "cursor":"pointer",
+        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_off_click24.png) no-repeat center"
+    },
+    viewSearchSearch:{
+        "float":"right",
+        "width":"30px",
+        "height":"100%",
+        "cursor":"pointer",
+        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_search24.png) no-repeat center"
     },
     viewListContainer:{
         "width":"1000px",
