@@ -62,7 +62,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
                 naviTitle.addEvents({
                     click:function(){
-                        alert(1)
+
                     }.bind(this)
                 });
 
@@ -392,7 +392,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         //this.reloadLayoutList();
                         if(json.data && json.data.id){
                             //this.actions.projectGet(json.data.id,function(jsonr){
-                              this.actions.get(json.data.id,function(jsonr){
+                            this.actions.get(json.data.id,function(jsonr){
                                 if(jsonr.data){
                                     this.openProject(jsonr.data)
                                 }
@@ -600,7 +600,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 onClose:function(d){
                     //if(d && d.title){
                     //    data1.push({"title":d.title});
-                        if(d)this.reloadProjectGroup();
+                    if(d)this.reloadProjectGroup();
 
                     //}
                 }.bind(this)
@@ -921,8 +921,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             }.bind(this)
         });
 
-         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
-         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
+        var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
+        var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
     },
     loadSingleListItem:function(container,d){
         if(container) container.empty();
@@ -1020,12 +1020,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     setFav:function(d,callback){
         if(d.star){
             this.actions.unStar(d.id,function(d){
-            //this.actions.projectUnStar(d.id,function(d){
+                //this.actions.projectUnStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }else if(!d.star){
             this.actions.star(d.id,function(d){
-            //this.actions.projectStar(d.id,function(d){
+                //this.actions.projectStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }
