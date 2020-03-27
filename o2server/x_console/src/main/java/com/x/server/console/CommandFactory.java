@@ -74,13 +74,13 @@ public class CommandFactory {
 
 	public static final Pattern show_http_thread_pattern = Pattern
 			.compile("^ {0,}show http thread ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
-//	public static final Pattern show_dataSource_pattern = Pattern
-//			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern stack_pattern = Pattern.compile("^ {0,}stack ([1-9][0-9]*) ([1-9][0-9]*) (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern heapDump_pattern = Pattern.compile("^ {0,}heap dump (.+)$", Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern debugDetailDisplay_pattern = Pattern.compile("^(\\s*)ddd(\\s*)", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {
@@ -127,8 +127,9 @@ public class CommandFactory {
 			help += " restore storage yyyyMMddHHmmss (passwd)" + "\t\t" + "restore storage to database,file.";
 			help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)" + "\t\t\t" + "change initial manager password.";
-//			help += StringUtils.LF;
-//			help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new version.";
+			// help += StringUtils.LF;
+			// help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new
+			// version.";
 			help += StringUtils.LF;
 			help += " update file (path) (backup) (passwd)" + "\t\t\t" + "upgrade to new version from local zip file.";
 			help += StringUtils.LF;
