@@ -14,7 +14,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -80,29 +79,30 @@ public class ProcessFactory extends ElementFactory {
 				o = (Process) element.getObjectValue();
 			}
 		} else {
-			o = this.entityManagerContainer().restrictFlag(flag, Process.class, Process.application_FIELDNAME,
-					application.getId());
+			o = this.restrictEnabledProcess(application.getId(), flag);
 			if (null != o) {
+				this.entityManagerContainer().get(Process.class).detach(o);
 				cache.put(new Element(cacheKey, o));
 			}
 		}
 		return o;
 	}
 
-	public Process pickEnabledEdition(String appId, String edition) throws Exception {
-		if (StringUtils.isEmpty(appId) || StringUtils.isEmpty(edition)) {
+	public Process pickEnabled(String application, String edition) throws Exception {
+		if (StringUtils.isEmpty(application) || StringUtils.isEmpty(edition)) {
 			return null;
 		}
 		Process o = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(appId, edition);
+		String cacheKey = ApplicationCache.concreteCacheKey(application, edition);
 		Element element = cache.get(cacheKey);
 		if (null != element) {
 			if (null != element.getObjectValue()) {
 				o = (Process) element.getObjectValue();
 			}
 		} else {
-			//code is hear
+			o = this.getEnabledProcess(application, edition);
 			if (null != o) {
+				this.entityManagerContainer().get(Process.class).detach(o);
 				cache.put(new Element(cacheKey, o));
 			}
 		}
@@ -141,8 +141,7 @@ public class ProcessFactory extends ElementFactory {
 				o = (Process) element.getObjectValue();
 			}
 		} else {
-			o = this.entityManagerContainer().restrictFlag(flag, Process.class, Process.application_FIELDNAME,
-					application.getId());
+			o = this.restrictEnabledProcess(application.getId(), flag);
 			if (null != o) {
 				cache.put(new Element(cacheKey, o));
 			}
@@ -208,6 +207,42 @@ public class ProcessFactory extends ElementFactory {
 			}
 		}
 		return list;
+	}
+
+	public Process getEnabledProcess(String application, String edition) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.equal(root.get(Process_.application), application);
+		p = cb.and(p, cb.equal(root.get(Process_.edition), edition));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
+		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
+		List<Process> list = em.createQuery(cq).getResultList();
+		if(list!=null && !list.isEmpty()){
+			return list.get(0);
+		}
+		return null;
+	}
+
+	public Process restrictEnabledProcess(String application, String flag) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.equal(root.get(Process_.application), application);
+		p = cb.and(p, cb.or(cb.equal(root.get(Process_.id), flag),
+				cb.equal(root.get(Process_.name), flag),
+				cb.equal(root.get(Process_.alias), flag)));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
+		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
+		List<Process> list = em.createQuery(cq).getResultList();
+		if(list!=null && !list.isEmpty()){
+			return list.get(0);
+		}
+		return null;
 	}
 
 	// /* 判断用户是否有管理权限 */
