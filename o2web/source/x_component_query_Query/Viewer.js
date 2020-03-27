@@ -787,6 +787,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             })
         }
     },
+    setFilter : function( filter ){
+        if( !filter )filter = [];
+        if( typeOf( filter ) === "object" )filter = [ filter ];
+        this.json.filter = filter;
+        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+    },
     switchView : function( json ){
         debugger;
         // json = {
@@ -807,7 +813,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         var newJson = Object.merge( Object.clone(this.originalJson), json );
         this.container.empty();
-        this.initialize( this.container, newJson, Object.clone(this.options), this.app);
+        this.initialize( this.container, newJson, Object.clone(this.options), this.app, this.parentMacro);
     },
     confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
         this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
