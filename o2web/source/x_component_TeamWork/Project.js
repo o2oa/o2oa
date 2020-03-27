@@ -102,6 +102,20 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.createStatLayout();
             }.bind(this)
         });
+
+
+        //********************************
+
+
+
+
+
+
+        //************************************
+
+
+
+
         this.topBarSettingContainer = new Element("div.topBarSettingContainer",{styles:this.css.topBarSettingContainer}).inject(this.topBarLayout);
         this.topBarSettingMenuContainer = new Element("div.topBarSettingMenuContainer",{styles:this.css.topBarSettingMenuContainer}).inject(this.topBarSettingContainer);
         this.topBarSettingMenuContainer.addEvents({
@@ -182,16 +196,21 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.naviTopSearchContainer = new Element("div.naviTopSearchContainer",{styles:this.css.naviTopSearchContainer}).inject(this.naviTop);
         this.naviTopSearchIn = new Element("input.naviTopSearchIn",{styles:this.css.naviTopSearchIn,placeholder:this.lp.searchTask}).inject(this.naviTopSearchContainer);
         this.naviTopSearchIn.addEvents({
-           keypress:function(e){
-               this.searchLoading = true;
-               var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
-               if (keycode == 13 || keycode == 10) {
-                   var key = this.naviTopSearchIn.get("value").trim();
-                   if(key=="") return;
-                   if(this.searchLoading) this.openSearch(key)
-               }
-
-           }.bind(this)
+            keypress:function(e){
+                this.searchLoading = true;
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                if (keycode == 13 || keycode == 10) {
+                    var key = this.naviTopSearchIn.get("value").trim();
+                    if(key=="") return;
+                    if(this.searchLoading) this.openSearch(key)
+                }
+            }.bind(this),
+            focus:function(){
+                this.naviTopSearchContainer.setStyles({"border":"1px solid #4A90E2"})
+            }.bind(this),
+            blur:function(){
+                this.naviTopSearchContainer.setStyles({"border":"1px solid #DEDEDE"})
+            }.bind(this)
         });
 
         this.naviTopTaskContainer = new Element("div.naviTopTaskContainer",{styles:this.css.naviTopTaskContainer}).inject(this.naviTop);
@@ -284,6 +303,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.naviView = new Element("div.naviView",{styles:this.css.naviView}).inject(this.naviLayout);
         this.naviViewTitleContainer = new Element("div.naviViewTitleContainer",{styles:this.css.naviViewTitleContainer}).inject(this.naviView);
         this.naviViewTitle = new Element("div.naviViewTitle",{styles:this.css.naviViewTitle,text:this.lp.viewTitle}).inject(this.naviViewTitleContainer);
+
+        /*  新增按钮
         this.naviViewAdd = new Element("div.naviViewAdd",{styles:this.css.naviViewAdd}).inject(this.naviViewTitleContainer);
         this.naviViewAdd.addEvents({
             click:function(){
@@ -301,6 +322,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 });
             }.bind(this)
         });
+        */
+
         this.createNaviViewItem();
     },
     createNaviViewItem:function(){
@@ -327,13 +350,13 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemMyContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemMyIcon = new Element("div.naviItemMyIcon",{styles:this.css.naviItemMyIcon}).inject(this.naviItemMyContainer);
                 this.naviItemMyText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemMy}).inject(this.naviItemMyContainer);
-                this.naviItemMyMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemMyContainer);
-                this.naviItemMyMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemMyMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                // this.naviItemMyMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemMyContainer);
+                // this.naviItemMyMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemMyMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemMyContainer.addEvents({
                     click:function(){
                         this.curNaviItem = json.name;
@@ -347,13 +370,13 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemFlowContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemFlowIcon = new Element("div.naviItemFlowIcon",{styles:this.css.naviItemFlowIcon}).inject(this.naviItemFlowContainer);
                 this.naviItemFlowText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemFlow}).inject(this.naviItemFlowContainer);
-                this.naviItemFlowMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemFlowContainer);
-                this.naviItemFlowMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemFlowMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                //this.naviItemFlowMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemFlowContainer);
+                // this.naviItemFlowMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemFlowMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemFlowContainer.addEvents({
                     click:function(){
                         alert("open")
@@ -366,13 +389,13 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemCompleteContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemCompleteIcon = new Element("div.naviItemCompleteIcon",{styles:this.css.naviItemCompleteIcon}).inject(this.naviItemCompleteContainer);
                 this.naviItemCompleteText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemComplete}).inject(this.naviItemCompleteContainer);
-                this.naviItemCompleteMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemCompleteContainer);
-                this.naviItemCompleteMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemCompleteMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                //this.naviItemCompleteMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemCompleteContainer);
+                // this.naviItemCompleteMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemCompleteMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemCompleteContainer.addEvents({
                     click:function(){
                         alert("open")
@@ -385,13 +408,13 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemOverContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemOverIcon = new Element("div.naviItemOverIcon",{styles:this.css.naviItemOverIcon}).inject(this.naviItemOverContainer);
                 this.naviItemOverText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemOver}).inject(this.naviItemOverContainer);
-                this.naviItemOverMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemOverContainer);
-                this.naviItemOverMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemOverMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                // this.naviItemOverMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemOverContainer);
+                // this.naviItemOverMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemOverMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemOverContainer.addEvents({
                     click:function(){
                         alert("open")
@@ -500,7 +523,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         node.empty();
         var taskGroupItemTitleContainer = new Element("div.taskGroupItemTitleContainer",{styles:this.css.taskGroupItemTitleContainer}).inject(node);
         new Element("div.taskGroupItemTitleText",{styles:this.css.taskGroupItemTitleText,text:data.name}).inject(taskGroupItemTitleContainer);
-        new Element("div.taskGroupItemTitleCount",{styles:this.css.taskGroupItemTitleCount,text:"("+data.taskCount+")"}).inject(taskGroupItemTitleContainer);
+        var titleCount = new Element("div.taskGroupItemTitleCount",{styles:this.css.taskGroupItemTitleCount,text:"(-)"}).inject(taskGroupItemTitleContainer);
         if(data.control.sortable){
             var taskGroupItemTitleMore = new Element("div.taskGroupItemTitleMore",{styles:this.css.taskGroupItemTitleMore}).inject(taskGroupItemTitleContainer);
             taskGroupItemTitleMore.addEvents({
@@ -574,7 +597,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.app.setLoading(taskGroupItemContainer);
 
         //this.actions.taskListByListId(this.data.id,data.id,function(json){
-         this.rootActions.TaskAction.listMyTaskWithTaskListId(this.data.id,data.id,function(json){
+        this.rootActions.TaskAction.listMyTaskWithTaskListId(this.data.id,data.id,function(json){
+            titleCount.set("text","("+json.count+")")
             taskGroupItemContainer.empty();
             var taskListData = json.data;
             //alert(JSON.stringify(taskListData));
@@ -589,11 +613,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var time = 200;
                 taskItemContainer.addEvents({
                     click:function(e){
-                        //解决click和mousedown事件冲突
-                        if(upTime>0){
-                            this.openTask(d.id,function(){ taskItemContainer.destroy() }.bind(this));
-                            upTime = 0
-                        }
+                        this.openTask(d.id,function(){ taskItemContainer.destroy() }.bind(this));
                     }.bind(this),
                     mouseenter:function(){
                         int = window.setInterval(function(){
@@ -607,177 +627,228 @@ MWF.xApplication.TeamWork.Project = new Class({
                         window.clearInterval(int);
                         taskItemContainer.getElement(".taskItemHover").setStyles({"width":"5px"});
                     }.bind(this),
-                    mouseup:function(){
-                        upTime = new Date().getTime();
 
-                    },
-                    mousedown:function(e){
-                        var position = taskItemContainer.getPosition();
-                        var clone = taskItemContainer.clone(true,true);
-                        clone.removeClass("dragin");
-                        clone.setStyles({
-                            "top":position.y+"px",
-                            "left":position.x+"px",
-                            "z-index":"9999",
-                            "position":"absolute",
-                            "cursor":"move"
-                        });
-                        var _height = clone.getHeight().toInt() - 2;
+                });
 
-                        var myDrag = new Drag.Move(clone, {
-                            container: this.taskContentLayout,
-                            //handle: taskItemHover,
-                            droppables: $$('.dragin'),
-                            onStart:function(el){
-                                if(upTime>0){
-                                    myDrag.stop();
-                                }else{
-                                    el.inject($(document.body));
-                                    taskItemContainer.setStyles({"border":"1px dotted #000000","opacity":"0.3"});
-                                }
-                            },
-                            onLeave:function(el,dr){
-                                var pre = dr.getPrevious();
-                                if(pre && pre.get("class")=="taskItemInsertLine") {
-                                    pre.destroy();
-                                }
-                            },
-                            onEnter:function(el,dr){
-                                var pre = dr.getPrevious();
-                                if(!pre || (pre && pre.get("class")!="taskItemInsertLine")){
-                                    if(el.get("id")!=dr.get("id")){
-                                        new Element("div.taskItemInsertLine",{styles:_self.css.taskItemInsertLine}).inject(dr,"before");
-                                    }
-                                }
-                            },
-                            onDrop:function(el, dr, e){
-                                var taskId = el.get("id");
-                                var taskInId = null;
-                                var taskGroupInId = null;
-                                var taskGroupFromId = null;
-                                var taskGroupFromSortable = null;
-                                var taskGroupInSortable = null;
-                                el.setStyles({"cursor":""});
-                                if(!dr){
-                                    //没有移入，还原
-                                    var fx = new Fx.Tween(el,{duration:time});
-                                    fx.start(["top"] ,el.getPosition().y+"px", taskItemContainer.getPosition().y+"px");
-                                    var fx2 = new Fx.Tween(el,{duration:time});
-                                    fx2.start(["left"] ,el.getPosition().x+"px", taskItemContainer.getPosition().x+"px");
-                                    window.setTimeout(function(){
-                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                        el.destroy()
-                                    },time)
-                                }else{
-                                    if(el.get("id")==dr.get("id")){ //如果移动的是本身的拷贝,恢复
-                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                        el.destroy();
-                                    }else{
-                                        taskInId = dr.get("id");
-                                        taskGroupFromId = taskItemContainer.getParent().getParent().get("id");
-                                        taskGroupInId = dr.getParent().getParent().get("id");
-                                        taskGroupFromSortable = taskItemContainer.getParent().getParent().get("sortable");
-                                        taskGroupInSortable = dr.getParent().getParent().get("sortable");
-                                        var pre = dr.getPrevious();
-                                        if(pre && pre.get("class")=="taskItemInsertLine") {
-                                            //alert("taskid="+taskId+",taskInId="+taskInId+",taskgroupFromid="+taskGroupFromId+",taskGroupInId="+taskGroupInId);
-                                            if(taskGroupInSortable == "false"){
-                                                //未分类视图不允许移入，还原并删除el对象
-                                                _self.app.notice("未分类列表不允许移入","error");
-                                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                    pre.destroy();
-                                                    el.destroy();
-                                                }
-                                                return ;
-                                            }
-                                            var data = {
-                                                taskId:taskId,
-                                                behindTaskId:taskInId
-                                            };
-                                            _self.rootActions.TaskListAction.addTask2ListWithBehindTask(taskGroupInId,data,function(json){
-                                                if(json.type == "success"){ //返回成功后再换位置
+                var drag = new Drag(taskItemContainer, {
+                    "compensateScroll": true,
 
-                                                    //fx fx2 动画clone到移入位置
-                                                    var fx = new Fx.Tween(el,{duration:time});
-                                                    fx.start(["top"] ,el.getPosition().y+"px", pre.getPosition().y+"px");
-                                                    var fx2 = new Fx.Tween(el,{duration:time});
-                                                    fx2.start(["left"] ,el.getPosition().x+"px", pre.getPosition().x+"px");
-                                                    //利用pre撑大高度
-                                                    pre.setStyles({"border":"0px","background-color":"#ffffff","height":(el.getHeight().toInt())+"px"});
-                                                    //var fx3 = new Fx.Tween(pre,{duration:time});
-                                                    //fx3.start(["height"] ,"0px", _height+"px");
-
-                                                    //新建一个占用原来位置
-                                                    var tmpdiv = taskItemContainer.clone();
-                                                    tmpdiv.setStyles({"border":"0px"});
-                                                    tmpdiv.empty();
-                                                    tmpdiv.inject(taskItemContainer,"before");
-
-                                                    //设置原有位置none
-                                                    taskItemContainer.setStyles({"display":"none"});
-
-                                                    //动画完成后插入真正的对象，恢复原位，并删除pre和clone
-                                                    window.setTimeout(function(){
-                                                        pre.destroy();
-                                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","height":_height+"px","display":"block","opacity":"1"});
-                                                        taskItemContainer.inject(dr,"before");
-                                                        //fx4把临时占用的位置删除
-                                                        var fx4 = new Fx.Tween(tmpdiv,{duration:time});
-                                                        fx4.start(["height"] ,_height+"px", "0px");
-                                                        window.setTimeout(function(){
-                                                            if(tmpdiv) tmpdiv.destroy()
-                                                        },time);
-                                                        //删除clone即el对象
-                                                        el.destroy();
-                                                    },time);
-
-                                                    //刷新其他需要加载的位置，比如数量
-                                                    var taskGroupFrom = taskItemContainer.getParent().getParent();
-                                                    var taskGroupIn = dr.getParent().getParent();
-                                                    //_self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
-                                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
-                                                        taskGroupFrom.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
-                                                    });
-                                                    _self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupInId,function(json){
-                                                        taskGroupIn.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
-                                                    })
-                                                }else{
-                                                    //返回失败，还原并删除el对象
-                                                    taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                    if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                        pre.destroy();
-                                                        el.destroy();
-                                                    }
-                                                }
-                                            },function(xhr,text,error){
-                                                _self.app.showErrorMessage(xhr,text,error);
-                                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                    pre.destroy();
-                                                    el.destroy();
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                        //传递鼠标事件e
-                        myDrag.start(e)
+                    container: this.taskContentLayout,
+                    "onStart": function(el, e){
+                        this.dragMove(el,e);
+                        drag.stop();
                     }.bind(this)
                 });
+
             }.bind(this));
 
             //最后加一行占位
             var emptyDrag = new Element("div.empty.dragin",{name:"item",styles:{
-                "width":"100%",
-                    "height":"50px"
+                    "width":"100%", "height":"50px"
                 }}).inject(taskGroupItemContainer);
 
-
         }.bind(this));
+
     },
+
+    dragMove:function(el,e){
+        var _self = this;
+        var taskItemContainer = el;
+        var time = 200;
+        //this.cloneTaskItem = new Element("").inject()
+        var position = el.getPosition(this.taskContentLayout);
+        //var clone = this.cloneTaskItem = el.clone(true,true).inject($(document.body));
+        var clone = this.cloneTaskItem = el.clone(true,true).inject(this.taskContentLayout);
+        this.cloneTaskItem.removeClass("dragin");
+        this.cloneTaskItem.setStyles({
+            "top":position.y+"px",
+            "left":(position.x+this.taskContentLayout.getScroll().x)+"px",
+            "z-index":"9999",
+            "margin":"0px",
+            //"position":"position",
+            "cursor":"move"
+        });
+        el.setStyles({"border":"1px dotted #000000","opacity":"0.3"});
+        var _height = this.cloneTaskItem.getHeight().toInt() - 2;
+
+        this.ccc = 0;
+        var drag = new Drag.Move(this.cloneTaskItem, {
+            container: this.taskContentLayout,
+            //container: $$("#6a933366-5165-4153-bee2-30ec0c327d40"),
+            //"stopPropagation": true,
+            "compensateScroll": true,
+            "droppables": $$(".dragin"),
+            "onStart": function(){
+                // this.topBarTabItemStat.set("text",JSON.stringify(el.getPosition()));
+
+            }.bind(this),
+            "onDrag": function(el,e){
+                // var _width = el.getWidth().toInt();
+                //
+                // var  _l= el.getPosition().x;
+                // var _sl = this.taskContentLayout.getScrollLeft();
+                // var _w = this.container.getWidth().toInt() + _sl;
+                //
+                //
+                // //this.topBarTabItemStat.set("text",_width+p.x-_w_w);
+                //
+                // //this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+2,0);
+                //
+                // this.topBarTabItemStat.set("text",_l);
+                // var p1 = this.taskContentLayout.getPosition();
+                //
+                // this.ccc ++;
+                // //this.topBarTabItemStat.set("text",this.ccc);
+                //
+                // if(_l + _width == _w){ this.topBarTabItemStat.set("text","AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                //     //this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+100,0);
+                //     // scrInt =  window.setInterval(function(){
+                //     //     this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+500,0);
+                //     //
+                //     //     this.ccc ++;
+                //     //     this.topBarTabItemStat.set("text",this.ccc);
+                //     // }.bind(this),20)
+                // }
+
+
+            }.bind(this),
+            "onEnter": function(el,dr){
+                var pre = dr.getPrevious();
+                if(!pre || (pre && pre.get("class")!="taskItemInsertLine")){
+                    if(el.get("id")!=dr.get("id")){
+                        new Element("div.taskItemInsertLine",{styles:_self.css.taskItemInsertLine}).inject(dr,"before");
+                    }
+                }
+            }.bind(this),
+            "onLeave": function(el,dr){
+                var pre = dr.getPrevious();
+                if(pre && pre.get("class")=="taskItemInsertLine") {
+                    pre.destroy();
+                }
+            }.bind(this),
+            "onDrop": function(el, dr, e){
+
+                var taskId = el.get("id");
+                var taskInId = null;
+                var taskGroupInId = null;
+                var taskGroupFromId = null;
+                var taskGroupFromSortable = null;
+                var taskGroupInSortable = null;
+                el.setStyles({"cursor":""});
+                if(!dr){
+                    //没有移入，还原
+                    var fx = new Fx.Tween(el,{duration:time});
+                    fx.start(["top"] ,(el.getPosition(this.taskContentLayout).y)+"px", taskItemContainer.getPosition(this.taskContentLayout).y+"px");
+                    var fx2 = new Fx.Tween(el,{duration:time});
+                    fx2.start(["left"] ,(el.getPosition(this.taskContentLayout).x + this.taskContentLayout.getScrollLeft())+"px", (taskItemContainer.getPosition(this.taskContentLayout).x +  this.taskContentLayout.getScrollLeft())+"px");
+                    window.setTimeout(function(){
+                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                        el.destroy()
+                    },time)
+                }else{
+                    if(el.get("id")==dr.get("id")){ //如果移动的是本身的拷贝,恢复
+                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                        el.destroy();
+                    }else{
+                        taskInId = dr.get("id");
+                        taskGroupFromId = taskItemContainer.getParent().getParent().get("id");
+                        taskGroupInId = dr.getParent().getParent().get("id");
+                        taskGroupFromSortable = taskItemContainer.getParent().getParent().get("sortable");
+                        taskGroupInSortable = dr.getParent().getParent().get("sortable");
+                        var pre = dr.getPrevious();
+                        if(pre && pre.get("class")=="taskItemInsertLine") {  //this.topBarTabItemStat.set("text","change");
+                            //alert("taskid="+taskId+",taskInId="+taskInId+",taskgroupFromid="+taskGroupFromId+",taskGroupInId="+taskGroupInId);
+                            if(taskGroupInSortable == "false"){
+                                //未分类视图不允许移入，还原并删除el对象
+                                _self.app.notice("未分类列表不允许移入","error");
+                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                if(pre && pre.get("class")=="taskItemInsertLine"){
+                                    pre.destroy();
+                                    el.destroy();
+                                }
+                                return ;
+                            }
+                            var data = {
+                                taskId:taskId,
+                                behindTaskId:taskInId
+                            };
+                            _self.rootActions.TaskListAction.addTask2ListWithBehindTask(taskGroupInId,data,function(json){
+                                if(json.type == "success"){ //返回成功后再换位置
+
+                                    //fx fx2 动画clone到移入位置
+                                    var fx = new Fx.Tween(el,{duration:time});
+                                    fx.start(["top"] ,el.getPosition(_self.taskContentLayout).y+"px", pre.getPosition(_self.taskContentLayout).y+"px");
+                                    var fx2 = new Fx.Tween(el,{duration:time});
+                                    fx2.start(["left"] ,(el.getPosition(_self.taskContentLayout).x + _self.taskContentLayout.getScrollLeft())+"px", (pre.getPosition(_self.taskContentLayout).x +  _self.taskContentLayout.getScrollLeft())+"px");
+                                    //利用pre撑大高度
+                                    pre.setStyles({"border":"0px","background-color":"#ffffff"});
+                                    //var fx3 = new Fx.Tween(pre,{duration:time});
+                                    //fx3.start(["height"] ,"0px", _height+"px");
+
+                                    //新建一个占用原来位置
+                                    var tmpdiv = taskItemContainer.clone();
+                                    tmpdiv.setStyles({"border":"0px","margin":"0px","height":(el.getHeight())+"px"});
+                                    tmpdiv.empty();
+                                    tmpdiv.inject(taskItemContainer,"before");
+
+                                    //设置原有位置none
+                                    taskItemContainer.setStyles({"display":"none"});
+
+                                    var __height = tmpdiv.getHeight().toInt() - 2;
+                                    //动画完成后插入真正的对象，恢复原位，并删除pre和clone
+                                    window.setTimeout(function(){
+                                        pre.destroy();
+                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","display":"block","opacity":"1"});
+                                        taskItemContainer.inject(dr,"before");
+                                        //fx4把临时占用的位置删除
+                                        var fx4 = new Fx.Tween(tmpdiv,{duration:time});
+                                        fx4.start(["height"] ,__height+"px", "0px");
+                                        window.setTimeout(function(){
+                                            if(tmpdiv) tmpdiv.destroy()
+                                        },time);
+                                        //删除clone即el对象
+                                        el.destroy();
+                                    },time);
+
+                                    //刷新其他需要加载的位置，比如数量
+                                    var taskGroupFrom = taskItemContainer.getParent().getParent();
+                                    var taskGroupIn = dr.getParent().getParent();
+                                    //_self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                        taskGroupFrom.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
+                                    });
+                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupInId,function(json){
+                                        taskGroupIn.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
+                                    })
+                                }else{
+                                    //返回失败，还原并删除el对象
+                                    taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                    if(pre && pre.get("class")=="taskItemInsertLine"){
+                                        pre.destroy();
+                                        el.destroy();
+                                    }
+                                }
+                            },function(xhr,text,error){
+                                _self.app.showErrorMessage(xhr,text,error);
+                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                if(pre && pre.get("class")=="taskItemInsertLine"){
+                                    pre.destroy();
+                                    el.destroy();
+                                }
+                            });
+                        }
+                    }
+                }
+            }.bind(this),
+            // "onCancel": function(el, e){ this._drag_cancel(dragging); }.bind(this),
+            //"onComplete": function(el, e){ if(scrInt) window.clearInterval(scrInt);}.bind(this),
+        });
+        drag.start(e);
+    },
+
+
+
+
     loadTaskNode:function(taskItemContainer,d){
         taskItemContainer.empty();
 
@@ -813,7 +884,19 @@ MWF.xApplication.TeamWork.Project = new Class({
         }.bind(this),null,false);
 
         taskItemHover.setStyles({"height":taskItemContainer.getHeight()});
+
+
+        // var drag = new Drag(taskItemContainer, {
+        //     "stopPropagation": true,
+        //     "compensateScroll": true,
+        //     "onStart": function(el, e){
+        //         this.doDragMove(e,taskItemContainer);
+        //         drag.stop();
+        //     }.bind(this)
+        // });
+
     },
+
     openTask:function(id,callback){
         var data = {
             taskId:id
@@ -844,6 +927,7 @@ MWF.xApplication.TeamWork.Project = new Class({
 
         if(this.viewContainer) delete this.viewContainer;
         if(this.viewListContainer) delete this.viewListContainer;
+        if(this.viewSearchInput) delete this.viewSearchInput;
         this.taskContentLayout.empty();
         var viewContainer = this.viewContainer = new Element("div.viewContainer",{styles:this.css.viewContainer}).inject(this.taskContentLayout);
         viewContainer.addEvents({
@@ -852,13 +936,53 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var sHeight = this.getScrollHeight();
                 var cHeight = viewContainer.getHeight();
 
-                if(sHeight - sTop < cHeight+10){ //偏移量
+                if(sHeight - sTop < cHeight+10 ){ //偏移量
                     if(_self.viewLoading){
                         _self.loadView(_self.curViewTaskId)
                     }
                 }
             }
         });
+        var viewSearchContainer = new Element("div.viewSearchContainer",{styles:this.css.viewSearchContainer}).inject(viewContainer);
+        var viewSearchContent = new Element("div.viewSearchContent",{styles:this.css.viewSearchContent}).inject(viewSearchContainer);
+        var viewSearchInput = this.viewSearchInput = new Element("input",{styles:this.css.viewSearchInput,"name":"viewSearchInput","placeholder":this.lp.searchTask}).inject(viewSearchContent);
+        viewSearchInput.addEvents({
+            keypress:function(e){
+                this.searchLoading = true;
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                if (keycode == 13 || keycode == 10) {
+                    var key = viewSearchInput.get("value").trim();
+                    if(key=="") return;
+                    //alert(key)
+                    viewSearchReset.show();
+                    if(this.searchLoading) this.loadView()
+                }
+            }.bind(this),
+            focus:function(){
+                viewSearchContent.setStyles({"border":"1px solid #4A90E2"})
+            }.bind(this),
+            blur:function(){
+                viewSearchContent.setStyles({"border":"1px solid #DEDEDE"})
+            }.bind(this)
+        })
+
+        var viewSearchSearch = new Element("div",{styles:this.css.viewSearchSearch}).inject(viewSearchContent);
+        viewSearchSearch.addEvents({
+            click:function(){
+                if(viewSearchInput.get("value").trim()=="") return;
+                viewSearchReset.show();
+                this.loadView();
+            }.bind(this)
+        });
+        var viewSearchReset = new Element("div",{styles:this.css.viewSearchReset}).inject(viewSearchContent);
+        viewSearchReset.addEvents({
+            click:function(){
+                viewSearchReset.hide();
+                viewSearchInput.set("value","");
+                this.loadView();
+            }.bind(this)
+        });
+
         var viewListContainer = this.viewListContainer = new Element("div.viewListContainer",{styles:this.css.viewListContainer}).inject(viewContainer);
         this.loadView()
     },
@@ -895,25 +1019,40 @@ MWF.xApplication.TeamWork.Project = new Class({
         }.bind(this))
     },
     loadView:function(id){
+        //this.curNaviItem  所有工作，我负责的任务。。。。。
+        //key 搜索关键字
+
+        if(!(id)) {
+            this.viewListContainer.empty();
+            this.curCount = 0;
+        }
+
         this.viewListContainer.getElements(".viewNext").destroy();
         var data = {
             project:this.data.id
         };
+        if(this.viewSearchInput.get("value").trim()!=""){
+            data.title = this.viewSearchInput.get("value").trim();
+        }
         var tmpLoading = new Element("div.tmpLoading",{styles:{"background-color":"#ffffff"}}).inject(this.viewListContainer);
         this.app.setLoading(tmpLoading);
         this.viewLoading = false;
-        this.actions.taskListNext(id||"(0)",10,data,function(json){
+        // var filter = {
+        //     //"title":this.viewSearchInput.get("value")||""
+        // }
+        this.rootActions.TaskAction.listNextWithFilter(id||"(0)",10,data,function(json){
             this.viewListContainer.getElements(".tmpLoading").destroy();
             json.data.each(function(data){
                 this.loadViewItem(data);
                 this.curViewTaskId = data.id;
+                this.curCount = this.curCount + 1;
             }.bind(this));
             this.viewLoading = true;
 
             var sHeight = this.viewListContainer.getHeight();
             var cHeight = this.viewContainer.getHeight();
 
-            if(sHeight<cHeight){
+            if(sHeight<cHeight && this.curCount < json.count){
                 var viewNext = new Element("div.viewNext",{styles:this.css.viewNext,text:"下一页"}).inject(this.viewListContainer);
                 viewNext.addEvents({
                     click:function(){
@@ -922,11 +1061,6 @@ MWF.xApplication.TeamWork.Project = new Class({
                 })
             }
 
-            // if(sHeight - sTop < cHeight+10){ //偏移量
-            //     if(_self.viewLoading){
-            //         _self.loadView(_self.curViewTaskId)
-            //     }
-            // }
         }.bind(this))
     },
     loadViewItem:function(data){

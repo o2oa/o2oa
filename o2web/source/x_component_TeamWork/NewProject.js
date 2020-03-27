@@ -43,14 +43,20 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                         "cursor":"",
                         "background-color":"#F0F0F0",
                         "color":"#666666"
-                    })
+                    });
                 }else{
                     this.newProjectAdd.setStyles({
                         "cursor":"pointer",
                         "background-color":"#4A90E2",
                         "color":"#FFFFFF"
-                    })
+                    });
                 }
+            }.bind(this),
+            focus:function(){
+                this.newProjectContainer.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.newProjectContainer.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
 
@@ -75,8 +81,7 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                         pre.destroy();
                     }
                 }
-
-
+                this.newProjectDesContainer.setStyles({"border":"1px solid #4A90E2"});
             }.bind(this),
             blur:function(){
                 var v = this.newProjectDesIn.get("value");
@@ -96,7 +101,7 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                         pre.destroy();
                     }
                 }
-
+                this.newProjectDesContainer.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
 
@@ -116,26 +121,29 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                             "z-index" : "102"
                         },
                         onClose:function(d){
+                            this.newProjectGroupContainer.setStyles({"border":"1px solid #A6A6A6"});
                             if(!d) return;
                             this.refreshGroup(function(){
                                 var res = [];
                                 d.each(function(dd){
                                     this.groupSearch(dd,function(json){
                                         if(json) res.push(json);
-                                    }.bind(this))
+                                    }.bind(this));
                                 }.bind(this));
                                 this.selectGroup = res;
                                 var resVal = [];
                                 res.each(function(dd){
-                                    resVal.push(dd.name)
+                                    resVal.push(dd.name);
                                 }.bind(this));
 
-                                this.newProjectGroupValue.set("text",resVal.join(","))
+                                this.newProjectGroupValue.set("text",resVal.join(","));
                             }.bind(this));
                         }.bind(this)
                     });
                     gs.load()
                 }.bind(this));
+                this.newProjectGroupContainer.setStyles({"border":"1px solid #4A90E2"});
+
             }.bind(this)
         });
 
@@ -160,7 +168,7 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                 };
 
                 //this.actions.projectSave(data,function(json){
-                 this.rootActions.ProjectAction.save(data,function(json){
+                this.rootActions.ProjectAction.save(data,function(json){
                     this.close(json);
                 }.bind(this));
 
