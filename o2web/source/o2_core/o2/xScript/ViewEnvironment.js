@@ -756,6 +756,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "selectAll" : function () { return _form.selectAll(); },
         "unSelectAll" : function () { return _form.unSelectAll(); },
         "getSelectedData" : function () { return _form.getSelectedData(); },
+        "setFilter" : function ( filter ) { return _form.setFilter(filter); },
         "switchView" : function ( options ) { return _form.switchView(options); },
 
         // "getInfor": function () { return ev.pageInfor; },
