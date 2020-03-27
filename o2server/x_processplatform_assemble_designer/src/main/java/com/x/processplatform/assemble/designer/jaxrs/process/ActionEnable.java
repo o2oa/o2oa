@@ -55,6 +55,7 @@ class ActionEnable extends BaseAction {
 				}
 			}
 			emc.commit();
+			cacheNotify();
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

@@ -101,7 +101,7 @@ class ActionUpgrade extends BaseAction {
 			Wo wo = new Wo();
 			wo.setId(newProcess.getId());
 			result.setData(wo);
-			MessageFactory.process_upgrade(newProcess);
+			MessageFactory.process_update(newProcess);
 			return result;
 		}
 	}
