@@ -931,7 +931,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     datath.setStyles(this.json.titleStyles);
                     tr.insertCell(1).setStyles(this.json.amountStyles).set("text", totalResaults[i] || "");
                 }else{
-                    tr.getElement("td").set("text", totalResaults[i] || "");
+                    tr.getElement("td").set("text", isNaN( totalResaults[i] ) ? "" : totalResaults[i]);
                 }
                 this.totalResaults[m.module.json.id] = totalResaults[i];
             }.bind(this));

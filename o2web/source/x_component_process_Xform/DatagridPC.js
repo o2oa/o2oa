@@ -823,7 +823,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this.totalModules.each(function(m, i){
                 this.totalResaults[m.module.json.id] = totalResaults[i];
                 var td = totalTds[m.index];
-                td.set("text", totalResaults[i] || "");
+                td.set("text", isNaN( totalResaults[i] ) ? "" : totalResaults[i] );
             }.bind(this));
         }
         return data;
