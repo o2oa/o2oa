@@ -89,6 +89,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		
 		var actionEditTd = new Element("td").inject(this.editorTr, "top");
 		this._createCompleteAction(actionEditTd);
+		this._createCancelAction(actionEditTd);
 		
 		new Element("td").inject(this.editorTr, "bottom");
 
@@ -263,6 +264,17 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		});
 		completeAction.inject(td);
 	},
+	_createCancelAction: function(td){
+		var cancelAction = new Element("div", {
+			"styles": this.form.css.delLineAction,
+			"events": {
+				"click": function(e){
+					this._cancelLineEdit(e);
+				}.bind(this)
+			}
+		});
+		cancelAction.inject(td);
+	},
 	
 	_editLine:function(td){
 		if (this.isEdit){
@@ -324,42 +336,74 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         return flag;
     },
 
-	_cancelLineEdit: function(){
-		this.isEdit = false;
+	// _cancelLineEdit: function(e){
+	// 	this.isEdit = false;
+	//
+	// 	var flag = true;
+	//
+	// 	var griddata = {};
+	// 	var newTr = null;
+	//
+	// 	if (this.currentEditLine){
+	// 		newTr = this.currentEditLine;
+	// 		griddata = this.currentEditLine.retrieve("data");
+	// 	}else{
+	// 		newTr = new Element("tr").inject(this.editorTr, "before");
+	// 		griddata = {};
+	// 	}
+	//
+	// 	if (flag){
+	// 		newTr.destroy();
+	// 	}
+	// 	this.currentEditLine = null;
+	//
+	// 	this._editorTrGoBack();
+	//
+	// 	// if (this.json.contentStyles){
+	// 	// 	var tds = newTr.getElements("td");
+	// 	// 	tds.setStyles(this.json.contentStyles);
+	// 	// }
+	// 	// if (this.json.actionStyles){
+	// 	// 	newTr.getFirst().setStyles(this.json.actionStyles);
+	// 	// }
+	//
+	// 	// this._loadBorderStyle();
+	// 	// this._loadZebraStyle();
+	// 	// this._loadSequence();
+	//
+	// 	this.fireEvent("cancelLineEdit");
+	// },
+	_cancelLineEdit: function(e){
 
-		var flag = true;
+		var datagrid = this;
+		this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.cancelDatagridLineEditTitle, MWF.xApplication.process.Xform.LP.cancelDatagridLineEdit, 300, 120, function(){
+			if (datagrid.currentEditLine) {
+				datagrid.currentEditLine.setStyle("display", "table-row");
+			}
 
-		var griddata = {};
-		var newTr = null;
+			datagrid.isEdit = false;
+			datagrid.currentEditLine = null;
 
-		if (this.currentEditLine){
-			newTr = this.currentEditLine;
-			griddata = this.currentEditLine.retrieve("data");
-		}else{
-			newTr = new Element("tr").inject(this.editorTr, "before");
-			griddata = {};
-		}
+			datagrid._editorTrGoBack();
 
-		if (flag){
-			newTr.destroy();
-		}
-		this.currentEditLine = null;
+			// this._loadBorderStyle();
+			// this._loadZebraStyle();
+			// this._loadSequence();
+			// this.getData();
 
-		this._editorTrGoBack();
+			// datagrid._loadZebraStyle();
+			// datagrid._loadSequence();
+			// datagrid._loadTotal();
+			// datagrid.getData();
+			this.close();
 
-		// if (this.json.contentStyles){
-		// 	var tds = newTr.getElements("td");
-		// 	tds.setStyles(this.json.contentStyles);
-		// }
-		// if (this.json.actionStyles){
-		// 	newTr.getFirst().setStyles(this.json.actionStyles);
-		// }
+			datagrid.fireEvent("cancelLineEdit");
+		}, function(){
+			// var color = currentTr.retrieve("bgcolor");
+			// currentTr.tween("background", color);
+			this.close();
+		}, null, null, this.form.json.confirmStyle);
 
-		// this._loadBorderStyle();
-		// this._loadZebraStyle();
-		// this._loadSequence();
-
-		this.fireEvent("cancelLineEdit");
 	},
 	_completeLineEdit: function(){
 		//this.currentEditLine.getElemets(td);
@@ -524,7 +568,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				currentTr.tween("background", color);
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
-		};
+		}
         this.validationMode();
 	},
 	_createMoveLineAction: function(td){
