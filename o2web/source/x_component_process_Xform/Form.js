@@ -1397,7 +1397,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 this.businessData.task.routeName = routeName;
-                this.businessData.task.opinion = opinion;
+                this.businessData.task.opinion = opinion || "";
 
                 var mediaIds = [];
                 if (medias && medias.length) {
