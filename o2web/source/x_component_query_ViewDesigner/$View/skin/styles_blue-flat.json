@@ -43,5 +43,8 @@
     "iconOverStyle": "xform_blue_flat_over",
     "customIconStyle" : "blue",
     "customIconOverStyle" : "white"
+  },
+  "paging" : {
+
   }
 }

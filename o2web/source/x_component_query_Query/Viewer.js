@@ -1,6 +1,7 @@
 MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
+MWF.require("o2.widget.Paging", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
 MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
@@ -634,75 +635,103 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.lookup(data);
         }
     },
-    _loadPageCountNode: function(){
-        this.viewPageContentNode.empty();
-
-        var size = this.viewPageAreaNode.getSize();
-        var w1 = this.viewPageFirstNode.getSize().x*2;
-        var w2 = this.viewPageContentNode.getStyle("margin-left").toInt();
-        var w = size.x-w1-w2;
-
-        var bw = this.css.viewPageButtonNode.width.toInt()+this.css.viewPageButtonNode["margin-right"].toInt();
-        var count = (w/bw).toInt()-2;
-        if (count>10) count = 10;
-        this.showPageCount = Math.min(count, this.pages);
-
-        var tmp = this.showPageCount/2;
-        var n = tmp.toInt();
-        var left = this.currentPage-n;
-        if (left<=0) left = 1;
-        var right = this.showPageCount + left-1;
-        if (right>this.pages) right = this.pages;
-        left = right-this.showPageCount+1;
-        if (left<=1) left = 1;
-
-        this.viewPagePrevNode = new Element("div", {"styles": this.css.viewPagePrevButtonNode}).inject(this.viewPageContentNode);
-        this.loadPageButtonEvent(this.viewPagePrevNode, "viewPagePrevButtonNode_over", "viewPagePrevButtonNode_up", "viewPagePrevButtonNode_down", function(){
-            if (this.currentPage>1) this.currentPage--;
-            this.loadCurrentPageData();
-        }.bind(this));
-
-        for (i=left; i<=right; i++){
-            var node = new Element("div", {"styles": this.css.viewPageButtonNode, "text": i}).inject(this.viewPageContentNode);
-            if (i==this.currentPage){
-                node.setStyles(this.css.viewPageButtonNode_current);
-            }else{
-                this.loadPageButtonEvent(node, "viewPageButtonNode_over", "viewPageButtonNode_up", "viewPageButtonNode_down", function(e){
-                    this.currentPage = e.target.get("text").toInt();
-                    this.loadCurrentPageData();
-                }.bind(this));
-            }
-        }
-        this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
-        this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
-            if (this.currentPage<=this.pages-1) this.currentPage++;
-            this.loadCurrentPageData();
-        }.bind(this));
-    },
-    loadPageButtonEvent: function(node, over, out, down, click){
-        node.addEvents({
-            "mouseover": function(){node.setStyles(this.css[over])}.bind(this),
-            "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
-            "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
-            "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
-            "click": click
-        });
-    },
-    _loadPageNode: function(){
+    // _loadPageCountNode: function(){
+    //     this.viewPageContentNode.empty();
+    //
+    //     var size = this.viewPageAreaNode.getSize();
+    //     var w1 = this.viewPageFirstNode.getSize().x*2;
+    //     var w2 = this.viewPageContentNode.getStyle("margin-left").toInt();
+    //     var w = size.x-w1-w2;
+    //
+    //     var bw = this.css.viewPageButtonNode.width.toInt()+this.css.viewPageButtonNode["margin-right"].toInt();
+    //     var count = (w/bw).toInt()-2;
+    //     if (count>10) count = 10;
+    //     this.showPageCount = Math.min(count, this.pages);
+    //
+    //     var tmp = this.showPageCount/2;
+    //     var n = tmp.toInt();
+    //     var left = this.currentPage-n;
+    //     if (left<=0) left = 1;
+    //     var right = this.showPageCount + left-1;
+    //     if (right>this.pages) right = this.pages;
+    //     left = right-this.showPageCount+1;
+    //     if (left<=1) left = 1;
+    //
+    //     this.viewPagePrevNode = new Element("div", {"styles": this.css.viewPagePrevButtonNode}).inject(this.viewPageContentNode);
+    //     this.loadPageButtonEvent(this.viewPagePrevNode, "viewPagePrevButtonNode_over", "viewPagePrevButtonNode_up", "viewPagePrevButtonNode_down", function(){
+    //         if (this.currentPage>1) this.currentPage--;
+    //         this.loadCurrentPageData();
+    //     }.bind(this));
+    //
+    //     for (i=left; i<=right; i++){
+    //         var node = new Element("div", {"styles": this.css.viewPageButtonNode, "text": i}).inject(this.viewPageContentNode);
+    //         if (i==this.currentPage){
+    //             node.setStyles(this.css.viewPageButtonNode_current);
+    //         }else{
+    //             this.loadPageButtonEvent(node, "viewPageButtonNode_over", "viewPageButtonNode_up", "viewPageButtonNode_down", function(e){
+    //                 this.currentPage = e.target.get("text").toInt();
+    //                 this.loadCurrentPageData();
+    //             }.bind(this));
+    //         }
+    //     }
+    //     this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
+    //     this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
+    //         if (this.currentPage<=this.pages-1) this.currentPage++;
+    //         this.loadCurrentPageData();
+    //     }.bind(this));
+    // },
+    // loadPageButtonEvent: function(node, over, out, down, click){
+    //     node.addEvents({
+    //         "mouseover": function(){node.setStyles(this.css[over])}.bind(this),
+    //         "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
+    //         "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
+    //         "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
+    //         "click": click
+    //     });
+    // },
+    // _loadPageNode: function(){
+    //     this.viewPageAreaNode.empty();
+    //     this.viewPageFirstNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.firstPage}).inject(this.viewPageAreaNode);
+    //     this.viewPageContentNode = new Element("div", {"styles": this.css.viewPageContentNode}).inject(this.viewPageAreaNode);
+    //     this.viewPageLastNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.lastPage}).inject(this.viewPageAreaNode);
+    //     this._loadPageCountNode();
+    //
+    //     this.loadPageButtonEvent(this.viewPageFirstNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+    //         this.currentPage = 1;
+    //         this.loadCurrentPageData();
+    //     }.bind(this));
+    //     this.loadPageButtonEvent(this.viewPageLastNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+    //         this.currentPage = this.pages;
+    //         this.loadCurrentPageData();
+    //     }.bind(this));
+    // },
+    _loadPageNode : function(){
+        debugger;
         this.viewPageAreaNode.empty();
-        this.viewPageFirstNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.firstPage}).inject(this.viewPageAreaNode);
-        this.viewPageContentNode = new Element("div", {"styles": this.css.viewPageContentNode}).inject(this.viewPageAreaNode);
-        this.viewPageLastNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.lastPage}).inject(this.viewPageAreaNode);
-        this._loadPageCountNode();
-
-        this.loadPageButtonEvent(this.viewPageFirstNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
-            this.currentPage = 1;
-            this.loadCurrentPageData();
-        }.bind(this));
-        this.loadPageButtonEvent(this.viewPageLastNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
-            this.currentPage = this.pages;
-            this.loadCurrentPageData();
-        }.bind(this));
+        this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
+            countPerPage: this.json.pageSize || this.options.perPageCount,
+            visiblePages: 10,
+            currentPage: this.currentPage,
+            itemSize: this.count,
+            pageSize: this.pages,
+            hasNextPage: true,
+            hasPrevPage: true,
+            hasTruningBar: true,
+            hasJumper: true,
+            hiddenWithDisable: false,
+            hiddenWithNoItem: true,
+            text: {
+                prePage: "",
+                nextPage: "",
+                firstPage: this.lp.firstPage,
+                lastPage: this.lp.lastPage
+            },
+            onJumpingPage : function( pageNum, itemNum ){
+                this.currentPage = pageNum;
+                this.loadCurrentPageData();
+            }.bind(this)
+        });
+        this.paging.load();
     },
     _initPage: function(){
         this.count = this.bundleItems.length;
@@ -737,98 +766,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }
         }.bind(this));
     },
-    //api 使用 开始
-    getParentEnvironment : function(){
-      return this.parentMacro ? this.parentMacro.environment : null;
-    },
-    getViewInfor : function(){
-        return this.json;
-    },
-    getPageInfor : function(){
-        return {
-            pages : this.pages,
-            perPageCount : this.options.perPageCount,
-            currentPageNumber : this.currentPage
-        };
-    },
-    getPageData : function () {
-        return this.gridJson;
-    },
-    toPage : function( pageNumber, callback ){
-        this.currentPage = pageNumber;
-        this.loadCurrentPageData( callback );
-    },
-    selectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
-            this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.selected();
-                }else{
-                    item.expand();
-                    if( item.items ){
-                        item.items.each( function (it) {
-                            it.selected();
-                        })
-                    }
-                }
-            })
-        }
-    },
-    unSelectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
-            this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.unSelected();
-                }else{
-                    if(item.items){
-                        item.items.each( function (it) {
-                            it.unSelected();
-                        })
-                    }
-                }
-            })
-        }
-    },
-    setFilter : function( filter ){
-        if( !filter )filter = [];
-        if( typeOf( filter ) === "object" )filter = [ filter ];
-        this.json.filter = filter;
-        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
-    },
-    switchView : function( json ){
-        debugger;
-        // json = {
-        //     "application": application,
-        //     "viewName": viewName,
-        //     "isTitle": "yes",
-        //     "select": "none",
-        //     "titleStyles": titleStyles,
-        //     "itemStyles": itemStyles,
-        //     "isExpand": "no",
-        //     "filter": filter
-        // }
-        this.node.setStyle("display", "block");
-        if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
-
-        this.searchMorph = null;
-        this.viewSearchCustomContentNode = null;
-
-        var newJson = Object.merge( Object.clone(this.originalJson), json );
-        this.container.empty();
-        this.initialize( this.container, newJson, Object.clone(this.options), this.app, this.parentMacro);
-    },
-    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
-        this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
-    },
-    alert: function (type, title, text, width, height) {
-        this.app.alert(type, "center", title, text, width, height);
-    },
-    notice: function (content, type, target, where, offset, option) {
-        this.app.notice(content, type, target, where, offset, option)
-    },
-    //api 使用 结束
     loadCurrentPageData: function( callback ){
         debugger;
         //是否需要在翻页的时候清空之前的items ?
@@ -1096,7 +1033,100 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 }
             }
         }.bind(this));
+    },
+
+    //api 使用 开始
+    getParentEnvironment : function(){
+        return this.parentMacro ? this.parentMacro.environment : null;
+    },
+    getViewInfor : function(){
+        return this.json;
+    },
+    getPageInfor : function(){
+        return {
+            pages : this.pages,
+            perPageCount : this.options.perPageCount,
+            currentPageNumber : this.currentPage
+        };
+    },
+    getPageData : function () {
+        return this.gridJson;
+    },
+    toPage : function( pageNumber, callback ){
+        this.currentPage = pageNumber;
+        this.loadCurrentPageData( callback );
+    },
+    selectAll : function(){
+        var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( flag==="multi"){
+            this.items.each( function (item) {
+                if( item.clazzType === "item" ){
+                    item.selected();
+                }else{
+                    item.expand();
+                    if( item.items ){
+                        item.items.each( function (it) {
+                            it.selected();
+                        })
+                    }
+                }
+            })
+        }
+    },
+    unSelectAll : function(){
+        var flag = this.json.select || this.viewJson.select ||  "none";
+        if ( flag==="multi"){
+            this.items.each( function (item) {
+                if( item.clazzType === "item" ){
+                    item.unSelected();
+                }else{
+                    if(item.items){
+                        item.items.each( function (it) {
+                            it.unSelected();
+                        })
+                    }
+                }
+            })
+        }
+    },
+    setFilter : function( filter ){
+        if( !filter )filter = [];
+        if( typeOf( filter ) === "object" )filter = [ filter ];
+        this.json.filter = filter;
+        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+    },
+    switchView : function( json ){
+        debugger;
+        // json = {
+        //     "application": application,
+        //     "viewName": viewName,
+        //     "isTitle": "yes",
+        //     "select": "none",
+        //     "titleStyles": titleStyles,
+        //     "itemStyles": itemStyles,
+        //     "isExpand": "no",
+        //     "filter": filter
+        // }
+        this.node.setStyle("display", "block");
+        if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
+
+        this.searchMorph = null;
+        this.viewSearchCustomContentNode = null;
+
+        var newJson = Object.merge( Object.clone(this.originalJson), json );
+        this.container.empty();
+        this.initialize( this.container, newJson, Object.clone(this.options), this.app, this.parentMacro);
+    },
+    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
+        this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
+    },
+    alert: function (type, title, text, width, height) {
+        this.app.alert(type, "center", title, text, width, height);
+    },
+    notice: function (content, type, target, where, offset, option) {
+        this.app.notice(content, type, target, where, offset, option)
     }
+    //api 使用 结束
 });
 
 MWF.xApplication.query.Query.Viewer.Item = new Class({
