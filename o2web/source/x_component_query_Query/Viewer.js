@@ -766,9 +766,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     item.selected();
                 }else{
                     item.expand();
-                    item.items.each( function (it) {
-                        item.selected();
-                    })
+                    if( item.items ){
+                        item.items.each( function (it) {
+                            it.selected();
+                        })
+                    }
                 }
             })
         }
@@ -780,9 +782,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 if( item.clazzType === "item" ){
                     item.unSelected();
                 }else{
-                    if(item.items)item.items.each( function (it) {
-                        item.unSelected();
-                    })
+                    if(item.items){
+                        item.items.each( function (it) {
+                            it.unSelected();
+                        })
+                    }
                 }
             })
         }
