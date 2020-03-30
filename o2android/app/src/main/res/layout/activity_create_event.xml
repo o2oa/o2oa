@@ -320,7 +320,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_repeat_name"></LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_event_repeat_name"/>
 
             <LinearLayout
                 android:id="@+id/ll_create_calendar_event_repeat_until_date"

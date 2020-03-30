@@ -26,8 +26,13 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
     override fun layoutResId(): Int = R.layout.activity_contact_picker
 
     companion object {
+        const val departmentPicker = "departmentPicker"
+        const val identityPicker = "identityPicker"
+        const val personPicker = "personPicker"
+        const val groupPicker = "groupPicker"
+
         const val CONTACT_PICKED_RESULT = "CONTACT_PICKED_RESULT"
-        val picker_mode_list = arrayOf("departmentPicker", "identityPicker", "groupPicker", "personPicker")
+        val picker_mode_list = arrayOf(departmentPicker, identityPicker, personPicker, groupPicker)
         const val PICKER_MODE_KEY = "PICKER_MODE_KEY"
         const val TOP_LIST_KEY = "TOP_LIST_KEY"
         const val ORG_TYPE_KEY = "ORG_TYPE_KEY"
@@ -322,7 +327,7 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
 
     private fun createFragment(mode: String, index: Int, isShowTab:Boolean) {
         when(mode) {
-            "departmentPicker" -> {
+            departmentPicker -> {
                 if (index == 0) {pickerTitle = "组织选择"}
                 val f = ContactUnitAndIdentityPicker.startPicker(
                         ContactUnitAndIdentityPicker.ORG_PICK_MODE,
@@ -335,7 +340,7 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
                 fragments.add(f)
                 if (isShowTab) {toolbar_snippet_tab_layout.addTab(toolbar_snippet_tab_layout.newTab().setText("组织选择"))}
             }
-            "identityPicker" -> {
+            identityPicker -> {
                 if (index == 0) {pickerTitle = "身份选择"}
                 val f = ContactUnitAndIdentityPicker.startPicker(
                         ContactUnitAndIdentityPicker.IDENTITY_PICK_MODE,
@@ -348,7 +353,7 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
                 fragments.add(f)
                 if (isShowTab) {toolbar_snippet_tab_layout.addTab(toolbar_snippet_tab_layout.newTab().setText("身份选择"))}
             }
-            "groupPicker" -> {
+            groupPicker -> {
                 if (index == 0) {pickerTitle = "群组选择"}
                 val f = ContactPersonGroupPicker.startPicker(
                         ContactPersonGroupPicker.GROUP_PICK_MODE,
@@ -358,7 +363,7 @@ class ContactPickerActivity : BaseMVPActivity<ContactPickerActivityContract.View
                 fragments.add(f)
                 if (isShowTab) {toolbar_snippet_tab_layout.addTab(toolbar_snippet_tab_layout.newTab().setText("群组选择"))}
             }
-            "personPicker" -> {
+            personPicker -> {
                 if (index == 0) {pickerTitle = "人员选择"}
                 val f =  ContactUnitAndIdentityPicker.startPicker(
                         ContactUnitAndIdentityPicker.PERSON_PICK_MODE,
