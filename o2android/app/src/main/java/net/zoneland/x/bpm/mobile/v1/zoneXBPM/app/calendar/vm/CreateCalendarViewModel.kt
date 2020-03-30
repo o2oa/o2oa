@@ -64,7 +64,7 @@ class CreateCalendarViewModel(app: Application) : BaseO2ViewModel(app) {
     //网络操作反馈结果
     private val netResponse: MutableLiveData<FrontendResponse> by lazy { MutableLiveData<FrontendResponse>() }
 
-    private val calendarTypeKey: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val calendarTypeKey: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
     init {
         isPublic.value = false
@@ -72,7 +72,6 @@ class CreateCalendarViewModel(app: Application) : BaseO2ViewModel(app) {
         deleteBtnVisibleable.addSource(calendarId) { id->
             deleteBtnVisibleable.value = !TextUtils.isEmpty(id)
         }
-
         targetName.addSource(target) { value ->
             targetName.value = if (value?.contains("@") == true) {
                 value.split("@").first()
@@ -338,20 +337,15 @@ class CreateCalendarViewModel(app: Application) : BaseO2ViewModel(app) {
     private fun loadFromNet(id: String?, calendarPostData: MutableLiveData<CalendarPostData>) {
         if (!TextUtils.isEmpty(id)) {
             val service = getCalendarAssembleService()
-            if (service!=null) {
-                service.getCalendar(id!!)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .o2Subscribe {
-                            onNext { res ->
-                                val calendar = res.data
-                                calendarPostData.value = calendar
-                            }
-                            onError { e, isNetworkError ->
-                                XLog.error("查询日历出错， isnetworkError:$isNetworkError", e)
-                                calendarPostData.value = null
-                            }
-                        }
+            service?.getCalendar(id!!)?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())?.o2Subscribe {
+                onNext { res ->
+                    val calendar = res.data
+                    calendarPostData.value = calendar
+                }
+                onError { e, isNetworkError ->
+                    XLog.error("查询日历出错， isnetworkError:$isNetworkError", e)
+                    calendarPostData.value = null
+                }
             }
         }
     }

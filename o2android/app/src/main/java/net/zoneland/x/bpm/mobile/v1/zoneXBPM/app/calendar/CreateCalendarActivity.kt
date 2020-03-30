@@ -19,6 +19,7 @@ import com.wugang.activityresult.library.ActivityResult
 import kotlinx.android.synthetic.main.activity_create_calendar.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.CalendarOB.CalendarTypeUNIT
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateCalendarViewModel
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.databinding.ActivityCreateCalendarBinding
@@ -71,6 +72,12 @@ class CreateCalendarActivity : AppCompatActivity() {
             XToast.toastShort(this, "日历名称不能为空！")
             return
         }
+        if (viewModel.calendarTypeKey.value == CalendarTypeUNIT) {
+            if (TextUtils.isEmpty(viewModel.target.value)){
+                XToast.toastShort(this, "日历所属组织不能为空！")
+                return
+            }
+        }
         if (TextUtils.isEmpty(viewModel.calendarId.value)) {
             viewModel.saveCalendar()
         } else {
@@ -92,23 +99,25 @@ class CreateCalendarActivity : AppCompatActivity() {
      * 日历类型 选择
      */
     fun chooseType(view: View) {
-        val picker = OptionsPickerView.Builder(this, OptionsPickerView.OnOptionsSelectListener { option1, _, _, _ ->
-            viewModel.setCalendarType(typeList[option1])
-        }).setTitleText(getString(R.string.calendar_type_choose))
-                .isDialog(true)
-                .build()
-        picker.setPicker(typeList)
-        var selectIndex = typeList.indexOfFirst { it.name == viewModel.calendarType.value }
-        if (selectIndex < 0) {
-            selectIndex = 0
+        if (TextUtils.isEmpty(viewModel.calendarId.value)) {
+            val picker = OptionsPickerView.Builder(this, OptionsPickerView.OnOptionsSelectListener { option1, _, _, _ ->
+                viewModel.setCalendarType(typeList[option1])
+            }).setTitleText(getString(R.string.calendar_type_choose))
+                    .isDialog(true)
+                    .build()
+            picker.setPicker(typeList)
+            var selectIndex = typeList.indexOfFirst { it.name == viewModel.calendarType.value }
+            if (selectIndex < 0) {
+                selectIndex = 0
+            }
+            picker.setSelectOptions(selectIndex)
+            picker.showDialog()
         }
-        picker.setSelectOptions(selectIndex)
-        picker.showDialog()
     }
 
     //选择所属组织
     fun chooseOrgTarget(view: View) {
-        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf("departmentPicker"),multiple=false)
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.departmentPicker),multiple=false)
         ActivityResult.of(this)
                 .className(ContactPickerActivity::class.java)
                 .params(bundle)
@@ -135,7 +144,7 @@ class CreateCalendarActivity : AppCompatActivity() {
     }
     //选择可见范围
     fun chooseViewableList(view: View) {
-        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf("personPicker", "departmentPicker","groupPicker"), multiple=true)
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.personPicker, ContactPickerActivity.departmentPicker,ContactPickerActivity.groupPicker), multiple=true)
         ActivityResult.of(this)
                 .className(ContactPickerActivity::class.java)
                 .params(bundle)
@@ -150,7 +159,7 @@ class CreateCalendarActivity : AppCompatActivity() {
     }
     //选择可新建日程范围
     fun choosePublishableList(view: View) {
-        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf("personPicker", "departmentPicker","groupPicker"), multiple=true)
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.personPicker, ContactPickerActivity.departmentPicker,ContactPickerActivity.groupPicker), multiple=true)
         ActivityResult.of(this)
                 .className(ContactPickerActivity::class.java)
                 .params(bundle)
