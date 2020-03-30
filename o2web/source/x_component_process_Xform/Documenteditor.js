@@ -652,8 +652,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (this.json.toWordTrigger=="save")  this.form.addEvent("beforeSave", this.docToWord.bind(this));
                 if (this.json.toWordTrigger=="submit")  this.form.addEvent("beforeProcess", this.docToWord.bind(this));
             }
-
             if (!layout.mobile) this.loadSideToolbar();
+
+            debugger;
+            var id = this.form.businessData.data["$work"].job;
+            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
+                this.historyDocumentList = json.data;
+                if (this.historyDocumentList.length){
+                    o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(this.historyDocumentList[0].id, function(json){
+                        this.prevHistoryData = json.data.data;
+                    }.bind(this));
+                }
+            }.bind(this));
 
             if (callback) callback();
         }.bind(this));
@@ -668,7 +678,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // if (!originaData || (originaData && originaData.filetext != this.data.filetext)){
         //     return true;
         // }
-        if (this.allowEdit) return true;
+        debugger;
+        if (this.allowEdit) if (!this.prevHistoryData || (this.prevHistoryData != this.data.filetext)) return true;
         return false;
     },
     saveNewDataEdition: function(callback){
@@ -676,12 +687,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.form.businessData.work){
             //var data = this.data.filetext;
 
-            var data = "";
-            if (this.editMode && this.filetextEditor){
-                data = this.filetextEditor.container.getText();
-            }else{
-                if (this.layout_filetext) data = this.layout_filetext.get("text");
-            }
+            var data = this.data.filetext;
+            // if (this.editMode && this.filetextEditor){
+            //     data = this.filetextEditor.container.getText();
+            // }else{
+            //     if (this.layout_filetext) data = this.layout_filetext.get("text");
+            // }
             // var activity = this.form.businessData.activity;
             // var job = this.form.businessData.work || this.form.businessData.workCompleted;
             // var taskUser = (this.form.businessData.task) ? this.form.businessData.task.identity : "";
@@ -770,7 +781,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     _checkScale: function(offset){
-        debugger;
         offset = 0;
         if (this.pages.length){
             var pageSize = this.pages[0].getSize();
@@ -782,30 +792,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.scale = scale;
                 this.zoom();
                 this.resetNodeSize();
-                // var h = this.node.getSize().y;
-                // h = h - contentSize.y*(1-scale);
-                //
-                // this.node.setStyles({
-                //     "height":""+h+"px"
-                // });
-                // this.contentNode.setStyles({
-                //     "transform":"scale(1, "+scale+")",
-                //     "transform-origin": "0px 0px",
-                //     "overflow": "visible"
-                // });
-                //
-                // this._singlePage();
-                // this.pages.each(function(page){
-                //     page.setStyles({
-                //         "transform":"scale("+scale+", 1)",
-                //         "transform-origin": "0px 0px",
-                //         "overflow": "visible",
-                //         "margin-left": "10px"
-                //     });
-                // });
-                //
-                // if (this.doublePageAction) this.doublePageAction.hide();
-
             }
         }
     },
@@ -820,17 +806,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             "overflow": "hidden",
             "width": ""+w+"px"
         });
-
-
-        // this._singlePage();
-        // this.pages.each(function(page){
-        //     page.setStyles({
-        //         "transform":"scale("+this.scale+", 1)",
-        //         "transform-origin": "0px 0px",
-        //         "overflow": "visible",
-        //         "margin-left": "10px"
-        //     });
-        // });
     },
 
     _switchReadOrEdit: function(){
@@ -871,7 +846,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), "$doc.doc");
     },
     _historyDoc: function(){
-        this.historyAreaNode = new Element("div", {"styles": this.css.historyAreaNode}).inject(this.node);
+
         // this.historyAreaActionNode = new Element("div", {"styles": this.css.historyAreaActionNode}).inject(this.historyAreaNode);
         // this.historyAreaTitleNode = new Element("div", {"styles": this.css.historyAreaTitleNode, "text": MWF.xApplication.process.Xform.LP.documentEditor.historyList}).inject(this.historyAreaNode);
         // this.historyAreaContentNode = new Element("div", {"styles": this.css.historyAreaContentNode}).inject(this.historyAreaNode);
@@ -887,54 +862,68 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //     }.bind(this));
         // }.bind(this));
         //
-        var size = this.node.getSize();
-        this.historyAreaNode.setStyle("height", ""+size.y+"px");
+
+        //this.contentNode.hide();
+
+        //this.historyAreaNode = new Element("div", {"styles": this.css.doc_content}).inject(this.contentNode, "after");
+        //var size = this.node.getSize();
+        //this.historyAreaNode.setStyle("height", ""+size.y+"px");
 
         debugger;
+        //if (this.layout_filetext) currentData = this.layout_filetext.get("text");
+        this.resetData();
+        var currentData = this.data.filetext;
 
-        var currentData = "";
-        // if (this.editMode && this.filetextEditor){
-        //     currentData = this.filetextEditor.container.getText();
-        // }else{
-            if (this.layout_filetext) currentData = this.layout_filetext.get("text");
-        // }
-
-
-        // if (!this.editMode) this._switchReadOrEditInline();
-        // if (this.filetextEditor){
-        //     debugger;
-        //     //var currentData = this.filetextEditor.getData();
-        //     var currentData = this.filetextEditor.container.getText();
-            alert(currentData);
-
-            var id = this.form.businessData.data["$work"].job;
-            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
-                var d = json.data[0];
-                o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(d.id, function(json){
-                    var historyData = json.data.data;
-                    o2.load("/o2_lib/diff-match-patch/diff_match_patch.js", function(){
+        this.getHistroyDocumentList(function(){
+            if (this.historyDocumentList && this.historyDocumentList.length){
+                this.getHistroyDocumentData(this.historyDocumentList[0].id, function(historyData){
+                    o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
                         var dmp = new diff_match_patch();
                         dmp.Diff_Timeout = parseFloat(10);
                         dmp.Diff_EditCost = parseFloat(4);
-                        var diff_d = dmp.diff_main(historyData, currentData);
+
+                        // var historyDataText = this.htmlToText(historyData);
+                        // var currentDataText = this.htmlToText(currentData);
+                        var historyDataText = (historyData);
+                        var currentDataText = (currentData);
+
+
+                        var diff_d = dmp.diff_main(historyDataText, currentDataText);
                         dmp.diff_cleanupSemantic(diff_d);
                         var diff_ds = dmp.diff_prettyHtml(diff_d);
 
-                        this.historyAreaNode.set("html", diff_ds);
+                        this.data.diffFiletext = diff_ds;
+                        this.resetData(this.data.diffFiletext);
+
+                        //this.historyAreaNode.set("html", diff_ds);
                     }.bind(this));
-                }.bind(this));
-                //json.data.each(function(d){
-                //     var title = o2.name.cn(d.person) + "(" + d.activityName + ")";
-                //     var time = d.createTime;
-                //     var node = new Element("div", {"styles": this.css.historyItemNode}).inject(this.historyAreaContentNode);
-                //     var titleNode = new Element("div", {"styles": this.css.historyItemTitleNode, "text": title}).inject(node);
-                //     var timeNode = new Element("div", {"styles": this.css.historyItemTimeNode, "text": time}).inject(node);
-                //}.bind(this));
-            }.bind(this));
-
-        //}
-
+                }.bind(this))
+            }
+        }.bind(this));
     },
+    htmlToText: function(html){
+        var tmpdiv = new Element("div", {"html": html});
+        var text = tmpdiv.get("text");
+        tmpdiv.destroy();
+        return text;
+    },
+    getHistroyDocumentData: function(id, callback){
+        o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(id, function(json){
+            if (callback) callback(json.data.data);
+        }.bind(this));
+    },
+    getHistroyDocumentList: function(callback){
+        if (!this.historyDocumentList){
+            var id = this.form.businessData.data["$work"].job;
+            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
+                this.historyDocumentList = json.data;
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
+    },
+
     _readFiletext: function(){
         //this._returnScale();
         this.zoom(1);
@@ -1314,7 +1303,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this._createPage(function(control){
             this._loadPageLayout(control);
-
+            
             // this.data = this._getBusinessData();
             // if (!this.data) this.data = this._getDefaultData();
 
@@ -1703,7 +1692,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 var d = Date.parse(n);
                                 return (d.isValid()) ? d.format("%Y年%m月%d日") : n;
                             });
-                            this.data[name] = tmpStrs.join("，")
+                            this.data[name] = tmpStrs.join("，");
                             break;
                         case "mainSend":
                             debugger;
@@ -1781,7 +1770,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     reload: function(){
         this.resetData();
     },
-    resetData: function(){
+    resetData: function(diffFiletext){
         if (this.editMode){ this._switchReadOrEditInline(); }
 
         this._computeData(false);
@@ -1794,7 +1783,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this._createPage(function(control){
             this._loadPageLayout(control);
 
-            this.setData(this.data);
+            this.setData(this.data, diffFiletext);
             //this._checkSplitPage(this.pages[0]);
 
             this._repage();
@@ -1867,7 +1856,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             tmpdiv.destroy();
         }
     },
-    setData: function(data){
+    setData: function(data, diffFiletext){
         if (data){
             debugger;
             this.data = data;
@@ -1902,7 +1891,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.layout_signer) this.layout_signer.set("text", data.signer || " ");
             if (this.layout_subject) this.layout_subject.set("html", data.subject || " ");
             if (this.layout_mainSend) this.layout_mainSend.set("text", data.mainSend || " ");
-            if (this.layout_filetext){
+            if (diffFiletext) {
+                this.layout_filetext.set("html", diffFiletext);
+            }else if (this.layout_filetext){
                 //this.layout_filetext.set("placeholder", this.json.defaultValue.filetext);
                 this.layout_filetext.set("html", data.filetext || "");
             }
