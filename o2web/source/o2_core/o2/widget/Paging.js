@@ -10,13 +10,18 @@ o2.widget.Paging = new Class({
         currentPage: 1,
         itemSize: 0,
         pageSize: 0,
+        hasFirstPage : true,
+        hasLastPage : true,
         hasNextPage: true,
         hasPrevPage: true,
+        hasBatchTuring : true,
         hasTruningBar: true,
         hasJumper: true,
         hiddenWithDisable: false,
         hiddenWithNoItem: true,
         text: {
+            preBatchTuring : "...",
+            nextBatchTuring : "...",
             prePage: "",
             nextPage: "",
             firstPage: "",
@@ -75,10 +80,16 @@ o2.widget.Paging = new Class({
             max = currentPage + halfCount;
         }
 
-        if  (min > 1 || !this.options.hiddenWithDisable )this.createFirst();
+        if( this.options.hasFirstPage && (min > 1 || showWithDisable) ){
+            this.createFirst();
+        }
 
         if (this.options.hasPrevPage && ( currentPage != 1 || showWithDisable ) ){
             this.createPrev();
+        }
+
+        if( this.options.hasBatchTuring && ( min > 1 ) ){ //showWithDisable
+            this.createPrevBatch( min );
         }
 
         if( this.options.hasTruningBar ){
@@ -98,15 +109,21 @@ o2.widget.Paging = new Class({
             }
         }
 
-        if (this.options.hasJumper) {
-            this.createPageJumper();
+        if( this.options.hasBatchTuring && ( max < pageSize )){ //showWithDisable
+            this.createNextBatch( max );
         }
 
         if (this.options.hasNextPage && ( currentPage != pageSize || showWithDisable )){
             this.createNext();
         }
 
-        if( max < pageSize || showWithDisable )this.createLast();
+        if(this.options.hasLastPage && ( max < pageSize || showWithDisable ) ){
+            this.createLast();
+        }
+
+        if (this.options.hasJumper) {
+            this.createPageJumper();
+        }
     },
     createFirst : function(){
         var firstPage = this.firstPage = new Element("div.firstPage", {
@@ -193,6 +210,54 @@ o2.widget.Paging = new Class({
             }.bind({obj: this, num: i})
         });
         return pageTurnNode;
+    },
+    createPrevBatch : function( min ){
+        this.preBatchPage = new Element("div.prePage", {
+            styles: this.css.preBatchPage
+        }).inject(this.node);
+        if (this.options.text.preBatchTuring ) this.preBatchPage.set("text", this.options.text.preBatchTuring);
+        this.preBatchPage.addEvents({
+            "mouseover": function (ev) {
+                ev.target.setStyles(this.css.preBatchPage_over)
+            }.bind(this),
+            "mouseout": function (ev) {
+                ev.target.setStyles(this.css.preBatchPage )
+            }.bind(this),
+            "click": function () {
+                var page;
+                if( this.options.visiblePages % 2 == 1 ){
+                    page = min - Math.ceil( this.options.visiblePages / 2 );
+                }else{
+                    page = min - Math.ceil( this.options.visiblePages / 2 ) - 1;
+                }
+                if( page < 1 )page = 1;
+                this.gotoPage( page );
+            }.bind(this)
+        });
+    },
+    createNextBatch : function( max ){
+        this.nextBatchPage = new Element("div.prePage", {
+            styles: this.css.nextBatchPage
+        }).inject(this.node);
+        if (this.options.text.nextBatchTuring ) this.nextBatchPage.set("text", this.options.text.nextBatchTuring);
+        this.nextBatchPage.addEvents({
+            "mouseover": function (ev) {
+                ev.target.setStyles(this.css.nextBatchPage_over);
+            }.bind(this),
+            "mouseout": function (ev) {
+                ev.target.setStyles(this.css.nextBatchPage );
+            }.bind(this),
+            "click": function () {
+                var page;
+                if( this.options.visiblePages % 2 == 1 ){
+                    page = max + Math.ceil( (this.options.visiblePages) / 2 );
+                }else{
+                    page = max + Math.ceil( (this.options.visiblePages) / 2 ) + 1;
+                }
+                if( page > this.options.pageSize )page = this.options.pageSize;
+                this.gotoPage( page );
+            }.bind(this)
+        });
     },
     createPageJumper : function(){
         var _self = this;

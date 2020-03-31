@@ -710,7 +710,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode.empty();
         this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
             countPerPage: this.json.pageSize || this.options.perPageCount,
-            visiblePages: 10,
+            visiblePages: 6,
             currentPage: this.currentPage,
             itemSize: this.count,
             pageSize: this.pages,
@@ -735,6 +735,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     _initPage: function(){
         this.count = this.bundleItems.length;
+
+        this.json.pageSize = 2;
+
         var i = this.count/this.json.pageSize;
         this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
         this.currentPage = 1;
