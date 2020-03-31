@@ -28,24 +28,19 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-public class ActionDumpData {
+public class DumpData {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDumpData.class);
+	private static Logger logger = LoggerFactory.getLogger(DumpData.class);
 
-	private Date start;
+	private Date start = new Date();
 
 	private File dir;
 
 	private DumpRestoreDataCatalog catalog;
 
-	private Gson pureGsonDateFormated;
+	private Gson pureGsonDateFormated = XGsonBuilder.instance();
 
-	public boolean execute(String path, String password) throws Exception {
-		this.start = new Date();
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
+	public boolean execute(String path) throws Exception {
 		if (StringUtils.isEmpty(path)) {
 			this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(this.start));
 		} else {
@@ -58,7 +53,6 @@ public class ActionDumpData {
 		FileUtils.forceMkdir(this.dir);
 		FileUtils.cleanDirectory(this.dir);
 		this.catalog = new DumpRestoreDataCatalog();
-		pureGsonDateFormated = XGsonBuilder.instance();
 
 		/* 初始化完成 */
 
@@ -71,22 +65,23 @@ public class ActionDumpData {
 		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
 		for (int i = 0; i < classNames.size(); i++) {
 			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
-			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
-			EntityManager em = emf.createEntityManager();
-			try {
-				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
-						this.estimateCount(em, cls));
-				this.dump(cls, em);
-			} finally {
-				em.close();
-				emf.close();
-			}
+				EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+						persistence.getName(),
+						PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+				EntityManager em = emf.createEntityManager();
+				try {
+					logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
+							this.estimateCount(em, cls));
+					this.dump(cls, em);
+				} finally {
+					em.close();
+					emf.close();
+				}
 		}
 		FileUtils.write(new File(dir, "catalog.json"), pureGsonDateFormated.toJson(this.catalog),
 				DefaultCharset.charset);
 		logger.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.getAbsolutePath(),
-				this.count(), (new Date().getTime() - start.getTime()) / 1000 / 60);
+				this.count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 		return true;
 	}
 
@@ -120,7 +115,7 @@ public class ActionDumpData {
 				FileUtils.write(file, pureGsonDateFormated.toJson(list), DefaultCharset.charset);
 			}
 			em.clear();
-			System.gc();
+			Runtime.getRuntime().gc();
 		} while (ListTools.isNotEmpty(list));
 		this.catalog.put(cls.getName(), count);
 	}
@@ -131,9 +126,9 @@ public class ActionDumpData {
 		Root<T> root = cq.from(cls);
 		Predicate p = cb.conjunction();
 		if (StringUtils.isNotEmpty(id)) {
-			p = cb.greaterThan(root.get("id"), id);
+			p = cb.greaterThan(root.get(JpaObject.id_FIELDNAME), id);
 		}
-		cq.select(root).where(p).orderBy(cb.asc(root.get("id")));
+		cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject.id_FIELDNAME)));
 		return em.createQuery(cq).setMaxResults(size).getResultList();
 	}
 

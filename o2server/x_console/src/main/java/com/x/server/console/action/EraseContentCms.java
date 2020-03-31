@@ -18,15 +18,11 @@ import com.x.cms.core.entity.DocumentCommentCommend;
 import com.x.cms.core.entity.DocumentCommend;
 import com.x.cms.core.entity.CmsBatchOperation;
 
-public class ActionEraseContentCms extends ActionEraseContentProcessPlatform {
+public class EraseContentCms extends EraseContentProcessPlatform {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEraseContentCms.class);
+	private static Logger logger = LoggerFactory.getLogger(EraseContentCms.class);
 
 	public boolean execute(String password) throws Exception {
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
 		this.init("cms", ItemCategory.cms);
 		addClass(Document.class);
 		addClass(Review.class);
