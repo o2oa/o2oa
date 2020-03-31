@@ -43,9 +43,9 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.query.core.entity.Item;
 
-public class ActionEraseContentProcessPlatform {
+public class EraseContentProcessPlatform {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEraseContentProcessPlatform.class);
+	private static Logger logger = LoggerFactory.getLogger(EraseContentProcessPlatform.class);
 
 	private Date start;
 
@@ -55,11 +55,7 @@ public class ActionEraseContentProcessPlatform {
 
 	private ItemCategory itemCategory;
 
-	public boolean execute(String password) throws Exception {
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
+	public boolean execute() throws Exception {
 		this.init("processPlatform", ItemCategory.pp);
 		addClass(Attachment.class);
 		addClass(DocumentVersion.class);
