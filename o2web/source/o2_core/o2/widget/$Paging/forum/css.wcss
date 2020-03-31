@@ -61,6 +61,42 @@
         "background-color" : "#fff",
         "color" : "#43AAFA"
     },
+    "preBatchPage" : {
+        "float" : "left",
+        "height" : "20px",
+        "min-width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "background-color" : "#f3f3f3",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "margin" : "5px"
+    },
+    "preBatchPage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "nextBatchPage" : {
+        "float" : "left",
+        "height" : "20px",
+        "min-width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "background-color" : "#f3f3f3",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "margin" : "5px"
+    },
+    "nextBatchPage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
     "currentPage" : {
         "float" : "left",
         "height" : "20px",
@@ -82,7 +118,7 @@
         "width" : "20px",
         "margin-top" : "5px",
         "margin-bottom" : "5px",
-        "margin-left" : "5px",
+        "margin-left" : "10px",
         "border" : "1px solid #ddd"
     },
     "pageJumper_over" : {
