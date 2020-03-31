@@ -921,10 +921,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var text = data;
                     switch (op) {
                         case DIFF_INSERT:
-                            html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
+                            html[x] = '<ins style="background:#e6ffe6; color:green">' + text + '</ins>';
                             break;
                         case DIFF_DELETE:
-                            html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
+                            html[x] = '<del style="background:#ffe6e6; color:red">' + text + '</del>';
                             break;
                         case DIFF_EQUAL:
                             html[x] = '<span>' + text + '</span>';
@@ -943,7 +943,26 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             // var currentDataText = (currentData);
             var diff_d = dmp.diff_main(earlyData, laterData);
             dmp.diff_cleanupSemantic(diff_d);
-            var diff_ds = dmp.diff_prettyHtml(diff_d);
+            var patch_list = dmp.patch_make(earlyData, laterData, diff_d);
+
+            var data = earlyData;
+            if (patch_list.length){
+                patch_list.each(function(patch){
+                    patch.start1;
+                    patch.start2;
+                    patch.length1;
+                    patch.length2;
+                    patch.diffs;
+
+                    var left = data.substring(0,patch.start1);
+                    var middle = data.substring(patch.start1, patch.length1);
+                    var right = data.substring(patch.start1+patch.length1, data.length);
+
+
+                }.bind(this));
+            }
+
+            //var diff_ds = dmp.diff_prettyHtml(diff_d);
             if (callback) callback(diff_ds);
         }.bind(this));
     },
