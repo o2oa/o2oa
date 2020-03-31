@@ -638,13 +638,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._doublePage();
             }
 
-            this.form.addEvent("beforeProcess", function(){
+            // this.form.addEvent("beforeProcess", function(){
+            //     this.resetData();
+            //     if (this.checkSaveNewEdition()) this.saveNewDataEdition();
+            //     this.notSaveResetData = true;
+            // }.bind(this));
+            this.form.addEvent("beforeSave", function(){
                 this.resetData();
                 if (this.checkSaveNewEdition()) this.saveNewDataEdition();
-                this.notSaveResetData = true;
-            }.bind(this));
-            this.form.addEvent("beforeSave", function(){
-                if (!this.notSaveResetData) this.resetData();
+                //if (!this.notSaveResetData) this.resetData();
             }.bind(this));
 
             if (this.json.toWord=="y"){
@@ -872,33 +874,77 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         debugger;
         //if (this.layout_filetext) currentData = this.layout_filetext.get("text");
         this.resetData();
-        var currentData = this.data.filetext;
+        var currentData = {
+            "data": this.data.filetext,
+            "person": layout.session.user.distinguishedName,
+            "activityName": this.form.businessData.activity.name,
+            "createTime" : (new Date()).format("db")
+        }
 
         this.getHistroyDocumentList(function(){
             if (this.historyDocumentList && this.historyDocumentList.length){
                 this.getHistroyDocumentData(this.historyDocumentList[0].id, function(historyData){
-                    o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
-                        var dmp = new diff_match_patch();
-                        dmp.Diff_Timeout = parseFloat(10);
-                        dmp.Diff_EditCost = parseFloat(4);
+                    this.diffHistroy(historyData.data, currentData.data, function(diff_ds){
+                        this.resetData(diff_ds);
 
-                        // var historyDataText = this.htmlToText(historyData);
-                        // var currentDataText = this.htmlToText(currentData);
-                        var historyDataText = (historyData);
-                        var currentDataText = (currentData);
+                        if (this.layout_filetext){
+                            var insList = this.layout_filetext.getElements("ins");
+                            var delList = this.layout_filetext.getElements("del");
 
+                            var insTitle = o2.name.cn(currentData.person)+" 添加的内容\n"+currentData.createTime;
+                            insList.set("title", insTitle);
+                            var delTitle = o2.name.cn(currentData.person)+" 删除的内容\n"+currentData.createTime
+                            delList.set("title", delTitle);
+                            // insList.addEvents({
+                            //     "mouseover": function(){alert()}
+                            // })
+                        }
 
-                        var diff_d = dmp.diff_main(historyDataText, currentDataText);
-                        dmp.diff_cleanupSemantic(diff_d);
-                        var diff_ds = dmp.diff_prettyHtml(diff_d);
-
-                        this.data.diffFiletext = diff_ds;
-                        this.resetData(this.data.diffFiletext);
-
-                        //this.historyAreaNode.set("html", diff_ds);
                     }.bind(this));
                 }.bind(this))
             }
+        }.bind(this));
+    },
+    diffHistroy: function(earlyData, laterData, callback){
+        o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+            diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
+                var html = [];
+                var pattern_amp = /&/g;
+                var pattern_lt = /</g;
+                var pattern_gt = />/g;
+                var pattern_para = /\n/g;
+                for (var x = 0; x < diffs.length; x++) {
+                    var op = diffs[x][0];    // Operation (insert, delete, equal)
+                    var data = diffs[x][1];  // Text of change.
+                    // var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
+                    //     .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
+                    var text = data;
+                    switch (op) {
+                        case DIFF_INSERT:
+                            html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
+                            break;
+                        case DIFF_DELETE:
+                            html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
+                            break;
+                        case DIFF_EQUAL:
+                            html[x] = '<span>' + text + '</span>';
+                            break;
+                    }
+                }
+                return html.join('');
+            };
+
+            var dmp = new diff_match_patch();
+            dmp.Diff_Timeout = parseFloat(10);
+            dmp.Diff_EditCost = parseFloat(4);
+            // var historyDataText = this.htmlToText(historyData);
+            // var currentDataText = this.htmlToText(currentData);
+            // var historyDataText = (historyData);
+            // var currentDataText = (currentData);
+            var diff_d = dmp.diff_main(earlyData, laterData);
+            dmp.diff_cleanupSemantic(diff_d);
+            var diff_ds = dmp.diff_prettyHtml(diff_d);
+            if (callback) callback(diff_ds);
         }.bind(this));
     },
     htmlToText: function(html){
@@ -909,12 +955,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     getHistroyDocumentData: function(id, callback){
         o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(id, function(json){
-            if (callback) callback(json.data.data);
+            if (callback) callback(json.data);
         }.bind(this));
     },
     getHistroyDocumentList: function(callback){
         if (!this.historyDocumentList){
-            var id = this.form.businessData.data["$work"].job;
+            //var id = this.form.businessData.data["$work"].job;
+            var id = this.form.businessData.work.job;
             o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
                 this.historyDocumentList = json.data;
                 if (callback) callback();
