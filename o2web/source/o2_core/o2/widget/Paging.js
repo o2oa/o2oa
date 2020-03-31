@@ -198,7 +198,7 @@ o2.widget.Paging = new Class({
         var _self = this;
         var pageJumper = this.pageJumper = new Element("input.pageJumper", {
             "styles": this.css.pageJumper,
-            "title": "输入页码，按回车跳转"
+            "title": "输入页码，离开输入框或按回车跳转"
         }).inject(this.node);
         this.pageJumperText = new Element("div.pageText", {
             "styles": this.css.pageJumperText,
@@ -209,10 +209,11 @@ o2.widget.Paging = new Class({
                 ev.target.setStyles(this.css.pageJumper_over)
             }.bind(this),
             "blur": function (ev) {
-                ev.target.setStyles(this.css.pageJumper)
-            }.bind(this),
+                if( this.value )_self.gotoPage(this.value);
+                ev.target.setStyles(_self.css.pageJumper);
+            },
             "keyup": function (e) {
-                this.value = this.value.replace(/[^0-9_]/g, '')
+                this.value = this.value.replace(/[^0-9_]/g, '');
             },
             "keydown": function (e) {
                 if (e.code == 13 && this.value != "") {

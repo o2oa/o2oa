@@ -772,7 +772,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         // },
         // "getField": function (name) { return _forms[name]; },
         // "getAction": function () { return _form.workAction },
-        "getDesktop": function () { return _form.app.desktop },
+        "getDesktop": function () { return _form.app ? _form.app.desktop : null},
         // "getData": function () { return new MWF.xScript.JSONData(_form.getData()); },
         //"save": function(callback){_form.saveWork(callback);},
         // "close": function () { _form.closeWork(); },
