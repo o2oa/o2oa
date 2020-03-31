@@ -1,4 +1,4 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity","MWF.widget.O2Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
