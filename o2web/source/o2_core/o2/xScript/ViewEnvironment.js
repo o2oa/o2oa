@@ -1,108 +1,32 @@
 MWF.xScript = MWF.xScript || {};
-MWF.xScript.PageEnvironment = function (ev) {
-    var _data = ev.data;
-    var _form = ev.form;
-    var _forms = ev.forms;
+MWF.xScript.ViewEnvironment = function (ev) {
+    var _form = ev.view;
 
     this.library = COMMON;
     //this.library.version = "4.0";
 
     //data
-    var getJSONData = function (jData) {
-        return new MWF.xScript.JSONData(jData, function (data, key, _self) {
-            var p = { "getKey": function () { return key; }, "getParent": function () { return _self; } };
-            while (p && !_forms[p.getKey()]) p = p.getParent();
-            if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
-        });
-    };
-    this.setData = function (data) {
-        this.data = getJSONData(data);
-        this.data.save = function (callback) {
-            var formData = {
-                "data": data,
-                "sectionList": _form.getSectionList()
-            };
-            form.workAction.saveData(function (json) { if (callback) callback(); }.bind(this), null, work.id, jData);
-        }
-    };
-    this.setData(_data);
-
-    //workContext
-    this.workContext = {
-        "getTask": function () { return ev.task; },
-        "getWork": function () { return ev.work || ev.workCompleted; },
-        "getActivity": function () { return ev.activity; },
-        "getTaskList": function () { return ev.taskList; },
-        "getControl": function () { return ev.control; },
-        "getWorkLogList": function () { return ev.workLogList; },
-        "getAttachmentList": function () { return ev.attachmentList; },
-        "getRouteList": function () { return (ev.task) ? ev.task.routeNameList : null; },
-        "getInquiredRouteList": function () { return null; },
-        "setTitle": function (title) {
-            //if (!this.workAction){
-            //    MWF.require("MWF.xScript.Actions.WorkActions", null, false);
-            //    this.workAction = new MWF.xScript.Actions.WorkActions();
-            //}
-            //this.workAction.setTitle(ev.work.id, {"title": title});
-        }
-    };
-    var _redefineWorkProperties = function (work) {
-        if (work) {
-            work.creatorPersonDn = work.creatorPerson;
-            work.creatorUnitDn = work.creatorUnit;
-            work.creatorUnitDnList = work.creatorUnitList;
-            work.creatorIdentityDn = work.creatorIdentity;
-            var o = {
-                "creatorPerson": { "get": function () { return this.creatorPersonDn.substring(0, this.creatorPersonDn.indexOf("@")); } },
-                "creatorUnit": { "get": function () { return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@")); } },
-                "creatorDepartment": { "get": function () { return this.creatorUnitDn.substring(0, this.creatorUnitDn.indexOf("@")); } },
-                "creatorIdentity": { "get": function () { return this.creatorIdentityDn.substring(0, this.creatorIdentityDn.indexOf("@")); } },
-                "creatorUnitList": {
-                    "get": function () {
-                        var v = [];
-                        this.creatorUnitDnList.each(function (dn) {
-                            v.push(dn.substring(0, dn.indexOf("@")))
-                        });
-                        return v;
-                    }
-                },
-                "creatorCompany": { "get": function () { return this.creatorUnitList[0] } }
-            };
-            MWF.defineProperties(work, o);
-        }
-        return work;
-    };
-    var _redefineTaskProperties = function (task) {
-        if (task) {
-            task.personDn = task.person;
-            task.unitDn = task.unit;
-            task.unitDnList = task.unitList;
-            task.identityDn = task.identity;
-            var o = {
-                "person": { "get": function () { return this.personDn.substring(0, this.personDn.indexOf("@")); } },
-                "unit": { "get": function () { return this.unitDn.substring(0, this.unitDn.indexOf("@")); } },
-                "department": { "get": function () { return this.unitDn.substring(0, this.unitDn.indexOf("@")); } },
-                "identity": { "get": function () { return this.identityDn.substring(0, this.identityDn.indexOf("@")); } },
-                "unitList": {
-                    "get": function () {
-                        var v = [];
-                        this.unitDnList.each(function (dn) {
-                            v.push(dn.substring(0, dn.indexOf("@")))
-                        });
-                        return v;
-                    }
-                },
-                "company": { "get": function () { return this.unitList[0]; } }
-            };
-            MWF.defineProperties(task, o);
-        }
-        return task;
-    };
-    _redefineWorkProperties(this.workContext.getWork());
-    _redefineTaskProperties(_redefineWorkProperties(this.workContext.getTask()));
+    // var getJSONData = function (jData) {
+    //     return new MWF.xScript.JSONData(jData, function (data, key, _self) {
+    //         var p = { "getKey": function () { return key; }, "getParent": function () { return _self; } };
+    //         while (p && !_forms[p.getKey()]) p = p.getParent();
+    //         if (p) if (p.getKey()) if (_forms[p.getKey()]) _forms[p.getKey()].resetData();
+    //     });
+    // };
+    // this.setData = function (data) {
+    //     this.data = getJSONData(data);
+    //     this.data.save = function (callback) {
+    //         var formData = {
+    //             "data": data,
+    //             "sectionList": _form.getSectionList()
+    //         };
+    //         form.workAction.saveData(function (json) { if (callback) callback(); }.bind(this), null, work.id, jData);
+    //     }
+    // };
+    // this.setData(_data);
 
     //dict
-    this.Dict = MWF.xScript.createDict(_form.json.application);
+    this.Dict = MWF.xScript.createDict();
     //org
     var orgActions = null;
     var getOrgActions = function () {
@@ -811,26 +735,6 @@ MWF.xScript.PageEnvironment = function (ev) {
             }
         }.bind(this), null, false);
     };
-    //var includedScripts = [];
-    //this.include = function(name, callback){
-    //    if (includedScripts.indexOf(name)==-1){
-    //        if (!this.scriptAction){
-    //            MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-    //            this.scriptAction = new MWF.xScript.Actions.PortalScriptActions();
-    //        }
-    //        this.scriptAction.getScriptByName(_form.json.application, name, includedScripts, function(json){
-    //            if (json.data){
-    //                includedScripts = includedScripts.concat(json.data.importedList);
-    //                MWF.Macro.exec(json.data.text, this);
-    //                if (callback) callback.apply(this);
-    //            }else{
-    //                if (callback) callback.apply(this);
-    //            }
-    //        }.bind(this), null, false);
-    //    }else{
-    //        if (callback) callback.apply(this);
-    //    }
-    //}.bind(this);
 
     this.define = function (name, fun, overwrite) {
         var over = true;
@@ -843,29 +747,39 @@ MWF.xScript.PageEnvironment = function (ev) {
 
     //仅前台对象-----------------------------------------
     //form
-    this.page = this.form = {
-        "getInfor": function () { return ev.pageInfor; },
-        "infor": ev.pageInfor,
-        "getApp": function () { return _form.app; },
-        "app": _form.app,
-        "node": function () { return _form.node; },
-        //"readonly": _form.options.readonly,
-        "get": function (name) { return (_form.all) ? _form.all[name] : null; },
-        "getWidgetModule": function (widget, moduleName) {
-            if (!_form.widgetModules || !_form.widgetModules[widget]) return null;
-            var module = _form.widgetModules[widget][moduleName];
-            return module || null;
-        },
-        "getField": function (name) { return _forms[name]; },
-        "getAction": function () { return _form.workAction },
-        "getDesktop": function () { return _form.app.desktop },
-        "getData": function () { return new MWF.xScript.JSONData(_form.getData()); },
-        //"save": function(callback){_form.saveWork(callback);},
-        "close": function () { _form.closeWork(); },
+    this.page = this.form = this.queryView = {
+        "getParentEnvironment" : function () { return _form.getParentEnvironment(); }, //视图嵌入的表单或页面的上下文
+        "getViewInfor" : function () { return _form.getViewInfor(); },
+        "getPageInfor" : function () { return _form.getPageInfor(); },
+        "getPageData" : function () { return _form.getPageData(); },
+        "toPage" : function ( pageNumber, callback ) { return _form.toPage(pageNumber, callback); },
+        "selectAll" : function () { return _form.selectAll(); },
+        "unSelectAll" : function () { return _form.unSelectAll(); },
+        "getSelectedData" : function () { return _form.getSelectedData(); },
+        "setFilter" : function ( filter ) { return _form.setFilter(filter); },
+        "switchView" : function ( options ) { return _form.switchView(options); },
 
-        "print": function (application, form) {
-            _form.printWork(application, form);
-        },
+        // "getInfor": function () { return ev.pageInfor; },
+        // "infor": ev.pageInfor,
+        // "getApp": function () { return _form.app; },
+        // "app": _form.app,
+        "node": function () { return _form.node; },
+        // "get": function (name) { return (_form.all) ? _form.all[name] : null; },
+        // "getWidgetModule": function (widget, moduleName) {
+        //     if (!_form.widgetModules || !_form.widgetModules[widget]) return null;
+        //     var module = _form.widgetModules[widget][moduleName];
+        //     return module || null;
+        // },
+        // "getField": function (name) { return _forms[name]; },
+        // "getAction": function () { return _form.workAction },
+        "getDesktop": function () { return _form.app ? _form.app.desktop : null},
+        // "getData": function () { return new MWF.xScript.JSONData(_form.getData()); },
+        //"save": function(callback){_form.saveWork(callback);},
+        // "close": function () { _form.closeWork(); },
+
+        // "print": function (application, form) {
+        //     _form.printWork(application, form);
+        // },
 
         "confirm": function (type, title, text, width, height, ok, cancel, callback, mask, style) {
             // var p = MWF.getCenter({"x": width, "y": height});
@@ -896,15 +810,15 @@ MWF.xScript.PageEnvironment = function (ev) {
             _form.notice(content, type, target, where, offset, option);
         },
         "addEvent": function (e, f) { _form.addEvent(e, f); },
-        "openWindow": function (form, app) {
-            _form.openWindow(form, app);
-        },
-        "toPage": function (name, par, nohis) {
-            _form.app.toPage(name, par, nohis);
-        },
-        "toPortal": function (portal, page, par) {
-            _form.app.toPortal(portal, page, par);
-        },
+        // "openWindow": function (form, app) {
+        //     _form.openWindow(form, app);
+        // },
+        // "toPage": function (name, par, nohis) {
+        //     _form.app.toPage(name, par, nohis);
+        // },
+        // "toPortal": function (portal, page, par) {
+        //     _form.app.toPortal(portal, page, par);
+        // },
         "openWork": function (id, completedId, title, options) {
             var op = options || {};
             op.workId = id;
@@ -1145,19 +1059,11 @@ MWF.xScript.PageEnvironment = function (ev) {
                     }.bind(this));
                 }
             });
-        },
-        "parameters": _form.options.parameters,
-        "getWidgetPrameters": function () {
-            if (!this.target) return null;
-            if (!this.target.widget) return null;
-            if (!this.widgetParameters) return null;
-            var pageId = this.target.widget.json.id;
-            return this.widgetParameters[pageId];
-        }.bind(this)
+        }
         //"app": _form.app
     };
-    this.form.currentRouteName = _form.json.currentRouteName;
-    this.form.opinion = _form.json.opinion;
+    // this.form.currentRouteName = _form.json.currentRouteName;
+    // this.form.opinion = _form.json.opinion;
 
     this.target = ev.target;
     this.event = ev.event;
@@ -1182,6 +1088,6 @@ MWF.xScript.PageEnvironment = function (ev) {
             o2.Actions.get("x_query_assemble_surface").executeStatement(option.name, json, success, error, options.async);
         }
     };
-    this.Table = MWF.xScript.createTable();
+    // this.Table = MWF.xScript.createTable();
 };
 
