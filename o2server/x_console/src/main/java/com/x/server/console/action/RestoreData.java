@@ -14,11 +14,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.OpenJPAPersistence;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -33,49 +28,48 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-public class ActionRestoreData {
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.OpenJPAPersistence;
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRestoreData.class);
+/**
+ * @author zhourui
+ */
+public class RestoreData {
 
-	private Date start;
+	private static Logger logger = LoggerFactory.getLogger(RestoreData.class);
+
+	private Date start = new Date();
 
 	private File dir;
 
 	private DumpRestoreDataCatalog catalog;
 
-	private Gson pureGsonDateFormated;
+	private Gson pureGsonDateFormated = XGsonBuilder.instance();
 
-	public boolean execute(Date date, String password) throws Exception {
-		this.start = new Date();
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not mactch.");
-			return false;
+	public boolean execute(String path) throws Exception {
+		if (StringUtils.isEmpty(path)) {
+			logger.print("path is empty.");
 		}
-		this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(date));
-		this.catalog = BaseTools.readConfigObject("local/dump/dumpData_" + DateTools.compact(date) + "/catalog.json",
-				DumpRestoreDataCatalog.class);
-		pureGsonDateFormated = XGsonBuilder.instance();
-		return this.execute();
-	}
-
-	public boolean execute(String path, String password) throws Exception {
-		this.start = new Date();
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not mactch.");
-			return false;
-		}
-		this.dir = new File(path);
-		if (!(this.dir.exists() && this.dir.isDirectory())) {
-			logger.print("dir not exist: {}.", path);
-			return false;
-		} else if (StringUtils.startsWith(dir.getAbsolutePath(), Config.base())) {
-			logger.print("path can not in base directory.");
-			return false;
+		if (BooleanUtils.isTrue(DateTools.isCompactDateTime(path))) {
+			this.dir = new File(Config.base(), "local/dump/dumpData_" + path);
+			this.catalog = BaseTools.readConfigObject("local/dump/dumpData_" + path + "/catalog.json",
+					DumpRestoreDataCatalog.class);
+		} else {
+			this.dir = new File(path);
+			if (!(this.dir.exists() && this.dir.isDirectory())) {
+				logger.print("dir not exist: {}.", path);
+				return false;
+			} else if (StringUtils.startsWith(dir.getAbsolutePath(), Config.base())) {
+				logger.print("path can not in base directory.");
+				return false;
+			}
 		}
 		this.catalog = XGsonBuilder.instance()
 				.fromJson(FileUtils.readFileToString(new File(dir.getAbsolutePath() + File.separator + "catalog.json"),
 						DefaultCharset.charset_utf_8), DumpRestoreDataCatalog.class);
-		pureGsonDateFormated = XGsonBuilder.instance();
 		return this.execute();
 	}
 
@@ -113,7 +107,7 @@ public class ActionRestoreData {
 			}
 		}
 		logger.print("restore data completed, total count: {}, elapsed: {} minutes.", count,
-				(new Date().getTime() - start.getTime()) / 1000 / 60);
+				(System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 		return true;
 	}
 
@@ -149,7 +143,7 @@ public class ActionRestoreData {
 			}
 			em.getTransaction().commit();
 			em.clear();
-			System.gc();
+			Runtime.getRuntime().gc();
 		}
 		System.out.println("restore data: " + cls.getName() + " completed, count: " + count + ".");
 		return count;
