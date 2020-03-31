@@ -13,19 +13,21 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.x.base.core.project.x_program_center;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.Host;
+import com.x.base.core.project.tools.NumberTools;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.MimeTypes;
-
-import com.google.gson.JsonElement;
-import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.Host;
-import com.x.base.core.project.tools.NumberTools;
 
 public class Config {
 
@@ -449,7 +451,14 @@ public class Config {
 		if (null == instance().version) {
 			synchronized (Config.class) {
 				if (null == instance().version) {
-					instance().version = BaseTools.readCfg(PATH_VERSION);
+					String text = BaseTools.readCfg(PATH_VERSION);
+					if (XGsonBuilder.isJson(text)) {
+						JsonObject obj = XGsonBuilder.instance().fromJson(text, JsonObject.class);
+						instance().version = obj.get("version").getAsString();
+					} else {
+						instance().version = text;
+					}
+
 				}
 			}
 		}

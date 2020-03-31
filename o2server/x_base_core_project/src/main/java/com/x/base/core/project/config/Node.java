@@ -1,11 +1,10 @@
 package com.x.base.core.project.config;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.DateTools;
 
 public class Node extends ConfigObject {
 
@@ -75,12 +74,19 @@ public class Node extends ConfigObject {
 	private String banner;
 	@FieldDescribe("是否自动启动")
 	private Boolean autoStart;
+	@FieldDescribe("是否允许使用擦除数据功能")
+	private Boolean eraseContentEnable;
 
 	/* 20191009兼容centerServer */
 	protected void setCenter(CenterServer centerServer) {
 		this.center = centerServer;
 	}
 	/* 20191009兼容centerServer end */
+
+ 
+	public Boolean getEraseContentEnable() {
+		return BooleanUtils.isNotFalse(eraseContentEnable);
+	}
 
 	public Boolean autoStart() {
 		return BooleanUtils.isNotFalse(autoStart);
@@ -324,5 +330,7 @@ public class Node extends ConfigObject {
 		}
 
 	}
+
+
 
 }

@@ -186,5 +186,6 @@
   "###nodeAgentEncrypt": "是否启用节点代理加密###",
   "###quickStartWebApp": "是否使用快速应用部署###",
   "###banner": "服务器控制台启动标识###",
-  "###autoStart": "是否自动启动###"
+  "###autoStart": "是否自动启动###",
+  "###eraseContentEnable": "是否允许使用擦除数据功能###"
 }

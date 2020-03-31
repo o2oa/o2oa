@@ -16,15 +16,11 @@ import com.x.bbs.entity.BBSVoteOption;
 import com.x.bbs.entity.BBSVoteOptionGroup;
 import com.x.bbs.entity.BBSVoteRecord;
 
-public class ActionEraseContentBbs extends ActionEraseContentProcessPlatform {
+public class EraseContentBbs extends EraseContentProcessPlatform {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEraseContentBbs.class);
+	private static Logger logger = LoggerFactory.getLogger(EraseContentBbs.class);
 
-	public boolean execute(String password) throws Exception {
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
+	public boolean execute() throws Exception {
 		this.init("bbs", ItemCategory.bbs);
 		addClass(BBSOperationRecord.class);
 		addClass(BBSReplyInfo.class);

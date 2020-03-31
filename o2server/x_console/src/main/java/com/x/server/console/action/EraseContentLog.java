@@ -10,15 +10,11 @@ import com.x.program.center.core.entity.ScheduleLog;
 import com.x.program.center.core.entity.UnexpectedErrorLog;
 import com.x.program.center.core.entity.WarnLog;
 
-public class ActionEraseContentLog extends ActionEraseContentProcessPlatform {
+public class EraseContentLog extends EraseContentProcessPlatform {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEraseContentLog.class);
+	private static Logger logger = LoggerFactory.getLogger(EraseContentLog.class);
 
 	public boolean execute(String password) throws Exception {
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
 		this.init("log", null);
 		addClass(ScheduleLog.class);
 		addClass(PromptErrorLog.class);
