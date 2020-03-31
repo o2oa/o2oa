@@ -34,24 +34,19 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 
-public class ActionDumpStorage {
+public class DumpStorage {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDumpStorage.class);
+	private static Logger logger = LoggerFactory.getLogger(DumpStorage.class);
 
-	private Date start;
+	private Date start= new Date();
 
 	private File dir;
 
 	private DumpRestoreStorageCatalog catalog;
 
-	private Gson pureGsonDateFormated;
+	private Gson pureGsonDateFormated=XGsonBuilder.instance();
 
-	public boolean execute(String path, String password) throws Exception {
-		this.start = new Date();
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}
+	public boolean execute(String path) throws Exception {
 		if (StringUtils.isEmpty(path)) {
 			this.dir = new File(Config.base(), "local/dump/dumpStorage_" + DateTools.compact(this.start));
 		} else {
@@ -63,7 +58,6 @@ public class ActionDumpStorage {
 		}
 		FileUtils.forceMkdir(this.dir);
 		FileUtils.cleanDirectory(this.dir);
-		this.pureGsonDateFormated = XGsonBuilder.instance();
 		this.catalog = new DumpRestoreStorageCatalog();
 
 		List<String> storageContainerEntityNames = new ArrayList<>();
@@ -94,7 +88,7 @@ public class ActionDumpStorage {
 		logger.print(
 				"dump storage completed, directory: {}, count: {}, normal: {}, empty: {}, invalidStorage: {}, size: {}M, elapsed: {} minutes.",
 				dir.getAbsolutePath(), this.count(), this.normal(), this.empty(), this.invalidStorage(),
-				(this.size() / 1024 / 1024), (new Date().getTime() - start.getTime()) / 1000 / 60);
+				(this.size() / 1024 / 1024), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 		return true;
 	}
 
@@ -201,7 +195,7 @@ public class ActionDumpStorage {
 				this.dumpWrite(file, normalList, emptyList, invalidStorageList);
 			}
 			em.clear();
-			System.gc();
+			Runtime.getRuntime().gc();
 		} while (ListTools.isNotEmpty(list));
 		DumpRestoreStorageCatalogItem item = new DumpRestoreStorageCatalogItem();
 		item.setCount(count);
