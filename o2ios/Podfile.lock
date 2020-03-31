@@ -29,7 +29,7 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - FSCalendar (2.8.0)
-  - HandyJSON (5.0.0)
+  - HandyJSON (5.0.2-beta)
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Alamofire (1.7.0):
@@ -95,7 +95,7 @@ DEPENDENCIES:
   - Eureka
   - FMDB (~> 2.6.2)
   - FSCalendar
-  - HandyJSON (~> 5.0.0)
+  - HandyJSON (~> 5.0.2-beta)
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
@@ -196,7 +196,7 @@ SPEC CHECKSUMS:
   Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
-  HandyJSON: 992f2d661716d6a91de82d0056927bc7813b5770
+  HandyJSON: e18b035d60cb4847c609a59bb831c5db8c549663
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JCore: 1a426120b510cdebfd67b82bfb9483238ee09413
@@ -224,6 +224,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: d1360080e7994d58c830e43b2e9d56aa35f3e3e6
+PODFILE CHECKSUM: 6d51640fea677ad9323a17f4b57b9a875165afcd
 
 COCOAPODS: 1.8.4

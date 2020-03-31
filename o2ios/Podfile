@@ -46,7 +46,7 @@ target 'O2Platform' do
     # UserDefaults加强
     pod 'SwiftyUserDefaults', '~>3.0'
     # json
-    pod 'HandyJSON', '~> 5.0.0'
+    pod 'HandyJSON', '~> 5.0.2-beta'
     pod 'SwiftyJSON', '~>3.1'
     # reactive
     pod 'ReactiveSwift', '~> 5.0'
