@@ -168,6 +168,13 @@
         "line-height": "24px",
         "border-bottom": "1px dashed #CCC"
     },
+    "editTableTitleNoWidth": {
+        "font-weight": "bold",
+        "font-size": "12px",
+        "height": "24px",
+        "line-height": "24px",
+        "border-bottom": "1px dashed #CCC"
+    },
     "editTableValue": {
         "height": "24px",
         "line-height": "24px",

@@ -88,7 +88,7 @@ o2.widget.Paging = new Class({
             this.createPrev();
         }
 
-        if( this.options.hasBatchTuring && ( min > 1 ) ){ //showWithDisable
+        if( this.options.hasTruningBar && this.options.hasBatchTuring && ( min > 1 ) ){ //showWithDisable
             this.createPrevBatch( min );
         }
 
@@ -109,7 +109,7 @@ o2.widget.Paging = new Class({
             }
         }
 
-        if( this.options.hasBatchTuring && ( max < pageSize )){ //showWithDisable
+        if( this.options.hasTruningBar && this.options.hasBatchTuring && ( max < pageSize )){ //showWithDisable
             this.createNextBatch( max );
         }
 
@@ -290,6 +290,7 @@ o2.widget.Paging = new Class({
         });
     },
     gotoPage: function (num) {
+        if( typeOf(num) === "string" )num = num.toInt();
         if (num < 1 || num > this.options.pageSize) return;
         this.fireEvent("jumpingPage", [num]);
         this.options.currentPage = num;
