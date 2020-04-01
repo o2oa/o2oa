@@ -1444,6 +1444,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     if (this.closeImmediatelyOnProcess) {
                         this.app.close();
+                    }else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+                        this.showCustomSubmitedDialog();
                     } else if (layout.mobile) {
                         //移动端页面关闭
                         _self.finishOnMobile()
