@@ -732,6 +732,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             onJumpingPage : function( pageNum, itemNum ){
                 this.currentPage = pageNum;
                 this.loadCurrentPageData();
+            }.bind(this),
+            onPostLoad : function () {
+                this.setContentHeightFun();
             }.bind(this)
         });
         this.paging.load();
