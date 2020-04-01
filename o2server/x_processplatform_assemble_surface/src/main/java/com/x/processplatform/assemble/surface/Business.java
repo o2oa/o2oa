@@ -420,50 +420,50 @@ public class Business {
 		Activity o = null;
 		if (null != activityType) {
 			switch (activityType) {
-			case agent:
-				o = agent().pick(id);
-				break;
-			case begin:
-				o = begin().pick(id);
-				break;
-			case cancel:
-				o = cancel().pick(id);
-				break;
-			case choice:
-				o = choice().pick(id);
-				break;
-			case delay:
-				o = delay().pick(id);
-				break;
-			case embed:
-				o = embed().pick(id);
-				break;
-			case end:
-				o = end().pick(id);
-				break;
-			case invoke:
-				o = invoke().pick(id);
-				break;
-			case manual:
-				o = manual().pick(id);
-				break;
-			case merge:
-				o = merge().pick(id);
-				break;
-			case message:
-				o = message().pick(id);
-				break;
-			case parallel:
-				o = parallel().pick(id);
-				break;
-			case service:
-				o = service().pick(id);
-				break;
-			case split:
-				o = service().pick(id);
-				break;
-			default:
-				break;
+				case agent:
+					o = agent().pick(id);
+					break;
+				case begin:
+					o = begin().pick(id);
+					break;
+				case cancel:
+					o = cancel().pick(id);
+					break;
+				case choice:
+					o = choice().pick(id);
+					break;
+				case delay:
+					o = delay().pick(id);
+					break;
+				case embed:
+					o = embed().pick(id);
+					break;
+				case end:
+					o = end().pick(id);
+					break;
+				case invoke:
+					o = invoke().pick(id);
+					break;
+				case manual:
+					o = manual().pick(id);
+					break;
+				case merge:
+					o = merge().pick(id);
+					break;
+				case message:
+					o = message().pick(id);
+					break;
+				case parallel:
+					o = parallel().pick(id);
+					break;
+				case service:
+					o = service().pick(id);
+					break;
+				case split:
+					o = service().pick(id);
+					break;
+				default:
+					break;
 			}
 		}
 		return o;
@@ -723,7 +723,11 @@ public class Business {
 			control.setAllowDelete(true);
 		} else if (null != activity && Objects.equals(activity.getActivityType(), ActivityType.manual)
 				&& BooleanUtils.isTrue(((Manual) activity).getAllowDeleteWork())) {
-			if (null != task && StringUtils.equals(work.getCreatorPerson(), effectivePerson.getDistinguishedName())) {
+			// if (null != task && StringUtils.equals(work.getCreatorPerson(),
+			// effectivePerson.getDistinguishedName())) {
+			// control.setAllowDelete(true);
+			// }
+			if (null != task) {
 				control.setAllowDelete(true);
 			}
 		}
@@ -1203,20 +1207,22 @@ public class Business {
 
 	/**
 	 * 下载附件并打包为zip
+	 * 
 	 * @param attachmentList
 	 * @param os
 	 * @throws Exception
 	 */
-	public void downToZip(List<Attachment> attachmentList, OutputStream os, Map<String, byte[]> otherAttMap) throws Exception {
+	public void downToZip(List<Attachment> attachmentList, OutputStream os, Map<String, byte[]> otherAttMap)
+			throws Exception {
 		Map<String, Attachment> filePathMap = new HashMap<>();
 		List<String> emptyFolderList = new ArrayList<>();
 		/* 生成zip压缩文件内的目录结构 */
-		if(attachmentList!=null) {
+		if (attachmentList != null) {
 			for (Attachment att : attachmentList) {
 				filePathMap.put(att.getName(), att);
 			}
 		}
-		try(ZipOutputStream zos  = new ZipOutputStream(os)){
+		try (ZipOutputStream zos = new ZipOutputStream(os)) {
 			for (Map.Entry<String, Attachment> entry : filePathMap.entrySet()) {
 				zos.putNextEntry(new ZipEntry(entry.getKey()));
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
@@ -1229,7 +1235,7 @@ public class Business {
 				}
 			}
 
-			if(otherAttMap!=null){
+			if (otherAttMap != null) {
 				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
 					zos.putNextEntry(new ZipEntry(entry.getKey()));
 					zos.write(entry.getValue());
