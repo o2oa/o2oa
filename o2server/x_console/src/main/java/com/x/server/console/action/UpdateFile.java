@@ -6,19 +6,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.JarTools;
 
-public class ActionUpdateFile extends ActionUpdate {
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateFile.class);
+/**
+ * @author Zhou Rui
+ */
+public class UpdateFile extends ActionBase {
+
+	private static Logger logger = LoggerFactory.getLogger(UpdateFile.class);
 
 	private Date start;
 
@@ -26,13 +28,9 @@ public class ActionUpdateFile extends ActionUpdate {
 		this.start = new Date();
 	}
 
-	public boolean execute(String path, boolean backup, String password) {
+	public boolean execute(String path, boolean backup) {
 		try {
 			this.init();
-			if (!StringUtils.equals(Config.token().getPassword(), password)) {
-				logger.print("password not mactch.");
-				return false;
-			}
 			File file = new File(path);
 			if (!file.exists() || file.isDirectory()) {
 				logger.print("zip file not exist path:{}.", path);
