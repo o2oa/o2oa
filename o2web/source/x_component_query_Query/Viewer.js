@@ -710,14 +710,17 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.viewPageAreaNode.empty();
         this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
             countPerPage: this.json.pageSize || this.options.perPageCount,
-            visiblePages: 10,
+            visiblePages: this.viewJson.visiblePages ? this.viewJson.visiblePages.toInt() : 9,
             currentPage: this.currentPage,
             itemSize: this.count,
             pageSize: this.pages,
-            hasNextPage: true,
-            hasPrevPage: true,
-            hasTruningBar: true,
-            hasJumper: true,
+            hasNextPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
+            hasPrevPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
+            hasTruningBar: typeOf( this.viewJson.hasTruningBar ) === "boolean" ? this.viewJson.hasTruningBar : true,
+            hasBatchTuring: typeOf( this.viewJson.hasBatchTuring ) === "boolean" ? this.viewJson.hasBatchTuring : true,
+            hasFirstPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
+            hasLastPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
+            hasJumper: typeOf( this.viewJson.hasPageJumper ) === "boolean" ? this.viewJson.hasPageJumper : true,
             hiddenWithDisable: false,
             hiddenWithNoItem: true,
             text: {
@@ -735,6 +738,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     _initPage: function(){
         this.count = this.bundleItems.length;
+
         var i = this.count/this.json.pageSize;
         this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
         this.currentPage = 1;
