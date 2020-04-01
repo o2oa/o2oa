@@ -38,7 +38,7 @@ import com.x.server.console.action.ActionConfig;
 import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.action.ActionDebugDesignDetail;
 import com.x.server.console.action.ActionSetPassword;
-import com.x.server.console.action.ActionUpdateFile;
+import com.x.server.console.action.UpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
@@ -260,7 +260,7 @@ public class Main {
 
 			matcher = CommandFactory.updateFile_pattern.matcher(cmd);
 			if (matcher.find()) {
-				if (updateFile(matcher.group(1), matcher.group(2), matcher.group(3))) {
+				if (updateFile(matcher.group(1), matcher.group(2))) {
 					stopAll();
 					System.exit(0);
 				} else {
@@ -329,9 +329,9 @@ public class Main {
 		return true;
 	}
 
-	private static boolean updateFile(String path, String backup, String password) {
+	private static boolean updateFile(String path, String backup) {
 		try {
-			return new ActionUpdateFile().execute(path, BooleanUtils.toBoolean(backup), password);
+			return new UpdateFile().execute(path, BooleanUtils.toBoolean(backup));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
