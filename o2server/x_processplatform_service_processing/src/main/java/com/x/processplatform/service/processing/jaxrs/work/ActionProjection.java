@@ -105,7 +105,7 @@ class ActionProjection extends BaseAction {
 
 	private List<Projection> listProjections(Process process) {
 		String text = process.getProjection();
-		if (StringUtils.isNotEmpty(text) && XGsonBuilder.isJson(text)) {
+		if (XGsonBuilder.isJsonArray(text)) {
 			return XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
 			}.getType());
 		}
