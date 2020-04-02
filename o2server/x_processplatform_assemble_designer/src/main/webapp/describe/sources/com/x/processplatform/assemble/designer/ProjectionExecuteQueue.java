@@ -45,7 +45,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			if (null == process) {
 				throw new ExceptionEntityNotExist(id, Process.class);
 			}
-			if (StringUtils.isNotEmpty(process.getProjection()) && XGsonBuilder.isJson(process.getProjection())) {
+			if (XGsonBuilder.isJsonArray(process.getProjection())) {
 				List<Projection> projections = XGsonBuilder.instance().fromJson(process.getProjection(),
 						new TypeToken<List<Projection>>() {
 						}.getType());

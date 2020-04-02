@@ -232,7 +232,6 @@ public abstract class Plan extends GsonPropertyObject {
 				ScriptEngine engine = this.getScriptEngine();
 				engine.put("gird", table);
 				engine.eval(Config.mooToolsScriptText());
-				// engine.put("organization", new Organization(emc));
 				for (SelectEntry selectEntry : this.selectList) {
 					if (StringUtils.isNotBlank(selectEntry.code)) {
 						List<ExtractObject> extractObjects = new TreeList<>();
@@ -254,9 +253,6 @@ public abstract class Plan extends GsonPropertyObject {
 						text.append("var o= {\n");
 						text.append("'value':extractObject.getValue(),\n");
 						text.append("'entry':extractObject.getEntry(),\n");
-//						text.append(
-//								"'entry':com.x.base.core.project.gson.XGsonBuilder.toJson(extractObject.getEntry()),\n");
-						// text.append("'girdData':gird,\n");
 						text.append("'columnName':extractObject.getColumn()\n");
 						text.append("}\n");
 						text.append("extractObject.setValue(executeScript.apply(o));\n");
