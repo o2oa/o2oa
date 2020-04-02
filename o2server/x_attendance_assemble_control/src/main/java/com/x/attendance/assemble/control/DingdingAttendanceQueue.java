@@ -16,6 +16,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
@@ -29,6 +30,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecord> {
@@ -91,7 +93,7 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                         DingdingAttendanceResult result = HttpConnection.postAsObject(dingdingUrl, null, post.toString(), DingdingAttendanceResult.class);
                         if (result.errcode != null && result.errcode == 0) {
                             List<DingdingAttendanceResultItem> resultList = result.getRecordresult();
-                            saveDingdingAttendance(resultList);
+                            saveDingdingAttendance(resultList, list);
                             saveNumber += resultList.size();
                             if (result.hasMore) {
                                 page++;
@@ -150,19 +152,46 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
         }
     }
 
-    private void saveDingdingAttendance(List<DingdingAttendanceResultItem> list) throws Exception {
+    private void saveDingdingAttendance(List<DingdingAttendanceResultItem> list, List<Person> personList) throws Exception {
         if (list != null && !list.isEmpty()) {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
                 emc.beginTransaction(AttendanceDingtalkDetail.class);
                 for (int i = 0; i < list.size(); i++) {
                     DingdingAttendanceResultItem item = list.get(i);
                     AttendanceDingtalkDetail detail = DingdingAttendanceResultItem.copier.copy(item);
                     detail.setDdId(item.getId());
+                    //添加o2组织和用户
+                    Optional<Person> first = personList.stream().filter(p -> item.userId.equals(p.getDingdingId())).findFirst();
+                    if (first.isPresent()) {
+                        Person person = first.get();
+                        String unit = getUnitWithPerson(person.getDistinguishedName(), business);
+                        detail.setO2Unit(unit);
+                        detail.setO2User(person.getDistinguishedName());
+                    }
                     emc.persist(detail);
                 }
                 emc.commit();
             }
         }
+    }
+    private String getUnitWithPerson(String person, Business business) throws Exception {
+        String result = null;
+        Integer level = 0;
+        Unit unit = null;
+        List<String> unitNames = business.organization().unit().listWithPerson( person );
+        if( ListTools.isNotEmpty( unitNames ) ) {
+            for( String unitName : unitNames ) {
+                if( StringUtils.isNotEmpty( unitName ) && !"null".equals( unitName ) ) {
+                    unit = business.organization().unit().getObject( unitName );
+                    if( level < unit.getLevel() ) {
+                        level = unit.getLevel();
+                        result = unitName;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     private void updateSyncRecord(DingdingQywxSyncRecord record, String errMsg) throws Exception {
