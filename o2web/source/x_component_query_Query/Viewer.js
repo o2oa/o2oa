@@ -895,6 +895,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
                 "style": "xform",
                 "isTime": true,
+                "secondEnable" : true,
                 "target": this.container,
                 "format": "db"
             });
