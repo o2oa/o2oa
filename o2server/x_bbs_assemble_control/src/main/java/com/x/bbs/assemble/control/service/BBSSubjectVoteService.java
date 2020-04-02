@@ -1,5 +1,6 @@
 package com.x.bbs.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -310,6 +311,19 @@ public class BBSSubjectVoteService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
 			return business.voteRecordFactory().countVoteRecordForSubject( subjectId, voteOptionId );
+		}catch( Exception e ){
+			throw e;
+		}
+	}
+
+	public List<String> listVoteUserForSubject( String subjectId, String voteOptionId ) throws Exception {
+		if( subjectId == null || subjectId.isEmpty() ){
+			return new ArrayList<>();
+		}
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			return business.voteRecordFactory().listVoteUserForSubject( subjectId, voteOptionId );
 		}catch( Exception e ){
 			throw e;
 		}
