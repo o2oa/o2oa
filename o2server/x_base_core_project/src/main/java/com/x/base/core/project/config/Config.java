@@ -451,14 +451,13 @@ public class Config {
 		if (null == instance().version) {
 			synchronized (Config.class) {
 				if (null == instance().version) {
-					String text = BaseTools.readCfg(PATH_VERSION);
-					if (XGsonBuilder.isJson(text)) {
+					String text = BaseTools.readString(PATH_VERSION);
+					if (XGsonBuilder.isJsonObject(text)) {
 						JsonObject obj = XGsonBuilder.instance().fromJson(text, JsonObject.class);
 						instance().version = obj.get("version").getAsString();
 					} else {
 						instance().version = text;
 					}
-
 				}
 			}
 		}
