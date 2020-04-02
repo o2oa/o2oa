@@ -40,5 +40,8 @@
   "actionbar": {
     "style": "xform_blue_simple",
     "customIconStyle" : ""
+  },
+  "pagingBar" : {
+    "style" : "default"
   }
 }
