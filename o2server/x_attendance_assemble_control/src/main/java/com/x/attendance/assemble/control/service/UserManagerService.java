@@ -27,10 +27,10 @@ public class UserManagerService {
 		}
 	}
 	/**
-	 * 根据员工姓名获取组织名称
+	 * 根据员工获取所在组织
 	 * 如果用户有多个身份，则取组织级别最大的组织名称
-	 * @param employeeName
-	 * @return
+	 * @param personName dn
+	 * @return unit 也是 dn
 	 * @throws Exception 
 	 */
 	public String getUnitNameWithPersonName( String personName ) throws Exception{
