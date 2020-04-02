@@ -112,7 +112,12 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 			hasPermission = checkUserPermission(checkUserPermission, roleAndPermission.getPermissionInfoList());
 			if (hasPermission) {
 				wrap.setManageAble(true);
-				wrap.setEditAble(true);
+				//如果该贴子已经有回复内容了，就不允许删除了
+				if( replyInfoService.countWithSubjectForPage( subjectId, false ) == 0 ){
+					wrap.setEditAble(false);
+				}else{
+					wrap.setEditAble(true);
+				}
 			}
 		}
 		if (check) {
