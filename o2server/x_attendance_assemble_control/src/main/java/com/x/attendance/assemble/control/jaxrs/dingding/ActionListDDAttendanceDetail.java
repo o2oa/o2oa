@@ -2,7 +2,10 @@ package com.x.attendance.assemble.control.jaxrs.dingding;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.dingding.exception.SearchArgEmptyException;
+import com.x.attendance.assemble.control.jaxrs.dingding.exception.TimeEmptyException;
 import com.x.attendance.entity.AttendanceDingtalkDetail;
+import com.x.attendance.entity.AttendanceDingtalkDetail_;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -11,11 +14,19 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.jaxrs.BetweenTerms;
+import com.x.base.core.project.jaxrs.EqualsTerms;
+import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,60 +35,164 @@ public class ActionListDDAttendanceDetail extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ActionListDDAttendanceDetail.class);
 
-    public ActionResult<List<Wo>> execute(JsonElement jsonElement) throws Exception {
+    public ActionResult<List<Wo>> execute(String flag, Integer count, JsonElement jsonElement) throws Exception {
         ActionResult<List<Wo>> result = new ActionResult<>();
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             Wi wi = this.convertToWrapIn(jsonElement , Wi.class);
-            Date start = DateTools.parseDateTime(wi.getStartTime());
-            Date end = DateTools.parseDateTime(wi.getEndTime());
-            String dingdingUser = null;
-            //转化dingding的id
-            if (wi.getPerson() != null && !wi.getPerson().isEmpty()) {
-                Person person = business.organization().person().getObject(wi.getPerson());
-                dingdingUser = person.getDingdingId();
+            logger.info("传入参数："+wi.toString());
+            if (StringUtils.isEmpty(wi.getYear())) {
+                throw new TimeEmptyException();
             }
-            List<AttendanceDingtalkDetail> list = business.dingdingAttendanceFactory().findAllDingdingAttendanceDetail(start, end, dingdingUser);
-            if (list != null && !list.isEmpty()) {
-                List<Wo> wos = list.stream().map(detail -> {
-                    Wo wo = new Wo();
-                    try {
-                        wo = Wo.copier.copy(detail, wo);
-                        wo.formatDateTime();
-                    }catch (Exception e) {
-                        logger.error(e);
-                    }
-                    return wo;
-                }).collect(Collectors.toList());
-                result.setData(wos);
+            if (StringUtils.isEmpty(wi.getPerson()) && StringUtils.isEmpty(wi.getUnit()) && StringUtils.isEmpty(wi.getTopUnit())) {
+                throw new SearchArgEmptyException();
             }
+            Date startDay  ;
+            Date endDay;
+            if (StringUtils.isEmpty(wi.getMonth())) {
+                startDay = getDay(wi.getYear(), "1", "1");
+                endDay = getDay(wi.getYear(), "12", "31");
+            }else {
+                if (StringUtils.isEmpty(wi.getDay())) {
+                    startDay = getDay(wi.getYear(), wi.getMonth(), "1");
+                    endDay = getMonthLastDay(wi.getYear(), wi.getMonth());
+                }else {
+                    startDay = getDay(wi.getYear(), wi.getMonth(), wi.getDay());
+                    endDay = getEndDay(wi.getYear(), wi.getMonth(), wi.getDay());
+                }
+            }
+            logger.info("startDay:"+DateTools.format(startDay));
+            logger.info("endDay:"+DateTools.format(endDay));
+            BetweenTerms betweenTerms = new BetweenTerms();
+            betweenTerms.put("userCheckTime", ListTools.toList(startDay.getTime(), endDay.getTime()));
+            logger.info("between :"+betweenTerms.toString());
+            String id = EMPTY_SYMBOL;
+            /** 如果不是空位标志位 */
+            if (!StringUtils.equals(EMPTY_SYMBOL, flag)) {
+                id = flag;
+            }
+            if (StringUtils.isNotEmpty(wi.getPerson())) {
+                EqualsTerms equals = new EqualsTerms();
+                equals.put("o2User", wi.getPerson());
+                logger.info("equals :"+equals.toString());
+                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
+                        null, null, null, null, null, betweenTerms, true, DESC);
+            }
+            if (StringUtils.isNotEmpty(wi.getUnit())) {
+                EqualsTerms equals = new EqualsTerms();
+                equals.put("o2Unit", wi.getUnit());
+                logger.info("equals :"+equals.toString());
+                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
+                        null, null, null, null, null, betweenTerms, true, DESC);
+            }
+            if (StringUtils.isNotEmpty(wi.getTopUnit())) {
+                InTerms ins = new InTerms();
+                List<String> subUnits = business.organization().unit().listWithUnitSubNested( wi.getTopUnit() );
+                if (subUnits == null || subUnits.isEmpty()) {
+                    subUnits = new ArrayList<>();
+                }
+                subUnits.add(wi.getTopUnit());
+                ins.put("o2Unit", subUnits);
+                logger.info("ins :"+ins.toString());
+                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null,
+                        null, ins, null, null, null, betweenTerms, true, DESC);
+            }
+
         }
         return result;
     }
 
+    public static Date getMonthLastDay(String year, String month) throws Exception {
+        Calendar cal = Calendar.getInstance();
+        int yearInt = Integer.parseInt(year);
+        cal.set(Calendar.YEAR, yearInt);
+        int monthInt = Integer.parseInt(month);
+        cal.set(Calendar.MONTH, monthInt);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DAY_OF_MONTH, -1);
+        return cal.getTime();
+    }
+
+    public static Date getDay(String year, String month, String day) throws Exception {
+        Calendar cal = Calendar.getInstance();
+        int yearInt = Integer.parseInt(year);
+        cal.set(Calendar.YEAR, yearInt);
+        int monthInt = Integer.parseInt(month);
+        cal.set(Calendar.MONTH, monthInt-1);
+        int dayInt = Integer.parseInt(day);
+        cal.set(Calendar.DATE, dayInt);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+    public static Date getEndDay(String year, String month, String day) throws Exception {
+        Calendar cal = Calendar.getInstance();
+        int yearInt = Integer.parseInt(year);
+        cal.set(Calendar.YEAR, yearInt);
+        int monthInt = Integer.parseInt(month);
+        cal.set(Calendar.MONTH, monthInt-1);
+        int dayInt = Integer.parseInt(day);
+        cal.set(Calendar.DATE, dayInt);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
     public static class Wi extends GsonPropertyObject {
-        @FieldDescribe("开始时间：yyyy-MM-dd HH:mm:ss")
-        private String startTime;
-        @FieldDescribe("结束时间：yyyy-MM-dd HH:mm:ss")
-        private String endTime;
+
+        @FieldDescribe("年份")
+        private String year;
+        @FieldDescribe("月份")
+        private String month;
+        @FieldDescribe("日期")
+        private String day;
         @FieldDescribe("人员")
         private String person;
+        @FieldDescribe("部门")
+        private String unit;
+        @FieldDescribe("顶级部门，会及联查询下级部门")
+        private String topUnit;
 
 
-        public String getStartTime() {
-            return startTime;
+
+        public String getYear() {
+            return year;
         }
 
-        public void setStartTime(String startTime) {
-            this.startTime = startTime;
+        public void setYear(String year) {
+            this.year = year;
         }
 
-        public String getEndTime() {
-            return endTime;
+        public String getMonth() {
+            return month;
         }
 
-        public void setEndTime(String endTime) {
-            this.endTime = endTime;
+        public void setMonth(String month) {
+            this.month = month;
+        }
+
+        public String getDay() {
+            return day;
+        }
+
+        public void setDay(String day) {
+            this.day = day;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public void setUnit(String unit) {
+            this.unit = unit;
         }
 
         public String getPerson() {
@@ -86,6 +201,14 @@ public class ActionListDDAttendanceDetail extends BaseAction {
 
         public void setPerson(String person) {
             this.person = person;
+        }
+
+        public String getTopUnit() {
+            return topUnit;
+        }
+
+        public void setTopUnit(String topUnit) {
+            this.topUnit = topUnit;
         }
     }
 
@@ -99,6 +222,9 @@ public class ActionListDDAttendanceDetail extends BaseAction {
         private Date workDateFormat;
         @FieldDescribe("基准时间，用于计算迟到和早退")
         private Date baseCheckTimeFormat;
+        @FieldDescribe("排序号")
+        private Long rank;
+
 
         public void formatDateTime() {
             if (userCheckTimeFormat == null) {
@@ -116,6 +242,14 @@ public class ActionListDDAttendanceDetail extends BaseAction {
                 date.setTime(getBaseCheckTime());
                 setBaseCheckTimeFormat(date);
             }
+        }
+
+        public Long getRank() {
+            return rank;
+        }
+
+        public void setRank(Long rank) {
+            this.rank = rank;
         }
 
         public Date getUserCheckTimeFormat() {

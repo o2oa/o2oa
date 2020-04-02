@@ -49,9 +49,17 @@ public class AttendanceDingtalkDetail extends SliceJpaObject  {
     @Column(name = ColumnNamePrefix + "ddID")
     private long ddId;
 
-    @FieldDescribe("用户id")
+    @FieldDescribe("钉钉的用户id")
     @Column(name = ColumnNamePrefix + "userId", length = length_96B)
     private String userId;
+
+    @FieldDescribe("O2用户")
+    @Column(name = ColumnNamePrefix + "o2User", length = length_128B)
+    private String o2User;
+
+    @FieldDescribe("O2用户所在的组织")
+    @Column(name = ColumnNamePrefix + "o2Unit", length = length_128B)
+    private String o2Unit;
 
     @FieldDescribe("基准时间，用于计算迟到和早退")
     @Column(name = ColumnNamePrefix + "baseCheckTime")
@@ -141,6 +149,22 @@ public class AttendanceDingtalkDetail extends SliceJpaObject  {
 //    @Column(name = ColumnNamePrefix + "userId", length = length_255B)
 //    private String procInstId;
 
+
+    public String getO2User() {
+        return o2User;
+    }
+
+    public void setO2User(String o2User) {
+        this.o2User = o2User;
+    }
+
+    public String getO2Unit() {
+        return o2Unit;
+    }
+
+    public void setO2Unit(String o2Unit) {
+        this.o2Unit = o2Unit;
+    }
 
     public long getDdId() {
         return ddId;
