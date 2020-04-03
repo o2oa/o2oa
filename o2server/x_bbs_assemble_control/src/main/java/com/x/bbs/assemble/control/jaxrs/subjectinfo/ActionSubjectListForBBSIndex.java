@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -60,7 +61,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		
 		if( check ) {
 			String cacheKey = wrapIn.getCacheKey( effectivePerson, isBBSManager );
-			Element element = cache.get( cacheKey );
+			Element element = cache.get( cacheKey + "#ActionSubjectListForBBSIndex#" + count + "#" + page );
 			
 			if ((null != element) && (null != element.getObjectValue())) {
 				ActionResult<List<Wo>> result_cache = (ActionResult<List<Wo>>) element.getObjectValue();
@@ -77,7 +78,8 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 	
 	public ActionResult<List<Wo>> getSubjectQueryResult( Wi wrapIn, HttpServletRequest request, EffectivePerson effectivePerson, Integer page, Integer count ) {
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wraps_out = new ArrayList<Wo>();
+		List<Wo> wraps_out = null;
+		List<Wo> wraps_out_result = new ArrayList<Wo>();
 		BBSSectionInfo sectionInfo = null;
 		List<BBSSubjectInfo> subjectInfoList = null;
 		List<String> viewSectionIds = new ArrayList<String>();
@@ -146,22 +148,33 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		
 		if( check ){
 			if( selectTotal > 0 && total > 0 ){
+				if( page <= 0 ){ page = 1; }
+				if( count <= 0 ){ count = 20; }
+				int startIndex = ( page - 1 ) * count;
+				int endIndex = page * count;
+
 				try{
+					//内存分页
 					subjectInfoList = subjectInfoServiceAdv.listSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, selectTotal, viewSectionIds );
-					if( subjectInfoList != null ){
+					if(ListTools.isNotEmpty( subjectInfoList ) ){
 						try {
 							wraps_out = Wo.copier.copy( subjectInfoList );
-							for( Wo wo : wraps_out ) {
-								cutPersonNames( wo );
-							}
-							SortTools.desc( wraps_out, "latestReplyTime" );
-							result.setData( wraps_out );
-							result.setCount( total );
 						} catch (Exception e) {
 							Exception exception = new ExceptionSubjectWrapOut( e );
 							result.error( exception );
 							logger.error( e, effectivePerson, request, null);
 						}
+
+						int i = 0;
+						for( ; wraps_out != null && i< wraps_out.size(); i++ ){
+							if( i >= startIndex && i < endIndex ){
+								cutPersonNames( wraps_out.get( i ) );
+								wraps_out_result.add( wraps_out.get( i ) );
+							}
+						}
+						SortTools.desc( wraps_out_result, "latestReplyTime" );
+						result.setData( wraps_out_result );
+						result.setCount( total );
 					}
 				} catch (Exception e) {
 					check = false;
@@ -220,7 +233,6 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		private Boolean withTopSubject = false; // 是否包含置顶贴
 		
 		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
-	
 		
 		public String getForumId() {
 			return forumId;
