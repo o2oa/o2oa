@@ -973,7 +973,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     if (m.type=="number"){
                         var cell = cells[m.index];
                         var addv = cell.get("text").toFloat();
-                        tmpV = tmpV.plus(addv);
+                        tmpV = tmpV.plus(addv||0);
                         //tmpV = tmpV + addv;
                     }
                     if (m.type=="count"){
