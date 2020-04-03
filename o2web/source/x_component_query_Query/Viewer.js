@@ -156,393 +156,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             a.destroy();
         }.bind(this));
     },
-    createSearchNode: function(){
-        if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
-            this.searchStatus = "default";
-            this.loadFilterSearch();
-        }else{
-            this.loadSimpleSearch();
-        }
-    },
-    loadSimpleSearch: function(){
-        return false;
-        this.searchSimpleNode = new Element("div", {"styles": this.css.searchSimpleNode}).inject(this.searchAreaNode);
-        this.searchSimpleButtonNode = new Element("div", {"styles": this.css.searchSimpleButtonNode}).inject(this.searchSimpleNode);
-        this.searchSimpleInputNode = new Element("input", {"type":"text", "styles": this.css.searchSimpleInputNode, "value": this.lp.searchKeywork}).inject(this.searchSimpleNode);
-        this.searchSimpleButtonNode.addEvent("click", function(){
-            this.search();
-        }.bind(this));
-        this.searchSimpleInputNode.addEvents({
-            "focus": function(){
-                if (this.searchSimpleInputNode.get("value")===this.lp.searchKeywork) this.searchSimpleInputNode.set("value", "");
-            }.bind(this),
-            "blur": function(){if (!this.searchSimpleInputNode.get("value")) this.searchSimpleInputNode.set("value", this.lp.searchKeywork);}.bind(this),
-            "keydown": function(e){
-                if (e.code===13) this.search();
-            }.bind(this)
-        });
-    },
-    search: function(){
-        if (this.gridJson){
-            var key = this.searchSimpleInputNode.get("value");
-            var rows = this.viewTable.rows;
-            var first = (this.json.isTitle!=="no") ? 1 : 0;
-            for (var i = first; i<rows.length; i++){
-                var tr = rows[i];
-                if (!key || key==this.lp.searchKeywork){
-                    if (tr.getStyle("display")==="none") tr.setStyle("display", "table-row");
-                }else{
-                    if (tr.get("text").indexOf(key)!==-1){
-                        if (tr.getStyle("display")==="none") tr.setStyle("display", "table-row");
-                    }else{
-                        if (tr.getStyle("display")!=="none") tr.setStyle("display", "none");
-                    }
-                }
-            }
-            //if (this.viewPageAreaNode) this.viewPageAreaNode.hide();
-        }
-    },
-    loadFilterSearch: function(){
-        this.viewSearchCustomActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomActionNode, "text": this.lp.customSearch}).inject(this.searchAreaNode);
-        this.viewSearchInputAreaNode = new Element("div", {"styles": this.css.viewFilterSearchInputAreaNode}).inject(this.searchAreaNode);
-
-        this.viewSearchIconNode = new Element("div", {"styles": this.css.viewFilterSearchIconNode}).inject(this.viewSearchInputAreaNode);
-        this.viewSearchInputBoxNode = new Element("div", {"styles": this.css.viewFilterSearchInputBoxNode}).inject(this.viewSearchInputAreaNode);
-        this.viewSearchInputNode = new Element("input", {"styles": this.css.viewFilterSearchInputNode, "value": this.lp.searchKeywork}).inject(this.viewSearchInputBoxNode);
-
-        this.viewSearchInputNode.addEvents({
-            "focus": function(){
-                if (this.viewSearchInputNode.get("value")===this.lp.searchKeywork) this.viewSearchInputNode.set("value", "");
-            }.bind(this),
-            "blur": function(){if (!this.viewSearchInputNode.get("value")) this.viewSearchInputNode.set("value", this.lp.searchKeywork);}.bind(this),
-            "keydown": function(e){
-                if (e.code===13) this.searchView();
-            }.bind(this)
-        });
-        this.viewSearchIconNode.addEvents({
-            "click": function(){this.searchView();}.bind(this)
-        });
-        this.viewSearchCustomActionNode.addEvents({
-            "click": function(){this.loadCustomSearch();}.bind(this)
-        });
-    },
-    searchView: function(){
-        if (this.viewJson.customFilterList) {
-            var key = this.viewSearchInputNode.get("value");
-            if (key && key !== this.lp.searchKeywork) {
-                var filterData = this.json.filter ? this.json.filter : [];
-                this.filterItems = [];
-                this.viewJson.customFilterList.each(function (entry) {
-                    if (entry.formatType === "textValue") {
-                        var d = {
-                            "path": entry.path,
-                            "value": key,
-                            "formatType": entry.formatType,
-                            "logic": "or",
-                            "comparison": "like"
-                        };
-                        filterData.push(d);
-                        this.filterItems.push({"data":d});
-                    }
-                    if (entry.formatType === "numberValue") {
-                        var v = key.toFloat();
-                        if (!isNaN(v)) {
-                            var d = {
-                                "path": entry.path,
-                                "value": v,
-                                "formatType": entry.formatType,
-                                "logic": "or",
-                                "comparison": "like"
-                            };
-                            filterData.push(d);
-                            this.filterItems.push({"data":d});
-                        }
-                    }
-                }.bind(this));
-
-                this.createViewNode({"filterList": filterData});
-            }else{
-                this.createViewNode();
-            }
-        }
-    },
-    searchCustomView: function(){
-        if (this.filterItems.length){
-            var filterData = this.json.filter ? this.json.filter.clone() : [];
-            this.filterItems.each(function(filter){
-                filterData.push(filter.data);
-            }.bind(this));
-
-            this.createViewNode({"filterList": filterData});
-        }else{
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
-        }
-    },
-    loadCustomSearch: function(){
-        this.viewSearchIconNode.setStyle("display", "none");
-        this.viewSearchInputBoxNode.setStyle("display", "none");
-        this.viewSearchCustomActionNode.setStyle("display", "none");
-
-        if (!this.searchMorph) this.searchMorph = new Fx.Morph(this.viewSearchInputAreaNode);
-        var x = this.viewSearchInputAreaNode.getParent().getSize().x-2-20;
-        this.css.viewFilterSearchInputAreaNode_custom.width = ""+x+"px";
-
-        var x1 = this.viewSearchInputAreaNode.getSize().x-2;
-        this.viewSearchInputAreaNode.setStyle("width", ""+x1+"px");
-        this.searchMorph.start(this.css.viewFilterSearchInputAreaNode_custom).chain(function(){
-            this.searchStatus = "custom";
-            this.css.viewFilterSearchInputAreaNode_custom.width = "auto";
-            this.viewSearchInputAreaNode.setStyle("width", "auto");
-
-            if (this.viewSearchCustomContentNode){
-                this.viewSearchCustomCloseActionNode.setStyle("display", "block");
-                this.viewSearchCustomContentNode.setStyle("display", "block");
-            }else{
-                this.loadCustomSearchContent();
-            }
-
-            this.setContentHeightFun();
-        }.bind(this));
-        this.searchCustomView();
-    },
-    loadCustomSearchContent: function(){
-        this.viewSearchCustomCloseActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomCloseActionNode}).inject(this.viewSearchInputAreaNode);
-        this.viewSearchCustomContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomContentNode}).inject(this.viewSearchInputAreaNode);
-
-        this.viewSearchCustomPathContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomPathContentNode}).inject(this.viewSearchCustomContentNode);
-        this.viewSearchCustomComparisonContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomComparisonContentNode}).inject(this.viewSearchCustomContentNode);
-        this.viewSearchCustomValueContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomValueContentNode}).inject(this.viewSearchCustomContentNode);
-        this.viewSearchCustomAddContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomAddContentNode}).inject(this.viewSearchCustomContentNode);
-        this.viewSearchCustomAddIconNode = new Element("div", {"styles": this.css.viewFilterSearchCustomAddIconNode}).inject(this.viewSearchCustomAddContentNode);
-        this.viewSearchCustomFilterContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomFilterContentNode}).inject(this.viewSearchCustomContentNode);
-
-        this.loadViewSearchCustomList();
-
-        this.viewSearchCustomCloseActionNode.addEvents({
-            "click": function(){this.closeCustomSearch();}.bind(this)
-        });
-        this.viewSearchCustomAddIconNode.addEvents({
-            "click": function(){this.viewSearchCustomAddToFilter();}.bind(this)
-        });
-    },
-    loadViewSearchCustomList: function(){
-        this.viewSearchCustomPathListNode = new Element("select", {
-            "styles": this.css.viewFilterSearchCustomPathListNode,
-            "multiple": true
-        }).inject(this.viewSearchCustomPathContentNode);
-        this.viewSearchCustomComparisonListNode = new Element("select", {
-            "styles": this.css.viewFilterSearchCustomComparisonListNode,
-            "multiple": true
-        }).inject(this.viewSearchCustomComparisonContentNode);
-
-        this.viewJson.customFilterList.each(function(entry){
-            var option = new Element("option", {
-                "style": this.css.viewFilterSearchOptionNode,
-                "value": entry.path,
-                "text": entry.title
-            }).inject(this.viewSearchCustomPathListNode);
-            option.store("entry", entry);
-        }.bind(this));
-
-        this.viewSearchCustomPathListNode.addEvent("change", function(){
-            this.loadViewSearchCustomComparisonList();
-        }.bind(this));
-    },
-    loadViewSearchCustomComparisonList: function(){
-        var idx = this.viewSearchCustomPathListNode.selectedIndex;
-        var option = this.viewSearchCustomPathListNode.options[idx];
-        var entry = option.retrieve("entry");
-        if (entry){
-            switch (entry.formatType){
-                case "numberValue":
-                    this.loadComparisonSelect(this.lp.numberFilter);
-                    this.loadViewSearchCustomValueNumberInput();
-                    break;
-                case "dateTimeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueDateTimeInput();
-                    break;
-                case "dateValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueDateInput();
-                    break;
-                case "timeValue":
-                    this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueTimeInput();
-                    break;
-                case "booleanValue":
-                    this.loadComparisonSelect(this.lp.booleanFilter);
-                    this.loadViewSearchCustomValueBooleanInput();
-                    break;
-                default:
-                    this.loadComparisonSelect(this.lp.textFilter);
-                    this.loadViewSearchCustomValueTextInput();
-            }
-        }
-    },
-    loadViewSearchCustomValueNumberInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("input", {
-            "styles": this.css.viewFilterSearchCustomValueNode,
-            "type": "number"
-        }).inject(this.viewSearchCustomValueContentNode);
-    },
-    loadViewSearchCustomValueDateTimeInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("input", {
-            "styles": this.css.viewFilterSearchCustomValueNode,
-            "type": "text",
-            "readonly": true
-        }).inject(this.viewSearchCustomValueContentNode);
-        MWF.require("MWF.widget.Calendar", function(){
-            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
-                "style": "xform",
-                "isTime": true,
-                "target": this.container,
-                "format": "db"
-            });
-        }.bind(this));
-    },
-    loadViewSearchCustomValueDateInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("input", {
-            "styles": this.css.viewFilterSearchCustomValueNode,
-            "type": "text",
-            "readonly": true
-        }).inject(this.viewSearchCustomValueContentNode);
-        MWF.require("MWF.widget.Calendar", function(){
-            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
-                "style": "xform",
-                "isTime": false,
-                "target": this.container,
-                "format": "%Y-%m-%d"
-            });
-        }.bind(this));
-    },
-    loadViewSearchCustomValueTimeInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("input", {
-            "styles": this.css.viewFilterSearchCustomValueNode,
-            "type": "text",
-            "readonly": true
-        }).inject(this.viewSearchCustomValueContentNode);
-        MWF.require("MWF.widget.Calendar", function(){
-            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
-                "style": "xform",
-                "timeOnly": true,
-                "target": this.container,
-                "format": "%H:%M:%S"
-            });
-        }.bind(this));
-    },
-    loadViewSearchCustomValueBooleanInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("select", {
-            "styles": this.css.viewFilterSearchCustomValueSelectNode,
-            "multiple": true
-        }).inject(this.viewSearchCustomValueContentNode);
-        new Element("option", {"value": "true","text": this.lp.yes}).inject(this.viewSearchCustomValueNode);
-        new Element("option", {"value": "false","text": this.lp.no}).inject(this.viewSearchCustomValueNode);
-    },
-    loadViewSearchCustomValueTextInput: function(){
-        this.viewSearchCustomValueContentNode.empty();
-        this.viewSearchCustomValueNode = new Element("textarea", {
-            "styles": this.css.viewFilterSearchCustomValueNode
-        }).inject(this.viewSearchCustomValueContentNode);
-    },
-    loadComparisonSelect:function(obj){
-        this.viewSearchCustomComparisonListNode.empty();
-        Object.each(obj, function(v, k){
-            var option = new Element("option", {"value": k,"text": v}).inject(this.viewSearchCustomComparisonListNode);
-        }.bind(this));
-    },
-    closeCustomSearch: function(){
-        if (this.viewSearchCustomContentNode && this.viewSearchCustomContentNode.getStyle("display")==="block"){
-            this.viewSearchCustomCloseActionNode.setStyle("display", "none");
-            this.viewSearchCustomContentNode.setStyle("display", "none");
-
-            var x = this.viewSearchInputAreaNode.getParent().getSize().x;
-            x1 = x-2-10-90;
-            this.css.viewFilterSearchInputAreaNode.width = ""+x1+"px";
-
-            var x1 = this.viewSearchInputAreaNode.getSize().x-2;
-            this.viewSearchInputAreaNode.setStyle("width", ""+x1+"px");
-
-            if (!this.searchMorph) this.searchMorph = new Fx.Morph(this.viewSearchInputAreaNode);
-            this.searchMorph.start(this.css.viewFilterSearchInputAreaNode).chain(function(){
-                this.searchStatus = "default";
-                this.css.viewFilterSearchInputAreaNode.width = "auto";
-                this.viewSearchInputAreaNode.setStyle("margin-right", "90px");
-
-                this.viewSearchIconNode.setStyle("display", "block");
-                this.viewSearchInputBoxNode.setStyle("display", "block");
-                this.viewSearchCustomActionNode.setStyle("display", "block");
-
-                this.setContentHeightFun();
-            }.bind(this));
-            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
-        }
-    },
-    viewSearchCustomAddToFilter: function(){
-        var pathIdx = this.viewSearchCustomPathListNode.selectedIndex;
-        var comparisonIdx = this.viewSearchCustomComparisonListNode.selectedIndex;
-        if (pathIdx===-1){
-            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorTitle, this.viewSearchCustomPathListNode, {"x": 0, "y": 85});
-            return false;
-        }
-        if (comparisonIdx===-1){
-            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorComparison, this.viewSearchCustomComparisonListNode, {"x": 0, "y": 85});
-            return false;
-        }
-        var pathOption = this.viewSearchCustomPathListNode.options[pathIdx];
-        var entry = pathOption.retrieve("entry");
-        if (entry){
-            var pathTitle = entry.title;
-            var path = entry.path;
-            var comparison = this.viewSearchCustomComparisonListNode.options[comparisonIdx].get("value");
-            var comparisonTitle = this.viewSearchCustomComparisonListNode.options[comparisonIdx].get("text");
-            var value = "";
-
-            switch (entry.formatType){
-                case "numberValue":
-                    value = this.viewSearchCustomValueNode.get("value");
-                    break;
-                case "dateTimeValue":
-                    value = this.viewSearchCustomValueNode.get("value");
-                    break;
-                case "booleanValue":
-                    var idx = this.viewSearchCustomValueNode.selectedIndex;
-                    if (idx!==-1){
-                        var v = this.viewSearchCustomValueNode.options[idx].get("value");
-                        value = (v==="true");
-                    }
-                    break;
-                default:
-                    value = this.viewSearchCustomValueNode.get("value");
-            }
-            if (value===""){
-                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorValue, this.viewSearchCustomValueContentNode, {"x": 0, "y": 85});
-                return false;
-            }
-
-            this.filterItems.push(new MWF.xApplication.query.Query.Viewer.Filter(this, {
-                "logic": "and",
-                "path": path,
-                "title": pathTitle,
-                "comparison": comparison,
-                "comparisonTitle": comparisonTitle,
-                "value": value,
-                "formatType": (entry.formatType=="datetimeValue") ? "dateTimeValue": entry.formatType
-            }, this.viewSearchCustomFilterContentNode));
-
-            this.searchCustomView();
-        }
-    },
-    searchViewRemoveFilter: function(filter){
-        this.filterItems.erase(filter);
-        filter.destroy();
-        this.searchCustomView()
-    },
     setContentHeight: function(){
         var size = this.node.getSize();
         var searchSize = this.searchAreaNode.getComputedSize();
@@ -1003,9 +616,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
         return (filterData.length) ? filterData : null;
     },
-    getSelectedData : function(){
-        return this.getData();
-    },
     getData: function(){
         if (this.selectedItems.length){
             var arr = [];
@@ -1042,6 +652,397 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
 
+    //搜索相关开始
+    createSearchNode: function(){
+        if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
+            this.searchStatus = "default";
+            this.loadFilterSearch();
+        }else{
+            this.loadSimpleSearch();
+        }
+    },
+    loadSimpleSearch: function(){
+        return false;
+        this.searchSimpleNode = new Element("div", {"styles": this.css.searchSimpleNode}).inject(this.searchAreaNode);
+        this.searchSimpleButtonNode = new Element("div", {"styles": this.css.searchSimpleButtonNode}).inject(this.searchSimpleNode);
+        this.searchSimpleInputNode = new Element("input", {"type":"text", "styles": this.css.searchSimpleInputNode, "value": this.lp.searchKeywork}).inject(this.searchSimpleNode);
+        this.searchSimpleButtonNode.addEvent("click", function(){
+            this.search();
+        }.bind(this));
+        this.searchSimpleInputNode.addEvents({
+            "focus": function(){
+                if (this.searchSimpleInputNode.get("value")===this.lp.searchKeywork) this.searchSimpleInputNode.set("value", "");
+            }.bind(this),
+            "blur": function(){if (!this.searchSimpleInputNode.get("value")) this.searchSimpleInputNode.set("value", this.lp.searchKeywork);}.bind(this),
+            "keydown": function(e){
+                if (e.code===13) this.search();
+            }.bind(this)
+        });
+    },
+    search: function(){
+        if (this.gridJson){
+            var key = this.searchSimpleInputNode.get("value");
+            var rows = this.viewTable.rows;
+            var first = (this.json.isTitle!=="no") ? 1 : 0;
+            for (var i = first; i<rows.length; i++){
+                var tr = rows[i];
+                if (!key || key==this.lp.searchKeywork){
+                    if (tr.getStyle("display")==="none") tr.setStyle("display", "table-row");
+                }else{
+                    if (tr.get("text").indexOf(key)!==-1){
+                        if (tr.getStyle("display")==="none") tr.setStyle("display", "table-row");
+                    }else{
+                        if (tr.getStyle("display")!=="none") tr.setStyle("display", "none");
+                    }
+                }
+            }
+            //if (this.viewPageAreaNode) this.viewPageAreaNode.hide();
+        }
+    },
+    loadFilterSearch: function(){
+        this.viewSearchCustomActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomActionNode, "text": this.lp.customSearch}).inject(this.searchAreaNode);
+        this.viewSearchInputAreaNode = new Element("div", {"styles": this.css.viewFilterSearchInputAreaNode}).inject(this.searchAreaNode);
+
+        this.viewSearchIconNode = new Element("div", {"styles": this.css.viewFilterSearchIconNode}).inject(this.viewSearchInputAreaNode);
+        this.viewSearchInputBoxNode = new Element("div", {"styles": this.css.viewFilterSearchInputBoxNode}).inject(this.viewSearchInputAreaNode);
+        this.viewSearchInputNode = new Element("input", {"styles": this.css.viewFilterSearchInputNode, "value": this.lp.searchKeywork}).inject(this.viewSearchInputBoxNode);
+
+        this.viewSearchInputNode.addEvents({
+            "focus": function(){
+                if (this.viewSearchInputNode.get("value")===this.lp.searchKeywork) this.viewSearchInputNode.set("value", "");
+            }.bind(this),
+            "blur": function(){if (!this.viewSearchInputNode.get("value")) this.viewSearchInputNode.set("value", this.lp.searchKeywork);}.bind(this),
+            "keydown": function(e){
+                if (e.code===13) this.searchView();
+            }.bind(this)
+        });
+        this.viewSearchIconNode.addEvents({
+            "click": function(){this.searchView();}.bind(this)
+        });
+        this.viewSearchCustomActionNode.addEvents({
+            "click": function(){this.loadCustomSearch();}.bind(this)
+        });
+    },
+    searchView: function(){
+        if (this.viewJson.customFilterList) {
+            var key = this.viewSearchInputNode.get("value");
+            if (key && key !== this.lp.searchKeywork) {
+                var filterData = this.json.filter ? this.json.filter : [];
+                this.filterItems = [];
+                this.viewJson.customFilterList.each(function (entry) {
+                    if (entry.formatType === "textValue") {
+                        var d = {
+                            "path": entry.path,
+                            "value": key,
+                            "formatType": entry.formatType,
+                            "logic": "or",
+                            "comparison": "like"
+                        };
+                        filterData.push(d);
+                        this.filterItems.push({"data":d});
+                    }
+                    if (entry.formatType === "numberValue") {
+                        var v = key.toFloat();
+                        if (!isNaN(v)) {
+                            var d = {
+                                "path": entry.path,
+                                "value": v,
+                                "formatType": entry.formatType,
+                                "logic": "or",
+                                "comparison": "like"
+                            };
+                            filterData.push(d);
+                            this.filterItems.push({"data":d});
+                        }
+                    }
+                }.bind(this));
+
+                this.createViewNode({"filterList": filterData});
+            }else{
+                this.createViewNode();
+            }
+        }
+    },
+    searchCustomView: function(){
+        if (this.filterItems.length){
+            var filterData = this.json.filter ? this.json.filter.clone() : [];
+            this.filterItems.each(function(filter){
+                filterData.push(filter.data);
+            }.bind(this));
+
+            this.createViewNode({"filterList": filterData});
+        }else{
+            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+        }
+    },
+    loadCustomSearch: function(){
+        this.viewSearchIconNode.setStyle("display", "none");
+        this.viewSearchInputBoxNode.setStyle("display", "none");
+        this.viewSearchCustomActionNode.setStyle("display", "none");
+
+        if (!this.searchMorph) this.searchMorph = new Fx.Morph(this.viewSearchInputAreaNode);
+        var x = this.viewSearchInputAreaNode.getParent().getSize().x-2-20;
+        this.css.viewFilterSearchInputAreaNode_custom.width = ""+x+"px";
+
+        var x1 = this.viewSearchInputAreaNode.getSize().x-2;
+        this.viewSearchInputAreaNode.setStyle("width", ""+x1+"px");
+        this.searchMorph.start(this.css.viewFilterSearchInputAreaNode_custom).chain(function(){
+            this.searchStatus = "custom";
+            this.css.viewFilterSearchInputAreaNode_custom.width = "auto";
+            this.viewSearchInputAreaNode.setStyle("width", "auto");
+
+            if (this.viewSearchCustomContentNode){
+                this.viewSearchCustomCloseActionNode.setStyle("display", "block");
+                this.viewSearchCustomContentNode.setStyle("display", "block");
+            }else{
+                this.loadCustomSearchContent();
+            }
+
+            this.setContentHeightFun();
+        }.bind(this));
+        this.searchCustomView();
+    },
+    loadCustomSearchContent: function(){
+        this.viewSearchCustomCloseActionNode = new Element("div", {"styles": this.css.viewFilterSearchCustomCloseActionNode}).inject(this.viewSearchInputAreaNode);
+        this.viewSearchCustomContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomContentNode}).inject(this.viewSearchInputAreaNode);
+
+        this.viewSearchCustomPathContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomPathContentNode}).inject(this.viewSearchCustomContentNode);
+        this.viewSearchCustomComparisonContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomComparisonContentNode}).inject(this.viewSearchCustomContentNode);
+        this.viewSearchCustomValueContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomValueContentNode}).inject(this.viewSearchCustomContentNode);
+        this.viewSearchCustomAddContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomAddContentNode}).inject(this.viewSearchCustomContentNode);
+        this.viewSearchCustomAddIconNode = new Element("div", {"styles": this.css.viewFilterSearchCustomAddIconNode}).inject(this.viewSearchCustomAddContentNode);
+        this.viewSearchCustomFilterContentNode = new Element("div", {"styles": this.css.viewFilterSearchCustomFilterContentNode}).inject(this.viewSearchCustomContentNode);
+
+        this.loadViewSearchCustomList();
+
+        this.viewSearchCustomCloseActionNode.addEvents({
+            "click": function(){this.closeCustomSearch();}.bind(this)
+        });
+        this.viewSearchCustomAddIconNode.addEvents({
+            "click": function(){this.viewSearchCustomAddToFilter();}.bind(this)
+        });
+    },
+    loadViewSearchCustomList: function(){
+        this.viewSearchCustomPathListNode = new Element("select", {
+            "styles": this.css.viewFilterSearchCustomPathListNode,
+            "multiple": true
+        }).inject(this.viewSearchCustomPathContentNode);
+        this.viewSearchCustomComparisonListNode = new Element("select", {
+            "styles": this.css.viewFilterSearchCustomComparisonListNode,
+            "multiple": true
+        }).inject(this.viewSearchCustomComparisonContentNode);
+
+        this.viewJson.customFilterList.each(function(entry){
+            var option = new Element("option", {
+                "style": this.css.viewFilterSearchOptionNode,
+                "value": entry.path,
+                "text": entry.title
+            }).inject(this.viewSearchCustomPathListNode);
+            option.store("entry", entry);
+        }.bind(this));
+
+        this.viewSearchCustomPathListNode.addEvent("change", function(){
+            this.loadViewSearchCustomComparisonList();
+        }.bind(this));
+    },
+    loadViewSearchCustomComparisonList: function(){
+        var idx = this.viewSearchCustomPathListNode.selectedIndex;
+        var option = this.viewSearchCustomPathListNode.options[idx];
+        var entry = option.retrieve("entry");
+        if (entry){
+            switch (entry.formatType){
+                case "numberValue":
+                    this.loadComparisonSelect(this.lp.numberFilter);
+                    this.loadViewSearchCustomValueNumberInput();
+                    break;
+                case "dateTimeValue":
+                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadViewSearchCustomValueDateTimeInput();
+                    break;
+                case "dateValue":
+                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadViewSearchCustomValueDateInput();
+                    break;
+                case "timeValue":
+                    this.loadComparisonSelect(this.lp.dateFilter);
+                    this.loadViewSearchCustomValueTimeInput();
+                    break;
+                case "booleanValue":
+                    this.loadComparisonSelect(this.lp.booleanFilter);
+                    this.loadViewSearchCustomValueBooleanInput();
+                    break;
+                default:
+                    this.loadComparisonSelect(this.lp.textFilter);
+                    this.loadViewSearchCustomValueTextInput();
+            }
+        }
+    },
+    loadViewSearchCustomValueNumberInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "number"
+        }).inject(this.viewSearchCustomValueContentNode);
+    },
+    loadViewSearchCustomValueDateTimeInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "text",
+            "readonly": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        MWF.require("MWF.widget.Calendar", function(){
+            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
+                "style": "xform",
+                "isTime": true,
+                "secondEnable" : true,
+                "target": this.container,
+                "format": "db"
+            });
+        }.bind(this));
+    },
+    loadViewSearchCustomValueDateInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "text",
+            "readonly": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        MWF.require("MWF.widget.Calendar", function(){
+            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
+                "style": "xform",
+                "isTime": false,
+                "target": this.container,
+                "format": "%Y-%m-%d"
+            });
+        }.bind(this));
+    },
+    loadViewSearchCustomValueTimeInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("input", {
+            "styles": this.css.viewFilterSearchCustomValueNode,
+            "type": "text",
+            "readonly": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        MWF.require("MWF.widget.Calendar", function(){
+            this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
+                "style": "xform",
+                "timeOnly": true,
+                "target": this.container,
+                "format": "%H:%M:%S"
+            });
+        }.bind(this));
+    },
+    loadViewSearchCustomValueBooleanInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("select", {
+            "styles": this.css.viewFilterSearchCustomValueSelectNode,
+            "multiple": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        new Element("option", {"value": "true","text": this.lp.yes}).inject(this.viewSearchCustomValueNode);
+        new Element("option", {"value": "false","text": this.lp.no}).inject(this.viewSearchCustomValueNode);
+    },
+    loadViewSearchCustomValueTextInput: function(){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("textarea", {
+            "styles": this.css.viewFilterSearchCustomValueNode
+        }).inject(this.viewSearchCustomValueContentNode);
+    },
+    loadComparisonSelect:function(obj){
+        this.viewSearchCustomComparisonListNode.empty();
+        Object.each(obj, function(v, k){
+            var option = new Element("option", {"value": k,"text": v}).inject(this.viewSearchCustomComparisonListNode);
+        }.bind(this));
+    },
+    closeCustomSearch: function(){
+        if (this.viewSearchCustomContentNode && this.viewSearchCustomContentNode.getStyle("display")==="block"){
+            this.viewSearchCustomCloseActionNode.setStyle("display", "none");
+            this.viewSearchCustomContentNode.setStyle("display", "none");
+
+            var x = this.viewSearchInputAreaNode.getParent().getSize().x;
+            x1 = x-2-10-90;
+            this.css.viewFilterSearchInputAreaNode.width = ""+x1+"px";
+
+            var x1 = this.viewSearchInputAreaNode.getSize().x-2;
+            this.viewSearchInputAreaNode.setStyle("width", ""+x1+"px");
+
+            if (!this.searchMorph) this.searchMorph = new Fx.Morph(this.viewSearchInputAreaNode);
+            this.searchMorph.start(this.css.viewFilterSearchInputAreaNode).chain(function(){
+                this.searchStatus = "default";
+                this.css.viewFilterSearchInputAreaNode.width = "auto";
+                this.viewSearchInputAreaNode.setStyle("margin-right", "90px");
+
+                this.viewSearchIconNode.setStyle("display", "block");
+                this.viewSearchInputBoxNode.setStyle("display", "block");
+                this.viewSearchCustomActionNode.setStyle("display", "block");
+
+                this.setContentHeightFun();
+            }.bind(this));
+            this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+        }
+    },
+    viewSearchCustomAddToFilter: function(){
+        var pathIdx = this.viewSearchCustomPathListNode.selectedIndex;
+        var comparisonIdx = this.viewSearchCustomComparisonListNode.selectedIndex;
+        if (pathIdx===-1){
+            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorTitle, this.viewSearchCustomPathListNode, {"x": 0, "y": 85});
+            return false;
+        }
+        if (comparisonIdx===-1){
+            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorComparison, this.viewSearchCustomComparisonListNode, {"x": 0, "y": 85});
+            return false;
+        }
+        var pathOption = this.viewSearchCustomPathListNode.options[pathIdx];
+        var entry = pathOption.retrieve("entry");
+        if (entry){
+            var pathTitle = entry.title;
+            var path = entry.path;
+            var comparison = this.viewSearchCustomComparisonListNode.options[comparisonIdx].get("value");
+            var comparisonTitle = this.viewSearchCustomComparisonListNode.options[comparisonIdx].get("text");
+            var value = "";
+
+            switch (entry.formatType){
+                case "numberValue":
+                    value = this.viewSearchCustomValueNode.get("value");
+                    break;
+                case "dateTimeValue":
+                    value = this.viewSearchCustomValueNode.get("value");
+                    break;
+                case "booleanValue":
+                    var idx = this.viewSearchCustomValueNode.selectedIndex;
+                    if (idx!==-1){
+                        var v = this.viewSearchCustomValueNode.options[idx].get("value");
+                        value = (v==="true");
+                    }
+                    break;
+                default:
+                    value = this.viewSearchCustomValueNode.get("value");
+            }
+            if (value===""){
+                MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorValue, this.viewSearchCustomValueContentNode, {"x": 0, "y": 85});
+                return false;
+            }
+
+            this.filterItems.push(new MWF.xApplication.query.Query.Viewer.Filter(this, {
+                "logic": "and",
+                "path": path,
+                "title": pathTitle,
+                "comparison": comparison,
+                "comparisonTitle": comparisonTitle,
+                "value": value,
+                "formatType": (entry.formatType=="datetimeValue") ? "dateTimeValue": entry.formatType
+            }, this.viewSearchCustomFilterContentNode));
+
+            this.searchCustomView();
+        }
+    },
+    searchViewRemoveFilter: function(filter){
+        this.filterItems.erase(filter);
+        filter.destroy();
+        this.searchCustomView()
+    },
+    //搜索相关结束
+
     //api 使用 开始
     getParentEnvironment : function(){
         return this.parentMacro ? this.parentMacro.environment : null;
@@ -1062,6 +1063,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     toPage : function( pageNumber, callback ){
         this.currentPage = pageNumber;
         this.loadCurrentPageData( callback );
+    },
+    getSelectedData : function(){
+        return this.getData();
     },
     selectAll : function(){
         var flag = this.json.select || this.viewJson.select ||  "none";
