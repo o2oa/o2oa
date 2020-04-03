@@ -134,7 +134,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		if( check ){
 			if( selectTotal > 0 ){
 				try{
-					total = subjectInfoServiceAdv.countSubjectInSectionForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, viewSectionIds );
+					total = subjectInfoServiceAdv.countSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, viewSectionIds );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionSubjectFilter( e );
@@ -147,7 +147,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		if( check ){
 			if( selectTotal > 0 && total > 0 ){
 				try{
-					subjectInfoList = subjectInfoServiceAdv.listSubjectInSectionForPage( wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, selectTotal, viewSectionIds );
+					subjectInfoList = subjectInfoServiceAdv.listSubjectInSectionForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getCreatorName(), wrapIn.getNeedPicture(), null, selectTotal, viewSectionIds );
 					if( subjectInfoList != null ){
 						try {
 							wraps_out = Wo.copier.copy( subjectInfoList );
@@ -207,7 +207,7 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 		@FieldDescribe( "贴子所属版块ID." )
 		private String sectionId = null;
 		
-		@FieldDescribe( "搜索内容." )
+		@FieldDescribe( "标题模糊搜索关键词" )
 		private String searchContent = null;
 		
 		@FieldDescribe( "创建者名称." )
@@ -253,6 +253,9 @@ public class ActionSubjectListForBBSIndex extends BaseAction {
 			this.withTopSubject = withTopSubject;
 		}
 		public String getSearchContent() {
+			if( StringUtils.isNotEmpty( this.searchContent ) && this.searchContent.indexOf( "%" ) < 0 ){
+				return "%" + searchContent + "%";
+			}
 			return searchContent;
 		}
 		public void setSearchContent( String searchContent ) {
