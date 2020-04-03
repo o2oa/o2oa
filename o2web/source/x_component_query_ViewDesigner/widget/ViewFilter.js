@@ -95,12 +95,13 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         this.valueDateInput = inputs[7];
         this.valueTimeInput = inputs[8];
 
-        this.datatypeInput.addEvent("change")
+        this.datatypeInput.addEvent("change");
 
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
                 "style": "xform",
                 "isTime": true,
+                "secondEnable": true,
                 "target": this.app.content,
                 "format": "db",
                 "onComplate": function(){
@@ -116,6 +117,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             new MWF.widget.Calendar(this.valueTimeInput, {
                 "style": "xform",
                 "timeOnly": true,
+                "secondEnable": true,
                 "target": this.app.content,
                 "format": "%H:%M:%S"
             });
@@ -147,6 +149,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput2, {
                     "style": "xform",
                     "isTime": true,
+                    "secondEnable": true,
                     "target": this.app.content,
                     "format": "db",
                     "onComplate": function(){
@@ -162,6 +165,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 new MWF.widget.Calendar(this.valueTimeInput2, {
                     "style": "xform",
                     "timeOnly": true,
+                    "secondEnable": true,
                     "target": this.app.content,
                     "format": "%H:%M:%S"
                 });
@@ -279,6 +283,17 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 this.addCustomFilterItem();
             }
         }
+        this.setData({
+            "logic": "and",
+            "path": "",
+            "title": "",
+            "type": "",
+            "comparison": "equals",
+            "formatType": "textValue",
+            "value": "",
+            "otherValue": "",
+            "code": ""
+        });
     },
     modifyFilterItem: function(){
         var data = this.getInputData();
@@ -450,6 +465,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 break;
             }
         }
+
         this.titleInput.set("value", data.title);
         this.pathInput.set("value", data.path);
 
@@ -520,7 +536,11 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 break;
         }
         this.scriptData = data.code;
-        if (this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
+        if (this.scriptArea && this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
+        this.changeValueInput();
+        if(this.datatypeInput.onchange){
+            this.datatypeInput.onchange();
+        }
     },
 
     deleteItem: function(item){
@@ -572,7 +592,11 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter.Item = new Class({
     },
     getText: function(){
         var lp = this.app.lp.filter;
-        return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " \""+this.data.value+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+        if( this.data.formatType === "numberValue" ){
+            return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " "+this.data.value+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+        }else{
+            return lp[this.data.logic]+" "+this.data.path+" "+lp[this.data.comparison] + " \""+this.data.value+"\""+((this.data.comparison=="range") ? ", \""+this.data.otherValue+"\"" : "");
+        }
     },
     reload: function(data){
         this.data = data;
