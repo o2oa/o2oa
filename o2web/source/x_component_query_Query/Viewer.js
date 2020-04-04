@@ -1104,7 +1104,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         if( !filter )filter = [];
         if( typeOf( filter ) === "object" )filter = [ filter ];
         this.json.filter = filter;
-        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+        if( this.viewAreaNode ){
+            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+        }
     },
     switchView : function( json ){
         debugger;
