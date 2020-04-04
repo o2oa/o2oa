@@ -65,6 +65,27 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             this.scriptArea.load(v);
         }.bind(this));
     },
+    createCustomFilterValueScriptArea : function(node){
+        var title = node.get("title");
+
+        MWF.require("MWF.widget.ScriptArea", function(){
+            this.customFilterValueScriptArea = new MWF.widget.ScriptArea(node, {
+                "title": title,
+                "isload" : true,
+                "isbind" : false,
+                "maxObj": this.app.formContentNode || this.app.pageContentNode,
+                "onChange": function(){
+                    this.customFilterValueScriptData = this.customFilterValueScriptArea.toJson();
+                }.bind(this),
+                "onSave": function(){
+                    //this.app.saveForm();
+                }.bind(this),
+                "style": "formula"
+            });
+            var v = (this.customFilterValueScriptData) ? this.customFilterValueScriptData.code : "";
+            this.customFilterValueScriptArea.load(v);
+        }.bind(this));
+    },
     getInputNodes: function(){
         this.inputAreaNode = this.node.getFirst("div");
         this.actionAreaNode = this.inputAreaNode.getNext().setStyles(this.css.actionAreaNode);
@@ -94,6 +115,16 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         this.valueBooleanInput = selects[3];
         this.valueDateInput = inputs[7];
         this.valueTimeInput = inputs[8];
+
+        debugger;
+        var dataId = this.app.view.data.id;
+        this.customFilterValueTypes = this.inputAreaNode.getElements("[name='"+dataId+"viewCustomFilterValueType']");
+
+        this.customFilterValueScriptDiv = this.inputAreaNode.getElement("#"+dataId+"viewCustomFilterValueScriptDiv");
+        this.customFilterValueScript = this.inputAreaNode.getElement("[name='"+dataId+"viewCustomFilterValueScript']");
+        if( this.customFilterValueScript ){
+            this.createCustomFilterValueScriptArea(this.customFilterValueScript);
+        }
 
         this.datatypeInput.addEvent("change");
 
@@ -287,7 +318,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             "logic": "and",
             "path": "",
             "title": "",
-            "type": "",
+            "type": this.restrictFilterInput.checked ? "restrict" : "custom",
             "comparison": "equals",
             "formatType": "textValue",
             "value": "",
@@ -445,16 +476,36 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 }
                 break;
         }
-        return {
-            "logic": logic,
-            "path": path,
-            "title": title,
-            "type": type,
-            "comparison": comparison,
-            "formatType": formatType,
-            "value": value,
-            "otherValue": value2,
-            "code": this.scriptData
+        if( type === "restrict" ){
+            return {
+                "logic": logic,
+                "path": path,
+                "title": title,
+                "type": type,
+                "comparison": comparison,
+                "formatType": formatType,
+                "value": value,
+                "otherValue": value2,
+                "code": this.scriptData
+            };
+        }else{
+            var valueType = "";
+            this.customFilterValueTypes.each( function (radio) {
+                if( radio.get("checked") )valueType = radio.get("value");
+            });
+            return {
+                "logic": logic,
+                "path": path,
+                "title": title,
+                "type": type,
+                "comparison": comparison,
+                "formatType": formatType,
+                "value": value,
+                "otherValue": value2,
+                "code": this.scriptData,
+                "valueType" : valueType,
+                "valueScript" : this.customFilterValueScriptData
+            };
         }
     },
 
@@ -537,6 +588,30 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         }
         this.scriptData = data.code;
         if (this.scriptArea && this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
+
+        debugger;
+        if( data.type === "custom" ){
+            this.customFilterValueTypes.each( function (radio) {
+                if( data.valueType ){
+                    if( data.valueType === radio.get("value") )radio.set("checked", true);
+                }else{
+                    if( "input" === radio.get("value") )radio.set("checked", true);
+                }
+            });
+            if ( this.customFilterValueScriptArea ){
+                if( !data.valueType || data.valueType === "input" ){
+                    this.customFilterValueScriptDiv.hide();
+                    this.customFilterValueScriptData = "";
+                    this.customFilterValueScriptArea.editor.setValue( "" );
+                }else{
+                    this.customFilterValueScriptDiv.show();
+                    this.customFilterValueScriptData = data.valueScript;
+                    this.customFilterValueScriptArea.editor.setValue( data.valueScript ? data.valueScript.code : "" );
+                }
+            }
+        }
+
+
         this.changeValueInput();
         if(this.datatypeInput.onchange){
             this.datatypeInput.onchange();
