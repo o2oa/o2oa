@@ -524,8 +524,14 @@
                     <tr>
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">
-                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'block');}"/>作为默认过滤条件<br>
-                            <input type="radio" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'none');}" checked/>作为自定义过滤数据
+                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
+                            }"/>作为默认过滤条件<br>
+                            <input type="radio" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
+                            }" checked/>作为自定义过滤数据
                         </td>
                     </tr>
                 </table>
@@ -692,6 +698,27 @@
                         </div>
                     </div>
 
+                </div>
+                <div id="text{$.id}viewCustomFilterRestrict"  style="display: block">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">值:</td>
+                            <td class="editTableValue">
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
+                                }" name="viewCustomFilterValueType" checked type="radio" value="input"/>输入
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
+                                }" name="viewCustomFilterValueType" type="radio" value="script"/>可选
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
+                        <div style="padding: 5px">return ["选项文本|选项值"]</div>
+                        <div name="text{$.id}viewCustomFilterValueScript" title="选项脚本"></div>
+                    </div>
                 </div>
             </div>
             <div></div>
