@@ -107,4 +107,45 @@ public class DingdingAttendanceAction extends StandardJaxrsAction {
     }
 
 
+
+    @JaxrsMethodDescribe(value = "钉钉考勤全部个人数据统计", action = ActionStatisticPersonMonthData.class)
+    @GET
+    @Path("statistic/person/year/{year}/month/{month}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statisticPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                         @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
+                         @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month) {
+        ActionResult<WrapBoolean> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticPersonMonthData().execute(year, month);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "钉钉考勤全部组织数据统计", action = ActionStatisticUnitDayData.class)
+    @GET
+    @Path("statistic/unit/year/{year}/month/{month}/day/{day}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statisticUnit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
+                                @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month,
+                                @JaxrsParameterDescribe("日期: dd") @PathParam("day") String day) {
+        ActionResult<WrapBoolean> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticUnitDayData().execute(year, month, day);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }
