@@ -18,7 +18,7 @@ public class ActionGetContent extends BaseAction {
 		String chatContent = null;
 		Boolean check = true;
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new ChatIDEmptyException();
@@ -26,7 +26,7 @@ public class ActionGetContent extends BaseAction {
 			}
 		}
 
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				chatContent = chatQueryService.getContent( id );
 			} catch (Exception e) {
@@ -37,7 +37,7 @@ public class ActionGetContent extends BaseAction {
 			}
 		}
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				wrap = new Wo();
 				wrap.setText( chatContent );
