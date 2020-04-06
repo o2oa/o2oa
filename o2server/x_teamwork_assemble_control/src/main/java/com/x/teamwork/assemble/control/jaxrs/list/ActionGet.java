@@ -46,7 +46,7 @@ public class ActionGet extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskList = taskListQueryService.get( taskListId );
 				} catch (Exception e) {
@@ -57,7 +57,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					if( taskList != null ) {
 						wo = Wo.copier.copy( taskList );

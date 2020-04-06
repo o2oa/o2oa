@@ -41,7 +41,7 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					//查询我参与的所有项目
 					projectIds = projectQueryService.listAllViewableProjectIds( effectivePerson, 2000, new QueryFilter() );
@@ -56,7 +56,7 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					//查询我所有的项目组列表
 					projectGroupList = projectGroupQueryService.listGroupByPerson( effectivePerson.getDistinguishedName() );
@@ -68,14 +68,14 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				if( ListTools.isNotEmpty( projectGroupList )) {
 					woGroupList = WoGroup.copier.copy( projectGroupList );
 					SortTools.asc( woGroupList, "createTime");
 				}
 			}			
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				if( ListTools.isNotEmpty( projectList )) {
 					for(  Project project : projectList ) {
 						woGroupList = checkGroup( project, woGroupList );
@@ -83,7 +83,7 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					wo = new Wo();
 					if( ListTools.isNotEmpty( woGroupList )) {
