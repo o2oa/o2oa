@@ -42,7 +42,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try{
 				attachment = attachmentQueryService.get( id );
 				if (null == attachment) {
@@ -58,7 +58,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				mapping = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
 				
@@ -79,7 +79,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				dynamic = dynamicPersistService.deleteAttachment( attachment, effectivePerson );
 				if( dynamic != null ) {

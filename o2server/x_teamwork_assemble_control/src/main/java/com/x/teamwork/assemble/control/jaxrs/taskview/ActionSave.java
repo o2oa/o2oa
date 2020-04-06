@@ -42,21 +42,21 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( wi.getProject() )) {
 				check = false;
 				Exception exception = new ProjectIdEmptyException();
 				result.error(exception);
 			}
 		}		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( wi.getName())) {
 				check = false;
 				Exception exception = new TaskViewNameEmptyException();
 				result.error(exception);
 			}
 		}
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( wi.getProject() )) {
 				check = false;
 				Exception exception = new ProjectIdEmptyException();
@@ -64,7 +64,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				project = projectQueryService.get( wi.getProject() );
 				if ( project == null) {
@@ -80,7 +80,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskView = taskViewPersistService.save( Wi.copier.copy( wi ), effectivePerson );
 				

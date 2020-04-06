@@ -43,11 +43,11 @@ public class ActionListNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			queryFilter = wrapIn.getQueryFilter();
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				Long total = chatQueryService.countWithFilter( queryFilter );
 				List<Chat>  chatList = chatQueryService.listWithFilterNext( count, flag, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter );
