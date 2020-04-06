@@ -196,7 +196,21 @@ public class TaskListFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public Integer maxOrder(String listId) throws Exception {
+	public Integer maxListOrder(String groupId ) throws Exception {
+		if( StringUtils.isEmpty( groupId ) ){
+			throw new Exception("groupId can not be empty!");
+		}
+		EntityManager em = this.entityManagerContainer().get(TaskList.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+		Root<TaskList> root = cq.from(TaskList.class);
+		Predicate p = cb.equal( root.get(TaskList_.taskGroup ), groupId );
+		cq.select( cb.max( root.get( TaskList_.order )));
+		Integer max = em.createQuery(cq.where(p)).getSingleResult();
+		return max == null ? 0 : max;
+	}
+
+	public Integer maxTaskOrder(String listId) throws Exception {
 		if( StringUtils.isEmpty( listId ) ){
 			throw new Exception("listId can not be empty!");
 		}
@@ -204,7 +218,7 @@ public class TaskListFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
 		Root<TaskListRele> root = cq.from(TaskListRele.class);
-		Predicate p = cb.equal( root.get(TaskListRele_.taskListId), listId );		
+		Predicate p = cb.equal( root.get(TaskListRele_.taskListId), listId );
 		cq.select( cb.max( root.get( TaskListRele_.order )));
 		Integer max = em.createQuery(cq.where(p)).getSingleResult();
 		return max == null ? 0 : max;

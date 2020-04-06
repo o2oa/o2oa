@@ -49,7 +49,7 @@ public class ActionAddTask2ListWithOrderNumber extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskList = taskListQueryService.get( taskListId );
 				if ( taskList == null) {
@@ -68,7 +68,7 @@ public class ActionAddTask2ListWithOrderNumber extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {				
 				taskListPersistService.addTaskToTaskListWithOrderNumber( wi.getTaskId(), taskListId, wi.getOrderNumber(), effectivePerson );
 				// 更新缓存

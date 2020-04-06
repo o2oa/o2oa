@@ -48,7 +48,7 @@ public class ActionGet extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					task = taskQueryService.get( flag );
 					if ( task == null) {
@@ -64,7 +64,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskDetail = taskQueryService.getDetail( flag );
 				} catch (Exception e) {
@@ -75,7 +75,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskExtField = taskQueryService.getExtField( flag );
 				} catch (Exception e) {
@@ -86,7 +86,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					extFieldReleList = projectExtFieldReleQueryService.listReleWithProject( task.getProject() );
 				} catch (Exception e) {
@@ -97,7 +97,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					wo = Wo.copier.copy( task );
 					if ( wo != null && taskDetail != null) {
@@ -130,7 +130,7 @@ public class ActionGet extends BaseAction {
 			}
 
 			//查询任务所在的Group信息
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				List<String> groupIds = null;
 				try {
 					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
@@ -146,7 +146,7 @@ public class ActionGet extends BaseAction {
 			}
 
 			//查询任务所在的List信息
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				if( StringUtils.isNotEmpty(wo.getTaskGroupId() )){
 					List<String> listIds = null;
 					try {
@@ -163,7 +163,7 @@ public class ActionGet extends BaseAction {
 			}
 
 //			//查询任务所在的Group信息
-//			if (check) {
+//			if( Boolean.TRUE.equals( check ) ){
 //				List<String> groupIds = null;
 //				List<TaskGroup> groupList = null;
 //				List<WoTaskGroup> woGroupList = new ArrayList<>();
@@ -183,7 +183,7 @@ public class ActionGet extends BaseAction {
 //			}
 //
 //			//查询任务所在的List信息
-//			if (check) {
+//			if( Boolean.TRUE.equals( check ) ){
 //				if( ListTools.isNotEmpty(wo.getTaskgroups() )){
 //					List<String> listIds = null;
 //					List<TaskList> taskLists = null;
