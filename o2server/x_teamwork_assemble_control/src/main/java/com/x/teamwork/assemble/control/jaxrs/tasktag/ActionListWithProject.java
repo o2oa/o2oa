@@ -31,7 +31,7 @@ public class ActionListWithProject extends BaseAction {
 		String cacheKey = null;
 		Element element = null;
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithProject", effectivePerson.getDistinguishedName(), project );
 			element = taskTagCache.get( cacheKey );
 			
