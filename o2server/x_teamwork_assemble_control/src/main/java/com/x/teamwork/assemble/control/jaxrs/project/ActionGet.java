@@ -49,7 +49,7 @@ public class ActionGet extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					project = projectQueryService.get(flag);
 					if ( project == null) {
@@ -65,7 +65,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					wo = Wo.copier.copy( project );
 					if( wo.getStarPersonList().contains( effectivePerson.getDistinguishedName() )) {

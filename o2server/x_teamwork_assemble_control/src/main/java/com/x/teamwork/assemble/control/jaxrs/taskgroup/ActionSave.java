@@ -36,7 +36,7 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				project = projectQueryService.get( wi.getProject() );
 				if( project == null ) {
@@ -52,7 +52,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
 				taskGroup = taskGroupPersistService.save( wi, effectivePerson );
 				

@@ -38,7 +38,7 @@ public class ActionListSubTaskWithTaskId extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				task = taskQueryService.get( taskId );
 				if ( task == null) {
@@ -54,7 +54,7 @@ public class ActionListSubTaskWithTaskId extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskList = taskQueryService.listTaskWithParentId( taskId, effectivePerson );
 				if( taskList == null ) {
@@ -68,7 +68,7 @@ public class ActionListSubTaskWithTaskId extends BaseAction {
 			}
 		}
 				
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				wos = Wo.copier.copy( taskList );
 				if(ListTools.isNotEmpty( wos )) {
