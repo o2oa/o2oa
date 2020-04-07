@@ -156,13 +156,14 @@
         "border-left": "1px solid #cccccc"
     },
     "historyListTitleAreaNode":{
-        "height": "70px",
+        "height": "80px",
+        "padding": "10px 0px"
     },
     "historyListTitleNode": {
         "font-weight": "bold",
         "font-size": "14px",
-        "height": "30px",
-        "line-height": "30px",
+        "height": "40px",
+        "line-height": "40px",
         "padding": "0px 10px"
     },
     "historyListTitleInsertNode": {
@@ -180,9 +181,11 @@
     "historyListContentAreaNode": {
         "margin": "5px",
         "border": "1px solid #cccccc",
-        "background-color": "#ffffff"
+        "background-color": "#ffffff",
+        "overflow": "auto"
     },
     "historyListItemNode": {
+        "margin-bottom": "10px",
         "overflow": "hidden",
         "padding": "5px 10px",
     },
@@ -198,10 +201,12 @@
         "overflow": "hidden",
         "padding": "5px 10px",
         "cursor": "pointer",
+        "border": "1px solid #ffffff",
         "border-radius": "5px",
         "background-color": "#ffffff"
     },
-    "historyListItemDiffNode_over": {
+    "historyListItemDiffNode_out": {
+        "border": "1px solid #ffffff",
     }
     
 }

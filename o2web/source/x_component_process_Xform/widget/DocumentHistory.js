@@ -21,12 +21,11 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     this.documentEditor.options.pageShow = "single";
                     this.documentEditor.resetData();
 
-                    this.beginDiffHistory(function(){
-                        this.loadHistoryToolbar();
-                        this.loadHistoryList();
+                    this.beginDiffHistory();
 
-                        if (callback) callback();
-                    }.bind(this));
+                    this.loadHistoryToolbar();
+                    this.loadHistoryList();
+                    if (callback) callback();
                 }.bind(this));
             }
         }.bind(this));
@@ -156,29 +155,33 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.historyListTitleInsertNode.set("text", insertStr);
         this.historyListTitleDeleteNode.set("text", deleteStr);
 
-        var original = this.historyDataList[0];
-        this.diffPatch.each(function(patchObj){
-            this.createHistoryListItem(patchObj);
+        //var original = this.historyDataList[0];
+        //this.createHistoryListItem(original);
+        this.historyDataList.each(function(historyData){
+            this.createHistoryListItem(historyData);
         }.bind(this));
+
+        // this.diffPatch.each(function(patchObj){
+        //     this.createHistoryListItem(patchObj);
+        // }.bind(this));
     },
-    createHistoryListItem: function(patchObj){
-        new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, patchObj);
+    createHistoryListItem: function(historyData){
+        new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, historyData);
     },
 
 
     getHistoryDataList: function(callback){
-        if (this.documentEditor.historyDataList){
-            this.getHistoryDataListFinish(this.documentEditor.historyDataList);
-            if (callback) callback();
-        }else{
+        // if (this.historyDataList && this.historyDataList.length){
+        //     this.getHistoryDataListFinish(this.historyDataList);
+        //     if (callback) callback();
+        // }else{
             var historyDataList = [];
             var getDataCount = 0;
             var idx = 0;
 
             var checkBeginDiffHistory = function(){
                 if (getDataCount>=this.historyDocumentList.length){
-                    this.getHistoryDataListFinish(historyDataList);
-                    if (callback) callback();
+                    this.getHistoryDataListFinish(historyDataList, callback);
                 }
             }.bind(this);
 
@@ -190,44 +193,67 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 }.bind(this), idx, historyDataList);
                 idx++;
             }
-        }
+        //}
     },
-    getHistoryDataListFinish: function(historyDataList){
-        this.documentEditor.historyDataList = historyDataList;
+    getHistoryDataListFinish: function(historyDataList, callback){
         this.historyDataList = historyDataList;
-        var currentData = {
-            "data": this.documentEditor.data.filetext,
-            "person": layout.session.user.distinguishedName,
-            "activityName": this.documentEditor.form.businessData.activity.name,
-            "createTime" : (new Date()).format("db")
-        };
-        this.historyDataList.push(currentData);
+        this.originaHistoryData = historyDataList[0].json.data || null;
+
+        if (this.documentEditor.allowEdit){
+            o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+                var originaData = this.documentEditor.form.businessData.originalData[this.documentEditor.json.id];
+                var data = this.documentEditor.data.filetext;
+                var earlyData = originaData.filetext;
+                if (data!=earlyData){
+                    var dmp = new diff_match_patch();
+                    var diff_d = dmp.diff_main(earlyData, data);
+                    dmp.diff_cleanupSemantic(diff_d);
+                    var patch_list = dmp.patch_make(earlyData, data, diff_d);
+
+                    if (patch_list.length){
+                        var patch = dmp.patch_toText(patch_list);
+                        var patchData = JSON.stringify({"patchs": patch});
+                        var currentData = {
+                            "data": patchData,
+                            "json": {"patchs": patch},
+                            "person": layout.session.user.distinguishedName,
+                            "activityName": this.documentEditor.form.businessData.activity.name,
+                            "createTime" : (new Date()).format("db")
+                        };
+                        this.historyDataList.push(currentData);
+                    }
+                }
+                if (callback) callback();
+            }.bind(this));
+        }else{
+            if (callback) callback();
+        }
     },
     getHistroyDocumentData: function(id, callback, i, historyDataList){
         o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(id, function(json){
+            var obj = JSON.parse(json.data.data);
+            json.data.json = obj;
             if (historyDataList) historyDataList[i] = json.data;
             if (callback) callback(json.data);
         }.bind(this));
     },
     getHistroyDocumentList: function(callback){
-        if (!this.documentEditor.historyDocumentList){
+        //if (!this.historyDocumentList){
             var id = this.documentEditor.form.businessData.work.job;
-            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
+            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.documentEditor.json.id, function(json){
                 this.historyDocumentList = json.data;
-                this.documentEditor.historyDocumentList = json.data;
                 if (callback) callback();
             }.bind(this));
-        }else{
-            this.historyDocumentList = this.documentEditor.historyDocumentList;
-            if (callback) callback();
-        }
+        //}else{
+        //   if (callback) callback();
+        //}
     },
 
-    beginDiffHistory: function(callback){
-        o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+    beginDiffHistory: function(){
+        //o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
             this.initAnimation();
-            if (callback) callback();
-        }.bind(this));
+            //if (callback) callback();
+        //}.bind(this));
     },
     initAnimation: function(){
         this.diffPatch =  this.diffHistroy();
@@ -246,14 +272,17 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.initAnimationStatus();
     },
     initData: function(){
-        this.currentHistoryData = this.historyDataList[0].data;
+        this.currentHistoryData = this.originaHistoryData;
         this.documentEditor.layout_filetext.set("html", this.currentHistoryData);
+        this.patchIndex = 0;
+        this.diffIndex = 0;
+        if (this.originaDiff) this.originaDiff.showCurrent();
     },
     initAnimationStatus: function(){
         this.patchIndex = 0;
         this.diffIndex = 0;
         this.currentDiffs = null;
-        this.stop = false;
+        this.stop = true;
         this.step = false;
         this.playing = false;
         this.reverse = false;
@@ -269,6 +298,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.patchIndex = 0;
             this.diffIndex = 0;
             this.playing = false;
+            this.stop = true;
             this.documentEditor.resetData();
             this.checkToolbar();
         }.bind(this));
@@ -282,20 +312,19 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         }
     },
     play: function(){
+        if (!this.playing){
+            this.initData();
+            this.initAnimationStatus();
+        }
         this.reverse = false;
         this.stop = false;
-    //    this.checkToolbar();
+        this.stopWhile = "";
         this.options.fxTime = 500;
         this.options.inforTime = 2000;
 
         this.toolbar.childrenButton[0].disable();
         this.toolbar.childrenButton[3].disable();
         this.toolbar.childrenButton[4].disable();
-
-        if (!this.playing){
-            this.initData();
-            this.initAnimationStatus();
-        }
         this.do();
     },
     stopPlay: function(){
@@ -345,6 +374,52 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         if (!this.playing) this.initData();
         this.do();
     },
+    to: function(diff){
+        if (this.nextPlayPrefixFunction){
+            this.playing = false;
+            this.nextPlayPrefixFunction(function(){
+                this.initData();
+                this.initAnimationStatus();
+                this.reverse = false;
+                this.options.fxTime = 0;
+                this.options.inforTime = 0;
+                this.stop = false;
+                this.stopWhile = diff.id;
+                this.toolbar.childrenButton[3].disable();
+                this.toolbar.childrenButton[4].disable();
+
+                this.doAnimationAuto(diff.id);
+
+            }.bind(this));
+            //this.nextPlayPrefixFunction = null;
+        }else{
+            this.initData();
+            this.initAnimationStatus();
+            this.reverse = false;
+            this.options.fxTime = 0;
+            this.options.inforTime = 0;
+            this.stop = false;
+            this.stopWhile = diff.id;
+            this.toolbar.childrenButton[3].disable();
+            this.toolbar.childrenButton[4].disable();
+
+            this.doAnimationAuto(diff.id);
+        }
+    },
+    origina: function(){
+        if (this.nextPlayPrefixFunction){
+            this.playing = false;
+            this.nextPlayPrefixFunction(function(){
+                this.initData();
+                this.initAnimationStatus();
+            }.bind(this));
+            this.nextPlayPrefixFunction = null;
+        }else{
+            this.initData();
+            this.initAnimationStatus();
+        }
+    },
+
     exit: function(){
         this.initAnimationStatus();
         this.options.fxTime = 0;
@@ -379,49 +454,60 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     this.documentEditor.options.pageShow = "single";
                     this.documentEditor.resetData();
 
-                    this.beginDiffHistory(function(){
-                        this.documentEditor.resetData();
-                        this.toolbarNode.show();
-                        this.documentEditor.documentToolbarNode = this.documentEditor.toolbarNode;
-                        this.documentEditor.documentToolbarNode.hide();
-                        if (this.documentEditor.sidebarNode) this.documentEditor.sidebarNode.hide();
-                        this.documentEditor.toolbarNode = this.toolbarNode;
-                        this.documentEditor.resizeToolbar();
+                    this.beginDiffHistory();
 
-                        var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
-                        text = text.replace(/{history}/, this.historyDataList.length).replace(/{diff}/, this.diffCount);
-                        this.toolbarNode.getLast().set("html", text);
+                    this.documentEditor.resetData();
+                    this.toolbarNode.show();
+                    this.documentEditor.documentToolbarNode = this.documentEditor.toolbarNode;
+                    this.documentEditor.documentToolbarNode.hide();
+                    if (this.documentEditor.sidebarNode) this.documentEditor.sidebarNode.hide();
+                    this.documentEditor.toolbarNode = this.toolbarNode;
+                    this.documentEditor.resizeToolbar();
 
-                        if (callback) callback();
-                    }.bind(this));
+                    var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
+                    text = text.replace(/{history}/, this.historyDataList.length).replace(/{diff}/, this.diffCount);
+                    this.toolbarNode.getLast().set("html", text);
+
+                    this.createHistoryListNode();
+                    this.loadHistoryList();
+
+                    this.documentEditor.options.pageShow = "single";
+                    this.documentEditor.resetData();
+
+                    if (callback) callback();
+
                 }.bind(this));
             }
         }.bind(this));
     },
 
-    doAnimationStep: function(i){
-        this.doPatchAnimationStep(i);
-
-        this.documentEditor.resetData();
-        this.checkToolbar();
-    },
-
     diffHistroy: function(){
         var diffPatch =  [];
+        //var historyPatchs = [];
         for (var i=1; i<this.historyDataList.length; i++){
-            var earlyDataText = this.historyDataList[i-1].data;
-            var laterData = this.historyDataList[i];
+            // var earlyDataText = this.historyDataList[i-1].data;
+            // var laterData = this.historyDataList[i];
+            //
+            // var dmp = new diff_match_patch();
+            // // dmp.Diff_Timeout = parseFloat(10);
+            // // dmp.Diff_EditCost = parseFloat(4);
+            // var diff_d = dmp.diff_main(earlyDataText, laterData.data);
+            // dmp.diff_cleanupSemantic(diff_d);
+            // var patch_list = dmp.patch_make(earlyDataText, laterData.data, diff_d);
 
-            var dmp = new diff_match_patch();
-            // dmp.Diff_Timeout = parseFloat(10);
-            // dmp.Diff_EditCost = parseFloat(4);
-            var diff_d = dmp.diff_main(earlyDataText, laterData.data);
-            dmp.diff_cleanupSemantic(diff_d);
-            var patch_list = dmp.patch_make(earlyDataText, laterData.data, diff_d);
+            //historyPatchs.push({"patch_list": patch_list, "obj": laterData});
+            var history = this.historyDataList[i];
+            var data = history.json;
+            history.json = data;
+            if (data.patchs){
+                var dmp = new diff_match_patch();
+                var patch_list = dmp.patch_fromText(data.patchs);
+                history.json.patchObj = patch_list;
 
-            patch_list.each(function(patch){
-                diffPatch.push({"patch":patch, "obj": laterData});
-            }.bind(this));
+                patch_list.each(function(patch){
+                    diffPatch.push({"patch":patch, "obj": history});
+                }.bind(this));
+            }
         }
         return diffPatch;
     },
@@ -433,14 +519,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.currentDiffs = patch.diffs;
         this.diffIndex = (this.reverse) ? patch.diffs.length-1 : 0;
 
-        // var inforDiv = this.createPatchInforNode(obj);
-        //
-        // var fx = new Fx.Tween(inforDiv, {property: 'opacity'});
-        // fx.start(0,1).chain(function(){
-
         var start = (this.reverse) ? patch.start1+patch.length2 : patch.start1;
         this.doDiffsAnimation(obj, start, function(){
-            //inforDiv.destroy();
             if (this.reverse){
                 this.patchIndex--;
                 if (this.patchIndex>=0){
@@ -501,6 +581,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         var filetextNode = this.documentEditor.layout_filetext;
         switch (diff[0]) {
             case DIFF_INSERT:
+                if (diff["item"]) diff["item"].showCurrent((!this.stopWhile || this.stopWhile == diff["id"]));
+                if (this.originaDiff) this.originaDiff.hideCurrent();
                 var text = diff[1];
                 if (this.reverse){
                     start -= text.length;
@@ -515,11 +597,11 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 }
 
                 var ins = filetextNode.getElement("ins");
-                ins.scrollIn();
+                if (!this.stopWhile || this.stopWhile == diff["id"]) ins.scrollIn();
 
                 this.doInsetAnimation(ins, diff[1], function(invisible){
                     var insertInforDiv = null;
-                    if (!invisible){
+                    if (!invisible && (!this.stopWhile || this.stopWhile == diff["id"]) ){
                         insertInforDiv = this.createDiifInforNode(obj, ins, "#e2edfb", MWF.xApplication.process.Xform.LP.documentHistory.insertContent);
                     }
                     window.setTimeout(function(){
@@ -528,6 +610,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                             var fx = new Fx.Tween(ins, {property: 'opacity', duration:this.options.speed*this.options.fxTime});
                             fx.start(1.1).chain(function(){
                                 if (insertInforDiv) insertInforDiv.destroy();
+                                if (diff["item"]) diff["item"].hideCurrent();
                                 if (this.reverse){
                                     ins.destroy();
                                     this.currentHistoryData = filetextNode.get("html");
@@ -540,7 +623,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                                     if (this.reverse){
                                         this.diffIndex--;
                                         if (this.diffIndex>=0){
-                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, callback);}.bind(this), this.options.speed*this.options.fxTime);
+                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, function(){
+                                                if (callback) callback();
+                                                if (cb) cb();
+                                            });}.bind(this), this.options.speed*this.options.fxTime);
                                             //this.doDiffsAnimation(obj, start, callback);
                                         }else{
                                             if (callback) callback();
@@ -549,7 +635,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                                         start += text.length;
                                         this.diffIndex++;
                                         if (this.diffIndex<this.currentDiffs.length){
-                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, callback);}.bind(this), this.options.speed*this.options.fxTime);
+                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, function(){
+                                                if (callback) callback();
+                                                if (cb) cb();
+                                            });}.bind(this), this.options.speed*this.options.fxTime);
                                             //this.doDiffsAnimation(obj, start, callback);
                                         }else{
                                             if (callback) callback();
@@ -558,22 +647,33 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                                 }else{
                                     this.initAnimationStatus();
                                     this.documentEditor.resetData();
+                                    if (cb) cb();
                                 }
-                                if (cb) cb();
+
 
                             }.bind(this));
                             if (this.nextPlayPrefixFunction) this.nextPlayPrefixFunction = null;
                         }.bind(this)
+
+                        if (this.stopWhile) if (this.stopWhile == diff["id"]) this.stop = true;
+
                         if (!this.stop || !this.playing) {
                             endFunction();
                         } else{
+                            if (this.stopWhile){
+                                this.stopWhile = "";
+                                //this.playing = false;
+                            }
                             this.nextPlayPrefixFunction = endFunction;
+
                         }
                         this.checkToolbar();
                     }.bind(this), (invisible ? 100: this.options.speed*this.options.inforTime));
                 }.bind(this));
                 break;
             case DIFF_DELETE:
+                if (diff["item"]) diff["item"].showCurrent((!this.stopWhile || this.stopWhile == diff["id"]));
+                if (this.originaDiff) this.originaDiff.hideCurrent();
                 var text = diff[1];
                 if (this.reverse){
                     var left = this.currentHistoryData.substring(0, start);
@@ -591,9 +691,9 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
 
                 var del = filetextNode.getElement("del");
-                del.scrollIn();
+                if (!this.stopWhile || this.stopWhile == diff["id"]) del.scrollIn();
 
-                this.doDeleteAnimation(del, diff[1], obj, function(deleteInforDiv){
+                this.doDeleteAnimation(del, diff, obj, function(deleteInforDiv){
                     // var deleteInforDiv = null;
                     // if (!invisible){
                     //     deleteInforDiv = this.createDiifInforNode(obj, del, "#fbe0e7", MWF.xApplication.process.Xform.LP.documentHistory.deleteContent);
@@ -605,6 +705,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                             var fx = new Fx.Tween(del, {property: 'opacity', duration:this.options.speed*this.options.fxTime});
                             fx.start(0.5,0).chain(function(){
                                 if (deleteInforDiv) deleteInforDiv.destroy();
+                                if (diff["item"]) diff["item"].hideCurrent();
                                 if (this.reverse){
                                     data = filetextNode.get("html");
                                     this.currentHistoryData = data.replace(/<del[\s\S]*\/del>/m, text);
@@ -618,14 +719,20 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                                     if (this.reverse){
                                         this.diffIndex--;
                                         if (this.diffIndex>=0){
-                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, callback);}.bind(this), this.options.speed*this.options.fxTime);
+                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, function(){
+                                                if (callback) callback();
+                                                if (cb) cb();
+                                            });}.bind(this), this.options.speed*this.options.fxTime);
                                         }else{
                                             if (callback) callback();
                                         }
                                     }else{
                                         this.diffIndex++;
                                         if (this.diffIndex<this.currentDiffs.length){
-                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, callback);}.bind(this), this.options.speed*this.options.fxTime);
+                                            window.setTimeout(function(){this.doDiffsAnimation(obj, start, function(){
+                                                if (callback) callback();
+                                                if (cb) cb();
+                                            });}.bind(this), this.options.speed*this.options.fxTime);
                                         }else{
                                             if (callback) callback();
                                         }
@@ -634,15 +741,24 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                                 }else{
                                     this.initAnimationStatus();
                                     this.documentEditor.resetData();
+                                    if (cb) cb();
                                 }
-                                if (cb) cb();
 
                             }.bind(this));
                             if (this.nextPlayPrefixFunction) this.nextPlayPrefixFunction = null;
                         }.bind(this)
+
+                        if (this.stopWhile){
+                            if (this.stopWhile == diff["id"]) this.stop = true;
+                        }
+
                         if (!this.stop || !this.playing) {
                             endFunction();
                         } else{
+                            if (this.stopWhile){
+                                this.stopWhile = "";
+                                //this.playing = false;
+                            }
                             this.nextPlayPrefixFunction = endFunction;
                         }
                         this.checkToolbar();
@@ -723,12 +839,13 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         }.bind(this));
     },
 
-    doDeleteAnimation: function(node, str, obj, callback){
+    doDeleteAnimation: function(node, diff, obj, callback){
+        var str = diff[1];
         var tmp = new Element("div", {"html": str});
         if (!tmp.get("text").trim()){
             if (callback) callback(null);
         }else{
-            deleteInforDiv = this.createDiifInforNode(obj, node, "#fbe0e7", MWF.xApplication.process.Xform.LP.documentHistory.deleteContent);
+            var deleteInforDiv = (!this.stopWhile || this.stopWhile == diff["id"]) ? this.createDiifInforNode(obj, node, "#fbe0e7", MWF.xApplication.process.Xform.LP.documentHistory.deleteContent) : null;
             var fx = new Fx.Tween(node, {property: 'opacity', duration:this.options.speed*this.options.fxTime});
             fx.start(1,0.5).chain(function(){
                 if (callback) callback(deleteInforDiv);
@@ -738,47 +855,96 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 });
 
 MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
-    initialize: function(history, patchObj){
+    initialize: function(history, historyData){
         this.history = history;
         this.documentEditor = this.history.documentEditor;
         this.css = this.history.css;
-        this.patchObj = patchObj;
+        this.historyData = historyData;
         this.load();
     },
     load: function(){
-        var patch = this.patchObj.patch;
-        var obj = this.patchObj.obj;
+        var patchs = this.historyData.json.patchObj || null;
+        var obj = this.historyData;
+
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
         var patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
         this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
 
         var _self = this;
-        patch.diffs.each(function(diff){
-            if (diff[0]!=0){
-                var infor = ((diff[1].length>50) ? diff[1].substring(0, 50)+"..." : diff[1]);
-                var tmp = new Element("div", {"html": infor});
-                infor = tmp.get("text");
-                tmp.destroy();
-                if (diff[0]==-1){
-                    infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
-                }else{
-                    infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+        if (patchs){
+            patchs.each(function(patch){
+                patch.diffs.each(function(diff){
+                    if (diff[0]!=0){
+                        diff["id"] = (new o2.widget.UUID()).toString();
+                        var tmp = new Element("div", {"html": diff[1]});
+                        infor = tmp.get("text");
+                        var infor = ((infor.length>50) ? infor.substring(0, 50)+"..." : infor);
+
+                        tmp.destroy();
+                        if (diff[0]==-1){
+                            infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+                        }else{
+                            infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+                        }
+                        diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+                        diffNode.store("diff", diff);
+                        diff["item"] = {
+                            "node": diffNode,
+                            "showCurrent": function(show){
+                                var thisDiff = this.node.retrieve("diff");
+                                var color = (thisDiff[0]==-1) ? "#fbe0e7": "#e2edfb";
+                                this.node.setStyles({"background-color": color});
+
+                                var ss = _self.history.historyListContentAreaNode.getScrollSize();
+                                var s = _self.history.historyListContentAreaNode.getSize();
+                                if (ss.y>s.y) if (show) this.node.scrollIn();
+                            },
+                            "hideCurrent": function(){
+                                this.node.setStyles(_self.css.historyListItemDiffNode);
+                            }
+                        };
+
+                        diffNode.addEvents({
+                            // "mouseover": function(){
+                            //     if (_self.history.stop){
+                            //         var diff = this.retrieve("diff");
+                            //         var color = (diff[0]==-1) ? "red": "blue";
+                            //         this.setStyles({"border-color": color});
+                            //     }
+                            // },
+                            // "mouseout": function(){ if (_self.history.stop) this.setStyles(_self.css.historyListItemDiffNode_out) },
+                            "click": function(){
+                                if (_self.history.stop){
+                                    var diff = this.retrieve("diff");
+                                    _self.history.to(diff);
+                                }
+                            }
+                        });
+
+                    }
+                }.bind(this));
+            }.bind(this));
+        }else{
+            infor = MWF.xApplication.process.Xform.LP.documentHistory.original;
+            diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+            this.history.originaDiff = {
+                "node": diffNode,
+                "showCurrent": function(){
+                    this.node.setStyles({"background-color": "#e2edfb"});
+                    //if (show) this.node.scrollIn();
+                },
+                "hideCurrent": function(){
+                    this.node.setStyles(_self.css.historyListItemDiffNode);
                 }
-                diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
-                diffNode.store("diff", diff);
-
-                diffNode.addEvents({
-                    "mouseover": function(){
-                        var diff = this.retrieve("diff");
-                        var color = (diff[0]==-1) ? "#fbe0e7": "#e2edfb";
-                        this.setStyles({"background-color": color});
-                    },
-                    "mouseout": function(){ this.setStyles(_self.css.historyListItemDiffNode) }
-                });
-
-            }
-        }.bind(this));
-
+            };
+            diffNode.addEvents({
+                "click": function(){
+                    if (_self.history.stop){
+                        _self.history.origina();
+                    }
+                }
+            });
+        }
     }
 })
