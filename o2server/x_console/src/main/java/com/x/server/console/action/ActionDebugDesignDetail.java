@@ -36,6 +36,7 @@ public class ActionDebugDesignDetail extends ActionBase {
 	private static final String CMD_RD = "rd";
 	private static final String CMD_RS = "rs";
 	private static final String CMD_CLH2 = "clh2";
+	private static final String CMD_UF = "uf";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -66,6 +67,8 @@ public class ActionDebugDesignDetail extends ActionBase {
 				rs(cmd);
 			} else if (cmd.hasOption(CMD_CLH2)) {
 				clh2(cmd);
+			} else if (cmd.hasOption(CMD_UF)) {
+				uf(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("ddd (Debug Design Detail)", options);
@@ -87,6 +90,7 @@ public class ActionDebugDesignDetail extends ActionBase {
 		options.addOption(rdOption());
 		options.addOption(rsOption());
 		options.addOption(clh2Option());
+		options.addOption(ufOption());
 		return options;
 	}
 
@@ -141,6 +145,11 @@ public class ActionDebugDesignDetail extends ActionBase {
 	private static Option rsOption() {
 		return Option.builder("rs").longOpt("restoreStorage").argName("path or date").hasArg()
 				.desc("将导出的json格式文件数据恢复到存储服务器.").build();
+	}
+
+	private static Option ufOption() {
+		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg()
+				.desc("升级服务器,升级前请注意备份.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -221,6 +230,12 @@ public class ActionDebugDesignDetail extends ActionBase {
 	private void hd(CommandLine cmd) throws Exception {
 		HeapDump heapDump = new HeapDump();
 		heapDump.execute();
+	}
+
+	private void uf(CommandLine cmd) throws Exception {
+		String path = Objects.toString(cmd.getOptionValue(CMD_UF), "");
+		UpdateFile updateFile= new UpdateFile();
+		updateFile.execute(path);
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {
