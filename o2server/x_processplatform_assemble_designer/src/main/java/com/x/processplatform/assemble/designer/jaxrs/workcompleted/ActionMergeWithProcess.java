@@ -1,7 +1,9 @@
 package com.x.processplatform.assemble.designer.jaxrs.workcompleted;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -24,22 +26,28 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapInteger;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
-class ActionMergeDataWithApplication extends BaseAction {
+class ActionMergeWithProcess extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String applicationFlag) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String processFlag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Application application = emc.find(applicationFlag, Application.class);
+			Process process = emc.find(processFlag, Process.class);
+			if (null == process) {
+				throw new ExceptionEntityNotExist(processFlag, Process.class);
+			}
+			Application application = emc.find(process.getApplication(), Application.class);
 			if (null == application) {
-				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
+				throw new ExceptionEntityNotExist(processFlag, Application.class);
 			}
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionAccessDenied(effectivePerson, application);
@@ -49,19 +57,29 @@ class ActionMergeDataWithApplication extends BaseAction {
 			WorkCompleted workCompleted = null;
 			int count = 0;
 			do {
-				ids = this.list(business, application);
+				ids = this.list(business, process);
 				for (String id : ids) {
 					workCompleted = emc.find(id, WorkCompleted.class);
 					if (null != workCompleted) {
-						List<Item> items = this.items(business, workCompleted);
-						JsonElement jsonElement = converter.assemble(items);
 						emc.beginTransaction(WorkCompleted.class);
-						workCompleted.setData(XGsonBuilder.toJson(jsonElement));
-						workCompleted.setDataMerged(true);
+						List<Item> items = this.items(business, workCompleted);
+						List<Record> records = emc.listEqual(Record.class, Record.job_FIELDNAME,
+								workCompleted.getJob());
+						records = records.stream()
+								.sorted(Comparator.comparing(Record::getOrder, Comparator.nullsLast(Long::compareTo)))
+								.collect(Collectors.toList());
+						workCompleted.getProperties().setRecordList(records);
+						JsonElement jsonElement = converter.assemble(items);
+						workCompleted.getProperties().setData(gson.fromJson(jsonElement, Data.class));
+						workCompleted.setMerged(true);
 						emc.commit();
 						emc.beginTransaction(Item.class);
+						emc.beginTransaction(Record.class);
 						for (Item item : items) {
 							emc.remove(item, CheckRemoveType.all);
+						}
+						for (Record record : records) {
+							emc.remove(record, CheckRemoveType.all);
 						}
 						emc.commit();
 						count++;
@@ -87,14 +105,14 @@ class ActionMergeDataWithApplication extends BaseAction {
 		return list;
 	}
 
-	private List<String> list(Business business, Application application) throws Exception {
+	private List<String> list(Business business, Process process) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(WorkCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
-		Predicate p = cb.equal(root.get(WorkCompleted_.application), application.getId());
-		p = cb.and(p, cb.or(cb.isNull(root.get(WorkCompleted_.dataMerged)),
-				cb.equal(root.get(WorkCompleted_.dataMerged), false)));
+		Predicate p = cb.equal(root.get(WorkCompleted_.process), process.getId());
+		p = cb.and(p, cb.or(cb.isNull(root.get(WorkCompleted_.merged)),
+				cb.equal(root.get(WorkCompleted_.merged), false)));
 		cq.select(root.get(WorkCompleted_.id)).where(p);
 		return em.createQuery(cq).setMaxResults(100).getResultList();
 	}

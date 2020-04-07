@@ -109,7 +109,7 @@ class TaskGroupService {
 		if( taskGroup != null ){
 			reles = business.taskGroupReleFactory().listWithGroupAndTask( groupId, taskId );
 			if( ListTools.isEmpty( reles )) { 
-				emc.beginTransaction( TaskGroup.class );		
+				emc.beginTransaction( TaskGroupRele.class );
 				taskGroupRele = new TaskGroupRele();
 				taskGroupRele.setId( TaskGroupRele.createId() );
 				taskGroupRele.setProject( taskGroup.getProject() );

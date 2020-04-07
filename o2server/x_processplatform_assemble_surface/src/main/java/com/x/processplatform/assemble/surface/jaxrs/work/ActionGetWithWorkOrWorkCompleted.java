@@ -87,9 +87,9 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		Wo wo = new Wo();
 		wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
 		CompletableFuture<Data> future_data = CompletableFuture.supplyAsync(() -> {
-			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
 				/* 如果data已经merged */
-				return gson.fromJson(workCompleted.getData(), Data.class);
+				return workCompleted.getProperties().getData();
 			} else {
 				return this.data(business, workCompleted.getJob());
 			}

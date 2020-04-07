@@ -89,6 +89,7 @@ public class Main {
 							cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
 							System.out.println("read command:" + cmd);
 							commandQueue.put(cmd);
+							continue;
 						}
 						Thread.sleep(1000);
 					}
@@ -190,62 +191,6 @@ public class Main {
 				}
 				continue;
 			}
-			// matcher = CommandFactory.dump_path_pattern.matcher(cmd);
-			// if (matcher.find()) {
-			// 	switch (matcher.group(1)) {
-			// 		case "data":
-			// 			dumpData(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		case "storage":
-			// 			dumpStorage(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		default:
-			// 			break;
-			// 	}
-			// 	continue;
-			// }
-			// matcher = CommandFactory.dump_pattern.matcher(cmd);
-			// if (matcher.find()) {
-			// 	switch (matcher.group(1)) {
-			// 		case "data":
-			// 			dumpData("", matcher.group(2));
-			// 			break;
-			// 		case "storage":
-			// 			dumpStorage("", matcher.group(2));
-			// 			break;
-			// 		default:
-			// 			break;
-			// 	}
-			// 	continue;
-			// }
-			// matcher = CommandFactory.restore_path_pattern.matcher(cmd);
-			// if (matcher.find()) {
-			// 	switch (matcher.group(1)) {
-			// 		case "data":
-			// 			resotreDataPath(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		case "storage":
-			// 			resotreStoragePath(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		default:
-			// 			break;
-			// 	}
-			// 	continue;
-			// }
-			// matcher = CommandFactory.restore_pattern.matcher(cmd);
-			// if (matcher.find()) {
-			// 	switch (matcher.group(1)) {
-			// 		case "data":
-			// 			resotreData(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		case "storage":
-			// 			resotreStorage(matcher.group(2), matcher.group(3));
-			// 			break;
-			// 		default:
-			// 			break;
-			// 	}
-			// 	continue;
-			// }
 			matcher = CommandFactory.help_pattern.matcher(cmd);
 			if (matcher.find()) {
 				CommandFactory.printHelp();
@@ -256,16 +201,6 @@ public class Main {
 			if (matcher.find()) {
 				version();
 				continue;
-			}
-
-			matcher = CommandFactory.updateFile_pattern.matcher(cmd);
-			if (matcher.find()) {
-				if (updateFile(matcher.group(1), matcher.group(2))) {
-					stopAll();
-					System.exit(0);
-				} else {
-					continue;
-				}
 			}
 
 			matcher = CommandFactory.setPassword_pattern.matcher(cmd);
@@ -317,21 +252,10 @@ public class Main {
 		}
 		return true;
 	}
- 
- 
 
 	private static boolean createEncryptKey(String password) {
 		try {
 			return new ActionCreateEncryptKey().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean updateFile(String path, String backup) {
-		try {
-			return new UpdateFile().execute(path, BooleanUtils.toBoolean(backup));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -551,63 +475,6 @@ public class Main {
 		}
 	}
 
-//	private static boolean dumpData(String path, String password) {
-//		try {
-//			return (new ActionDumpData()).execute(path, password);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return true;
-//	}
-//
-//	private static boolean dumpStorage(String path, String password) {
-//		try {
-//			return (new ActionDumpStorage()).execute(path, password);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return true;
-//	}
-
-//	private static void resotreData(String dateString, String password) {
-//		try {
-//			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-//			Date date = format.parse(dateString);
-//			File file = new File(Config.base(), "local/dump/dumpData_" + format.format(date));
-//			if (file.exists() && file.isDirectory()) {
-//				(new ActionRestoreData()).execute(date, password);
-//			} else {
-//				System.out.println("directory " + file.getAbsolutePath() + " not existed.");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	private static void resotreDataPath(String path, String password) {
-//		try {
-//			(new ActionRestoreData()).execute(path, password);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
-//	private static void resotreStorage(String dateString, String password) {
-//		try {
-//			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-//			Date date = format.parse(dateString);
-//			File file = new File(Config.base(), "local/dump/dumpStorage_" + format.format(date));
-//			if (file.exists() && file.isDirectory()) {
-//				ActionRestoreStorage restoreStorage = new ActionRestoreStorage();
-//				restoreStorage.execute(date, password);
-//			} else {
-//				System.out.println("directory " + file.getAbsolutePath() + " not existed.");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	private static void debugDesignDetail(String cmd) {
 		try {
 			String[] args = StringTools.translateCommandline(cmd);
@@ -618,14 +485,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
-//	private static void resotreStoragePath(String path, String password) {
-//		try {
-//			new ActionRestoreStorage().execute(path, password);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 
 	private static void createTempClassesDirectory(String base) throws Exception {
 		File local_temp_classes_dir = new File(base, "local/temp/classes");
@@ -781,16 +640,5 @@ public class Main {
 		}
 		return false;
 	}
-
-//	private static boolean compactData(String password) throws Exception {
-//		try {
-//			return new ActionCompactData().execute(password);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
-
- 
 
 }
