@@ -850,32 +850,90 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         var option = this.viewSearchCustomPathListNode.options[idx];
         var entry = option.retrieve("entry");
         if (entry){
+            var selectableList = this.getCustomSelectScriptResult(entry);
             switch (entry.formatType){
                 case "numberValue":
                     this.loadComparisonSelect(this.lp.numberFilter);
-                    this.loadViewSearchCustomValueNumberInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else{
+                        this.loadViewSearchCustomValueNumberInput();
+                    }
                     break;
                 case "dateTimeValue":
                     this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueDateTimeInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else {
+                        this.loadViewSearchCustomValueDateTimeInput();
+                    }
                     break;
                 case "dateValue":
                     this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueDateInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else {
+                        this.loadViewSearchCustomValueDateInput();
+                    }
                     break;
                 case "timeValue":
                     this.loadComparisonSelect(this.lp.dateFilter);
-                    this.loadViewSearchCustomValueTimeInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else {
+                        this.loadViewSearchCustomValueTimeInput();
+                    }
                     break;
                 case "booleanValue":
                     this.loadComparisonSelect(this.lp.booleanFilter);
-                    this.loadViewSearchCustomValueBooleanInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else {
+                        this.loadViewSearchCustomValueBooleanInput();
+                    }
                     break;
                 default:
                     this.loadComparisonSelect(this.lp.textFilter);
-                    this.loadViewSearchCustomValueTextInput();
+                    if( selectableList.length > 0 ){
+                        this.loadViewSerchCustomSelectByScript(selectableList)
+                    }else {
+                        this.loadViewSearchCustomValueTextInput();
+                    }
             }
         }
+    },
+    getCustomSelectScriptResult : function( entry ){
+        var scriptResult = [];
+        if( entry.valueType === "script" ){
+            if( entry.valueScript && entry.valueScript.code ){
+                var result = this.Macro.exec(entry.valueScript.code, this);
+                var array = typeOf( result ) === "array" ? result : [result];
+                for( var i=0; i<array.length; i++ ){
+                    if( array[i].indexOf( "|" ) > -1 ){
+                        var arr = array[i].split("|");
+                        scriptResult.push({ "text" : arr[0], "value" : arr[1] })
+                    }else{
+                        scriptResult.push({ "text" : array[i], "value" : array[i] })
+                    }
+                }
+            }
+        }
+        return scriptResult;
+    },
+    loadViewSerchCustomSelectByScript: function( array ){
+        this.viewSearchCustomValueContentNode.empty();
+        this.viewSearchCustomValueNode = new Element("select", {
+            "styles": this.css.viewFilterSearchCustomComparisonListNode,
+            "multiple": true
+        }).inject(this.viewSearchCustomValueContentNode);
+        array.each(function( v ){
+            var option = new Element("option", {
+                "style": this.css.viewFilterSearchOptionNode,
+                "value": v.value,
+                "text": v.text,
+                "selected" : array.length === 1
+            }).inject(this.viewSearchCustomValueNode);
+        }.bind(this));
     },
     loadViewSearchCustomValueNumberInput: function(){
         this.viewSearchCustomValueContentNode.empty();
@@ -1001,23 +1059,32 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var comparisonTitle = this.viewSearchCustomComparisonListNode.options[comparisonIdx].get("text");
             var value = "";
 
-            switch (entry.formatType){
-                case "numberValue":
-                    value = this.viewSearchCustomValueNode.get("value");
-                    break;
-                case "dateTimeValue":
-                    value = this.viewSearchCustomValueNode.get("value");
-                    break;
-                case "booleanValue":
-                    var idx = this.viewSearchCustomValueNode.selectedIndex;
-                    if (idx!==-1){
-                        var v = this.viewSearchCustomValueNode.options[idx].get("value");
-                        value = (v==="true");
-                    }
-                    break;
-                default:
-                    value = this.viewSearchCustomValueNode.get("value");
+            if( entry.valueType === "script" && entry.valueScript && entry.valueScript.code  ){
+                var idx = this.viewSearchCustomValueNode.selectedIndex;
+                if (idx!==-1){
+                    var v = this.viewSearchCustomValueNode.options[idx].get("value");
+                    value = entry.formatType === "booleanValue" ? (v==="true") : v;
+                }
+            }else{
+                switch (entry.formatType){
+                    case "numberValue":
+                        value = this.viewSearchCustomValueNode.get("value");
+                        break;
+                    case "dateTimeValue":
+                        value = this.viewSearchCustomValueNode.get("value");
+                        break;
+                    case "booleanValue":
+                        var idx = this.viewSearchCustomValueNode.selectedIndex;
+                        if (idx!==-1){
+                            var v = this.viewSearchCustomValueNode.options[idx].get("value");
+                            value = (v==="true");
+                        }
+                        break;
+                    default:
+                        value = this.viewSearchCustomValueNode.get("value");
+                }
             }
+
             if (value===""){
                 MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, this.lp.filterErrorValue, this.viewSearchCustomValueContentNode, {"x": 0, "y": 85});
                 return false;
