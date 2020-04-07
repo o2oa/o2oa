@@ -1901,7 +1901,7 @@ diff_match_patch.prototype.patch_apply = function(patches, text) {
               text = text.substring(0, start_loc + index2) + mod[1] +
                      text.substring(start_loc + index2);
             } else if (mod[0] === DIFF_DELETE) {  // Deletion
-              text = text.substring(0, start_loc + index2) +
+              text = text.substring(0, start_loc + index2) + mod[1] +
                      text.substring(start_loc + this.diff_xIndex(diffs,
                          index1 + mod[1].length));
             }

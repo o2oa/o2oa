@@ -138,6 +138,25 @@
         "line-height": "20px",
         "font-size": "12px",
         "overflow": "hidden"
+    },
+    "historyInforNode": {
+        "width": "300px",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "5px",
+        "box-shadow": "2px 2px 5px #CCCCCC",
+        "position": "absolute",
+        "opacity": 1
+    },
+    "historyListAreaNode": {
+        "width": "260px",
+        "float": "right",
+        "height": "500px",
+        "background-color": "#f3f3f3",
+        "border-left": "1px solid #cccccc"
+    },
+    "historyListTitleAreaNode":{
     }
     
 }
