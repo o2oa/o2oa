@@ -152,11 +152,36 @@
     "historyListAreaNode": {
         "width": "260px",
         "float": "right",
-        "height": "500px",
         "background-color": "#f3f3f3",
         "border-left": "1px solid #cccccc"
     },
     "historyListTitleAreaNode":{
+        "height": "70px",
+    },
+    "historyListTitleNode": {
+        "font-weigth": "bold",
+        "font-size": "16px",
+        "height": "30px",
+        "line-height": "30px"
+    },
+    "historyListTitleInsertNode": {
+        "font-size": "14px",
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "historyListTitleDeleteNode": {
+        "font-size": "14px",
+        "height": "20px",
+        "line-height": "20px"
+    },
+    "historyListContentAreaNode": {
+        "margin": "5px",
+        "border": "1px solid #cccccc",
+        "background-color": "#ffffff"
+    },
+    "historyListItemNode": {
+        "overflow": "hidden",
+        "padding": "5px"
     }
     
 }
