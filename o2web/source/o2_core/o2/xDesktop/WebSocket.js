@@ -56,6 +56,7 @@ MWF.xDesktop.WebSocket = new Class({
             }catch(e){
                 //WebSocket.close();
                 //this.webSocket = new WebSocket(this.ws);
+                this.errorCount++;
                 console.log("Unable to connect to the websocket server, will retry in "+(this.checkingTimeout/1000)+" seconds");
                 this.checkRetry();
                 // if (this.webSocket){

@@ -3,6 +3,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     Extends: MWF.APP$Module,
     options: {
         "moduleEvents": ["load", "queryLoad", "beforeLoad", "postLoad", "afterLoad", "loadPage"],
+        "historyColors": [
+            "#d62728",
+            "#1f77b4",
+            "#ff7f0e",
+            "#2ca02c",
+            "#8c564b",
+            "#9467bd",
+            "#17becf",
+            "#e377c2",
+            "#bcbd22",
+            "#ff9896"
+        ],
         "docPageHeight": 850.4,
         "docPageFullWidth": 794,
         "pageShow": "single"
@@ -94,7 +106,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     _createPage: function(callback){
-        debugger;
         var pageContentNode = this._createNewPage().getFirst();
 
         var control = this.getShowControl();
@@ -443,7 +454,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
 
     reSetShow: function(control){
-        debugger;
         if (!control) control = this.getShowControl();
         var m = function(s){ return (control[s]) ? "show" : "hide"; }
 
@@ -481,7 +491,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_issuanceDate) this.layout_issuanceDate[m("issuanceDate")]();
         if (this.layout_annotation) this.layout_annotation[m("annotation")]();
 
-        debugger;
         if ((!control.copyto || !this.layout_copytoContent) && (!control.copyto2 || !this.layout_copyto2Content)  && (!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
             if (this.layout_editionArea) this.layout_editionArea.hide();
         }else{
@@ -509,7 +518,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 // });
             }
             if ((!control.editionUnit || !this.layout_edition_issuance_unit) && (!control.editionDate || !this.layout_edition_issuance_date)){
-                debugger
                 if (this.layout_editionArea && (this.layout_edition_issuance_date || this.layout_edition_issuance_unit)){
                     var trs = this.layout_editionArea.getElement("table").rows;
                     trs.item(trs.length-1).destroy();
@@ -638,15 +646,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._doublePage();
             }
 
-            // this.form.addEvent("beforeProcess", function(){
-            //     this.resetData();
-            //     if (this.checkSaveNewEdition()) this.saveNewDataEdition();
-            //     this.notSaveResetData = true;
-            // }.bind(this));
-            this.form.addEvent("beforeSave", function(){
+            this.form.addEvent("beforeProcess", function(){
                 this.resetData();
                 if (this.checkSaveNewEdition()) this.saveNewDataEdition();
-                //if (!this.notSaveResetData) this.resetData();
+                this.notSaveResetData = true;
+            }.bind(this));
+            this.form.addEvent("beforeSave", function(){
+                // this.resetData();
+                // if (this.checkSaveNewEdition()) this.saveNewDataEdition();
+                if (!this.notSaveResetData) this.resetData();
             }.bind(this));
 
             if (this.json.toWord=="y"){
@@ -656,7 +664,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
             if (!layout.mobile) this.loadSideToolbar();
 
-            debugger;
             var id = this.form.businessData.data["$work"].job;
             o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
                 this.historyDocumentList = json.data;
@@ -681,7 +688,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //     return true;
         // }
         debugger;
-        if (this.allowEdit) if (!this.prevHistoryData || (this.prevHistoryData != this.data.filetext)) return true;
+        if (this.allowEdit && this.data.filetext && (this.data.filetext != this.json.defaultValue.filetext)) if (!this.prevHistoryData || (this.prevHistoryData != this.data.filetext)) return true;
         return false;
     },
     saveNewDataEdition: function(callback){
@@ -703,15 +710,38 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var editionData = {"category": this.json.id, "data": data };
 
             o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.create(this.form.businessData.work.id, editionData, function(json){
+                this.prevHistoryData = this.data.filetext
                 if (callback) callback();
-            });
+            }.bind(this));
         }
 
         //
         // if (!this.data.editions) this.data.editions = [];
         // this.data.editions.push(editionData);
     },
+    resizeToolbar: function(){
+        if (this.toolbarNode){
+            var p = this.toolNode.getPosition(this.form.app.content);
+            var size = this.toolNode.getSize();
+            var pl = this.toolbarNode.getStyle("padding-left").toInt();
+            var pr = this.toolbarNode.getStyle("padding-right").toInt();
+            var x = size.x-pl-pr;
 
+            if (p.y<0){
+                this.toolbarNode.inject(this.form.node);
+                this.toolbarNode.setStyles({
+                    "position": "absolute",
+                    "width": ""+x+"px",
+                    "z-index": 20000,
+                    "top": "0px",
+                    "left": ""+p.x+"px"
+                });
+            }else{
+                this.toolbarNode.inject(this.toolNode);
+                this.toolbarNode.setStyles({"position": "static"});
+            }
+        }
+    },
     resizeSidebar: function(){
         if (this.sidebarNode){
             var fileTextNode = this.contentNode.getElement("div.doc_layout_filetext");
@@ -786,7 +816,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         offset = 0;
         if (this.pages.length){
             var pageSize = this.pages[0].getSize();
-            var contentSize = this.node.getSize();
+            var contentSize = this.contentNode.getSize();
             var contentWidth = (offset) ? contentSize.x-20-offset : contentSize.x-20;
             if (contentWidth<pageSize.x){
                 this.isScale = true;
@@ -801,6 +831,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (scale) this.scale = scale;
 
         var w = this.node.getSize().x;
+        if (this.history && this.history.historyListAreaNode) w = w-this.history.historyListAreaNode.getComputedSize().totalWidth-2;
         w = w/this.scale;
         this.contentNode.setStyles({
             "transform":"scale("+this.scale+")",
@@ -848,147 +879,33 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), "$doc.doc");
     },
     _historyDoc: function(){
-
-        // this.historyAreaActionNode = new Element("div", {"styles": this.css.historyAreaActionNode}).inject(this.historyAreaNode);
-        // this.historyAreaTitleNode = new Element("div", {"styles": this.css.historyAreaTitleNode, "text": MWF.xApplication.process.Xform.LP.documentEditor.historyList}).inject(this.historyAreaNode);
-        // this.historyAreaContentNode = new Element("div", {"styles": this.css.historyAreaContentNode}).inject(this.historyAreaNode);
-        //
-        // var id = this.form.businessData.data["$work"].job;
-        // o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJob(id, function(json){
-        //     json.data.each(function(d){
-        //         var title = o2.name.cn(d.person) + "(" + d.activityName + ")";
-        //         var time = d.createTime;
-        //         var node = new Element("div", {"styles": this.css.historyItemNode}).inject(this.historyAreaContentNode);
-        //         var titleNode = new Element("div", {"styles": this.css.historyItemTitleNode, "text": title}).inject(node);
-        //         var timeNode = new Element("div", {"styles": this.css.historyItemTimeNode, "text": time}).inject(node);
-        //     }.bind(this));
-        // }.bind(this));
-        //
-
-        //this.contentNode.hide();
-
-        //this.historyAreaNode = new Element("div", {"styles": this.css.doc_content}).inject(this.contentNode, "after");
-        //var size = this.node.getSize();
-        //this.historyAreaNode.setStyle("height", ""+size.y+"px");
-
-        debugger;
-        //if (this.layout_filetext) currentData = this.layout_filetext.get("text");
-        this.resetData();
-        var currentData = {
-            "data": this.data.filetext,
-            "person": layout.session.user.distinguishedName,
-            "activityName": this.form.businessData.activity.name,
-            "createTime" : (new Date()).format("db")
+        this.getHistory(function(){
+            //this.history.play();
+        }.bind(this));
+    },
+    getHistory: function(callback){
+        if (this.history){
+            this.history.active(function(){
+                if (callback) callback();
+            });
+        }else{
+            MWF.xDesktop.requireApp("process.Xform", "widget.DocumentHistory", function(){
+                this.history = new MWF.xApplication.process.Xform.widget.DocumentHistory(this);
+                this.history.load(function(){
+                    if (callback) callback();
+                });
+            }.bind(this));
         }
-
-        this.getHistroyDocumentList(function(){
-            if (this.historyDocumentList && this.historyDocumentList.length){
-                this.getHistroyDocumentData(this.historyDocumentList[0].id, function(historyData){
-                    this.diffHistroy(historyData.data, currentData.data, function(diff_ds){
-                        this.resetData(diff_ds);
-
-                        if (this.layout_filetext){
-                            var insList = this.layout_filetext.getElements("ins");
-                            var delList = this.layout_filetext.getElements("del");
-
-                            var insTitle = o2.name.cn(currentData.person)+" 添加的内容\n"+currentData.createTime;
-                            insList.set("title", insTitle);
-                            var delTitle = o2.name.cn(currentData.person)+" 删除的内容\n"+currentData.createTime
-                            delList.set("title", delTitle);
-                            // insList.addEvents({
-                            //     "mouseover": function(){alert()}
-                            // })
-                        }
-
-                    }.bind(this));
-                }.bind(this))
-            }
-        }.bind(this));
     },
-    diffHistroy: function(earlyData, laterData, callback){
-        o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
-            diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
-                var html = [];
-                var pattern_amp = /&/g;
-                var pattern_lt = /</g;
-                var pattern_gt = />/g;
-                var pattern_para = /\n/g;
-                for (var x = 0; x < diffs.length; x++) {
-                    var op = diffs[x][0];    // Operation (insert, delete, equal)
-                    var data = diffs[x][1];  // Text of change.
-                    // var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
-                    //     .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
-                    var text = data;
-                    switch (op) {
-                        case DIFF_INSERT:
-                            html[x] = '<ins style="background:#e6ffe6; color:green">' + text + '</ins>';
-                            break;
-                        case DIFF_DELETE:
-                            html[x] = '<del style="background:#ffe6e6; color:red">' + text + '</del>';
-                            break;
-                        case DIFF_EQUAL:
-                            html[x] = '<span>' + text + '</span>';
-                            break;
-                    }
-                }
-                return html.join('');
-            };
-
-            var dmp = new diff_match_patch();
-            dmp.Diff_Timeout = parseFloat(10);
-            dmp.Diff_EditCost = parseFloat(4);
-            // var historyDataText = this.htmlToText(historyData);
-            // var currentDataText = this.htmlToText(currentData);
-            // var historyDataText = (historyData);
-            // var currentDataText = (currentData);
-            var diff_d = dmp.diff_main(earlyData, laterData);
-            dmp.diff_cleanupSemantic(diff_d);
-            var patch_list = dmp.patch_make(earlyData, laterData, diff_d);
-
-            var data = earlyData;
-            if (patch_list.length){
-                patch_list.each(function(patch){
-                    patch.start1;
-                    patch.start2;
-                    patch.length1;
-                    patch.length2;
-                    patch.diffs;
-
-                    var left = data.substring(0,patch.start1);
-                    var middle = data.substring(patch.start1, patch.length1);
-                    var right = data.substring(patch.start1+patch.length1, data.length);
 
 
-                }.bind(this));
-            }
-
-            //var diff_ds = dmp.diff_prettyHtml(diff_d);
-            if (callback) callback(diff_ds);
-        }.bind(this));
-    },
     htmlToText: function(html){
         var tmpdiv = new Element("div", {"html": html});
         var text = tmpdiv.get("text");
         tmpdiv.destroy();
         return text;
     },
-    getHistroyDocumentData: function(id, callback){
-        o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(id, function(json){
-            if (callback) callback(json.data);
-        }.bind(this));
-    },
-    getHistroyDocumentList: function(callback){
-        if (!this.historyDocumentList){
-            //var id = this.form.businessData.data["$work"].job;
-            var id = this.form.businessData.work.job;
-            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
-                this.historyDocumentList = json.data;
-                if (callback) callback();
-            }.bind(this));
-        }else{
-            if (callback) callback();
-        }
-    },
+
 
     _readFiletext: function(){
         //this._returnScale();
@@ -1039,7 +956,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _createEditor: function(inline){
         if (this.allowEdit){
             this.loadCkeditorFiletext(function(e){
-                debugger;
                 e.editor.focus();
                 e.editor.getSelection().scrollIntoView();
 
@@ -1198,6 +1114,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.toolbar.load();
         }.bind(this));
 
+        this.scrollNode = this.toolbarNode.getParentSrcollNode();
+        if (this.scrollNode){
+            this.scrollNode.addEvent("scroll", function(){
+                this.resizeToolbar();
+            }.bind(this));
+        }
+
         this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
         this.doublePageAction.addEvent("click", function(){
             if (this.options.pageShow!=="double"){
@@ -1284,7 +1207,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     createWaitSplitPage: function(){
-        debugger;
         this.node.mask({
             "style": {
                 "background-color": "#cccccc",
@@ -1761,7 +1683,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                             this.data[name] = tmpStrs.join("，");
                             break;
                         case "mainSend":
-                            debugger;
                             this.data[name] = strs.join("，") + "：";
                             break;
                         default:
@@ -1789,8 +1710,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
                 break;
             case "script":
-                debugger;
-
                 if (this.json[scriptItem] && this.json[scriptItem].code){
                     var v = this.form.Macro.exec(this.json[scriptItem].code, this);
                     this.data[name] = v;
@@ -1924,7 +1843,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     },
     setData: function(data, diffFiletext){
         if (data){
-            debugger;
             this.data = data;
             // this.data["$json"] = this.json;
             this._setBusinessData(data);
