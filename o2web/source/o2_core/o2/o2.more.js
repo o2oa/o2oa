@@ -219,15 +219,18 @@
     });
     if (window.Element && Element.implement) Element.implement({
         "isIntoView": function() {
-            var pNode = this.getParent();
-            while (pNode && ((pNode.getScrollSize().y-(pNode.getComputedSize().height+1)<=0) || pNode.getStyle("overflow")==="visible")) pNode = pNode.getParent();
+            // var pNode = this.getParent();
+            // while (pNode && ((pNode.getScrollSize().y-(pNode.getComputedSize().height+1)<=0) || pNode.getStyle("overflow")==="visible")) pNode = pNode.getParent();
+            //
+            var pNode = this.getParentSrcollNode();
 
             if (!pNode) pNode = document.body;
             var size = pNode.getSize();
             var srcoll = pNode.getScroll();
             var p = (pNode == window) ? {"x":0, "y": 0} : this.getPosition(pNode);
             var nodeSize = this.getSize();
-            return (p.x-srcoll.x>=0 && p.y-srcoll.y>=0) && (p.x+nodeSize.x<size.x+srcoll.x && p.y+nodeSize.y<size.y+srcoll.y)
+            //return (p.x-srcoll.x>=0 && p.y-srcoll.y>=0) && (p.x+nodeSize.x<size.x+srcoll.x && p.y+nodeSize.y<size.y+srcoll.y);
+            return (p.x-srcoll.x>=0 && p.y>=0) && (p.x+nodeSize.x<size.x+srcoll.x && p.y+nodeSize.y<size.y)
         },
         "appendHTML": function(html, where){
             if (this.insertAdjacentHTML){
@@ -417,13 +420,39 @@
                 "onClick": click
             });
         },
+        "scrollIn": function(where){
+            var wh = (where) ? where.toString().toLowerCase() : "center";
+
+            if (Browser.name=="ie" || Browser.name=="safari"){
+                var scrollNode = this.getParentSrcollNode();
+                var scrollFx = new Fx.Scroll(scrollNode);
+                var scroll = scrollNode.getScroll();
+                var size = scrollNode.getSize();
+                var thisSize = this.getComputedSize();
+                var p = this.getPosition(scrollNode);
+
+                if (wh=="start"){
+                    var top = 0;
+                    scrollFx.start(scroll.x, p.y-top+scroll.y);
+                }else if (wh=="end"){
+                    var bottom = size.y-thisSize.totalHeight;
+                    scrollFx.start(scroll.x, p.y-bottom+scroll.y);
+                }else{
+                    var center = size.y/2-thisSize.totalHeight/2;
+                    scrollFx.start(scroll.x, p.y-center+scroll.y);
+                }
+            }else{
+                if (wh!=="start" && wh!=="end") wh = "center"
+                this.scrollIntoView({"behavior": "smooth", "block": wh, "inline": "nearest"});
+            }
+        },
         scrollToNode: function(el, where){
             var scrollSize = this.getScrollSize();
             if (!scrollSize.y) return true;
             var wh = (where) ? where.toString().toLowerCase() : "bottom";
             var node = $(el);
-            var size = el.getComputedSize();
-            var p = el.getPosition(this);
+            var size = node.getComputedSize();
+            var p = node.getPosition(this);
             var thisSize = this.getComputedSize();
             var scroll = this.getScroll();
             if (wh==="top"){
