@@ -133,6 +133,49 @@ public class DingdingAttendanceFactory extends AbstractFactory {
     }
 
 
+    /**
+     * 人员统计数据
+     * @param person
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticDingdingPersonForMonth> findPersonStatistic(String person, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticDingdingPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticDingdingPersonForMonth> query = cb.createQuery(StatisticDingdingPersonForMonth.class);
+        Root<StatisticDingdingPersonForMonth> root = query.from(StatisticDingdingPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticDingdingPersonForMonth_.o2User), person);
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingPersonForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingPersonForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+
+    /**
+     * 部门统计数据
+     * @param unit
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticDingdingUnitForMonth> findUnitStatistic(String unit, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticDingdingUnitForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticDingdingUnitForMonth> query = cb.createQuery(StatisticDingdingUnitForMonth.class);
+        Root<StatisticDingdingUnitForMonth> root = query.from(StatisticDingdingUnitForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticDingdingUnitForMonth_.o2Unit), unit);
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingUnitForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingUnitForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
     ////////////////////////////////统计/////////////////////////////
 
     /**
