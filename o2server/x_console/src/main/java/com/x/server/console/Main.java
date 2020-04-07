@@ -203,16 +203,6 @@ public class Main {
 				continue;
 			}
 
-			matcher = CommandFactory.updateFile_pattern.matcher(cmd);
-			if (matcher.find()) {
-				if (updateFile(matcher.group(1), matcher.group(2))) {
-					stopAll();
-					System.exit(0);
-				} else {
-					continue;
-				}
-			}
-
 			matcher = CommandFactory.setPassword_pattern.matcher(cmd);
 			if (matcher.find()) {
 				setPassword(matcher.group(1), matcher.group(2));
@@ -266,15 +256,6 @@ public class Main {
 	private static boolean createEncryptKey(String password) {
 		try {
 			return new ActionCreateEncryptKey().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean updateFile(String path, String backup) {
-		try {
-			return new UpdateFile().execute(path, BooleanUtils.toBoolean(backup));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
