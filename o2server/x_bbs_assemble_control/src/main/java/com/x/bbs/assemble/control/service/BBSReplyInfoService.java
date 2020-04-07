@@ -3,7 +3,6 @@ package com.x.bbs.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
-import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -16,6 +15,7 @@ import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 论坛信息管理服务类
@@ -150,6 +150,11 @@ public class BBSReplyInfoService {
 				if( _subjectInfo != null ){
 					if( _subjectInfo.getReplyTotal() > 0 ){
 						_subjectInfo.setReplyTotal( _subjectInfo.getReplyTotal() - 1 );
+						//如果当前删除的回复，是主贴采纳的解决方案，那么需要把主贴采纳的解决方案置空
+						if( StringUtils.isNotEmpty( _subjectInfo.getAcceptReplyId() ) &&
+							StringUtils.equals( _subjectInfo.getAcceptReplyId(), id )){
+							_subjectInfo.setAcceptReplyId( null );
+						}
 						emc.check( _subjectInfo, CheckPersistType.all );
 					}
 				}
