@@ -13,12 +13,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
@@ -31,11 +28,15 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.service.processing.ThisApplication;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import fr.opensagres.poi.xwpf.converter.core.utils.StringUtils;
 
-public class DataMerge extends AbstractJob {
+public class Combine extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(DataMerge.class);
+	private static Logger logger = LoggerFactory.getLogger(Combine.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -55,12 +56,12 @@ public class DataMerge extends AbstractJob {
 							try {
 								ThisApplication.context().applications()
 										.getQuery(x_processplatform_service_processing.class, Applications
-												.joinQueryUri("workcompleted", workCompleted.getId(), "data", "merge"),
+												.joinQueryUri("workcompleted", workCompleted.getId(), "combine"),
 												workCompleted.getJob())
 										.getData(WoId.class);
 								count.incrementAndGet();
 							} catch (Exception e) {
-								throw new ExceptionDataMerge(e, workCompleted.getId(), workCompleted.getTitle(),
+								throw new ExceptionCombine(e, workCompleted.getId(), workCompleted.getTitle(),
 										workCompleted.getSequence());
 							}
 						} catch (Exception e) {
@@ -69,7 +70,7 @@ public class DataMerge extends AbstractJob {
 					}
 				}
 			} while (!targets.isEmpty());
-			logger.print("完成{}个已完成工作数据合并, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
+			logger.print("完成{}个已完成工作合并, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
@@ -77,28 +78,28 @@ public class DataMerge extends AbstractJob {
 
 	private List<WorkCompleted> list(EntityManagerContainer emc, String sequence) throws Exception {
 		Date date = new Date();
-		date = DateUtils.addDays(date, 0 - Config.processPlatform().getDataMerge().getThresholdDays());
+		date = DateUtils.addDays(date, 0 - Config.processPlatform().getCombine().getThresholdDays());
 		EntityManager em = emc.get(WorkCompleted.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
-		Path<String> id_path = root.get(WorkCompleted_.id);
-		Path<String> job_path = root.get(WorkCompleted_.job);
-		Path<String> sequence_path = root.get(WorkCompleted_.sequence);
-		Predicate p = cb.or(cb.isNull(root.get(WorkCompleted_.dataMerged)),
-				cb.equal(root.get(WorkCompleted_.dataMerged), false));
+		Path<String> idPath = root.get(WorkCompleted_.id);
+		Path<String> jobPath = root.get(WorkCompleted_.job);
+		Path<String> sequencePath = root.get(JpaObject_.sequence);
+		Predicate p = cb.or(cb.isNull(root.get(WorkCompleted_.merged)),
+				cb.equal(root.get(WorkCompleted_.merged), false));
 		p = cb.and(p, cb.lessThan(root.get(WorkCompleted_.completedTime), date));
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path).where(p).orderBy(cb.asc(sequence_path));
-		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
+		cq.multiselect(idPath, jobPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
+		List<Tuple> os = em.createQuery(cq).setMaxResults(100).getResultList();
 		List<WorkCompleted> list = new ArrayList<>();
 		for (Tuple o : os) {
 			WorkCompleted workCompleted = new WorkCompleted();
-			workCompleted.setId(o.get(id_path));
-			workCompleted.setJob(o.get(job_path));
-			workCompleted.setSequence(o.get(sequence_path));
+			workCompleted.setId(o.get(idPath));
+			workCompleted.setJob(o.get(jobPath));
+			workCompleted.setSequence(o.get(sequencePath));
 			list.add(workCompleted);
 		}
 		return list;

@@ -192,7 +192,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron);
+			return DateTools.cronAvailable(this.cron());
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
@@ -232,7 +232,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron);
+			return DateTools.cronAvailable(this.cron());
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨4点进行备份.")
@@ -275,7 +275,7 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
-		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		@FieldDescribe("是否启用.")
 		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
@@ -308,7 +308,7 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
-		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
+		@FieldDescribe("是否启用.")
 		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
