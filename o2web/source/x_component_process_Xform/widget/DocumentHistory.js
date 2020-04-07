@@ -138,31 +138,24 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         h = h-y-title_y;
         this.historyListContentAreaNode.setStyle("height", ""+h+"px");
 
+        this.historyListTitleNode = new Element("div", {"styles": this.css.historyListTitleNode}).inject(this.historyListTitleAreaNode);
+        this.historyListTitleInsertNode = new Element("div", {"styles": this.css.historyListTitleInsertNode}).inject(this.historyListTitleAreaNode);
+        this.historyListTitleDeleteNode = new Element("div", {"styles": this.css.historyListTitleDeleteNode}).inject(this.historyListTitleAreaNode);
+
+    },
+    loadHistoryList: function(){
         var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
         text = text.replace(/{history}/, this.historyDataList.length).replace(/{diff}/, this.diffCount);
-
-
 
         var insertStr = MWF.xApplication.process.Xform.LP.documentHistory.insertTimes;
         var deleteStr = MWF.xApplication.process.Xform.LP.documentHistory.deleteTimes;
         insertStr = insertStr.replace(/{times}/, this.diffInsertCount);
         deleteStr = deleteStr.replace(/{times}/, this.diffDeleteCount);
 
-        this.historyListTitleNode = new Element("div", {"styles": this.css.historyListTitleNode, "text": text}).inject(this.historyListAreaNode);
-        this.historyListTitleInsertNode = new Element("div", {"styles": this.css.historyListTitleInsertNode, "text": text}).inject(this.historyListAreaNode);
-        this.historyListTitleDeleteNode = new Element("div", {"styles": this.css.historyListTitleDeleteNode, "text": text}).inject(this.historyListAreaNode);
+        this.historyListTitleNode.set("text", text);
+        this.historyListTitleInsertNode.set("text", insertStr);
+        this.historyListTitleDeleteNode.set("text", deleteStr);
 
-
-        documentHistory
-
-
-        diffDeleteCount
-        this.historyListTitleAreaNode.set("", text);
-
-
-
-    },
-    loadHistoryList: function(){
         var original = this.historyDataList[0];
         this.diffPatch.each(function(patchObj){
             this.createHistoryListItem(patchObj);
@@ -757,12 +750,35 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         var obj = this.patchObj.obj;
         this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
         var patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
-        this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": html}).inject(this.node);
-
+        this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": patchHtml}).inject(this.node);
         this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
 
+        var _self = this;
         patch.diffs.each(function(diff){
-            diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode}).inject(this.diffsNode);
+            if (diff[0]!=0){
+                var infor = ((diff[1].length>50) ? diff[1].substring(0, 50)+"..." : diff[1]);
+                var tmp = new Element("div", {"html": infor});
+                infor = tmp.get("text");
+                tmp.destroy();
+                if (diff[0]==-1){
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.delete +": "+"<span style='color:red'><del>"+infor+"</del></span>"
+                }else{
+                    infor = MWF.xApplication.process.Xform.LP.documentHistory.insert +": "+"<span style='color:blue'><ins>"+infor+"</ins></span>"
+                }
+                diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode, "html": infor}).inject(this.diffsNode);
+                diffNode.store("diff", diff);
+
+                diffNode.addEvents({
+                    "mouseover": function(){
+                        var diff = this.retrieve("diff");
+                        var color = (diff[0]==-1) ? "#fbe0e7": "#e2edfb";
+                        this.setStyles({"background-color": color});
+                    },
+                    "mouseout": function(){ this.setStyles(_self.css.historyListItemDiffNode) }
+                });
+
+            }
         }.bind(this));
+
     }
 })
