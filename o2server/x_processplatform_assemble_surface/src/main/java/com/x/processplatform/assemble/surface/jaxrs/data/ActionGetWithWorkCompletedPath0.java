@@ -28,8 +28,8 @@ class ActionGetWithWorkCompletedPath0 extends BaseAction {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
-			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
-				Data data = gson.fromJson(workCompleted.getData(), Data.class);
+			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
+				Data data = workCompleted.getProperties().getData();
 				Object o = data.find(path0);
 				result.setData(gson.toJsonTree(o));
 			} else {
