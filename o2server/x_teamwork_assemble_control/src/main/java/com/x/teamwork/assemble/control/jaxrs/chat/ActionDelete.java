@@ -36,7 +36,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				chat = chatQueryService.get( id );
 				if ( chat == null) {
@@ -52,7 +52,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				chatPersistService.delete( id, effectivePerson );				
 				// 更新缓存
@@ -67,7 +67,7 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
 				Dynamic dynamic = dynamicPersistService.chatDeleteDynamic( chat, effectivePerson);
 				if( dynamic != null ) {

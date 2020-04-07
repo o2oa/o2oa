@@ -102,6 +102,11 @@ class V2Retract extends BaseAction {
 				throw new ExceptionRetractNoWorkLog(work.getId());
 			}
 
+			if (emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
+					TaskCompleted.activityToken_FIELDNAME, work.getActivityToken()) > 0) {
+				throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
+			}
+
 			taskCompleted = emc.firstEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 					workLog.getJob(), TaskCompleted.activityToken_FIELDNAME, workLog.getFromActivityToken(),
 					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());

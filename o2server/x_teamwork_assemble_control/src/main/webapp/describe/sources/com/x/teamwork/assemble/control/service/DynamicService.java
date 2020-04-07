@@ -728,7 +728,32 @@ class DynamicService {
 		
 		return dynamics;
 	}
-	
+
+	/**
+	 * 复制任务信息操作动态
+	 * @param sourceTask
+	 * @param newTask
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<Dynamic> getTaskCopyDynamic( Task sourceTask, Task newTask, EffectivePerson effectivePerson ) throws Exception {
+		String objectType =  "TASK";
+		String optType =  "TASK_INFO";
+		String title =  "复制工作任务信息";
+		List<Dynamic> dynamics = new ArrayList<>();
+		String viewUrl = null;
+		String description = null;
+
+		if( sourceTask != null ) {
+			optType =  "COPY";
+			title =  "工作任务信息复制";
+			description = effectivePerson.getName() + "复制了任务：" + sourceTask.getName() + "。";
+			dynamics.add( composeNewDynamic( objectType, title, description, viewUrl, optType, newTask, effectivePerson, false ) );
+		}
+		return dynamics;
+	}
+
 	/**
 	 * 更新工作任务管理者信息操作动态
 	 * @param object

@@ -50,14 +50,14 @@ public class ActionListNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			queryFilter = wrapIn.getQueryFilter();
 			if( StringUtils.isEmpty( wrapIn.getOwner() )) {
 				queryFilter.addEqualsTerm(  new EqualsTerm("owner", effectivePerson.getDistinguishedName() ) );
 			}
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNextWithFilter", effectivePerson.getDistinguishedName(),   flag, count,  wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = taskViewCache.get( cacheKey );
 			

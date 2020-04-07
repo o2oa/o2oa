@@ -14,7 +14,6 @@ MWF.xApplication.Org.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Org.LP;
 		this.restActions = MWF.Actions.get("x_organization_assemble_control");
-
 	},
 	loadApplication: function(callback){
 		this.createNode();
@@ -87,6 +86,9 @@ MWF.xApplication.Org.Main = new Class({
 		}
 		if (this.importConfiguratorContentNode){
             this.importConfiguratorContentNode.destroy();
+		}
+		if (this.privateNamesQueryPowerContentNode){
+            this.privateNamesQueryPowerContentNode.destroy();
 		}
         if (this.pingyinArea) this.pingyinArea.empty();
 	},
@@ -202,6 +204,27 @@ MWF.xApplication.Org.Main = new Class({
                     }.bind(this)
                 }).load();
 			}.bind(this));
+		}.bind(this));
+	},
+	privateNamesQueryPower:function(){
+		debugger;
+		this.clearContent();
+        this.privateNamesQueryPowerContentNode = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.privateNamesQueryPowerContentNode.set("load", {"onSuccess": function(){
+			this.queryPrivateConfigAreaNode = this.privateNamesQueryPowerContentNode.getElement(".queryPrivateConfigAreaNode");
+
+            o2.loadCss(this.path+this.options.style+"/queryPrivateConfig.css", this.privateNamesQueryPowerContentNode, function(){
+                this.loadprivateNamesQueryPower();
+            }.bind(this));
+        }.bind(this)}).load(this.path+this.options.style+"/queryPrivateConfigView.html");
+	},
+    loadprivateNamesQueryPower: function(){
+		MWF.xDesktop.requireApp("Org", "PrivateConfig", function(){
+				this.privateConfigurator = new MWF.xApplication.Org.PrivateConfig(this.privateNamesQueryPowerContentNode);
+				this.privateConfigurator.app = this;
+				this.privateConfigurator.load();
 		}.bind(this));
 	},
 

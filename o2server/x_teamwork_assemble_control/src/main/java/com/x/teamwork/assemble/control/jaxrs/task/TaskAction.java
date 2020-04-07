@@ -111,6 +111,25 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "复制指定的工作为新的工作.", action = ActionCopyTask.class)
+	@GET
+	@Path("copy/{tid}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void copyTask(@Suspended final AsyncResponse asyncResponse,
+								   @Context HttpServletRequest request,
+								   @JaxrsParameterDescribe("指定任务ID") @PathParam("tid") String tid) {
+		ActionResult<ActionCopyTask.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopyTask().execute( request, effectivePerson, tid );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "查询我的项目首页中工作任务视图信息.", action = ActionStatisticMyTaskViews.class)
 	@GET
 	@Path("statitic/group/{projectId}")

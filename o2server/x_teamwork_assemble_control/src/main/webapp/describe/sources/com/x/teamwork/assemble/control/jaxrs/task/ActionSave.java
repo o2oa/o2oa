@@ -226,6 +226,15 @@ public class ActionSave extends BaseAction {
 			}
 		}
 
+		//查询该任务和任务组的绑定情况
+		if (check) {
+			if( !taskGroupQueryService.existsWithTaskAndGroup( wi.getTaskGroupId(), task.getId() )){
+				//添加任务和任务组的关联
+				taskGroupPersistService.addTaskToGroup( task.getId(), wi.getTaskGroupId() );
+				taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), task.getId() );
+			}
+		}
+
 		//检查标签是否有变动
 		if (check) {
 			//检查任务和标签的所有关联

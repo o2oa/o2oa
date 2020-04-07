@@ -33,14 +33,14 @@ public class ActionRemoveTagRele extends BaseAction {
 		Dynamic dynamic = null;
 		
 		Wo wo = new Wo();
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( taskId )) {
 				check = false;
 				Exception exception = new TaskIdEmptyException();
 				result.error(exception);
 			}
 		}		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( tagId )) {
 				check = false;
 				Exception exception = new TagIdEmptyException();
@@ -48,7 +48,7 @@ public class ActionRemoveTagRele extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskTag = taskTagQueryService.get( tagId );
 				if ( taskTag == null) {
@@ -64,7 +64,7 @@ public class ActionRemoveTagRele extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				task = taskQueryService.get( taskId );
 				if ( task == null) {
@@ -80,7 +80,7 @@ public class ActionRemoveTagRele extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				
 				List<String> ids = taskTagPersistService.removeTagRele( taskId, tagId, effectivePerson);
@@ -99,7 +99,7 @@ public class ActionRemoveTagRele extends BaseAction {
 			}			
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
 				dynamic = dynamicPersistService.removeTaskTagReleDynamic( task, taskTag, effectivePerson );
 				if( dynamic != null ) {

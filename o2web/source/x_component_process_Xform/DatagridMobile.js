@@ -331,6 +331,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "styles": this.form.css.mobileDatagridAddActionNode,
             "text": MWF.xApplication.process.Xform.LP.add
         }).inject(actionNode);
+        var cancelAction = new Element("div", {
+            "styles": this.form.css.mobileDatagridDelActionNode,
+            "text": MWF.xApplication.process.Xform.LP.cancelEdit
+        }).inject(actionNode);
         var completeAction = new Element("div", {
             "styles": this.form.css.mobileDatagridCompleteActionNode,
             "text": MWF.xApplication.process.Xform.LP.completedEdit
@@ -346,6 +350,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         });
         completeAction.addEvent("click", function(e){
             _self._completeLineEdit();
+        });
+        cancelAction.addEvent("click", function(e){
+            _self._cancelLineEdit(e);
         });
         addAction.addEvent("click", function(e){
             _self._addLine();
@@ -410,6 +417,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             if (actions[1]) actions[1].setStyle("display", "none");
             if (actions[2]) actions[2].setStyle("display", "none");
             if (actions[3]) actions[3].setStyle("display", "block");
+            if (actions[4]) actions[4].setStyle("display", "block");
 
             //this.addAction.inject(this.table, "after");
             //this.addAction.set("text", MWF.xApplication.process.Xform.LP.completedEdit);
@@ -462,7 +470,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
         var tables = this.node.getElements("table");
         var idx;
-        var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}});
+        var dataDiv = new Element("div.datagridDataDiv", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}});
         if (this.totalDiv){
             idx = tables.length-2;
             dataDiv.inject(this.totalDiv, "before");
@@ -488,6 +496,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         if (actions[1]) actions[1].setStyle("display", "none");
         if (actions[2]) actions[2].setStyle("display", "none");
         if (actions[3]) actions[3].setStyle("display", "block");
+        if (actions[4]) actions[4].setStyle("display", "block");
 
         if (!dataDiv.isIntoView()) dataDiv.scrollIntoView(true);
 
@@ -499,6 +508,52 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
         this.validationMode();
         this.fireEvent("addLine");
+    },
+    _cancelLineEdit : function(e){
+        var datagrid = this;
+        var _self = this;
+        this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.cancelDatagridLineEditTitle, MWF.xApplication.process.Xform.LP.cancelDatagridLineEdit, 300, 120, function(){
+
+            datagrid.isEdit = false;
+
+            if (datagrid.currentEditLine) {
+                // datagrid.currentEditLine.setStyle("display", "table-row");
+
+                var currentEditTable = datagrid.currentEditLine.getElement("table");
+                currentEditTable.setStyle("display", "table");
+
+                var actions = datagrid.currentEditLine.getFirst("div").getLast("div").getElements("div");
+                if (actions[0]) actions[0].setStyle("display", "block");
+                if (actions[1]) actions[1].setStyle("display", "block");
+                if (actions[2]) actions[2].setStyle("display", "block");
+                if (actions[3]) actions[3].setStyle("display", "none");
+                if (actions[4]) actions[4].setStyle("display", "none");
+
+                datagrid._editorTrGoBack();
+            }else{
+                var datagridDataDiv = e.target.getParent(".datagridDataDiv");
+                datagrid._editorTrGoBack();
+                if(datagridDataDiv)datagridDataDiv.destroy();
+            }
+
+            datagrid.currentEditLine = null;
+
+            if (!_self.gridData.data.length){
+                if (_self.addAction){
+                    _self.addAction.setStyle("display", "block");
+                }else{
+                    _self._loadAddAction();
+                }
+            }
+
+            this.close();
+
+            datagrid.fireEvent("cancelLineEdit");
+        }, function(){
+            // var color = currentTr.retrieve("bgcolor");
+            // currentTr.tween("background", color);
+            this.close();
+        }, null, null, this.form.json.confirmStyle);
     },
     _completeLineEdit: function(){
         if (!this.editValidation()){
@@ -522,6 +577,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             if (actions[1]) actions[1].setStyle("display", "block");
             if (actions[2]) actions[2].setStyle("display", "block");
             if (actions[3]) actions[3].setStyle("display", "none");
+            if (actions[4]) actions[4].setStyle("display", "none");
         }else{
             //dataNode = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.table, "before");
             //var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataNode);
@@ -530,6 +586,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             if (actions[1]) actions[1].setStyle("display", "block");
             if (actions[2]) actions[2].setStyle("display", "block");
             if (actions[3]) actions[3].setStyle("display", "none");
+            if (actions[4]) actions[4].setStyle("display", "none");
 
             table = new Element("table", {
                 styles : this.json.tableStyles
@@ -758,7 +815,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 datagrid._loadTotal();
                 datagrid.getData();
 
-                if (!_self.gridData.data.length) if (_self.addAction) _self.addAction.setStyle("display", "block");
+                debugger;
+
+                if (!_self.gridData.data.length){
+                    if (_self.addAction){
+                        _self.addAction.setStyle("display", "block");
+                    }else{
+                        _self._loadAddAction();
+                    }
+                }
                 this.close();
 
                 _self.fireEvent("afterDeleteLine");
@@ -908,7 +973,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     if (m.type=="number"){
                         var cell = cells[m.index];
                         var addv = cell.get("text").toFloat();
-                        tmpV = tmpV.plus(addv);
+                        tmpV = tmpV.plus(addv||0);
                         //tmpV = tmpV + addv;
                     }
                     if (m.type=="count"){

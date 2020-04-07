@@ -79,6 +79,7 @@ public class TaskPersistService {
 		if ( task == null) {
 			throw new Exception( "task is null." );
 		}
+
 		if( StringUtils.isEmpty( task.getName() )) {
 			task.setName("无标题工作任务("+ DateOperation.getNowDateTime() +")");
 		}		
