@@ -350,7 +350,7 @@
         "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
         "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
         "JSONTemplate": ["/o2_lib/mootools/plugin/Template.js"],
-        "kity": ["/o2_lib/kityminder/kity/kity.min.js"],
+        "kity": ["/o2_lib/kityminder/kity/kity.js"],
         "kityminder": ["/o2_lib/kityminder/core/dist/kityminder.core.js"]
     };
     var _loaded = {};
