@@ -64,10 +64,14 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class);
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
+
 		if( !showSubReply ){
-			p = cb.and( p,cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
+			Predicate p_showSubReply = cb.isNull( root.get( BBSReplyInfo_.parentId ));
+			p_showSubReply = cb.or( p_showSubReply, cb.equal( root.get( BBSReplyInfo_.parentId), ""));
+			p = cb.and( p, p_showSubReply);
 		}
 		cq.select( cb.count( root ) );
+//		System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).toString() );
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 	
@@ -112,12 +116,17 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
 		Predicate p = cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId );
 		if( !showSubReply ){
-			p = cb.and( p, cb.equal(root.get( BBSReplyInfo_.parentId ), ""));
+			Predicate p_showSubReply = cb.isNull( root.get( BBSReplyInfo_.parentId ));
+			p_showSubReply = cb.or( p_showSubReply, cb.equal( root.get( BBSReplyInfo_.parentId), ""));
+			p = cb.and( p, p_showSubReply);
 		}
+
 		cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
 		if( maxCount == null ){
+//			System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).toString() );
 			return em.createQuery(cq.where(p)).getResultList();
 		}else{
+//			System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).setMaxResults( maxCount ).toString() );
 			return em.createQuery(cq.where(p)).setMaxResults( maxCount ).getResultList();
 		}
 	}

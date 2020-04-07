@@ -38,7 +38,7 @@ public class ActionListMyTaskView extends BaseAction {
 			result.error(exception);
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListMyTaskView", projectId, effectivePerson.getDistinguishedName(), effectivePerson.isManager() );
 			element = taskViewCache.get( cacheKey );
 			

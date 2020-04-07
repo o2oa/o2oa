@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -49,10 +50,9 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 		if (check) {
 			if ( ListTools.isEmpty(wi.getPermissionList())) {
-				wi.setPermissionList(new ArrayList<>());
-//				check = false;
-//				Exception exception = new ExceptionServiceLogic("文档权限为空，该文档将没有任何用户可以访问。ID：" + wi.getDocId());
-//				result.error(exception);
+				check = false;
+				Exception exception = new ExceptionServiceLogic("文档权限为空，该文档将没有任何用户可以访问。ID：" + wi.getDocId());
+				result.error(exception);
 			}
 		}
 
@@ -74,7 +74,7 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 
 		if (check) {
 			try {
-				documentPersistService.refreshDocumentPermission( document.getId(), wi.getPermissionList() );
+				documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionServiceLogic(e, "系统在为文档设置用户访问权限过程中发生异常。ID：" + wi.getDocId());
@@ -83,6 +83,9 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 			}
 
 		}
+
+		ApplicationCache.notify( Document.class );
+
 		return result;
 	}
 
