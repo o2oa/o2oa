@@ -319,7 +319,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     //     }.bind(this));
     // },
     _loadPageNode : function(){
-        debugger;
         this.viewPageAreaNode.empty();
         this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
             countPerPage: this.json.pageSize || this.options.perPageCount,
@@ -387,7 +386,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }.bind(this));
     },
     loadCurrentPageData: function( callback ){
-        debugger;
         //是否需要在翻页的时候清空之前的items ?
         this.items = [];
 
@@ -628,12 +626,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     _loadModuleEvents : function(){
-        debugger;
         Object.each(this.viewJson.events, function(e, key){
             if (e.code){
                 if (this.options.moduleEvents.indexOf(key)!==-1){
                     this.addEvent(key, function(event, target){
-                        debugger;
                         return this.Macro.fire(e.code, target || this, event);
                     }.bind(this));
                 }
