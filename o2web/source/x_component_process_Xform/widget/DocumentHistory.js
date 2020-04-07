@@ -132,13 +132,44 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 
         this.historyListTitleAreaNode = new Element("div", {"styles": this.css.historyListTitleAreaNode}).inject(this.historyListAreaNode);
         this.historyListContentAreaNode = new Element("div", {"styles": this.css.historyListContentAreaNode}).inject(this.historyListAreaNode);
+
+        var y = this.historyListContentAreaNode.getEdgeHeight();
+        var title_y = this.historyListTitleAreaNode.getComputedSize().totalHeight;
+        h = h-y-title_y;
+        this.historyListContentAreaNode.setStyle("height", ""+h+"px");
+
+        var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
+        text = text.replace(/{history}/, this.historyDataList.length).replace(/{diff}/, this.diffCount);
+
+
+
+        var insertStr = MWF.xApplication.process.Xform.LP.documentHistory.insertTimes;
+        var deleteStr = MWF.xApplication.process.Xform.LP.documentHistory.deleteTimes;
+        insertStr = insertStr.replace(/{times}/, this.diffInsertCount);
+        deleteStr = deleteStr.replace(/{times}/, this.diffDeleteCount);
+
+        this.historyListTitleNode = new Element("div", {"styles": this.css.historyListTitleNode, "text": text}).inject(this.historyListAreaNode);
+        this.historyListTitleInsertNode = new Element("div", {"styles": this.css.historyListTitleInsertNode, "text": text}).inject(this.historyListAreaNode);
+        this.historyListTitleDeleteNode = new Element("div", {"styles": this.css.historyListTitleDeleteNode, "text": text}).inject(this.historyListAreaNode);
+
+
+        documentHistory
+
+
+        diffDeleteCount
+        this.historyListTitleAreaNode.set("", text);
+
+
+
     },
     loadHistoryList: function(){
         var original = this.historyDataList[0];
-        this.diffPatch.each();
+        this.diffPatch.each(function(patchObj){
+            this.createHistoryListItem(patchObj);
+        }.bind(this));
     },
-    createHistoryListItem: function(){
-
+    createHistoryListItem: function(patchObj){
+        new MWF.xApplication.process.Xform.widget.DocumentHistory.Item(this, patchObj);
     },
 
 
@@ -176,7 +207,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             "person": layout.session.user.distinguishedName,
             "activityName": this.documentEditor.form.businessData.activity.name,
             "createTime" : (new Date()).format("db")
-        }
+        };
         this.historyDataList.push(currentData);
     },
     getHistroyDocumentData: function(id, callback, i, historyDataList){
@@ -208,14 +239,18 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     initAnimation: function(){
         this.diffPatch =  this.diffHistroy();
         this.diffCount = 0;
+        this.diffInsertCount = 0;
+        this.diffDeleteCount = 0;
         this.diffPatch.each(function(patch){
             patch.patch.diffs.each(function(diff){
                 if (diff[0]!=0) this.diffCount++;
+                if (diff[0]==-1) this.diffDeleteCount++;
+                if (diff[0]==1) this.diffInsertCount++;
             }.bind(this));
         }.bind(this));
 
         // this.initData();
-        // this.initAnimationStatus();
+        this.initAnimationStatus();
     },
     initData: function(){
         this.currentHistoryData = this.historyDataList[0].data;
@@ -302,10 +337,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.toolbar.childrenButton[3].disable();
         this.toolbar.childrenButton[4].disable();
 
-        if (!this.playing){
-            this.initData();
-            this.initAnimationStatus();
-        }
+        if (!this.playing) this.initData();
         this.do();
     },
     prev: function(){
@@ -713,13 +745,24 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
 });
 
 MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
-    initialize: function(history, patch){
+    initialize: function(history, patchObj){
         this.history = history;
         this.documentEditor = this.history.documentEditor;
         this.css = this.history.css;
+        this.patchObj = patchObj;
         this.load();
     },
     load: function(){
+        var patch = this.patchObj.patch;
+        var obj = this.patchObj.obj;
+        this.node = new Element("div", {"styles": this.css.historyListItemNode}).inject(this.history.historyListContentAreaNode);
+        var patchHtml = "<div style='font-weight: bold; height: 30px; line-height: 30px'>"+o2.name.cn(obj.person)+" ["+obj.activityName+"]</div><div style='height: 20px; line-height: 20px; color:#666666'>"+obj.createTime+"</div>"
+        this.patchNode = new Element("div", {"styles": this.css.historyListItemPatchNode, "html": html}).inject(this.node);
 
+        this.diffsNode = new Element("div", {"styles": this.css.historyListItemDiffsNode}).inject(this.node);
+
+        patch.diffs.each(function(diff){
+            diffNode = new Element("div", {"styles": this.css.historyListItemDiffNode}).inject(this.diffsNode);
+        }.bind(this));
     }
 })
