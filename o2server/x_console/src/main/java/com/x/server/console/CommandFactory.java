@@ -48,8 +48,8 @@ public class CommandFactory {
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) {0,}$",
-			Pattern.CASE_INSENSITIVE);
+	// public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) {0,}$",
+	// 		Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
 
@@ -110,8 +110,8 @@ public class CommandFactory {
 			// help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)    change initial manager password.";
 			help += StringUtils.LF;
-			help += " update file (path) (backup)            upgrade to new version from local zip file.";
-			help += StringUtils.LF;
+			// help += " update file (path) (backup)            upgrade to new version from local zip file.";
+			// help += StringUtils.LF;
 			// help += " compact data (passwd) compact local h2 repository database.";
 			// help += StringUtils.LF;
 			// help += " erase content (cms|pp|bbs|log) (passwd)" + "\t\t" + "remove all
