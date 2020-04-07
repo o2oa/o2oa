@@ -80,14 +80,13 @@ class ActionGetSystemLog extends BaseAction {
 						dos.writeLong(lastPoint);
 						dos.flush();
 
-						logger.info("socket dispatch getSystemLog to {}:{} lastPoint={}", node, nodes.get(node).nodeAgentPort(), lastPoint);
+						//logger.debug("socket dispatch getSystemLog to {}:{} lastPoint={}", node, nodes.get(node).nodeAgentPort(), lastPoint);
 
 						String result = dis.readUTF();
 						if(StringUtils.isNotEmpty(result) && result.startsWith("[")){
 							List<Wo> list = gson.fromJson(result, new TypeToken<List<Wo>>(){}.getType());
 							allLogs.addAll(list);
 							long returnLastPoint = dis.readLong();
-							logger.info("用户的cacheKey={}，最后日志标志：{}", cacheKey, returnLastPoint);
 							if(clo==null){
 								clo = new CacheLogObject();
 								clo.setUserToken(key);

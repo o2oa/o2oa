@@ -57,7 +57,7 @@ public class NodeAgent extends Thread {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						String json = dis.readUTF();
-						logger.info("receive socket json={}",json);
+						//logger.info("receive socket json={}",json);
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
