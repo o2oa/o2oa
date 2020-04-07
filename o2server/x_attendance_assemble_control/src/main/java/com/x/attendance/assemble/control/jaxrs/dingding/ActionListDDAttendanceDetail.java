@@ -74,6 +74,12 @@ public class ActionListDDAttendanceDetail extends BaseAction {
             if (StringUtils.isNotEmpty(wi.getPerson())) {
                 EqualsTerms equals = new EqualsTerms();
                 equals.put("o2User", wi.getPerson());
+                if (isCheckTypeEnable(wi.getCheckType())){
+                    equals.put("checkType", wi.getCheckType());
+                }
+                if (isTimeResultEnable(wi.getTimeResult())) {
+                    equals.put("timeResult", wi.getTimeResult());
+                }
                 logger.info("equals :"+equals.toString());
                 result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
                         null, null, null, null, null, betweenTerms, true, DESC);
@@ -81,11 +87,24 @@ public class ActionListDDAttendanceDetail extends BaseAction {
             if (StringUtils.isNotEmpty(wi.getUnit())) {
                 EqualsTerms equals = new EqualsTerms();
                 equals.put("o2Unit", wi.getUnit());
+                if (isCheckTypeEnable(wi.getCheckType())){
+                    equals.put("checkType", wi.getCheckType());
+                }
+                if (isTimeResultEnable(wi.getTimeResult())) {
+                    equals.put("timeResult", wi.getTimeResult());
+                }
                 logger.info("equals :"+equals.toString());
                 result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
                         null, null, null, null, null, betweenTerms, true, DESC);
             }
             if (StringUtils.isNotEmpty(wi.getTopUnit())) {
+                EqualsTerms equals = new EqualsTerms();
+                if (isCheckTypeEnable(wi.getCheckType())){
+                    equals.put("checkType", wi.getCheckType());
+                }
+                if (isTimeResultEnable(wi.getTimeResult())) {
+                    equals.put("timeResult", wi.getTimeResult());
+                }
                 InTerms ins = new InTerms();
                 List<String> subUnits = business.organization().unit().listWithUnitSubNested( wi.getTopUnit() );
                 if (subUnits == null || subUnits.isEmpty()) {
@@ -94,12 +113,32 @@ public class ActionListDDAttendanceDetail extends BaseAction {
                 subUnits.add(wi.getTopUnit());
                 ins.put("o2Unit", subUnits);
                 logger.info("ins :"+ins.toString());
-                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null,
+                result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
                         null, ins, null, null, null, betweenTerms, true, DESC);
             }
 
         }
         return result;
+    }
+
+    private boolean isCheckTypeEnable(String type) {
+        if (StringUtils.isEmpty(type) || (!AttendanceDingtalkDetail.OffDuty.equals(type) && !AttendanceDingtalkDetail.OnDuty.equals(type))) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isTimeResultEnable(String result) {
+        if (StringUtils.isEmpty(result) ||
+                (!AttendanceDingtalkDetail.TIMERESULT_Absenteeism.equals(result)
+                        && !AttendanceDingtalkDetail.TIMERESULT_Early.equals(result)
+                        && !AttendanceDingtalkDetail.TIMERESULT_Late.equals(result)
+                        && !AttendanceDingtalkDetail.TIMERESULT_NORMAL.equals(result)
+                        && !AttendanceDingtalkDetail.TIMERESULT_NotSigned.equals(result)
+                        && !AttendanceDingtalkDetail.TIMERESULT_SeriousLate.equals(result))) {
+            return false;
+        }
+        return true;
     }
 
     public static Date getMonthLastDay(String year, String month) throws Exception {
@@ -160,8 +199,27 @@ public class ActionListDDAttendanceDetail extends BaseAction {
         private String unit;
         @FieldDescribe("顶级部门，会及联查询下级部门")
         private String topUnit;
+        @FieldDescribe("打卡类型:OffDuty|OnDuty")
+        private String checkType;
+        @FieldDescribe("打卡结果:Normal|Early|Late|SeriousLate|Absenteeism|NotSigned")
+        private String timeResult;
 
 
+        public String getCheckType() {
+            return checkType;
+        }
+
+        public void setCheckType(String checkType) {
+            this.checkType = checkType;
+        }
+
+        public String getTimeResult() {
+            return timeResult;
+        }
+
+        public void setTimeResult(String timeResult) {
+            this.timeResult = timeResult;
+        }
 
         public String getYear() {
             return year;
