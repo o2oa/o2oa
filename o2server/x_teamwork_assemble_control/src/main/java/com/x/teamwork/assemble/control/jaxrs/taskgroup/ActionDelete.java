@@ -28,7 +28,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskGroup = taskGroupQueryService.get(flag);
 				if ( taskGroup == null) {
@@ -44,7 +44,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskGroupPersistService.delete(flag, effectivePerson );				
 				// 更新缓存

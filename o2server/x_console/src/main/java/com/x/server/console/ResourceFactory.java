@@ -244,8 +244,10 @@ public class ResourceFactory {
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			services[i] = Executors.newSingleThreadExecutor();
+			//services[i] = Executors.newSingleThreadExecutor();
+			services[i] = Executors.newFixedThreadPool(1);
 		}
+	
 		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
 	}
 

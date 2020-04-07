@@ -25,6 +25,8 @@ object CalendarOB {
     const val MONTHLY = "MONTHLY"
     const val YEARLY = "YEARLY"
     const val NONE = "NONE"
+    const val CalendarTypePERSON = "PERSON"
+    const val CalendarTypeUNIT = "UNIT"
 
     val deepColor = linkedMapOf(
             0 to "#428ffc",
@@ -47,9 +49,10 @@ object CalendarOB {
             7 to "#cae2ff"
     )
 
+
     val calendarTypes = linkedMapOf(
-            "PERSON" to "个人日历",
-            "UNIT" to "组织日历"
+            CalendarTypePERSON to "个人日历",
+            CalendarTypeUNIT to "组织日历"
     )
 
     val remindOptions = linkedMapOf(

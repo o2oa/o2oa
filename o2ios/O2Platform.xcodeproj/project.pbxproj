@@ -6619,7 +6619,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 66;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6651,7 +6651,7 @@
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
 				);
-				MARKETING_VERSION = 5.0.6;
+				MARKETING_VERSION = 5.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6733,7 +6733,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 66;
+				CURRENT_PROJECT_VERSION = 67;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6765,7 +6765,7 @@
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
 				);
-				MARKETING_VERSION = 5.0.6;
+				MARKETING_VERSION = 5.0.7;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

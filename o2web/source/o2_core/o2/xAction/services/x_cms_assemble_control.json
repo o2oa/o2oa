@@ -5,6 +5,7 @@
   "getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"},
 
   "listAllAppType" : {"uri":"/jaxrs/appinfo/list/appType"},
+  "listAllAppTypeByManager" : {"uri":"/jaxrs/appinfo/list/appType/manager"},
   "listWhatICanManageWithAppType" : {"uri":"/jaxrs/appinfo/list/manage/type/{appType}"},
   "listWhatICanViewWithAppType" : {"uri":"/jaxrs/appinfo/list/user/view/all/type/{appType}"},
 

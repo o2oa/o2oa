@@ -24,12 +24,12 @@ PODS:
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
   - EmptyDataSet-Swift (5.0.0)
-  - Eureka (4.3.0)
+  - Eureka (5.2.1)
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - FSCalendar (2.8.0)
-  - HandyJSON (5.0.0)
+  - HandyJSON (5.0.2-beta)
   - ImageSlideshow (1.7.0):
     - ImageSlideshow/Core (= 1.7.0)
   - ImageSlideshow/Alamofire (1.7.0):
@@ -92,10 +92,10 @@ DEPENDENCIES:
   - Chrysan
   - CocoaLumberjack/Swift (~> 3.5)
   - EmptyDataSet-Swift (~> 5.0.0)
-  - Eureka
+  - Eureka (~> 5.2.1)
   - FMDB (~> 2.6.2)
   - FSCalendar
-  - HandyJSON (~> 5.0.0)
+  - HandyJSON (~> 5.0.2-beta)
   - ImageSlideshow (~> 1.5)
   - ImageSlideshow/Alamofire
   - IQKeyboardManagerSwift
@@ -193,10 +193,10 @@ SPEC CHECKSUMS:
   Chrysan: 6bf6682adb2db76f7f5c103930a8c6670f54eebe
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   EmptyDataSet-Swift: eb382c0c87a2d9c678077385a595cec52da38171
-  Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
+  Eureka: c883105488e05bc65539f583246ecf9657cabbfe
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
-  HandyJSON: 992f2d661716d6a91de82d0056927bc7813b5770
+  HandyJSON: e18b035d60cb4847c609a59bb831c5db8c549663
   ImageSlideshow: f8eec5e37a980f60923b585ff23b0e140fd24018
   IQKeyboardManagerSwift: b07ccf9d8cafe993dcd6cb794eb4ba34611a0c4e
   JCore: 1a426120b510cdebfd67b82bfb9483238ee09413
@@ -224,6 +224,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: d1360080e7994d58c830e43b2e9d56aa35f3e3e6
+PODFILE CHECKSUM: db8bd463f4a5f9d40d99734694cef3178373900d
 
 COCOAPODS: 1.8.4

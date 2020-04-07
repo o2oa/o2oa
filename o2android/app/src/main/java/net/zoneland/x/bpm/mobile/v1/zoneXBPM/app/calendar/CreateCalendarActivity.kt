@@ -15,12 +15,16 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.bigkoo.pickerview.OptionsPickerView
 import com.readystatesoftware.systembartint.SystemBarTintManager
+import com.wugang.activityresult.library.ActivityResult
 import kotlinx.android.synthetic.main.activity_create_calendar.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.CalendarOB.CalendarTypeUNIT
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateCalendarViewModel
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.databinding.ActivityCreateCalendarBinding
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.CalendarPickerOption
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.ImmersedStatusBarUtils
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
@@ -68,6 +72,12 @@ class CreateCalendarActivity : AppCompatActivity() {
             XToast.toastShort(this, "日历名称不能为空！")
             return
         }
+        if (viewModel.calendarTypeKey.value == CalendarTypeUNIT) {
+            if (TextUtils.isEmpty(viewModel.target.value)){
+                XToast.toastShort(this, "日历所属组织不能为空！")
+                return
+            }
+        }
         if (TextUtils.isEmpty(viewModel.calendarId.value)) {
             viewModel.saveCalendar()
         } else {
@@ -87,22 +97,82 @@ class CreateCalendarActivity : AppCompatActivity() {
 
     /**
      * 日历类型 选择
-     * @2018-8-8 先删除这个事件 暂时不能选择类型 因为组织类型还有其他字段问题。。。。
      */
-//    fun chooseType(view: View) {
-//        val picker = OptionsPickerView.Builder(this, OptionsPickerView.OnOptionsSelectListener { option1, _, _, _ ->
-//            viewModel.setCalendarType(typeList[option1])
-//        }).setTitleText(getString(R.string.calendar_type_choose))
-//                .isDialog(true)
-//                .build()
-//        picker.setPicker(typeList)
-//        var selectIndex = typeList.indexOfFirst { it.name == viewModel.calendarType.value }
-//        if (selectIndex < 0) {
-//            selectIndex = 0
-//        }
-//        picker.setSelectOptions(selectIndex)
-//        picker.showDialog()
-//    }
+    fun chooseType(view: View) {
+        if (TextUtils.isEmpty(viewModel.calendarId.value)) {
+            val picker = OptionsPickerView.Builder(this, OptionsPickerView.OnOptionsSelectListener { option1, _, _, _ ->
+                viewModel.setCalendarType(typeList[option1])
+            }).setTitleText(getString(R.string.calendar_type_choose))
+                    .isDialog(true)
+                    .build()
+            picker.setPicker(typeList)
+            var selectIndex = typeList.indexOfFirst { it.name == viewModel.calendarType.value }
+            if (selectIndex < 0) {
+                selectIndex = 0
+            }
+            picker.setSelectOptions(selectIndex)
+            picker.showDialog()
+        }
+    }
+
+    //选择所属组织
+    fun chooseOrgTarget(view: View) {
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.departmentPicker),multiple=false)
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(bundle)
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null) {
+                         viewModel.target.value = result.departments.firstOrNull()?.distinguishedName
+                    }
+                }
+    }
+
+    //选择管理者
+    fun chooseManageablePersonList(view: View) {
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf("personPicker"),multiple=true)
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(bundle)
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null) {
+                        viewModel.manageablePersonList.value = result.users.map { it.distinguishedName }
+                    }
+                }
+    }
+    //选择可见范围
+    fun chooseViewableList(view: View) {
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.personPicker, ContactPickerActivity.departmentPicker,ContactPickerActivity.groupPicker), multiple=true)
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(bundle)
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null) {
+                        viewModel.viewablePersonList.value = result.users.map { it.distinguishedName }
+                        viewModel.viewableUnitList.value = result.departments.map { it.distinguishedName }
+                        viewModel.viewableGroupList.value = result.groups.map { it.distinguishedName }
+                    }
+                }
+    }
+    //选择可新建日程范围
+    fun choosePublishableList(view: View) {
+        val bundle = ContactPickerActivity.startPickerBundle(arrayListOf(ContactPickerActivity.personPicker, ContactPickerActivity.departmentPicker,ContactPickerActivity.groupPicker), multiple=true)
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(bundle)
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null) {
+                        viewModel.publishablePersonList.value = result.users.map { it.distinguishedName }
+                        viewModel.publishableUnitList.value = result.departments.map { it.distinguishedName }
+                        viewModel.publishableGroupList.value = result.groups.map { it.distinguishedName }
+                    }
+                }
+    }
+
 
 
     /************* MARK private ************/
@@ -160,9 +230,9 @@ class CreateCalendarActivity : AppCompatActivity() {
         CalendarOB.deepColor.forEach { (_, value) ->
             val card = CardView(this@CreateCalendarActivity)
             card.setCardBackgroundColor(Color.parseColor(value))
-            card.radius = dip(11).toFloat()
+            card.radius = dip(15).toFloat()
             card.tag = value
-            val lp = LinearLayout.LayoutParams(dip(22), dip(22))
+            val lp = LinearLayout.LayoutParams(dip(30), dip(30))
             val margin = dip(8)
             lp.setMargins(margin, margin, margin, margin)
             ll_create_calendar_color_layout.addView(card, lp)

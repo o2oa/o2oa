@@ -1,0 +1,69 @@
+{
+  "id": "",
+  "name": "",
+  "type": "Actionbar",
+  "description": "",
+  "tools":[],
+  "style": "view_default",
+  "customIconStyle" : "",
+  "hideSystemTools": false,
+  "container": "",
+  "events": {
+    "queryLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "postLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "afterLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "keydown": {
+      "code": "",
+      "html": ""
+    },
+    "keypress": {
+      "code": "",
+      "html": ""
+    },
+    "keyup": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    }
+  }
+}

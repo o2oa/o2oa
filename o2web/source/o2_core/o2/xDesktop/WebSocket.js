@@ -14,12 +14,9 @@ MWF.xDesktop.WebSocket = new Class({
 
         this.reConnect = true;
         this.checking = false;
-        this.heartTimeout = 60000;
-        this.checkingTimeout = 4000;
+        this.heartTimeout = 30000;
+        this.checkingTimeout = 10000;
         this.heartMsg = "heartbeat";
-        this.maxErrorCount = 10;
-        this.errorCount = 0;
-
 
         // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
         // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
@@ -38,21 +35,18 @@ MWF.xDesktop.WebSocket = new Class({
         ///*暂时不启用WebSocket了------------
         //this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
 
-        this.connect();
-    },
-    connect: function(){
         if (layout.config.webSocketEnable){
-            var ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+            this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
 
             try{
-                this.webSocket = new WebSocket(ws);
+                this.webSocket = new WebSocket(this.ws);
 
                 //this.webSocket = new WebSocket(this.ws);
                 this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
                 this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
                 this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
                 this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
-                //---------------------------------*/
+                //---------------------------------*/\
             }catch(e){
                 //WebSocket.close();
                 //this.webSocket = new WebSocket(this.ws);
@@ -64,18 +58,17 @@ MWF.xDesktop.WebSocket = new Class({
                 //     //this.webSocket = new WebSocket(this.ws);
                 // }
             }
+            this.heartbeat();
         }
+
     },
     onOpen: function(e){
-        this.errorCount = 0;
         console.log("websocket is open, You can receive system messages");
-        this.heartbeat();
-
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
     },
     onClose: function(e){
         console.log("websocket is closed. ");
-        //if (this.reConnect) this.checkRetry();
+        if (this.reConnect) this.initialize();
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
     onMessage: function(e){
@@ -151,6 +144,13 @@ MWF.xDesktop.WebSocket = new Class({
                             case "calendar_alarm":
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
+                            case "teamwork_taskCreate":
+                            case "teamwork_taskUpdate":
+                            case "teamwork_taskDelelte":
+                            case "teamwork_taskOvertime":
+                            case "teamwork_taskChat":
+                                this.receiveTeamWorkMessage(data);
+                                break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
                                 break;
@@ -161,25 +161,14 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     onError: function(e){
-        this.errorCount++;
-        //console.log(e);
-        console.log("Unable to connect to the websocket server, will retry in "+(this.checkingTimeout/1000)+" seconds.");
-        this.checkRetry();
+        console.log("websocket is error ...");
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
-    },
-    checkRetry: function(){
-        if (this.serverCheck) window.clearTimeout(this.serverCheck);
-        if (this.heartbeatCheck) window.clearTimeout(this.heartbeatCheck);
-        if (this.errorCount < this.maxErrorCount) this.serverCheck = window.setTimeout(function(){
-            this.retry();
-        }.bind(this), this.checkingTimeout);
     },
     retry: function(){
         if (this.webSocket){
             this.close();
         }
-        console.log("Retry connect to websocket server. ("+this.errorCount+"/"+this.maxErrorCount+")");
-        this.connect();
+        this.initialize();
     },
     close: function(){
         this.reConnect = false;
@@ -188,15 +177,14 @@ MWF.xDesktop.WebSocket = new Class({
     },
     send: function(msg){
         if (!this.webSocket || this.webSocket.readyState != 1) {
-            if (this.serverCheck) window.clearTimeout(this.serverCheck);
-            this.retry();
+            this.initialize();
         }
-        // try{
-        this.webSocket.send(JSON.encode(msg));
-        // }catch(e){
-        //     this.retry();
-        //     this.webSocket.send(JSON.encode(msg));
-        // }
+        try{
+            this.webSocket.send(JSON.encode(msg));
+        }catch(e){
+            this.initialize();
+            this.webSocket.send(JSON.encode(msg));
+        }
     },
     heartbeat: function(){
         if (this.serverCheck) window.clearTimeout(this.serverCheck);
@@ -207,16 +195,15 @@ MWF.xDesktop.WebSocket = new Class({
     },
     sendHeartbeat: function(msg){
         if (!this.webSocket || this.webSocket.readyState != 1) {
-            if (this.serverCheck) window.clearTimeout(this.serverCheck);
             this.retry();
         }
         try{
             //console.log("send heartbeat ...");
             this.webSocket.send(msg);
-            this.checkRetry();
+            this.serverCheck = window.setTimeout(function(){
+                this.retry();
+            }.bind(this), this.checkingTimeout);
         }catch(e){
-            //console.log("send heartbeat error !!!");
-            if (this.serverCheck) window.clearTimeout(this.serverCheck);
             this.retry();
             //this.initialize();
         }
@@ -587,5 +574,30 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
         });
-    }
+    },
+    receiveTeamWorkMessage: function(data){
+        debugger;
+        var task = data.body;
+        //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
+        var content = data.title;
+        //content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.creatorPerson+": </font><font style='color: #ea621f'>"+task.creatorPerson+"</font>;  "+
+        //    "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.executor+": </font><font style='color: #ea621f'>"+task.executor+"</font>";
+        var msg = {
+            "subject": task.name,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            var options = {"taskId": task.id, "projectId": task.project};
+            layout.desktop.openApplication(e, "TeamWork.Task", options);
+        }.bind(this));
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            var options = {"taskId": task.id, "projectId": task.project};
+            layout.desktop.openApplication(e, "TeamWork.Task", options);
+        }.bind(this));
+    },
 });

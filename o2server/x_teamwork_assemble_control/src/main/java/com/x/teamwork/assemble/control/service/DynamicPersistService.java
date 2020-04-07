@@ -255,6 +255,40 @@ public class DynamicPersistService {
 	}
 
 	/**
+	 * 工作复制动态信息
+	 * @param sourceTask
+	 * @param newTask
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> taskCopyDynamic( Task sourceTask, Task newTask, EffectivePerson effectivePerson ) throws Exception {
+		if ( sourceTask == null) {
+			throw new Exception("sourceTask is null.");
+		}
+		if ( newTask == null) {
+			throw new Exception("newTask is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> result = new ArrayList<>();
+		List<Dynamic> dynamics = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			dynamics = dynamicService.getTaskCopyDynamic( sourceTask, newTask, effectivePerson );
+			if( ListTools.isNotEmpty( dynamics )) {
+				for( Dynamic dynamic : dynamics ) {
+					dynamic = dynamicService.save( emc, dynamic, "" );
+					result.add( dynamic );
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
 	 * 保存转换子工作的动态信息
 	 * @param subTask
 	 * @param parentTask
