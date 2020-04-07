@@ -1202,6 +1202,7 @@ MWF.xApplication.query.ViewDesigner.Property.Filter = new Class({
                     this.calendar = new MWF.widget.Calendar(valueInput, {
                         "style": "xform",
                         "isTime": true,
+                        "secondEnable": true,
                         "target": this.property.designer.content,
                         "format": "%Y-%m-%d %H:%M:%S"
                     });
