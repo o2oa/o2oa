@@ -100,6 +100,7 @@ MWF.xApplication.process.ViewDesigner.widget.ViewFilter = new Class({
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
                 "style": "xform",
                 "isTime": true,
+                "secondEnable" : true,
                 "target": this.app.content,
                 "format": "db"
             });

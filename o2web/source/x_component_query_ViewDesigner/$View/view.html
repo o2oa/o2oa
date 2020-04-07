@@ -207,6 +207,9 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="editTableValue" colspan="2">取应用和流程的并集</td>
+                </tr>
+                <tr>
                     <td class="editTableTitle">选择应用:</td>
                     <td class="editTableValue">
                         <div class="MWFSelectApplication" name="data.where.applicationList"></div>
@@ -238,6 +241,9 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="editTableValue" colspan="2">取栏目和分类的并集：</td>
+                </tr>
+                <tr>
                     <td class="editTableTitle">选择栏目:</td>
                     <td class="editTableValue">
                         <div class="MWFSelectCMSApplication" name="data.where.appInfoList"></div>
@@ -252,6 +258,9 @@
             </table>
         </div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2">取组织、人员和身份的并集：</td>
+            </tr>
             <tr>
                 <td class="editTableTitle">拟稿组织:</td>
                 <td class="editTableValue">
@@ -277,27 +286,83 @@
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr><td class="editTableTitle">时段类型:</td><td class="editTableValue">
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', 'none');
+                       }"
                        type="radio" text{(['year','season','month','week','date','season'].indexOf($.data.where.dateRange.dateRangeType)==-1)?'checked':''} value="none"/>全部
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', 'none');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='range')?'checked':''} value="range"/>范围<br/>
 
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); }"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', '');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='year')?'checked':''} value="year"/>年度
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', '');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='season')?'checked':''} value="season"/>季度
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', '');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='month')?'checked':''} value="month"/>月度
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', '');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='week')?'checked':''} value="week"/>周
                 <input class="editTableRadio" name="text{$.id}*data.where.dateRange.dateRangeType"
-                       onclick="if (this.checked){ $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_DateArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block'); $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none'); $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');}"
+                       onclick="if (this.checked){
+                           $('text{$.id}dateRangeType_YearArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_DateArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_WeekArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_MonthArea').setStyle('display', 'block');
+                           $('text{$.id}dateRangeType_SeasonArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_RangeArea').setStyle('display', 'none');
+                           $('text{$.id}dateRangeType_adjust').setStyle('display', '');
+                       }"
                        type="radio" text{($.data.where.dateRange.dateRangeType=='date')?'checked':''} value="date"/>日
             </td></tr>
         </table>
@@ -384,14 +449,16 @@
             </table>
         </div>
 
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">偏移量:</td>
-                <td class="editTableValue">
-                    <input type="text" name="data.where.dateRange.adjust" value="text{$.data.where.dateRange.adjust}" class="editTableInput"/>
-                </td>
-            </tr>
-        </table>
+        <div id="text{$.id}dateRangeType_adjust" style="display: text{($.data.where.dateRange.dateRangeType=='none'||$.data.where.dateRange.dateRangeType=='range')?'none':''}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">偏移量:</td>
+                    <td class="editTableValue">
+                        <input type="text" name="data.where.dateRange.adjust" value="text{$.data.where.dateRange.adjust}" class="editTableInput"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <div title="过滤"  class="MWFTab">
@@ -457,8 +524,14 @@
                     <tr>
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">
-                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'block');}"/>作为默认过滤条件<br>
-                            <input type="radio" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){ $('text{$.id}viewFilterRestrict').setStyle('display', 'none');}" checked/>作为自定义过滤数据
+                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                $('text{$.id}viewFilterRestrict').setStyle('display', 'block');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
+                            }"/>作为默认过滤条件<br>
+                            <input type="radio" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
+                                $('text{$.id}viewFilterRestrict').setStyle('display', 'none');
+                                $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
+                            }" checked/>作为自定义过滤数据
                         </td>
                     </tr>
                 </table>
@@ -625,6 +698,27 @@
                         </div>
                     </div>
 
+                </div>
+                <div id="text{$.id}viewCustomFilterRestrict"  style="display: block">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">值:</td>
+                            <td class="editTableValue">
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'none');
+                                }" name="viewCustomFilterValueType" checked type="radio" value="input"/>输入
+                                <input class="editTableRadio" onclick="
+                                if (this.checked){
+                                    $('text{$.id}viewCustomFilterValueScriptDiv').setStyle('display', 'block');
+                                }" name="viewCustomFilterValueType" type="radio" value="script"/>可选
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="display:none" id="text{$.id}viewCustomFilterValueScriptDiv">
+                        <div style="padding: 5px">return ["选项文本|选项值"]</div>
+                        <div name="text{$.id}viewCustomFilterValueScript" title="选项脚本"></div>
+                    </div>
                 </div>
             </div>
             <div></div>
