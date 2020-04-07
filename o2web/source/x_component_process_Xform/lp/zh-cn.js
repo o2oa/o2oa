@@ -204,6 +204,8 @@ MWF.xApplication.process.Xform.LP = {
         "deleteContent": "<div>{time}</div>{name} 在 ”{activity}“ 时删除的内容:",
         "insert": "插入了",
         "delete": "删除了",
+        "insertTimes": "插入了 {times} 处",
+        "deleteTimes": "删除了 {times} 处",
         "play": "修改记录回放",
         "pause": "暂停回放",
         "stop": "停止修改记录回放",
