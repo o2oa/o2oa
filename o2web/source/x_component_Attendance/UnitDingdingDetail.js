@@ -33,7 +33,7 @@ MWF.xApplication.Attendance.UnitDingdingDetail = new Class({
             this.tabs = new MWF.widget.Tab(this.tabNode, { "style": "attendance" });
             this.tabs.load();
 
-            this.detailPage = this.tabs.addTab(this.detailArea, "部门出勤明细", false);
+            this.detailPage = this.tabs.addTab(this.detailArea, "部门打卡明细", false);
             this.detailPage.contentNodeArea.set("class", "detailPage");
             this.detailPage.addEvent("show", function () {
                 if (!this.detailExplorer) {
@@ -43,7 +43,7 @@ MWF.xApplication.Attendance.UnitDingdingDetail = new Class({
             }.bind(this));
 
 
-            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, "部门出勤率统计", false);
+            this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, "部门打卡率统计", false);
             this.detailStaticPage.contentNodeArea.set("class", "detailStaticPage");
             this.detailStaticPage.addEvent("show", function () {
                 if (!this.detailStaticExplorer) {
@@ -293,7 +293,7 @@ MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticExplorer = new Class(
         if (this.view) delete this.view;
         this.view = new MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticView(this.elementContentNode, this.app, this);
         this.view.filterData = filterData;
-        this.view.listItemUrl = this.path + "listItem_detailStatic.json";
+        this.view.listItemUrl = this.path + "listItem_dingding_detailStatic.json";
         this.view.load();
         this.setContentSize();
     }
@@ -340,13 +340,10 @@ MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticView = new Class({
 
     _getCurrentPageData: function (callback, count) {
         var filter = this.filterData || {};
-        //if( !filter.cycleMonth || filter.cycleMonth == "" )filter.cycleMonth = "(0)";
-        this.actions.listPersonMonthStaticByUnit(filter.q_unitName, filter.cycleYear, filter.cycleMonth, function (json) {
-
+        var action = o2.Actions.load("x_attendance_assemble_control");
+        action.DingdingAttendanceStatisticAction.personMonthWithUnit(filter.q_unitName, filter.cycleYear, filter.cycleMonth, function (json) {
             if (callback) callback(json);
         }.bind(this));
-
-
     },
     _removeDocument: function (documentData, all) {
 
