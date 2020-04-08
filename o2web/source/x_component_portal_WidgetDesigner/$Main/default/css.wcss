@@ -358,5 +358,24 @@
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
         "background": "url("+"/x_component_portal_PageDesigner/$Main/default/editCancel_bg.png) no-repeat"
-    }
+    },
+	"designTabScriptAreaNode": {
+		"height": "100%"
+	},
+	"designTabHtmlAreaNode": {
+		"height": "100%"
+	},
+	"designTabScriptPcAreaNode": {
+		"height": "100%"
+	},
+	"designTabScriptMobileAreaNode": {
+		"height": "100%",
+		"display": "none"
+	},
+	"scriptPageDragNode": {
+		"opacity": 0.7,
+		"border": "2px dashed #999",
+		"background-color": "#CCC",
+		"position": "absolute"
+	}
 }
