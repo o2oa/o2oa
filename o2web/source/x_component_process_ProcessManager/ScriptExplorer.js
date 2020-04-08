@@ -3,10 +3,10 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer = new Class({
 	Extends: MWF.xApplication.process.ProcessManager.DictionaryExplorer,
 	Implements: [Options, Events],
     options: {
-        "create": MWF.APPPM.LP.dictionary.create,
-        "search": MWF.APPPM.LP.dictionary.search,
-        "searchText": MWF.APPPM.LP.dictionary.searchText,
-        "noElement": MWF.APPPM.LP.dictionary.noDictionaryNoticeText
+        "create": MWF.APPPM.LP.script.create,
+        "search": MWF.APPPM.LP.script.search,
+        "searchText": MWF.APPPM.LP.script.searchText,
+        "noElement": MWF.APPPM.LP.script.noScriptNoticeText
     },
 
     keyCopy: function(e){

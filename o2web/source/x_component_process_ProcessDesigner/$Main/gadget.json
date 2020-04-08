@@ -59,11 +59,11 @@
     "text": "服务调用",
     "className": "Invoke"
   },
-//  "service": {
-//    "icon": "service24.png",
-//    "text": "服务",
-//    "className": "Service"
-//  },
+  "service": {
+    "icon": "service24.png",
+    "text": "服务",
+    "className": "Service"
+  },
 //  "message": {
 //    "icon": "message24.png",
 //    "text": "消息",

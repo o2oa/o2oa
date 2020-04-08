@@ -564,23 +564,23 @@
 
     "type": "agent"
   },
-//  "service": {
-//    "name":"服务",
-//    "alias":"",
-//    "description":"",
-//    "position":"",
-//    "decisionIdList":[],
-//    "id":"",
-//    "version":1,
-//    "createTime":"",
-//    "type": "service",
-//
-//    "beforeArriveScript": "",
-//    "afterArriveScript": "",
-//    "beforeExecuteScript": "",
-//    "afterExecuteScript": "",
-//    "afterInquireScript": ""
-//  },
+  "service": {
+    "name":"服务",
+    "alias":"",
+    "description":"",
+    "position":"",
+    "decisionIdList":[],
+    "id":"",
+    "version":1,
+    "createTime":"",
+    "type": "service",
+
+    "beforeArriveScript": "",
+    "afterArriveScript": "",
+    "beforeExecuteScript": "",
+    "afterExecuteScript": "",
+    "afterInquireScript": ""
+  },
 //  "message": {
 //    "name":"消息",
 //    "alias":"",
