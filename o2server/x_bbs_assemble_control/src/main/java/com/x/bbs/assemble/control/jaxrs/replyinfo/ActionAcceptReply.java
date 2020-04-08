@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
@@ -20,6 +21,7 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyNotExi
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionSubjectNotExists;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
 import com.x.bbs.entity.BBSReplyInfo;
+import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
 
 public class ActionAcceptReply extends BaseAction {
@@ -76,6 +78,9 @@ public class ActionAcceptReply extends BaseAction {
 				} else {
 					subjectInfoService.acceptReply(subjectInfo.getId(), replyInfo.getId());
 					result.setData(new WrapOutId(replyInfo.getId()));
+
+					ApplicationCache.notify( BBSSubjectInfo.class );
+
 				}
 			} catch (Exception e) {
 				check = false;
