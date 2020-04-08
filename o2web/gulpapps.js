@@ -61,6 +61,7 @@ var apps = [
     { "folder": "x_component_process_StatDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_process_TaskCenter", "tasks": ["move", "min"] },
     { "folder": "x_component_process_ViewDesigner", "tasks": ["move", "min"] },
+    { "folder": "x_component_process_WidgetDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_process_Work", "tasks": ["move", "min"] },
     { "folder": "x_component_process_Xform", "tasks": ["move", "min"] },
     { "folder": "x_component_Profile", "tasks": ["move", "min"] },
