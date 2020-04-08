@@ -615,6 +615,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.allowEdit = this._isAllowEdit();
         this.allowPrint = this._isAllowPrint();
+        this.allowHistory = this._isAllowHistory();
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.doc_content}).inject(this.node);
 
@@ -1066,6 +1067,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         return true;
     },
+    _isAllowHistory: function(){
+        if (this.json.allowHistory=="n") return false;
+        if (this.json.allowHistory=="s"){
+            if (this.json.allowHistoryScript && this.json.allowHistoryScript.code){
+                return !!this.form.Macro.exec(this.json.allowHistoryScript.code, this);
+            }
+        }
+        return true;
+    },
 
     _getEdit: function(name, typeItem, scriptItem){
         switch (this.json[typeItem]) {
@@ -1104,7 +1114,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.allowPrint){
             html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
         }
-        if (this.allowPrint){
+        if (this.allowHistory){
            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
         }
         this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
