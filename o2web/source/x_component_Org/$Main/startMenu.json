@@ -3,24 +3,35 @@
 		"title": MWF.xApplication.Org.LP.unitList,
 		"id": "1.1",
 		"action": "orgConfig",
-		"icon": "org"
+		"icon": "org",
+		"display": true
 	},
 	{
 		"title": MWF.xApplication.Org.LP.groupList,
 		"id": "1.1",
 		"action": "groupConfig",
-		"icon": "group"
+		"icon": "group",
+		"display": true
 	},
-//	{
-//		"title": "角色管理",
-//		"id": "1.1",
-//		"action": "roleConfig",
-//		"icon": "role.png"
-//	},
+	{
+		"title": MWF.xApplication.Org.LP.roleList,
+		"id": "1.1",
+		"action": "roleConfig",
+		"icon": "role",
+		"display": (o2.AC.isOrganizationManager() || o2.AC.isRoleManager())
+	},
 	{
 		"title": MWF.xApplication.Org.LP.personList,
 		"id": "1.1",
 		"action": "personConfig",
-		"icon": "person"
+		"icon": "person",
+		"display": true
+	},
+	{
+		"title": MWF.xApplication.Org.LP.personImport,
+		"id": "1.1",
+		"action": "personImport",
+		"icon": "xls",
+		"display": o2.AC.isOrganizationManager()
 	}
 ]
