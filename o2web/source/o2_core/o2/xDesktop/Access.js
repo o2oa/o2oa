@@ -66,7 +66,6 @@ MWF.xDesktop.Access = MWF.AC = {
         return this.isAdministrator() || (this.roleList.indexOf("personmanager")!==-1);
     },
 
-
     isGroupCreator: function(){
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
