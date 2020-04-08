@@ -12,12 +12,10 @@
                 "preperation:macos": "gulp preperation --e macos",
                 "preperation:neokylin": "gulp preperation --e neokylin",
                 "preperation:rpi": "gulp preperation --e raspberrypi",
-
                 "build_server": "gulp build_server",
                 "build_server_script": "cd o2server && mvn clean && mvn install",
                 "build_web": "gulp build_web",
                 "build_parallel": "npm run build_server && npm run build_web",
-
                 "deploy": "gulp deploy",
                 "deploy:win": "gulp deploy --e windows",
                 "deploy:linux": "gulp deploy --e linux",
@@ -26,10 +24,8 @@
                 "deploy:macos": "gulp deploy --e macos",
                 "deploy:neokylin": "gulp deploy --e neokylin",
                 "deploy:rpi": "gulp deploy --e raspberrypi",
-
                 "typeInfor": "type welcome && echo Your server is build success: target/o2server/",
                 "clear": "gulp clear_build",
-
                 "build": "npm run clear && npm run preperation && npm run build_parallel && npm run deploy && npm run typeInfor",
                 "build:win": "npm run clear && npm run preperation:win && npm run build_parallel && npm run deploy:win && npm run typeInfor",
                 "build:linux": "npm run clear && npm run preperation:linux && npm run build_parallel && npm run deploy:linux && npm run typeInfor",

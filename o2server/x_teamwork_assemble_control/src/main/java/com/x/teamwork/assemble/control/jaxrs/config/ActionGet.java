@@ -23,7 +23,7 @@ public class ActionGet extends BaseAction {
 		SystemConfig systemConfig = null;
 		Boolean check = true;
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new ExceptionConfigIdEmpty();
@@ -31,7 +31,7 @@ public class ActionGet extends BaseAction {
 			}
 		}
 
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				systemConfig = systemConfigQueryService.get( id );
 			} catch (Exception e) {
@@ -42,7 +42,7 @@ public class ActionGet extends BaseAction {
 			}
 		}
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			if( systemConfig == null ) {
 				try {
 					systemConfig = systemConfigQueryService.getByCode( id );
@@ -55,7 +55,7 @@ public class ActionGet extends BaseAction {
 			}
 		}
 		
-		if( check ){
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				wrap = Wo.copier.copy( systemConfig );
 				result.setData( wrap );

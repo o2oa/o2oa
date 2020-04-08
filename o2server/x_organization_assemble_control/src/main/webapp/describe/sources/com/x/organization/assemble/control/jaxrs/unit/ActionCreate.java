@@ -55,6 +55,9 @@ class ActionCreate extends BaseAction {
 			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
 				throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
 			}
+			if (this.checkNameInvalid(business,unit)){
+				throw new ExceptionNameInvalid(unit.getName());
+			}
 			/** 判断同一级别下name不重复 */
 			if (this.duplicateName(business, unit)) {
 				throw new ExceptionDuplicateName(unit.getName());

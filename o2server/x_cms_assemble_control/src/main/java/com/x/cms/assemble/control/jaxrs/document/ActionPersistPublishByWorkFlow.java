@@ -167,18 +167,31 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		}
 
 		if (check) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if ( StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
-					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
-					wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
-					wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
-				} else {
-					if ("xadmin".equalsIgnoreCase( effectivePerson.getDistinguishedName()) ) {
+			try {
+				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
+					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
+						wi.setCreatorIdentity("cipher");
+						wi.setCreatorPerson("cipher");
+						wi.setCreatorUnitName("cipher");
+						wi.setCreatorTopUnitName("cipher");
+					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
 						wi.setCreatorIdentity("xadmin");
 						wi.setCreatorPerson("xadmin");
 						wi.setCreatorUnitName("xadmin");
 						wi.setCreatorTopUnitName("xadmin");
-					} else {
+					}else {
+						//尝试一下根据当前用户获取用户的第一个身份
+						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+					}
+				}
+
+				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
+					//说明是指定的发布者，并不使用cipher和xadmin代替
+					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
+						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
+						wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
+						wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
+					}else {
 						Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
 						result.error(exception);
 					}
@@ -191,9 +204,6 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			if ( StringUtils.isEmpty(wi.getTitle())) {
-//				check = false;
-//				Exception exception = new ExceptionDocumentTitleEmpty();
-//				result.error(exception);
 				wi.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
 			}
 		}
@@ -212,6 +222,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			}
 		}
 
+		//从流程管理中复制所有的附件到CMS
 		if (check) {
 			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
 				FileInfo fileInfo = null;
@@ -267,11 +278,12 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				throw exception;
 			}
 		}
+
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				logService.log(emc, wi.getCreatorIdentity(),
 						document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(),
-						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
+						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布" );
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);

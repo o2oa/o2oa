@@ -541,25 +541,13 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject, W extends Object> List<T> listBetweenAndEqual(Class<T> cls, String attribute,
 			Object start, Object end, String equalAttribute, Object equalValue) throws Exception {
-		Comparable s = (Comparable) start;
-		Comparable e = (Comparable) end;
 		EntityManager em = this.get(cls);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<T> cq = cb.createQuery(cls);
-		Root<T> root = cq.from(cls);
-		Predicate p = cb.between(root.get(attribute), s, e);
-		p = cb.and(p, cb.equal(root.get(equalAttribute), equalValue));
-		cq.select(root).where(p);
-		List<T> os = em.createQuery(cq).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
-		// Query query = em.createQuery("select o from " + cls.getName() + " o where
-		// ((o." + attribute
-		// + " between ?1 and ?2) and (o." + equalAttribute + " = ?3))");
-		// query.setParameter(1, start);
-		// query.setParameter(2, end);
-		// query.setParameter(3, equalValue);
-		// return new ArrayList<T>(query.getResultList());
+		Query query = em.createQuery("select o from " + cls.getName() + " o where ((o." + attribute
+				+ " between ?1 and ?2) and (o." + equalAttribute + " = ?3))");
+		query.setParameter(1, start);
+		query.setParameter(2, end);
+		query.setParameter(3, equalValue);
+		return new ArrayList<T>(query.getResultList());
 	}
 
 	public <T extends JpaObject> List<T> listNotEqual(Class<T> cls, String attribute, Object value) throws Exception {

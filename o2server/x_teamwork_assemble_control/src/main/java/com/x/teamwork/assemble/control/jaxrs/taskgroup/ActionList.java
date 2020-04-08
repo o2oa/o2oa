@@ -39,7 +39,7 @@ public class ActionList extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					project = projectQueryService.get( projectId );
 					if ( project == null) {
@@ -55,7 +55,7 @@ public class ActionList extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskGroups = taskGroupQueryService.listGroupByPersonAndProject(effectivePerson, projectId );
 					if( ListTools.isNotEmpty( taskGroups )) {
