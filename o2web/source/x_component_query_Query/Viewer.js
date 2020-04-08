@@ -346,7 +346,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadCurrentPageData();
             }.bind(this),
             onPostLoad : function () {
-                this.setContentHeightFun();
+                if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this)
         });
         this.paging.load();
