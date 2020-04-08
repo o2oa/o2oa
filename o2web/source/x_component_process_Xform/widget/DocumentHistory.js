@@ -814,34 +814,50 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 }
             }.bind(this));
         }else{
-            var duration = this.options.speed*this.options.fxTime/nodes.length
-            var span = new Element("span", {"styles": {"opacity": 0}}).inject(ins);
-            span.appendChild(node);
-            var fx = new Fx.Tween(span, {property: 'opacity', duration:duration});
-            fx.start(0,1).chain(function(){
+            var duration = this.options.speed*this.options.fxTime/nodes.length;
+            if (!duration){
+                ins.appendChild(node);
                 idx++;
                 if (idx<nodes.length){
                     this.doInsetNodeAnimation(ins, nodes, idx, callback);
                 }else{
                     if (callback) callback();
                 }
-            }.bind(this));
+            }else{
+                var span = new Element("span", {"styles": {"opacity": 0}}).inject(ins);
+                span.appendChild(node);
+                var fx = new Fx.Tween(span, {property: 'opacity', duration:duration});
+                fx.start(0,1).chain(function(){
+                    idx++;
+                    if (idx<nodes.length){
+                        this.doInsetNodeAnimation(ins, nodes, idx, callback);
+                    }else{
+                        if (callback) callback();
+                    }
+                }.bind(this));
+            }
         }
     },
 
     doCharAnimation: function(node, str, idx, callback){
         var duration = this.options.speed*this.options.fxTime/str.length;
-        var char = str.charAt(idx);
-        var span = new Element("span", {"styles": {"opacity": 0}, "html": char}).inject(node);
-        var fx = new Fx.Tween(span, {property: 'opacity', duration:duration});
-        fx.start(0,1).chain(function(){
-            idx++;
-            if (idx<str.length){
-                this.doCharAnimation(node, str, idx, callback);
-            }else{
-                if (callback) callback();
-            }
-        }.bind(this));
+        if (!duration){
+            node.set("html", str);
+            idx = str.length;
+            if (callback) callback();
+        }else{
+            var char = str.charAt(idx);
+            var span = new Element("span", {"styles": {"opacity": 0}, "html": char}).inject(node);
+            var fx = new Fx.Tween(span, {property: 'opacity', duration:duration});
+            fx.start(0,1).chain(function(){
+                idx++;
+                if (idx<str.length){
+                    this.doCharAnimation(node, str, idx, callback);
+                }else{
+                    if (callback) callback();
+                }
+            }.bind(this));
+        }
     },
 
     doDeleteAnimation: function(node, diff, obj, callback){
