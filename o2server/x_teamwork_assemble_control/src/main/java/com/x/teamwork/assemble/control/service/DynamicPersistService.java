@@ -82,7 +82,6 @@ public class DynamicPersistService {
 	
 	/**
 	 * 保存项目创建或者更新动态信息
-	 * @param old_object
 	 * @param object
 	 * @param effectivePerson
 	 * @param content
@@ -132,9 +131,7 @@ public class DynamicPersistService {
 	 * 保存项目扩展信息保存操作动态信息
 	 * @param object_old
 	 * @param object
-	 * @param optType
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -179,8 +176,8 @@ public class DynamicPersistService {
 	
 	/**
 	 * 保存动态信息
+	 * @param object_old
 	 * @param object
-	 * @param optType
 	 * @param effectivePerson
 	 * @param content
 	 * @return
@@ -230,7 +227,6 @@ public class DynamicPersistService {
 	 * @param object_old
 	 * @param object_new
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -257,11 +253,87 @@ public class DynamicPersistService {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * 保存动态信息
-	 * @param dynamic
+	 * 工作复制动态信息
+	 * @param sourceTask
+	 * @param newTask
 	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> taskCopyDynamic( Task sourceTask, Task newTask, EffectivePerson effectivePerson ) throws Exception {
+		if ( sourceTask == null) {
+			throw new Exception("sourceTask is null.");
+		}
+		if ( newTask == null) {
+			throw new Exception("newTask is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> result = new ArrayList<>();
+		List<Dynamic> dynamics = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			dynamics = dynamicService.getTaskCopyDynamic( sourceTask, newTask, effectivePerson );
+			if( ListTools.isNotEmpty( dynamics )) {
+				for( Dynamic dynamic : dynamics ) {
+					dynamic = dynamicService.save( emc, dynamic, "" );
+					result.add( dynamic );
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 保存转换子工作的动态信息
+	 * @param subTask
+	 * @param parentTask
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> subTaskTransformDynamic( Task subTask, Task parentTask, EffectivePerson effectivePerson ) throws Exception {
+		if ( subTask == null) {
+			throw new Exception("sourceTask is null.");
+		}
+		if ( parentTask == null) {
+			throw new Exception("parentTask is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> result = new ArrayList<>();
+		List<Dynamic> dynamics = null;
+
+		//记录一个添加子任务转换的动态信息
+		result.add(dynamicService.getTaskTransformDynamic( parentTask, subTask, effectivePerson));
+
+		//记录一个为上级任务添加子任务的动态信息
+		result.add(dynamicService.getTaskSplitDynamic( parentTask, subTask, effectivePerson));
+
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if( ListTools.isNotEmpty( result )) {
+				for( Dynamic dynamic : result ) {
+					//持久化工作操作动态
+					dynamicService.save( emc, dynamic, "" );
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 保存项目工作组信息动态
+	 * @param object_old
+	 * @param object
+	 * @param effectivePerson
+	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -287,7 +359,6 @@ public class DynamicPersistService {
 	 * 保存项目组删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -311,7 +382,6 @@ public class DynamicPersistService {
 	 * 保存工作任务删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -338,7 +408,6 @@ public class DynamicPersistService {
 	 * @param addManagers
 	 * @param removeManagers
 	 * @param effectivePerson
-	 * @param content
 	 * @throws Exception
 	 */
 	public List<Dynamic> taskManagerUpdateDynamic(Task task, List<String> addManagers, List<String> removeManagers, EffectivePerson effectivePerson ) throws Exception {
@@ -421,7 +490,6 @@ public class DynamicPersistService {
 	 * @param addParticipants
 	 * @param removeParticipants
 	 * @param effectivePerson
-	 * @param content
 	 * @throws Exception
 	 */
 	public List<Dynamic> taskParticipantsUpdateDynamic(Task task, List<String> addParticipants, List<String> removeParticipants, EffectivePerson effectivePerson ) throws Exception {
@@ -570,7 +638,6 @@ public class DynamicPersistService {
 	 * 保存工作任务评论删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */

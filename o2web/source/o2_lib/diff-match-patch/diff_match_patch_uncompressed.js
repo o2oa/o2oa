@@ -1257,13 +1257,16 @@ diff_match_patch.prototype.diff_prettyHtml = function(diffs) {
   for (var x = 0; x < diffs.length; x++) {
     var op = diffs[x][0];    // Operation (insert, delete, equal)
     var data = diffs[x][1];  // Text of change.
-    var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
-        .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
+    // var text = data.replace(pattern_amp, '&amp;').replace(pattern_lt, '&lt;')
+    //     .replace(pattern_gt, '&gt;').replace(pattern_para, '&para;<br>');
+    var text = data;
     switch (op) {
       case DIFF_INSERT:
+        //text = data.replace(pattern_para, '&para;<br>');
         html[x] = '<ins style="background:#e6ffe6;">' + text + '</ins>';
         break;
       case DIFF_DELETE:
+        //text = data.replace(pattern_para, '&para;<br>');
         html[x] = '<del style="background:#ffe6e6;">' + text + '</del>';
         break;
       case DIFF_EQUAL:
@@ -1898,7 +1901,7 @@ diff_match_patch.prototype.patch_apply = function(patches, text) {
               text = text.substring(0, start_loc + index2) + mod[1] +
                      text.substring(start_loc + index2);
             } else if (mod[0] === DIFF_DELETE) {  // Deletion
-              text = text.substring(0, start_loc + index2) +
+              text = text.substring(0, start_loc + index2) + mod[1] +
                      text.substring(start_loc + this.diff_xIndex(diffs,
                          index1 + mod[1].length));
             }

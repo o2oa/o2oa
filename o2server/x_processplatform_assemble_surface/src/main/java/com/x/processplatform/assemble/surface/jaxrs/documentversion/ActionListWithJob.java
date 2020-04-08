@@ -9,7 +9,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionAccessDeniedOrEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -57,7 +56,7 @@ class ActionListWithJob extends BaseAction {
 		static final long serialVersionUID = 5610132069178497370L;
 
 		static WrapCopier<DocumentVersion, Wo> copier = WrapCopierFactory.wo(DocumentVersion.class, Wo.class,
-				JpaObject.singularAttributeField(DocumentVersion.class, true, true), null);
+				JpaObject.singularAttributeField(DocumentVersion.class, true, false), null);
 
 	}
 

@@ -44,11 +44,11 @@ public class ActionListNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			queryFilter = wrapIn.getQueryFilter();
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				List<Dynamic>  dynamicList = null;
 				long total = dynamicQueryService.countWithFilter( queryFilter );

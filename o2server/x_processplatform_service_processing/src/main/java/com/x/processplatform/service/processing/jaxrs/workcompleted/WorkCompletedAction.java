@@ -49,17 +49,17 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "指定的已完成工作进行数据合并.", action = ActionDataMerge.class)
+	@JaxrsMethodDescribe(value = "指定的已完成工作进行合并.", action = ActionCombine.class)
 	@GET
-	@Path("{flag}/data/merge")
+	@Path("{flag}/combine")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void dataMerge(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void combine(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("完成工作") @PathParam("flag") String flag) {
-		ActionResult<ActionDataMerge.Wo> result = new ActionResult<>();
+		ActionResult<ActionCombine.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDataMerge().execute(effectivePerson, flag);
+			result = new ActionCombine().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
