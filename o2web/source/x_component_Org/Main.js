@@ -252,33 +252,36 @@ MWF.xApplication.Org.Menu = new Class({
 		this.load();
 	},
 	load: function(){
-		var menuUrl = (MWF.AC.isOrganizationManager()) ? this.app.path+"startMenu_admin.json" : this.app.path+"startMenu.json";
+		//var menuUrl = (MWF.AC.isOrganizationManager()) ? this.app.path+"startMenu_admin.json" : this.app.path+"startMenu.json";
+		var menuUrl = this.app.path+"startMenu.json";
 
 		MWF.getJSON(menuUrl, function(json){
 			json.each(function(navi){
-				var naviNode = new Element("div", {
-					"styles": this.app.css.startMenuNaviNode,
-					"title": navi.title
-				});
-				naviNode.store("naviData", navi);
-				
-				var iconNode =  new Element("div", {
-					"styles": this.app.css.startMenuIconNode
-				}).inject(naviNode);
-				iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+"60.png)");
-				
-				var textNode =  new Element("div", {
-					"styles": this.app.css.startMenuTextNode,
-					"text": navi.title
-				});
-				textNode.inject(naviNode);
-				naviNode.inject(this.node);
-				
-				this.startNavis.push(naviNode);
-				
-				this.setStartNaviEvent(naviNode, navi);
-				
-				this.setNodeCenter(this.node);
+				if (navi.display){
+					var naviNode = new Element("div", {
+						"styles": this.app.css.startMenuNaviNode,
+						"title": navi.title
+					});
+					naviNode.store("naviData", navi);
+
+					var iconNode =  new Element("div", {
+						"styles": this.app.css.startMenuIconNode
+					}).inject(naviNode);
+					iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+"60.png)");
+
+					var textNode =  new Element("div", {
+						"styles": this.app.css.startMenuTextNode,
+						"text": navi.title
+					});
+					textNode.inject(naviNode);
+					naviNode.inject(this.node);
+
+					this.startNavis.push(naviNode);
+
+					this.setStartNaviEvent(naviNode, navi);
+
+					this.setNodeCenter(this.node);
+				}
 			}.bind(this));
 			this.setStartMenuWidth();
 			
