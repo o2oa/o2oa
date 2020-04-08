@@ -12,6 +12,7 @@ MWF.xApplication.Org.LP = {
     "roleList": "Role",
     "personList": "Person",
     "personImport": "Person Import",
+    "privateNamesQueryPower":"privateNamesQueryPower Config",
 
 	"application" : "应用",
 	"CMSApplication" : "应用",
@@ -241,5 +242,15 @@ MWF.xApplication.Org.LP = {
     "importPersonTitle": "人员导入",
     "importPersonInfor": "您可以通过Excel批量导入人员，<a target='_blank' href='{url}' >点击此处</a>获取人员导入模板",
     "importPersonAction": "上传Excel文件，导入人员",
-    "importPersonResult": "人员已导入，<a target='_blank' href='{url}' >点击此处</a>查看导入结果"
+    "importPersonResult": "人员已导入，<a target='_blank' href='{url}' >点击此处</a>查看导入结果",
+
+    "queryPrivateConfigTitle":"个人通讯录权限配置",
+    "queryPrivateConfigExcludUnit":"不允许被查询单位",
+    "queryPrivateConfigExcludPerson":"不允许被查询个人",
+    "queryPrivateConfigLimitOuter":"限制查看外部门",
+    "queryPrivateConfigLimitAll":"限制查看所有人",
+    "queryPrivateConfigDescribe":"描述",
+    "queryPrivateConfigBtnEdit":"编辑",
+    "queryPrivateConfigBtnSave":"保存",
+    "queryPrivateConfigBtnCancel":"取消"
 };

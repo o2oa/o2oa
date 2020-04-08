@@ -63,7 +63,7 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				oldTask = taskQueryService.get( wi.getId() );
 			} catch (Exception e) {
@@ -74,7 +74,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				oldTaskDetail = taskQueryService.getDetail( wi.getId() );
 			} catch (Exception e) {
@@ -85,13 +85,13 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( wi.getProject() ) && oldTask != null ) {
 				wi.setProject( oldTask.getProject() );
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty( wi.getTaskGroupId() ) && StringUtils.isEmpty( wi.getProject() )  ) {
 				check = false;
 				Exception exception = new TaskGroupIdAndProjectEmptyException( );
@@ -99,7 +99,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isNotEmpty( wi.getTaskGroupId()) ) {
 				try {
 					taskGroup = taskGroupQueryService.get( wi.getTaskGroupId() );
@@ -119,7 +119,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				project = projectQueryService.get( wi.getProject() );
 				if( project == null ) {
@@ -135,7 +135,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if ( !taskPersistService.checkPermissionForPersist( project, effectivePerson ) ) {
 				check = false;
 				Exception exception = new TaskPersistException("task save permission denied!" );
@@ -143,14 +143,14 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( taskGroup == null ) {
 				//查询默认的全部工作的taskGroup
 				taskGroup = taskGroupQueryService.getDefaultTaskGroupWithProject( effectivePerson, project.getId() );
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//校验parentID， 确认上级任务是否存在， parentId = "0"或者为空都不会视为工作拆解
 			if( StringUtils.isNotEmpty( wi.getParent() ) && !wi.getParent().equalsIgnoreCase( "0" ) && !wi.getParent().equalsIgnoreCase( wi.getId() )) {
 				try {
@@ -174,7 +174,7 @@ public class ActionSave extends BaseAction {
 			}
 		}		
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//如果是标识为已完成，那么需要判断一下，该任务的所有下级任务是否全部都已经完成，否则不允许标识为已完成
 			if( TaskStatuType.completed.name().equalsIgnoreCase( wi.getWorkStatus() )) {
 				List<Task> unCompletedTasks =  taskQueryService.allUnCompletedSubTasks( wi.getId() );
@@ -186,7 +186,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			TaskDetail taskDetail = new TaskDetail();
 			taskDetail.setId( wi.getId() );
 			taskDetail.setProject( project.getId() );
@@ -226,8 +226,17 @@ public class ActionSave extends BaseAction {
 			}
 		}
 
+		//查询该任务和任务组的绑定情况
+		if( Boolean.TRUE.equals( check ) ){
+			if( !taskGroupQueryService.existsWithTaskAndGroup( wi.getTaskGroupId(), task.getId() )){
+				//添加任务和任务组的关联
+				taskGroupPersistService.addTaskToGroup( task.getId(), wi.getTaskGroupId() );
+				taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), task.getId() );
+			}
+		}
+
 		//检查标签是否有变动
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//检查任务和标签的所有关联
 			List<String> tagIds = taskTagQueryService.listTagIdsWithTask( effectivePerson, task.getId() );
 			if( ListTools.isNotEmpty( wi.getTaskTagIds() )) {
@@ -302,7 +311,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
 				new BatchOperationPersistService().addOperation( 
 						BatchOperationProcessService.OPT_OBJ_TASK, 
@@ -312,7 +321,7 @@ public class ActionSave extends BaseAction {
 			}	
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//记录父工作任务拆解的动态记录
 			if( split && parentTask != null ) {
 				dynamics = new ArrayList<>();
@@ -324,19 +333,19 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				if( oldTask == null ) {
 					MessageFactory.message_to_teamWorkCreate( task );
 				}else {
-					MessageFactory.message_to_teamWorkUpdate( task );
+					MessageFactory.message_to_teamWorkUpdate( task, null );
 				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//记录工作任务信息变化记录
 			try {
 				if( ListTools.isNotEmpty( dynamics ) ) {

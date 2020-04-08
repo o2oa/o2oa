@@ -27,7 +27,7 @@ public class ActionUnStar extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				project = projectQueryService.get(flag);
 				if ( project == null) {

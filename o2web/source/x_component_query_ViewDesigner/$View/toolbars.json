@@ -1,0 +1,12 @@
+[
+  {
+    "type": "MWFToolBarButton",
+    "img": "export.png",
+    "title": "导出Excel",
+    "action": "exportView",
+    "text": "导出Excel",
+    "id": "action_export",
+    "condition": "",
+    "read": true
+  }
+]

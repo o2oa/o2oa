@@ -162,7 +162,12 @@ public class ActionGetSubjectOperationPermissoin extends BaseAction {
 		if (check) {
 			if (effectivePerson.getDistinguishedName() != null
 					&& subjectInfo.getCreatorName().equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-				wrap.setEditAble(true);
+				//如果该贴子已经有回复内容了，就不允许删除了
+				if( replyInfoService.countWithSubjectForPage( subjectId, false ) == 0 ){
+					wrap.setEditAble(true);
+				}else{
+					wrap.setEditAble(false);
+				}
 			}
 		}
 

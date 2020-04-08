@@ -57,7 +57,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		static final long serialVersionUID = 5610132069178497370L;
 
 		static WrapCopier<DocumentVersion, Wo> copier = WrapCopierFactory.wo(DocumentVersion.class, Wo.class,
-				JpaObject.singularAttributeField(DocumentVersion.class, true, true), null);
+				JpaObject.singularAttributeField(DocumentVersion.class, true, false), null);
 
 	}
 
