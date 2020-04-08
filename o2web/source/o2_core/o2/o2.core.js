@@ -311,7 +311,7 @@
                 //         layout.session.token = xToken;
                 //     }
                 // }
-                o2.runCallback(callback, "success", [responseJSON])
+                o2.runCallback(callback, "success", [responseJSON]);
             },
             onFailure: function(xhr){
                 o2.runCallback(callback, "requestFailure", [xhr]);
