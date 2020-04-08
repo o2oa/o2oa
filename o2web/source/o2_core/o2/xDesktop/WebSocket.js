@@ -164,6 +164,13 @@ MWF.xDesktop.WebSocket = new Class({
         console.log("websocket is error ...");
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
     },
+    checkRetry: function(){
+        if (this.serverCheck) window.clearTimeout(this.serverCheck);
+        if (this.heartbeatCheck) window.clearTimeout(this.heartbeatCheck);
+        if (this.errorCount < this.maxErrorCount) this.serverCheck = window.setTimeout(function(){
+            this.retry();
+        }.bind(this), this.checkingTimeout);
+    },
     retry: function(){
         if (this.webSocket){
             this.close();
