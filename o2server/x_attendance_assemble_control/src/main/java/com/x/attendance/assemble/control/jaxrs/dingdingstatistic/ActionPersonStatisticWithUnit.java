@@ -16,17 +16,17 @@ import java.util.List;
  * Created by fancyLou on 2020-04-07.
  * Copyright © 2020 O2. All rights reserved.
  */
-public class ActionPersonStatistic extends BaseAction {
+public class ActionPersonStatisticWithUnit extends BaseAction {
 
 
-    ActionResult<List<Wo>> execute(String person, String year, String month) throws Exception {
+    ActionResult<List<Wo>> execute(String unit, String year, String month) throws Exception {
         ActionResult<List<Wo>> result = new ActionResult<>();
-        if (StringUtils.isEmpty(person) || StringUtils.isEmpty(year) || StringUtils.isEmpty(month)) {
+        if (StringUtils.isEmpty(unit) || StringUtils.isEmpty(year) || StringUtils.isEmpty(month)) {
             throw new EmptyArgsException();
         }
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
-            List<StatisticDingdingPersonForMonth> list = business.dingdingAttendanceFactory().findPersonStatistic(person, year, month);
+            List<StatisticDingdingPersonForMonth> list = business.dingdingAttendanceFactory().findPersonStatisticWithUnit(unit, year, month);
             result.setData(Wo.copier.copy(list));
         }
         return result;
