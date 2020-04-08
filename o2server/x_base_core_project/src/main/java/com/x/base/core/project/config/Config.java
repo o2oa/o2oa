@@ -790,6 +790,12 @@ public class Config {
 					mimeTypes.addMimeMapping("wcss", "application/json");
 					/* 添加默认格式 */
 					mimeTypes.addMimeMapping("", "application/octet-stream");
+					/* 添加新版office格式 */
+					mimeTypes.addMimeMapping("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+					mimeTypes.addMimeMapping("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					mimeTypes.addMimeMapping("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+					/* 名片 */
+					mimeTypes.addMimeMapping("vcf", "text/x-vcard");
 					instance().mimeTypes = mimeTypes;
 				}
 			}
