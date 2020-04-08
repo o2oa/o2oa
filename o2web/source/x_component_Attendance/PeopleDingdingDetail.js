@@ -306,7 +306,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticExplorer = new Clas
         if (this.view) delete this.view;
         this.view = new MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticView(this.elementContentNode, this.app, this);
         this.view.filterData = filterData;
-        this.view.listItemUrl = this.path + "listItem_detailStatic.json";
+        this.view.listItemUrl = this.path + "listItem_dingding_detailStatic.json";
         this.view.load();
         this.setContentSize();
     }
@@ -336,7 +336,7 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.View = new Class({
         if (!count) count = 20;
         var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
         var filter = this.filterData || {};
-        
+
         var action = o2.Actions.load("x_attendance_assemble_control");
         action.DingdingAttendanceAction.listNextDingdingAttendance(id, count, filter, function (json) {
             if (callback) callback(json);
@@ -387,13 +387,13 @@ MWF.xApplication.Attendance.PeopleDingdingDetail.DetailStaticView = new Class({
 
     _getCurrentPageData: function (callback, count) {
         var filter = this.filterData || {};
-        if (filter.cycleMonth == "") filter.cycleMonth = "(0)";
-        this.actions.listStaticMonthPerson(filter.q_empName, filter.cycleYear, filter.cycleMonth, function (json) {
-            var data = json.data;
-            data.sort(function (a, b) {
-                return parseInt(b.statisticYear + b.statisticMonth) - parseInt(a.statisticYear + a.statisticMonth)
-            });
-            json.data = data;
+        var action = o2.Actions.load("x_attendance_assemble_control");
+        action.DingdingAttendanceStatisticAction.personMonth(filter.q_empName, filter.cycleYear, filter.cycleMonth, function (json) {
+            // var data = json.data;
+            // data.sort(function (a, b) {
+            //     return parseInt(b.statisticYear + b.statisticMonth) - parseInt(a.statisticYear + a.statisticMonth)
+            // });
+            // json.data = data;
             if (callback) callback(json);
         }.bind(this))
     },
