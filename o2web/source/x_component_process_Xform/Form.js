@@ -1,4 +1,4 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity","MWF.widget.O2Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
@@ -1352,6 +1352,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         return list;
     },
+    //saveDocumentEditor
     submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
         if (!this.businessData.control["allowProcessing"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -1383,6 +1384,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
+        // if (this.documenteditorList) {
+        //     this.documenteditorList.each(function (module) {
+        //         module.save(history);
+        //     });
+        // }
 
         //处理忽略授权
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
@@ -1397,7 +1403,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 this.businessData.task.routeName = routeName;
-                this.businessData.task.opinion = opinion;
+                this.businessData.task.opinion = opinion || "";
 
                 var mediaIds = [];
                 if (medias && medias.length) {
@@ -1444,6 +1450,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     if (this.closeImmediatelyOnProcess) {
                         this.app.close();
+                    }else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+                        this.showCustomSubmitedDialog(json.data);
                     } else if (layout.mobile) {
                         //移动端页面关闭
                         _self.finishOnMobile()

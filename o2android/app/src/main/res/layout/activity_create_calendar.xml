@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewmodel"
-            type="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateCalendarViewModel"/>
+            type="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CreateCalendarViewModel" />
     </data>
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/z_color_background"
         tools:context=".app.calendar.CreateCalendarActivity">
+
         <RelativeLayout
             android:id="@+id/rl_create_calendar_top"
             android:layout_width="match_parent"
@@ -48,10 +52,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/image_create_calendar_close_btn"
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginEnd="@dimen/spacing_small"
                 android:layout_marginStart="@dimen/spacing_small"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small"
                 android:background="@null"
                 android:hint="@string/calendar_title_hint"
                 android:text="@={viewmodel.calendarTitle}"
@@ -66,11 +70,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_normal"
-            android:checked="@={viewmodel.isPublic()}"
-            android:text="@string/calendar_is_open"
             android:button="@drawable/o2_checkbox"
+            android:checked="@={viewmodel.isPublic()}"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
+            android:text="@string/calendar_is_open"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rl_create_calendar_top" />
@@ -111,13 +115,14 @@
 
         <TextView
             android:id="@+id/tv_create_calendar_type"
-            android:layout_width="335dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_normal"
             android:text="@={viewmodel.calendarType}"
             android:textColor="@color/z_color_text_primary_dark"
             android:textSize="@dimen/font_large"
+            android:onClick="chooseType"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_color_divider"
@@ -126,14 +131,187 @@
         <ImageView
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginEnd="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_normal"
             android:src="@mipmap/icon_arrow_22dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/tv_create_calendar_type"
             app:layout_constraintTop_toBottomOf="@+id/view_create_calendar_color_divider" />
+
+
+        <LinearLayout
+            android:id="@+id/ll_create_calendar_org_args"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            visibleOrGone="@{viewmodel.isOrgCalendar}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_type">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:orientation="horizontal"
+                android:onClick="chooseOrgTarget">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_large"
+                    android:text="所属组织" />
+                <TextView
+                    android:id="@+id/tv_create_calendar_target_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_normal"
+                    tools:text="组织1"
+                    android:text="@={viewmodel.targetName}"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/icon_arrow_22dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:orientation="horizontal"
+                android:onClick="chooseManageablePersonList">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_large"
+                    android:text="管理者" />
+                <TextView
+                    android:id="@+id/tv_create_calendar_manager_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_normal"
+                    tools:text="组织1"
+                    android:text="@={viewmodel.manageablePersonName}"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/icon_arrow_22dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:orientation="horizontal"
+                android:onClick="chooseViewableList">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_small"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_large"
+                    android:text="可见范围" />
+                <TextView
+                    android:id="@+id/tv_create_calendar_viewable_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_normal"
+                    tools:text="组织1"
+                    android:text="@={viewmodel.viewableName}"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/icon_arrow_22dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:orientation="horizontal"
+                android:onClick="choosePublishableList">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_large"
+                    android:text="可新建范围"
+                    android:layout_marginEnd="@dimen/spacing_small"/>
+                <TextView
+                    android:id="@+id/tv_create_calendar_publishable_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/z_color_text_primary_dark"
+                    android:textSize="@dimen/font_normal"
+                    tools:text="组织1"
+                    android:text="@={viewmodel.publishableName}"/>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@mipmap/icon_arrow_22dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <View
             android:id="@+id/view_create_calendar_type_divider"
@@ -143,7 +321,7 @@
             android:background="@color/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_create_calendar_type" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_create_calendar_org_args" />
 
         <EditText
             android:id="@+id/et_create_calendar_comment"
@@ -152,9 +330,9 @@
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_normal"
             android:background="@null"
-            android:minLines="3"
-            android:hint="@string/calendar_comment"
             android:gravity="top"
+            android:hint="@string/calendar_comment"
+            android:minLines="3"
             android:text="@={viewmodel.comment}"
             android:textColor="@color/z_color_text_primary"
             android:textColorHint="@color/z_color_text_hint"
@@ -165,20 +343,19 @@
 
         <Button
             android:id="@+id/btn_login_submit"
+            visibleOrGone="@{viewmodel.deleteBtnVisibleable}"
             android:layout_width="325dp"
             android:layout_height="44dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_create_calendar_comment"
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/spacing_normal"
             android:background="@drawable/button_background_44dp"
+            android:onClick="clickDeleteBtn"
             android:text="@string/calendar_delete_calendar"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            visibleOrGone="@{viewmodel.deleteBtnVisibleable}"
-            android:onClick="clickDeleteBtn"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_create_calendar_comment" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
