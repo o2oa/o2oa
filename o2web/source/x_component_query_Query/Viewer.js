@@ -9,6 +9,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
+        "skin" : null,
         "resizeNode": true,
         "paging" : "scroll",
         "perPageCount" : 50,
@@ -321,6 +322,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     _loadPageNode : function(){
         this.viewPageAreaNode.empty();
         this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
+            style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
             countPerPage: this.json.pageSize || this.options.perPageCount,
             visiblePages: this.viewJson.visiblePages ? this.viewJson.visiblePages.toInt() : 9,
             currentPage: this.currentPage,
