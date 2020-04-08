@@ -560,6 +560,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     createDiifInforNode: function(obj, node, color, insertInfor){
+        if (this.historyInforDiv){
+            this.historyInforDiv.dispose();
+            this.historyInforDiv = null;
+        }
         var insertInforDiv = new Element("div", { "styles": this.css.historyInforNode }).inject(this.documentEditor.node);
         insertInforDiv.setStyle("background", color);
         insertInfor = insertInfor.replace(/{name}/, o2.name.cn(obj.person))
@@ -574,6 +578,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                 "x": 0, "y": -10
             }
         });
+        this.historyInforDiv = insertInforDiv;
         return insertInforDiv;
     },
     doDiffsAnimation: function(obj, start, callback){
