@@ -1,12 +1,10 @@
 package com.x.teamwork.assemble.control.jaxrs.task;
 
-import com.google.gson.Gson;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -16,7 +14,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
 import com.x.teamwork.core.entity.*;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,10 +46,6 @@ public class ActionTransformAsSubTask extends BaseAction {
 		Wo wo = new Wo();
 		Task sourceTask = null;
 		Task parentTask = null;
-		TaskDetail taskDetail = null;
-		TaskExtField taskExtField = null;
-		List<ProjectExtFieldRele> extFieldReleList = null;
-		List<TaskTag> tags = null;
 		List<Dynamic> dynamics  = new ArrayList<>();
 		Boolean check = true;
 
@@ -68,7 +61,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//查询需要转换为子任务的任务是否存在
 			try {
 				sourceTask = taskQueryService.get( sourceTaskId );
@@ -85,7 +78,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 			}
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//查询上级任务是否存在
 			try {
 				parentTask = taskQueryService.get( parentId );
@@ -104,6 +97,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 
 		try {
 			taskPersistService.updateParentId( sourceTask.getId(), parentTask.getId(), effectivePerson );
+			wo.setId( sourceTask.getId() );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new TaskPersistException(e, "工作上级任务ID信息更新时发生异常。");
@@ -112,7 +106,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 		}
 
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			//记录工作任务信息变化记录
 			try {
 				dynamics = dynamicPersistService.subTaskTransformDynamic( sourceTask, parentTask, effectivePerson );
@@ -121,7 +115,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 			}
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				new BatchOperationPersistService().addOperation(
 						BatchOperationProcessService.OPT_OBJ_TASK,
@@ -131,7 +125,7 @@ public class ActionTransformAsSubTask extends BaseAction {
 			}
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				new BatchOperationPersistService().addOperation(
 						BatchOperationProcessService.OPT_OBJ_TASK,

@@ -32,7 +32,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskView = taskViewQueryService.get(taskViewId);
 				if ( taskView == null) {
@@ -48,7 +48,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				taskViewPersistService.delete( taskViewId, effectivePerson );
 				

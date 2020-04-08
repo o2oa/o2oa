@@ -57,6 +57,12 @@
 		<table id="text{$.pid}handwritingSize" style=""
 			   width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
+				<td class="editTableValue"><b>展开手写意见:</b>
+					<input class="editTableRadio" name="handwritingExpanded" text{($.handwritingExpanded)?'checked':''} type="radio" value="true"/>是
+					<input class="editTableRadio" name="handwritingExpanded" text{(!$.handwritingExpanded)?'checked':''} type="radio" value="false"/>否
+				</td>
+			</tr>
+			<tr>
 				<td class="editTableValue"><b>手写意见宽度:</b>
 					<input type="text" name="handwritingWidth" value="text{$.handwritingWidth}" class="editTableInputNoWidth" style="width: 50px;;margin-right:5px;" />px
 					<span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>

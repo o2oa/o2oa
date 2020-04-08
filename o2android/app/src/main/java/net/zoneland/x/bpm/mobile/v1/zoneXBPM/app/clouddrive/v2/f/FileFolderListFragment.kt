@@ -244,7 +244,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
 
     private fun share() {
         val bundle = ContactPickerActivity.startPickerBundle(
-                arrayListOf("personPicker", "departmentPicker"),
+                arrayListOf(ContactPickerActivity.personPicker, ContactPickerActivity.departmentPicker),
                 multiple = true)
         if (activity is CloudDiskActivity) {
             (activity as CloudDiskActivity).contactPicker(bundle) { result ->

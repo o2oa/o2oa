@@ -45,7 +45,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			if (null == process) {
 				throw new ExceptionEntityNotExist(id, Process.class);
 			}
-			if (StringUtils.isNotEmpty(process.getProjection()) && XGsonBuilder.isJson(process.getProjection())) {
+			if (XGsonBuilder.isJsonArray(process.getProjection())) {
 				List<Projection> projections = XGsonBuilder.instance().fromJson(process.getProjection(),
 						new TypeToken<List<Projection>>() {
 						}.getType());
@@ -166,8 +166,8 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 	}
 
 	private Data data(Business business, WorkCompleted workCompleted) throws Exception {
-		if (StringUtils.isNotEmpty(workCompleted.getData())) {
-			return XGsonBuilder.instance().fromJson(workCompleted.getData(), Data.class);
+		if (BooleanUtils.isTrue(workCompleted.getMerged())) {
+			return workCompleted.getProperties().getData();
 		}
 		List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class, Item.bundle_FIELDNAME,
 				workCompleted.getJob(), Item.itemCategory_FIELDNAME, ItemCategory.pp);

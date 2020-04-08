@@ -52,7 +52,7 @@ public class ActionListArchiveNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -73,7 +73,7 @@ public class ActionListArchiveNextWithFilter extends BaseAction {
 			queryFilter.addIsTrueTerm( new IsTrueTerm("archive" ));
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListArchiveNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );

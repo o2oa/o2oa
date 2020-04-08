@@ -965,7 +965,8 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
             }
         }).inject( this.container );
 
-        node.setStyles(this.getCoordinate());
+        var coordinate = this.getCoordinate();
+        node.setStyles(coordinate);
 
         if( this.weekInfor.isEventStart ){
             node.setStyles({
@@ -983,7 +984,7 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
         }
 
         if( this.weekInfor.isEventStart ){
-            var timeNode = new Element("div",{
+            this.timeNode = new Element("div",{
                 styles : {
                     "font-size" : "10px",
                     "padding-left" : "2px",
@@ -993,14 +994,20 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
             }).inject( node );
         }
 
-        var titleNode = new Element("div",{
+        this.titleNode = new Element("div",{
             styles : {
                 "padding-left" : "5px",
                 "font-size" : "12px",
-                "float" : "left"
+                "float" : "left",
+                "overflow" : "hidden",
+                "text-overflow" : "ellipsis",
+                "white-space" : "nowrap"
             },
             text : this.data.title
         }).inject( node );
+
+        this.titleNode.setStyle("width", coordinate.width - ( this.timeNode ? this.timeNode.getSize().x : 0 ) -6  );
+
         //}
 
 
@@ -1035,7 +1042,13 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
         this.node.setStyle("border-color", this.lightColor );
     },
     resize : function(){
-        this.node.setStyles(this.getCoordinate());
+        // this.node.setStyles(this.getCoordinate());
+
+        var coordinate = this.getCoordinate();
+        this.node.setStyles( coordinate );
+
+        this.titleNode.setStyle("width", coordinate.width - ( this.timeNode ? this.timeNode.getSize().x : 0 ) - 6  );
+
     },
     reload: function(){
         if( this.tooltip )this.tooltip.destroy();
@@ -1097,10 +1110,11 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
             }
         }).inject( this.container );
 
-        node.setStyles(this.getCoordinate());
+        var coordinate = this.getCoordinate();
+        node.setStyles(coordinate);
 
         //if( this.isFirst ){
-        var timeNode = new Element("div",{
+        this.timeNode = new Element("div",{
             styles : {
                 "font-size" : "10px",
                 "padding-left" : "2px",
@@ -1109,14 +1123,19 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
             text : this.timeStart.format("%H:%M") + "至" + this.timeEnd.format("%H:%M")
         }).inject( node );
 
-        var titleNode = new Element("div",{
+        this.titleNode = new Element("div",{
             styles : {
                 "padding-left" : "5px",
                 "font-size" : "12px",
-                "float" : "left"
+                "float" : "left",
+                "overflow" : "hidden",
+                "text-overflow" : "ellipsis",
+                "white-space" : "nowrap"
             },
             text : this.data.title
         }).inject( node );
+
+        this.titleNode.setStyle("width", coordinate.width - this.timeNode.getSize().x - 6 );
         //}
 
 
@@ -1143,7 +1162,9 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
         }
     },
     resize : function(){
-        this.node.setStyles(this.getCoordinate());
+        var coordinate = this.getCoordinate();
+        this.node.setStyles( coordinate );
+        this.titleNode.setStyle("width", coordinate.width - this.timeNode.getSize().x - 6 );
     },
     reload: function(){
         if( this.tooltip )this.tooltip.destroy();

@@ -73,8 +73,8 @@ MWF.xApplication.ForumDocument.Vote = new Class({
         }
 
         var personStr = "";
-        if( this.data.voteCount ){
-            personStr = "，目前已有"+ this.data.voteCount +"人参与"
+        if( this.data.voteUserCount || this.data.voteCount ){
+            personStr = "，目前已有"+ this.data.voteUserCount || this.data.voteCount +"人参与"
         }else{
             personStr = "，目前还没有人参与"
         }

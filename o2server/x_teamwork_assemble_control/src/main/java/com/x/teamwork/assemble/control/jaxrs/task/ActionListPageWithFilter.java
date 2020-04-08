@@ -49,13 +49,13 @@ public class ActionListPageWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( check ) {
-			if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
+			if( Boolean.TRUE.equals( check ) ){
 				queryFilter = wrapIn.getQueryFilter();
 			}
 		}
 		
-		if( check ) {
+		if( Boolean.TRUE.equals( check ) ){
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPage", effectivePerson.getDistinguishedName(), 
 					pageNum, pageSize, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = taskCache.get( cacheKey );
