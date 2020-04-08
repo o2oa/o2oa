@@ -2,6 +2,10 @@ MWF.xApplication.process.Xform.LP = {
     "ok": "确定",
 	"deleteDatagridLineTitle":"删除条目确认",
     "deleteDatagridLine": "是否确定要删除当前条目？",
+
+    "cancelDatagridLineEditTitle" : "取消编辑数据网格确认",
+    "cancelDatagridLineEdit" : "是否确定取消编辑数据网格？",
+
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
     "activity": "活动",
@@ -98,6 +102,7 @@ MWF.xApplication.process.Xform.LP = {
     "addLine": "添加新条目",
     "edit": "编辑",
     "completedEdit": "完成",
+    "cancelEdit": "取消",
     "mobileGridHelp": "长按数据区域可编辑数据<br>向左滑动可以删除数据",
     "item": "▌条目",
     "all": "全部",
@@ -156,7 +161,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdoc": "编辑正文",
     "editdocCompleted": "编辑完成",
     "printdoc": "打印正文",
-    "history": "正文痕迹",
+    "history": "正文痕迹审查",
 
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
     "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
@@ -197,6 +202,23 @@ MWF.xApplication.process.Xform.LP = {
         "editionUnit":"[印发机关]",
         "editionDate":"[印发日期]",
         "historyList": "历史版本文档"
+    },
+    "documentHistory": {
+        "diffContent": "<div>{time}</div>{name} 在 ”{activity}“ 时修改的内容",
+        "insertContent": "<div>{time}</div>{name} 在 ”{activity}“ 时插入的内容:",
+        "deleteContent": "<div>{time}</div>{name} 在 ”{activity}“ 时删除的内容:",
+        "insert": "插入了",
+        "delete": "删除了",
+        "insertTimes": "插入了 {times} 处",
+        "deleteTimes": "删除了 {times} 处",
+        "play": "修改记录回放",
+        "pause": "暂停回放",
+        "stop": "停止修改记录回放",
+        "next": "下一个修改记录",
+        "prev": "上一个修改记录",
+        "exit": "退出痕迹审查",
+        "diff_patch_count": "共有{history}个历史版本，{diff}处修订。",
+        "original": "原始版本"
     }
 
 };

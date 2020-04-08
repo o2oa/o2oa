@@ -59,7 +59,19 @@
 			</td>
 		</tr>
 		</table>
-		<div id="text{$.pid}allowPrintScriptArea" style="display: text{($.allowEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="allowPrintScript" title="允许打印脚本 (S)"></div>
+		<div id="text{$.pid}allowPrintScriptArea" style="display: text{($.allowPrint=='s')?'block':'none'}" class="MWFFormulaArea" name="allowPrintScript" title="允许打印脚本 (S)"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">查看痕迹:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHistoryScriptArea').setStyle('display', 'none')}" name="allowHistory" text{($.allowHistory!='n' && $.allowHistory!='s')?'checked':''} type="radio" value="y"/>允许
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHistoryScriptArea').setStyle('display', 'none')}" name="allowHistory" text{($.allowHistory=='n')?'checked':''} type="radio" value="n"/>不允许
+					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}allowHistoryScriptArea').setStyle('display', 'block')}" name="allowHistory" text{($.allowHistory=='s')?'checked':''} type="radio" value="s"/>根据脚本
+				</td>
+			</tr>
+		</table>
+		<div id="text{$.pid}allowHistoryScriptArea" style="display: text{($.allowHistory=='s')?'block':'none'}" class="MWFFormulaArea" name="allowHistoryScript" title="允许查看痕迹脚本 (S)"></div>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>

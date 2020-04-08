@@ -272,8 +272,8 @@
     },
     "editStyles": {
       "background-color": "#ffffff",
-      "text-align": "right",
-      "height": "36px",
+      "text-align": "left",
+      "height": "auto",
       "border-top": "0px",
       "border-left": "0px",
       "border-right" : "1px solid #999999",
@@ -325,10 +325,12 @@
       "border-radius": "8px",
       "border-bottom": "1px solid #979797",
       "border": "1px solid #979797",
-      "height": "80px",
+      "height": "auto",
+      "min-height" : "78px",
+      "line-height": "78px",
       "color": "#000",
       "font-size": "30px",
-      "float": "left",
+      "float": "none",
       "text-align": "left"
     }
   },

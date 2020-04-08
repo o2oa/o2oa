@@ -217,7 +217,9 @@ public class TaskQueryService {
 					for( TaskListRele rele : taskListReles ) {
 						task = emc.find( rele.getTaskId(), Task.class );
 						//只查询自己负责的任务
-						if( personName.equalsIgnoreCase( task.getExecutor() )) {
+						if( personName.equalsIgnoreCase( task.getExecutor() ) ||
+								( task.getParticipantList() !=null && task.getParticipantList().contains( personName ))
+						) {
 							task.setOrder( rele.getOrder() );
 							resultList.add( task );
 						}
@@ -252,7 +254,9 @@ public class TaskQueryService {
 				if( ListTools.isNotEmpty( taskListTmp )) {
 					for( Task _task : taskListTmp ) {
 						//只查询自己负责的任务
-						if( personName.equalsIgnoreCase( _task.getExecutor() )) {
+						if( personName.equalsIgnoreCase( _task.getExecutor() )||
+								( _task.getParticipantList() !=null && _task.getParticipantList().contains( personName )))
+						{
 							resultList.add( _task );
 						}
 					}
@@ -266,7 +270,6 @@ public class TaskQueryService {
 	
 	/**
 	 * 在人员的可见范围之类，根据指定的工作任务ID，查询子任务列表
-	 * @param project
 	 * @param taskId
 	 * @param effectivePerson
 	 * @return

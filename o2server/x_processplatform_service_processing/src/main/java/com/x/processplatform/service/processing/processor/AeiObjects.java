@@ -228,7 +228,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (null == this.projections) {
 			if (null != this.getProcess()) {
 				String text = this.getProcess().getProjection();
-				if (StringUtils.isNotEmpty(text) && XGsonBuilder.isJson(text)) {
+				if (XGsonBuilder.isJsonArray(text)) {
 					this.projections = XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
 					}.getType());
 				}
