@@ -34,7 +34,15 @@
                 "build:macos": "npm run clear && npm run preperation:macos && npm run build_parallel && npm run deploy:macos && npm run typeInfor",
                 "build:neokylin": "npm run clear && npm run preperation:neokylin && npm run build_parallel && npm run deploy:neokylin && npm run typeInfor",
                 "build:rpi": "npm run clear && npm run preperation:rpi && npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
-                "test": "type welcome"
+                "build_ci": "npm run clear && npm run preperation && npm run build_parallel && npm run deploy && npm run typeInfor",
+                "build_ci:win": "npm run clear && npm run preperation:win && npm run build_parallel && npm run deploy:win && npm run typeInfor",
+                "build_ci:linux": "npm run clear && npm run preperation:linux && npm run build_parallel && npm run deploy:linux && npm run typeInfor",
+                "build_ci:aix": "npm run clear && npm run preperation:aix && npm run build_parallel && npm run deploy:aix && npm run typeInfor",
+                "build_ci:kylinos": "npm run clear && npm run preperation:kylinos && npm run build_parallel && npm run deploy:kylinos && npm run typeInfor",
+                "build_ci:macos": "npm run clear && npm run preperation:macos && npm run build_parallel && npm run deploy:macos && npm run typeInfor",
+                "build_ci:neokylin": "npm run clear && npm run preperation:neokylin && npm run build_parallel && npm run deploy:neokylin && npm run typeInfor",
+                "build_ci:rpi": "npm run clear && npm run preperation:rpi && npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
+               "test": "type welcome"
         },
         "repository": {
                 "type": "git",
