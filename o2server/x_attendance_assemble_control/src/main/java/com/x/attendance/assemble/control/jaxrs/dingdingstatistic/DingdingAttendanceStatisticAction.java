@@ -67,6 +67,26 @@ public class DingdingAttendanceStatisticAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "根据部门查询人员月份统计", action = ActionPersonStatisticWithUnit.class)
+    @GET
+    @Path("person/unit/{unit}/{year}/{month}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void personMonthWithUnit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                            @JaxrsParameterDescribe("部门") @PathParam("unit") String unit,
+                            @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
+                            @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month) {
+        ActionResult<List<ActionPersonStatisticWithUnit.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionPersonStatisticWithUnit().execute(unit, year, month);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "部门月份统计查询", action = ActionUnitStatistic.class)
     @GET
     @Path("unit/{unit}/{year}/{month}")
