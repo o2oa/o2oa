@@ -1,0 +1,83 @@
+[
+  {
+    "title": "人员",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){ return d.o2User.split('@')[0] }",
+    "name": "o2User",
+    "width": "9%"
+  },
+  {
+    "title": "月份",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ return data.statisticYear + '-' + data.statisticMonth  }",
+    "name": "statisticMonth",
+    "width": "9%"
+  },
+  {
+    "title": "上班打卡次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "onDutyTimes",
+    "name": "onDutyTimes",
+    "width": "9%"
+  },
+  {
+    "title": "下班打卡次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "offDutyTimes",
+    "name": "offDutyTimes",
+    "width": "9%"
+  },
+  {
+    "title": "出勤人天数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "workDayCount",
+    "name": "workDayCount",
+    "width": "9%"
+  },
+  {
+    "title": "迟到次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "lateTimes",
+    "name": "lateTimes",
+    "width": "9%"
+  },
+  {
+    "title": "早退次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "leaveEarlyTimes",
+    "name": "leaveEarlyTimes",
+    "width": "9%"
+  },
+  {
+    "title": "未打卡次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "notSignedCount",
+    "name": "notSignedCount",
+    "width": "9%"
+  },
+  {
+    "title": "严重迟到次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "seriousLateTimes",
+    "name": "seriousLateTimes",
+    "width": "9%"
+  },
+  {
+    "title": "旷工次数",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "absenteeismTimes",
+    "name": "absenteeismTimes",
+    "width": "9%"
+  }
+   
+]
