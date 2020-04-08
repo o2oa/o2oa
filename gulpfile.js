@@ -16,8 +16,8 @@ var gulp = require('gulp'),
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
 
-var downloadHost = "download.o2oa.net";
-//var downloadHost = "release.o2oa.net";
+//var downloadHost = "download.o2oa.net";
+var downloadHost = "release.o2oa.net";
 var protocol = "http";
 var commonUrl = "/build/commons.tar.gz";
 
