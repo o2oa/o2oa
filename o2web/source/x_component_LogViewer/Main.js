@@ -225,7 +225,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         }
     },
     showSystemLog : function(data){
-
+        this.logFinish = true;
         data.each(function (log) {
             var node = new Element("div", {"styles": this.css.logItemNode}).inject(this.screenInforAreaNode);
 
