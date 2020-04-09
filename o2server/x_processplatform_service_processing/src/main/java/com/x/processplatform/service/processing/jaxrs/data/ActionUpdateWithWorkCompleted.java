@@ -54,8 +54,8 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 					if (null == workCompleted) {
 						throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 					}
-					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-						throw new ExceptionModifyMerged(workCompleted.getId());
+					if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+						throw new ExceptionModifyDataMerged(workCompleted.getId());
 					}
 					wo.setId(workCompleted.getId());
 					updateData(business, workCompleted, jsonElement);

@@ -164,7 +164,7 @@
         "border": "1px solid #cccccc",
         "float": "none",
         "margin": "10px",
-        "border-radius": "5px"
+        "border-radius": "5px",
     },
     "viewFilterSearchCustomActionNode": {
         "height": "24px",
@@ -249,16 +249,16 @@
     "viewFilterSearchCustomPathListNode": {
         "border": "0px",
         "border-radius": "5px",
-        "height": "74px",
+        "height": "80px",
         "padding": "3px",
-        "width": "93px",
+        "width": "99px",
         "font-size": "12px"
     },
     "viewFilterSearchCustomComparisonListNode": {
         "border": "0px",
-        "height": "74px",
+        "height": "80px",
         "padding": "3px",
-        "width": "93px",
+        "width": "99px",
         "font-size": "12px"
     },
     "viewFilterSearchOptionNode": {
@@ -288,7 +288,8 @@
         "float": "left"
     },
     "viewSearchFilterNode_over": {
-        "border": "1px solid #fe9145"
+        "border": "1px solid #fe9145",
+        //"color": "#fe9145",
     },
     "viewSearchFilterSelectAreaNode": {
         "height": "17px",
@@ -312,7 +313,7 @@
         "width": "13px",
         "margin": "2px 0px",
         "border-radius": "6px",
-        "background-color": "#666666"
+        "background-color": "#666666",
     },
     "viewSearchFilterSelectButtonNode_over": {
         "background-color": "#fe9145"
@@ -415,7 +416,7 @@
         "z-index": "200"
     },
     "worksAreaTitleNode": {
-        "height": "20px"
+        "height": "20px",
     },
     "worksAreaTitleCloseNode": {
         "width": "20px",
@@ -436,7 +437,7 @@
     },
     "workAreaTitleNode": {
         "height": "20px",
-        "line-height": "20px"
+        "line-height": "20px",
     },
     "workAreaContentNode": {
         "height": "20px",

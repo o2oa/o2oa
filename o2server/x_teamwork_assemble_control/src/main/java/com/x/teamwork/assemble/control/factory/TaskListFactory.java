@@ -196,21 +196,7 @@ public class TaskListFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public Integer maxListOrder(String groupId ) throws Exception {
-		if( StringUtils.isEmpty( groupId ) ){
-			throw new Exception("groupId can not be empty!");
-		}
-		EntityManager em = this.entityManagerContainer().get(TaskList.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
-		Root<TaskList> root = cq.from(TaskList.class);
-		Predicate p = cb.equal( root.get(TaskList_.taskGroup ), groupId );
-		cq.select( cb.max( root.get( TaskList_.order )));
-		Integer max = em.createQuery(cq.where(p)).getSingleResult();
-		return max == null ? 0 : max;
-	}
-
-	public Integer maxTaskOrder(String listId) throws Exception {
+	public Integer maxOrder(String listId) throws Exception {
 		if( StringUtils.isEmpty( listId ) ){
 			throw new Exception("listId can not be empty!");
 		}
@@ -218,7 +204,7 @@ public class TaskListFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
 		Root<TaskListRele> root = cq.from(TaskListRele.class);
-		Predicate p = cb.equal( root.get(TaskListRele_.taskListId), listId );
+		Predicate p = cb.equal( root.get(TaskListRele_.taskListId), listId );		
 		cq.select( cb.max( root.get( TaskListRele_.order )));
 		Integer max = em.createQuery(cq.where(p)).getSingleResult();
 		return max == null ? 0 : max;
@@ -355,32 +341,12 @@ public class TaskListFactory extends AbstractFactory {
 		if( StringUtils.isEmpty( taskId ) ){
 			return null;
 		}
-		if( StringUtils.isEmpty( taskGroupId ) ){
-			return null;
-		}
 		EntityManager em = this.entityManagerContainer().get(TaskListRele.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<TaskListRele> cq = cb.createQuery(TaskListRele.class);
 		Root<TaskListRele> root = cq.from(TaskListRele.class);
 		Predicate p = cb.equal( root.get(TaskListRele_.taskId ), taskId );
 		p = cb.and( p, cb.equal( root.get(TaskListRele_.taskGroupId ), taskGroupId ) );
-		return em.createQuery(cq.where(p)).getResultList();
-	}
-
-	public List<String> listTaskListIdWithTask(String taskId, String taskGroupId ) throws Exception {
-		if( StringUtils.isEmpty( taskId ) ){
-			return null;
-		}
-		if( StringUtils.isEmpty( taskGroupId ) ){
-			return null;
-		}
-		EntityManager em = this.entityManagerContainer().get(TaskListRele.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<TaskListRele> root = cq.from(TaskListRele.class);
-		Predicate p = cb.equal( root.get(TaskListRele_.taskId ), taskId );
-		p = cb.and( p, cb.equal( root.get(TaskListRele_.taskGroupId ), taskGroupId ) );
-		cq.select( root.get(TaskListRele_.taskListId) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 

@@ -1,4 +1,12 @@
 package com.x.teamwork.assemble.control.jaxrs.project;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
@@ -13,17 +21,14 @@ import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 import com.x.teamwork.core.entity.tools.filter.term.IsTrueTerm;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import net.sf.ehcache.Element;
-import org.apache.commons.lang3.StringUtils;
 
 public class ActionListRecycleNextWithFilter extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListRecycleNextWithFilter.class);
 
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag, Integer count, JsonElement jsonElement ) throws Exception {
+	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String flag, Integer count, JsonElement jsonElement ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		ResultObject resultObject = null;
 		List<Wo> wos = new ArrayList<>();
@@ -31,7 +36,7 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 		Boolean check = true;
 		String cacheKey = null;
 		Element element = null;
-		QueryFilter queryFilter = null;
+		QueryFilter  queryFilter = null;
 		List<String> queryProjectIds = new ArrayList<>();
 		
 		if ( StringUtils.isEmpty( flag ) || "(0)".equals(flag)) {
@@ -47,7 +52,7 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( Boolean.TRUE.equals( check ) ) {
+		if( check ) {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -68,8 +73,8 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 			queryFilter.addIsTrueTerm( new IsTrueTerm("deleted" ));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ) {
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListRecycleNextWithFilter", effectivePerson.getDistinguishedName(), flag, count,
+		if( check ) {
+			cacheKey = ApplicationCache.concreteCacheKey( "ActionListRecycleNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );
 			
@@ -112,11 +117,12 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 						result.setData( resultObject.getWos() );
 					}
 				} catch (Exception e) {
+					check = false;
 					logger.warn("系统查询项目信息列表时发生异常!");
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}
+			}		
 		}
 		return result;
 	}

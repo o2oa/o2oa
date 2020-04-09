@@ -2,10 +2,6 @@ MWF.xApplication.process.Xform.LP = {
     "ok": "确定",
 	"deleteDatagridLineTitle":"删除条目确认",
     "deleteDatagridLine": "是否确定要删除当前条目？",
-
-    "cancelDatagridLineEditTitle" : "取消编辑数据网格确认",
-    "cancelDatagridLineEdit" : "是否确定取消编辑数据网格？",
-
     "browserNotActiveX": "您的浏览器不支持ActiveX控件，不能加载Office控件，请使用IE浏览器",
 
     "activity": "活动",
@@ -102,7 +98,6 @@ MWF.xApplication.process.Xform.LP = {
     "addLine": "添加新条目",
     "edit": "编辑",
     "completedEdit": "完成",
-    "cancelEdit": "取消",
     "mobileGridHelp": "长按数据区域可编辑数据<br>向左滑动可以删除数据",
     "item": "▌条目",
     "all": "全部",

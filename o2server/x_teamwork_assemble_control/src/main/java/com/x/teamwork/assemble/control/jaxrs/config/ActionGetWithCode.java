@@ -23,14 +23,14 @@ public class ActionGetWithCode extends BaseAction {
 		SystemConfig systemConfig = null;
 		Boolean check = true;
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			if( code == null || code.isEmpty() ){
 				check = false;
 				Exception exception = new ExceptionConfigCodeEmpty();
 				result.error( exception );
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				systemConfig = systemConfigQueryService.getByCode( code );
 			} catch (Exception e) {
@@ -40,7 +40,7 @@ public class ActionGetWithCode extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				wrap = Wo.copier.copy( systemConfig );
 				result.setData( wrap );

@@ -40,7 +40,7 @@ public class ActionExecuteWithFilterNext extends BaseAction {
 		QueryFilter  queryFilter = null;
 		List<TaskTag> tags = null;
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			try {
 				taskView = taskViewQueryService.get( viewId );
 				if ( taskView == null) {
@@ -65,11 +65,11 @@ public class ActionExecuteWithFilterNext extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			queryFilter = wrapIn.getQueryFilter(taskView);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( ListTools.isNotEmpty( taskView.getChooseWorkTag() )) {
 				//获取在该项目中符合标签条件的所有工作任务ID				
 				List<String> taskIds = taskTagQueryService.listTaskIdsWithTagIds( taskView.getChooseWorkTag() );
@@ -81,7 +81,7 @@ public class ActionExecuteWithFilterNext extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionExecuteWithFilterNext", effectivePerson.getDistinguishedName(),  flag, count, taskView.getOrderField(), taskView.getOrderType(), queryFilter.getContentSHA1() );
 			element = taskViewCache.get( cacheKey );
 			

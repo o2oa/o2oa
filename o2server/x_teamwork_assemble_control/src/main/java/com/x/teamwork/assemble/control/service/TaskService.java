@@ -138,11 +138,11 @@ class TaskService {
 	/**
 	 * 向数据库持久化工作任务信息
 	 * @param emc
-	 * @param object
-	 * @param detail
-	 * @param extField
+	 * @param taskExtField 
+	 * @param taskDetail 
+	 * @param task
 	 * @return
-	 * @throws Exception
+	 * @throws Exception 
 	 */
 	protected Task save( EntityManagerContainer emc, Task object, TaskDetail detail, TaskExtField extField ) throws Exception {
 		Task task = null;

@@ -143,7 +143,6 @@
 	"today_xform_mobile": {
 		"border": "0px solid #FFF",
 		"color": "#FF0000",
-		"background": "#FFF"
 	//	"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom"
 	},
 	"current_xform_mobile": {
@@ -153,7 +152,7 @@
 	},
 	"normal_xform_mobile": {
 	//	"background": "url("+o2.session.path+"/widget/$Calendar/xform/tdbg.gif) repeat-x bottom",
-		"background": "#FFF",
+	//	"background": "#FFF",
 		"border": "0px solid #FFF",
 		"color": "#333"
 	},

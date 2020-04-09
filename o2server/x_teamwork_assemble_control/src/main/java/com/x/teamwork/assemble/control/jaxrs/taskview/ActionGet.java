@@ -43,7 +43,7 @@ public class ActionGet extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					taskView = taskViewQueryService.get(id);
 					if ( taskView == null) {
@@ -59,7 +59,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					wo = Wo.copier.copy( taskView );
 					taskViewCache.put(new Element(cacheKey, wo));

@@ -36,7 +36,7 @@ public class ActionList extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					taskLists = taskListQueryService.listWithProject( effectivePerson.getDistinguishedName(), projectId );
 					if( ListTools.isNotEmpty( taskLists )) {

@@ -45,6 +45,41 @@ class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 			executorSeed = workCompleted.getJob();
 		}
 
+		/*
+		void updateData(Business business, WorkCompleted workCompleted, JsonElement jsonElement, String... paths)
+				throws Exception {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if (paths.length == 0) {
+				DataWork dataWork = DataWork.workCompletedCopier.copy(workCompleted);
+				dataWork.setWorkCompletedId(workCompleted.getId());
+				dataWork.setWorkId(workCompleted.getWork());
+				dataWork.setCompleted(true);
+				jsonObject.add(Data.WORK_PROPERTY, gson.toJsonTree(dataWork));
+				jsonObject.add(Data.ATTACHMENTLIST_PROPERTY,
+						gson.toJsonTree(this.listDataAttachment(business, workCompleted.getJob())));
+			}
+			DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
+			List<Item> exists = business.item().listWithJobWithPath(workCompleted.getJob(), paths);
+			List<Item> currents = converter.disassemble(jsonObject, paths);
+			List<Item> removes = converter.subtract(exists, currents);
+			List<Item> adds = converter.subtract(currents, exists);
+			if ((!removes.isEmpty()) || (!adds.isEmpty())) {
+				business.entityManagerContainer().beginTransaction(Item.class);
+				for (Item _o : removes) {
+					business.entityManagerContainer().remove(_o);
+				}
+				for (Item _o : adds) {
+					this.fill(_o, workCompleted);
+					business.entityManagerContainer().persist(_o);
+				}
+				//基于前面的原因,这里进行单独提交 
+				business.entityManagerContainer().commit();
+		
+			}
+		
+		}
+		*/
+
 		Callable<String> callable = new Callable<String>() {
 			public String call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -53,12 +88,13 @@ class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 					if (null == workCompleted) {
 						throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 					}
-					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-						throw new ExceptionModifyMerged(workCompleted.getId());
+					if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+						throw new ExceptionModifyDataMerged(workCompleted.getId());
 					}
 
 					Wo wo = new Wo();
 					wo.setId(workCompleted.getId());
+					//					updateData(business, workCompleted, jsonElement, path0);
 					List<Item> exists = business.item().listWithJobWithPath(workCompleted.getJob(), path0);
 
 					if (1 == exists.size()) {

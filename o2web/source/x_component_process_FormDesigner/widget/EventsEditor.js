@@ -131,7 +131,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
         if (form.scriptDesigner) form.scriptDesigner.addScriptItem(this.data, "code", this.editor.module, this.editor.scriptPath+"."+this.event);
 	},
     deleteScriptDesignerItem: function(){
-        var form = this.editor.app.form || this.editor.app.page || this.editor.app.view;
+        var form = this.editor.app.form || this.editor.app.page;
         if (form.scriptDesigner){
             form.scriptDesigner.deleteScriptItem(this.editor.module, this.editor.scriptPath+"."+this.event);
         }

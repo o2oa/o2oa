@@ -147,8 +147,8 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 	}
 
-	public Boolean getMerged() {
-		return BooleanUtils.isTrue(merged);
+	public Boolean getDataMerged() {
+		return BooleanUtils.isTrue(dataMerged);
 	}
 
 	public static final String job_FIELDNAME = "job";
@@ -339,13 +339,13 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Boolean allowRollback;
 
-	// public static final String data_FIELDNAME = "data";
-	// @FieldDescribe("业务数据.")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String data;
+	public static final String data_FIELDNAME = "data";
+	@FieldDescribe("业务数据.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String data;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -355,12 +355,12 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private WorkCompletedProperties properties;
 
-	public static final String merged_FIELDNAME = "merged";
+	public static final String dataMerged_FIELDNAME = "dataMerged";
 	@FieldDescribe("业务数据是否从item表中合并至data字段")
-	@Column(name = ColumnNamePrefix + merged_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + merged_FIELDNAME)
+	@Column(name = ColumnNamePrefix + dataMerged_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dataMerged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private Boolean merged;
+	private Boolean dataMerged;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -780,13 +780,13 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.allowRollback = allowRollback;
 	}
 
-	// public String getData() {
-	// 	return data;
-	// }
+	public String getData() {
+		return data;
+	}
 
-	// public void setData(String data) {
-	// 	this.data = data;
-	// }
+	public void setData(String data) {
+		this.data = data;
+	}
 
 	public String getStringValue01() {
 		return stringValue01;
@@ -1044,8 +1044,8 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.titleLob = titleLob;
 	}
 
-	public void setMerged(Boolean merged) {
-		this.merged = merged;
+	public void setDataMerged(Boolean dataMerged) {
+		this.dataMerged = dataMerged;
 	}
 
 	public void setProperties(WorkCompletedProperties properties) {

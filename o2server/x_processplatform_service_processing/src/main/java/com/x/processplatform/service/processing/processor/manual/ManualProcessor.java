@@ -40,9 +40,6 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-/**
- * @author Zhou Rui
- */
 public class ManualProcessor extends AbstractManualProcessor {
 
 	private static Logger logger = LoggerFactory.getLogger(ManualProcessor.class);
@@ -56,188 +53,78 @@ public class ManualProcessor extends AbstractManualProcessor {
 		/* 根据manual计算出来的活动处理人 */
 		List<String> identities = calculateTaskIdentities(aeiObjects, manual);
 		/* 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作. */
-		Work merge = this.arrivingMergeSameJob(aeiObjects, manual, identities);
-		if (null != merge) {
-			return merge;
+		if (BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
+			List<String> exists = this.arriving_sameJobActivityExistIdentities(aeiObjects, manual);
+			if (ListTools.isNotEmpty(exists)) {
+				Work other = aeiObjects.getWorks().stream().filter(o -> {
+					return StringUtils.equals(aeiObjects.getWork().getJob(), o.getJob())
+							&& StringUtils.equals(aeiObjects.getWork().getActivity(), o.getActivity())
+							&& (!Objects.equals(aeiObjects.getWork(), o));
+				}).findFirst().orElse(null);
+				if (null != other) {
+					identities.removeAll(exists);
+					if (ListTools.isEmpty(identities)) {
+						this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
+						this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
+						this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
+						this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
+						this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
+						this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
+						if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
+								.size(other.getSplitTokenList())) {
+							other.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
+							other.setSplitToken(aeiObjects.getWork().getSplitToken());
+							other.setSplitValue(aeiObjects.getWork().getSplitValue());
+							other.setSplitting(true);
+						}
+						aeiObjects.getUpdateWorks().add(other);
+						aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
+						return other;
+					}
+				}
+			}
 		}
-		this.arrivingPassSame(aeiObjects, identities);
-		// if (BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
-		// List<String> exists =
-		// this.arriving_sameJobActivityExistIdentities(aeiObjects, manual);
-		// if (ListTools.isNotEmpty(exists)) {
-		// Work other = aeiObjects.getWorks().stream().filter(o -> {
-		// return StringUtils.equals(aeiObjects.getWork().getJob(), o.getJob())
-		// && StringUtils.equals(aeiObjects.getWork().getActivity(), o.getActivity())
-		// && (!Objects.equals(aeiObjects.getWork(), o));
-		// }).findFirst().orElse(null);
-		// if (null != other) {
-		// identities.removeAll(exists);
-		// if (ListTools.isEmpty(identities)) {
-		// this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
-		// if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
-		// .size(other.getSplitTokenList())) {
-		// other.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-		// other.setSplitToken(aeiObjects.getWork().getSplitToken());
-		// other.setSplitValue(aeiObjects.getWork().getSplitValue());
-		// other.setSplitting(true);
-		// }
-		// aeiObjects.getUpdateWorks().add(other);
-		// aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
-		// return other;
-		// }
-		// }
-		// }
-		// }
+
 		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>(identities));
-		// /* 查找是否有passSameTarget设置 */
-		// Route passSameTargetRoute = aeiObjects.getRoutes().stream()
-		// .filter(o ->
-		// BooleanUtils.isTrue(o.getPassSameTarget())).findFirst().orElse(null);
-		// /* 如果有passSameTarget,有到达ArriveWorkLog,不是调度到这个节点的 */
-		// if ((null != passSameTargetRoute) && ((null !=
-		// aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
-		// && (!aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
-		// logger.debug("pass same target work:{}.", aeiObjects.getWork());
-		// WorkLog rollbackWorkLog = findPassSameTargetWorkLog(aeiObjects);
-		// logger.debug("pass same target workLog:{}.", rollbackWorkLog);
-		// // if (null != rollbackWorkLog) {
-		// // final String arriveActivityToken =
-		// rollbackWorkLog.getArrivedActivityToken();
-		// // aeiObjects.getJoinInquireTaskCompleteds().stream()
-		// // .filter(o ->
-		// // aeiObjects.getWork().getManualTaskIdentityList().contains(o.getIdentity())
-		// // && StringUtils.equals(o.getActivityToken(), arriveActivityToken))
-		// // .forEach(o -> {
-		// // TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(),
-		// // passSameTargetRoute, o);
-		// // try {
-		// // obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
-		// // obj.setRouteName(passSameTargetRoute.getName());
-		// // Date now = new Date();
-		// // obj.setStartTime(now);
-		// // obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// // obj.setCompletedTime(now);
-		// // obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// // obj.setDuration(0L);
-		// // obj.setExpired(false);
-		// // obj.setExpireTime(null);
-		// // obj.setTask(null);
-		// // obj.setLatest(true);
-		// // aeiObjects.getCreateTaskCompleteds().add(obj);
-		// // } catch (Exception e) {
-		// // e.printStackTrace();
-		// // }
-		// // });
-		// // }
-		// if (null != rollbackWorkLog) {
-		// for (TaskCompleted o : aeiObjects.getJoinInquireTaskCompleteds()) {
-		// if (StringUtils.equals(o.getActivityToken(),
-		// rollbackWorkLog.getArrivedActivityToken())) {
-		// List<String> values =
-		// ListUtils.union(aeiObjects.getWork().getManualTaskIdentityList(),
-		// aeiObjects.business().organization().identity().listWithPerson(o.getPerson()));
-		// if (!values.isEmpty()) {
-		// TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(),
-		// passSameTargetRoute, o);
-		// obj.setIdentity(values.get(0));
-		// obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
-		// obj.setRouteName(passSameTargetRoute.getName());
-		// Date now = new Date();
-		// obj.setStartTime(now);
-		// obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// obj.setCompletedTime(now);
-		// obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// obj.setDuration(0L);
-		// obj.setExpired(false);
-		// obj.setExpireTime(null);
-		// obj.setTask(null);
-		// obj.setLatest(true);
-		// aeiObjects.getCreateTaskCompleteds().add(obj);
-		// }
-		// }
-		// }
-		// }
-		// }
-		return aeiObjects.getWork();
-	}
-
-	private Work arrivingMergeSameJob(AeiObjects aeiObjects, Manual manual, List<String> identities) throws Exception {
-		if (!BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
-			return null;
-		}
-		List<String> exists = this.arriving_sameJobActivityExistIdentities(aeiObjects, manual);
-		if (ListTools.isNotEmpty(exists)) {
-			Work other = aeiObjects.getWorks().stream().filter(o -> {
-				return StringUtils.equals(aeiObjects.getWork().getJob(), o.getJob())
-						&& StringUtils.equals(aeiObjects.getWork().getActivity(), o.getActivity())
-						&& (!Objects.equals(aeiObjects.getWork(), o));
-			}).findFirst().orElse(null);
-			if (null != other) {
-				identities.removeAll(exists);
-				if (ListTools.isEmpty(identities)) {
-					this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
-					this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
-					this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
-					this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-					this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
-					this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
-					if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
-							.size(other.getSplitTokenList())) {
-						other.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-						other.setSplitToken(aeiObjects.getWork().getSplitToken());
-						other.setSplitValue(aeiObjects.getWork().getSplitValue());
-						other.setSplitting(true);
-					}
-					aeiObjects.getUpdateWorks().add(other);
-					aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
-					return other;
-				}
-			}
-		}
-		return null;
-	}
-
-	private void arrivingPassSame(AeiObjects aeiObjects, List<String> identities) throws Exception {
 		/* 查找是否有passSameTarget设置 */
-		Route route = aeiObjects.getRoutes().stream().filter(o -> BooleanUtils.isTrue(o.getPassSameTarget()))
-				.findFirst().orElse(null);
+		Route passSameTargetRoute = aeiObjects.getRoutes().stream()
+				.filter(o -> BooleanUtils.isTrue(o.getPassSameTarget())).findFirst().orElse(null);
 		/* 如果有passSameTarget,有到达ArriveWorkLog,不是调度到这个节点的 */
-		if ((null != route) && ((null != aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
+//		if ((null != passSameTargetRoute) && ((null != aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
+//				&& (BooleanUtils.isNotTrue(aeiObjects.getWork().getForceRouteArriveCurrentActivity()))) {
+		if ((null != passSameTargetRoute) && ((null != aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
 				&& (!aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
-			WorkLog workLog = findPassSameTargetWorkLog(aeiObjects);
-			logger.debug("pass same target work:{}, workLog:{}.", aeiObjects.getWork(), workLog);
-			if (null == workLog) {
-				return;
-			}
-			for (TaskCompleted o : aeiObjects.getJoinInquireTaskCompleteds()) {
-				if (StringUtils.equals(o.getActivityToken(), workLog.getArrivedActivityToken())) {
-					List<String> values = ListUtils.union(identities,
-							aeiObjects.business().organization().identity().listWithPerson(o.getPerson()));
-					if (!values.isEmpty()) {
-						TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), route, o);
-						obj.setIdentity(values.get(0));
-						obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
-						obj.setRouteName(route.getName());
-						Date now = new Date();
-						obj.setStartTime(now);
-						obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-						obj.setCompletedTime(now);
-						obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-						obj.setDuration(0L);
-						obj.setExpired(false);
-						obj.setExpireTime(null);
-						obj.setTask(null);
-						obj.setLatest(true);
-						aeiObjects.getCreateTaskCompleteds().add(obj);
-					}
-				}
+			logger.debug("pass same target work:{}.", aeiObjects.getWork());
+			WorkLog rollbackWorkLog = findPassSameTargetWorkLog(aeiObjects);
+			logger.debug("pass same target workLog:{}.", rollbackWorkLog);
+			if (null != rollbackWorkLog) {
+				final String arriveActivityToken = rollbackWorkLog.getArrivedActivityToken();
+				aeiObjects.getJoinInquireTaskCompleteds().stream()
+						.filter(o -> aeiObjects.getWork().getManualTaskIdentityList().contains(o.getIdentity())
+								&& StringUtils.equals(o.getActivityToken(), arriveActivityToken))
+						.forEach(o -> {
+							TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), passSameTargetRoute, o);
+							try {
+								obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
+								obj.setRouteName(passSameTargetRoute.getName());
+								Date now = new Date();
+								obj.setStartTime(now);
+								obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
+								obj.setCompletedTime(now);
+								obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
+								obj.setDuration(0L);
+								obj.setExpired(false);
+								obj.setExpireTime(null);
+								obj.setTask(null);
+								obj.setLatest(true);
+								aeiObjects.getCreateTaskCompleteds().add(obj);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
 			}
 		}
+		return aeiObjects.getWork();
 	}
 
 	/* 计算处理人 */
@@ -388,20 +275,20 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 
 		switch (manual.getManualMode()) {
-			case single:
-				passThrough = this.single(aeiObjects, manual, identities);
-				break;
-			case parallel:
-				passThrough = this.parallel(aeiObjects, manual, identities);
-				break;
-			case queue:
-				passThrough = this.queue(aeiObjects, manual, identities);
-				break;
-			case grab:
-				passThrough = this.single(aeiObjects, manual, identities);
-				break;
-			default:
-				throw new ExceptionManualModeError(manual.getId());
+		case single:
+			passThrough = this.single(aeiObjects, manual, identities);
+			break;
+		case parallel:
+			passThrough = this.parallel(aeiObjects, manual, identities);
+			break;
+		case queue:
+			passThrough = this.queue(aeiObjects, manual, identities);
+			break;
+		case grab:
+			passThrough = this.single(aeiObjects, manual, identities);
+			break;
+		default:
+			throw new ExceptionManualModeError(manual.getId());
 		}
 
 		if (passThrough) {
@@ -628,17 +515,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void calculateExpire(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		if (null != manual.getTaskExpireType()) {
 			switch (manual.getTaskExpireType()) {
-				case never:
-					this.expireNever(task);
-					break;
-				case appoint:
-					this.expireAppoint(manual, task);
-					break;
-				case script:
-					this.expireScript(aeiObjects, manual, task);
-					break;
-				default:
-					break;
+			case never:
+				this.expireNever(task);
+				break;
+			case appoint:
+				this.expireAppoint(manual, task);
+				break;
+			case script:
+				this.expireScript(aeiObjects, manual, task);
+				break;
+			default:
+				break;
 			}
 		}
 		/* 如果work有截至时间 */
@@ -710,24 +597,21 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
-	// private void expireScript(AeiObjects aeiObjects, Manual manual, Task task)
-	// throws Exception {
-	// ScriptContext scriptContext = aeiObjects.scriptContext();
-	// Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-	// bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
-	// Object objectValue = aeiObjects.business().element()
-	// .getCompiledScript(aeiObjects.getWork().getApplication(), manual,
-	// Business.EVENT_MANUALTASKEXPIRE)
-	// .eval(scriptContext);
-	// WorkTime wt = new WorkTime();
-	// if (NumberUtils.isCreatable(objectValue.toString())) {
-	// task.setExpireTime(wt.forwardMinutes(new Date(),
-	// NumberUtils.toInt(ScriptFactory.asString(objectValue))));
-	// } else {
-	// task.setExpireTime(null);
-	// }
-	//
-	// }
+//	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
+//		ScriptContext scriptContext = aeiObjects.scriptContext();
+//		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+//		bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
+//		Object objectValue = aeiObjects.business().element()
+//				.getCompiledScript(aeiObjects.getWork().getApplication(), manual, Business.EVENT_MANUALTASKEXPIRE)
+//				.eval(scriptContext);
+//		WorkTime wt = new WorkTime();
+//		if (NumberUtils.isCreatable(objectValue.toString())) {
+//			task.setExpireTime(wt.forwardMinutes(new Date(), NumberUtils.toInt(ScriptFactory.asString(objectValue))));
+//		} else {
+//			task.setExpireTime(null);
+//		}
+//
+//	}
 
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();

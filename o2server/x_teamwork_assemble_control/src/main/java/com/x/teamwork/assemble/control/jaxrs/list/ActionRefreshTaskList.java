@@ -41,7 +41,7 @@ public class ActionRefreshTaskList extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskList = taskListQueryService.get( id );
 				if ( taskList == null) {
@@ -57,7 +57,7 @@ public class ActionRefreshTaskList extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskListPersistService.refreshTaskListRele(wi.getTaskIds(), id, effectivePerson);
 				// 更新缓存

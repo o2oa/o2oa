@@ -375,7 +375,7 @@ o2.widget.Combox.Value = new Class({
         this.node.hide();
         this.input.setInputPosition(where);
         this.combox.editItem = this;
-        if(this.combox.input)this.combox.input.hide();
+        this.combox.input.hide();
         this.input.searchItems();
     },
     commitInput: function(data){

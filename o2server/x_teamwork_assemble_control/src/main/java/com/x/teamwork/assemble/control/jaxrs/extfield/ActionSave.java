@@ -46,7 +46,7 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( projectExtFieldRele.getProjectId() )) {
 				check = false;
 				Exception exception = new ProjectFlagForQueryEmptyException();
@@ -54,7 +54,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				project = projectQueryService.get( projectExtFieldRele.getProjectId() );
 				if ( project == null) {
@@ -70,7 +70,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isNotEmpty( projectExtFieldRele.getId() )) {
 				try {
 					projectExtFieldRele_old = projectExtFieldReleQueryService.get( projectExtFieldRele.getId() );
@@ -83,7 +83,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( projectExtFieldRele_old == null ) { //新建
 				fieldName = projectExtFieldReleQueryService.getNextUseableExtFieldName( projectExtFieldRele.getProjectId(), projectExtFieldRele.getDisplayType() );
 			}else {
@@ -98,7 +98,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( StringUtils.isEmpty(  fieldName )) {
 				//备用属性已经用完了，无法再添加新的属性
 				check = false;
@@ -109,7 +109,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				
 				projectExtFieldRele = projectExtFieldRelePersistService.save( projectExtFieldRele, effectivePerson );
@@ -126,7 +126,7 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}			
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				Dynamic dynamic = dynamicPersistService.projectExtFieldReleSaveDynamic(projectExtFieldRele_old, projectExtFieldRele, effectivePerson);
 				if( dynamic != null ) {

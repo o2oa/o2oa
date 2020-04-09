@@ -41,7 +41,7 @@ public class ActionListWithTaskList extends BaseAction {
 			result.error(exception);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithTaskList", taskListId );
 			element = taskCache.get( cacheKey );
 			

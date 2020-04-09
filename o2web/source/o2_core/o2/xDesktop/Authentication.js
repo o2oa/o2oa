@@ -760,11 +760,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             this.bindSepArea = this.bindLoginContainer.getElement("[styles='bindSepArea']");
             var link = this.bindLoginContainer.getElement("[styles='bindTipLinkArea']");
             link.addEvent("click", function () {
-                if( layout.config.appUrl ){
-                    window.open(layout.config.appUrl, "_blank");
-                }else{
-                    window.open(this.lp.o2downloadLink, "_blank");
-                }
+                window.open(this.lp.o2downloadLink, "_blank");
             }.bind(this));
 
             MWF.xDesktop.requireApp("Template", "MForm", function () {

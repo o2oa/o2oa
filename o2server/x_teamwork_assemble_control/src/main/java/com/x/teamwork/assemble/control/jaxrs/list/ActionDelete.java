@@ -27,7 +27,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskList = taskListQueryService.get(id);
 				if ( taskList == null) {
@@ -43,7 +43,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				//物理删除
 				taskListPersistService.delete(id, effectivePerson);
@@ -60,7 +60,7 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				dynamicPersistService.taskListDeleteDynamic( taskList, effectivePerson);
 			} catch (Exception e) {

@@ -35,7 +35,6 @@ public class ActionUpdateSingleProperty extends BaseAction {
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String taskId, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Task newTask = null;
 		Task oldTask = null;
 		TaskDetail oldDetail = null;
 		TaskExtField oldExtField = null;
@@ -54,7 +53,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				oldTask = taskQueryService.get( taskId );
 				if( oldTask == null ) {
@@ -70,7 +69,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				oldDetail = taskQueryService.getDetail( taskId );
 				if( oldDetail == null ) {
@@ -84,7 +83,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				oldExtField = taskQueryService.getExtField( taskId );
 				if( oldExtField == null ) {
@@ -98,7 +97,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			//如果是标识为已完成，那么需要判断一下，该任务的所有下级任务是否全部都已经完成，否则不允许标识为已完成
 			if( Task.workStatus_FIELDNAME.equalsIgnoreCase(wi.getProperty()) && TaskStatuType.completed.name().equalsIgnoreCase( wi.getMainValue().toString() )) {
 				List<Task> unCompletedTasks =  taskQueryService.allUnCompletedSubTasks( taskId );
@@ -110,7 +109,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {	
 			try {
 				if( TaskDetail.description_FIELDNAME.equalsIgnoreCase( wi.getProperty() )) {
 					dynamicInfo = changeTaskProperty( 
@@ -136,8 +135,6 @@ public class ActionUpdateSingleProperty extends BaseAction {
 					dynamicInfo = changeTaskProperty( 
 							effectivePerson.getName(), oldTask.getProject(), taskId, "工作负责人", "UPDATE_EXECUTOR", 
 							wi.getProperty(), oldTask.getExecutor(), wi.getMainValue(), wi.getSecondaryValue(), wi.getDataType(), false );
-					//也要给新的工作负责人发送通知
-					newTask = taskQueryService.get( taskId );
 				} else if( Task.startTime_FIELDNAME.equalsIgnoreCase( wi.getProperty() )) {
 					dynamicInfo = changeTaskProperty( 
 							effectivePerson.getName(), oldTask.getProject(), taskId, "任务开始日期", "UPDATE_STARTDATE", 
@@ -202,7 +199,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				new BatchOperationPersistService().addOperation( 
 						BatchOperationProcessService.OPT_OBJ_TASK, 
@@ -212,15 +209,15 @@ public class ActionUpdateSingleProperty extends BaseAction {
 			}	
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
-				MessageFactory.message_to_teamWorkUpdate( oldTask, newTask );
+				MessageFactory.message_to_teamWorkUpdate( oldTask );
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			//记录工作任务属性信息变化记录
 			try {
 				dynamics = dynamicPersistService.taskUpdatePropertyDynamic( oldTask,  dynamicInfo.getTitle(), dynamicInfo.getOptType(), dynamicInfo.getDescription(), effectivePerson );

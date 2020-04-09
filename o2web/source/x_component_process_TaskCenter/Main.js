@@ -906,14 +906,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         this.application = application;
         this.applicationData = applicationData;
         this.app = this.application.app;
-        if( this.application.starter ){
-            this.starter = this.application.starter;
-        }else if( this.application.app && this.application.app.starter ){
-            this.starter = this.application.app.starter;
-        }else if( this.application.app && this.application.app.processStarter ){
-            this.starter = this.application.app.processStarter;
-        }
-        //this.starter = this.application.starter
+        this.starter = this.application.starter
         this.container = container;
         this.css = this.app.css;
 

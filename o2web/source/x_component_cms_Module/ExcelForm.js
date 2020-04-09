@@ -193,7 +193,7 @@ MWF.xApplication.cms.Module.ExportForm = new Class({
                 "onSelect": function(){
                     this.fireEvent("select");
                 }.bind(this)
-            }, this.app);
+            });
         }.bind(this));
     },
     _setNodesSize : function(width, height, formContentHeight, formTableHeight){

@@ -1,10 +1,11 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.DateTools;
 
 public class Node extends ConfigObject {
 
@@ -74,19 +75,12 @@ public class Node extends ConfigObject {
 	private String banner;
 	@FieldDescribe("是否自动启动")
 	private Boolean autoStart;
-	@FieldDescribe("是否允许使用擦除数据功能")
-	private Boolean eraseContentEnable;
 
 	/* 20191009兼容centerServer */
 	protected void setCenter(CenterServer centerServer) {
 		this.center = centerServer;
 	}
 	/* 20191009兼容centerServer end */
-
- 
-	public Boolean getEraseContentEnable() {
-		return BooleanUtils.isNotFalse(eraseContentEnable);
-	}
 
 	public Boolean autoStart() {
 		return BooleanUtils.isNotFalse(autoStart);
@@ -192,7 +186,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron());
+			return DateTools.cronAvailable(this.cron);
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
@@ -232,7 +226,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron());
+			return DateTools.cronAvailable(this.cron);
 		}
 
 		@FieldDescribe("是否启用,默认每天凌晨4点进行备份.")
@@ -275,7 +269,7 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
-		@FieldDescribe("是否启用.")
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
 		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
@@ -308,7 +302,7 @@ public class Node extends ConfigObject {
 			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
-		@FieldDescribe("是否启用.")
+		@FieldDescribe("是否启用,默认每天凌晨2点进行备份.")
 		private Boolean enable = false;
 
 		@FieldDescribe("定时任务cron表达式")
@@ -330,7 +324,5 @@ public class Node extends ConfigObject {
 		}
 
 	}
-
-
 
 }

@@ -34,7 +34,7 @@ public class ActionArchive extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				task = taskQueryService.get( taskId );
 				if ( task == null) {
@@ -50,7 +50,7 @@ public class ActionArchive extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			//工作创建者、工作负责人、管理者和系统管理员有归档权限
 			if( !hasArchivePermission( task, effectivePerson )) {
 				check = false;
@@ -59,7 +59,7 @@ public class ActionArchive extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskPersistService.archiveTask( taskId );
 				// 更新缓存

@@ -42,7 +42,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				task = taskQueryService.get(flag);
 				if ( task == null) {
@@ -58,7 +58,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskPersistService.delete(flag, effectivePerson );
 				//taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), flag );
@@ -79,7 +79,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				new BatchOperationPersistService().addOperation( 
 						BatchOperationProcessService.OPT_OBJ_TASK, 
@@ -89,7 +89,7 @@ public class ActionDelete extends BaseAction {
 			}	
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isNotEmpty( task.getParent() )) {
 				Task parentTask = taskQueryService.get( task.getParent() );
 				if( parentTask != null ) {
@@ -102,7 +102,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				MessageFactory.message_to_teamWorkDelete(task);
 			} catch (Exception e) {
@@ -110,7 +110,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				Dynamic dynamic = dynamicPersistService.taskDeleteDynamic( task, effectivePerson );
 				if( dynamic != null ) {

@@ -165,51 +165,5 @@ MWF.Macro.PageContext = new Class({
     }
 });
 
-if( !MWF.Macro.ViewContext ) {
-    MWF.Macro.ViewContext = new Class({
-        macroFunction: null,
-        environment: {},
-        initialize: function (view) {
-            this.form = view;
-            var environment = {
-                "view": view,
-                "viewInfor": view.viewInfor,
-                "target": null,
-                "event": null
-            };
-            MWF.require("MWF.xScript.ViewEnvironment", null, false);
-            this.environment = new MWF.xScript.ViewEnvironment(environment);
-        },
-        setTarget: function (target) {
-            if (target) {
-                this.environment.target = target;
-            } else {
-                this.environment.target = null;
-            }
-        },
-        setEvent: function (event) {
-            if (event) {
-                this.environment.event = event;
-            } else {
-                this.environment.event = null;
-            }
-        },
-        exec: function (code, target) {
-            this.setTarget(target);
-            var returnValue = MWF.Macro.exec(code, this.environment);
-            //this.form.businessData.data = Object.merge(this.form.businessData.data, this.environment.data);
-
-            return returnValue;
-            //this.environment.data
-
-        },
-        fire: function (code, target, event) {
-            this.setTarget(target);
-            this.setEvent(event);
-            return MWF.Macro.exec(code, this.environment);
-        }
-    });
-}
-
 JSONObject = function(o){
 };

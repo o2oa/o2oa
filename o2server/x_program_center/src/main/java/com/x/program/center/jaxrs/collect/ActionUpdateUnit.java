@@ -43,7 +43,6 @@ class ActionUpdateUnit extends BaseAction {
 		Wo wo = new Wo();
 		wo.setValue(this.update(name, newName, mobile, codeAnswer, wi.getKey(), wi.getSecret()));
 		if (BooleanUtils.isTrue(wo.getValue()) && name.equals(Config.collect().getName())) {
-			Config.collect().setEnable(true);
 			Config.collect().setName(newName);
 			Config.collect().setKey(wi.getKey());
 			Config.collect().setSecret(wi.getSecret());

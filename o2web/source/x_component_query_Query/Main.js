@@ -195,7 +195,7 @@ MWF.xApplication.query.Query.ViewItem = new Class({
                 "application": this.view.query,
                 "viewName": this.view.name,
                 "isExpand": data.isExpand
-            }, {"export": true}, this.app);
+            }, {"export": true});
         }.bind(this));
     }
 

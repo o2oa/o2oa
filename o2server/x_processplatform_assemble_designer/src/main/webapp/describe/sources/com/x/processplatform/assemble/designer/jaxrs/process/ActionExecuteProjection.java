@@ -35,7 +35,7 @@ class ActionExecuteProjection extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			Wo wo = new Wo();
-			if (XGsonBuilder.isJsonArray(process.getProjection())) {
+			if (StringUtils.isNotEmpty(process.getProjection()) && XGsonBuilder.isJson(process.getProjection())) {
 				if (!ThisApplication.projectionExecuteQueue.contains(process.getId())) {
 					ThisApplication.projectionExecuteQueue.send(process.getId());
 					wo.setValue(true);

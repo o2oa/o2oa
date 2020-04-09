@@ -166,6 +166,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				formMobileString = form.getMobileData();
 			}
 		}
-		return new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		return workCompleted;
 	}
 }

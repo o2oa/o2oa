@@ -1,4 +1,4 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity","MWF.widget.O2Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
@@ -1397,7 +1397,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 this.businessData.task.routeName = routeName;
-                this.businessData.task.opinion = opinion || "";
+                this.businessData.task.opinion = opinion;
 
                 var mediaIds = [];
                 if (medias && medias.length) {
@@ -1444,8 +1444,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     if (this.closeImmediatelyOnProcess) {
                         this.app.close();
-                    }else if (typeOf(this.showCustomSubmitedDialog) === "function") {
-                        this.showCustomSubmitedDialog(json.data);
                     } else if (layout.mobile) {
                         //移动端页面关闭
                         _self.finishOnMobile()

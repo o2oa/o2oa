@@ -126,7 +126,6 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setResourceBase(dir.getAbsolutePath());
 				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
 				webApp.setExtraClasspath(calculateExtraClassPath(clz));
-				//webApp.getMimeTypes().addMimeMapping("wcss", "application/json");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");

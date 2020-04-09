@@ -88,7 +88,6 @@ MWF.xApplication.cms.QueryViewDesigner.widget.ViewFilter = new Class({
                 this.valueBooleanInput.setStyle("display", "none");
                 break;
             case "datetimeValue":
-            case "dateTimeValue":
                 this.valueTextInput.setStyle("display", "none");
                 this.valueNumberInput.setStyle("display", "none");
                 this.valueDatetimeInput.setStyle("display", "block");
@@ -170,7 +169,6 @@ MWF.xApplication.cms.QueryViewDesigner.widget.ViewFilter = new Class({
                 value = this.valueNumberInput.get("value").toFloat();
                 break;
             case "datetimeValue":
-            case "dateTimeValue":
                 value = this.valueDatetimeInput.get("value");
                 break;
             case "booleanValue":
@@ -223,7 +221,6 @@ MWF.xApplication.cms.QueryViewDesigner.widget.ViewFilter = new Class({
                 this.valueNumberInput.set("value", data.value);
                 break;
             case "datetimeValue":
-            case "dateTimeValue":
                 this.valueDatetimeInput.set("value", data.value);
                 break;
             case "booleanValue":

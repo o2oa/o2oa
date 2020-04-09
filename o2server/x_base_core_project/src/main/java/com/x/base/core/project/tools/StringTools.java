@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -337,28 +336,25 @@ public class StringTools {
 
 	public static boolean matchWildcard(String str, String pattern) {
 		return Objects.toString(str, "").matches(Objects.toString(pattern, "").replace("?", ".?").replace("*", ".*?"));
-		// if (StringUtils.isNotEmpty(str) && StringUtils.isNotEmpty(pattern) &&
-		// StringUtils.contains(pattern, "*")) {
-		// if (StringUtils.equals(pattern, "*")) {
-		// return true;
-		// }
-		// if (StringUtils.startsWith(pattern, "*")) {
-		// return StringUtils.endsWith(str, StringUtils.substringAfter(pattern, "*"));
-		// }
-		// if (StringUtils.endsWith(pattern, "*")) {
-		// return StringUtils.startsWith(str, StringUtils.substringBeforeLast(pattern,
-		// "*"));
-		// }
-		// String[] parts = StringUtils.split(pattern, "*", 2);
-		// if (StringUtils.startsWith(str, parts[0]) && StringUtils.endsWith(str,
-		// parts[1])) {
-		// return true;
-		// } else {
-		// return false;
-		// }
-		// } else {
-		// return StringUtils.equals(str, pattern);
-		// }
+//		if (StringUtils.isNotEmpty(str) && StringUtils.isNotEmpty(pattern) && StringUtils.contains(pattern, "*")) {
+//			if (StringUtils.equals(pattern, "*")) {
+//				return true;
+//			}
+//			if (StringUtils.startsWith(pattern, "*")) {
+//				return StringUtils.endsWith(str, StringUtils.substringAfter(pattern, "*"));
+//			}
+//			if (StringUtils.endsWith(pattern, "*")) {
+//				return StringUtils.startsWith(str, StringUtils.substringBeforeLast(pattern, "*"));
+//			}
+//			String[] parts = StringUtils.split(pattern, "*", 2);
+//			if (StringUtils.startsWith(str, parts[0]) && StringUtils.endsWith(str, parts[1])) {
+//				return true;
+//			} else {
+//				return false;
+//			}
+//		} else {
+//			return StringUtils.equals(str, pattern);
+//		}
 	}
 
 	public static List<String> includesExcludesWithWildcard(List<String> list, Collection<String> includes,
@@ -452,68 +448,6 @@ public class StringTools {
 			return true;
 		}
 		return false;
-	}
-
-	// copy from /org/apache/tools/ant/types/Commandline.java
-	public static String[] translateCommandline(String toProcess) throws Exception {
-		if (toProcess == null || toProcess.isEmpty()) {
-			// no command? no string
-			return new String[0];
-		}
-		// parse with a simple finite state machine
-
-		final int normal = 0;
-		final int inQuote = 1;
-		final int inDoubleQuote = 2;
-		int state = normal;
-		final StringTokenizer tok = new StringTokenizer(toProcess, "\"\' ", true);
-		final ArrayList<String> result = new ArrayList<>();
-		final StringBuilder current = new StringBuilder();
-		boolean lastTokenHasBeenQuoted = false;
-
-		while (tok.hasMoreTokens()) {
-			String nextTok = tok.nextToken();
-			switch (state) {
-				case inQuote:
-					if ("\'".equals(nextTok)) {
-						lastTokenHasBeenQuoted = true;
-						state = normal;
-					} else {
-						current.append(nextTok);
-					}
-					break;
-				case inDoubleQuote:
-					if ("\"".equals(nextTok)) {
-						lastTokenHasBeenQuoted = true;
-						state = normal;
-					} else {
-						current.append(nextTok);
-					}
-					break;
-				default:
-					if ("\'".equals(nextTok)) {
-						state = inQuote;
-					} else if ("\"".equals(nextTok)) {
-						state = inDoubleQuote;
-					} else if (" ".equals(nextTok)) {
-						if (lastTokenHasBeenQuoted || current.length() > 0) {
-							result.add(current.toString());
-							current.setLength(0);
-						}
-					} else {
-						current.append(nextTok);
-					}
-					lastTokenHasBeenQuoted = false;
-					break;
-			}
-		}
-		if (lastTokenHasBeenQuoted || current.length() > 0) {
-			result.add(current.toString());
-		}
-		if (state == inQuote || state == inDoubleQuote) {
-			throw new Exception("unbalanced quotes in " + toProcess);
-		}
-		return result.toArray(new String[result.size()]);
 	}
 
 }

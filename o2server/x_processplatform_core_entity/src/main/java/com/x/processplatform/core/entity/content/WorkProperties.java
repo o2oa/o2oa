@@ -12,8 +12,6 @@ public class WorkProperties extends JsonProperties {
 
 	private LinkedHashMap<String, String> manualEmpowerMap = new LinkedHashMap<>();
 
-	private LinkedHashMap<String, Object> serviceValue = new LinkedHashMap<>();
-
 	public List<String> getManualForceTaskIdentityList() {
 		if (this.manualForceTaskIdentityList == null) {
 			this.manualForceTaskIdentityList = new ArrayList<String>();
@@ -35,21 +33,6 @@ public class WorkProperties extends JsonProperties {
 	public void setManualEmpowerMap(LinkedHashMap<String, String> manualEmpowerMap) {
 		this.manualEmpowerMap = manualEmpowerMap;
 	}
-
-	public LinkedHashMap<String, Object> getServiceValue() {
-		if (this.serviceValue == null) {
-			this.serviceValue = new LinkedHashMap<String, Object>();
-		}
-		return this.serviceValue;
-	}
-
-	public void setServiceValue(LinkedHashMap<String, Object> serviceValue) {
-		this.serviceValue = serviceValue;
-	}
-
-
-
-	
 
 //	private String destinationRoute;
 //

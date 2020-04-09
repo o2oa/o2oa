@@ -36,7 +36,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				projectExtFieldRele = projectExtFieldReleQueryService.get(flag);
 				if ( projectExtFieldRele == null) {
@@ -52,7 +52,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				projectExtFieldRelePersistService.delete(flag, effectivePerson );
 				
@@ -68,7 +68,7 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				Dynamic dynamic = dynamicPersistService.projectExtFieldReleDeleteDynamic( projectExtFieldRele, effectivePerson);
 				if( dynamic != null ) {

@@ -23,7 +23,7 @@ public class ActionListAll extends BaseAction {
 		List<SystemConfig> systemConfigList = null;
 		Boolean check = true;
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				systemConfigList = systemConfigQueryService.listAll();
 			} catch (Exception e) {
@@ -33,7 +33,7 @@ public class ActionListAll extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				wraps = Wo.copier.copy( systemConfigList );
 				result.setData(wraps);

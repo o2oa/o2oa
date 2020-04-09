@@ -1,9 +1,5 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.config.Config;
-import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectPerson;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -31,15 +27,6 @@ class ActionValidateDirect extends BaseAction {
 		}
 		if (!this.validate(name, password)) {
 			wo.setValue(false);
-		}
-		if (BooleanUtils.isTrue(wo.getValue())) {
-			Config.collect().setEnable(true);
-			Config.collect().setName(name);
-			Config.collect().setPassword(password);
-			Config.collect().save();
-			Config.flush();
-			/* 提交人员人员同步 */
-			ThisApplication.context().scheduleLocal(CollectPerson.class);
 		}
 		result.setData(wo);
 		return result;

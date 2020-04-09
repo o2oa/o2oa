@@ -114,7 +114,7 @@ public class ActionSubjectView extends BaseAction {
 						logger.error( e, effectivePerson, request, null);
 					}
 					try {
-						//查询投票总数
+						//查询投票总人数
 						Long voteCount = subjectVoteService.countVoteRecordForSubject( id, null );
 						currentSubject.setVoteCount( voteCount );
 					}catch (Exception e) {
@@ -123,26 +123,15 @@ public class ActionSubjectView extends BaseAction {
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
-
+					
 					try {
-						//查询投票总人数
-						List<String> voteUsers = subjectVoteService.listVoteUserForSubject( id, null );
-						currentSubject.setVoteUserCount( voteUsers.size() );
-					}catch (Exception e) {
+						voteOptionList = subjectVoteService.listVoteOption( id );
+					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionVoteOptionListById( e, id );
 						result.error( exception );
 						logger.error( e, effectivePerson, request, null);
 					}
-					
-//					try {
-//						voteOptionList = subjectVoteService.listVoteOption( id );
-//					} catch (Exception e) {
-//						check = false;
-//						Exception exception = new ExceptionVoteOptionListById( e, id );
-//						result.error( exception );
-//						logger.error( e, effectivePerson, request, null);
-//					}
 					result.getData().setCurrentSubject(currentSubject);
 				}
 			}
@@ -353,15 +342,10 @@ public class ActionSubjectView extends BaseAction {
 		
 		@FieldDescribe( "投票主题的所有投票选项列表." )
 		private List<WoBBSVoteOptionGroup> voteOptionGroupList;
-
-		@FieldDescribe( "主贴内容" )
+		
 		private String content = null;
-
-		@FieldDescribe( "投票总数" )
+		
 		private Long voteCount = 0L;
-
-		@FieldDescribe( "投票人数" )
-		private Integer voteUserCount = 0;
 		
 		private String pictureBase64 = null;
 		
@@ -385,11 +369,7 @@ public class ActionSubjectView extends BaseAction {
 		
 		@FieldDescribe( "当前用户是否已经投票过." )
 		private Boolean voted = false;
-
-		public Integer getVoteUserCount() { return voteUserCount; }
-
-		public void setVoteUserCount(Integer voteUserCount) { this.voteUserCount = voteUserCount; }
-
+		
 		public String getLatestReplyUserShort() {
 			return latestReplyUserShort;
 		}

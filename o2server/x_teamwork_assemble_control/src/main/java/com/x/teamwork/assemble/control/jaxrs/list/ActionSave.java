@@ -34,11 +34,11 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {	
 			taskList_old = taskListQueryService.get( wi.getId() );
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {			
 			try {
 				
 				taskList = taskListPersistService.save( Wi.copier.copy(wi), effectivePerson );
@@ -55,7 +55,7 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				dynamicPersistService.taskListSaveDynamic(taskList_old, taskList, effectivePerson,  jsonElement.toString() );
 			} catch (Exception e) {

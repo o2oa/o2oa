@@ -49,7 +49,7 @@ public class ActionAddTask2ListWithBehindTask extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskList = taskListQueryService.get( taskListId );
 				if ( taskList == null) {
@@ -66,7 +66,7 @@ public class ActionAddTask2ListWithBehindTask extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {				
 				taskListPersistService.addTaskToTaskListWithBehindTask( wi.getTaskId(), taskListId, wi.getBehindTaskId(), effectivePerson );
 				// 更新缓存

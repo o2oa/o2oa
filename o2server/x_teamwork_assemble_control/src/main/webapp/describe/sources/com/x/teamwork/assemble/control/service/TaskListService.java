@@ -66,11 +66,6 @@ class TaskListService {
 		Business business = new Business( emc );	
 		return business.taskListFactory().listTaskListWithTask( taskId, taskGroupId );
 	}
-
-	public List<String> listTaskListIdWithTask(EntityManagerContainer emc, String taskId, String taskGroupId ) throws Exception {
-		Business business = new Business( emc );
-		return business.taskListFactory().listTaskListIdWithTask( taskId, taskGroupId );
-	}
 	
 	public List<String> listTaskListIdsWithGroup(EntityManagerContainer emc, String taskGroupId, String person) throws Exception {
 		Business business = new Business( emc );	
@@ -122,7 +117,7 @@ class TaskListService {
 	/**
 	 * 向数据库持久化工作任务列表列表信息
 	 * @param emc
-	 * @param object
+	 * @param taskList
 	 * @return
 	 * @throws Exception 
 	 */

@@ -17,6 +17,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.bbs.assemble.control.jaxrs.subjectinfo.ActionSubjectListForPage.Wi;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectFilter;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapOut;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
@@ -60,7 +61,7 @@ public class ActionSubjectListMyForPage extends BaseAction {
 		}
 		if (check) {
 			try {
-				total = subjectInfoServiceAdv.countUserSubjectForPage( wrapIn.getSearchContent(), wrapIn.getForumId(), wrapIn.getMainSectionId(),
+				total = subjectInfoServiceAdv.countUserSubjectForPage(wrapIn.getForumId(), wrapIn.getMainSectionId(),
 						wrapIn.getSectionId(), wrapIn.getNeedPicture(), wrapIn.getWithTopSubject(),
 						effectivePerson.getDistinguishedName());
 			} catch (Exception e) {
@@ -73,7 +74,7 @@ public class ActionSubjectListMyForPage extends BaseAction {
 		if (check) {
 			if (total > 0) {
 				try {
-					subjectInfoList = subjectInfoServiceAdv.listUserSubjectForPage( wrapIn.getSearchContent(), wrapIn.getForumId(),
+					subjectInfoList = subjectInfoServiceAdv.listUserSubjectForPage(wrapIn.getForumId(),
 							wrapIn.getMainSectionId(), wrapIn.getSectionId(), wrapIn.getNeedPicture(),
 							wrapIn.getWithTopSubject(), page * count, effectivePerson.getDistinguishedName());
 				} catch (Exception e) {
@@ -152,98 +153,6 @@ public class ActionSubjectListMyForPage extends BaseAction {
 				subject.setAuditorNameShort(subject.getAuditorName().split("@")[0]);
 			}
 		}
-	}
-
-	public static class Wi{
-
-		@FieldDescribe( "贴子ID." )
-		private String subjectId = null;
-
-		@FieldDescribe( "投标选项ID." )
-		private String voteOptionId = null;
-
-		@FieldDescribe( "贴子所属论坛ID." )
-		private String forumId = null;
-
-		@FieldDescribe( "贴子所属主版块ID." )
-		private String mainSectionId = null;
-
-		@FieldDescribe( "贴子所属版块ID." )
-		private String sectionId = null;
-
-		@FieldDescribe( "标题模糊搜索关键词" )
-		private String searchContent = null;
-
-		@FieldDescribe( "创建者名称." )
-		private String creatorName = null;
-
-		@FieldDescribe( "是否只查询有大图的贴子." )
-		private Boolean needPicture = false;
-
-		@FieldDescribe( "是否包含置顶贴." )
-		private Boolean withTopSubject = false; // 是否包含置顶贴
-
-		public static List<String> Excludes = new ArrayList<String>( JpaObject.FieldsUnmodify );
-
-
-		public String getForumId() {
-			return forumId;
-		}
-		public void setForumId(String forumId) {
-			this.forumId = forumId;
-		}
-		public String getSectionId() {
-			return sectionId;
-		}
-		public void setSectionId(String sectionId) {
-			this.sectionId = sectionId;
-		}
-		public String getMainSectionId() {
-			return mainSectionId;
-		}
-		public void setMainSectionId(String mainSectionId) {
-			this.mainSectionId = mainSectionId;
-		}
-		public Boolean getNeedPicture() {
-			return needPicture;
-		}
-		public void setNeedPicture(Boolean needPicture) {
-			this.needPicture = needPicture;
-		}
-		public Boolean getWithTopSubject() {
-			return withTopSubject;
-		}
-		public void setWithTopSubject(Boolean withTopSubject) {
-			this.withTopSubject = withTopSubject;
-		}
-		public String getSearchContent() {
-			if( StringUtils.isNotEmpty( this.searchContent ) && this.searchContent.indexOf( "%" ) < 0 ){
-				return "%" + searchContent + "%";
-			}
-			return searchContent;
-		}
-		public void setSearchContent( String searchContent ) {
-			this.searchContent = searchContent;
-		}
-		public String getCreatorName() {
-			return creatorName;
-		}
-		public void setCreatorName(String creatorName) {
-			this.creatorName = creatorName;
-		}
-		public String getSubjectId() {
-			return subjectId;
-		}
-		public void setSubjectId(String subjectId) {
-			this.subjectId = subjectId;
-		}
-		public String getVoteOptionId() {
-			return voteOptionId;
-		}
-		public void setVoteOptionId(String voteOptionId) {
-			this.voteOptionId = voteOptionId;
-		}
-
 	}
 
 	public static class Wo extends BBSSubjectInfo {

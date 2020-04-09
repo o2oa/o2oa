@@ -66,11 +66,6 @@ class TaskListService {
 		Business business = new Business( emc );	
 		return business.taskListFactory().listTaskListWithTask( taskId, taskGroupId );
 	}
-
-	public List<String> listTaskListIdWithTask(EntityManagerContainer emc, String taskId, String taskGroupId ) throws Exception {
-		Business business = new Business( emc );
-		return business.taskListFactory().listTaskListIdWithTask( taskId, taskGroupId );
-	}
 	
 	public List<String> listTaskListIdsWithGroup(EntityManagerContainer emc, String taskGroupId, String person) throws Exception {
 		Business business = new Business( emc );	
@@ -122,7 +117,7 @@ class TaskListService {
 	/**
 	 * 向数据库持久化工作任务列表列表信息
 	 * @param emc
-	 * @param object
+	 * @param taskList
 	 * @return
 	 * @throws Exception 
 	 */
@@ -133,7 +128,7 @@ class TaskListService {
 		}
 		
 		taskList = emc.find( object.getId(), TaskList.class );
-		Business business = new Business(emc);
+		
 		emc.beginTransaction( TaskList.class );		
 		if( taskList == null ){ // 保存一个新的对象
 			TaskGroup taskGroup = emc.find( object.getTaskGroup(), TaskGroup.class );
@@ -146,11 +141,7 @@ class TaskListService {
 			object.copyTo( taskList );
 			if( StringUtils.isNotEmpty( object.getId() ) ){
 				taskList.setId( object.getId() );
-			}
-
-			//查询最大的排序号
-			Integer maxListOrder = business.taskListFactory().maxListOrder( taskGroup.getId() ) + 1;
-			taskList.setOrder( maxListOrder );
+			}			
 			emc.persist( taskList, CheckPersistType.all);
 		}else{ //对象已经存在，更新对象信息
 			TaskGroup taskGroup = emc.find( taskList.getTaskGroup(), TaskGroup.class );

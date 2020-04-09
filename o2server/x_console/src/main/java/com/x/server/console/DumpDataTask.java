@@ -16,7 +16,7 @@ import org.quartz.JobExecutionException;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.action.DumpData;
+import com.x.server.console.action.ActionDumpData;
 
 public class DumpDataTask implements Job {
 
@@ -26,8 +26,8 @@ public class DumpDataTask implements Job {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			logger.print("schedule dump data task start.");
-			DumpData action = new DumpData();
-			action.execute(Config.currentNode().dumpData().path());
+			ActionDumpData action = new ActionDumpData();
+			action.execute(Config.currentNode().dumpData().path(), Config.token().getPassword());
 			if (Config.currentNode().dumpData().size() > 0) {
 				File dir = new File(Config.base(), "local/dump");
 				List<File> list = new ArrayList<>();

@@ -123,7 +123,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 
                 radio.addEvent("click", function(){
                     this.validationMode();
-                    if (this.validation()) this._setBusinessData(this.getInputData("change") || []);
+                    if (this.validation()) this._setBusinessData(this.getInputData("change"));
                 }.bind(this));
 
                 Object.each(this.json.events, function(e, key){
@@ -190,7 +190,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 }
             });
         }
-        return (value.length) ? value : [];
+        return (value.length) ? value : null;
     },
     resetData: function(){
         this.setData(this.getValue());

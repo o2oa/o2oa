@@ -46,7 +46,7 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if ( !projectPersistService.checkPermissionForPersist( effectivePerson, systemConfigQueryService.getValueByCode("PROJECT_CREATOR")) ) {
 				check = false;
 				Exception exception = new ProjectPersistException("project save permission denied!" );
@@ -54,11 +54,11 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {	
 			old_project = projectQueryService.get( wi.getId() );
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			ProjectDetail projectDetail = new ProjectDetail();
 			projectDetail.setDescription( wi.getDescription() );
 			
@@ -89,7 +89,7 @@ public class ActionSave extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				new BatchOperationPersistService().addOperation( 
 						BatchOperationProcessService.OPT_OBJ_PROJECT, 
@@ -99,7 +99,7 @@ public class ActionSave extends BaseAction {
 			}	
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				List<Dynamic> dynamics = dynamicPersistService.projectSaveDynamic(old_project, project, effectivePerson,  jsonElement.toString() );
 				if( dynamics == null ) {

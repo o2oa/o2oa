@@ -79,7 +79,6 @@ public class TaskPersistService {
 		if ( task == null) {
 			throw new Exception( "task is null." );
 		}
-
 		if( StringUtils.isEmpty( task.getName() )) {
 			task.setName("无标题工作任务("+ DateOperation.getNowDateTime() +")");
 		}		
@@ -191,34 +190,7 @@ public class TaskPersistService {
 			throw e;
 		}
 	}
-
-
-	/**
-	 * 更新任务的上级任务ID信息
-	 * @param taskId
-	 * @param parentId
-	 * @param effectivePerson
-	 * @throws Exception
-	 */
-	public void updateParentId( String taskId, String parentId, EffectivePerson effectivePerson) throws Exception {
-
-		if( StringUtils.isEmpty( taskId )) {
-			throw new Exception("taskId can not empty in update parentId.");
-		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Task task = emc.find( taskId, Task.class );
-			if( task != null ){
-				task.setParent( parentId );
-			}
-			emc.beginTransaction( Task.class );
-			emc.check( task, CheckPersistType.all );
-			emc.commit();
-		} catch (Exception e) {
-			throw e;
-		}
-
-	}
-
+	
 	/**
 	 * 查询用户是否拥有创建工作任务的权限
 	 * @param effectivePerson
@@ -616,5 +588,5 @@ public class TaskPersistService {
 		}
 	}
 
-
+	
 }

@@ -39,7 +39,7 @@ public class ActionStatisticMyTaskViews extends BaseAction {
 			wo = ( Wo ) element.getObjectValue();
 			result.setData( wo );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					//查询用户在该项目中所有的视图信息
 					taskViewList = taskViewQueryService.listViewWithPersonAndProject( effectivePerson, projectId );
@@ -50,14 +50,14 @@ public class ActionStatisticMyTaskViews extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				if( ListTools.isNotEmpty( taskGroupList )) {
 					woGroupList = WoTaskGroup.copier.copy( taskGroupList );
 					SortTools.asc( woGroupList, "createTime");
 				}
 			}
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				if( ListTools.isNotEmpty( taskViewList )) {
 					woViewList = WoTaskView.copier.copy( taskViewList );
 					SortTools.asc( woViewList, "createTime");
@@ -65,7 +65,7 @@ public class ActionStatisticMyTaskViews extends BaseAction {
 			}	
 			
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					wo.setViews( woViewList );
 					taskCache.put( new Element( cacheKey, wo) );

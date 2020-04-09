@@ -37,7 +37,7 @@ public class ActionListWithProject extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					projectExtFieldReles = projectExtFieldReleQueryService.listReleWithProject(projectId);
 					if( ListTools.isEmpty( projectExtFieldReles )) {

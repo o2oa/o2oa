@@ -51,7 +51,7 @@ public class ActionListWithFilter extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					projectGroups = projectGroupQueryService.list( wi.getIds() );
 				} catch (Exception e) {
@@ -63,7 +63,7 @@ public class ActionListWithFilter extends BaseAction {
 				
 			}
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				if( ListTools.isNotEmpty( projectGroups )) {
 					wos = Wo.copier.copy( projectGroups );					
 					SortTools.asc( wos, "createTime");					

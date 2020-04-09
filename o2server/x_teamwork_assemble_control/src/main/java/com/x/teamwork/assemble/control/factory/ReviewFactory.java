@@ -201,6 +201,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), person );
 		p = cb.and( p, cb.equal( root.get( Review_.parent ), taskId ));
+		System.out.println(">>>SQL:" + em.createQuery( cq.where(p) ) );
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
 }

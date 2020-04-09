@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.teamwork.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -18,6 +17,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskDetail;
+import com.x.teamwork.core.entity.TaskExtField;
+import com.x.teamwork.core.entity.TaskTag;
 
 import net.sf.ehcache.Element;
 
@@ -104,11 +108,11 @@ public class ActionGet extends BaseAction {
 						wo.setDetail( taskDetail.getDetail() );
 						wo.setDescription( taskDetail.getDescription() );
 					}
-
-					if( taskExtField != null ) {
-						wo.setExtField( WoTaskExtField.copier.copy( taskExtField ));
-					}
-
+					
+//					if( taskExtField != null ) {
+//						wo.setExtField( WoTaskExtField.copier.copy( taskExtField ));
+//					}
+					
 					if( ListTools.isNotEmpty( extFieldReleList )) {
 						List<WoExtFieldRele> reles = WoExtFieldRele.copier.copy( extFieldReleList ) ;
 						for( WoExtFieldRele woExtFieldRele :  reles ) {
@@ -121,93 +125,15 @@ public class ActionGet extends BaseAction {
 					if( ListTools.isNotEmpty( tags )) {
 						wo.setTags( WoTaskTag.copier.copy( tags ));
 					}
-
+					taskCache.put(new Element( cacheKey, wo ));
+					result.setData(wo);
 				} catch (Exception e) {
 					Exception exception = new TaskQueryException(e, "将查询出来的工作任务信息对象转换为可输出的数据信息时发生异常。");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-
-			//查询任务所在的Group信息
-			if (check) {
-				List<String> groupIds = null;
-				try {
-					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
-					if( ListTools.isNotEmpty( groupIds )){
-						wo.setTaskGroupId( groupIds.get(0) );
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
-
-			//查询任务所在的List信息
-			if (check) {
-				if( StringUtils.isNotEmpty(wo.getTaskGroupId() )){
-					List<String> listIds = null;
-					try {
-						listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), wo.getTaskGroupId() );
-						if( ListTools.isNotEmpty( listIds )){
-							wo.setTaskListId( listIds.get(0) );
-						}
-					} catch (Exception e) {
-						Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-						result.error(exception);
-						logger.error(e, effectivePerson, request, null);
-					}
-				}
-			}
-
-//			//查询任务所在的Group信息
-//			if (check) {
-//				List<String> groupIds = null;
-//				List<TaskGroup> groupList = null;
-//				List<WoTaskGroup> woGroupList = new ArrayList<>();
-//				try {
-//					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
-//					groupList = taskGroupQueryService.list( groupIds );
-//					if( ListTools.isNotEmpty( groupList )){
-//						woGroupList = WoTaskGroup.copier.copy( groupList );
-//					}
-//					wo.setTaskgroups( woGroupList );
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-//
-//			//查询任务所在的List信息
-//			if (check) {
-//				if( ListTools.isNotEmpty(wo.getTaskgroups() )){
-//					List<String> listIds = null;
-//					List<TaskList> taskLists = null;
-//					List<WoTaskList> woTaskLists = new ArrayList<>();
-//					for( WoTaskGroup woGroup : wo.getTaskgroups() ){
-//						try {
-//							listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), woGroup.getId() );
-//							taskLists = taskListQueryService.list( listIds );
-//							if( ListTools.isNotEmpty( taskLists )){
-//								woTaskLists = WoTaskList.copier.copy( taskLists );
-//							}
-//							woGroup.setTaskLists( woTaskLists );
-//						} catch (Exception e) {
-//							check = false;
-//							Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//							result.error(exception);
-//							logger.error(e, effectivePerson, request, null);
-//						}
-//					}
-//				}
-//			}
 		}
-		taskCache.put(new Element( cacheKey, wo ));
-		result.setData(wo);
 		return result;
 	}
 
@@ -219,46 +145,24 @@ public class ActionGet extends BaseAction {
 		@FieldDescribe("说明详细信息(10M)")
 		private String description;
 		
-		@FieldDescribe("扩展属性信息(对象)")
-		private WoTaskExtField extField;
+//		@FieldDescribe("扩展属性信息(对象)")
+//		private WoTaskExtField extField;
 		
 		@FieldDescribe("任务标签(列表)")
 		private List<WoTaskTag> tags = null;
 		
 		@FieldDescribe("所属项目的扩展列设定(配置列表)")
 		private List<WoExtFieldRele> extFieldConfigs;
-
-		@FieldDescribe("工作任务所属的工作任务组信息ID")
-		String taskGroupId = null;
-
-		@FieldDescribe("工作任务所属的工作任务列表（泳道）信息ID")
-		String taskListId = null;
-
+		
 		private Long rank;
 
-		public String getTaskGroupId() {
-			return taskGroupId;
-		}
-
-		public void setTaskGroupId(String taskGroupId) {
-			this.taskGroupId = taskGroupId;
-		}
-
-		public String getTaskListId() {
-			return taskListId;
-		}
-
-		public void setTaskListId(String taskListId) {
-			this.taskListId = taskListId;
-		}
-
-		public WoTaskExtField getExtField() {
-			return extField;
-		}
-
-		public void setExtField(WoTaskExtField extField) {
-			this.extField = extField;
-		}
+//		public WoTaskExtField getExtField() {
+//			return extField;
+//		}
+//
+//		public void setExtField(WoTaskExtField extField) {
+//			this.extField = extField;
+//		}
 
 		public List<WoExtFieldRele> getExtFieldConfigs() {
 			return extFieldConfigs;

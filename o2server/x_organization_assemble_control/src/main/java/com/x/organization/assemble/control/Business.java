@@ -24,9 +24,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.factory.GroupFactory;
 import com.x.organization.assemble.control.factory.IdentityFactory;
-import com.x.organization.assemble.control.factory.PermissionSettingFactory;
 import com.x.organization.assemble.control.factory.PersonAttributeFactory;
-import com.x.organization.assemble.control.factory.PersonCardFactory;
 import com.x.organization.assemble.control.factory.PersonFactory;
 import com.x.organization.assemble.control.factory.RoleFactory;
 import com.x.organization.assemble.control.factory.UnitAttributeFactory;
@@ -58,7 +56,7 @@ public class Business {
 		this.cache = ApplicationCache.instance().getCache(Group.class, Role.class, Person.class, PersonAttribute.class,
 				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class);
 	}
- 
+
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
 	}
@@ -81,25 +79,6 @@ public class Business {
 		return person;
 	}
 
-	
-	private PersonCardFactory personCard;
-
-	public PersonCardFactory personCard() throws Exception {
-		if (null == this.personCard) {
-			this.personCard = new PersonCardFactory(this);
-		}
-		return personCard;
-	}
-	
-	private PermissionSettingFactory permissionSetting;
-
-	public PermissionSettingFactory permissionSetting() throws Exception {
-		if (null == this.permissionSetting) {
-			this.permissionSetting = new PermissionSettingFactory(this);
-		}
-		return permissionSetting;
-	}
-	
 	private PersonAttributeFactory personAttribute;
 
 	public PersonAttributeFactory personAttribute() throws Exception {

@@ -233,7 +233,7 @@ public class TaskListPersistService {
 		Business business = new Business( emc );
 		//查询当前任务在当前列表里的关联信息
 		List<TaskListRele> reles = business.taskListFactory().listReleWithTaskAndList( taskId, listId );
-		Integer  maxOrder = business.taskListFactory().maxTaskOrder( listId );
+		Integer  maxOrder = business.taskListFactory().maxOrder( listId );
 		if( ListTools.isNotEmpty( reles) && reles.get(0).getOrder() == newOrder ) {//排序号未改变
 			return;
 		}
@@ -299,7 +299,7 @@ public class TaskListPersistService {
 		
 		if( StringUtils.isEmpty( behindTaskId ) ) {
 			//未设置后序任务ID，放到最后一个，不需要插入到列表中间，不改变其他任务的序号
-			Integer  maxOrder = business.taskListFactory().maxTaskOrder( listId );
+			Integer  maxOrder = business.taskListFactory().maxOrder( listId );
 			if( ListTools.isNotEmpty( reles )) {
 				emc.beginTransaction( TaskListRele.class );
 				for( TaskListRele rele : reles ) {

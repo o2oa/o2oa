@@ -971,7 +971,8 @@ Describe.prototype = {
 								})
 								
 								debugger;
-								$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
+							$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n前台脚本样例</span>\n\n"+ Describe.createSampleJSO2(m)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\nmootools样例</span>\n\n"+Describe.createSampleMootools(m)+"</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
+
 							});
 				});
 			});
@@ -1318,7 +1319,7 @@ Describe.prototype = {
 								})
 								
 								debugger;
-								$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
+							$('#Sample').html("<div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;color: #1E7ACE;\">\n平台推荐脚本样例</span>\n\n"+ Describe.createSampleCommon(m,j.name)+ "</div><div style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n前台脚本样例</span>\n\n"+ Describe.createSampleJSO2(m)+ "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\n后台脚本样例</span>\n\n" + Describe.createSampleO2(m) + "</div><div  style=\"border-bottom:1px solid #E6E6E6;padding-bottom: 40px;line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\nmootools样例</span>\n\n"+Describe.createSampleMootools(m)+"</div><div  style=\"line-height:21px\"><span style=\"font-size:17px;font-weight:bold;\">\n\njquery样例</span>\n\n<span style=\"\">"+ Describe.createSample(m)+"</span></div>");
 							});
 				});
 			});

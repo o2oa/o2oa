@@ -42,7 +42,6 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 					try {
 						logger.info("Timertask_BatchOperationTask -> send operation to queue[queueBatchOperation]......");
 						ThisApplication.queueBatchOperation.send( operation );
-						Thread.sleep(500 );
 					} catch (Exception e) {
 						logger.warn("Timertask_BatchOperationTask -> send operation to queue got an exception.");
 						logger.error(e);

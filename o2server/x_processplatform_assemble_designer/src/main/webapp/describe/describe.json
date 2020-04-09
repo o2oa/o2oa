@@ -7719,7 +7719,7 @@
       "methods": [
         {
           "name": "mergeDataWithApplication",
-          "className": "com.x.processplatform.assemble.designer.jaxrs.workcompleted.ActionMergeWithApplication",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.workcompleted.ActionMergeDataWithApplication",
           "description": "指定application合并DataItem数据到WorkCompleted,并删除Item表中的数据.",
           "type": "GET",
           "path": "jaxrs/workcompleted/application/{applicationFlag}/merge/data",
@@ -7748,7 +7748,7 @@
         },
         {
           "name": "mergeDataWithProcess",
-          "className": "com.x.processplatform.assemble.designer.jaxrs.workcompleted.ActionMergeWithProcess",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.workcompleted.ActionMergeDataWithProcess",
           "description": "指定process合并DataItem数据到WorkCompleted,并删除Item表中的数据.",
           "type": "GET",
           "path": "jaxrs/workcompleted/process/{processFlag}/merge/data",

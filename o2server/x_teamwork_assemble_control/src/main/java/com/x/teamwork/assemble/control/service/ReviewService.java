@@ -263,7 +263,7 @@ public class ReviewService {
 			}
 			
 			//查查该工作是否有上级工作，如果有上级工作，那上级工作的可见人员也应该加入到该工作的可见人员中
-			if( StringUtils.isNotEmpty( task.getParent() ) && !StringUtils.equals( task.getParent(), task.getId() ) ) {
+			if( StringUtils.isNotEmpty( task.getParent() )) {
 				permissionObjs = addTaskAllPermission( emc, permissionObjs, task.getParent() );
 			}
 		}

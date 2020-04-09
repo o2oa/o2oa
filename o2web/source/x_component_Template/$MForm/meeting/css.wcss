@@ -103,7 +103,7 @@
   "inputOkButton" : {
     "background": "#3C76B7",
     "border-radius": "4px",
-    "width" : "230px",
+    "width" : "250px",
     "height" : "40px",
     "border" : "0px",
     "color" : "#fff",
@@ -113,7 +113,7 @@
   "inputCancelButton" : {
     "background": "#f0f0f0",
     "border-radius": "4px",
-    "width" : "110px",
+    "width" : "130px",
     "height" : "40px",
     "color" : "#666",
     "border" : "0px",

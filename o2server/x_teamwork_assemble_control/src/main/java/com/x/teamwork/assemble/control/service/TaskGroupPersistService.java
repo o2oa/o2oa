@@ -77,6 +77,7 @@ public class TaskGroupPersistService {
 	
 	/**
 	 *  将工作任务从工作任务组中除去
+	 * @param emc
 	 * @param taskId
 	 * @param groupId
 	 * @throws Exception

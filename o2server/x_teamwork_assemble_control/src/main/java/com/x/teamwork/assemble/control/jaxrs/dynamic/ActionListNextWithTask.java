@@ -51,12 +51,12 @@ public class ActionListNextWithTask extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			queryFilter = wrapIn.getQueryFilter();
 			queryFilter.addEqualsTerm( new EqualsTerm("taskId", taskId ));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			try {
 				List<Dynamic>  dynamicList = null;
 				long total = dynamicQueryService.countWithFilter( queryFilter );

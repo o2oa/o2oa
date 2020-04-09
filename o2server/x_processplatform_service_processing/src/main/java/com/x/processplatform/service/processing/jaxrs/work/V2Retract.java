@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,7 +24,6 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -29,9 +31,6 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RetractWi;
 import com.x.processplatform.service.processing.Business;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 
 class V2Retract extends BaseAction {
 
@@ -85,17 +84,6 @@ class V2Retract extends BaseAction {
 					workIds = ListUtils.subtract(workIds, ListTools.toList(work.getId()));
 
 					deleteWorks(business, work.getJob(), workIds);
-
-					Activity activity = business.element().getActivity(workLog.getFromActivity());
-
-					/* 替换表单 */
-					if (null == activity) {
-						throw new ExceptionEntityNotExist(workLog.getFromActivity());
-					}
-
-					if (StringUtils.isNotEmpty(activity.getForm())) {
-						work.setForm(activity.getForm());
-					}
 
 					update(work, workLog);
 

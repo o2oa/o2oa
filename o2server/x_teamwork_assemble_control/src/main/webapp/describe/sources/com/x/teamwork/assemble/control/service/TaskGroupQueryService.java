@@ -142,7 +142,7 @@ public class TaskGroupQueryService {
 	/**
 	 * 判断是否存在分组和工作任务的关联
 	 * @param taskId
-	 * @param groupId
+	 * @param projectId
 	 * @return
 	 * @throws Exception 
 	 */

@@ -148,7 +148,7 @@ public class WarnLogAction extends StandardJaxrsAction {
 	public void getSystemLog(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 							 @JaxrsParameterDescribe("日志标识") @PathParam("tag") String tag) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionGetSystemLog.Wo>> result = new ActionResult<>();
+		ActionResult<ActionGetSystemLog.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionGetSystemLog().execute(effectivePerson, tag);
 		} catch (Exception e) {

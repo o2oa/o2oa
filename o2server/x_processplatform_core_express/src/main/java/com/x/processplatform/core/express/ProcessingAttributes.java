@@ -16,7 +16,7 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	public static final String TYPE_RESET = "reset";
 	public static final String TYPE_RETRACT = "retract";
 	public static final String TYPE_ROLLBACK = "rollback";
-	public static final String TYPE_SERVICE = "service";
+	//public static final String TYPE_BEGIN = "begin";
 	private Integer loop = 1;
 
 	@FieldDescribe("强制从arrive开始")
