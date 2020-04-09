@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -43,6 +41,8 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppe
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
+
+import org.apache.commons.lang3.StringUtils;
 
 class ActionProcessing extends BaseAction {
 
@@ -261,7 +261,7 @@ class ActionProcessing extends BaseAction {
 		/* 记录上一处理人信息 */
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
-			req.setTaskList(ListTools.extractProperty(newTasks, Task.id_FIELDNAME, String.class, true, true));
+			req.setTaskList(ListTools.extractProperty(newTasks, JpaObject.id_FIELDNAME, String.class, true, true));
 			req.getPrevTaskIdentityList().add(task.getIdentity());
 			ThisApplication.context().applications()
 					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
@@ -345,7 +345,7 @@ class ActionProcessing extends BaseAction {
 		private static final long serialVersionUID = 2702712453822143654L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(Task.id_FIELDNAME, Task.activity_FIELDNAME, Task.activityName_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, Task.activity_FIELDNAME, Task.activityName_FIELDNAME,
 						Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME),
 				null);
 
