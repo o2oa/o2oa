@@ -2100,9 +2100,16 @@ MWF.xApplication.ForumDocument.ReplyDocument = new Class({
 		this.app.confirm("warn", ev, this.lp.deleteReplyTitle, this.lp.deleteReplyText, 350, 120, function(){
 			//_self.view._removeDocument(_self.data, false);
 			_self.actions.deleteReply( _self.data.id, function(){
-				_self.destroy();
-				_self.app.adjustReplyCount( -1 );
-				_self.app.notice( _self.lp.deleteReplySuccess, "ok")
+				if( MWFForum.getSystemConfigValue("BBS_REPLY_DELETETYPE").toLowerCase() === "recursively" ){
+					_self.destroy();
+					_self.app.adjustReplyCount( -1 );
+					_self.view.reload();
+					_self.app.notice( _self.lp.deleteReplySuccess, "ok")
+				}else{
+					_self.destroy();
+					_self.app.adjustReplyCount( -1 );
+					_self.app.notice( _self.lp.deleteReplySuccess, "ok")
+				}
 			}.bind(this) );
 			this.close();
 		}, function(){
