@@ -54,7 +54,7 @@ public class ActionParticipantUpdate extends BaseAction {
 			result.error( exception );
 		}
 		
-		if (check) {	
+		if( Boolean.TRUE.equals( check ) ){
 			task = taskQueryService.get( id );
 			if( task == null ) {
 				check = false;
@@ -63,7 +63,7 @@ public class ActionParticipantUpdate extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			old_participants = task.getParticipantList();
 			new_participants = wi.getParticipantList();
 			if( ListTools.isNotEmpty( wi.getParticipantList() ) ) {
@@ -84,7 +84,7 @@ public class ActionParticipantUpdate extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			List<String> addParticipants = new ArrayList<>();
 			List<String> removeParticipants = new ArrayList<>();
 			if( old_participants == null ) { old_participants = new ArrayList<>(); }
@@ -100,7 +100,7 @@ public class ActionParticipantUpdate extends BaseAction {
 				}
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {					
 					new BatchOperationPersistService().addOperation( 
 							BatchOperationProcessService.OPT_OBJ_TASK, 
@@ -110,7 +110,7 @@ public class ActionParticipantUpdate extends BaseAction {
 				}	
 			}
 			
-			if (check) {
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					MessageFactory.message_to_teamWorkUpdateParticipants( task, addParticipants );
 				} catch (Exception e) {

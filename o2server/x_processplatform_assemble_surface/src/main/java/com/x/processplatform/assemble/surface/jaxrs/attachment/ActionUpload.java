@@ -23,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import javax.servlet.http.HttpServletRequest;
+
 class ActionUpload extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionUpload.class);
@@ -42,11 +44,6 @@ class ActionUpload extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			if (StringUtils.isEmpty(fileName)) {
-				fileName = this.fileName(disposition);
-			}
-			/* 调整可能的附件名称 */
-			fileName = this.adjustFileName(business, work.getJob(), fileName);
 
 			/* 天谷印章扩展 */
 			if (StringUtils.isNotEmpty(extraParam)) {
@@ -58,6 +55,13 @@ class ActionUpload extends BaseAction {
 					site = wiExtraParam.getSite();
 				}
 			}
+
+			if (StringUtils.isEmpty(fileName)) {
+				fileName = this.fileName(disposition);
+			}
+			/* 调整可能的附件名称 */
+			fileName = this.adjustFileName(business, work.getJob(), fileName);
+
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			Attachment attachment = this.concreteAttachment(work, effectivePerson, site);
 			attachment.saveContent(mapping, bytes, fileName);
