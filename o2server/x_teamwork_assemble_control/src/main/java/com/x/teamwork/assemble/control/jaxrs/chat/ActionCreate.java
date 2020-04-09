@@ -45,27 +45,27 @@ public class ActionCreate extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getTaskId() )) {
 				check = false;
 				Exception exception = new TaskIDEmptyException();
 				result.error(exception);
 			}
 		}		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getContent() )) {
 				check = false;
 				Exception exception = new ChatContentEmptyException();
 				result.error(exception);
 			}
 		}		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getSender() )) {
 				chat.setSender( effectivePerson.getDistinguishedName() );
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				task = taskQueryService.get( wi.getTaskId() );
 				if ( task == null) {
@@ -85,7 +85,7 @@ public class ActionCreate extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				String lobContent = wi.getContent();
 				if( wi.getContent().length() > 70 ) {
@@ -108,7 +108,7 @@ public class ActionCreate extends BaseAction {
 			}			
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				MessageFactory.message_to_chat( chat );
 			} catch (Exception e) {
@@ -116,7 +116,7 @@ public class ActionCreate extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				Dynamic dynamic = dynamicPersistService.chatPublishDynamic( chat, effectivePerson,  jsonElement.toString() );
 				if( dynamic != null ) {

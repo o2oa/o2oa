@@ -37,7 +37,7 @@ public class ActionListWithTaskGroup extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					taskLists = taskListQueryService.listWithTaskGroup( effectivePerson.getDistinguishedName(), taskGroupId );
 					if( ListTools.isNotEmpty( taskLists )) {

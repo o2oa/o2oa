@@ -23,7 +23,7 @@ public class ActionGet extends BaseAction {
 		Chat chat = null;
 		Boolean check = true;
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			if( id == null || id.isEmpty() ){
 				check = false;
 				Exception exception = new ChatIDEmptyException();
@@ -31,7 +31,7 @@ public class ActionGet extends BaseAction {
 			}
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				chat = chatQueryService.get( id );
 				if( chat == null ) {
@@ -47,7 +47,7 @@ public class ActionGet extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				wrap = Wo.copier.copy( chat );
 				result.setData( wrap );

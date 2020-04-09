@@ -13,8 +13,6 @@ MWF.xApplication.LogViewer.Main = new Class({
     onQueryLoad: function(){
         this.lp = MWF.xApplication.LogViewer.LP;
         this.tagId = o2.uuid();
-
-
     },
     loadApplication: function(callback){
         if (!this.options.isRefresh){
@@ -49,8 +47,6 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.method = "listPromptErrorLog";
         this.count = 20;
         this.currentId = "(0)";
-
-        //定时器
     },
 
     loadToolbar: function(){
@@ -90,39 +86,25 @@ MWF.xApplication.LogViewer.Main = new Class({
         //     this.showTypeLog("warn");
         // }.bind(this));
 
-        this.clearBtn = new Element("button",{"text":"clear","style":"margin:10px;float:right"}).inject(this.toolbarNode);
-        this.clearBtn.addEvent("click",function () {
+        var clearBtn = new Element("button",{"text":"clear","style":"margin:10px"}).inject(this.toolbarNode);
+        clearBtn.addEvent("click",function () {
             this.screenInforAreaNode.empty();
             this.tagId = o2.uuid();
         }.bind(this));
-        this.stopBtn = new Element("button",{"text":"stop","style":"margin:10px;float:right"}).inject(this.toolbarNode);
-        this.startBtn = new Element("button",{"text":"start","style":"margin:10px;display:none;;float:right"}).inject(this.toolbarNode);
-
-        this.stopBtn.addEvent("click",function () {
-
-            this.startBtn.show();
-            this.stopBtn.hide();
+        var loadBtn = new Element("button",{"text":"load","style":"margin:10px"}).inject(this.toolbarNode);
+        loadBtn.addEvent("click",function () {
             if(this.method==="listSystemLog"){
-                $clear(this.timeDo);
-                this.timeDo = null;
+                this.actions[this.method](this.tagId, function(json){
+                    this.showSystemLog(json.data);
+                    this.screenInforAreaNode.scrollTop = this.screenInforAreaNode.scrollHeight;
+                }.bind(this));
             }else {
                 this.initLog();
                 this.loadLog();
             }
         }.bind(this));
-
-        this.startBtn.addEvent("click",function () {
-            this.startBtn.hide();
-            this.stopBtn.show();
-            this.initLog();
-            this.loadLog();
-        }.bind(this));
     },
     showTypeLog: function(status){
-
-        $clear(this.timeDo);
-        this.timeDo = null;
-
         if (this.status!==status){
             switch (this.status){
                 case "prompt":
@@ -183,9 +165,6 @@ MWF.xApplication.LogViewer.Main = new Class({
     },
 
     loadLog: function(){
-
-
-
         this.date = this.dateSelect.options[this.dateSelect.selectedIndex].value;
         switch (this.status){
             case "prompt":
@@ -207,10 +186,6 @@ MWF.xApplication.LogViewer.Main = new Class({
             this.actions[this.method](this.tagId, function(json){
                 this.showSystemLog(json.data);
             }.bind(this));
-
-            //添加定时器
-            this.timeDo = this.tiemShowSystemLog.periodical(2000,this);
-
         }else{
             if (this.date==="all"){
                 this.actions[this.method](this.currentId, this.count, function(json){
@@ -225,54 +200,10 @@ MWF.xApplication.LogViewer.Main = new Class({
         }
     },
     showSystemLog : function(data){
-
-        data.each(function (log) {
+        if(!data.valueList) return;
+        data.valueList.each(function (log) {
             var node = new Element("div", {"styles": this.css.logItemNode}).inject(this.screenInforAreaNode);
-
-            if(log.logLevel){
-                var lineLog = log.lineLog;
-                var logTime = log.logTime.split("#")[0];
-                lineLog = lineLog.replace(logTime,"");
-                lineLog = lineLog.replace(log.logLevel,"");
-                var typeNode =   new Element("div",{
-                    "html" : log.logLevel,
-                    "title" : log.node,
-                    "style" : "float:left;margin:0 10px;width:50px;font-weight:500;"
-                }).inject(node);
-
-                var color = "#FF0000";
-                switch (log.logLevel) {
-
-                    case "INFO" :
-                        color = "#5a86ff";
-                        break;
-                    case  "PRINT" :
-                        color = "#ffd192";
-                        break;
-                    case  "DEBUG" :
-                        color = "#d7ff3d";
-                        break;
-                    default :
-
-                }
-                typeNode.setStyle("color",color);
-
-                var timeNode = new Element("div",{
-                    "html" : logTime,
-                    "style" : "float:left;margin:0 10px;width:180px;color:#6BC5FC"
-                }).inject(node);
-            }
-            var contentNode = new Element("div",{
-                "text" : log.lineLog,
-                "style" : "margin-left:270px"
-            }).inject(node);
-        }.bind(this));
-
-    },
-    tiemShowSystemLog : function(){
-        this.actions[this.method](this.tagId, function(json){
-            this.showSystemLog(json.data);
-            this.screenInforAreaNode.scrollTop = this.screenInforAreaNode.scrollHeight;
+            node.set("text",log);
         }.bind(this));
     },
     showLog: function(data){

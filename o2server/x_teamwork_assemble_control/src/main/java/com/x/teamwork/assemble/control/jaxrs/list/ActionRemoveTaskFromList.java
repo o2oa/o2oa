@@ -33,7 +33,7 @@ public class ActionRemoveTaskFromList extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskList = taskListQueryService.get( id );
 				if ( taskList == null) {
@@ -49,7 +49,7 @@ public class ActionRemoveTaskFromList extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskListPersistService.removeTaskFromList(taskId, id, effectivePerson);
 				// 更新缓存

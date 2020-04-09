@@ -43,7 +43,7 @@ public class ActionGet extends BaseAction {
 			wo = (Wo) element.getObjectValue();
 			
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					projectExtFieldRele = projectExtFieldReleQueryService.get(id);
 					if ( projectExtFieldRele == null) {
@@ -59,7 +59,7 @@ public class ActionGet extends BaseAction {
 				}
 			}
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					wo = Wo.copier.copy( projectExtFieldRele );
 				} catch (Exception e) {

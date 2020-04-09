@@ -151,33 +151,13 @@ public class XGsonBuilder {
 		return instance().fromJson(element, cls);
 	}
 
-	public static boolean isJsonObject(String json) {
+	public static boolean isJson(String json) {
 		if (StringUtils.isBlank(json)) {
 			return false;
 		}
 		try {
-			JsonElement jsonElement = new JsonParser().parse(json);
-			if (jsonElement.isJsonObject()){
-				return true;
-			} else {
-				return false;
-			}
-		} catch (JsonParseException e) {
-			return false;
-		}
-	}
-
-	public static boolean isJsonArray(String json) {
-		if (StringUtils.isBlank(json)) {
-			return false;
-		}
-		try {
-			JsonElement jsonElement = new JsonParser().parse(json);
-			if (jsonElement.isJsonArray()){
-				return true;
-			} else {
-				return false;
-			}
+			new JsonParser().parse(json);
+			return true;
 		} catch (JsonParseException e) {
 			return false;
 		}

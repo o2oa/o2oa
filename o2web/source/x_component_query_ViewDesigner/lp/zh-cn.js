@@ -48,28 +48,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "numberKey": "项目名称不能为数字，请重新输入",
 
         "inputName": "请输入视图名称",
-        "noModifyName": "不能修改名称或者别名",
-
-        "deleteEventTitle": "删除事件确认",
-        "deleteEvent": "是否确定删除当前事件吗？"
-    },
-    "actionbar": {
-        "readhide": "设置阅读时是否显示",
-        "edithide": "设置编辑时是否显示",
-        "hideCondition": "设置隐藏条件",
-        "title": "标题",
-        "img": "图标",
-        "action": "操作",
-        "condition": "显示条件",
-        "editScript": "操作脚本编辑",
-        "editCondition": "隐藏条件编辑（返回true隐藏操作）",
-        "up" : "上移",
-        "property" : "属性",
-        "addCustomTool" : "添加自定义操作",
-        "delete" : "删除",
-        "setProperties" : "设置操作属性",
-        "restoreDefaultTool" : "恢复删除的系统操作",
-        "selectDefaultTool" : "选择系统操作"
+        "noModifyName": "不能修改名称或者别名"
     },
     "mastInputPath": "请输入数据路径",
     "mastInputTitle": "请输入标题",

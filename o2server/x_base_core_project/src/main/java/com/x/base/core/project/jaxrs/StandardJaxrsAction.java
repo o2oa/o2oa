@@ -1,7 +1,9 @@
 package com.x.base.core.project.jaxrs;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
@@ -12,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
@@ -1241,29 +1242,6 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
 		return em.createQuery(cq.select(cb.count(root)).where(predicate)).getSingleResult();
-	}
-
-	/**
-	 * 将request参数值转为json
-	 */
-	public String request2Json(HttpServletRequest request) {
-		Map<String,String> map = new HashMap<>();
-		Enumeration paramNames = request.getParameterNames();
-		while (paramNames.hasMoreElements()) {
-			String paramName = (String) paramNames.nextElement();
-			String[] pv = request.getParameterValues(paramName);
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < pv.length; i++) {
-				if (pv[i].length() > 0) {
-					if (i > 0) {
-						sb.append(",");
-					}
-					sb.append(pv[i]);
-				}
-			}
-			map.put(paramName, sb.toString());
-		}
-		return gson.toJson(map);
 	}
 
 }

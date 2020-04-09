@@ -46,7 +46,7 @@ public class ActionStatisticMyTasks extends BaseAction {
 			Integer completedTotal = 0;
 			Integer overtimeTotal = 0;
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					//查询用户在该项目中所有工作任务组信息，如果没有，则需要创建一个工作任务组，将所有的工作任务添加到该工作任务组中
 					taskGroupList = taskGroupQueryService.listGroupByPersonAndProject( effectivePerson, projectId );
@@ -58,7 +58,7 @@ public class ActionStatisticMyTasks extends BaseAction {
 				}
 			}
 			
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					//查询用户在该项目中所有的视图信息
 					taskViewList = taskViewQueryService.listViewWithPersonAndProject( effectivePerson, projectId );

@@ -80,9 +80,6 @@ public class Record extends SliceJpaObject {
 	/* 超时自动流转 */
 	public final static String TYPE_PASSEXPIRED = "passExpired";
 
-	/* 外部调用流转 */
-	public final static String TYPE_SERVICE = "service";
-
 	/* 定制意见 */
 	public final static String TYPE_CUSTOM = "custom";
 

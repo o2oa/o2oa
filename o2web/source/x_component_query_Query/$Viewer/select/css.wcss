@@ -17,7 +17,7 @@
         "height": "30px"
     },
     "viewPageAreaNode": {
-        "height": "24px"
+        "height": "24px",
         //"margin-top": "28px"
     },
     "viewPageContentNode": {
@@ -161,7 +161,7 @@
         "border": "1px solid #cccccc",
         "float": "none",
         "margin": "10px",
-        "border-radius": "5px"
+        "border-radius": "5px",
     },
     "viewFilterSearchCustomActionNode": {
         "height": "24px",

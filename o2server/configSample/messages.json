@@ -3,7 +3,7 @@
     "consumers": [],
     "consumersV2": {
       "qiyeweixin": "excute",
-      "describe": "excute表示脚本messageSendRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务"
+      "describe": "excute表示脚本messageRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务"
     }
   },
   "attachment_editor": {

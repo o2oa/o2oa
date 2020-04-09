@@ -44,21 +44,21 @@ public class ActionCreate extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getProject() )) {
 				check = false;
 				Exception exception = new ProjectIdEmptyException();
 				result.error(exception);
 			}
 		}		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getTag() )) {
 				check = false;
 				Exception exception = new TagEmptyException();
 				result.error(exception);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( wi.getTagColor() )) {
 				check = false;
 				Exception exception = new TagColorEmptyException();
@@ -66,7 +66,7 @@ public class ActionCreate extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				project = projectQueryService.get( wi.getProject() );
 				if ( project == null) {
@@ -82,7 +82,7 @@ public class ActionCreate extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskTag = taskTagPersistService.save( Wi.copier.copy( wi ), effectivePerson );
 				
@@ -99,7 +99,7 @@ public class ActionCreate extends BaseAction {
 			}			
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				dynamic = dynamicPersistService.taskTagCreateDynamic(taskTag, effectivePerson);
 				if( dynamic != null ) {

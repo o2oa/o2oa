@@ -52,7 +52,7 @@ public class ActionListNoGroupNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -73,7 +73,7 @@ public class ActionListNoGroupNextWithFilter extends BaseAction {
 			queryFilter.addEqualsTerm( new EqualsTerm("groupCount", 0 ));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNoGroupNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );

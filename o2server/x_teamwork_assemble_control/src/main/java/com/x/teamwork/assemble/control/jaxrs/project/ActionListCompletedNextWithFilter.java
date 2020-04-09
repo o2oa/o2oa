@@ -52,7 +52,7 @@ public class ActionListCompletedNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -73,7 +73,7 @@ public class ActionListCompletedNextWithFilter extends BaseAction {
 			queryFilter.addIsTrueTerm( new IsTrueTerm("completed" ));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListCompletedNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );

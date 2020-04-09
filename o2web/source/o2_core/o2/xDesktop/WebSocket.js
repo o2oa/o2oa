@@ -142,13 +142,6 @@ MWF.xDesktop.WebSocket = new Class({
                             case "calendar_alarm":
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
-                            case "teamwork_taskCreate":
-                            case "teamwork_taskUpdate":
-                            case "teamwork_taskDelelte":
-                            case "teamwork_taskOvertime":
-                            case "teamwork_taskChat":
-                                this.receiveTeamWorkMessage(data);
-                                break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
                                 break;
@@ -572,30 +565,5 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
         });
-    },
-    receiveTeamWorkMessage: function(data){
-        debugger;
-        var task = data.body;
-        //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
-        var content = data.title;
-        //content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.creatorPerson+": </font><font style='color: #ea621f'>"+task.creatorPerson+"</font>;  "+
-        //    "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.executor+": </font><font style='color: #ea621f'>"+task.executor+"</font>";
-        var msg = {
-            "subject": task.name,
-            "content": content
-        };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
-        tooltipItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.hide();
-            var options = {"taskId": task.id, "projectId": task.project};
-            layout.desktop.openApplication(e, "TeamWork.Task", options);
-        }.bind(this));
-        messageItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.addUnread(-1);
-            layout.desktop.message.hide();
-            var options = {"taskId": task.id, "projectId": task.project};
-            layout.desktop.openApplication(e, "TeamWork.Task", options);
-        }.bind(this));
-    },
+    }
 });

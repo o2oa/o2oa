@@ -47,7 +47,7 @@ public class ActionListPageWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -66,14 +66,14 @@ public class ActionListPageWithFilter extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPageWithFilter", effectivePerson.getDistinguishedName(), 
 					pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if ((null != element) && (null != element.getObjectValue())) {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );

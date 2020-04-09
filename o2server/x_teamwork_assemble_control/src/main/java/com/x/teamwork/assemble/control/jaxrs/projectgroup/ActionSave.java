@@ -41,11 +41,11 @@ public class ActionSave extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			projectGroup_old = projectGroupQueryService.get( wi.getId() );
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				projectGroup = projectGroupPersistService.save( wi, effectivePerson );
 				
@@ -62,7 +62,7 @@ public class ActionSave extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}			
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				Dynamic dynamic = dynamicPersistService.projectGroupSaveDynamic(projectGroup_old, projectGroup, effectivePerson,  jsonElement.toString() );
 				if( dynamic != null ) {

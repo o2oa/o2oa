@@ -38,91 +38,18 @@
                     <input class="editTableRadio" name="data.isSequence" text{($.data.isSequence!=='yes')?'checked':''} type="radio" value="no"/>否
                 </td>
             </tr>
-<!--            <tr>-->
-<!--                <td class="editTableTitle">视图样式:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <select class="MWFViewStyle" name="viewStyleType"></select>-->
-<!--                </td>-->
-<!--            </tr>-->
             <tr>
-                <td class="editTableTitle">隐藏操作条:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.actionbarHidden" text{($.data.actionbarHidden===false)?'checked':''} type="radio" value="false"/>否
-                </td>
+                <td class="editTableTitle">最大行数:</td>
+                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
             </tr>
             <tr>
-                <td class="editTableTitle">选择:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none"/>无
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='single')?'checked':''} type="radio" value="single"/>单选
-                    <input class="editTableRadio" name="data.select" text{($.data.select==='multi')?'checked':''} type="radio" value="multi"/>多选
-                </td>
+                <td class="editTableTitle">每页行数:</td>
+                <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
             </tr>
             <!--<tr>-->
             <!--<td class="editTableTitle">最大行数:</td>-->
             <!--<td class="editTableValue"><input type="text" name="max" value="text{$.max}" class="editTableInput"/></td>-->
             <!--</tr>-->
-        </table>
-        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">分页</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitleNoWidth">最大行数:</td>
-                <td class="editTableValue"><input type="number" name="count" value="text{$.count || 600}" class="editTableInput"/></td>
-            </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">每页行数:</td>
-                <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
-            </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">显示数字分页:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.hasTruningBar" text{($.data.hasTruningBar!==false)?'checked':''}  onclick="
-                    if (this.checked){
-                        $('text{$.id}visiblePagesTr').setStyle('display', 'table-row');
-                        $('text{$.id}hasBatchTuringTr').setStyle('display', 'table-row');
-                    }" type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.hasTruningBar" text{($.data.hasTruningBar===false)?'checked':''}   onclick="
-                    if (this.checked){
-                        $('text{$.id}visiblePagesTr').setStyle('display', 'none');
-                        $('text{$.id}hasBatchTuringTr').setStyle('display', 'none');
-                    }" type="radio" value="false"/>否
-                </td>
-            </tr>
-            <tr id="text{$.id}visiblePagesTr">
-                <td class="editTableTitleNoWidth">数字显示个数:</td>
-                <td class="editTableValue"><input type="number" name="data.visiblePages" value="text{$.data.visiblePages || 9}" onchange="
-                    $('text{$.id}visiblePagesText').set('text', this.value);
-                " class="editTableInput"/></td>
-            </tr>
-            <tr id="text{$.id}hasBatchTuringTr">
-                <td class="editTableTitleNoWidth">显示前后<span id="text{$.id}visiblePagesText">text{$.data.visiblePages || 9}</span>页:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.hasBatchTuring" text{($.data.hasBatchTuring!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.hasBatchTuring" text{($.data.hasBatchTuring===false)?'checked':''} type="radio" value="false"/>否
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">显示首页末页:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.hasFirstLastPage" text{($.data.hasFirstLastPage!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.hasFirstLastPage" text{($.data.hasFirstLastPage===false)?'checked':''} type="radio" value="false"/>否
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">显示上页下页:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.hasPreNextPage" text{($.data.hasPreNextPage!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.hasPreNextPage" text{($.data.hasPreNextPage===false)?'checked':''} type="radio" value="false"/>否
-                </td>
-            </tr>
-            <tr>
-                <td class="editTableTitleNoWidth">显示跳页:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="data.hasPageJumper" text{($.data.hasPageJumper!==false)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="data.hasPageJumper" text{($.data.hasPageJumper===false)?'checked':''} type="radio" value="false"/>否
-                </td>
-            </tr>
         </table>
 
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">权限</div>
@@ -186,7 +113,6 @@
                 </td>
             </tr>
         </table>
-
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">权限:</td>
@@ -635,17 +561,6 @@
         </div>
     </div>
 
-<!--    <div title="样式"  class="MWFTab">-->
-<!--        <div class="MWFMaplist" name="tableStyles" collapse="true" title="表格样式"></div>-->
-<!--        <div class="MWFMaplist" name="titleTdStyles" collapse="true" title="标题单元格样式"></div>-->
-<!--        <div class="MWFMaplist" name="contentTdStyles" collapse="true" title="内容单元格样式"></div>-->
-<!--        <div class="MWFMaplist" name="contentTdOverStyles" collapse="true" title="内容单元格鼠标over事件样式"></div>-->
-<!--        <div class="MWFMaplist" name="contentTdSelectedStyles" collapse="true" title="内容单元格选中样式"></div>-->
-<!--    </div>-->
-
-    <div title="事件"  class="MWFTab">
-        <div class="MWFEventsArea" name="data.events"></div>
-    </div>
 
     <div title="JSON"  class="MWFTab">
         <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>

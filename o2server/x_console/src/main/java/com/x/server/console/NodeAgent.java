@@ -57,7 +57,7 @@ public class NodeAgent extends Thread {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						String json = dis.readUTF();
-						//logger.info("receive socket json={}",json);
+						logger.info("receive socket json={}",json);
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
@@ -143,15 +143,11 @@ public class NodeAgent extends Thread {
 						curReadSize = curReadSize + bytes.length + 1;
 						String lineStr = new String(bytes);
 						String time = curTime;
-						String logLevel = "";
 						if (lineStr.length() > 23) {
 							time = StringUtils.left(lineStr, 19);
 							if (DateTools.isDateTime(time)) {
 								time = StringUtils.left(lineStr, 23);
 								curTime = time;
-								if(lineStr.length() > 29){
-									logLevel = StringUtils.right(StringUtils.left(lineStr, 29),5).trim();
-								}
 							} else {
 								if (StringUtils.isEmpty(curTime)) {
 									time = "2020-01-01 00:00:01.001";
@@ -168,8 +164,6 @@ public class NodeAgent extends Thread {
 						}
 						Map<String, String> map = new HashMap<>();
 						map.put("logTime",time+"#"+Config.node());
-						map.put("node", Config.node());
-						map.put("logLevel", logLevel);
 						map.put("lineLog", lineStr);
 						list.add(map);
 						if (curReadSize > LOG_MAX_READ_SIZE){

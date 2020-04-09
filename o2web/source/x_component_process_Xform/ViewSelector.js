@@ -334,7 +334,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     ],
                     "onPostShow": function(){
                         MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"}, this.form.app, this.form.Macro );
+                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"});
                         }.bind(this));
                     }.bind(this)
                 });

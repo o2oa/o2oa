@@ -37,7 +37,7 @@ public class ActionList extends BaseAction {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
-			if( Boolean.TRUE.equals( check ) ){
+			if (check) {
 				try {
 					projectGroups = projectGroupQueryService.listGroupByPerson( effectivePerson.getDistinguishedName() );
 					if( ListTools.isNotEmpty( projectGroups )) {

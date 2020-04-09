@@ -3,7 +3,17 @@ package com.x.teamwork.assemble.control.jaxrs.task;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.teamwork.assemble.control.service.*;
+import com.x.teamwork.assemble.control.service.DynamicPersistService;
+import com.x.teamwork.assemble.control.service.ProjectExtFieldReleQueryService;
+import com.x.teamwork.assemble.control.service.ProjectQueryService;
+import com.x.teamwork.assemble.control.service.TaskGroupPersistService;
+import com.x.teamwork.assemble.control.service.TaskGroupQueryService;
+import com.x.teamwork.assemble.control.service.TaskListPersistService;
+import com.x.teamwork.assemble.control.service.TaskPersistService;
+import com.x.teamwork.assemble.control.service.TaskQueryService;
+import com.x.teamwork.assemble.control.service.TaskTagPersistService;
+import com.x.teamwork.assemble.control.service.TaskTagQueryService;
+import com.x.teamwork.assemble.control.service.TaskViewQueryService;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskView;
 
@@ -28,8 +38,6 @@ public class BaseAction extends StandardJaxrsAction {
 	protected 	TaskPersistService taskPersistService = new TaskPersistService();
 	
 	protected TaskListPersistService taskListPersistService = new TaskListPersistService();
-
-	protected TaskListQueryService taskListQueryService = new TaskListQueryService();
 	
 	protected TaskGroupQueryService taskGroupQueryService = new TaskGroupQueryService();
 	

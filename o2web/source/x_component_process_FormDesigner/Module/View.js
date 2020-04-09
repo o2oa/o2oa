@@ -14,9 +14,6 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 		this.path = "/x_component_process_FormDesigner/Module/View/";
 		this.cssPath = "/x_component_process_FormDesigner/Module/View/"+this.options.style+"/css.wcss";
 
-        this.imagePath_default = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_custom = "/x_component_process_FormDesigner/Module/Actionbar/";
-
 		this._loadCss();
 		this.moduleType = "element";
 		this.moduleName = "view";
@@ -106,7 +103,6 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         this.viewNode = this.node.getChildren("div")[1];
         if (this.viewNode){
             this.node.setStyle("background", "transparent");
-            this.actionbarNode = this.viewNode.getChildren("div")[0];
             this.viewTable = this.viewNode.getElement("table").setStyles(this.css.viewTitleTableNode);
             this.viewLine = this.viewTable.getElement("tr").setStyles(this.css.viewTitleLineNode);
             this.viewSelectCell = this.viewLine.getElement("td");
@@ -116,12 +112,8 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         }
 	},
     _createViewNode: function(callback){
-
         if (!this.viewNode) this.viewNode = new Element("div", {"styles": this.css.viewNode}).inject(this.node);
-        if( !this.actionbarNode)this.actionbarNode = new Element("div.actionbarNode",{}).inject( this.viewNode, "top" );
-
         this.node.setStyle("background", "transparent");
-
 
         this.viewTable = new Element("table", {
             "styles": this.css.viewTitleTableNode,
@@ -140,13 +132,6 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 
         MWF.Actions.get("x_query_assemble_designer").getView(this.json["queryView"].id, function(json){
             var viewData = JSON.decode(json.data.data);
-
-            this.viewData = viewData;
-            if( this.json.actionbar === "show" ){
-                this.actionbarList = [];
-                this._showActionbar();
-            }
-
             var columnList = viewData.selectEntryList || viewData.selectList;
             columnList.each(function(column){
                 if (!column.hideColumn){
@@ -190,9 +175,6 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
             }
             this.treeNode.setTitle(this.json.id);
             this.node.set("id", this.json.id);
-        }
-        if(name=="actionbar"){
-            input.get("value") === "show" ? this._showActionbar() : this._hideActionbar();
         }
 
         this._setEditStyle_custom(name, input, oldValue);
@@ -249,80 +231,5 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
     _checkTitle: function(){
         if (!this.json["isTitle"]) this.json["isTitle"] = "yes";
         if (this.viewNode) this._setViewNodeTitle();
-    },
-
-    _hideActionbar : function(){
-        if(this.actionbarNode)this.actionbarNode.hide();
-    },
-    _showActionbar : function(){
-	    if( !this.actionbarNode )return;
-        MWF.require("MWF.widget.Toolbar", null, false);
-        this.actionbarNode.show();
-        if( !this.viewData.actionbarList )this.viewData.actionbarList = [];
-        if( !this.actionbarList || this.actionbarList.length == 0 ){
-            this.actionbarNode.empty();
-            if( this.viewData.actionbarList.length ){
-                if( !this.actionbarList )this.actionbarList = [];
-                this.viewData.actionbarList.each( function(json){
-
-                    var toolbarWidget = new MWF.widget.Toolbar(this.actionbarNode, {"style": json.style}, this);
-                    if (json.actionStyles)toolbarWidget.css = json.actionStyles;
-
-                    if( !json.hideSystemTools )this.setToolbars( json.defaultTools, this.actionbarNode, json );
-                    this.setCustomToolbars( json.tools, this.actionbarNode, json );
-
-                    toolbarWidget.load();
-                    this.actionbarList.push( toolbarWidget );
-                }.bind(this));
-            }else{
-
-            }
-        }
-    },
-    setToolbars: function(tools, node, json){
-	    var style = "default";
-        tools.each(function(tool){
-            var actionNode = new Element("div", {
-                "MWFnodetype": tool.type,
-                "MWFButtonImage": this.imagePath_default+""+style+"/actionbar/"+tool.img,
-                "title": tool.title,
-                "MWFButtonAction": tool.action,
-                "MWFButtonText": tool.text
-            }).inject(node);
-            if( this.json.iconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , this.imagePath_default+""+ style+"/actionbar/"+json.iconOverStyle+"/"+tool.img );
-            }
-            // this.systemTools.push(actionNode);
-            // if (tool.sub){
-            //     var subNode = node.getLast();
-            //     this.setToolbars(tool.sub, subNode);
-            // }
-        }.bind(this));
-    },
-    setCustomToolbars: function(tools, node, json){
-        //var style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
-        var path = "";
-        if( json.customIconStyle ){
-            path = json.customIconStyle+ "/";
-        }
-        var customImageStyle = "default";
-
-        tools.each(function(tool){
-            var actionNode = new Element("div", {
-                "MWFnodetype": tool.type,
-                "MWFButtonImage": this.imagePath_custom+""+customImageStyle +"/custom/"+path+tool.img,
-                "title": tool.title,
-                "MWFButtonAction": tool.action,
-                "MWFButtonText": tool.text
-            }).inject(node);
-            if( this.json.customIconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , this.imagePath_custom+""+customImageStyle +"/custom/"+json.customIconOverStyle+ "/" +tool.img );
-            }
-            // this.customTools.push(actionNode);
-            // if (tool.sub){
-            //     var subNode = node.getLast();
-            //     this.setCustomToolbars(tool.sub, subNode);
-            // }
-        }.bind(this));
     }
 });

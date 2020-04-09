@@ -11,9 +11,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
-/**
- * @author Zhou Rui
- */
 public class ProcessPlatform extends ConfigObject {
 
 	public final static Integer DEFAULT_FORMVERSIONPERIOD = 45;
@@ -31,7 +28,6 @@ public class ProcessPlatform extends ConfigObject {
 	public final static String DEFAULT_DOCTOWORDTYPE = "local";
 
 	public final static String DOCTOWORDTYPE_LOCAL = "local";
-
 	public final static String DOCTOWORDTYPE_CLOUD = "cloud";
 
 	public final static String DEFAULT_DOCTOWORDDEFAULTFILENAME = "正文.docx";
@@ -50,6 +46,9 @@ public class ProcessPlatform extends ConfigObject {
 		this.formVersionCount = DEFAULT_FORMVERSIONCOUNT;
 		this.processVersionCount = DEFAULT_PROCESSVERSIONCOUNT;
 		this.scriptVersionCount = DEFAULT_SCRIPTVERSIONCOUNT;
+//		this.formVersionPeriod = DEFAULT_FORMVERSIONPERIOD;
+//		this.processVersionPeriod = DEFAULT_PROCESSVERSIONPERIOD;
+//		this.scriptVersionPeriod = DEFAULT_SCRIPTVERSIONPERIOD;
 		this.docToWordType = DEFAULT_DOCTOWORDTYPE;
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
@@ -57,7 +56,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
-		this.combine = new Combine();
+		this.dataMerge = new DataMerge();
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
@@ -75,6 +74,15 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("脚本历史版本保留数量,0为不保留.")
 	private Integer scriptVersionCount;
+
+//	@FieldDescribe("表单历史版本保留天数.")
+//	private Integer formVersionPeriod;
+//
+//	@FieldDescribe("流程历史版本保留天数.")
+//	private Integer processVersionPeriod;
+//
+//	@FieldDescribe("脚本历史版本保留天数.")
+//	private Integer scriptVersionPeriod;
 
 	@FieldDescribe("HTML版式公文转换成Word文件方式,local,cloud.")
 	private String docToWordType;
@@ -104,6 +112,21 @@ public class ProcessPlatform extends ConfigObject {
 		return scriptVersionCount == null ? DEFAULT_SCRIPTVERSIONCOUNT : this.scriptVersionCount;
 	}
 
+//	public Integer getFormVersionPeriod() {
+//		return (formVersionPeriod == null || formVersionPeriod < 1) ? DEFAULT_FORMVERSIONPERIOD
+//				: this.formVersionPeriod;
+//	}
+//
+//	public Integer getProcessVersionPeriod() {
+//		return (processVersionPeriod == null || processVersionPeriod < 1) ? DEFAULT_PROCESSVERSIONPERIOD
+//				: this.processVersionPeriod;
+//	}
+//
+//	public Integer getScriptVersionPeriod() {
+//		return (scriptVersionPeriod == null || scriptVersionPeriod < 1) ? DEFAULT_SCRIPTVERSIONPERIOD
+//				: this.scriptVersionPeriod;
+//	}
+
 	public String getDocToWordType() {
 		return StringUtils.isEmpty(docToWordType) ? DEFAULT_DOCTOWORDTYPE : docToWordType;
 	}
@@ -127,7 +150,7 @@ public class ProcessPlatform extends ConfigObject {
 	private TouchDelay touchDelay;
 
 	@FieldDescribe("合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.")
-	private Combine combine;
+	private DataMerge dataMerge;
 
 	@FieldDescribe("清除草稿状态的工作.")
 	private DeleteDraft deleteDraft;
@@ -172,8 +195,8 @@ public class ProcessPlatform extends ConfigObject {
 		return this.logLongDetained == null ? new LogLongDetained() : this.logLongDetained;
 	}
 
-	public Combine getCombine() {
-		return this.combine == null ? new Combine() : this.combine;
+	public DataMerge getDataMerge() {
+		return this.dataMerge == null ? new DataMerge() : this.dataMerge;
 	}
 
 	public Press getPress() {
@@ -289,10 +312,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	}
 
-	public static class Combine extends ConfigObject {
+	public static class DataMerge extends ConfigObject {
 
-		public static Combine defaultInstance() {
-			Combine o = new Combine();
+		public static DataMerge defaultInstance() {
+			DataMerge o = new DataMerge();
 			return o;
 		}
 
@@ -308,7 +331,7 @@ public class ProcessPlatform extends ConfigObject {
 		@FieldDescribe("定时cron表达式")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("期限,已完成工作结束间隔指定时间进行combine,默认两年后进行combine")
+		@FieldDescribe("期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge")
 		private Integer thresholdDays = DEFAULT_THRESHOLDDAYS;
 
 		public String getCron() {
@@ -324,7 +347,7 @@ public class ProcessPlatform extends ConfigObject {
 		}
 
 		public Integer getThresholdDays() {
-			return (null == thresholdDays || thresholdDays < 0) ? DEFAULT_THRESHOLDDAYS : thresholdDays;
+			return (null == thresholdDays || thresholdDays < 1) ? DEFAULT_THRESHOLDDAYS : thresholdDays;
 		}
 
 	}

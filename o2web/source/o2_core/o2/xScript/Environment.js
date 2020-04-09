@@ -857,7 +857,7 @@ MWF.xScript.Environment = function(ev){
                     }
 
                     MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, {"style": "select"}, _form.app, _form.Macro);
+                        this.view = new MWF.xApplication.query.Query.Viewer(dlg.content.getFirst(), viewJson, {"style": "select"});
                     }.bind(this));
                 }.bind(this));
             }

@@ -37,32 +37,7 @@ public class TaskListQueryService {
 			throw e;
 		}
 	}
-
-	public List<TaskList> list(List<String> listIds) throws Exception {
-		if ( ListTools.isEmpty( listIds )) {
-			return null;
-		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return emc.list( TaskList.class, listIds);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-	public List<String> listTaskListIdWithTaskId( String taskId, String taskGroupId) throws Exception {
-		if ( StringUtils.isEmpty( taskId )) {
-			throw new Exception("taskId is empty.");
-		}
-		if ( StringUtils.isEmpty( taskGroupId )) {
-			throw new Exception("taskGroupId is empty.");
-		}
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return taskListService.listTaskListIdWithTask( emc, taskId, taskGroupId );
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
+	
 	/**
 	 *  根据用户和项目ID查询工作任务列表
 	 * @param person
@@ -176,7 +151,4 @@ public class TaskListQueryService {
 		taskList.setOwner( person );
 		return taskList;
 	}
-
-
-
 }

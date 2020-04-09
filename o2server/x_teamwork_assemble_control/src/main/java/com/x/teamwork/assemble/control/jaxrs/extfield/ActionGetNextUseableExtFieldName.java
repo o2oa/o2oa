@@ -20,7 +20,7 @@ public class ActionGetNextUseableExtFieldName extends BaseAction {
 		Boolean check = true;
 		Wo wo = new Wo();
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( projectId )) {
 				check = false;
 				Exception exception = new ProjectFlagForQueryEmptyException();
@@ -28,13 +28,13 @@ public class ActionGetNextUseableExtFieldName extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if( StringUtils.isEmpty( fieldType )) {
 				fieldType = "TEXT";
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				project = projectQueryService.get( projectId );
 				if ( project == null) {
@@ -50,7 +50,7 @@ public class ActionGetNextUseableExtFieldName extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			String fieldName = projectExtFieldReleQueryService.getNextUseableExtFieldName( projectId, fieldType );
 			if( StringUtils.isNotEmpty( fieldName )) {
 				wo.setFieldName(fieldName);

@@ -34,21 +34,21 @@ public class ActionSave extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			if( wrapIn.getConfigCode() == null || wrapIn.getConfigCode().isEmpty() ){
 				check = false;
 				Exception exception = new ExceptionConfigCodeEmpty();
 				result.error( exception );
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			if( wrapIn.getConfigName() == null || wrapIn.getConfigName().isEmpty() ){
 				check = false;
 				Exception exception = new ExceptionConfigNameEmpty();
 				result.error( exception );
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				systemConfig = Wi.copier.copy( wrapIn );
 				if( wrapIn.getId() != null && !wrapIn.getId().isEmpty() ){
@@ -61,7 +61,7 @@ public class ActionSave extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				systemConfig = systemConfigPersistService.save( systemConfig );
 				result.setData( new Wo( systemConfig.getId() ) );

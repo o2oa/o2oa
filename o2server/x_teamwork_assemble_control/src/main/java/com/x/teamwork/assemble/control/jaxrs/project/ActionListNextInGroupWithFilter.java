@@ -51,7 +51,7 @@ public class ActionListNextInGroupWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
@@ -67,7 +67,7 @@ public class ActionListNextInGroupWithFilter extends BaseAction {
 			queryFilter.addInTerm( new InTerm("id", new ArrayList<Object>(queryProjectIds) ));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNextInGroupWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );

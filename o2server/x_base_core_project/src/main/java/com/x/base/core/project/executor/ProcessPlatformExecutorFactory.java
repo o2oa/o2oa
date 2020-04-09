@@ -8,15 +8,35 @@ import com.x.base.core.project.config.Config;
 
 public class ProcessPlatformExecutorFactory {
 
-	private ProcessPlatformExecutorFactory() {
-		throw new IllegalStateException("ProcessPlatformExecutorFactory class");
-	}
-
 	private static ExecutorService[] executors;
 
-	public static synchronized ExecutorService get(String seed) throws Exception {
+//	private static int count;
+//
+//	public static ExecutorService get(String seed) throws Exception {
+//		if (null == executors) {
+//			synchronized (ProcessPlatformExecutorServiceFactory.class) {
+//				if (null == executors) {
+//					count = Config.processPlatform().getExecutorCount();
+//					executors = new ExecutorService[count];
+//					for (int i = 0; i < count; i++) {
+//						executors[i] = Executors.newSingleThreadExecutor();
+//					}
+//				}
+//			}
+//		}
+//		CRC32 crc32 = new CRC32();
+//		crc32.update(Objects.toString(seed, "").getBytes());
+//		int idx = (int) (crc32.getValue() % count);
+//		return executors[idx];
+//	}
+
+	public static ExecutorService get(String seed) throws Exception {
 		if (null == executors) {
-			executors = Config.resource_node_processPlatformExecutors();
+			synchronized (ProcessPlatformExecutorFactory.class) {
+				if (null == executors) {
+					executors = Config.resource_node_processPlatformExecutors();
+				}
+			}
 		}
 		CRC32 crc32 = new CRC32();
 		crc32.update(Objects.toString(seed, "").getBytes());

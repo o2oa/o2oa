@@ -123,19 +123,6 @@ public class BBSVoteRecordFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 
-	public List<String> listVoteUserForSubject( String subjectId, String voteOptionId ) throws Exception {
-		EntityManager em = this.entityManagerContainer().get( BBSVoteRecord.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<BBSVoteRecord> root = cq.from( BBSVoteRecord.class);
-		Predicate p = cb.equal( root.get( BBSVoteRecord_.subjectId ), subjectId );
-		if( StringUtils.isNotEmpty( voteOptionId ) ){
-			p = cb.and( p, cb.equal( root.get( BBSVoteRecord_.optionId ), voteOptionId ));
-		}
-		cq.select( root.get( BBSVoteRecord_.votorName ) );
-		return em.createQuery(cq.where(p).distinct(true)).getResultList();
-	}
-
 	public List<BBSVoteRecord> listVoteRecordForPage(String subjectId, String voteOptionId, Integer maxRecordCount) throws Exception {
 		if( maxRecordCount == null ){
 			throw new Exception( "maxRecordCount is null." );

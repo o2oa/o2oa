@@ -1,8 +1,9 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
@@ -104,11 +105,11 @@ class ActionProjection extends BaseAction {
 
 	private List<Projection> listProjections(Process process) {
 		String text = process.getProjection();
-		if (XGsonBuilder.isJsonArray(text)) {
+		if (StringUtils.isNotEmpty(text) && XGsonBuilder.isJson(text)) {
 			return XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
 			}.getType());
 		}
-		return new ArrayList<Projection>();
+		return null;
 	}
 
 	public static class Wo extends WrapBoolean {

@@ -39,49 +39,7 @@
     "calculate": {},
     "afterGridScriptText": "",
     "afterGroupGridScriptText": "",
-    "afterCalculateGridScriptText": "",
-    "events": {
-      "queryLoad" : {
-        "code": "",
-        "html": ""
-      },
-      "postLoad": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadPageData" : {
-        "code": "",
-        "html": ""
-      },
-      "postLoadPage": {
-        "code": "",
-        "html": ""
-      },
-      "queryLoadItemRow": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadItemRow": {
-        "code": "",
-        "html": ""
-      },
-      "queryLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadCategoryRow": {
-        "code": "",
-        "html": ""
-      },
-      "selectRow" : {
-        "code": "",
-        "html": ""
-      },
-      "unselectRow" : {
-        "code": "",
-        "html": ""
-      }
-    }
+    "afterCalculateGridScriptText": ""
   },
   "availableIdentityList": [],
   "availableUnitList": []

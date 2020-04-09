@@ -16,7 +16,7 @@ import org.quartz.JobExecutionException;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.server.console.action.DumpStorage;
+import com.x.server.console.action.ActionDumpStorage;
 
 public class DumpStorageTask implements Job {
 
@@ -26,8 +26,8 @@ public class DumpStorageTask implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
 			logger.print("schedule dump storage task start.");
-			DumpStorage action = new DumpStorage();
-			action.execute(Config.currentNode().dumpStorage().path());
+			ActionDumpStorage action = new ActionDumpStorage();
+			action.execute(Config.currentNode().dumpStorage().path(), Config.token().getPassword());
 			if (Config.currentNode().dumpStorage().size() > 0) {
 				File dir = new File(Config.base(), "local/dump");
 				List<File> list = new ArrayList<>();

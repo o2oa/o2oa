@@ -99,9 +99,6 @@ public class BatchOperationProcessService {
 				if( StringUtils.isEmpty( task.getParent() )) {
 					task.setParent( "0" );
 				}
-				if( StringUtils.equals( task.getId(), task.getParent() )) {
-					task.setParent( "0" );
-				}
 				emc.check( task, CheckPersistType.all );
 				emc.commit();
 			}

@@ -40,7 +40,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				project = projectQueryService.get(projectId);
 				if ( project == null) {
@@ -56,7 +56,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				projectPersistService.delete( projectId, effectivePerson );				
 				// 更新缓存
@@ -74,7 +74,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}		
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				new BatchOperationPersistService().addOperation( 
 						BatchOperationProcessService.OPT_OBJ_PROJECT, 
@@ -84,7 +84,7 @@ public class ActionDelete extends BaseAction {
 			}	
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				Dynamic dynamic = dynamicPersistService.projectDeleteDynamic( project, effectivePerson);
 				if( dynamic != null ) {

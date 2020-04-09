@@ -1,7 +1,6 @@
 MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.Query = MWF.xApplication.query.Query || {};
 MWF.require("MWF.widget.Common", null, false);
-MWF.require("o2.widget.Paging", null, false);
 MWF.require("MWF.xScript.Macro", null, false);
 MWF.xDesktop.requireApp("query.Query", "lp.zh-cn", null, false);
 MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
@@ -13,10 +12,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         "paging" : "scroll",
         "perPageCount" : 50,
         "isload": "true",
-        "export": false,
-        "moduleEvents": ["queryLoad", "postLoad", "postLoadPageData", "postLoadPage", "selectRow", "unselectRow",
-            "queryLoadItemRow", "postLoadItemRow", "queryLoadCategoryRow", "postLoadCategoryRow"]
-
+        "export": false
         // "actions": {
         //     "lookup": {"uri": "/jaxrs/view/flag/{view}/query/{application}/execute", "method":"PUT"},
         //     "getView": {"uri": "/jaxrs/view/flag/{view}/query/{application}"}
@@ -24,12 +20,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         // },
         // "actionRoot": "x_query_assemble_surface"
     },
-    initialize: function(container, json, options, app, parentMacro){
-        //本类有三种事件，
-        //一种是通过 options 传进来的事件，包括 loadView、openDocument、select
-        //一种是用户配置的 事件， 在this.options.moduleEvents 中定义的作为类事件
-        //还有一种也是用户配置的事件，不在this.options.moduleEvents 中定义的作为 this.node 的DOM事件
-
+    initialize: function(container, json, options){
         this.setOptions(options);
 
         this.path = "/x_component_query_Query/$Viewer/";
@@ -37,15 +28,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this._loadCss();
         this.lp = MWF.xApplication.query.Query.LP;
 
-        this.app = app;
-
         this.container = $(container);
         this.json = json;
-
-        this.parentMacro = parentMacro;
-
-        debugger;
-        this.originalJson = Object.clone(json);
 
         this.viewJson = null;
         this.filterItems = [];
@@ -64,7 +48,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.load();
             }.bind(this));
         }
-
     },
     loadView: function(){
         if (this.viewJson){
@@ -84,18 +67,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     load: function(){
-        this.loadMacro( function () {
-            this._loadModuleEvents();
-            if (this.fireEvent("queryLoad")){
-                this._loadUserInterface();
-                //this._loadStyles();
-                this._loadDomEvents();
-            }
-        }.bind(this))
-    },
-    _loadUserInterface : function(){
         this.loadLayout();
-        this.createActionbarNode();
+        this.createExportNode();
         this.createSearchNode();
         this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
 
@@ -107,23 +80,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
-        this.actionbarAreaNode =  new Element("div", {"styles": this.css.actionbarAreaNode}).inject(this.node);
-        //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
+        if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
         this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
         this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
     },
-    loadMacro: function (callback) {
-        MWF.require("MWF.xScript.Macro", function () {
-            this.Macro = new MWF.Macro.ViewContext(this);
-            if (callback) callback();
-        }.bind(this));
-    },
     createExportNode: function(){
         if (this.options.export){
             MWF.require("MWF.widget.Toolbar", function(){
-                this.toolbar = new MWF.widget.Toolbar(this.actionbarAreaNode, {"style": "simple"}, this); //this.exportAreaNode
+                this.toolbar = new MWF.widget.Toolbar(this.exportAreaNode, {"style": "simple"}, this);
                 var actionNode = new Element("div", {
                     "id": "",
                     "MWFnodetype": "MWFToolBarButton",
@@ -131,7 +97,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     "title": this.lp.exportExcel,
                     "MWFButtonAction": "exportView",
                     "MWFButtonText": this.lp.exportExcel
-                }).inject(this.actionbarAreaNode); //this.exportAreaNode
+                }).inject(this.exportAreaNode);
 
                 this.toolbar.load();
             }.bind(this));
@@ -156,503 +122,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             a.destroy();
         }.bind(this));
     },
-    setContentHeight: function(){
-        var size = this.node.getSize();
-        var searchSize = this.searchAreaNode.getComputedSize();
-        var h = size.y-searchSize.totalHeight;
-        //if (this.exportAreaNode){
-        //    var exportSize = this.exportAreaNode.getComputedSize();
-        //    h = h-exportSize.totalHeight;
-        //}
-        if( this.actionbarAreaNode ){
-            var exportSize = this.actionbarAreaNode.getComputedSize();
-            h = h-exportSize.totalHeight;
-        }
-        var pageSize = this.viewPageNode.getComputedSize();
-        h = h-pageSize.totalHeight;
-        this.viewAreaNode.setStyle("height", ""+h+"px");
-    },
-    createLoadding: function(){
-        this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
-        new Element("div", {"styles": {"height": "5px"}}).inject(this.loadingAreaNode);
-        var loadingNode = new Element("div", {"styles": this.css.viewLoadingNode}).inject(this.loadingAreaNode);
-        new Element("div", {"styles": this.css.viewLoadingIconNode}).inject(loadingNode);
-        var loadingTextNode = new Element("div", {"styles": this.css.viewLoadingTextNode}).inject(loadingNode);
-        loadingTextNode.set("text", "loading...");
-    },
-    createActionbarNode : function(){
-        this.actionbarAreaNode.empty();
-        if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
-            if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
-            this.actionbar = new MWF.xApplication.query.Query.Viewer.Actionbar(this.actionbarAreaNode, this.viewJson.actionbarList[0], this, {});
-            this.actionbar.load();
-        }else{ //兼容以前的ExportNode
-            this.createExportNode();
-        }
-    },
-    createViewNode: function(data){
-        this.viewAreaNode.empty();
-        this.contentAreaNode = new Element("div", {"styles": this.css.contentAreaNode}).inject(this.viewAreaNode);
-
-        this.viewTable = new Element("table", {
-            "styles": this.css.viewTitleTableNode,
-            "border": "0px",
-            "cellPadding": "0",
-            "cellSpacing": "0"
-        }).inject(this.contentAreaNode);
-        this.createLoadding();
-
-        if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
-
-            //if (this.json.select==="single" || this.json.select==="multi") {
-            this.selectTitleCell = new Element("td", {
-                "styles": this.css.viewTitleCellNode
-            }).inject(this.viewTitleLine);
-            this.selectTitleCell.setStyle("width", "10px");
-            if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
-            //}
-
-            //序号
-            if (this.viewJson.isSequence==="yes"){
-                this.sequenceTitleCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode
-                }).inject(this.viewTitleLine);
-                this.sequenceTitleCell.setStyle("width", "10px");
-                if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
-            }
-
-            this.entries = {};
-            this.viewJson.selectList.each(function(column){
-                this.entries[column.column] = column;
-
-                if (!column.hideColumn){
-                    var viewCell = new Element("td", {
-                        "styles": this.css.viewTitleCellNode,
-                        "text": column.displayName
-                    }).inject(this.viewTitleLine);
-                    var size = MWF.getTextSize(column.displayName, this.css.viewTitleCellNode);
-                    viewCell.setStyle("min-width", ""+size.x+"px");
-                    if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
-                }else{
-                    this.hideColumns.push(column.column);
-                }
-                if (column.allowOpen) this.openColumns.push(column.column);
-            }.bind(this));
-            this.lookup(data);
-        }else{
-            this.viewJson.selectList.each(function(column){
-                if (column.hideColumn) this.hideColumns.push(column.column);
-                if (!column.allowOpen) this.openColumns.push(column.column);
-            }.bind(this));
-            this.lookup(data);
-        }
-    },
-    // _loadPageCountNode: function(){
-    //     this.viewPageContentNode.empty();
-    //
-    //     var size = this.viewPageAreaNode.getSize();
-    //     var w1 = this.viewPageFirstNode.getSize().x*2;
-    //     var w2 = this.viewPageContentNode.getStyle("margin-left").toInt();
-    //     var w = size.x-w1-w2;
-    //
-    //     var bw = this.css.viewPageButtonNode.width.toInt()+this.css.viewPageButtonNode["margin-right"].toInt();
-    //     var count = (w/bw).toInt()-2;
-    //     if (count>10) count = 10;
-    //     this.showPageCount = Math.min(count, this.pages);
-    //
-    //     var tmp = this.showPageCount/2;
-    //     var n = tmp.toInt();
-    //     var left = this.currentPage-n;
-    //     if (left<=0) left = 1;
-    //     var right = this.showPageCount + left-1;
-    //     if (right>this.pages) right = this.pages;
-    //     left = right-this.showPageCount+1;
-    //     if (left<=1) left = 1;
-    //
-    //     this.viewPagePrevNode = new Element("div", {"styles": this.css.viewPagePrevButtonNode}).inject(this.viewPageContentNode);
-    //     this.loadPageButtonEvent(this.viewPagePrevNode, "viewPagePrevButtonNode_over", "viewPagePrevButtonNode_up", "viewPagePrevButtonNode_down", function(){
-    //         if (this.currentPage>1) this.currentPage--;
-    //         this.loadCurrentPageData();
-    //     }.bind(this));
-    //
-    //     for (i=left; i<=right; i++){
-    //         var node = new Element("div", {"styles": this.css.viewPageButtonNode, "text": i}).inject(this.viewPageContentNode);
-    //         if (i==this.currentPage){
-    //             node.setStyles(this.css.viewPageButtonNode_current);
-    //         }else{
-    //             this.loadPageButtonEvent(node, "viewPageButtonNode_over", "viewPageButtonNode_up", "viewPageButtonNode_down", function(e){
-    //                 this.currentPage = e.target.get("text").toInt();
-    //                 this.loadCurrentPageData();
-    //             }.bind(this));
-    //         }
-    //     }
-    //     this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
-    //     this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
-    //         if (this.currentPage<=this.pages-1) this.currentPage++;
-    //         this.loadCurrentPageData();
-    //     }.bind(this));
-    // },
-    // loadPageButtonEvent: function(node, over, out, down, click){
-    //     node.addEvents({
-    //         "mouseover": function(){node.setStyles(this.css[over])}.bind(this),
-    //         "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
-    //         "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
-    //         "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
-    //         "click": click
-    //     });
-    // },
-    // _loadPageNode: function(){
-    //     this.viewPageAreaNode.empty();
-    //     this.viewPageFirstNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.firstPage}).inject(this.viewPageAreaNode);
-    //     this.viewPageContentNode = new Element("div", {"styles": this.css.viewPageContentNode}).inject(this.viewPageAreaNode);
-    //     this.viewPageLastNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.lastPage}).inject(this.viewPageAreaNode);
-    //     this._loadPageCountNode();
-    //
-    //     this.loadPageButtonEvent(this.viewPageFirstNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
-    //         this.currentPage = 1;
-    //         this.loadCurrentPageData();
-    //     }.bind(this));
-    //     this.loadPageButtonEvent(this.viewPageLastNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
-    //         this.currentPage = this.pages;
-    //         this.loadCurrentPageData();
-    //     }.bind(this));
-    // },
-    _loadPageNode : function(){
-        debugger;
-        this.viewPageAreaNode.empty();
-        this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
-            countPerPage: this.json.pageSize || this.options.perPageCount,
-            visiblePages: this.viewJson.visiblePages ? this.viewJson.visiblePages.toInt() : 9,
-            currentPage: this.currentPage,
-            itemSize: this.count,
-            pageSize: this.pages,
-            hasNextPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasPrevPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasTruningBar: typeOf( this.viewJson.hasTruningBar ) === "boolean" ? this.viewJson.hasTruningBar : true,
-            hasBatchTuring: typeOf( this.viewJson.hasBatchTuring ) === "boolean" ? this.viewJson.hasBatchTuring : true,
-            hasFirstPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasLastPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasJumper: typeOf( this.viewJson.hasPageJumper ) === "boolean" ? this.viewJson.hasPageJumper : true,
-            hiddenWithDisable: false,
-            hiddenWithNoItem: true,
-            text: {
-                prePage: "",
-                nextPage: "",
-                firstPage: this.lp.firstPage,
-                lastPage: this.lp.lastPage
-            },
-            onJumpingPage : function( pageNum, itemNum ){
-                this.currentPage = pageNum;
-                this.loadCurrentPageData();
-            }.bind(this),
-            onPostLoad : function () {
-                this.setContentHeightFun();
-            }.bind(this)
-        });
-        this.paging.load();
-    },
-    _initPage: function(){
-        this.count = this.bundleItems.length;
-
-        var i = this.count/this.json.pageSize;
-        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
-        this.currentPage = 1;
-    },
-    lookup: function(data){
-        this.getLookupAction(function(){
-            if (this.json.application){
-
-                var d = data || {};
-                d.count = this.json.count;
-                this.lookupAction.bundleView(this.json.id, d, function(json){
-                    this.bundleItems = json.data.valueList;
-
-                    this._initPage();
-                    if (this.bundleItems.length){
-                        this.loadCurrentPageData( function () {
-                            this.fireEvent("postLoad"); //用户配置的事件
-                        }.bind(this));
-                    }else{
-                        //this._loadPageNode();
-                        this.viewPageAreaNode.empty();
-                        if (this.loadingAreaNode){
-                            this.loadingAreaNode.destroy();
-                            this.loadingAreaNode = null;
-                        }
-                        this.fireEvent("postLoad"); //用户配置的事件
-                    }
-                }.bind(this));
-            }
-        }.bind(this));
-    },
-    loadCurrentPageData: function( callback ){
-        debugger;
-        //是否需要在翻页的时候清空之前的items ?
-        this.items = [];
-
-        var p = this.currentPage;
-        var d = {};
-        var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
-        d.bundleList = valueList;
-
-        while (this.viewTable.rows.length>1){
-            this.viewTable.deleteRow(-1);
-        }
-        //this.createLoadding();
-
-        this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
-            this.viewData = json.data;
-
-            this.fireEvent("postLoadPageData");
-
-            if (this.viewJson.group.column){
-                this.gridJson = json.data.groupGrid;
-                this.loadGroupData();
-            }else{
-                this.gridJson = json.data.grid;
-                this.loadData();
-            }
-            if (this.gridJson.length) this._loadPageNode();
-            if (this.loadingAreaNode){
-                this.loadingAreaNode.destroy();
-                this.loadingAreaNode = null;
-            }
-
-            this.fireEvent("loadView"); //options 传入的事件
-
-            this.fireEvent("postLoadPage");
-
-            if(callback)callback();
-        }.bind(this));
-    },
-
-
-    loadData: function(){
-        if (this.gridJson.length){
-            // if( !this.options.paging ){
-            this.gridJson.each(function(line, i){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
-            }.bind(this));
-            // }else{
-            //     this.loadPaging();
-            // }
-        }else{
-            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
-        }
-    },
-    loadPaging : function(){
-        this.isItemsLoading = false;
-        this.pageNumber = 0;
-        this.isItemsLoaded = false;
-        this.isSetedScroll = false;
-        this.setScroll();
-        this.loadDataByPaging()
-    },
-    setScroll : function(){
-        if( this.options.paging && !this.isSetedScroll ){
-            this.contentAreaNode.setStyle("overflow","auto");
-            this.scrollContainerFun = function(){
-                var scrollSize = this.contentAreaNode.getScrollSize();
-                var clientSize = this.contentAreaNode.getSize();
-                var scrollHeight = scrollSize.y - clientSize.y;
-                //alert( "clientSize.y=" + clientSize.y + " scrollSize.y="+scrollSize.y + " this.contentAreaNode.scrollTop="+this.contentAreaNode.scrollTop);
-                if (this.contentAreaNode.scrollTop + 150 > scrollHeight ) {
-                    if (!this.isItemsLoaded) this.loadDataByPaging();
-                }
-            }.bind(this);
-            this.isSetedScroll = true;
-            this.contentAreaNode.addEvent("scroll", this.scrollContainerFun )
-        }
-    },
-    loadDataByPaging : function(){
-        if( this.isItemsLoading )return;
-        if( !this.isItemsLoaded ){
-            var from = Math.min( this.pageNumber * this.options.perPageCount , this.gridJson.length);
-            var to = Math.min( ( this.pageNumber + 1 ) * this.options.perPageCount + 1 , this.gridJson.length);
-            this.isItemsLoading = true;
-            for( var i = from; i<to; i++ ){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, this.gridJson[i], null, i));
-            }
-            this.isItemsLoading = false;
-            this.pageNumber ++;
-            if( to == this.gridJson.length )this.isItemsLoaded = true;
-        }
-    },
-    loadGroupData: function(){
-        if (this.selectTitleCell){
-            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
-            this.selectTitleCell.setStyle("cursor", "pointer");
-            this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
-        }
-
-        if (this.gridJson.length){
-            var i = 0;
-            this.gridJson.each(function(data){
-                this.items.push(new MWF.xApplication.query.Query.Viewer.ItemCategory(this, data, i));
-                i += data.list.length;
-            }.bind(this));
-
-            if (this.json.isExpand=="yes") this.expandOrCollapseAll();
-        }else{
-            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
-        }
-    },
-    expandOrCollapseAll: function(){
-        var icon = this.selectTitleCell.getElement("span");
-        if (icon.get("html").indexOf("expand.png")===-1){
-            this.items.each(function(item){
-                item.collapse();
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
-            }.bind(this));
-        }else{
-            this.items.each(function(item, i){
-                window.setTimeout(function(){
-                    item.expand();
-                }.bind(this), 10*i+5);
-
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
-            }.bind(this));
-        }
-    },
-    getView: function(callback){
-        this.getLookupAction(function(){
-            if (this.json.application){
-                this.getViewRes = this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
-                    this.viewJson = JSON.decode(json.data.data);
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-
-                // this.lookupAction.invoke({"name": "getView","async": true, "parameter": {"view": this.json.viewName, "application": this.json.application},"success": function(json){
-                //     this.viewJson = JSON.decode(json.data.data);
-                //     this.json = Object.merge(this.json, json.data);
-                //     //var viewData = JSON.decode(json.data.data);
-                //     if (callback) callback();
-                // }.bind(this)});
-            }else{
-                this.getViewRes = this.lookupAction.getViewById(this.json.viewId, function(json){
-                    this.viewJson = JSON.decode(json.data.data);
-                    this.json.application = json.data.query;
-                    this.json = Object.merge(this.json, json.data);
-                    if (callback) callback();
-                }.bind(this));
-            }
-        }.bind(this));
-    },
-    getLookupAction: function(callback){
-        if (!this.lookupAction){
-            this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
-            if (callback) callback();
-            // var _self = this;
-            // MWF.require("MWF.xDesktop.Actions.RestActions", function(){
-            //     this.lookupAction = new MWF.xDesktop.Actions.RestActions("", this.options.actionRoot, "");
-            //     this.lookupAction.getActions = function(actionCallback){
-            //         this.actions = _self.options.actions;
-            //         if (actionCallback) actionCallback();
-            //     };
-            //     if (callback) callback();
-            // }.bind(this));
-        }else{
-            if (callback) callback();
-        }
-    },
-    hide: function(){
-        this.node.setStyle("display", "none");
-    },
-    reload: function(){
-        this.node.setStyle("display", "block");
-        if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
-
-        this.filterItems.each(function(filter){
-            filter.destroy();
-        }.bind(this));
-        this.filterItems = [];
-        if (this.viewSearchInputNode) this.viewSearchInputNode.set("text", this.lp.searchKeywork);
-
-        this.closeCustomSearch();
-
-        this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
-    },
-    getFilter: function(){
-        var filterData = [];
-        if (this.searchStatus==="custom"){
-            if (this.filterItems.length){
-                this.filterItems.each(function(filter){
-                    filterData.push(filter.data);
-                }.bind(this));
-            }
-        }
-        if (this.searchStatus==="default"){
-            var key = this.viewSearchInputNode.get("value");
-            if (key && key!==this.lp.searchKeywork){
-                this.viewJson.customFilterList.each(function(entry){
-                    if (entry.formatType==="textValue"){
-                        var d = {
-                            "path": entry.path,
-                            "value": key,
-                            "formatType": entry.formatType,
-                            "logic": "or",
-                            "comparison": "like"
-                        };
-                        filterData.push(d);
-                    }
-                    if (entry.formatType==="numberValue"){
-                        var v = key.toFloat();
-                        if (!isNaN(v)){
-                            var d = {
-                                "path": entry.path,
-                                "value": v,
-                                "formatType": entry.formatType,
-                                "logic": "or",
-                                "comparison": "like"
-                            };
-                            filterData.push(d);
-                        }
-                    }
-                }.bind(this));
-            }
-        }
-        return (filterData.length) ? filterData : null;
-    },
-    getData: function(){
-        if (this.selectedItems.length){
-            var arr = [];
-            this.selectedItems.each(function(item){
-                arr.push(item.data);
-            });
-            return arr;
-        }else{
-            return [];
-        }
-    },
-    _loadModuleEvents : function(){
-        debugger;
-        Object.each(this.viewJson.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event, target){
-                        debugger;
-                        return this.Macro.fire(e.code, target || this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-    _loadDomEvents: function(){
-        Object.each(this.viewJson.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)===-1){
-                    this.node.addEvent(key, function(event){
-                        return this.Macro.fire(e.code, this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-
-    //搜索相关开始
     createSearchNode: function(){
         if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
             this.searchStatus = "default";
@@ -895,7 +364,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.calendar = new MWF.widget.Calendar(this.viewSearchCustomValueNode, {
                 "style": "xform",
                 "isTime": true,
-                "secondEnable" : true,
                 "target": this.container,
                 "format": "db"
             });
@@ -1041,105 +509,415 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         filter.destroy();
         this.searchCustomView()
     },
-    //搜索相关结束
+    setContentHeight: function(){
+        var size = this.node.getSize();
+        var searchSize = this.searchAreaNode.getComputedSize();
+        var h = size.y-searchSize.totalHeight;
+        if (this.exportAreaNode){
+            var exportSize = this.exportAreaNode.getComputedSize();
+            h = h-exportSize.totalHeight;
+        }
+        var pageSize = this.viewPageNode.getComputedSize();
+        h = h-pageSize.totalHeight;
+        this.viewAreaNode.setStyle("height", ""+h+"px");
+    },
+    createLoadding: function(){
+        this.loadingAreaNode = new Element("div", {"styles": this.css.viewLoadingAreaNode}).inject(this.contentAreaNode);
+        new Element("div", {"styles": {"height": "5px"}}).inject(this.loadingAreaNode);
+        var loadingNode = new Element("div", {"styles": this.css.viewLoadingNode}).inject(this.loadingAreaNode);
+        new Element("div", {"styles": this.css.viewLoadingIconNode}).inject(loadingNode);
+        var loadingTextNode = new Element("div", {"styles": this.css.viewLoadingTextNode}).inject(loadingNode);
+        loadingTextNode.set("text", "loading...");
+    },
+    createViewNode: function(data){
+        this.viewAreaNode.empty();
+        this.contentAreaNode = new Element("div", {"styles": this.css.contentAreaNode}).inject(this.viewAreaNode);
 
-    //api 使用 开始
-    getParentEnvironment : function(){
-        return this.parentMacro ? this.parentMacro.environment : null;
-    },
-    getViewInfor : function(){
-        return this.json;
-    },
-    getPageInfor : function(){
-        return {
-            pages : this.pages,
-            perPageCount : this.options.perPageCount,
-            currentPageNumber : this.currentPage
-        };
-    },
-    getPageData : function () {
-        return this.gridJson;
-    },
-    toPage : function( pageNumber, callback ){
-        this.currentPage = pageNumber;
-        this.loadCurrentPageData( callback );
-    },
-    getSelectedData : function(){
-        return this.getData();
-    },
-    selectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
-            this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.selected();
+        this.viewTable = new Element("table", {
+            "styles": this.css.viewTitleTableNode,
+            "border": "0px",
+            "cellPadding": "0",
+            "cellSpacing": "0"
+        }).inject(this.contentAreaNode);
+        this.createLoadding();
+
+        if (this.json.isTitle!=="no"){
+            this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
+
+            //if (this.json.select==="single" || this.json.select==="multi") {
+                this.selectTitleCell = new Element("td", {
+                    "styles": this.css.viewTitleCellNode
+                }).inject(this.viewTitleLine);
+                this.selectTitleCell.setStyle("width", "10px");
+                if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
+            //}
+
+            //序号
+            if (this.viewJson.isSequence==="yes"){
+                this.sequenceTitleCell = new Element("td", {
+                    "styles": this.css.viewTitleCellNode
+                }).inject(this.viewTitleLine);
+                this.sequenceTitleCell.setStyle("width", "10px");
+                if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
+            }
+
+            this.entries = {};
+            this.viewJson.selectList.each(function(column){
+                this.entries[column.column] = column;
+
+                if (!column.hideColumn){
+                    var viewCell = new Element("td", {
+                        "styles": this.css.viewTitleCellNode,
+                        "text": column.displayName
+                    }).inject(this.viewTitleLine);
+                    var size = MWF.getTextSize(column.displayName, this.css.viewTitleCellNode);
+                    viewCell.setStyle("min-width", ""+size.x+"px");
+                    if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
                 }else{
+                    this.hideColumns.push(column.column);
+                }
+                if (column.allowOpen) this.openColumns.push(column.column);
+            }.bind(this));
+            this.lookup(data);
+        }else{
+            this.viewJson.selectList.each(function(column){
+                if (column.hideColumn) this.hideColumns.push(column.column);
+                if (!column.allowOpen) this.openColumns.push(column.column);
+            }.bind(this));
+            this.lookup(data);
+        }
+    },
+    _loadPageCountNode: function(){
+        this.viewPageContentNode.empty();
+
+        var size = this.viewPageAreaNode.getSize();
+        var w1 = this.viewPageFirstNode.getSize().x*2;
+        var w2 = this.viewPageContentNode.getStyle("margin-left").toInt();
+        var w = size.x-w1-w2;
+
+        var bw = this.css.viewPageButtonNode.width.toInt()+this.css.viewPageButtonNode["margin-right"].toInt();
+        var count = (w/bw).toInt()-2;
+        if (count>10) count = 10;
+        this.showPageCount = Math.min(count, this.pages);
+
+        var tmp = this.showPageCount/2;
+        var n = tmp.toInt();
+        var left = this.currentPage-n;
+        if (left<=0) left = 1;
+        var right = this.showPageCount + left-1;
+        if (right>this.pages) right = this.pages;
+        left = right-this.showPageCount+1;
+        if (left<=1) left = 1;
+
+        this.viewPagePrevNode = new Element("div", {"styles": this.css.viewPagePrevButtonNode}).inject(this.viewPageContentNode);
+        this.loadPageButtonEvent(this.viewPagePrevNode, "viewPagePrevButtonNode_over", "viewPagePrevButtonNode_up", "viewPagePrevButtonNode_down", function(){
+            if (this.currentPage>1) this.currentPage--;
+            this.loadCurrentPageData();
+        }.bind(this));
+
+        for (i=left; i<=right; i++){
+            var node = new Element("div", {"styles": this.css.viewPageButtonNode, "text": i}).inject(this.viewPageContentNode);
+            if (i==this.currentPage){
+                node.setStyles(this.css.viewPageButtonNode_current);
+            }else{
+                this.loadPageButtonEvent(node, "viewPageButtonNode_over", "viewPageButtonNode_up", "viewPageButtonNode_down", function(e){
+                    this.currentPage = e.target.get("text").toInt();
+                    this.loadCurrentPageData();
+                }.bind(this));
+            }
+        }
+        this.viewPageNextNode = new Element("div", {"styles": this.css.viewPageNextButtonNode}).inject(this.viewPageContentNode);
+        this.loadPageButtonEvent(this.viewPageNextNode, "viewPageNextButtonNode_over", "viewPageNextButtonNode_up", "viewPageNextButtonNode_down", function(){
+            if (this.currentPage<=this.pages-1) this.currentPage++;
+            this.loadCurrentPageData();
+        }.bind(this));
+    },
+    loadPageButtonEvent: function(node, over, out, down, click){
+        node.addEvents({
+            "mouseover": function(){node.setStyles(this.css[over])}.bind(this),
+            "mouseout": function(){node.setStyles(this.css[out])}.bind(this),
+            "mousedown": function(){node.setStyles(this.css[down])}.bind(this),
+            "mouseup": function(){node.setStyles(this.css[out])}.bind(this),
+            "click": click,
+        });
+    },
+    _loadPageNode: function(){
+        this.viewPageAreaNode.empty();
+        this.viewPageFirstNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.firstPage}).inject(this.viewPageAreaNode);
+        this.viewPageContentNode = new Element("div", {"styles": this.css.viewPageContentNode}).inject(this.viewPageAreaNode);
+        this.viewPageLastNode = new Element("div", {"styles": this.css.viewPageFirstLastNode, "text": this.lp.lastPage}).inject(this.viewPageAreaNode);
+        this._loadPageCountNode();
+
+        this.loadPageButtonEvent(this.viewPageFirstNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+            this.currentPage = 1;
+            this.loadCurrentPageData();
+        }.bind(this));
+        this.loadPageButtonEvent(this.viewPageLastNode, "viewPageFirstLastNode_over", "viewPageFirstLastNode_up", "viewPageFirstLastNode_down", function(){
+            this.currentPage = this.pages;
+            this.loadCurrentPageData();
+        }.bind(this));
+    },
+    _initPage: function(){
+        this.count = this.bundleItems.length;
+        var i = this.count/this.json.pageSize;
+        this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
+        this.currentPage = 1;
+    },
+    lookup: function(data){
+        this.getLookupAction(function(){
+            if (this.json.application){
+
+                var d = data || {};
+                d.count = this.json.count;
+                this.lookupAction.bundleView(this.json.id, d, function(json){
+                    this.bundleItems = json.data.valueList;
+
+                    this._initPage();
+                    if (this.bundleItems.length){
+                        this.loadCurrentPageData();
+                    }else{
+                        //this._loadPageNode();
+                        this.viewPageAreaNode.empty();
+                        if (this.loadingAreaNode){
+                            this.loadingAreaNode.destroy();
+                            this.loadingAreaNode = null;
+                        }
+                    }
+
+
+                }.bind(this));
+            }
+        }.bind(this));
+    },
+    loadCurrentPageData: function(){
+        var p = this.currentPage;
+        var d = {};
+        var valueList = this.bundleItems.slice((p-1)*this.json.pageSize,this.json.pageSize*p);
+        d.bundleList = valueList;
+
+        while (this.viewTable.rows.length>1){
+            this.viewTable.deleteRow(-1);
+        }
+        //this.createLoadding();
+
+        this.loadViewRes = this.lookupAction.loadView(this.json.name, this.json.application, d, function(json){
+            this.viewData = json.data;
+            if (this.viewJson.group.column){
+                this.gridJson = json.data.groupGrid;
+                this.loadGroupData();
+            }else{
+                this.gridJson = json.data.grid;
+                this.loadData();
+            }
+            if (this.gridJson.length) this._loadPageNode();
+            if (this.loadingAreaNode){
+                this.loadingAreaNode.destroy();
+                this.loadingAreaNode = null;
+            }
+            this.fireEvent("loadView");
+        }.bind(this));
+    },
+
+
+    loadData: function(){
+        if (this.gridJson.length){
+            // if( !this.options.paging ){
+                this.gridJson.each(function(line, i){
+                    this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, line, null, i));
+                }.bind(this));
+            // }else{
+            //     this.loadPaging();
+            // }
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
+        }
+    },
+    loadPaging : function(){
+        this.isItemsLoading = false;
+        this.pageNumber = 0;
+        this.isItemsLoaded = false;
+        this.isSetedScroll = false;
+        this.setScroll();
+        this.loadDataByPaging()
+    },
+    setScroll : function(){
+        if( this.options.paging && !this.isSetedScroll ){
+            this.contentAreaNode.setStyle("overflow","auto");
+            this.scrollContainerFun = function(){
+                var scrollSize = this.contentAreaNode.getScrollSize();
+                var clientSize = this.contentAreaNode.getSize();
+                var scrollHeight = scrollSize.y - clientSize.y;
+                //alert( "clientSize.y=" + clientSize.y + " scrollSize.y="+scrollSize.y + " this.contentAreaNode.scrollTop="+this.contentAreaNode.scrollTop);
+                if (this.contentAreaNode.scrollTop + 150 > scrollHeight ) {
+                    if (!this.isItemsLoaded) this.loadDataByPaging();
+                }
+            }.bind(this);
+            this.isSetedScroll = true;
+            this.contentAreaNode.addEvent("scroll", this.scrollContainerFun )
+        }
+    },
+    loadDataByPaging : function(){
+        if( this.isItemsLoading )return;
+        if( !this.isItemsLoaded ){
+            var from = Math.min( this.pageNumber * this.options.perPageCount , this.gridJson.length);
+            var to = Math.min( ( this.pageNumber + 1 ) * this.options.perPageCount + 1 , this.gridJson.length);
+            this.isItemsLoading = true;
+            for( var i = from; i<to; i++ ){
+                this.items.push(new MWF.xApplication.query.Query.Viewer.Item(this, this.gridJson[i], null, i));
+            }
+            this.isItemsLoading = false;
+            this.pageNumber ++;
+            if( to == this.gridJson.length )this.isItemsLoaded = true;
+        }
+    },
+    loadGroupData: function(){
+        if (this.selectTitleCell){
+            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+            this.selectTitleCell.setStyle("cursor", "pointer");
+            this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+        }
+
+        if (this.gridJson.length){
+            var i = 0;
+            this.gridJson.each(function(data){
+                this.items.push(new MWF.xApplication.query.Query.Viewer.ItemCategory(this, data, i));
+                i += data.list.length;
+            }.bind(this));
+
+            if (this.json.isExpand=="yes") this.expandOrCollapseAll();
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
+        }
+    },
+    expandOrCollapseAll: function(){
+        var icon = this.selectTitleCell.getElement("span");
+        if (icon.get("html").indexOf("expand.png")===-1){
+            this.items.each(function(item){
+                item.collapse();
+                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+            }.bind(this));
+        }else{
+            this.items.each(function(item, i){
+                window.setTimeout(function(){
                     item.expand();
-                    if( item.items ){
-                        item.items.each( function (it) {
-                            it.selected();
-                        })
-                    }
-                }
-            })
+                }.bind(this), 10*i+5);
+
+                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+            }.bind(this));
         }
     },
-    unSelectAll : function(){
-        var flag = this.json.select || this.viewJson.select ||  "none";
-        if ( flag==="multi"){
-            this.items.each( function (item) {
-                if( item.clazzType === "item" ){
-                    item.unSelected();
-                }else{
-                    if(item.items){
-                        item.items.each( function (it) {
-                            it.unSelected();
-                        })
-                    }
-                }
-            })
+    getView: function(callback){
+        this.getLookupAction(function(){
+            if (this.json.application){
+                this.getViewRes = this.lookupAction.getView(this.json.viewName, this.json.application, function(json){
+                    this.viewJson = JSON.decode(json.data.data);
+                    this.json = Object.merge(this.json, json.data);
+                    if (callback) callback();
+                }.bind(this));
+
+                // this.lookupAction.invoke({"name": "getView","async": true, "parameter": {"view": this.json.viewName, "application": this.json.application},"success": function(json){
+                //     this.viewJson = JSON.decode(json.data.data);
+                //     this.json = Object.merge(this.json, json.data);
+                //     //var viewData = JSON.decode(json.data.data);
+                //     if (callback) callback();
+                // }.bind(this)});
+            }else{
+                this.getViewRes = this.lookupAction.getViewById(this.json.viewId, function(json){
+                    this.viewJson = JSON.decode(json.data.data);
+                    this.json.application = json.data.query;
+                    this.json = Object.merge(this.json, json.data);
+                    if (callback) callback();
+                }.bind(this));
+            }
+        }.bind(this));
+    },
+    getLookupAction: function(callback){
+        if (!this.lookupAction){
+            this.lookupAction = MWF.Actions.get("x_query_assemble_surface");
+            if (callback) callback();
+            // var _self = this;
+            // MWF.require("MWF.xDesktop.Actions.RestActions", function(){
+            //     this.lookupAction = new MWF.xDesktop.Actions.RestActions("", this.options.actionRoot, "");
+            //     this.lookupAction.getActions = function(actionCallback){
+            //         this.actions = _self.options.actions;
+            //         if (actionCallback) actionCallback();
+            //     };
+            //     if (callback) callback();
+            // }.bind(this));
+        }else{
+            if (callback) callback();
         }
     },
-    setFilter : function( filter ){
-        if( !filter )filter = [];
-        if( typeOf( filter ) === "object" )filter = [ filter ];
-        this.json.filter = filter;
-        if( this.viewAreaNode ){
-            this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
-        }
+    hide: function(){
+        this.node.setStyle("display", "none");
     },
-    switchView : function( json ){
-        debugger;
-        // json = {
-        //     "application": application,
-        //     "viewName": viewName,
-        //     "isTitle": "yes",
-        //     "select": "none",
-        //     "titleStyles": titleStyles,
-        //     "itemStyles": itemStyles,
-        //     "isExpand": "no",
-        //     "filter": filter
-        // }
+    reload: function(){
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
 
-        this.searchMorph = null;
-        this.viewSearchCustomContentNode = null;
+        this.filterItems.each(function(filter){
+            filter.destroy();
+        }.bind(this));
+        this.filterItems = [];
+        if (this.viewSearchInputNode) this.viewSearchInputNode.set("text", this.lp.searchKeywork);
 
-        var newJson = Object.merge( Object.clone(this.originalJson), json );
-        this.container.empty();
-        this.initialize( this.container, newJson, Object.clone(this.options), this.app, this.parentMacro);
+        this.closeCustomSearch();
+
+        this.viewAreaNode.empty();
+        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
     },
-    confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
-        this.app.confirm(type, e, title, text, width, height, ok, cancel, callback, mask, style)
+    getFilter: function(){
+        var filterData = [];
+        if (this.searchStatus==="custom"){
+            if (this.filterItems.length){
+                this.filterItems.each(function(filter){
+                    filterData.push(filter.data);
+                }.bind(this));
+            }
+        }
+        if (this.searchStatus==="default"){
+            var key = this.viewSearchInputNode.get("value");
+            if (key && key!==this.lp.searchKeywork){
+                this.viewJson.customFilterList.each(function(entry){
+                    if (entry.formatType==="textValue"){
+                        var d = {
+                            "path": entry.path,
+                            "value": key,
+                            "formatType": entry.formatType,
+                            "logic": "or",
+                            "comparison": "like"
+                        };
+                        filterData.push(d);
+                    }
+                    if (entry.formatType==="numberValue"){
+                        var v = key.toFloat();
+                        if (!isNaN(v)){
+                            var d = {
+                                "path": entry.path,
+                                "value": v,
+                                "formatType": entry.formatType,
+                                "logic": "or",
+                                "comparison": "like"
+                            };
+                            filterData.push(d);
+                        }
+                    }
+                }.bind(this));
+            }
+        }
+        return (filterData.length) ? filterData : null;
     },
-    alert: function (type, title, text, width, height) {
-        this.app.alert(type, "center", title, text, width, height);
-    },
-    notice: function (content, type, target, where, offset, option) {
-        this.app.notice(content, type, target, where, offset, option)
+    getData: function(){
+        if (this.selectedItems.length){
+            var arr = [];
+            this.selectedItems.each(function(item){
+                arr.push(item.data);
+            });
+            return arr;
+        }else{
+            return [];
+        }
     }
-    //api 使用 结束
 });
 
 MWF.xApplication.query.Query.Viewer.Item = new Class({
@@ -1150,12 +928,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.isSelected = false;
         this.prev = prev;
         this.idx = i;
-        this.clazzType = "item";
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadItemRow", [null, this]);
-
+        debugger;
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
         if (this.prev){
             this.node.inject(this.prev.node, "after");
@@ -1164,9 +940,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-        this.selectTd.setStyles({"cursor": "pointer"});
-        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+            this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+            this.selectTd.setStyles({"cursor": "pointer"});
+            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //序号
@@ -1178,25 +954,26 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         Object.each(this.view.entries, function(c, k){
+            debugger;
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
             //if (cell){
-            if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-                if (k!== this.view.viewJson.group.column){
-                    //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                    var v = cell;
-                    if (c.isHtml){
-                        td.set("html", v);
-                    }else{
-                        td.set("text", v);
+                if (this.view.hideColumns.indexOf(k)===-1){
+                    var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                    if (k!== this.view.viewJson.group.column){
+                        //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
+                        var v = cell;
+                        if (c.isHtml){
+                            td.set("html", v);
+                        }else{
+                            td.set("text", v);
+                        }
                     }
+                    if (this.view.openColumns.indexOf(k)!==-1){
+                        this.setOpenWork(td, c)
+                    }
+                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                 }
-                if (this.view.openColumns.indexOf(k)!==-1){
-                    this.setOpenWork(td, c)
-                }
-                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-            }
             //}
         }.bind(this));
 
@@ -1215,41 +992,32 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         // }.bind(this));
 
         this.setEvent();
-
-        this.view.fireEvent("postLoadItemRow", [null, this]);
     },
     setOpenWork: function(td, column){
+        debugger;
         td.setStyle("cursor", "pointer");
         if( column.clickCode ){
-            // if( !this.view.Macro ){
-            //     MWF.require("MWF.xScript.Macro", function () {
-            //         this.view.businessData = {};
-            //         this.view.Macro = new MWF.Macro.PageContext(this.view);
-            //     }.bind(this), false);
-            // }
+            if( !this.view.Macro ){
+                MWF.require("MWF.xScript.Macro", function () {
+                    this.view.businessData = {};
+                    this.view.Macro = new MWF.Macro.PageContext(this.view);
+                }.bind(this), false);
+            }
             td.addEvent("click", function( ev ){
-                var result = this.view.Macro.fire(column.clickCode, this, ev);
-                ev.stopPropagation();
-                return result;
+                return this.view.Macro.fire(column.clickCode, this, ev);
             }.bind(this));
         }else{
             if (this.view.json.type==="cms"){
-                td.addEvent("click", function(ev){
-                    this.openCms(ev)
-                    ev.stopPropagation();
-                }.bind(this));
+                td.addEvent("click", this.openCms.bind(this));
             }else{
-                td.addEvent("click", function(ev){
-                    this.openWorkAndCompleted(ev)
-                    ev.stopPropagation();
-                }.bind(this));
+                td.addEvent("click", this.openWorkAndCompleted.bind(this));
             }
         }
 
     },
     openCms: function(e){
         var options = {"documentId": this.data.bundle};
-        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        this.view.fireEvent("openDocument", [options, this]);
         layout.desktop.openApplication(e, "cms.Document", options);
     },
     openWorkAndCompleted: function(e){
@@ -1369,23 +1137,22 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
     openWork: function(id, e){
         var options = {"workId": id};
-        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        this.view.fireEvent("openDocument", [options, this]);
         layout.desktop.openApplication(e, "process.Work", options);
     },
     openWorkCompleted: function(id, e){
         var options = {"workCompletedId": id};
-        this.view.fireEvent("openDocument", [options, this]); //options 传入的事件
+        this.view.fireEvent("openDocument", [options, this]);
         layout.desktop.openApplication(e, "process.Work", options);
     },
 
     setEvent: function(){
-        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
-        if ( flag ==="single" || flag==="multi"){
+        if (this.view.json.select==="single" || this.view.json.select==="multi"){
             this.node.addEvents({
                 "mouseover": function(){
                     if (!this.isSelected){
                         var iconName = "checkbox";
-                        if (flag==="single") iconName = "radiobox";
+                        if (this.view.json.select==="single") iconName = "radiobox";
                         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
                     }
                 }.bind(this),
@@ -1398,21 +1165,20 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     },
 
     select: function(){
-        var flag = this.view.json.select || this.view.viewJson.select ||  "none";
         if (this.isSelected){
-            if (flag==="single"){
+            if (this.view.json.select==="single"){
                 this.unSelectedSingle();
             }else{
                 this.unSelected();
             }
         }else{
-            if (flag==="single"){
+            if (this.view.json.select==="single"){
                 this.selectedSingle();
             }else{
                 this.selected();
             }
         }
-        this.view.fireEvent("select"); //options 传入的事件
+        this.view.fireEvent("select");
     },
 
     selected: function(){
@@ -1420,14 +1186,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
-        this.view.fireEvent("selectRow", [this]);
     },
     unSelected: function(){
         this.view.selectedItems.erase(this);
         this.selectTd.setStyles({"background": "transparent"});
         this.node.setStyles(this.css.viewContentTrNode);
         this.isSelected = false;
-        this.view.fireEvent("unselectRow", [this]);
     },
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
@@ -1436,7 +1200,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
-        this.view.fireEvent("selectRow", [this]);
     },
     unSelectedSingle: function(){
         this.view.selectedItems = [];
@@ -1444,7 +1207,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd.setStyles({"background": "transparent"});
         this.node.setStyles(this.css.viewContentTrNode);
         this.isSelected = false;
-        this.view.fireEvent("unselectRow", [this]);
     }
 });
 
@@ -1456,16 +1218,13 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.items = [];
         this.loadChild = false;
         this.idx = i;
-        this.clazzType = "category";
         this.load();
     },
     load: function(){
-        this.view.fireEvent("queryLoadCategoryRow", [null, this]);
-
         this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
-        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+            this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+            if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
         this.categoryTd = new Element("td", {
             "styles": this.css.viewContentCategoryTdNode,
@@ -1490,14 +1249,12 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
-
-        this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
     setEvent: function(){
         //if (this.selectTd){
-        this.node.addEvents({
-            "click": function(){this.expandOrCollapse();}.bind(this)
-        });
+            this.node.addEvents({
+                "click": function(){this.expandOrCollapse();}.bind(this)
+            });
         //}
     },
     expandOrCollapse: function(){
@@ -1597,268 +1354,5 @@ MWF.xApplication.query.Query.Viewer.Filter = new Class({
     destroy: function(){
         this.node.destroy();
         MWF.release(this);
-    }
-});
-
-MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
-    Implements: [Events],
-    options: {
-        "style" : "default",
-        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
-    },
-    initialize: function(node, json, form, options){
-
-        this.node = $(node);
-        this.node.store("module", this);
-        this.json = json;
-        this.form = form;
-        this.view = form;
-    },
-    hide: function(){
-        var dsp = this.node.getStyle("display");
-        if (dsp!=="none") this.node.store("mwf_display", dsp);
-        this.node.setStyle("display", "none");
-    },
-    show: function(){
-        var dsp = this.node.retrieve("mwf_display", dsp);
-        this.node.setStyle("display", dsp);
-    },
-    load: function(){
-
-        this._loadModuleEvents();
-        if (this.fireEvent("queryLoad")){
-            //this._queryLoaded();
-            this._loadUserInterface();
-            this._loadStyles();
-            this._loadDomEvents();
-            //this._loadEvents();
-
-            //this._afterLoaded();
-            this.fireEvent("postLoad");
-            this.fireEvent("load");
-        }
-    },
-
-    _loadStyles: function(){
-        if (this.json.styles) Object.each(this.json.styles, function(value, key){
-            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
-                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
-                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
-                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
-                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
-                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
-                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
-                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
-                }
-                if (value.indexOf("/x_portal_assemble_surface")!==-1){
-                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
-                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
-                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
-                }
-                if (value.indexOf("/x_cms_assemble_control")!==-1){
-                    value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
-                }else if (value.indexOf("x_cms_assemble_control")!==-1){
-                    value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
-                }
-            }
-            this.node.setStyle(key, value);
-        }.bind(this));
-
-        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
-        //     var host = MWF.Actions.getHost(root);
-        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
-        // }
-        //if (this.json.styles) this.node.setStyles(this.json.styles);
-    },
-    _loadModuleEvents : function(){
-        Object.each(this.json.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-    _loadDomEvents: function(){
-        Object.each(this.json.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)===-1){
-                    this.node.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-    _loadEvents: function(){
-        Object.each(this.json.events, function(e, key){
-            if (e.code){
-                if (this.options.moduleEvents.indexOf(key)!==-1){
-                    this.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
-                    }.bind(this));
-                }else{
-                    this.node.addEvent(key, function(event){
-                        return this.form.Macro.fire(e.code, this, event);
-                    }.bind(this));
-                }
-            }
-        }.bind(this));
-    },
-    addModuleEvent: function(key, fun){
-        if (this.options.moduleEvents.indexOf(key)!==-1){
-            this.addEvent(key, function(event){
-                return (fun) ? fun(this, event) : null;
-            }.bind(this));
-        }else{
-            this.node.addEvent(key, function(event){
-                return (fun) ? fun(this, event) : null;
-            }.bind(this));
-        }
-    },
-    _loadUserInterface: function(){
-        // if (this.form.json.mode == "Mobile"){
-        //     this.node.empty();
-        // }else if (COMMON.Browser.Platform.isMobile){
-        //     this.node.empty();
-        // }else{
-        this.toolbarNode = this.node.getFirst("div");
-        if( !this.toolbarNode ){
-            this.toolbarNode = new Element("div").inject( this.node );
-        }
-        this.toolbarNode.empty();
-
-        MWF.require("MWF.widget.Toolbar", function(){
-            this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {
-                "style": this.json.style,
-                "onPostLoad" : function(){
-                    this.fireEvent("afterLoad");
-                }.bind(this)
-            }, this);
-            if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
-            //alert(this.readonly)
-
-            if (this.json.hideSystemTools){
-                this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                this.toolbarWidget.load();
-            }else{
-                if (this.json.defaultTools){
-                    this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
-                    this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                    this.toolbarWidget.load();
-                }else{
-                    MWF.getJSON(this.form.path+"toolbars.json", function(json){
-                        this.setToolbars(json, this.toolbarNode, this.readonly, true);
-                        this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                        this.toolbarWidget.load();
-                    }.bind(this), null);
-                }
-            }
-
-        }.bind(this));
-        // }
-    },
-
-    setCustomToolbars: function(tools, node){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
-        var iconPath = "";
-        if( this.json.customIconStyle ){
-            iconPath = this.json.customIconStyle+"/";
-        }
-        tools.each(function(tool){
-            var flag = true;
-            if (this.readonly){
-                flag = tool.readShow;
-            }else{
-                flag = tool.editShow;
-            }
-            if (flag){
-                flag = true;
-                // if (tool.control){
-                //     flag = this.form.businessData.control[tool.control]
-                // }
-                if (tool.condition){
-                    var hideFlag = this.form.Macro.exec(tool.condition, this);
-                    flag = !hideFlag;
-                }
-                if (flag){
-                    var actionNode = new Element("div", {
-                        "id": tool.id,
-                        "MWFnodetype": tool.type,
-                        "MWFButtonImage": path+""+this.form.options.style+"/custom/"+iconPath+tool.img,
-                        "title": tool.title,
-                        "MWFButtonAction": "runCustomAction",
-                        "MWFButtonText": tool.text
-                    }).inject(node);
-                    if( this.json.customIconOverStyle ){
-                        actionNode.set("MWFButtonImageOver" , path+""+this.form.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
-                    }
-                    if( tool.properties ){
-                        actionNode.set(tool.properties);
-                    }
-                    if (tool.actionScript){
-                        actionNode.store("script", tool.actionScript);
-                    }
-                    if (tool.sub){
-                        var subNode = node.getLast();
-                        this.setCustomToolbars(tool.sub, subNode);
-                    }
-                }
-            }
-        }.bind(this));
-    },
-
-    setToolbarItem: function(tool, node, readonly, noCondition){
-        //var path = "/x_component_process_FormDesigner/Module/Actionbar/";
-        var path = "/x_component_query_ViewDesigner/$View/";
-        var flag = true;
-        // if (tool.control){
-        //     flag = this.form.businessData.control[tool.control]
-        // }
-        if (!noCondition) if (tool.condition){
-            var hideFlag = this.form.Macro.exec(tool.condition, this);
-            flag = flag && (!hideFlag);
-        }
-        if (readonly) if (!tool.read) flag = false;
-        if (flag){
-            var actionNode = new Element("div", {
-                "id": tool.id,
-                "MWFnodetype": tool.type,
-                //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
-                //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                "MWFButtonImage": path+this.options.style+"/actionbar/"+tool.img,
-                "title": tool.title,
-                "MWFButtonAction": tool.action,
-                "MWFButtonText": tool.text
-            }).inject(node);
-            if( this.json.iconOverStyle ){
-                actionNode.set("MWFButtonImageOver" , path+""+this.options.style+"/actionbar/"+this.json.iconOverStyle+"/"+tool.img );
-                //actionNode.set("MWFButtonImageOver" , path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+tool.img );
-            }
-            if( tool.properties ){
-                actionNode.set(tool.properties);
-            }
-            if (tool.sub){
-                var subNode = node.getLast();
-                this.setToolbars(tool.sub, subNode, readonly, noCondition);
-            }
-        }
-    },
-    setToolbars: function(tools, node, readonly, noCondition){
-        tools.each(function(tool){
-            this.setToolbarItem(tool, node, readonly, noCondition);
-        }.bind(this));
-    },
-    runCustomAction: function(bt){
-        var script = bt.node.retrieve("script");
-        this.form.Macro.exec(script, this);
-    },
-    exportView : function(){
-        this.form.exportView();
-    },
-    deleteWork: function(){
-        this.form.deleteWork();
     }
 });

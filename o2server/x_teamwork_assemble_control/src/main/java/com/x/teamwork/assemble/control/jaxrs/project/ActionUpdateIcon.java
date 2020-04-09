@@ -31,7 +31,7 @@ public class ActionUpdateIcon extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			if ( !projectPersistService.checkPermissionForPersist( effectivePerson, systemConfigQueryService.getValueByCode("PROJECT_CREATOR")) ) {
 				check = false;
 				Exception exception = new ProjectPersistException("project save permission denied!" );
@@ -39,7 +39,7 @@ public class ActionUpdateIcon extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				project = projectQueryService.get( projectId );
 				if ( project == null) {
@@ -55,7 +55,7 @@ public class ActionUpdateIcon extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {	
 				projectPersistService.saveProjectIcon( projectId, wi.getIcon() );
 

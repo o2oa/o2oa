@@ -517,7 +517,7 @@
         "line-height": "40px"
     },
     "createMeetingAttachmentContentNode": {
-//        "margin-left": "220px",
+        "margin-left": "220px",
         "margin-right": "20px",
         "min-height": "40px",
         "overflow": "hidden"

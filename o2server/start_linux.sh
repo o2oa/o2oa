@@ -1,4 +1,4 @@
-﻿current_dir=$(cd "$(dirname "$0")"; pwd);
+current_dir=$(cd "$(dirname "$0")"; pwd);
 if [ -d ${current_dir}/local/update ]; then
 	if [ ! -d ${current_dir}/commons ]; then
 	mkdir ${current_dir}/commons

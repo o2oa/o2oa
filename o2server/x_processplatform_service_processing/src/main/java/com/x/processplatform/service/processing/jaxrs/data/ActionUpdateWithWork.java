@@ -34,6 +34,10 @@ class ActionUpdateWithWork extends BaseAction {
 			throw new ExceptionNotJsonObject();
 		}
 
+//		if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
+//			throw new ExceptionEmptyData();
+//		}
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
 			if (null == work) {

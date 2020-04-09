@@ -41,7 +41,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 		Boolean check = true;		
 		Wo wo = new Wo();
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			if( StringUtils.isEmpty( taskId ) ){
 				check = false;
 				Exception exception = new ExceptionTaskIdEmpty( );
@@ -49,7 +49,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){//判断工作信息是否已经存在
+		if( check ){//判断工作信息是否已经存在
 			try {
 				task = taskQueryService.get( taskId );
 				if (null == task) {
@@ -64,7 +64,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				fileName = FilenameUtils.getName(new String(disposition.getFileName().getBytes(DefaultCharset.name_iso_8859_1), DefaultCharset.name));
 				/** 禁止不带扩展名的文件上传 */
@@ -79,7 +79,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				mapping = ThisApplication.context().storageMappings().random( Attachment.class );
 			} catch (Exception e) {
@@ -90,7 +90,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ){
 			try {
 				attachment = this.concreteAttachment( mapping, task, fileName, effectivePerson, site );
 				attachment.saveContent(mapping, bytes, fileName);
@@ -104,7 +104,7 @@ public class ActionTaskAttachmentUpload extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				Dynamic dynamic = dynamicPersistService.uploadAttachmentDynamic(attachment, effectivePerson);
 				if( dynamic != null ) {

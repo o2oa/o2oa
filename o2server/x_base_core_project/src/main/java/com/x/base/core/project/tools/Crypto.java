@@ -26,11 +26,9 @@ public class Crypto {
 
 	private final static String DES = "DES";
 	
-	//private final static String CIPHER_INIT = "DES";
+	private final static String cipher_init = "DES";
 
 	private final static String RSA = "RSA";
-
-	//private final static SecureRandom sr = new SecureRandom();
 
 	public static String encrypt(String data, String key) throws Exception {
 		byte[] bt = encrypt(data.getBytes(), key.getBytes());
@@ -47,7 +45,7 @@ public class Crypto {
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
 		SecretKey securekey = keyFactory.generateSecret(dks);
 		// Cipher对象实际完成加密操作
-		Cipher cipher = Cipher.getInstance(DES);
+		Cipher cipher = Cipher.getInstance(cipher_init);
 		// 用密钥初始化Cipher对象
 		cipher.init(Cipher.ENCRYPT_MODE, securekey, sr);
 		return cipher.doFinal(data);
@@ -72,7 +70,7 @@ public class Crypto {
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DES);
 		SecretKey securekey = keyFactory.generateSecret(dks);
 		// Cipher对象实际完成解密操作
-		Cipher cipher = Cipher.getInstance(DES);
+		Cipher cipher = Cipher.getInstance(cipher_init);
 		// 用密钥初始化Cipher对象
 		cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
 		return cipher.doFinal(data);

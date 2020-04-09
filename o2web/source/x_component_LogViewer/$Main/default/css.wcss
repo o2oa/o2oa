@@ -1,11 +1,11 @@
 {
-    "contentNode": {
-        "height": "100%",
-        "width": "100%",
-        "background-color": "#CCC"
-    },
+	"contentNode": {
+	    "height": "100%",
+	    "width": "100%",
+	    "background-color": "#CCC"
+	},
 
-    "toolbarButton":{
+	"toolbarButton":{
         "height": "32px",
         "line-height": "32px",
         "margin": "3px 10px 3px 3px",
@@ -13,8 +13,8 @@
         "border": "1px solid #CCC",
         "background-color": "#CCC",
         "cursor": "pointer"
-    },
-    "toolbarButton_over": {
+	},
+	"toolbarButton_over": {
         "border-top": "1px solid #f7f7f7",
         "border-left": "1px solid #f7f7f7",
         "border-right": "1px solid #999",
@@ -57,7 +57,6 @@
     "screenNode": {
         "overflow": "hidden",
         "background-color": "#333",
-        "width": "100%",
         "color": "#FFF"
     },
     "bottomNode": {

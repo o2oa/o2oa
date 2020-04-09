@@ -151,7 +151,4 @@ typings/
 #vscode
 **/.factorypath
 **/.vscode/
-
-
 *.swp
-

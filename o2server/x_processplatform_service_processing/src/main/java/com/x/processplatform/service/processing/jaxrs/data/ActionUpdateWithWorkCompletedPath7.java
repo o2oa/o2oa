@@ -48,8 +48,8 @@ class ActionUpdateWithWorkCompletedPath7 extends BaseAction {
 					if (null == workCompleted) {
 						throw new ExceptionEntityNotExist(id, WorkCompleted.class);
 					}
-					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
-						throw new ExceptionModifyMerged(workCompleted.getId());
+					if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+						throw new ExceptionModifyDataMerged(workCompleted.getId());
 					}
 
 					Wo wo = new Wo();

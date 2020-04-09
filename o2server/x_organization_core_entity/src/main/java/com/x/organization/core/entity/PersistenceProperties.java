@@ -34,17 +34,7 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String distinguishNameCharacter = "P";
 		public static final Pattern distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
 	}
-	public static class PersonCard {
-		public static final String table = "ORG_PERSONCARD";
-		public static final String distinguishNameCharacter = "P";
-		public static final Pattern distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
-	}
-	public static class PermissionSetting {
-		public static final String table = "ORG_PERMISSIONSETTING";
-		public static final String distinguishNameCharacter = "P";
-		public static final Pattern distinguishedName_pattern = Pattern.compile("^(\\S+)\\@(\\S+)\\@P$");
-	}
-	
+
 	public static class PersonAttribute {
 		public static final String table = "ORG_PERSONATTRIBUTE";
 		public static final String distinguishNameCharacter = "PA";

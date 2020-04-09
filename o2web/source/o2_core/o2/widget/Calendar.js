@@ -760,7 +760,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					"styles" : this.css.calendarTimeSelectItem_mobile
 				}).inject( this.itmeHNode );
 			}
-			this.selectedHour = this.addZero(h, 2 );
+			this.selectedsHour = this.addZero(h, 2 );
 			this.hMobileSelect = new o2.Calendar.MobileSelect( this.itmeHNode.getParent(), {
 				"lineHeight" : 40,
 				"itemSize" : 24,

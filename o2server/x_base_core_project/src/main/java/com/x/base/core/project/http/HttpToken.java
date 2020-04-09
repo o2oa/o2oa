@@ -2,7 +2,6 @@ package com.x.base.core.project.http;
 
 import java.net.URLDecoder;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,7 +74,7 @@ public class HttpToken {
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
 			TokenType tokenType = TokenType.valueOf(matcher.group(1));
-			long diff = (System.currentTimeMillis() - date.getTime());
+			long diff = (new Date().getTime() - date.getTime());
 			diff = Math.abs(diff);
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
@@ -112,20 +111,20 @@ public class HttpToken {
 	public void setToken(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
 		switch (effectivePerson.getTokenType()) {
-			case anonymous:
-				// this.deleteToken(request, response);
-				break;
-			case user:
-				this.setResponseToken(request, response, effectivePerson);
-				break;
-			case manager:
-				this.setResponseToken(request, response, effectivePerson);
-				break;
-			case cipher:
-				this.deleteToken(request, response);
-				break;
-			default:
-				break;
+		case anonymous:
+			// this.deleteToken(request, response);
+			break;
+		case user:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case manager:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case cipher:
+			this.deleteToken(request, response);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -140,27 +139,27 @@ public class HttpToken {
 
 	public String getToken(HttpServletRequest request) throws Exception {
 		String token = null;
-		token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);
-		if (StringUtils.isEmpty(token)) {
-			token = request.getHeader(X_Token);
-		}
-		if (StringUtils.isEmpty(token)) {
-			if (null != request.getCookies()) {
-				for (Cookie c : request.getCookies()) {
-					if (StringUtils.equals(X_Token, c.getName())) {
-						token = c.getValue();
-						break;
-					}
+		if (null != request.getCookies()) {
+			for (Cookie c : request.getCookies()) {
+				if (StringUtils.equals(X_Token, c.getName())) {
+					token = c.getValue();
+					break;
 				}
 			}
 		}
 		if (StringUtils.isEmpty(token)) {
+			token = request.getHeader(X_Token);
+		}
+		if (StringUtils.isEmpty(token)) {
 			token = request.getHeader(X_Authorization);
 		}
+		if (StringUtils.isEmpty(token)) {
+			token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);
+		}
 		// 此代码将导致input被关闭.
-		// if (StringUtils.isEmpty(token)) {
-		// token = request.getParameter(X_Token);
-		// }
+//		if (StringUtils.isEmpty(token)) {
+//			token = request.getParameter(X_Token);
+//		}
 		return token;
 	}
 

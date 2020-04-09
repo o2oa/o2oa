@@ -89,7 +89,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		
 		var actionEditTd = new Element("td").inject(this.editorTr, "top");
 		this._createCompleteAction(actionEditTd);
-		this._createCancelAction(actionEditTd);
 		
 		new Element("td").inject(this.editorTr, "bottom");
 
@@ -264,17 +263,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		});
 		completeAction.inject(td);
 	},
-	_createCancelAction: function(td){
-		var cancelAction = new Element("div", {
-			"styles": this.form.css.delLineAction,
-			"events": {
-				"click": function(e){
-					this._cancelLineEdit(e);
-				}.bind(this)
-			}
-		});
-		cancelAction.inject(td);
-	},
 	
 	_editLine:function(td){
 		if (this.isEdit){
@@ -336,74 +324,42 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         return flag;
     },
 
-	// _cancelLineEdit: function(e){
-	// 	this.isEdit = false;
-	//
-	// 	var flag = true;
-	//
-	// 	var griddata = {};
-	// 	var newTr = null;
-	//
-	// 	if (this.currentEditLine){
-	// 		newTr = this.currentEditLine;
-	// 		griddata = this.currentEditLine.retrieve("data");
-	// 	}else{
-	// 		newTr = new Element("tr").inject(this.editorTr, "before");
-	// 		griddata = {};
-	// 	}
-	//
-	// 	if (flag){
-	// 		newTr.destroy();
-	// 	}
-	// 	this.currentEditLine = null;
-	//
-	// 	this._editorTrGoBack();
-	//
-	// 	// if (this.json.contentStyles){
-	// 	// 	var tds = newTr.getElements("td");
-	// 	// 	tds.setStyles(this.json.contentStyles);
-	// 	// }
-	// 	// if (this.json.actionStyles){
-	// 	// 	newTr.getFirst().setStyles(this.json.actionStyles);
-	// 	// }
-	//
-	// 	// this._loadBorderStyle();
-	// 	// this._loadZebraStyle();
-	// 	// this._loadSequence();
-	//
-	// 	this.fireEvent("cancelLineEdit");
-	// },
-	_cancelLineEdit: function(e){
+	_cancelLineEdit: function(){
+		this.isEdit = false;
 
-		var datagrid = this;
-		this.form.confirm("warn", e, MWF.xApplication.process.Xform.LP.cancelDatagridLineEditTitle, MWF.xApplication.process.Xform.LP.cancelDatagridLineEdit, 300, 120, function(){
-			if (datagrid.currentEditLine) {
-				datagrid.currentEditLine.setStyle("display", "table-row");
-			}
+		var flag = true;
 
-			datagrid.isEdit = false;
-			datagrid.currentEditLine = null;
+		var griddata = {};
+		var newTr = null;
 
-			datagrid._editorTrGoBack();
+		if (this.currentEditLine){
+			newTr = this.currentEditLine;
+			griddata = this.currentEditLine.retrieve("data");
+		}else{
+			newTr = new Element("tr").inject(this.editorTr, "before");
+			griddata = {};
+		}
 
-			// this._loadBorderStyle();
-			// this._loadZebraStyle();
-			// this._loadSequence();
-			// this.getData();
+		if (flag){
+			newTr.destroy();
+		}
+		this.currentEditLine = null;
 
-			// datagrid._loadZebraStyle();
-			// datagrid._loadSequence();
-			// datagrid._loadTotal();
-			// datagrid.getData();
-			this.close();
+		this._editorTrGoBack();
 
-			datagrid.fireEvent("cancelLineEdit");
-		}, function(){
-			// var color = currentTr.retrieve("bgcolor");
-			// currentTr.tween("background", color);
-			this.close();
-		}, null, null, this.form.json.confirmStyle);
+		// if (this.json.contentStyles){
+		// 	var tds = newTr.getElements("td");
+		// 	tds.setStyles(this.json.contentStyles);
+		// }
+		// if (this.json.actionStyles){
+		// 	newTr.getFirst().setStyles(this.json.actionStyles);
+		// }
 
+		// this._loadBorderStyle();
+		// this._loadZebraStyle();
+		// this._loadSequence();
+
+		this.fireEvent("cancelLineEdit");
 	},
 	_completeLineEdit: function(){
 		//this.currentEditLine.getElemets(td);
@@ -568,7 +524,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 				currentTr.tween("background", color);
 				this.close();
 			}, null, null, this.form.json.confirmStyle);
-		}
+		};
         this.validationMode();
 	},
 	_createMoveLineAction: function(td){
@@ -850,7 +806,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                         if (m.type=="number"){
                             var cell = cells[m.index];
                             var addv = cell.get("text").toFloat();
-                            tmpV = tmpV.plus(addv||0);
+                            tmpV = tmpV.plus(addv);
                             //tmpV = tmpV + addv;
                         }
                         if (m.type=="count"){
@@ -867,7 +823,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this.totalModules.each(function(m, i){
                 this.totalResaults[m.module.json.id] = totalResaults[i];
                 var td = totalTds[m.index];
-                td.set("text", isNaN( totalResaults[i] ) ? "" : totalResaults[i] );
+                td.set("text", totalResaults[i] || "");
             }.bind(this));
         }
         return data;

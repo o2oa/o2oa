@@ -166,7 +166,6 @@ public class WebServerTools extends JettySeverTools {
 			/** 写入systemName */
 			map.put("footer", Config.collect().getFooter());
 			map.put("title", Config.collect().getTitle());
-			map.put("appUrl", Config.collect().getAppUrl());
 			/***/
 			if (centerServerConfig.getSslEnable()) {
 				map.put("app_protocol", "https:");

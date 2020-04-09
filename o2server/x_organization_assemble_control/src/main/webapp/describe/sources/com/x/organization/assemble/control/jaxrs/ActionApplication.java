@@ -11,10 +11,8 @@ import com.x.organization.assemble.control.jaxrs.group.GroupAction;
 import com.x.organization.assemble.control.jaxrs.identity.IdentityAction;
 import com.x.organization.assemble.control.jaxrs.inputperson.InputPersonAction;
 import com.x.organization.assemble.control.jaxrs.loginrecord.LoginRecordAction;
-import com.x.organization.assemble.control.jaxrs.permissionsetting.PermissionSettingAction;
 import com.x.organization.assemble.control.jaxrs.person.PersonAction;
 import com.x.organization.assemble.control.jaxrs.personattribute.PersonAttributeAction;
-import com.x.organization.assemble.control.jaxrs.personcard.PersonCardAction;
 import com.x.organization.assemble.control.jaxrs.role.RoleAction;
 import com.x.organization.assemble.control.jaxrs.unit.UnitAction;
 import com.x.organization.assemble.control.jaxrs.unitattribute.UnitAttributeAction;
@@ -36,8 +34,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(UnitAttributeAction.class);
 		classes.add(UnitDutyAction.class);
 		classes.add(ExportAction.class);
-		classes.add(PersonCardAction.class);
-		classes.add(PermissionSettingAction.class);
 		return classes;
 	}
 

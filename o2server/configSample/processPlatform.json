@@ -25,7 +25,7 @@
     "###enable": "是否启用###",
     "###cron": "定时cron表达式###"
   },
-  "combine": {
+  "dataMerge": {
     "enable": false,
     "cron": "30 30 6 * * ?",
     "thresholdDays": 730.0,
@@ -66,7 +66,7 @@
   "###urge": "催办任务设置,发现即将过期时发送提醒消息.###",
   "###expire": "将已经过了截至时间的待办标记过期.###",
   "###touchDelay": "延时任务设置,定时触发延时任务,当超过延时时间后继续流转.###",
-  "###combine": "合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.###",
+  "###dataMerge": "合并任务设置,定时触发合并任务,将已完成工作的Data从Item表中提取合并到WorkCompleted的Data字段中,默认工作完成后2年开始进行合并.###",
   "###deleteDraft": "清除草稿状态的工作.###",
   "###passExpired": "超时工作路由设置.###",
   "###touchDetained": "触发长时间未处理的工作.###",

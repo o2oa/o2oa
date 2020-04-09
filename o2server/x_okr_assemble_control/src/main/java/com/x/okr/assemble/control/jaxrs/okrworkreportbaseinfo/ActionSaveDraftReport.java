@@ -64,7 +64,7 @@ public class ActionSaveDraftReport extends BaseAction {
 		}
 				
 		//设置当前登录用户为创建工作汇报的用户
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				wrapIn.setCreatorName( effectivePerson.getDistinguishedName() );
 				wrapIn.setCreatorIdentity( okrUserManagerService.getIdentityWithPerson(effectivePerson.getDistinguishedName()) );
@@ -75,7 +75,7 @@ public class ActionSaveDraftReport extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				wrapIn.setCreatorUnitName( okrUserManagerService.getUnitNameByIdentity(wrapIn.getCreatorIdentity()));
 			} catch (Exception e) {
@@ -85,7 +85,7 @@ public class ActionSaveDraftReport extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				wrapIn.setCreatorTopUnitName( okrUserManagerService.getTopUnitNameByIdentity(wrapIn.getCreatorIdentity()) );
 			} catch (Exception e) {

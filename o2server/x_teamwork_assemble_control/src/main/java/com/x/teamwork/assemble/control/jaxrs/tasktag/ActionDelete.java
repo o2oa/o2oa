@@ -37,7 +37,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskTag = taskTagQueryService.get(taskTagId);
 				if ( taskTag == null) {
@@ -53,7 +53,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				taskTagPersistService.delete( taskTagId, effectivePerson );				
 				// 更新缓存
@@ -69,7 +69,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}		
 				
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {					
 				dynamic = dynamicPersistService.taskTagDeleteDynamic( taskTag, effectivePerson );	
 				if( dynamic != null ) {

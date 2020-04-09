@@ -21,7 +21,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		/* 示例 */
 		Map<String,String> map = new HashMap<>();
 		map.put(MessageConnector.CONSUME_QIYEWEIXIN, "excute");
-		map.put("describe","excute表示脚本messageSendRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务");
+		map.put("describe","excute表示脚本messageRule.js中的方法名称，该js文件需放在与messages.json同目录下，更改脚本需重启服务");
 		o.put("##sample##", new Message(map));
 
 		/* 文件通知 */

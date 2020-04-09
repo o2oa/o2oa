@@ -161,12 +161,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
     loadResource: function (callback) {
         window.BMap_loadScriptTime = (new Date).getTime();
         //var apiPath = "http://api.map.baidu.com/api?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg";
-        var apiPath;
-        if( window.location.protocol.toLowerCase() === "https" ){
-            apiPath = "https://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
-        }else{
-            apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
-        }
+        var apiPath = "http://api.map.baidu.com/getscript?v=2.0&ak=Qac4WmBvHXiC87z3HjtRrbotCE3sC9Zg&services=&t=20161219171637";
         if( !window.BDMapApiLoaded ){
             COMMON.AjaxModule.loadDom(apiPath, function () {
                 window.BDMapApiLoaded = true;

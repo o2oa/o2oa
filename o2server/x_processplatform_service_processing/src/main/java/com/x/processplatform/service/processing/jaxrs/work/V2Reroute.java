@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -25,8 +26,7 @@ import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-
-import org.apache.commons.lang3.StringUtils;
+import com.x.processplatform.service.processing.jaxrs.work.V2Retract.Wo;
 
 class V2Reroute extends BaseAction {
 
@@ -120,7 +120,7 @@ class V2Reroute extends BaseAction {
 
 	private void removeOtherWork(Business business, Work work) throws Exception {
 		List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-				work.getJob(), JpaObject.id_FIELDNAME, work.getId());
+				work.getJob(), Work.id_FIELDNAME, work.getId());
 		os.stream().forEach(o -> {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);

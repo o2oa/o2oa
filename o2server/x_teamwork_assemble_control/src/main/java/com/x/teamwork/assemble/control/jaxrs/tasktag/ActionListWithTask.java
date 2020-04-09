@@ -41,7 +41,7 @@ public class ActionListWithTask extends BaseAction {
 			result.error( exception );
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				task = taskQueryService.get( taskId );
 				if ( task == null) {
@@ -57,7 +57,7 @@ public class ActionListWithTask extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithTask", effectivePerson.getDistinguishedName(), taskId );
 			element = taskTagCache.get( cacheKey );
 			

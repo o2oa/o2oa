@@ -641,7 +641,7 @@ public class BBSSubjectInfoService {
 		return business.subjectAttachmentFactory().list( attachmentList );
 	}
 
-	public List<BBSSubjectInfo> listSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds ) throws Exception {
+	public List<BBSSubjectInfo> listSubjectInSectionForPage( String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, Integer maxRecordCount, List<String> viewSectionIds ) throws Exception {
 		if( viewSectionIds == null || viewSectionIds.isEmpty() ){
 			return null;
 		}
@@ -651,20 +651,20 @@ public class BBSSubjectInfoService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().listSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, maxRecordCount, viewSectionIds );
+			return business.subjectInfoFactory().listSubjectInSectionForPage( forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, maxRecordCount, viewSectionIds );
 		}catch( Exception e ){
 			throw e;
 		}
 	}
 	
-	public Long countSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds ) throws Exception {
+	public Long countSubjectInSectionForPage( String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds ) throws Exception {
 		if( viewSectionIds == null || viewSectionIds.isEmpty() ){
 			return 0L;
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().countSubjectInSectionForPage( searchTitle, forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds );
+			return business.subjectInfoFactory().countSubjectInSectionForPage( forumId, mainSectionId, sectionId, creatorName, needPicture, isTopSubject, viewSectionIds );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -754,20 +754,20 @@ public class BBSSubjectInfoService {
 		}
 	}
 
-	public Long countUserSubjectForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, Boolean needPicture, Boolean withTopSubject, String name) throws Exception {
+	public Long countUserSubjectForPage( String forumId, String mainSectionId, String sectionId, Boolean needPicture, Boolean withTopSubject, String name) throws Exception {
 		if( name == null || name.isEmpty() ){
 			throw new Exception( "name can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().countUserSubjectForPage( searchTitle, forumId, mainSectionId, sectionId, needPicture, withTopSubject, name );
+			return business.subjectInfoFactory().countUserSubjectForPage( forumId, mainSectionId, sectionId, needPicture, withTopSubject, name );
 		}catch( Exception e ){
 			throw e;
 		}
 	}
 
-	public List<BBSSubjectInfo> listUserSubjectForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, Boolean needPicture, Boolean withTopSubject, Integer maxRecordCount, String name ) throws Exception {
+	public List<BBSSubjectInfo> listUserSubjectForPage(String forumId, String mainSectionId, String sectionId, Boolean needPicture, Boolean withTopSubject, Integer maxRecordCount, String name ) throws Exception {
 		if( name == null || name.isEmpty() ){
 			throw new Exception( "name can not null." );
 		}
@@ -777,7 +777,7 @@ public class BBSSubjectInfoService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().listUserSubjectForPage( searchTitle, forumId, mainSectionId, sectionId, needPicture, withTopSubject, maxRecordCount, name );
+			return business.subjectInfoFactory().listUserSubjectForPage( forumId, mainSectionId, sectionId, needPicture, withTopSubject, maxRecordCount, name );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -790,7 +790,7 @@ public class BBSSubjectInfoService {
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.subjectInfoFactory().countUserSubjectForPage( null, null, null, null, null, null, userName );
+			return business.subjectInfoFactory().countUserSubjectForPage( null, null, null, null, null, userName );
 		}catch( Exception e ){
 			throw e;
 		}

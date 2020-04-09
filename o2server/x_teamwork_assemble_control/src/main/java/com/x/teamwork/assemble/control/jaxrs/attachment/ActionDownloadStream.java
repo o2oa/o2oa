@@ -42,14 +42,14 @@ public class ActionDownloadStream extends BaseAction {
 			logger.error( e, effectivePerson, request, null);
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if( check ) {
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
 			wo = new Wo(attachment.readContent(mapping), 
 					this.contentType(stream, attachment.getName()), 
 					this.contentDisposition(stream, attachment.getName()));
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		if (check) {
 			try {
 				Dynamic dynamic = dynamicPersistService.downloadAttachmentDynamic(attachment, effectivePerson);
 				if( dynamic != null ) {

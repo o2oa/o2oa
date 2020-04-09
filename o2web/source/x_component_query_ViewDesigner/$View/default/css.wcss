@@ -1,7 +1,4 @@
 {
-    "actionbarNode" : {
-        "overflow": "hidden"
-    },
     "viewAreaNode": {
         "overflow": "hidden"
     },
@@ -168,13 +165,6 @@
         "line-height": "24px",
         "border-bottom": "1px dashed #CCC"
     },
-    "editTableTitleNoWidth": {
-        "font-weight": "bold",
-        "font-size": "12px",
-        "height": "24px",
-        "line-height": "24px",
-        "border-bottom": "1px dashed #CCC"
-    },
     "editTableValue": {
         "height": "24px",
         "line-height": "24px",
@@ -326,33 +316,5 @@
         "position": "relative",
         "margin-right": "8px",
         "top": "-38px"
-    },
-
-    "toolbarWarpNode": {
-        "border": "1px dashed #999",
-        "height": "auto",
-        "overflow": "hidden",
-        "margin": "auto",
-        "display": "block",
-        "-webkit-user-select": "none",
-        "-moz-user-select": "none",
-        "position": "static",
-        "opacity": 1,
-        "width": "auto",
-        "margin": "3px 3px",
-        "background-color": "#999",
-        "cursor": "pointer"
-    },
-    "toolbarWarpNode_selected": {
-        "background-color": "#FFF",
-//        "height": "38px",
-        "border": "1px solid red",
-        "white-space": "nowrap"
-    },
-    "toolbarWarpNode_over": {
-        "background-color": "#F9F9F9",
-//        "height": "38px",
-        "border": "1px dotted blue",
-        "white-space": "nowrap"
-    },
+    }
 }
