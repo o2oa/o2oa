@@ -77,6 +77,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		List<BBSReplyInfo> replyInfoList_out = new ArrayList<BBSReplyInfo>();
 		Long total = 0L;
 		Boolean check = true;
+		String config_BBS_REPLY_SORTTYPE = configSettingService.getValueWithConfigCode("BBS_REPLY_SORTTYPE");
 
 		if (check) {
 			if (page == null) {
@@ -105,7 +106,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		if (check) {
 			if (total > 0) {
 				try {
-					replyInfoList = replyInfoService.listWithSubjectForPage( wrapIn.getSubjectId(), wrapIn.getShowSubReply(), page * count );
+					replyInfoList = replyInfoService.listWithSubjectForPage( wrapIn.getSubjectId(), wrapIn.getShowSubReply(), page * count, config_BBS_REPLY_SORTTYPE );
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionReplyInfoProcess(e,"根据主题ID查询主题内所有的回复列表时发生异常。Subject:" + wrapIn.getSubjectId());
@@ -123,12 +124,12 @@ public class ActionListWithSubjectForPage extends BaseAction {
 			}
 			int startIndex = (page - 1) * count;
 			int endIndex = page * count;
-			for (int i = 0; replyInfoList != null && i < replyInfoList.size(); i++) {
+			for ( int i = 0; replyInfoList != null && i < replyInfoList.size(); i++ ) {
 				if (i < replyInfoList.size() && i >= startIndex && i < endIndex) {
 					replyInfoList_out.add( replyInfoList.get(i) );
 				}
 			}
-			if (ListTools.isNotEmpty( replyInfoList_out )) {
+			if ( ListTools.isNotEmpty( replyInfoList_out )) {
 				try {
 					wraps = Wo.copier.copy(replyInfoList_out);
 				} catch (Exception e) {
@@ -141,7 +142,6 @@ public class ActionListWithSubjectForPage extends BaseAction {
 		}
 		if (check) {
 			if (ListTools.isNotEmpty(wraps)) {
-
 				List<BBSReplyInfo> subReplies = null;
 				for (Wo wo : wraps) {
 					if (StringUtils.isNotEmpty(wo.getCreatorName())) {
@@ -152,10 +152,9 @@ public class ActionListWithSubjectForPage extends BaseAction {
 					}
 
 					//查询一下该回复是否存在下级回复，以及下级回复的数量，除了第一条，其他的都去掉内容，避免大量的网络传输
-					subReplies = replyInfoService.listRelysWithRelyId( wo.getId() );
+					subReplies = replyInfoService.listRelysWithRelyId( wo.getId(), config_BBS_REPLY_SORTTYPE );
 					if( ListTools.isNotEmpty( subReplies )){
 						wrapSubReplies = Wo.copier.copy( subReplies );
-						SortTools.desc( wrapSubReplies, "createTime" );
 						for( int i=0; i<wrapSubReplies.size(); i++  ){
 							if( i > 0 ){
 								wrapSubReplies.get(i).setContent(null);
@@ -166,7 +165,7 @@ public class ActionListWithSubjectForPage extends BaseAction {
 					}
 				}
 				result.setCount(total);
-				SortTools.desc( wraps, "createTime" );
+
 			}
 		}
 		result.setData(wraps);

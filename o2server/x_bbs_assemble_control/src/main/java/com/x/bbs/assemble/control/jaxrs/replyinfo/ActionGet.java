@@ -58,16 +58,16 @@ public class ActionGet extends BaseAction {
 					result.error( exception );
 					logger.error( e, effectivePerson, request, null);
 				}
+				if( wrap != null && StringUtils.isNotEmpty( wrap.getCreatorName() ) ) {
+					wrap.setCreatorNameShort( wrap.getCreatorName().split( "@" )[0]);
+				}
+				if( wrap != null && StringUtils.isNotEmpty( wrap.getAuditorName() ) ) {
+					wrap.setAuditorNameShort( wrap.getAuditorName().split( "@" )[0]);
+				}
 			}else{
 				Exception exception = new ExceptionReplyNotExists( id );
 				result.error( exception );
 			}
-		}
-		if( StringUtils.isNotEmpty( wrap.getCreatorName() ) ) {
-			wrap.setCreatorNameShort( wrap.getCreatorName().split( "@" )[0]);
-		}
-		if( StringUtils.isNotEmpty( wrap.getAuditorName() ) ) {
-			wrap.setAuditorNameShort( wrap.getAuditorName().split( "@" )[0]);
 		}
 		result.setData( wrap );
 		return result;

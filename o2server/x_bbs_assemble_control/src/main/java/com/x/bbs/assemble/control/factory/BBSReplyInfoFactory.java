@@ -106,7 +106,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, Integer maxCount) throws Exception {
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, Integer maxCount, String orderType ) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
@@ -120,13 +120,14 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 			p_showSubReply = cb.or( p_showSubReply, cb.equal( root.get( BBSReplyInfo_.parentId), ""));
 			p = cb.and( p, p_showSubReply);
 		}
-
-		cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
-		if( maxCount == null ){
-//			System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).toString() );
-			return em.createQuery(cq.where(p)).getResultList();
+		if( StringUtils.equalsIgnoreCase(orderType, "DESC")){
+			cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
 		}else{
-//			System.out.println( ">>>>>SQL:" + em.createQuery(cq.where(p)).setMaxResults( maxCount ).toString() );
+			cq.orderBy( cb.asc( root.get( BBSReplyInfo_.createTime ) ) );
+		}
+		if( maxCount == null ){
+			return em.createQuery(cq.where(p)).setMaxResults( 2000 ).getResultList();
+		}else{
 			return em.createQuery(cq.where(p)).setMaxResults( maxCount ).getResultList();
 		}
 	}
@@ -422,7 +423,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	 * @param replyId
 	 * @return
 	 */
-    public List<BBSReplyInfo> listReplyWithReplyId(String replyId) throws Exception {
+    public List<BBSReplyInfo> listReplyWithReplyId(String replyId, String orderType ) throws Exception {
 		if( StringUtils.isEmpty( replyId ) ){
 			throw new Exception( "replyId is empty!" );
 		}
@@ -435,6 +436,31 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 				cb.equal( root.get( BBSReplyInfo_.replyAuditStatus ), "无审核" ),
 				cb.equal( root.get( BBSReplyInfo_.replyAuditStatus ), "审核通过" )
 		));
+		if( StringUtils.equalsIgnoreCase( orderType, "DESC")){
+			cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
+		}else{
+			cq.orderBy( cb.asc( root.get( BBSReplyInfo_.createTime ) ) );
+		}
 		return em.createQuery(cq.where(p)).getResultList();
     }
+
+	/**
+	 * 根据回复ID，查询二级回复列表，状态：无审核|审核通过
+	 *
+	 * @param replyId
+	 * @return
+	 */
+	public List<String> listSubReplyIdsWithReplyId(String replyId) throws Exception {
+		if( StringUtils.isEmpty( replyId ) ){
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( BBSReplyInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<BBSReplyInfo> root = cq.from( BBSReplyInfo.class );
+		Predicate p = cb.equal( root.get( BBSReplyInfo_.parentId ), replyId );
+		cq.select( root.get( BBSReplyInfo_.id ) );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
 }
