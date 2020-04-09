@@ -305,12 +305,13 @@
             onSuccess: function(responseJSON, responseText){
                 // var xToken = this.getHeader("authorization");
                 // if (!xToken) xToken = this.getHeader("x-token");
-                // if (xToken){
-                //     if (layout){
-                //         if (!layout.session) layout.session = {};
-                //         layout.session.token = xToken;
-                //     }
-                // }
+                var xToken = this.getHeader("x-token");
+                if (xToken){
+                    if (layout){
+                        if (!layout.session) layout.session = {};
+                        layout.session.token = xToken;
+                    }
+                }
                 o2.runCallback(callback, "success", [responseJSON]);
             },
             onFailure: function(xhr){
