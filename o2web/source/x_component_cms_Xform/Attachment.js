@@ -193,7 +193,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         if (this.json.attachmentExtOtherType) accepts.push(this.json.attachmentExtOtherType);
                         break;
                 }
-            });
+            }.bind(this));
             accept = accepts.join(", ");
         }
         var size = 0;
