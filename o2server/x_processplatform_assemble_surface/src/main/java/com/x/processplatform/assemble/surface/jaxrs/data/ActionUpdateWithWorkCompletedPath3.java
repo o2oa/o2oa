@@ -39,7 +39,7 @@ class ActionUpdateWithWorkCompletedPath3 extends BaseAction {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
 			}
-			if (BooleanUtils.isTrue(workCompleted.getDataMerged())) {
+			if (BooleanUtils.isTrue(workCompleted.getMerged())) {
 				throw new ExceptionModifyDataMerged(workCompleted.getId());
 			}
 		}

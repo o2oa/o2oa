@@ -34,7 +34,11 @@ class CollectLogJobService : JobService() {
     private var collectService: CollectService? = null
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        collectService = RetrofitClient.instance().collectApi()
+        try {
+            collectService = RetrofitClient.instance().collectApi()
+        } catch (e: Exception) {
+            XLog.error("中心服务器获取失败", e)
+        }
         XLog.info("onStartJob :" + params?.jobId)
         executeTask(params)
         return false//true还在执行,任务执行完成后需要手动调用jobFinished， false 表示任务执行完了

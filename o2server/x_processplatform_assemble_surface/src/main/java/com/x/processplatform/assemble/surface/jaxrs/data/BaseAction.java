@@ -47,11 +47,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected Gson gson = XGsonBuilder.instance();
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
-		JsonElement jsonElement = null;
+		//JsonElement jsonElement = null;
 		List<Item> list = business.item().listWithJobWithPath(job, paths);
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
-		jsonElement = converter.assemble(list, paths.length);
-		return jsonElement;
+		return  converter.assemble(list, paths.length);
+		//return XGsonBuilder.convert(jsonElement, Data.class);
 	}
 
 	/** 将data中的Title 和 serial 字段同步到work中 */

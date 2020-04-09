@@ -22,11 +22,18 @@ public class MessageFactory {
 		MessageConnector.send( MessageConnector.TYPE_TEAMWORK_TASKCREATE, title, task.getExecutor(),	task );
 	}
 	
-	public static void message_to_teamWorkUpdate( Task  task ) throws Exception {
+	public static void message_to_teamWorkUpdate( Task oldTask, Task newTask ) throws Exception {
 		//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>message for teamwork update!" + task.getExecutor() );
-		String title = "工作任务信息变更:" + adjustTitle( task );
+		String title = "工作任务信息变更:" + adjustTitle( oldTask );
+		if( newTask != null && StringUtils.equals( newTask.getExecutor(), oldTask.getExecutor() )){
+			title = "工作任务负责人变更通知:" + adjustTitle( oldTask );
+		}
 		title = StringTools.utf8SubString( title, JpaObject.length_255B );
-		MessageConnector.send( MessageConnector.TYPE_TEAMWORK_TASKUPDATE, title, task.getExecutor(),	task );
+		MessageConnector.send( MessageConnector.TYPE_TEAMWORK_TASKUPDATE, title, oldTask.getExecutor(),	oldTask );
+		if( newTask != null ){
+			title = "工作任务负责人变更通知:" + adjustTitle( newTask );
+			MessageConnector.send( MessageConnector.TYPE_TEAMWORK_TASKUPDATE, title, newTask.getExecutor(),	newTask );
+		}
 	}
 	
 	public static void message_to_teamWorkUpdateParticipants( Task  task, List<String> participants ) throws Exception {
