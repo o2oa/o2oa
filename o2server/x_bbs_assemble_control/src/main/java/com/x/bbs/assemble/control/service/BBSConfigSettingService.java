@@ -281,5 +281,29 @@ public class BBSConfigSettingService{
 			logger.warn( "system init system config 'BBS_SUBJECT_TYPECATAGORY' got an exception." );
 			logger.error(e);
 		}
+
+		value = "Recursively";
+		type = "select";
+		selectContent = "Single|Recursively";
+		isMultiple = false;
+		description = "回复删除模式：可选值：Single|Recursively,单选。";
+		try {
+			checkAndInitSystemConfig("BBS_REPLY_DELETETYPE", "回复删除模式", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_REPLY_DELETETYPE' got an exception." );
+			logger.error(e);
+		}
+
+		value = "ASC";
+		type = "select";
+		selectContent = "ASC|DESC";
+		isMultiple = false;
+		description = "回贴排序模式：可选值：ASC|DESC, 按创建时间正序|倒序，单选。";
+		try {
+			checkAndInitSystemConfig("BBS_REPLY_SORTTYPE", "回贴排序模式", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_REPLY_SORTTYPE' got an exception." );
+			logger.error(e);
+		}
 	}
 }
