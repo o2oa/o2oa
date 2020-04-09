@@ -23,6 +23,7 @@ import com.x.processplatform.assemble.surface.jaxrs.review.ReviewAction;
 import com.x.processplatform.assemble.surface.jaxrs.route.RouteAction;
 import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
 import com.x.processplatform.assemble.surface.jaxrs.serialnumber.SerialNumberAction;
+import com.x.processplatform.assemble.surface.jaxrs.service.ServiceAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
 import com.x.processplatform.assemble.surface.jaxrs.taskcompleted.TaskCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
@@ -57,6 +58,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(KeyLockAction.class);
 		classes.add(DocumentVersionAction.class);
 		classes.add(RecordAction.class);
+		classes.add(ServiceAction.class);
 		return classes;
 	}
 }
