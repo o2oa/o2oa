@@ -858,7 +858,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return data;
     },
     getData: function (issubmit) {
-        var data = Object.clone(this.businessData.data);
+        //var data = Object.clone(this.businessData.data);
+        var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
             if (module.json.type === "Opinion") {
                 debugger;
@@ -881,7 +882,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 }
             }
         }.bind(this));
-
 
         this.businessData.data = data;
         this.Macro.environment.setData(this.businessData.data);
