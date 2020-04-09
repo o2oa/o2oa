@@ -791,7 +791,7 @@ MWFCalendar.EventForm = new Class({
         }
         this.fileUploadNode.click();
     },
-    createUploadFileNode: function(){
+    createUploadFileNode: function(){git
         this.uploadFileAreaNode = new Element("div");
         var html = "<input name=\"file\" type=\"file\" multiple/>";
         this.uploadFileAreaNode.set("html", html);

@@ -71,7 +71,7 @@ o2.widget.ScrollBar = new Class({
 			e.stopPropagation();
 		}.bind(this);
 
-		layout.desktop.addEvent("resize", this.checkScrollFun);
+		if(layout.desktop && layout.desktop.addEvent)layout.desktop.addEvent("resize", this.checkScrollFun);
 		//layout.desktop.addEvent("onresize", this.checkScrollFun);
 		this.node.addEvent("mouseover", this.checkScrollStopFun);
 		this.node.addEvent("mouseout", this.checkScrollStopFun);
