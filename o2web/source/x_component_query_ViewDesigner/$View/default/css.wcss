@@ -2,6 +2,9 @@
     "actionbarNode" : {
         "overflow": "hidden"
     },
+    "pagingNode" : {
+        "overflow": "hidden"
+    },
     "viewAreaNode": {
         "overflow": "hidden"
     },
@@ -345,14 +348,38 @@
     },
     "toolbarWarpNode_selected": {
         "background-color": "#FFF",
-//        "height": "38px",
         "border": "1px solid red",
         "white-space": "nowrap"
     },
     "toolbarWarpNode_over": {
         "background-color": "#F9F9F9",
-//        "height": "38px",
         "border": "1px dotted blue",
         "white-space": "nowrap"
     },
+
+    "pagingWarpNode": {
+        "border": "1px dashed #999",
+        "height": "auto",
+        "overflow": "hidden",
+        "display": "block",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "opacity": 1,
+        "width": "auto",
+        "margin": "3px 3px",
+        "padding" : "5px",
+        "background-color": "#FFF",
+        "cursor": "pointer"
+    },
+    "pagingWarpNode_selected": {
+        "background-color": "#FFF",
+        "border": "1px solid red",
+        "white-space": "nowrap"
+    },
+    "pagingWarpNode_over": {
+        "background-color": "#F9F9F9",
+        "border": "1px dotted blue",
+        "white-space": "nowrap"
+    }
 }
