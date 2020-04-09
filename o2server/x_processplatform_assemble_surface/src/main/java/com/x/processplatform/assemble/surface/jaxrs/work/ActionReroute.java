@@ -31,6 +31,11 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
 
+/**
+ * @deprecated
+ * 
+ * 废弃,不再使用,改用V2Reroute
+ */
 class ActionReroute extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String activityId, ActivityType activityType,
