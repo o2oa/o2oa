@@ -127,6 +127,8 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
             this.loadView();
 
+            this.loadPaging();
+
             this.selected();
             this.setEvent();
 
@@ -428,7 +430,8 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         var size = this.areaNode.getSize();
         var titleSize = this.viewTitleNode.getSize();
         var actionbarSize = this.actionbarNode ? this.actionbarNode.getSize() : {x:0, y:0};
-        var height = size.y-titleSize.y-actionbarSize.y-2;
+        var pagingSize = this.pagingNode ? this.pagingNode.getSize() : {x:0, y:0};
+        var height = size.y-titleSize.y-actionbarSize.y-pagingSize.y-2;
 
         this.viewContentScrollNode.setStyle("height", height);
 
@@ -507,6 +510,21 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             }
         }
         if( !noSetHeight )this.setContentHeight();
+    },
+    loadPaging: function( noSetHeight ){
+        this.pagingNode = new Element("div#pagingNode", {"styles": this.css.pagingNode}).inject(this.areaNode);
+        this.pagingList = [];
+        if( !this.json.data.pagingList )this.json.data.pagingList = [];
+        if( !this.pagingList || this.pagingList.length == 0 ){
+            if( this.json.data.pagingList.length ){
+                this.json.data.pagingList.each( function(json){
+                    this.pagingList.push( new MWF.xApplication.query.ViewDesigner.View.Paging( json, this.json.data.pagingList, this) )
+                }.bind(this));
+            }else{
+                this.pagingList.push( new MWF.xApplication.query.ViewDesigner.View.Paging( null, this.json.data.pagingList, this) )
+            }
+        }
+        // if( !noSetHeight )this.setContentHeight();
     },
     setViewWidth: function(){
         this.viewAreaNode.setStyle("width", "auto");
@@ -1843,6 +1861,303 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this._refreshActionbar();
         }
 
+    }
+
+});
+
+
+
+
+MWF.require("MWF.widget.Paging", null, false);
+MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
+    Implements: [Options, Events],
+    options : {
+        "style" : "default"
+    },
+    initialize: function(json, jsonList, view, options){
+        this.setOptions( options );
+        this.propertyPath = "/x_component_query_ViewDesigner/$View/paging.html";
+
+        this.view = view;
+        this.json = json;
+        this.jsonList = jsonList;
+        this.css = this.view.css;
+        this.container = this.view.pagingNode;
+        this.load();
+    },
+    load: function(){
+        this.systemTools = [];
+        this.customTools = [];
+        if( !this.json ){
+            this.loadDefaultJson(function(){
+                this._createNode();
+                this.setEvent();
+            }.bind(this));
+        }else{
+            this._createNode();
+            this.setEvent();
+        }
+    },
+    loadDefaultJson: function(callback){
+        var url = this.view.path+"paging.json";
+        MWF.getJSON(url, {
+            "onSuccess": function(obj){
+                this.view.designer.actions.getUUID(function(id){
+                    obj.id=id;
+                    this.json = obj;
+                    this.jsonList.push( this.json );
+                    if (callback) callback(obj);
+                }.bind(this));
+            }.bind(this),
+            "onerror": function(text){
+                this.view.designer.notice(text, "error");
+            }.bind(this),
+            "onRequestFailure": function(xhr){
+                this.view.designer.notice(xhr.responseText, "error");
+            }.bind(this)
+        });
+    },
+    setEvent: function(){
+        this.node.addEvents({
+            "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
+            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.pagingWarpNode_over)}.bind(this),
+            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css.pagingWarpNode) }.bind(this)
+        });
+    },
+    selected: function(){
+        if (this.view.currentSelectedModule){
+            if (this.view.currentSelectedModule==this){
+                return true;
+            }else{
+                this.view.currentSelectedModule.unSelected();
+            }
+        }
+        this.node.setStyles(this.css.pagingWarpNode_selected);
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+
+        this.view.currentSelectedModule = this;
+        this.isSelected = true;
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.view.currentSelectedModule = null;
+        this.node.setStyles(this.css.pagingWarpNode);
+
+        this.isSelected = false;
+        this.hideProperty();
+    },
+
+    showProperty: function(){
+        if (!this.property){
+            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
+                "path": this.propertyPath,
+                "onPostLoad": function(){
+                    this.property.show();
+                }.bind(this)
+            });
+            this.property.load();
+        }else{
+            this.property.show();
+        }
+    },
+    hideProperty: function(){
+        if (this.property) this.property.hide();
+    },
+
+    resetTextNode: function(){
+        var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
+        if (!listText) listText = "unnamed";
+
+        this.textNode.set("text", this.json.displayName);
+        this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
+    },
+
+    deletePropertiesOrStyles: function(name, key){
+        if (name=="properties"){
+            try{
+                this.node.removeProperty(key);
+            }catch(e){}
+        }
+    },
+    setPropertiesOrStyles: function(name){
+        if (name=="styles"){
+            try{
+                this.setCustomStyles();
+            }catch(e){}
+        }
+        if (name=="properties"){
+            try{
+                this.node.setProperties(this.json.properties);
+            }catch(e){}
+        }
+    },
+    setCustomNodeStyles: function(node, styles){
+        var border = node.getStyle("border");
+        node.clearStyles();
+        //node.setStyles(styles);
+        node.setStyle("border", border);
+
+        Object.each(styles, function(value, key){
+            var reg = /^border\w*/ig;
+            if (!key.test(reg)){
+                node.setStyle(key, value);
+            }
+        }.bind(this));
+    },
+    setCustomStyles: function(){
+        var border = this.node.getStyle("border");
+        this.node.clearStyles();
+        this.node.setStyles(this.css.moduleNode);
+
+        if (this.initialStyles) this.node.setStyles(this.initialStyles);
+        this.node.setStyle("border", border);
+
+        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+            }
+
+            var reg = /^border\w*/ig;
+            if (!key.test(reg)){
+                if (key){
+                    if (key.toString().toLowerCase()==="display"){
+                        if (value.toString().toLowerCase()==="none"){
+                            this.node.setStyle("opacity", 0.3);
+                        }else{
+                            this.node.setStyle("opacity", 1);
+                            this.node.setStyle(key, value);
+                        }
+                    }else{
+                        this.node.setStyle(key, value);
+                    }
+                }
+            }
+            //this.node.setStyle(key, value);
+        }.bind(this));
+    },
+
+    _setEditStyle: function(name, obj, oldValue){
+        var title = "";
+        var text = "";
+        if (name==="name"){
+            title = this.json.name || this.json.id;
+            text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+            this.treeNode.setText("<"+text+"> "+title);
+        }
+        if (name==="id"){
+            title = this.json.name || this.json.id;
+            if (!this.json.name){
+                text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
+                this.treeNode.setText("<"+text+"> "+this.json.id);
+            }
+            this.treeNode.setTitle(this.json.id);
+            this.node.set("id", this.json.id);
+        }
+
+        this._setEditStyle_custom(name, obj, oldValue);
+    },
+    reloadMaplist: function(){
+        if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
+    },
+
+    getHtml: function(){
+        var copy = this.node.clone(true, true);
+        copy.clearStyles(true);
+
+        var html = copy.outerHTML;
+        copy.destroy();
+
+        return html;
+    },
+    getJson: function(){
+        var json = Object.clone(this.json);
+        var o = {};
+        o[json.id] = json;
+        return o;
+    },
+
+
+    _createNode: function(callback){
+        this.node = new Element("div", {
+            "id": this.json.id,
+            "MWFType": "paging",
+            "styles": this.css.pagingWarpNode,
+            "events": {
+                "selectstart": function(e){
+                    e.preventDefault();
+                }
+            }
+
+        }).inject(this.container );
+
+        this.pagingNode = new Element("div").inject(this.node);
+        this.loadWidget();
+        // this.pagingWidget = new MWF.widget.Paging(this.pagingNode, {"style": this.json.style}, this);
+        // if (!this.json.pagingStyles){
+        //     this.json.pagingStyles = Object.clone(this.pagingWidget.css);
+        // }
+        // this.pagingWidget.load();
+    },
+    loadWidget : function(){
+        var visiblePages = this.json.visiblePages ? this.json.visiblePages.toInt() : 9;
+        this.pagingWidget = new o2.widget.Paging(this.pagingNode, {
+            style : this.json.style || "default",
+            countPerPage: 20, //this.json.pageSize || this.options.perPageCount,
+            visiblePages: visiblePages,
+            currentPage: 1,
+            itemSize: visiblePages * 20 * 2,
+            // pageSize: this.pages,
+            hasNextPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasPrevPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasTruningBar: typeOf( this.json.hasTruningBar ) === "boolean" ? this.json.hasTruningBar : true,
+            hasBatchTuring: typeOf( this.json.hasBatchTuring ) === "boolean" ? this.json.hasBatchTuring : true,
+            hasFirstPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasLastPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : true,
+            hiddenWithDisable: false,
+            // hiddenWithNoItem: true,
+            text: {
+                prePage: this.json.prePageText,
+                nextPage: this.json.nextPageText,
+                firstPage: this.json.firstPageText,
+                lastPage: this.json.lastPageText
+            },
+            onJumpingPage : function( pageNum, itemNum ){
+            }.bind(this),
+            onPostLoad : function () {
+                this.view.setContentHeight()
+                // if(this.setContentHeightFun)this.setContentHeightFun();
+            }.bind(this)
+        }, this.json.pagingStyles || {});
+        if (!this.json.pagingStyles){
+            this.json.pagingStyles = Object.clone(this.pagingWidget.css);
+        }
+        this.pagingWidget.load();
+    },
+
+    _refreshPaging: function(){
+        this.pagingNode.empty();
+        this.loadWidget();
+    },
+    _setEditStyle_custom: function(name, obj, oldValue){
+        debugger;
+        if ( ["hasTruningBar","visiblePages","hasBatchTuring",
+            "hasFirstLastPage","hasPreNextPage","hasPageJumper",
+            "firstPageText","lastPageText","prePageText","nextPageText",
+            "pagingStyles"].contains(name)){
+            this._refreshPaging();
+        }
     }
 
 });

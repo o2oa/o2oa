@@ -64,6 +64,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadJSONArea();
 
                     this.loadEventsEditor();
+                    this.loadPagingStylesArea();
                     this.loadActionStylesArea();
                     this.loadActionArea();
                     this.loadStylesList();
@@ -718,6 +719,37 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             MWF.require("MWF.widget.Maplist", function(){
                 var maps = [];
                 Object.each(actionStyles, function(v, k){
+                    var mapNode = new Element("div").inject(node);
+                    mapNode.empty();
+
+                    var maplist = new MWF.widget.Maplist(mapNode, {
+                        "title": k,
+                        "collapse": true,
+                        "onChange": function(){
+                            var oldData = _self.data[name];
+                            maps.each(function(o){
+                                _self.data[name][o.key] = o.map.toJson();
+                            }.bind(this));
+                            _self.changeData(name, node, oldData);
+                        }
+                    });
+                    maps.push({"key": k, "map": maplist});
+                    maplist.load(v);
+                }.bind(this));
+            }.bind(this));
+
+
+        }.bind(this));
+    },
+    loadPagingStylesArea: function(){
+        var _self = this;
+        var pagingAreas = this.propertyContent.getElements(".MWFPagingStylesArea");
+        pagingAreas.each(function(node){
+            var name = node.get("name");
+            var pagingStyles = this.data[name];
+            MWF.require("MWF.widget.Maplist", function(){
+                var maps = [];
+                Object.each(pagingStyles, function(v, k){
                     var mapNode = new Element("div").inject(node);
                     mapNode.empty();
 
