@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.JsonElement;
@@ -59,6 +60,8 @@ import com.x.processplatform.core.entity.element.wrap.WrapRoute;
 import com.x.processplatform.core.entity.element.wrap.WrapScript;
 import com.x.processplatform.core.entity.element.wrap.WrapService;
 import com.x.processplatform.core.entity.element.wrap.WrapSplit;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -153,6 +156,22 @@ class ActionCreate extends BaseAction {
 			process = WrapProcess.inCopier.copy(wrapProcess);
 			process.setApplication(application.getId());
 			persistObjects.add(process);
+			if (StringUtils.isNotEmpty(process.getEdition())) {
+				if(BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
+							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
+							p.setLastUpdateTime(new Date());
+							p.setEditionEnable(false);
+						}
+					}
+				}
+			}else{
+				process.setEdition(process.getId());
+				process.setEditionEnable(true);
+				process.setEditionNumber(1.0);
+				process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
+			}
 			for (WrapAgent _o : wrapProcess.getAgentList()) {
 				Agent obj = business.entityManagerContainer().find(_o.getId(), Agent.class);
 				if (null != obj) {

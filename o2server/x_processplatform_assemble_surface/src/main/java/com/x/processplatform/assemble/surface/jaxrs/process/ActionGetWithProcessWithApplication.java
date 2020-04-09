@@ -11,6 +11,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionGetWithProcessWithApplication extends BaseAction {
 
@@ -25,6 +27,9 @@ public class ActionGetWithProcessWithApplication extends BaseAction {
 			Process process = business.process().pickObject(application, flag);
 			if (null == process) {
 				throw new ExceptionEntityNotExist(flag, Process.class);
+			}
+			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 			Wo wo = Wo.copier.copy(process);
 			result.setData(wo);

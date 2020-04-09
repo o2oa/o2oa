@@ -32,6 +32,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -54,6 +55,7 @@ class ActionCreate extends BaseAction {
 			process.setCreatorPerson(effectivePerson.getDistinguishedName());
 			process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			process.setLastUpdateTime(new Date());
+			this.updateEdition(process);
 			jpaObjects.add(process);
 			jpaObjects.addAll(create_agent(wrapIn.getAgentList(), process));
 			jpaObjects.add(create_begin(wrapIn.getBegin(), process));
@@ -101,6 +103,13 @@ class ActionCreate extends BaseAction {
 
 	public static class Wo extends WoId {
 
+	}
+
+	private void updateEdition(Process process) throws Exception {
+		process.setEdition(process.getId());
+		process.setEditionEnable(true);
+		process.setEditionNumber(1.0);
+		process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
 	}
 
 }
