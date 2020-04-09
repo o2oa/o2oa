@@ -321,37 +321,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     // },
     _loadPageNode : function(){
         this.viewPageAreaNode.empty();
-        this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
-            style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
-            countPerPage: this.json.pageSize || this.options.perPageCount,
-            visiblePages: this.viewJson.visiblePages ? this.viewJson.visiblePages.toInt() : 9,
-            currentPage: this.currentPage,
-            itemSize: this.count,
-            pageSize: this.pages,
-            hasNextPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasPrevPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasTruningBar: typeOf( this.viewJson.hasTruningBar ) === "boolean" ? this.viewJson.hasTruningBar : true,
-            hasBatchTuring: typeOf( this.viewJson.hasBatchTuring ) === "boolean" ? this.viewJson.hasBatchTuring : true,
-            hasFirstPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasLastPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasJumper: typeOf( this.viewJson.hasPageJumper ) === "boolean" ? this.viewJson.hasPageJumper : true,
-            hiddenWithDisable: false,
-            hiddenWithNoItem: true,
-            text: {
-                prePage: "",
-                nextPage: "",
-                firstPage: this.lp.firstPage,
-                lastPage: this.lp.lastPage
-            },
-            onJumpingPage : function( pageNum, itemNum ){
-                this.currentPage = pageNum;
-                this.loadCurrentPageData();
-            }.bind(this),
-            onPostLoad : function () {
-                if(this.setContentHeightFun)this.setContentHeightFun();
-            }.bind(this)
-        });
-        this.paging.load();
+        if( !this.paging ){
+            var json;
+            if( !this.viewJson.pagingList || !this.viewJson.pagingList.length ){
+                json = {
+                    "firstPageText": this.lp.firstPage,
+                    "lastPageText": this.lp.lastPage
+                };
+            }else{
+                json = this.viewJson.pagingList[0];
+            }
+            this.paging = new MWF.xApplication.query.Query.Viewer.Paging(this.viewPageAreaNode, json, this, {});
+            this.paging.load();
+        }else{
+            this.paging.reload();
+        }
     },
     _initPage: function(){
         this.count = this.bundleItems.length;
@@ -1925,5 +1909,178 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     },
     deleteWork: function(){
         this.form.deleteWork();
+    }
+});
+
+MWF.xApplication.query.Query.Viewer.Paging = new Class({
+    Implements: [Events],
+    options: {
+        "style" : "default",
+        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad","jump"]
+    },
+    initialize: function(node, json, form, options){
+        this.node = $(node);
+        this.node.store("module", this);
+        this.json = json;
+        this.form = form;
+        this.view = form;
+    },
+    hide: function(){
+        var dsp = this.node.getStyle("display");
+        if (dsp!=="none") this.node.store("mwf_display", dsp);
+        this.node.setStyle("display", "none");
+    },
+    show: function(){
+        var dsp = this.node.retrieve("mwf_display", dsp);
+        this.node.setStyle("display", dsp);
+    },
+    load: function(){
+
+        this._loadModuleEvents();
+        if (this.fireEvent("queryLoad")){
+            //this._queryLoaded();
+            this._loadUserInterface();
+            this._loadStyles();
+            this._loadDomEvents();
+            //this._loadEvents();
+
+            //this._afterLoaded();
+            this.fireEvent("postLoad");
+        }
+    },
+
+    _loadStyles: function(){
+        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+                if (value.indexOf("/x_cms_assemble_control")!==-1){
+                    value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }else if (value.indexOf("x_cms_assemble_control")!==-1){
+                    value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }
+            }
+            this.node.setStyle(key, value);
+        }.bind(this));
+
+        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
+        //     var host = MWF.Actions.getHost(root);
+        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
+        // }
+        //if (this.json.styles) this.node.setStyles(this.json.styles);
+    },
+    _loadModuleEvents : function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
+    _loadUserInterface: function(){
+        // if (this.form.json.mode == "Mobile"){
+        //     this.node.empty();
+        // }else if (COMMON.Browser.Platform.isMobile){
+        //     this.node.empty();
+        // }else{
+        this.loadPaging( true )
+    },
+    reload : function(){
+        this.loadPaging( false )
+    },
+    loadPaging : function( firstLoading ){
+        this.pagingNode = this.node.getFirst("div");
+        if( !this.pagingNode ){
+            this.pagingNode = new Element("div").inject( this.node );
+        }
+        this.pagingNode.empty();
+
+        this.paging = new o2.widget.Paging(this.pagingNode, {
+            //style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
+            countPerPage: this.view.json.pageSize || this.view.options.perPageCount,
+            visiblePages: this.json.visiblePages ? this.json.visiblePages.toInt() : 9,
+            currentPage: this.view.currentPage,
+            itemSize: this.view.count,
+            pageSize: this.view.pages,
+            hasNextPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasPrevPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasTruningBar: typeOf( this.json.hasTruningBar ) === "boolean" ? this.json.hasTruningBar : true,
+            hasBatchTuring: typeOf( this.json.hasBatchTuring ) === "boolean" ? this.json.hasBatchTuring : true,
+            hasFirstPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasLastPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : true,
+            hiddenWithDisable: false,
+            hiddenWithNoItem: true,
+            text: {
+                prePage: this.json.prePageText,
+                nextPage: this.json.nextPageText,
+                firstPage: this.json.firstPageText,
+                lastPage: this.json.lastPageText
+            },
+            onJumpingPage : function( pageNum, itemNum ){
+                this.view.currentPage = pageNum;
+                this.fireEvent("jump");
+                this.view.loadCurrentPageData();
+            }.bind(this),
+            onPostLoad : function () {
+                if( firstLoading ){
+                    if(this.view.setContentHeightFun)this.view.setContentHeightFun();
+                    this.fireEvent("load");
+                }
+                this.fireEvent("afterLoad");
+            }.bind(this)
+        }, this.json.pagingStyles || {});
+        this.paging.load();
     }
 });
