@@ -37,7 +37,7 @@ public class ActionDelete extends BaseAction {
 			result.error( exception );
 		}
 
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				projectGroup = projectGroupQueryService.get(flag);
 				if ( projectGroup == null) {
@@ -53,7 +53,7 @@ public class ActionDelete extends BaseAction {
 			}
 		}
 		
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {
 				projectGroupPersistService.delete(flag, effectivePerson );				
 				// 更新缓存
@@ -69,7 +69,7 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		if (check) {
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
 				Dynamic dynamic = dynamicPersistService.projectGroupDeleteDynamic( projectGroup, effectivePerson );
 				if( dynamic != null ) {
