@@ -681,6 +681,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var editionData = {"category": this.json.id};
             if (!originaData || !originaData.filetext || !this.originaHistoryData){
                 //保存原始版本
+                this.originaHistoryData = {"data": this.data.filetext};
                 editionData.data = JSON.stringify({"data": this.data.filetext});
             }else if (originaData.filetext!=this.data.filetext){
                 //保存历史版本
