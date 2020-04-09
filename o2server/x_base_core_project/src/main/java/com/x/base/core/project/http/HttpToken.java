@@ -142,9 +142,6 @@ public class HttpToken {
 		String token = null;
 		token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);
 		if (StringUtils.isEmpty(token)) {
-			token = request.getHeader(X_Token);
-		}
-		if (StringUtils.isEmpty(token)) {
 			if (null != request.getCookies()) {
 				for (Cookie c : request.getCookies()) {
 					if (StringUtils.equals(X_Token, c.getName())) {
@@ -153,6 +150,9 @@ public class HttpToken {
 					}
 				}
 			}
+		}
+		if (StringUtils.isEmpty(token)) {
+			token = request.getHeader(X_Token);
 		}
 		if (StringUtils.isEmpty(token)) {
 			token = request.getHeader(X_Authorization);
