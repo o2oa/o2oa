@@ -2,18 +2,22 @@ package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyIdEmpty;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyInfoProcess;
 import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyNotExists;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+
+import java.util.List;
 
 public class ActionDelete extends BaseAction {
 
@@ -50,23 +54,38 @@ public class ActionDelete extends BaseAction {
 				result.error(exception);
 			}
 		}
-		try {
-			replyInfoService.delete(id);
+		if (check) {
+			try {
+				String config_BBS_REPLY_DELETETYPE = configSettingService.getValueWithConfigCode("BBS_REPLY_DELETETYPE");
 
-			Wo wo = new Wo();
-			wo.setId( id );
-			result.setData( wo );
-			
-			ApplicationCache.notify( BBSSubjectInfo.class );
-			ApplicationCache.notify( BBSReplyInfo.class );
-			ApplicationCache.notify( BBSSectionInfo.class );
-			
-			operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "DELETE", hostIp, hostName);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionReplyInfoProcess(e, "根据指定ID删除回复信息时发生异常.ID:" + id);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+				if(StringUtils.equals( "Recursively", config_BBS_REPLY_DELETETYPE )){
+					//递归删除
+					List<String> subIds = replyInfoService.listAllSubReplyIds(id, null);
+					if (ListTools.isNotEmpty(subIds)) {
+						for (String replyId : subIds) {
+							logger.debug("删除下级回复信息，ID=" + replyId);
+							replyInfoService.delete(replyId);
+						}
+					}
+				}
+
+				replyInfoService.delete(id);
+
+				Wo wo = new Wo();
+				wo.setId(id);
+				result.setData(wo);
+
+				ApplicationCache.notify(BBSSubjectInfo.class);
+				ApplicationCache.notify(BBSReplyInfo.class);
+				ApplicationCache.notify(BBSSectionInfo.class);
+
+				operationRecordService.replyOperation(effectivePerson.getDistinguishedName(), replyInfo, "DELETE", hostIp, hostName);
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionReplyInfoProcess(e, "根据指定ID删除回复信息时发生异常.ID:" + id);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 		return result;
 	}
