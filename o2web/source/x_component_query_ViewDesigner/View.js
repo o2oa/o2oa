@@ -2116,7 +2116,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
             countPerPage: 20, //this.json.pageSize || this.options.perPageCount,
             visiblePages: visiblePages,
             currentPage: 1,
-            itemSize: visiblePages * 20 * 2,
+            itemSize: visiblePages * 20 * 3,
             // pageSize: this.pages,
             hasNextPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
             hasPrevPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
