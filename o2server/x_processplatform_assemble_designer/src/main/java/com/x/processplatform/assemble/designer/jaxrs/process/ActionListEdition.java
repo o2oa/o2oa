@@ -1,13 +1,5 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -19,11 +11,12 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Process_;
 
-class ActionListWithApplication extends BaseAction {
+import java.util.List;
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationId) throws Exception {
+class ActionListEdition extends BaseAction {
+
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationId, String edition) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -35,7 +28,7 @@ class ActionListWithApplication extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
-			List<Wo> wos = Wo.copier.copy(business.process().listWithApplicationObject(applicationId));
+			List<Wo> wos = Wo.copier.copy(business.process().listProcessEditionObject(applicationId, edition));
 			wos = business.process().sort(wos);
 			result.setData(wos);
 			return result;
