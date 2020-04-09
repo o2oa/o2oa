@@ -68,7 +68,7 @@ public class PermissionSettingFactory extends AbstractFactory {
 	}
 	
 	private PermissionSetting pickObject(String flag) throws Exception {
-		PermissionSetting o = this.entityManagerContainer().flag(flag, PermissionSetting.class);
+		PermissionSetting o = this.entityManagerContainer().flag(flag, PermissionSetting.class); 
 		if (o != null) {
 			this.entityManagerContainer().get(PermissionSetting.class).detach(o);
 		} else {
@@ -102,7 +102,7 @@ public class PermissionSettingFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<PermissionSetting> root = cq.from(PermissionSetting.class);
-		cq.select(root.get(PermissionSetting_.id)).orderBy(cb.asc(root.get(PermissionSetting_.createTime)));
+		cq.select(root.get(PermissionSetting_.id)).orderBy(cb.asc(root.get(PermissionSetting_.createTime))); 
 		return em.createQuery(cq).getResultList();
 	}
 	/*
