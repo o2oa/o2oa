@@ -13,6 +13,7 @@ public class FilterTools {
 	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
 	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, Content-Length, x-cipher, x-client, x-debugger, Authorization";
 	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
+	public static final String Access_Control_Expose_Headers = "Access-Control-Expose-Headers";
 
 	public static void allow(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
@@ -21,6 +22,7 @@ public class FilterTools {
 			response.addHeader(Access_Control_Allow_Methods, Access_Control_Allow_Methods_Value);
 			response.addHeader(Access_Control_Allow_Headers, Access_Control_Allow_Headers_Value);
 			response.addHeader(Access_Control_Allow_Credentials, "true");
+			response.setHeader(Access_Control_Expose_Headers, HttpToken.X_Token);
 		} catch (Exception e) {
 			throw e;
 		}
