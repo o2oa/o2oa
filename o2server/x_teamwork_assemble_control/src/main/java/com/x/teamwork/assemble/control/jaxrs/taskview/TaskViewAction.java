@@ -27,6 +27,7 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.teamwork.assemble.control.jaxrs.task.ActionListPageWithFilter;
 
 @Path("task_view")
 @JaxrsDescribe("工作任务视图信息管理")
