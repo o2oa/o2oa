@@ -1,11 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.personcard;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,9 +21,11 @@ import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.DateTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.jaxrs.personcard.ActionExportPersonalVcf.Wo;
 import com.x.organization.assemble.control.staticconfig.FollowConfig;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
@@ -43,59 +41,54 @@ class ActionExportVcf extends BaseAction {
 
 
 	//导出通讯录vcf
-	ActionResult<String> exportVcf(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> exportVcf(EffectivePerson effectivePerson, String idList) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<String> result = new ActionResult<>();
+			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			List<String> personIdList = wi.getPersonList();
+			List<String> personIdList = Arrays.asList(idList.split(","));
+			Wo wo = null;
 			if(!personIdList.isEmpty()){
-				//String path = "D:\\tmp\\export_contacts.vcf";
-				String path = FollowConfig.VCFPATH+"export_contacts"+System.currentTimeMillis()+".vcf";
-				File file = new File(path);
-				if (file.exists()) {
-					file.createNewFile();
-				}
-				BufferedWriter reader = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+				ByteArrayOutputStream reader = new ByteArrayOutputStream();
+				
 				for (String flag : personIdList) {
 					Person personCard = emc.find(flag, Person.class);
 					if (null == personCard) {
 						throw new ExceptionPersonNotExist(flag);
 					}
-					reader.write("BEGIN:VCARD");
-					reader.write("\r\n");
-					reader.write("VERSION:3.0");
-					reader.write("\r\n");
-					reader.write("N:"+personCard.getName()+";;;;");
-					reader.write("\r\n");
-					reader.write("FN:"+personCard.getName());
-					reader.write("\r\n");	    
+					reader.write("BEGIN:VCARD".getBytes());
+					reader.write("\r\n".getBytes());
+					reader.write("VERSION:3.0".getBytes());
+					reader.write("\r\n".getBytes());
+					reader.write(("N:"+personCard.getName()+";;;;").getBytes());
+					reader.write("\r\n".getBytes());
+					reader.write(("FN:"+personCard.getName()).getBytes());
+					reader.write("\r\n".getBytes());	    
 					if(personCard.getOfficePhone()!=null && !personCard.getOfficePhone().equals("")){
-						reader.write("TEL:"+personCard.getOfficePhone());
-						reader.write("\r\n");
+						reader.write(("TEL:"+personCard.getOfficePhone()).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					if(personCard.getMobile()!=null && !personCard.getMobile().equals("")){
-						reader.write("TEL;CELL:"+personCard.getMobile());
-						reader.write("\r\n");
+						reader.write(("TEL;CELL:"+personCard.getMobile()).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					/*if(!personCard.getAddress().equals("")){
 						content = content+"ADR;HOME;POSTAL:;;"+personCard.getAddress()+";;;;\n";
 					}*/
 					if(personCard.getMail()!=null && !personCard.getMail().equals("")){
-						reader.write("EMAIL:"+personCard.getMail());
-						reader.write("\r\n");
+						reader.write(("EMAIL:"+personCard.getMail()).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					if(personCard.getQq()!=null && !personCard.getQq().equals("")){
-						reader.write("X-QQ:"+personCard.getQq());
-						reader.write("\r\n");
+						reader.write(("X-QQ:"+personCard.getQq()).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					if(personCard.getWeixin()!=null && !personCard.getWeixin().equals("")){
-						reader.write("NOTE:微信:"+personCard.getWeixin());
-						reader.write("\r\n");
+						reader.write(("NOTE:微信:"+personCard.getWeixin()).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					if(personCard.getBirthday()!=null && !personCard.getBirthday().equals("")){
-						reader.write("BDAY:"+DateTools.formatDate(personCard.getBirthday()));
-						reader.write("\r\n");
+						reader.write(("BDAY:"+DateTools.formatDate(personCard.getBirthday())).getBytes());
+						reader.write("\r\n".getBytes());
 					}
 					if(personCard.getId()!=null && !personCard.getId().equals("")){
 						List<Identity> identityList = referenceIdentity(business,flag);
@@ -106,8 +99,8 @@ class ActionExportVcf extends BaseAction {
 								if (null == unit) {
 									throw new ExceptionEntityNotExist(flag);
 								}
-								reader.write("ORG:"+unit.getName());
-								reader.write("\r\n");
+								reader.write(("ORG:"+unit.getName()).getBytes());
+								reader.write("\r\n".getBytes());
 							}
 						}else{
 							String orgString = "";
@@ -124,45 +117,41 @@ class ActionExportVcf extends BaseAction {
 								}
 							}
 							if(!orgString.equals("")){
-								reader.write("ORG:"+orgString);
-								reader.write("\r\n");
+								reader.write(("ORG:"+orgString).getBytes());
+								reader.write("\r\n".getBytes());
 							}
 							if(!titleString.equals("")){
-								reader.write("TITLE:"+titleString);
-								reader.write("\r\n");
+								reader.write(("TITLE:"+titleString).getBytes());
+								reader.write("\r\n".getBytes());
 							}
 						}	
 					}
 					
-					reader.write("END:VCARD");
-					reader.write("\r\n");
+					reader.write("END:VCARD".getBytes());
+					reader.write("\r\n".getBytes());
 					
 				}
-				reader.flush();
-				reader.close();
-				result.setData(path);
+				String fileName = "export_person_contacts"+System.currentTimeMillis()+".vcf";
+				try {
+					wo = new Wo(reader.toByteArray(), 
+							this.contentType(false, fileName), 
+							this.contentDisposition(false, fileName));
+				} finally {
+					reader.close();
+				}
+				result.setData(wo);
 			}
 
 			return result;
 		}
 	}
 	
-	public static class Wi extends GsonPropertyObject {
+	public static class Wo extends WoFile {
 
-		@FieldDescribe("通讯录人员标识")
-		private List<String> personList = new ArrayList<>();
-
-		public List<String> getPersonList() {
-			return personList;
+		public Wo(byte[] bytes, String contentType, String contentDisposition) {
+			super(bytes, contentType, contentDisposition);
 		}
 
-		public void setPersonList(List<String> personList) {
-			this.personList = personList;
-		}
-
-	}
-	public static class Wo extends WoId {
-		
 	}
 	
 	public List<Identity> referenceIdentity(Business business,String flag) throws Exception {

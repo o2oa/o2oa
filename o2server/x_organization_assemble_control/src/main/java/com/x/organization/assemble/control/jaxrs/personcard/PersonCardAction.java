@@ -215,15 +215,15 @@ public class PersonCardAction extends StandardJaxrsAction {
 	}
 	
 	@JaxrsMethodDescribe(value = "导出组织通讯录vcf", action = ActionExportVcf.class) 
-	@POST
-	@Path("listVCf")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@GET
+	@Path("listVCf/{idList}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,JsonElement jsonElement) {
-		ActionResult<String> result = new ActionResult<>(); 
+	public void listVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("名片id组") @PathParam("idList") String idList) {
+		ActionResult<ActionExportVcf.Wo> result = new ActionResult<>(); 
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionExportVcf().exportVcf(effectivePerson, jsonElement);
+			result = new ActionExportVcf().exportVcf(effectivePerson, idList);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);  
 			result.error(e);
@@ -231,33 +231,16 @@ public class PersonCardAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	/*@JaxrsMethodDescribe(value = "导出个人通讯录vcf", action = ActionExportPersonalVcf.class) 
-	@POST
-	@Path("listPersonalVCf")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPersonalVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,JsonElement jsonElement) {
-		ActionResult<String> result = new ActionResult<>(); 
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionExportPersonalVcf().exportPersonalVcf(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);  
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}*/
-	@JaxrsMethodDescribe(value = "导出个人通讯录vcf", action = ActionExportPersonalVcf2.class) 
+	@JaxrsMethodDescribe(value = "导出个人通讯录vcf", action = ActionExportPersonalVcf.class) 
 	@GET
 	@Path("listPersonalVCf/{idList}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listPersonalVCf2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void listPersonalVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("名片id组") @PathParam("idList") String idList) {
-		ActionResult<ActionExportPersonalVcf2.Wo> result = new ActionResult<>(); 
+		ActionResult<ActionExportPersonalVcf.Wo> result = new ActionResult<>(); 
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionExportPersonalVcf2().exportPersonalVcf(effectivePerson, idList);
+			result = new ActionExportPersonalVcf().exportPersonalVcf(effectivePerson, idList);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);  
 			result.error(e);
