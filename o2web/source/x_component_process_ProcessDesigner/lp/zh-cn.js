@@ -114,5 +114,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"projectionRunTitle": "立即执行确认",
 	"projectionRunText": "请确认立即执行数据映射",
 	"projectionRunSuccess": "数据映射已开始执行",
-	"projectionRunError": "不需要执行数据映射"
+	"projectionRunError": "不需要执行数据映射",
+
+	"enable": "已启用",
+	"notEnable": "未启用",
+	"currentEdition": "当前版本",
+
+	"upgradeConfirm": "保存为新版本确认",
+	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>您是否确定要将当前流程保存为新版?<br/>选中\"同时启用新版本\"在保存完成之后,会将新版本设置为启用版本.</div><div style='margin-top:10px'><input type='checkbox' checked>同时启用新版本</div>"
 };

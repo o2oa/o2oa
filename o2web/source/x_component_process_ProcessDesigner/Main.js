@@ -789,6 +789,10 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     processExplode: function(){
         this.process.explode();
     },
+    saveNewEdition: function(el, e){
+        this.process.saveNewEdition(e);
+    },
+
 
     onPostClose: function() {
         if (this.process) {
