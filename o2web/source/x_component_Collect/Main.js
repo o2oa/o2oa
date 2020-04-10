@@ -2,21 +2,21 @@ MWF.xApplication.Collect.options.multitask = false;
 MWF.require("MWF.xDesktop.Access", null, false);
 MWF.xDesktop.requireApp("Collect", "Actions.RestActions", null, false);
 MWF.xApplication.Collect.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "Collect",
-		"icon": "icon.png",
-		"width": "400",
-		"height": "500",
-		"isResize": false,
-		"isMax": false,
-		"title": MWF.xApplication.Collect.LP.title
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.Collect.LP;
+    options: {
+        "style": "default",
+        "name": "Collect",
+        "icon": "icon.png",
+        "width": "400",
+        "height": "500",
+        "isResize": false,
+        "isMax": false,
+        "title": MWF.xApplication.Collect.LP.title
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.Collect.LP;
         this.action = MWF.Actions.get("x_program_center");
         //this.action = new MWF.xApplication.Collect.Actions.RestActions();
         this.connected = false;
@@ -25,7 +25,7 @@ MWF.xApplication.Collect.Main = new Class({
         this.connectChecked = false;
         this.loginChecked = false;
 
-	},
+    },
     loadWindow: function(isCurrent){
         this.fireAppEvent("queryLoadWindow");
         this.window = new MWF.xDesktop.WindowTransparent(this, {"container": this.desktop.node});
@@ -41,7 +41,7 @@ MWF.xApplication.Collect.Main = new Class({
         }.bind(this));
     },
 
-	loadApplication: function(callback){
+    loadApplication: function(callback){
         if (!MWF.AC.isAdministrator()){
             try{
                 this.close();
@@ -59,7 +59,7 @@ MWF.xApplication.Collect.Main = new Class({
                 }
             }.bind(this));
         }
-	},
+    },
     loadContent: function(){
         this.titleAreaNode = new Element("div", {"styles": this.css.titleAreaNode}).inject(this.node);
         this.backNode = new Element("div", {"styles": this.css.backNode}).inject(this.titleAreaNode);
@@ -142,6 +142,9 @@ MWF.xApplication.Collect.Check = new Class({
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.modifyAccount}).inject(this.actionsNode);
         this.modifyAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyAccountAction}).inject(this.actionsNode);
 
+        this.disconnectAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.doDisconnect}).inject(this.actionsNode);
+        this.disconnectAction.addEvent("click", this.disconnect.bind(this));
+
         this.modifyPwdAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyPwdAccountAction}).inject(this.actionsNode);
 
         this.deleteAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.deleteAccountAction}).inject(this.actionsNode);
@@ -171,7 +174,6 @@ MWF.xApplication.Collect.Check = new Class({
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.disconnect}).inject(this.actionsNode);
         new Element("div", {"styles": this.css.disconnectInfor, "html": this.lp.disconnectInfo}).inject(this.actionsNode);
     },
-
     setStatusConnectNode: function(){
         this.statusConnectNode.empty();
         this.setStatusConnectNodeContent();
@@ -201,7 +203,6 @@ MWF.xApplication.Collect.Check = new Class({
 
         this.statusConnectTextNode = new Element("div", {"styles": this.css.statusConnectTextNode, "text": this.lp.checking}).inject(this.statusConnectNode);
     },
-
     setStatusConnectSuccess: function(){
         this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconConnectedNode);
         this.statusConnectTextNode.set("text", this.lp.collectConnected);
@@ -210,7 +211,6 @@ MWF.xApplication.Collect.Check = new Class({
         this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconDisconnectNode);
         this.statusConnectTextNode.set("text", this.lp.collectDisconnect);
     },
-
     setStatusLoginNode: function(){
         this.statusLoginNode.empty();
         this.setStatusLoginNodeContent();
@@ -244,7 +244,6 @@ MWF.xApplication.Collect.Check = new Class({
 
         this.statusLoginTextNode = new Element("div", {"styles": this.css.statusLoginTextNode, "text": this.lp.checking}).inject(this.statusLoginNode);
     },
-
     setStatusLoginSuccess: function(){
         this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconConnectedNode);
         this.statusLoginTextNode.set("text", this.lp.collectLogin);
@@ -252,6 +251,11 @@ MWF.xApplication.Collect.Check = new Class({
     setStatusLoginFailure: function(){
         this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconDisconnectNode);
         this.statusLoginTextNode.set("text", this.lp.collectNotLogin);
+    },
+    disconnect : function(){
+        this.action.disconnect( function(json){
+            this.recheck();
+        }.bind(this), null , false);
     },
     recheck: function(){
         this.contentNode.empty();
@@ -459,10 +463,14 @@ MWF.xApplication.Collect.LoginForm = new Class({
         });
     },
     showModifyForm: function(){
-        if (!this.collect.modifyForm){
+        /*if (!this.collect.modifyForm){
             this.collect.modifyForm = new MWF.xApplication.Collect.ModifyForm(this.collect);
         }
-        this.collect.modifyForm.show();
+        this.collect.modifyForm.show();*/
+        if (!this.collect.modifyPwdForm){
+            this.collect.modifyPwdForm = new MWF.xApplication.Collect.ModifyPwdForm(this.collect);
+        }
+        this.collect.modifyPwdForm.show();
     },
     showRegisterForm: function(){
         if (!this.collect.registerForm){
