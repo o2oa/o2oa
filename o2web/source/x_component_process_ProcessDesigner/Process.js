@@ -174,7 +174,6 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			for (var i=0; i<this.activitys.length; i++){
 				this.activitys[i].checkUUID();
 			}
-			//
 		}.bind(this));
 	},
 	
@@ -206,6 +205,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//	this.loadActivityDecisions();
 		}.bind(this));
 		this.showProperty();
+		this.showEditionInfor();
 	},
 	setEvent: function(){
 		this.paper.canvas.addEvent("selectstart", function(e){e.preventDefault();e.stopPropagation();});
@@ -368,7 +368,28 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
     //    this.isFocus = true;
 	},
 	showEditionInfor: function(){
+		if (this.process.edition){
+			if (this.designer.processEditionNode){
+				if (this.process.editionEnable){
+					this.designer.processEditionNode.set("text", this.designer.lp.enable);
+				}else{
+					this.designer.processEditionNode.set("text", this.designer.lp.notEnable);
+					this.designer.processEditionNode.removeClass("mainColor_bg");
+				}
 
+
+				this.designer.processEditionNode.addEvent("click", function(){
+					this.enableCurrentEdition();
+				}.bind(this));
+			}
+			if (this.designer.processEditionInforNode){
+				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionName+"</span> "+"("+this.process.lastUpdatePerson+")";
+				this.designer.processEditionInforNode.set("html", text);
+			}
+		}
+	},
+	enableCurrentEdition: function(){
+		//@todo enable edition
 	},
 
 	unSelected: function(e){
@@ -488,6 +509,70 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//unrealized
 		this.designer.alert("error", e, "", MWF.APPPD.LP.unrealized, 220, 100);
 	},
+	saveNewEdition: function(e){
+		if (this.process.isNewProcess){
+			this.save();
+		}else{
+			var _self = this;
+			this.designer.confirm("infor", e, this.designer.lp.upgradeConfirm, {"html": this.designer.lp.upgradeInfor}, 520, 210, function(){
+				var checkbox = this.content.getElement("input");
+				var enable = (!!checkbox && checkbox.get("checked"));
+				_self.doSaveNewEdition(enable);
+				this.close();
+			}, function(){
+				this.close();
+			});
+		}
+	},
+	doSaveNewEdition: function(enable){
+		debugger;
+		var process = Object.clone(this.process);
+		var oldIds = [];
+		oldIds.push(process.id);
+		if (process.begin) oldIds.push(process.begin.id);
+		if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
+		if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
+		if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
+		if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
+		if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});
+		if (process.parallelList) process.parallelList.each(function(a){oldIds.push(a.id);});
+		if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
+		if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
+		if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
+		if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
+		if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
+		if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
+		if (process.messageList) process.messageList.each(function(a){oldIds.push(a.id);});
+		if (process.serviceList) process.serviceList.each(function(a){oldIds.push(a.id);});
+		if (process.routeList) process.routeList.each(function(a){oldIds.push(a.id);});
+
+		var actions = o2.Actions.load("x_processplatform_assemble_designer");
+		this.designer.actions.getId(oldIds.length, function(ids) {
+			var checkUUIDs = ids.data;
+			var processStr = JSON.encode(process);
+			oldIds.each(function(oid, i){
+				var reg = new RegExp(oid, "ig");
+				processStr = processStr.replace(reg, checkUUIDs[i].id);
+			}.bind(this));
+			process = JSON.decode(processStr);
+			actions.ProcessAction.upgrade(this.process.id, process, function(json){
+				var processId = json.data.id;
+				if (enable){
+					actions.ProcessAction.enableProcess(processId, function(processJson){
+						actions.ProcessAction.get(processId, function(processJson){
+							this.reload(processJson.data);
+						}.bind(this))
+					}.bind(this))
+				}else{
+					actions.ProcessAction.get(processId, function(processJson){
+						this.reload(processJson.data);
+					}.bind(this))
+				}
+			}.bind(this));
+		}.bind(this));
+	},
+
+
 	switchGrid: function(item){
 		if (this.isGrid){
 			this.hideGrid();
@@ -749,15 +834,19 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             this.isSave = true;
             //check empty routeList
 			this.checkEmptyRouteList();
+			var reload = !!this.process.isNewProcess;
             this.designer.actions.saveProcess(this.process, function(responseJSON){
                 this.isSave = false;
                 this.process.isNewProcess = false;
                 this.designer.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"} );
                 this.isNewProcess = false;
-                //this.designer.actions.getProcess(responseJSON.data.id, function(json){
-                //    this.reload(json.data);
-                //    if (callback) callback();
-                //}.bind(this));
+                if (reload){
+					this.designer.actions.getProcess(responseJSON.data.id, function(json){
+					   this.reload(json.data);
+					   if (callback) callback();
+					}.bind(this));
+				}
+
                 this.designer.options.id = responseJSON.data.id;
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
@@ -836,6 +925,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             activityData.process = this.process.id;
             activityData.createTime = new Date().format('db');
             activityData.updateTime = new Date().format('db');
+
+			activityData.position = position.x+","+position.y;
             activity = new MWF.APPPD.Activity[c](activityData, this);
             activity.create(position);
 
