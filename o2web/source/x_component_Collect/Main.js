@@ -2,21 +2,21 @@ MWF.xApplication.Collect.options.multitask = false;
 MWF.require("MWF.xDesktop.Access", null, false);
 MWF.xDesktop.requireApp("Collect", "Actions.RestActions", null, false);
 MWF.xApplication.Collect.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "Collect",
-		"icon": "icon.png",
-		"width": "400",
-		"height": "500",
-		"isResize": false,
-		"isMax": false,
-		"title": MWF.xApplication.Collect.LP.title
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.Collect.LP;
+    options: {
+        "style": "default",
+        "name": "Collect",
+        "icon": "icon.png",
+        "width": "400",
+        "height": "500",
+        "isResize": false,
+        "isMax": false,
+        "title": MWF.xApplication.Collect.LP.title
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.Collect.LP;
         this.action = MWF.Actions.get("x_program_center");
         //this.action = new MWF.xApplication.Collect.Actions.RestActions();
         this.connected = false;
@@ -25,7 +25,7 @@ MWF.xApplication.Collect.Main = new Class({
         this.connectChecked = false;
         this.loginChecked = false;
 
-	},
+    },
     loadWindow: function(isCurrent){
         this.fireAppEvent("queryLoadWindow");
         this.window = new MWF.xDesktop.WindowTransparent(this, {"container": this.desktop.node});
@@ -41,7 +41,7 @@ MWF.xApplication.Collect.Main = new Class({
         }.bind(this));
     },
 
-	loadApplication: function(callback){
+    loadApplication: function(callback){
         if (!MWF.AC.isAdministrator()){
             try{
                 this.close();
@@ -59,7 +59,7 @@ MWF.xApplication.Collect.Main = new Class({
                 }
             }.bind(this));
         }
-	},
+    },
     loadContent: function(){
         this.titleAreaNode = new Element("div", {"styles": this.css.titleAreaNode}).inject(this.node);
         this.backNode = new Element("div", {"styles": this.css.backNode}).inject(this.titleAreaNode);
@@ -459,10 +459,14 @@ MWF.xApplication.Collect.LoginForm = new Class({
         });
     },
     showModifyForm: function(){
-        if (!this.collect.modifyForm){
+        /*if (!this.collect.modifyForm){
             this.collect.modifyForm = new MWF.xApplication.Collect.ModifyForm(this.collect);
         }
-        this.collect.modifyForm.show();
+        this.collect.modifyForm.show();*/
+        if (!this.collect.modifyPwdForm){
+            this.collect.modifyPwdForm = new MWF.xApplication.Collect.ModifyPwdForm(this.collect);
+        }
+        this.collect.modifyPwdForm.show();
     },
     showRegisterForm: function(){
         if (!this.collect.registerForm){
