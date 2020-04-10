@@ -1,11 +1,9 @@
 {
   "name": "传统样式",
-  "form": {
-    "styles":{
-      "background-color": "#f0f0f0"
-    }
-  },
   "table": {
+    "containerStyles" : {
+
+    },
     "tableStyles": {
       "background-color": "#FFF",
       "border": "1px solid #ddd"
@@ -41,7 +39,7 @@
     "style": "xform_blue_simple",
     "customIconStyle" : ""
   },
-  "pagingBar" : {
+  "paging" : {
     "style" : "default"
   }
 }

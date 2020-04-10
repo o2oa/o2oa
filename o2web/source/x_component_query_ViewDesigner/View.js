@@ -527,6 +527,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         // if( !noSetHeight )this.setContentHeight();
     },
     setViewWidth: function(){
+        if( !this.viewAreaNode )return;
         this.viewAreaNode.setStyle("width", "auto");
         this.viewTitleNode.setStyle("width", "auto");
 
@@ -643,6 +644,8 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         }
         if (name=="data.viewStyleType"){
 
+            debugger;
+
             var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
             var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
             this.loadTemplateStyles( file, extendFile, function( templateStyles ){
@@ -657,10 +660,26 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                     this.json.data.styleConfig = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType] : null;
 
-                    if (oldTemplateStyles["form"]) this.clearTemplateStyles(oldTemplateStyles["form"]);
-                    if (this.templateStyles["form"]) this.setTemplateStyles(this.templateStyles["form"]);
+                    if (oldTemplateStyles["table"]) this.clearTemplateStyles(oldTemplateStyles["table"]);
+                    if (this.templateStyles["table"]) this.setTemplateStyles(this.templateStyles["table"]);
 
-                    // this.setAllStyles();
+                    this.setAllStyles();
+
+                    this.actionbarList.each( function (module) {
+                            if (oldTemplateStyles["actionbar"]){
+                                module.clearTemplateStyles(oldTemplateStyles["actionbar"]);
+                            }
+                            module.setStyleTemplate();
+                            module.setAllStyles();
+                    })
+
+                    this.pagingList.each( function (module) {
+                        if (oldTemplateStyles["paging"]){
+                            module.clearTemplateStyles(oldTemplateStyles["paging"]);
+                        }
+                        module.setStyleTemplate();
+                        module.setAllStyles();
+                    });
 
                     // this.moduleList.each(function(module){
                     //     if (oldTemplateStyles[module.moduleName]){
@@ -673,6 +692,40 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
             }.bind(this))
         }
+    },
+    setAllStyles: function(){
+        this.setPropertiesOrStyles("styles");
+        this.setPropertiesOrStyles("properties");
+        this.reloadMaplist();
+    },
+    reloadMaplist: function(){
+        if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
+    },
+    setPropertiesOrStyles: function(name){
+        if (name=="styles"){
+            this.setCustomStyles();
+        }
+        if (name=="properties"){
+            this.node.setProperties(this.json.properties);
+        }
+    },
+    setCustomStyles: function(){
+        // var border = this.node.getStyle("border");
+        // this.node.clearStyles();
+        // this.node.setStyles((this.options.mode==="Mobile") ? this.css.formMobileNode : this.css.formNode);
+        // var y = this.container.getStyle("height");
+        // y = (y) ? y.toInt()-2 : this.container.getSize().y-2;
+        // this.node.setStyle("min-height", ""+y+"px");
+        //
+        // if (this.initialStyles) this.node.setStyles(this.initialStyles);
+        // this.node.setStyle("border", border);
+        //
+        // Object.each(this.json.styles, function(value, key){
+        //     var reg = /^border\w*/ig;
+        //     if (!key.test(reg)){
+        //         this.node.setStyle(key, value);
+        //     }
+        // }.bind(this));
     },
 
     saveAs: function(){
@@ -755,11 +808,11 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                     this.templateStyles = templateStyles;
                     // this.loadDomModules();
 
-                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["form"]){
-                        this.setTemplateStyles(this.templateStyles["form"]);
+                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["table"]){
+                        this.setTemplateStyles(this.templateStyles["table"]);
                     }
 
-                    // this.setCustomStyles();
+                    this.setCustomStyles();
                     this.node.setProperties(this.json.data.properties);
 
                     if(callback)callback();
@@ -1252,178 +1305,56 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
 
 });
 
-MWF.require("MWF.widget.Toolbar", null, false);
-MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
+MWF.xApplication.query.ViewDesigner.View.$Module = MWF.QV$Module = new Class({
+    Extends: MWF.widget.Common,
     Implements: [Options, Events],
-    options : {
-        "style" : "default",
-        "customImageStyle" : "default"
-    },
-    initialize: function(json, jsonList, view, options){
-        this.setOptions( options );
-        this.propertyPath = "/x_component_query_ViewDesigner/$View/actionbar.html";
-        this.path = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_default = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_custom = "/x_component_process_FormDesigner/Module/Actionbar/";
-        this.cssPath = "/x_component_query_ViewDesigner/$View/"+this.options.style+"/actionbar.wcss";
 
-        this.view = view;
-        this.json = json;
-        this.jsonList = jsonList;
-        this.css = this.view.css;
-        this.container = this.view.actionbarNode;
-        this.load();
+    copyStyles: function(from, to){
+        if (!this.json[to]) this.json[to] = {};
+        Object.each(from, function(style, key){
+            //if (!this.json[to][key])
+            this.json[to][key] = style;
+        }.bind(this));
     },
-    load: function(){
-        this.systemTools = [];
-        this.customTools = [];
-        if( !this.json ){
-            this.loadDefaultJson(function(){
-                this._load()
+    removeStyles: function(from, to){
+        if (this.json[to]){
+            Object.each(from, function(style, key){
+                if (this.json[to][key] && this.json[to][key]==style){
+                    delete this.json[to][key];
+                }
+                //if (this.json[from][key]){
+                //   delete this.json[to][key];
+                //}
             }.bind(this));
-        }else{
-            this._load()
         }
     },
-    _load : function(){
-        this._createNode();
-        //this._createIconAction();
-        //if (!this.json.export) this.hideMode();
-        this.setEvent();
+    setTemplateStyles: function(styles){
+        if (styles.styles) this.copyStyles(styles.styles, "styles");
+        if (styles.properties) this.copyStyles(styles.properties, "properties");
     },
-    loadDefaultJson: function(callback){
-        var url = this.path+"actionbar.json";
-        MWF.getJSON(url, {
-            "onSuccess": function(obj){
-                this.view.designer.actions.getUUID(function(id){
-                    obj.id=id;
-                    //obj.isNewView = true;
-                    //obj.application = this.view.designer.application.id;
-                    this.json = obj;
-                    this.jsonList.push( this.json );
-                    if (callback) callback(obj);
-                }.bind(this));
-            }.bind(this),
-            "onerror": function(text){
-                this.view.designer.notice(text, "error");
-            }.bind(this),
-            "onRequestFailure": function(xhr){
-                this.view.designer.notice(xhr.responseText, "error");
-            }.bind(this)
-        });
-    },
-    setEvent: function(){
-        this.node.addEvents({
-            "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
-            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.toolbarWarpNode_over)}.bind(this),
-            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css.toolbarWarpNode) }.bind(this)
-        });
-    },
-    //_createIconAction: function(){
-    //    if (!this.actionArea){
-    //        this.actionArea = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.container, "after");
-    //
-    //        //this._createAction({
-    //        //    "name": "move",
-    //        //    "icon": "move1.png",
-    //        //    "event": "mousedown",
-    //        //    "action": "move",
-    //        //    "title": MWF.APPDVD.LP.action.move
-    //        //});
-    //        //this._createAction({
-    //        //    "name": "add",
-    //        //    "icon": "add.png",
-    //        //    "event": "click",
-    //        //    "action": "addColumn",
-    //        //    "title": MWF.APPDVD.LP.action.add
-    //        //});
-    //        this._createAction({
-    //            "name": "delete",
-    //            "icon": "delete1.png",
-    //            "event": "click",
-    //            "action": "delete",
-    //            "title": MWF.APPDVD.LP.action["delete"]
-    //        });
-    //    }
-    //},
-    //_createAction: function(action){
-    //    var actionNode = new Element("div", {
-    //        "styles": this.css.actionNodeStyles,
-    //        "title": action.title
-    //    }).inject(this.actionArea);
-    //    actionNode.setStyle("background", "url("+this.view.path+this.view.options.style+"/action/"+action.icon+") no-repeat left center");
-    //    actionNode.addEvent(action.event, function(e){
-    //        this[action.action](e);
-    //    }.bind(this));
-    //    actionNode.addEvents({
-    //        "mouseover": function(e){
-    //            e.target.setStyle("border", "1px solid #999");
-    //        }.bind(this),
-    //        "mouseout": function(e){
-    //            e.target.setStyle("border", "1px solid #F1F1F1");
-    //        }.bind(this)
-    //    });
-    //},
-    //_setActionAreaPosition: function(){
-    //    var p = this.node.getPosition(this.view.areaNode.getOffsetParent());
-    //    var y = p.y-25;
-    //    var x = p.x;
-    //    this.actionArea.setPosition({"x": x, "y": y});
-    //},
-    //_showActions: function(){
-    //    if (this.actionArea){
-    //        this._setActionAreaPosition();
-    //        this.actionArea.setStyle("display", "block");
-    //    }
-    //},
-    //_hideActions: function(){
-    //    if (this.actionArea) this.actionArea.setStyle("display", "none");
-    //},
-
-    selected: function(){
-        if (this.view.currentSelectedModule){
-            if (this.view.currentSelectedModule==this){
-                return true;
-            }else{
-                this.view.currentSelectedModule.unSelected();
-            }
+    clearTemplateStyles: function(styles){
+        if (styles){
+            if (styles.styles) this.removeStyles(styles.styles, "styles");
+            if (styles.properties) this.removeStyles(styles.properties, "properties");
         }
-        this.node.setStyles(this.css.toolbarWarpNode_selected);
-        //this.listNode.setStyles(this.css.cloumnListNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
-        //new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
-
-        this.view.currentSelectedModule = this;
-        this.isSelected = true;
-        //this._showActions();
-        this.showProperty();
     },
-    unSelected: function(){
-        this.view.currentSelectedModule = null;
-        this.node.setStyles(this.css.toolbarWarpNode)
-
-        //this.listNode.setStyles(this.css.cloumnListNode);
-        this.isSelected = false;
-        //this._hideActions();
-        this.hideProperty();
+    setStyleTemplate: function(){
+        if( this.view.templateStyles && this.view.templateStyles[this.moduleName] ){
+            this.setTemplateStyles(this.view.templateStyles[this.moduleName]);
+        }
     },
-
+    setAllStyles: function(){
+        this.setPropertiesOrStyles("styles");
+        this.setPropertiesOrStyles("inputStyles");
+        this.setPropertiesOrStyles("properties");
+        this.reloadMaplist();
+    },
     showProperty: function(){
         if (!this.property){
             this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
                 "path": this.propertyPath,
                 "onPostLoad": function(){
                     this.property.show();
-                    //var processDiv = this.property.propertyContent.getElements("#"+this.json.id+"dataPathSelectedProcessArea");
-                    //var cmsDiv = this.property.propertyContent.getElements("#"+this.json.id+"dataPathSelectedCMSArea");
-                    //
-                    //if (this.view.json.type=="cms"){
-                    //    processDiv.setStyle("display", "none");
-                    //    cmsDiv.setStyle("display", "block");
-                    //}else{
-                    //    processDiv.setStyle("display", "block");
-                    //    cmsDiv.setStyle("display", "none");
-                    //}
                 }.bind(this)
             });
             this.property.load();
@@ -1434,129 +1365,6 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
     hideProperty: function(){
         if (this.property) this.property.hide();
     },
-
-    resetTextNode: function(){
-        var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
-        if (!listText) listText = "unnamed";
-
-        this.textNode.set("text", this.json.displayName);
-        this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
-    },
-    //"delete": function(e){
-    //    var _self = this;
-    //    if (!e) e = this.node;
-    //    this.view.designer.confirm("warn", e, MWF.APPDVD.LP.notice.deleteColumnTitle, MWF.APPDVD.LP.notice.deleteColumn, 300, 120, function(){
-    //        _self.destroy();
-    //
-    //        this.close();
-    //    }, function(){
-    //        this.close();
-    //    }, null);
-    //},
-    //destroy: function(){
-    //    if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
-    //    if (this.actionArea) this.actionArea.destroy();
-    //    if (this.listNode) this.listNode.destroy();
-    //    if (this.property) this.property.propertyContent.destroy();
-    //
-    //    var idx = this.view.items.indexOf(this);
-    //
-    //    if (this.view.viewContentTableNode){
-    //        var trs = this.view.viewContentTableNode.getElements("tr");
-    //        trs.each(function(tr){
-    //            tr.deleteCell(idx);
-    //        }.bind(this));
-    //    }
-    //
-    //    if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
-    //    if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
-    //    this.view.items.erase(this);
-    //    if (this.view.property) this.view.property.loadStatColumnSelect();
-    //
-    //    this.areaNode.destroy();
-    //    this.view.selected();
-    //
-    //    this.view.setViewWidth();
-    //
-    //    MWF.release(this);
-    //    delete this;
-    //},
-
-    //move: function(e){
-    //    this._createMoveNode();
-    //
-    //    //this._setNodeMove(columnNodes, e);
-    //},
-    //_createMoveNode: function(){
-    //    this.moveNode = new Element("div", {"text": this.node.get("text")});
-    //    this.moveNode.inject(this.view.designer.content);
-    //    this.moveNode.setStyles({
-    //        "border": "2px dashed #ffa200",
-    //        "opacity": 0.7,
-    //        "height": "30px",
-    //        "line-height": "30px",
-    //        "padding": "0px 10px",
-    //        "position": "absolute"
-    //    });
-    //},
-    //_setMoveNodePosition: function(e){
-    //    var x = e.page.x+2;
-    //    var y = e.page.y+2;
-    //    this.moveNode.positionTo(x, y);
-    //},
-    //createMoveFlagNode: function(){
-    //    this.moveFlagNode = new Element("td", {"styles": this.css.moveFlagNode});
-    //},
-    //_setNodeMove: function(droppables, e){
-    //    this._setMoveNodePosition(e);
-    //    var movePosition = this.moveNode.getPosition();
-    //    var moveSize = this.moveNode.getSize();
-    //    var contentPosition = this.content.getPosition();
-    //    var contentSize = this.content.getSize();
-    //
-    //    var nodeDrag = new Drag.Move(this.moveNode, {
-    //        "droppables": droppables,
-    //        "limit": {
-    //            "x": [contentPosition.x, contentPosition.x+contentSize.x],
-    //            "y": [movePosition.y, movePosition.y+moveSize.y]
-    //        },
-    //        "onEnter": function(dragging, inObj){
-    //            if (!this.moveFlagNode) this.createMoveFlagNode();
-    //            this.moveFlagNode.inject(inObj, "before");
-    //        }.bind(this),
-    //        "onLeave": function(dragging, inObj){
-    //            if (this.moveFlagNode){
-    //                this.moveFlagNode.dispose();
-    //            }
-    //        }.bind(this),
-    //        "onDrop": function(dragging, inObj){
-    //            if (inObj){
-    //                this.areaNode.inject(inObj, "before");
-    //                var column = inObj.retrieve("column");
-    //                this.listNode.inject(column.listNode, "before");
-    //                var idx = this.view.json.data.selectList.indexOf(column.json);
-    //
-    //                this.view.json.data.selectList.erase(this.json);
-    //                this.view.items.erase(this);
-    //
-    //                this.view.json.data.selectList.splice(idx, 0, this.json);
-    //                this.view.items.splice(idx, 0, this);
-    //
-    //                if (this.moveNode) this.moveNode.destroy();
-    //                if (this.moveFlagNode) this.moveFlagNode.destroy();
-    //                this._setActionAreaPosition();
-    //            }else{
-    //                if (this.moveNode) this.moveNode.destroy();
-    //                if (this.moveFlagNode) this.moveFlagNode.destroy();
-    //            }
-    //        }.bind(this),
-    //        "onCancel": function(dragging){
-    //            if (this.moveNode) this.moveNode.destroy();
-    //            if (this.moveFlagNode) this.moveFlagNode.destroy();
-    //        }.bind(this)
-    //    });
-    //    nodeDrag.start(e);
-    //},
 
     deletePropertiesOrStyles: function(name, key){
         if (name=="properties"){
@@ -1653,10 +1461,10 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
 
         this._setEditStyle_custom(name, obj, oldValue);
     },
+
     reloadMaplist: function(){
         if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
     },
-
     getHtml: function(){
         var copy = this.node.clone(true, true);
         copy.clearStyles(true);
@@ -1671,8 +1479,130 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         var o = {};
         o[json.id] = json;
         return o;
+    }
+})
+
+MWF.require("MWF.widget.Toolbar", null, false);
+MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
+    Extends: MWF.xApplication.query.ViewDesigner.View.$Module,
+    options : {
+        "style" : "default",
+        "customImageStyle" : "default"
+    },
+    initialize: function(json, jsonList, view, options){
+        this.setOptions( options );
+        this.propertyPath = "/x_component_query_ViewDesigner/$View/actionbar.html";
+        this.path = "/x_component_query_ViewDesigner/$View/";
+        this.imagePath_default = "/x_component_query_ViewDesigner/$View/";
+        this.imagePath_custom = "/x_component_process_FormDesigner/Module/Actionbar/";
+        this.cssPath = "/x_component_query_ViewDesigner/$View/"+this.options.style+"/actionbar.wcss";
+
+        this.view = view;
+        this.json = json;
+        this.jsonList = jsonList;
+        this.css = this.view.css;
+        this.container = this.view.actionbarNode;
+        this.moduleName = "actionbar";
+        this.load();
+    },
+    load: function(){
+        this.systemTools = [];
+        this.customTools = [];
+        if( !this.json ){
+            this.loadDefaultJson(function(){
+                this._load()
+            }.bind(this));
+        }else{
+            this._load()
+        }
+    },
+    _load : function(){
+        this.json.moduleName = this.moduleName;
+        this._createNode();
+        //this._createIconAction();
+        //if (!this.json.export) this.hideMode();
+        this.setEvent();
+    },
+    loadDefaultJson: function(callback){
+        var url = this.path+"actionbar.json";
+        MWF.getJSON(url, {
+            "onSuccess": function(obj){
+                this.view.designer.actions.getUUID(function(id){
+                    obj.id=id;
+                    //obj.isNewView = true;
+                    //obj.application = this.view.designer.application.id;
+                    this.json = obj;
+                    this.jsonList.push( this.json );
+                    if (callback) callback(obj);
+                }.bind(this));
+            }.bind(this),
+            "onerror": function(text){
+                this.view.designer.notice(text, "error");
+            }.bind(this),
+            "onRequestFailure": function(xhr){
+                this.view.designer.notice(xhr.responseText, "error");
+            }.bind(this)
+        });
+    },
+    setTemplateStyles: function(styles){
+        this.json.style = styles.style;
+        this.json.iconOverStyle = styles.iconOverStyle || "";
+        this.json.customIconStyle = styles.customIconStyle;
+        this.json.customIconOverStyle = styles.customIconOverStyle || "";
+        this.json.forceStyles = styles.forceStyles || "";
+    },
+    clearTemplateStyles: function(styles){
+        this.json.style = "form";
+        this.json.iconOverStyle = "";
+        this.json.customIconStyle = "";
+        this.json.customIconOverStyle = "";
+        this.json.forceStyles = "";
+    },
+    setAllStyles: function(){
+        this._resetActionbar();
+    },
+    setEvent: function(){
+        this.node.addEvents({
+            "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
+            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.toolbarWarpNode_over)}.bind(this),
+            "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css.toolbarWarpNode) }.bind(this)
+        });
+    },
+    selected: function(){
+        if (this.view.currentSelectedModule){
+            if (this.view.currentSelectedModule==this){
+                return true;
+            }else{
+                this.view.currentSelectedModule.unSelected();
+            }
+        }
+        this.node.setStyles(this.css.toolbarWarpNode_selected);
+        //this.listNode.setStyles(this.css.cloumnListNode_selected);
+        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        //new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+
+        this.view.currentSelectedModule = this;
+        this.isSelected = true;
+        //this._showActions();
+        this.showProperty();
+    },
+    unSelected: function(){
+        this.view.currentSelectedModule = null;
+        this.node.setStyles(this.css.toolbarWarpNode)
+
+        //this.listNode.setStyles(this.css.cloumnListNode);
+        this.isSelected = false;
+        //this._hideActions();
+        this.hideProperty();
     },
 
+    resetTextNode: function(){
+        var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
+        if (!listText) listText = "unnamed";
+
+        this.textNode.set("text", this.json.displayName);
+        this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
+    },
 
     _createNode: function(callback){
         this.node = new Element("div", {
@@ -1771,9 +1701,9 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             this.toolbarNode.empty();
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
             if (!this.json.actionStyles){
-                this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+                this.json.actionStyles = Object.merge( Object.clone( this.toolbarWidget.css ), this.json.forceStyles || {} );
             }else{
-                this.toolbarWidget.css = Object.merge( Object.clone(this.json.actionStyles), this.toolbarWidget.css );
+                this.toolbarWidget.css = Object.merge( Object.clone( this.json.actionStyles ), this.toolbarWidget.css, this.json.forceStyles || {} );
                 this.json.actionStyles = Object.clone(this.toolbarWidget.css);
             }
 
@@ -1866,11 +1796,9 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
 });
 
 
-
-
 MWF.require("MWF.widget.Paging", null, false);
 MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
-    Implements: [Options, Events],
+    Extends: MWF.xApplication.query.ViewDesigner.View.$Module,
     options : {
         "style" : "default"
     },
@@ -1883,6 +1811,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         this.jsonList = jsonList;
         this.css = this.view.css;
         this.container = this.view.pagingNode;
+        this.moduleName = "paging";
         this.load();
     },
     load: function(){
@@ -1890,13 +1819,16 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         this.customTools = [];
         if( !this.json ){
             this.loadDefaultJson(function(){
-                this._createNode();
-                this.setEvent();
+                this._load();
             }.bind(this));
         }else{
-            this._createNode();
-            this.setEvent();
+            this._load();
         }
+    },
+    _load : function(){
+        this.json.moduleName = this.moduleName;
+        this._createNode();
+        this.setEvent();
     },
     loadDefaultJson: function(callback){
         var url = this.view.path+"paging.json";
@@ -1916,6 +1848,17 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
                 this.view.designer.notice(xhr.responseText, "error");
             }.bind(this)
         });
+    },
+    setTemplateStyles: function(styles){
+        this.json.style = styles.style;
+        this.json.forceStyles = styles.forceStyles || "";
+    },
+    clearTemplateStyles: function(styles){
+        this.json.style = "default";
+        this.json.forceStyles = "";
+    },
+    setAllStyles: function(){
+        this._resetPaging();
     },
     setEvent: function(){
         this.node.addEvents({
@@ -1947,22 +1890,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         this.hideProperty();
     },
 
-    showProperty: function(){
-        if (!this.property){
-            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.view.designer.propertyContentArea, this.view.designer, {
-                "path": this.propertyPath,
-                "onPostLoad": function(){
-                    this.property.show();
-                }.bind(this)
-            });
-            this.property.load();
-        }else{
-            this.property.show();
-        }
-    },
-    hideProperty: function(){
-        if (this.property) this.property.hide();
-    },
+
 
     resetTextNode: function(){
         var listText = (this.json.selectType=="attribute") ? (this.json.attribute || "") : (this.json.path || "");
@@ -1970,121 +1898,6 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
 
         this.textNode.set("text", this.json.displayName);
         this.listNode.getLast().set("text", this.json.displayName+"("+listText+")");
-    },
-
-    deletePropertiesOrStyles: function(name, key){
-        if (name=="properties"){
-            try{
-                this.node.removeProperty(key);
-            }catch(e){}
-        }
-    },
-    setPropertiesOrStyles: function(name){
-        if (name=="styles"){
-            try{
-                this.setCustomStyles();
-            }catch(e){}
-        }
-        if (name=="properties"){
-            try{
-                this.node.setProperties(this.json.properties);
-            }catch(e){}
-        }
-    },
-    setCustomNodeStyles: function(node, styles){
-        var border = node.getStyle("border");
-        node.clearStyles();
-        //node.setStyles(styles);
-        node.setStyle("border", border);
-
-        Object.each(styles, function(value, key){
-            var reg = /^border\w*/ig;
-            if (!key.test(reg)){
-                node.setStyle(key, value);
-            }
-        }.bind(this));
-    },
-    setCustomStyles: function(){
-        var border = this.node.getStyle("border");
-        this.node.clearStyles();
-        this.node.setStyles(this.css.moduleNode);
-
-        if (this.initialStyles) this.node.setStyles(this.initialStyles);
-        this.node.setStyle("border", border);
-
-        if (this.json.styles) Object.each(this.json.styles, function(value, key){
-            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
-                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
-                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
-                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
-                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
-                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
-                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
-                }
-                if (value.indexOf("/x_portal_assemble_surface")!==-1){
-                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
-                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
-                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
-                }
-            }
-
-            var reg = /^border\w*/ig;
-            if (!key.test(reg)){
-                if (key){
-                    if (key.toString().toLowerCase()==="display"){
-                        if (value.toString().toLowerCase()==="none"){
-                            this.node.setStyle("opacity", 0.3);
-                        }else{
-                            this.node.setStyle("opacity", 1);
-                            this.node.setStyle(key, value);
-                        }
-                    }else{
-                        this.node.setStyle(key, value);
-                    }
-                }
-            }
-            //this.node.setStyle(key, value);
-        }.bind(this));
-    },
-
-    _setEditStyle: function(name, obj, oldValue){
-        var title = "";
-        var text = "";
-        if (name==="name"){
-            title = this.json.name || this.json.id;
-            text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
-            this.treeNode.setText("<"+text+"> "+title);
-        }
-        if (name==="id"){
-            title = this.json.name || this.json.id;
-            if (!this.json.name){
-                text = this.json.type.substr(this.json.type.lastIndexOf("$")+1, this.json.type.length);
-                this.treeNode.setText("<"+text+"> "+this.json.id);
-            }
-            this.treeNode.setTitle(this.json.id);
-            this.node.set("id", this.json.id);
-        }
-
-        this._setEditStyle_custom(name, obj, oldValue);
-    },
-    reloadMaplist: function(){
-        if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
-    },
-
-    getHtml: function(){
-        var copy = this.node.clone(true, true);
-        copy.clearStyles(true);
-
-        var html = copy.outerHTML;
-        copy.destroy();
-
-        return html;
-    },
-    getJson: function(){
-        var json = Object.clone(this.json);
-        var o = {};
-        o[json.id] = json;
-        return o;
     },
 
 
@@ -2109,7 +1922,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         // }
         // this.pagingWidget.load();
     },
-    loadWidget : function(){
+    loadWidget : function( isReset ){
         var visiblePages = this.json.visiblePages ? this.json.visiblePages.toInt() : 9;
         this.pagingWidget = new o2.widget.Paging(this.pagingNode, {
             style : this.json.style || "default",
@@ -2139,13 +1952,25 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
                 this.view.setContentHeight()
                 // if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this)
-        }, this.json.pagingStyles || {});
-        if (!this.json.pagingStyles){
-            this.json.pagingStyles = Object.clone(this.pagingWidget.css);
+        }, isReset ? {} : (this.json.pagingStyles || {}));
+        if( isReset ){
+            if (!this.json.pagingStyles){
+                this.json.pagingStyles = Object.merge( Object.clone( this.pagingWidget.css ), this.json.forceStyles || {} );
+            }else{
+                this.pagingWidget.css = Object.merge( Object.clone( this.json.pagingStyles ), this.pagingWidget.css, this.json.forceStyles || {} );
+                this.json.pagingStyles = Object.clone(this.pagingWidget.css);
+            }
+        }else{
+            if (!this.json.pagingStyles){
+                this.json.pagingStyles = Object.clone(this.pagingWidget.css);
+            }
         }
         this.pagingWidget.load();
     },
-
+    _resetPaging : function(){
+        this.pagingNode.empty();
+        this.loadWidget( true );
+    },
     _refreshPaging: function(){
         this.pagingNode.empty();
         this.loadWidget();
