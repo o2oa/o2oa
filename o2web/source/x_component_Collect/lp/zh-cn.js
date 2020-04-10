@@ -8,6 +8,8 @@ MWF.xApplication.Collect.LP = {
     "collectNotLogin": "您还未登录到O2云！",
 
     "recheck": "重新检查连接",
+    "doDisconnect": "断开连接",
+
     "modifyAccountAction": "修改账号",
     "modifyPwdAccountAction": "修改密码",
     "deleteAccountAction": "删除账号",

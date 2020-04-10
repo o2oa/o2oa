@@ -142,6 +142,9 @@ MWF.xApplication.Collect.Check = new Class({
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.modifyAccount}).inject(this.actionsNode);
         this.modifyAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyAccountAction}).inject(this.actionsNode);
 
+        this.disconnectAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.doDisconnect}).inject(this.actionsNode);
+        this.disconnectAction.addEvent("click", this.disconnect.bind(this));
+
         this.modifyPwdAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.modifyPwdAccountAction}).inject(this.actionsNode);
 
         this.deleteAccountAction = new Element("div", {"styles": this.css.inforAction, "html": this.lp.deleteAccountAction}).inject(this.actionsNode);
@@ -171,7 +174,6 @@ MWF.xApplication.Collect.Check = new Class({
         new Element("div", {"styles": this.css.loginInfor, "html": this.lp.disconnect}).inject(this.actionsNode);
         new Element("div", {"styles": this.css.disconnectInfor, "html": this.lp.disconnectInfo}).inject(this.actionsNode);
     },
-
     setStatusConnectNode: function(){
         this.statusConnectNode.empty();
         this.setStatusConnectNodeContent();
@@ -201,7 +203,6 @@ MWF.xApplication.Collect.Check = new Class({
 
         this.statusConnectTextNode = new Element("div", {"styles": this.css.statusConnectTextNode, "text": this.lp.checking}).inject(this.statusConnectNode);
     },
-
     setStatusConnectSuccess: function(){
         this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconConnectedNode);
         this.statusConnectTextNode.set("text", this.lp.collectConnected);
@@ -210,7 +211,6 @@ MWF.xApplication.Collect.Check = new Class({
         this.statusConnectIconConnectNode.setStyles(this.css.statusConnectIconDisconnectNode);
         this.statusConnectTextNode.set("text", this.lp.collectDisconnect);
     },
-
     setStatusLoginNode: function(){
         this.statusLoginNode.empty();
         this.setStatusLoginNodeContent();
@@ -244,7 +244,6 @@ MWF.xApplication.Collect.Check = new Class({
 
         this.statusLoginTextNode = new Element("div", {"styles": this.css.statusLoginTextNode, "text": this.lp.checking}).inject(this.statusLoginNode);
     },
-
     setStatusLoginSuccess: function(){
         this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconConnectedNode);
         this.statusLoginTextNode.set("text", this.lp.collectLogin);
@@ -252,6 +251,11 @@ MWF.xApplication.Collect.Check = new Class({
     setStatusLoginFailure: function(){
         this.statusLoginIconConnectNode.setStyles(this.css.statusLoginIconDisconnectNode);
         this.statusLoginTextNode.set("text", this.lp.collectNotLogin);
+    },
+    disconnect : function(){
+        this.action.disconnect( function(json){
+            this.recheck();
+        }.bind(this), null , false);
     },
     recheck: function(){
         this.contentNode.empty();
