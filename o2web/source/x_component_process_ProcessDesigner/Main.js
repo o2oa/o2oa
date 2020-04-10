@@ -621,7 +621,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
 
             $(toolbarNode).inject(this.toolbarNode);
             MWF.require("MWF.widget.Toolbar", function(){
-                this.processToolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
+                this.processToolbar = new MWF.widget.Toolbar(toolbarNode, {"style": "Process"}, this);
                 this.processToolbar.load();
                 if (callback) callback();
             }.bind(this));
@@ -633,6 +633,8 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
                 }.bind(this));
             }
 
+            this.processEditionNode = toolbarNode.getElement(".processEdition");
+            this.processEditionInforNode = toolbarNode.getElement(".processEditionInfor");
         }.bind(this));
     },
     getProcessToolbarHTML: function(callback){
