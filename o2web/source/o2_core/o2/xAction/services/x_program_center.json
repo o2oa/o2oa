@@ -1,6 +1,7 @@
 {
   "collectConnected": {"uri": "/jaxrs/collect/connect"},
   "getCollectConfig": {"uri": "/jaxrs/collect"},
+  "disconnect": {"uri": "/jaxrs/collect/disconnect"},
   "collectValidate": {"uri": "/jaxrs/collect/validate"},
 
   "updateCollect": {"uri": "/jaxrs/collect", "method": "PUT"},
