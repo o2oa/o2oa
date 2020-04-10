@@ -25,6 +25,12 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">视图样式:</td>
+                <td class="editTableValue">
+                    <select class="MWFViewStyle" name="data.viewStyleType"></select>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">展开分类:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="data.isExpand" text{($.data.isExpand==='yes')?'checked':''} type="radio" value="yes"/>是
@@ -46,12 +52,6 @@
                 <td class="editTableTitleNoWidth">每页行数:</td>
                 <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
             </tr>
-<!--            <tr>-->
-<!--                <td class="editTableTitle">视图样式:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <select class="MWFViewStyle" name="viewStyleType"></select>-->
-<!--                </td>-->
-<!--            </tr>-->
             <tr>
                 <td class="editTableTitle">隐藏操作条:</td>
                 <td class="editTableValue">
@@ -684,6 +684,10 @@
 <!--        <div class="MWFMaplist" name="contentTdOverStyles" collapse="true" title="内容单元格鼠标over事件样式"></div>-->
 <!--        <div class="MWFMaplist" name="contentTdSelectedStyles" collapse="true" title="内容单元格选中样式"></div>-->
 <!--    </div>-->
+
+    <div title="样式"  class="MWFTab">
+        <div class="MWFViewStylesArea" name="viewStyles"></div>
+    </div>
 
     <div title="事件"  class="MWFTab">
         <div class="MWFEventsArea" name="data.events"></div>

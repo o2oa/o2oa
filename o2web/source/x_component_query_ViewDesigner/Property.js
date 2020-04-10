@@ -64,6 +64,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadJSONArea();
 
                     this.loadEventsEditor();
+                    this.loadViewStylesArea();
                     this.loadPagingStylesArea();
                     this.loadActionStylesArea();
                     this.loadActionArea();
@@ -709,6 +710,37 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         this.data.filterList.push(op);
         var filter = new MWF.xApplication.query.ViewDesigner.Property.Filter(op, table, this);
         filter.editMode();
+    },
+    loadViewStylesArea: function(){
+        var _self = this;
+        var viewAreas = this.propertyContent.getElements(".MWFViewStylesArea");
+        viewAreas.each(function(node){
+            var name = node.get("name");
+            var viewStyles = this.data[name] || {};
+            MWF.require("MWF.widget.Maplist", function(){
+                var maps = [];
+                Object.each(viewStyles, function(v, k){
+                    var mapNode = new Element("div").inject(node);
+                    mapNode.empty();
+
+                    var maplist = new MWF.widget.Maplist(mapNode, {
+                        "title": k,
+                        "collapse": true,
+                        "onChange": function(){
+                            var oldData = _self.data[name];
+                            maps.each(function(o){
+                                _self.data[name][o.key] = o.map.toJson();
+                            }.bind(this));
+                            _self.changeData(name, node, oldData);
+                        }
+                    });
+                    maps.push({"key": k, "map": maplist});
+                    maplist.load(v);
+                }.bind(this));
+            }.bind(this));
+
+
+        }.bind(this));
     },
     loadActionStylesArea: function(){
         var _self = this;
