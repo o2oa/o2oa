@@ -126,6 +126,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.setEvent();
 		this.setMenu();
 		this.showProperty();
+		this.showEditionInfor();
 	},
 	checkLoadRoutes: function(){
 		Object.each(this.routes, function(route){
@@ -366,6 +367,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}
     //    this.isFocus = true;
 	},
+	showEditionInfor: function(){
+
+	},
+
 	unSelected: function(e){
 		//var els = this.paper.getElementsByPoint(e.event.layerX, e.event.layerY);
 		var els = this.paper.getElementsByPoint(e.event.offsetX, e.event.offsetY);
