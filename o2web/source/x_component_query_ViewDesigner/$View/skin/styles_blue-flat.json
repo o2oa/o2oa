@@ -1,11 +1,9 @@
 {
   "name": "蓝白扁平",
-  "form": {
-    "styles":{
-      "background-color": "#f1f4f9"
-    }
-  },
   "table": {
+    "containerStyles" : {
+
+    },
     "tableStyles": {
       "background-color": "#FFF",
       "border" : "1px solid #DCDFE6"
@@ -42,9 +40,16 @@
     "style": "xform_blue_flat",
     "iconOverStyle": "xform_blue_flat_over",
     "customIconStyle" : "blue",
-    "customIconOverStyle" : "white"
+    "customIconOverStyle" : "white",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "padding-left" : "10px",
+        "padding-right" : "10px"
+      }
+    }
   },
   "paging" : {
-
+    "style" : "default"
   }
 }
