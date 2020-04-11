@@ -45,7 +45,9 @@
       "container" : {
         "width" : "100%",
         "padding-left" : "10px",
-        "padding-right" : "10px"
+        "padding-right" : "10px",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #4a90e2"
       }
     }
   },

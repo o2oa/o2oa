@@ -2,7 +2,14 @@
   "name": "红色简洁",
   "actionbar": {
     "style": "xform_red_simple",
-    "customIconStyle" : ""
+    "customIconStyle" : "",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #cc3d3d"
+      }
+    }
   },
   "paging" : {
     "style" : "red"

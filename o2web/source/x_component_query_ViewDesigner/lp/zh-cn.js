@@ -13,6 +13,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
     "name": "名称",
     "alias": "别名",
     "description": "描述",
+    "saveViewNotice" : "请先保存视图！",
 
     "application" : "数据应用",
     "newView" : "新视图",

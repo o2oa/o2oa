@@ -28,6 +28,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
         this.designer = designer;
         this.data = data;
+
         if (!this.data.data) this.data.data = {};
         this.parseData();
 
@@ -47,7 +48,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         if(this.designer.application) this.data.applicationName = this.designer.application.name;
         if(this.designer.application) this.data.application = this.designer.application.id;
 
-        this.isNewView = (this.data.id) ? false : true;
+        this.isNewView = (this.data.name) ? false : true;
 
         this.items = [];
         this.view = this;
@@ -575,6 +576,20 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     //     this.items.push(new MWF.xApplication.process.DictionaryDesigner.Dictionary.item("ROOT", this.data.data, null, 0, this, true));
     // },
 
+    preview: function(){
+        if( this.isNewView ){
+            this.designer.notice( this.designer.lp.saveViewNotice, "error" );
+            return;
+        }
+        this.saveSilence( function () {
+            var url = "/x_desktop/app.html?app=query.Query&status=";
+            url += JSON.stringify({
+                id : this.data.application,
+                viewId : this.data.id
+            });
+            window.open(url,"_blank");
+        }.bind(this));
+    },
     saveSilence: function(callback){
         if (!this.data.name){
             this.designer.notice(this.designer.lp.notice.inputName, "error");
@@ -583,6 +598,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
         this.designer.actions.saveView(this.data, function(json){
             this.data.id = json.data.id;
+            this.isNewView = false;
             //this.page.textNode.set("text", this.data.name);
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name+"("+this.data.alias+")");
@@ -599,7 +615,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         //}
         this.designer.actions.saveView(this.data, function(json){
             this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
-
+            this.isNewView = false;
             this.data.id = json.data.id;
             //this.page.textNode.set("text", this.data.name);
             if (this.lisNode) {

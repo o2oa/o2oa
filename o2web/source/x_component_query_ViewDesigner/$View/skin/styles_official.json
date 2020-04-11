@@ -1,7 +1,15 @@
 {
   "name": "公文样式",
   "actionbar": {
-    "style": "xform_red_simple"
+    "style": "xform_red_simple",
+    "customIconStyle" : "",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #cc3d3d"
+      }
+    }
   },
   "paging" : {
     "style" : "default"
