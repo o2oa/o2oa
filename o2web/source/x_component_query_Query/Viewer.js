@@ -108,12 +108,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
-        this.actionbarAreaNode =  new Element("div", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
-        this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
-        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
+        // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
     },
     loadMacro: function (callback) {
         MWF.require("MWF.xScript.Macro", function () {
@@ -169,7 +169,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var exportSize = this.actionbarAreaNode.getComputedSize();
             h = h-exportSize.totalHeight;
         }
-        var pageSize = this.viewPageNode.getComputedSize();
+        var pageSize = this.viewPageAreaNode.getComputedSize();
         h = h-pageSize.totalHeight;
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
@@ -2040,13 +2040,14 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
         this.loadPaging( false )
     },
     loadPaging : function( firstLoading ){
-        this.pagingNode = this.node.getFirst("div");
-        if( !this.pagingNode ){
-            this.pagingNode = new Element("div").inject( this.node );
-        }
-        this.pagingNode.empty();
+        // this.pagingNode = this.node.getFirst("div");
+        // if( !this.pagingNode ){
+        //     this.pagingNode = new Element("div").inject( this.node );
+        // }
+        // this.pagingNode.empty();
+        this.node.empty();
 
-        this.paging = new o2.widget.Paging(this.pagingNode, {
+        this.paging = new o2.widget.Paging(this.node, {
             //style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
             countPerPage: this.view.json.pageSize || this.view.options.perPageCount,
             visiblePages: this.json.visiblePages ? this.json.visiblePages.toInt() : 9,

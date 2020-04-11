@@ -2,7 +2,14 @@
   "name": "蓝色简洁",
   "actionbar": {
     "style": "xform_blue_simple",
-    "customIconStyle" : ""
+    "customIconStyle" : "",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #4a90e2"
+      }
+    }
   },
   "paging" : {
     "style" : "default"

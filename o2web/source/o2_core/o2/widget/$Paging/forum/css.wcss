@@ -1,4 +1,8 @@
 {
+    "pagingBarWraper" : {
+        "height" : "56px",
+        "overflow" : "hidden"
+    },
     "pagingBar" : {
         "float" : "right",
         "margin-right" : "10px",
