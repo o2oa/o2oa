@@ -1,7 +1,12 @@
 {
+    "pagingBarWraper" : {
+        "height" : "60px",
+        "overflow" : "hidden"
+    },
     "pagingBar" : {
         "float": "left",
         "margin-left": "10px",
+        "margin-top": "18px",
         "height": "24px",
         "color": "#777777"
     },
