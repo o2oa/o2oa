@@ -181,11 +181,10 @@ public class PersonCardAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "个人通讯录生成二维码", action = ActionCreateCode.class) 
 	@GET
 	@Path("createQR/{cardId}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8) 
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void code(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("名片id") @PathParam("cardId") String cardId) {
-		ActionResult<String> result = new ActionResult<>(); 
+		ActionResult<ActionCreateCode.Wo> result = new ActionResult<>(); 
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionCreateCode().qrcode(effectivePerson, cardId);
@@ -199,11 +198,10 @@ public class PersonCardAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "组织人员生成二维码", action = ActionPersonCode.class) 
 	@GET
 	@Path("createCode/{cardId}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8) 
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void personcode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("名片id") @PathParam("cardId") String cardId) {
-		ActionResult<String> result = new ActionResult<>(); 
+		ActionResult<ActionPersonCode.Wo> result = new ActionResult<>(); 
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionPersonCode().personcode(effectivePerson, cardId);
