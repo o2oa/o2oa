@@ -177,35 +177,55 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }
 
                             json.data.groupGrid.each(function(line, idx){
-                                var groupTr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
+                                var groupTr = new Element("tr", {"styles":
+                                    this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                                }).inject(this.viewContentTableNode);
                                 var colSpan = this.items.length ;
-                                var td = new Element("td", {"styles": this.css.viewContentGroupTdNode, "colSpan": colSpan}).inject(groupTr);
-                                var groupAreaNode = new Element("div", {"styles": this.css.viewContentTdGroupNode}).inject(td);
-                                var groupIconNode = new Element("div", {"styles": this.css.viewContentTdGroupIconNode}).inject(groupAreaNode);
-                                var groupTextNode = new Element("div", {"styles": this.css.viewContentTdGroupTextNode}).inject(groupAreaNode);
-                                if (groupColumn){
-                                    //groupTextNode.set("text", (groupColumn.code) ? MWF.Macro.exec(groupColumn.code, {"value": line.group, "gridData": json.data.groupGrid, "data": json.data, "entry": line}) : line.group);
-                                    groupTextNode.set("text", line.group);
+                                var td = new Element("td", {
+                                    "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentGroupTd"] : this.css.viewContentGroupTdNode,
+                                    "colSpan": colSpan
+                                }).inject(groupTr);
+
+                                var groupAreaNode;
+                                if( this.json.data.viewStyles ){
+                                    groupAreaNode = new Element("div", {"styles": this.json.data.viewStyles["groupCollapseNode"]}).inject(td);
+                                    groupAreaNode.set("text", line.group);
                                 }else{
-                                    groupTextNode.set("text", line.group);
+                                    groupAreaNode = new Element("div", {"styles": this.css.viewContentTdGroupNode}).inject(td);
+                                    var groupIconNode = new Element("div", {"styles": this.css.viewContentTdGroupIconNode}).inject(groupAreaNode);
+                                    var groupTextNode = new Element("div", {"styles": this.css.viewContentTdGroupTextNode}).inject(groupAreaNode);
+                                    if (groupColumn){
+                                        //groupTextNode.set("text", (groupColumn.code) ? MWF.Macro.exec(groupColumn.code, {"value": line.group, "gridData": json.data.groupGrid, "data": json.data, "entry": line}) : line.group);
+                                        groupTextNode.set("text", line.group);
+                                    }else{
+                                        groupTextNode.set("text", line.group);
+                                    }
+
                                 }
+
 
 
                                 var subtrs = [];
 
                                 line.list.each(function(entry){
-                                    var tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
+                                    var tr = new Element("tr", {
+                                        "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                                    }).inject(this.viewContentTableNode);
                                     tr.setStyle("display", "none");
 
                                     //this.createViewCheckboxTd( tr );
 
-                                    var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
+                                    var td = new Element("td", {
+                                        "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTd"] : this.css.viewContentTdNode
+                                    }).inject(tr);
 
                                     Object.each(entries, function(c, k){
                                         var d = entry.data[k];
                                         if (d!=undefined){
                                             if (k!=this.json.data.group.column){
-                                                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
+                                                var td = new Element("td", {
+                                                    "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTd"] : this.css.viewContentTdNode
+                                                }).inject(tr);
                                                 //td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.groupGrid, "data": json.data, "entry": entry}) : d);
 
                                                 if (c.isHtml){
@@ -236,10 +256,18 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                                     if (subtrs[0]){
                                         if (subtrs[0].getStyle("display")=="none"){
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "table-row"); });
-                                            iconNode.setStyle("background", "url("+"/x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                            if( iconNode ) {
+                                                iconNode.setStyle("background", "url(" + "/x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                            }else{
+                                                this.setStyles( _self.json.data.viewStyles["groupExpandNode"] )
+                                            }
                                         }else{
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "none"); });
-                                            iconNode.setStyle("background", "url("+"/x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                            if( iconNode ) {
+                                                iconNode.setStyle("background", "url(" + "/x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                            }else{
+                                                this.setStyles( _self.json.data.viewStyles["groupCollapseNode"] )
+                                            }
                                         }
                                     }
                                     _self.setContentHeight();
@@ -253,14 +281,18 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                         if (json.data.grid.length){
                             json.data.grid.each(function(line, idx){
-                                var tr = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.viewContentTableNode);
+                                var tr = new Element("tr", {
+                                    "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                                }).inject(this.viewContentTableNode);
 
                                 //this.createViewCheckboxTd( tr );
 
                                 Object.each(entries, function(c, k){
                                     var d = line.data[k];
                                     if (d!=undefined){
-                                        var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(tr);
+                                        var td = new Element("td", {
+                                            "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTd"] : this.css.viewContentTdNode
+                                        }).inject(tr);
                                         //td.set("text", (entries[k].code) ? MWF.Macro.exec(entries[k].code, {"value": d, "gridData": json.data.grid, "data": json.data, "entry": line}) : d);
                                         if (c.isHtml){
                                             td.set("html", d);
@@ -678,7 +710,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                     if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
                     if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
-
                     this.setAllStyles();
 
                     this.actionbarList.each( function (module) {
@@ -708,24 +739,31 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
             }.bind(this))
         }
+        if (name=="data.viewStyles"){
+            this.setCustomStyles();
+        }
     },
     setAllStyles: function(){
-        this.setPropertiesOrStyles("styles");
-        this.setPropertiesOrStyles("properties");
+        // this.setPropertiesOrStyles("styles");
+        // this.setPropertiesOrStyles("properties");
+        this.setCustomStyles();
         this.reloadMaplist();
     },
     reloadMaplist: function(){
         if (this.property) Object.each(this.property.maplists, function(map, name){ map.reload(this.json[name]);}.bind(this));
     },
-    setPropertiesOrStyles: function(name){
-        if (name=="styles"){
-            this.setCustomStyles();
-        }
-        if (name=="properties"){
-            this.node.setProperties(this.json.properties);
-        }
-    },
+    // setPropertiesOrStyles: function(name){
+    //     if (name=="styles"){
+    //         this.setCustomStyles();
+    //     }
+    //     if (name=="properties"){
+    //         this.node.setProperties(this.json.properties);
+    //     }
+    // },
     setCustomStyles: function(){
+        this.items.each( function( item ){
+            item.setCustomStyles()
+        }.bind(this));
         // var border = this.node.getStyle("border");
         // this.node.clearStyles();
         // this.node.setStyles((this.options.mode==="Mobile") ? this.css.formMobileNode : this.css.formNode);
@@ -743,67 +781,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         //     }
         // }.bind(this));
     },
-
-    saveAs: function(){
-        var form = new MWF.xApplication.query.ViewDesigner.View.NewNameForm(this, {
-            name : this.data.name + "_" + MWF.xApplication.query.ViewDesigner.LP.copy,
-            query : this.data.query || this.data.application,
-            queryName :	this.data.queryName || this.data.applicationName
-        }, {
-            onSave : function( data, callback ){
-                this._saveAs( data, callback );
-            }.bind(this)
-        }, {
-            app: this.designer
-        });
-        form.edit()
-    },
-    cloneObject : function( obj ){
-        if (null == obj || "object" != typeof obj) return obj;
-
-        if ( typeof obj.length==='number'){ //数组
-            //print( "array" );
-            var copy = [];
-            for (var i = 0, len = obj.length; i < len; ++i) {
-                copy[i] = this.cloneObject(obj[i]);
-            }
-            return copy;
-        }else{
-            var copy = {};
-            for (var attr in obj) {
-                copy[attr] = this.cloneObject(obj[attr]);
-            }
-            return copy;
-        }
-    },
-    _saveAs : function( data , callback){
-        var _self = this;
-
-        var d = this.cloneObject( this.data );
-
-        d.isNewView = true;
-        d.id = this.designer.actions.getUUID();
-        d.name = data.name;
-        d.alias = "";
-        d.query = data.query;
-        d.queryName = data.queryName;
-        d.application = data.query;
-        d.applicationName = data.queryName;
-        d.pid = d.id + d.id;
-
-        delete d[this.data.id+"viewFilterType"];
-        d[d.id+"viewFilterType"]="custom";
-
-        d.data.selectList.each( function( entry ){
-            entry.id = (new MWF.widget.UUID).id;
-        }.bind(this));
-
-        this.designer.actions.saveView(d, function(json){
-            this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
-            if (callback) callback();
-        }.bind(this));
-    },
-
 
     loadTemplateStyle : function( callback ){
         this.loadStylesList(function(){
@@ -825,18 +802,19 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                     debugger;
 
-                    if(!this.json.data.viewStyles && this.templateStyles["view"]){
-                        this.json.data.viewStyles = Object.clone(this.templateStyles["view"]);
-                    }
-
                     // this.loadDomModules();
+                    if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
 
-                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["view"]){
-                        this.setTemplateStyles(this.templateStyles["view"]);
+                    if ( this.templateStyles && this.templateStyles["view"]){
+                        if(!this.json.data.viewStyles){
+                            this.json.data.viewStyles = Object.clone(this.templateStyles["view"]);
+                        }else{
+                            this.setTemplateStyles(this.templateStyles["view"]);
+                        }
                     }
 
                     this.setCustomStyles();
-                    this.node.setProperties(this.json.data.properties);
+                    // this.node.setProperties(this.json.data.properties);
 
                     if(callback)callback();
 
@@ -850,29 +828,66 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         }.bind(this));
     },
     removeStyles: function(from, to){
-        if (this.json.data[to]){
+        if (this.json.data.viewStyles[to]){
             Object.each(from, function(style, key){
-                if (this.json.data[to][key] && this.json.data[to][key]==style){
-                    delete this.json.data[to][key];
+                if (this.json.data.viewStyles[to][key] && this.json.data.viewStyles[to][key]==style){
+                    delete this.json.data.viewStyles[to][key];
                 }
             }.bind(this));
         }
     },
     copyStyles: function(from, to){
-        if (!this.json.data[to]) this.json.data[to] = {};
+        if (!this.json.data.viewStyles[to]) this.json.data.viewStyles[to] = {};
         Object.each(from, function(style, key){
-            if (!this.json.data[to][key]) this.json.data[to][key] = style;
+            if (!this.json.data.viewStyles[to][key]) this.json.data.viewStyles[to][key] = style;
         }.bind(this));
     },
+    // clearTemplateStyles: function(styles){
+    //     if (styles){
+    //         if (styles.styles) this.removeStyles(styles.styles, "styles");
+    //         if (styles.properties) this.removeStyles(styles.properties, "properties");
+    //     }
+    // },
+    // setTemplateStyles: function(styles){
+    //     if (styles.styles) this.copyStyles(styles.styles, "styles");
+    //     if (styles.properties) this.copyStyles(styles.properties, "properties");
+    // },
     clearTemplateStyles: function(styles){
         if (styles){
-            if (styles.styles) this.removeStyles(styles.styles, "styles");
-            if (styles.properties) this.removeStyles(styles.properties, "properties");
+            if (styles.container) this.removeStyles(styles.container, "container");
+            if (styles.table) this.removeStyles(styles.table, "table");
+            if (styles.titleTr) this.removeStyles(styles.titleTr, "titleTr");
+            if (styles.titleTd) this.removeStyles(styles.titleTd, "titleTd");
+            if (styles.contentTr) this.removeStyles(styles.contentTr, "contentTr");
+            if (styles.contentSelectedTr) this.removeStyles(styles.contentSelectedTr, "contentSelectedTr");
+            if (styles.contentTd) this.removeStyles(styles.contentTd, "contentTd");
+            if (styles.contentGroupTd) this.removeStyles(styles.contentGroupTd, "contentGroupTd");
+            if (styles.groupCollapseNode) this.removeStyles(styles.groupCollapseNode, "groupCollapseNode");
+            if (styles.groupExpandNode) this.removeStyles(styles.groupExpandNode, "groupExpandNode");
+            if (styles.checkboxNode) this.removeStyles(styles.checkboxNode, "checkboxNode");
+            if (styles.checkedCheckboxNode) this.removeStyles(styles.checkedCheckboxNode, "checkedCheckboxNode");
+            if (styles.radioNode) this.removeStyles(styles.radioNode, "radioNode");
+            if (styles.checkedRadioNode) this.removeStyles(styles.checkedRadioNode, "checkedRadioNode");
+            if (styles.tableProperties) this.removeStyles(styles.tableProperties, "tableProperties");
         }
     },
+
     setTemplateStyles: function(styles){
-        if (styles.styles) this.copyStyles(styles.styles, "styles");
-        if (styles.properties) this.copyStyles(styles.properties, "properties");
+        if (styles.container) this.copyStyles(styles.container, "container");
+        if (styles.table) this.copyStyles(styles.table, "table");
+        if (styles.titleTr) this.copyStyles(styles.titleTr, "titleTr");
+        if (styles.titleTd) this.copyStyles(styles.titleTd, "titleTd");
+        if (styles.contentTr) this.copyStyles(styles.contentTr, "contentTr");
+        if (styles.contentSelectedTr) this.copyStyles(styles.contentSelectedTr, "contentSelectedTr");
+        if (styles.contentTd) this.copyStyles(styles.contentTd, "contentTd");
+        if (styles.contentGroupTd) this.copyStyles(styles.contentGroupTd, "contentGroupTd");
+        if (styles.groupCollapseNode) this.copyStyles(styles.groupCollapseNode, "groupCollapseNode");
+        if (styles.groupExpandNode) this.copyStyles(styles.groupExpandNode, "groupExpandNode");
+        if (styles.checkboxNode) this.copyStyles(styles.checkboxNode, "checkboxNode");
+        if (styles.checkedCheckboxNode) this.copyStyles(styles.checkedCheckboxNode, "checkedCheckboxNode");
+        if (styles.radioNode) this.copyStyles(styles.radioNode, "radioNode");
+        if (styles.checkedRadioNode) this.copyStyles(styles.checkedRadioNode, "checkedRadioNode");
+        if (styles.tableProperties) this.copyStyles(styles.tableProperties, "tableProperties");
     },
 
     loadTemplateStyles : function( file, extendFile, callback ){
@@ -950,6 +965,66 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 }.bind(this)
             }
         );
+    },
+
+    saveAs: function(){
+        var form = new MWF.xApplication.query.ViewDesigner.View.NewNameForm(this, {
+            name : this.data.name + "_" + MWF.xApplication.query.ViewDesigner.LP.copy,
+            query : this.data.query || this.data.application,
+            queryName :	this.data.queryName || this.data.applicationName
+        }, {
+            onSave : function( data, callback ){
+                this._saveAs( data, callback );
+            }.bind(this)
+        }, {
+            app: this.designer
+        });
+        form.edit()
+    },
+    cloneObject : function( obj ){
+        if (null == obj || "object" != typeof obj) return obj;
+
+        if ( typeof obj.length==='number'){ //数组
+            //print( "array" );
+            var copy = [];
+            for (var i = 0, len = obj.length; i < len; ++i) {
+                copy[i] = this.cloneObject(obj[i]);
+            }
+            return copy;
+        }else{
+            var copy = {};
+            for (var attr in obj) {
+                copy[attr] = this.cloneObject(obj[attr]);
+            }
+            return copy;
+        }
+    },
+    _saveAs : function( data , callback){
+        var _self = this;
+
+        var d = this.cloneObject( this.data );
+
+        d.isNewView = true;
+        d.id = this.designer.actions.getUUID();
+        d.name = data.name;
+        d.alias = "";
+        d.query = data.query;
+        d.queryName = data.queryName;
+        d.application = data.query;
+        d.applicationName = data.queryName;
+        d.pid = d.id + d.id;
+
+        delete d[this.data.id+"viewFilterType"];
+        d[d.id+"viewFilterType"]="custom";
+
+        d.data.selectList.each( function( entry ){
+            entry.id = (new MWF.widget.UUID).id;
+        }.bind(this));
+
+        this.designer.actions.saveView(d, function(json){
+            this.designer.notice(this.designer.lp.notice.saveAs_success, "success", this.node, {"x": "left", "y": "bottom"});
+            if (callback) callback();
+        }.bind(this));
     }
 
 });
@@ -992,6 +1067,27 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         //if (!this.json.export) this.hideMode();
 
         this.setEvent();
+
+        this.setCustomStyles();
+    },
+    setCustomStyles : function(){
+        var viewStyles = this.view.json.data.viewStyles;
+        var border = this.areaNode.getStyle("border");
+        this.areaNode.clearStyles();
+        this.areaNode.setStyles(this.css.viewTitleColumnAreaNode);
+        // var y = this.container.getStyle("height");
+        // y = (y) ? y.toInt()-2 : this.container.getSize().y-2;
+        // this.node.setStyle("min-height", ""+y+"px");
+
+        // if (this.initialStyles) this.node.setStyles(this.initialStyles);
+        this.node.setStyle("border", border);
+
+        Object.each(viewStyles.titleTd, function(value, key){
+            var reg = /^border\w*/ig;
+            if (!key.test(reg)){
+                this.node.setStyle(key, value);
+            }
+        }.bind(this));
     },
     createDomListItem: function(){
         this.listNode = new Element("div", {"styles": this.css.cloumnListNode});

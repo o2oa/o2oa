@@ -37,22 +37,22 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		this.selectedMultiTds = [];
 	},
     clearTemplateStyles: function(styles){
-        if (styles){
-            if (styles.styles) this.removeStyles(styles.styles, "styles");
-            if (styles.properties) this.removeStyles(styles.properties, "properties");
-            if (styles.titleStyles) this.removeStyles(styles.titleStyles, "titleTdStyles");
-            if (styles.contentStyles) this.removeStyles(styles.contentStyles, "contentTdStyles");
-            if (styles.layoutStyles) this.removeStyles(styles.layoutStyles, "layoutTdStyles");
-        }
-    },
+		if (styles){
+			if (styles.styles) this.removeStyles(styles.styles, "styles");
+			if (styles.properties) this.removeStyles(styles.properties, "properties");
+			if (styles.titleStyles) this.removeStyles(styles.titleStyles, "titleTdStyles");
+			if (styles.contentStyles) this.removeStyles(styles.contentStyles, "contentTdStyles");
+			if (styles.layoutStyles) this.removeStyles(styles.layoutStyles, "layoutTdStyles");
+		}
+	},
 
-    setTemplateStyles: function(styles){
-        if (styles.styles) this.copyStyles(styles.styles, "styles");
-        if (styles.properties) this.copyStyles(styles.properties, "properties");
-        if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
-        if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");
-        if (styles.layoutStyles) this.copyStyles(styles.layoutStyles, "layoutTdStyles");
-    },
+	setTemplateStyles: function(styles){
+		if (styles.styles) this.copyStyles(styles.styles, "styles");
+		if (styles.properties) this.copyStyles(styles.properties, "properties");
+		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
+		if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");
+		if (styles.layoutStyles) this.copyStyles(styles.layoutStyles, "layoutTdStyles");
+	},
 
 	_createMoveNode: function(){
 		var tableHTML = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"2\" width=\"100%\" align=\"center\">";
