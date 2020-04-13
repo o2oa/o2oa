@@ -46,8 +46,7 @@
       "padding-left" : "20px",
       "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/right.png)",
       "background-repeat" : "no-repeat",
-      "background-position": "left center",
-      "background-size": "20px 20px"
+      "background-position": "left center"
     },
     "groupExpandNode": {
       "height": "30px",
@@ -55,8 +54,7 @@
       "padding-left" : "20px",
       "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/down.png)",
       "background-repeat" : "no-repeat",
-      "background-position": "left center",
-      "background-size": "20px 20px"
+      "background-position": "left center"
     },
     "checkboxNode" : {
       "background-image": "url(/x_component_query_Query/$Viewer/default/icon/checkbox.png)",
