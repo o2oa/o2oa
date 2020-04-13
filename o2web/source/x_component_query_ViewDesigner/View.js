@@ -692,8 +692,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         }
         if (name=="data.viewStyleType"){
 
-            debugger;
-
             var file = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].file : null;
             var extendFile = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType].extendFile : null;
             this.loadTemplateStyles( file, extendFile, function( templateStyles ){
@@ -799,8 +797,6 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             this.loadTemplateStyles( this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
                 function( templateStyles ){
                     this.templateStyles = templateStyles;
-
-                    debugger;
 
                     // this.loadDomModules();
                     if( !this.json.data.viewStyleType )this.json.data.viewStyleType = "default";
@@ -2095,7 +2091,6 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         this.loadWidget();
     },
     _setEditStyle_custom: function(name, obj, oldValue){
-        debugger;
         if ( ["hasTruningBar","visiblePages","hasBatchTuring",
             "hasFirstLastPage","hasPreNextPage","hasPageJumper",
             "firstPageText","lastPageText","prePageText","nextPageText",
