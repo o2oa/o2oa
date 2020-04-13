@@ -1,11 +1,14 @@
 package com.x.organization.assemble.control.jaxrs.personcard;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.zxing.BarcodeFormat;
@@ -16,8 +19,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
-import com.x.organization.assemble.control.staticconfig.FollowConfig;
+import com.x.base.core.project.jaxrs.WoFile;
 import com.x.organization.core.entity.PersonCard;
 
 
@@ -27,16 +29,15 @@ class ActionCreateCode extends BaseAction {
 
 
 	//个人通讯录生成二维码。
-	ActionResult<String> qrcode(EffectivePerson effectivePerson, String flag) throws Exception {
+	ActionResult<Wo> qrcode(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<String> result = new ActionResult<>();
+			ActionResult<Wo> result = new ActionResult<>();
 			PersonCard personCard = emc.find(flag, PersonCard.class);
 			if (null == personCard) {
 				throw new ExceptionPersonCardNotExist(flag);
 			}
 			
-			//String path = "D:\\tmp\\pilar111.png";
-			String path = FollowConfig.QRPATH+personCard.getId()+".png";
+			String fname = personCard.getId()+".png";
 			String content = "BEGIN:VCARD\n" +
 	        	    "VERSION:3.0\n" +
 	        	    "N:"+personCard.getName()+"\n";
@@ -71,8 +72,10 @@ class ActionCreateCode extends BaseAction {
 	        	    "URL:http://blog.csdn.net/lidew521\n" +
 	        	    "NOTE:呼呼测试下吧。。。\n" +
 	        	    "END:VCARD";*/
-			getBarCode(content,path);
-			result.setData(path);
+			//getBarCode(content,path);
+			
+			Wo wo = new Wo(getBarCodeWo(content), this.contentType(false, fname), this.contentDisposition(false, fname));
+			result.setData(wo);
 			return result;
 		}
 	}
@@ -101,8 +104,38 @@ class ActionCreateCode extends BaseAction {
 	            e.printStackTrace();
 	        }
 	}
+	
+	/**
+     *二维码实现
+     * @param msg /二维码包含的信息
+     */
+	public static byte[] getBarCodeWo(String msg){
+			byte[] bs = null;
+	        try {
+	            String format = "png";
+	            Map<EncodeHintType,String> map =new HashMap<EncodeHintType, String>();
+	            //设置编码 EncodeHintType类中可以设置MAX_SIZE， ERROR_CORRECTION，CHARACTER_SET，DATA_MATRIX_SHAPE，AZTEC_LAYERS等参数
+	            map.put(EncodeHintType.CHARACTER_SET,"UTF-8");
+	            map.put(EncodeHintType.MARGIN,"1");
+	            //生成二维码
+	            BitMatrix bitMatrix = new MultiFormatWriter().encode(msg, BarcodeFormat.QR_CODE,300,300,map);
+	            BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				ImageIO.write(image, "gif", out);
+				bs = out.toByteArray();
+	            
+	        }catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return bs;
+	}
 	 
-	public static class Wo extends WoId {
+	public static class Wo extends WoFile {
+
+		public Wo(byte[] bytes, String contentType, String contentDisposition) {
+			super(bytes, contentType, contentDisposition);
+		}
+
 	}
 
 }

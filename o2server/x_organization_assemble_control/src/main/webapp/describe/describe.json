@@ -8671,7 +8671,6 @@
           "type": "GET",
           "path": "jaxrs/personcard/createQR/{cardId}",
           "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
           "pathParameters": [
@@ -8686,10 +8685,22 @@
           "ins": [],
           "outs": [
             {
-              "name": "id",
+              "name": "contentDisposition",
               "type": "String",
               "isCollection": false,
-              "description": "id"
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
             }
           ]
         },
@@ -8968,13 +8979,12 @@
           ]
         },
         {
-          "name": "listPersonalVCf2",
-          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionExportPersonalVcf2",
+          "name": "listPersonalVCf",
+          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionExportPersonalVcf",
           "description": "导出个人通讯录vcf",
           "type": "GET",
           "path": "jaxrs/personcard/listPersonalVCf/{idList}",
           "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
           "pathParameters": [
@@ -9012,30 +9022,39 @@
           "name": "listVCf",
           "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionExportVcf",
           "description": "导出组织通讯录vcf",
-          "type": "POST",
-          "path": "jaxrs/personcard/listVCf",
+          "type": "GET",
+          "path": "jaxrs/personcard/listVCf/{idList}",
           "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
-          "pathParameters": [],
-          "formParameters": [],
-          "queryParameters": [],
-          "ins": [
+          "pathParameters": [
             {
-              "name": "personList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "通讯录人员标识",
-              "isBaseType": true
+              "name": "idList",
+              "type": "String",
+              "description": "名片id组"
             }
           ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
           "outs": [
             {
-              "name": "id",
+              "name": "contentDisposition",
               "type": "String",
               "isCollection": false,
-              "description": "id"
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
             }
           ]
         },
@@ -9177,7 +9196,6 @@
           "type": "GET",
           "path": "jaxrs/personcard/createCode/{cardId}",
           "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
           "pathParameters": [
@@ -9192,10 +9210,22 @@
           "ins": [],
           "outs": [
             {
-              "name": "id",
+              "name": "contentDisposition",
               "type": "String",
               "isCollection": false,
-              "description": "id"
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
             }
           ]
         },
