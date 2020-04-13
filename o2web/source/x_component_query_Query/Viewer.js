@@ -45,7 +45,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.parentMacro = parentMacro;
 
-        debugger;
         this.originalJson = Object.clone(json);
 
         this.viewJson = null;
@@ -193,7 +192,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     createViewNode: function(data){
         this.viewAreaNode.empty();
-        this.contentAreaNode = new Element("div", {"styles": this.css.contentAreaNode}).inject(this.viewAreaNode);
+
+        var viewStyles = this.viewJson.viewStyles;
+
+        this.contentAreaNode = new Element("div", {"styles":
+                (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
+        }).inject(this.viewAreaNode);
 
         this.viewTable = new Element("table", {
             "styles": this.css.viewTitleTableNode,
@@ -201,14 +205,22 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             "cellPadding": "0",
             "cellSpacing": "0"
         }).inject(this.contentAreaNode);
+        if( viewStyles ){
+            if( viewStyles["tableProperties"] )this.viewTable.set(viewStyles["tableProperties"]);
+            if( viewStyles["table"] )this.viewTable.setStyles(viewStyles["table"]);
+        }
+
         this.createLoadding();
 
+        var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
         if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
+            this.viewTitleLine = new Element("tr", {
+                "styles": (viewStyles && viewStyles["titleTr"]) ? viewStyles["titleTr"] : this.css.viewTitleLineNode
+            }).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
             this.selectTitleCell = new Element("td", {
-                "styles": this.css.viewTitleCellNode
+                "styles": viewTitleCellNode
             }).inject(this.viewTitleLine);
             this.selectTitleCell.setStyle("width", "10px");
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
@@ -217,7 +229,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             //序号
             if (this.viewJson.isSequence==="yes"){
                 this.sequenceTitleCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode
+                    "styles": viewTitleCellNode
                 }).inject(this.viewTitleLine);
                 this.sequenceTitleCell.setStyle("width", "10px");
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
@@ -229,10 +241,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
-                        "styles": this.css.viewTitleCellNode,
+                        "styles": viewTitleCellNode,
                         "text": column.displayName
                     }).inject(this.viewTitleLine);
-                    var size = MWF.getTextSize(column.displayName, this.css.viewTitleCellNode);
+                    var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
                 }else{
@@ -464,11 +476,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadGroupData: function(){
-        if (this.selectTitleCell){
-            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+        if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
+            if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+                this.expandAllNode = new Element("span", {
+                    styles : this.viewJson.viewStyles["groupCollapseNode"]
+                }).inject( this.selectTitleCell );
+                this.selectTitleCell.setStyle("cursor", "pointer");
+            }else{
+                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+            }
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+            this.selectTitleCell.store("expandLoaded", true);
         }
+        this.expandAll = false;
 
         if (this.gridJson.length){
             var i = 0;
@@ -483,20 +504,42 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     expandOrCollapseAll: function(){
-        var icon = this.selectTitleCell.getElement("span");
-        if (icon.get("html").indexOf("expand.png")===-1){
-            this.items.each(function(item){
-                item.collapse();
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
-            }.bind(this));
-        }else{
-            this.items.each(function(item, i){
-                window.setTimeout(function(){
-                    item.expand();
-                }.bind(this), 10*i+5);
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+            var span = this.selectTitleCell.getElement("span");
+            if( this.expandAll ){
+                this.items.each(function(item){
+                    item.collapse();
+                    span.setStyles( this.viewJson.viewStyles["groupCollapseNode"] );
+                }.bind(this));
+                this.expandAll = false;
+            }else{
+                this.items.each(function(item, i){
+                    window.setTimeout(function(){
+                        item.expand();
+                    }.bind(this), 10*i+5);
 
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
-            }.bind(this));
+                    span.setStyles( this.viewJson.viewStyles["groupExpandNode"] );
+                    this.expandAll = true;
+                }.bind(this));
+            }
+        }else{
+            var icon = this.selectTitleCell.getElement("span");
+            if (icon.get("html").indexOf("expand.png")===-1){
+                this.items.each(function(item){
+                    item.collapse();
+                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+                }.bind(this));
+                this.expandAll = false;
+            }else{
+                this.items.each(function(item, i){
+                    window.setTimeout(function(){
+                        item.expand();
+                    }.bind(this), 10*i+5);
+
+                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+                }.bind(this));
+                this.expandAll = true;
+            }
         }
     },
     getView: function(callback){
@@ -758,6 +801,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadCustomSearch: function(){
+        debugger;
         this.viewSearchIconNode.setStyle("display", "none");
         this.viewSearchInputBoxNode.setStyle("display", "none");
         this.viewSearchCustomActionNode.setStyle("display", "none");
@@ -1205,7 +1249,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     load: function(){
         this.view.fireEvent("queryLoadItemRow", [null, this]);
 
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
+        var viewStyles = this.view.viewJson.viewStyles;
+        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+
+        this.node = new Element("tr", {
+            "styles": ( viewStyles && viewStyles["contentTr"] ) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        });
         if (this.prev){
             this.node.inject(this.prev.node, "after");
         }else{
@@ -1213,14 +1262,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+        this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //序号
         if (this.view.viewJson.isSequence==="yes"){
-            this.sequenceTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+            this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
             this.sequenceTd.setStyle("width", "10px");
             var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
             this.sequenceTd.set("text", s);
@@ -1231,7 +1280,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if (cell === undefined) cell = "";
             //if (cell){
             if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
                 if (k!== this.view.viewJson.group.column){
                     //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
                     var v = cell;
@@ -1433,9 +1482,18 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.node.addEvents({
                 "mouseover": function(){
                     if (!this.isSelected){
-                        var iconName = "checkbox";
-                        if (flag==="single") iconName = "radiobox";
-                        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                        var viewStyles = this.view.viewJson.viewStyles;
+                        if( viewStyles ){
+                            if( flag === "single" ){
+                                this.selectTd.setStyles( viewStyles["radioNode"] );
+                            }else{
+                                this.selectTd.setStyles( viewStyles["checkboxNode"] );
+                            }
+                        }else{
+                            var iconName = "checkbox";
+                            if (flag==="single") iconName = "radiobox";
+                            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                        }
                     }
                 }.bind(this),
                 "mouseout": function(){
@@ -1466,15 +1524,26 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
     selected: function(){
         this.view.selectedItems.push(this);
-        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
-        this.node.setStyles(this.css.viewContentTrNode_selected);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.selectTd.setStyles( viewStyles["checkedCheckboxNode"] );
+            this.node.setStyles( viewStyles["contentSelectedTr"] );
+        }else{
+            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
+            this.node.setStyles(this.css.viewContentTrNode_selected);
+        }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
     },
     unSelected: function(){
         this.view.selectedItems.erase(this);
         this.selectTd.setStyles({"background": "transparent"});
-        this.node.setStyles(this.css.viewContentTrNode);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.node.setStyles( viewStyles["contentTr"] );
+        }else{
+            this.node.setStyles(this.css.viewContentTrNode);
+        }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
     },
@@ -1482,8 +1551,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
         this.view.selectedItems = [this];
         this.view.currentSelectedItem = this;
-        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
-        this.node.setStyles(this.css.viewContentTrNode_selected);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
+            this.node.setStyles( viewStyles["contentSelectedTr"] );
+        }else {
+            this.selectTd.setStyles({"background": "url(" + "/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
+            this.node.setStyles(this.css.viewContentTrNode_selected);
+        }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
     },
@@ -1491,7 +1566,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
         this.selectTd.setStyles({"background": "transparent"});
-        this.node.setStyles(this.css.viewContentTrNode);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.node.setStyles( viewStyles["contentTr"] );
+        }else{
+            this.node.setStyles(this.css.viewContentTrNode);
+        }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
     }
@@ -1511,13 +1591,19 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     load: function(){
         this.view.fireEvent("queryLoadCategoryRow", [null, this]);
 
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
+        var viewStyles = this.view.viewJson.viewStyles;
+
+        var viewContentCategoryTdNode = ( viewStyles && viewStyles["contentGroupTd"] ) ? viewStyles["contentGroupTd"] : this.css.viewContentCategoryTdNode;
+
+        this.node = new Element("tr", {
+            "styles": (viewStyles && viewStyles["contentTr"]) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+        this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
         this.categoryTd = new Element("td", {
-            "styles": this.css.viewContentCategoryTdNode,
+            "styles": viewContentCategoryTdNode,
             "colspan": this.view.viewJson.selectList.length+1
         }).inject(this.node);
 
@@ -1535,7 +1621,16 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             var text = this.data.group;
         }
 
-        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        if( viewStyles && viewStyles["groupCollapseNode"] ){
+            this.expandNode = new Element("span", {
+                styles : viewStyles["groupCollapseNode"]
+            }).inject( this.categoryTd );
+            new Element("span", { text : text }).inject( this.categoryTd );
+            // this.categoryTd.set("text", text );
+        }else{
+            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        }
+        this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
@@ -1550,8 +1645,13 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //}
     },
     expandOrCollapse: function(){
-        var t = this.node.getElement("span").get("html");
-        if (t.indexOf("expand.png")===-1){
+        // var t = this.node.getElement("span").get("html");
+        // if (t.indexOf("expand.png")===-1){
+        //     this.collapse();
+        // }else{
+        //     this.expand();
+        // }
+        if( this.expanded ){
             this.collapse();
         }else{
             this.expand();
@@ -1561,13 +1661,23 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.items.each(function(item){
             item.node.setStyle("display", "none");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+        if( this.expandNode ){
+            this.expandNode.setStyles( this.view.viewJson.viewStyles["groupCollapseNode"] )
+        }else{
+            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+        }
+        this.expanded = false;
     },
     expand: function(){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        if( this.expandNode ){
+            this.expandNode.setStyles( this.view.viewJson.viewStyles["groupExpandNode"] )
+        }else{
+            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        }
+        this.expanded = true;
         if (!this.loadChild){
             //window.setTimeout(function(){
             this.data.list.each(function(line, i){
