@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 import com.x.processplatform.assemble.designer.AbstractFactory;
 import com.x.processplatform.assemble.designer.Business;
@@ -66,6 +63,27 @@ public class ProcessFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Process_.application), application);
 		p = cb.and(p, cb.equal(root.get(Process_.edition), edition));
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
+		return em.createQuery(cq).getResultList();
+	}
+
+	public List<String> listProcessDisableEdition(String application) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.equal(root.get(Process_.application), application);
+		p = cb.and(p, cb.isNotNull(root.get(Process_.edition)));
+		p = cb.and(p, cb.notEqual(root.get(Process_.edition), ""));
+
+		Subquery<Process> subquery = cq.subquery(Process.class);
+		Root<Process> subRoot = subquery.from(Process.class);
+		Predicate subP = cb.conjunction();
+		subP = cb.and(subP, cb.equal(root.get(Process_.edition), subRoot.get(Process_.edition)));
+		subP = cb.and(subP, cb.isTrue(subRoot.get(Process_.editionEnable)));
+		subquery.select(subRoot).where(subP);
+		p = cb.and(p, cb.not(cb.exists(subquery)));
+
+		cq.distinct(true).select(root.get(Process_.edition)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
 

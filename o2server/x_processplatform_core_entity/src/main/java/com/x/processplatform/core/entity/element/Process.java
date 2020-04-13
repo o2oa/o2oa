@@ -490,6 +490,12 @@ public class Process extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + editionNumber_FIELDNAME)
 	private Double editionNumber;
 
+	public static final String editionDes_FIELDNAME = "editionDes";
+	@FieldDescribe("版本描述.")
+	@Column(length = length_255B, name = ColumnNamePrefix + editionDes_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String editionDes;
+
 	/* flag标志位 */
 
 	public String getName() {
@@ -820,4 +826,11 @@ public class Process extends SliceJpaObject {
 		this.editionNumber = editionNumber;
 	}
 
+	public String getEditionDes() {
+		return editionDes;
+	}
+
+	public void setEditionDes(String editionDes) {
+		this.editionDes = editionDes;
+	}
 }
