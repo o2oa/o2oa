@@ -720,7 +720,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             var d = this.data;
             Array.each( name.split("."), function(n){
                 if(d)d = d[n];
-            })
+            });
             var viewStyles = d || {};
             MWF.require("MWF.widget.Maplist", function(){
                 var maps = [];
@@ -732,9 +732,13 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         "title": k,
                         "collapse": true,
                         "onChange": function(){
-                            var oldData = _self.data[name];
+                            // var oldData = _self.data[name];
+                            var oldData = this.data;
+                            Array.each( name.split("."), function(n){
+                                if(oldData)oldData = oldData[n];
+                            });
                             maps.each(function(o){
-                                _self.data[name][o.key] = o.map.toJson();
+                                d[o.key] = o.map.toJson();
                             }.bind(this));
                             _self.changeData(name, node, oldData);
                         }
