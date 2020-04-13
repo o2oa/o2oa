@@ -1,0 +1,43 @@
+pipeline {
+    agent {label 'master' }
+    stages {
+        stage('envtag') {
+            steps {
+                bat  "cd.> \"gitTag.txt\""
+                bat  "git describe --tags  >>\"gitTag.txt\""
+                script {
+            	    json_file = "gitTag.txt"
+	                file_contents = readFile json_file
+	                if(file_contents.trim().indexOf("-")!=-1){
+						env.tag =file_contents.trim().substring(0,file_contents.trim().indexOf("-"))
+					}else{
+						env.tag =file_contents.trim();
+					}
+                }
+                echo 'env.tag='+env.tag
+            }
+        }
+        stage('init') {
+            steps {
+                bat 'npm install'
+            }
+        }
+		stage('build') {
+            steps {
+                bat 'npm run build_ci'
+            }
+        }
+		stage('antzip') {
+            steps {
+               bat 'ant -DVERSION='+env.tag
+            }
+        }
+        stage('sshZipSend') {
+			steps {
+				sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.95.60', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'o2server-*'+env.tag+'.zip')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+				sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.95.60', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'download-pro.json,download_preview.jsonp')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+			}
+		}
+      }
+
+}
