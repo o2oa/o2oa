@@ -379,7 +379,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 // );
                 this.naviItemFlowContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemFlowContainer);
                     }.bind(this),
                     mouseenter:function(){ _self.naviItemChange(this,"enter")},
                     mouseleave:function(){_self.naviItemChange(this,"leave")}
@@ -398,7 +399,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 // );
                 this.naviItemCompleteContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemCompleteContainer);
                     }.bind(this),
                     mouseenter:function(){ _self.naviItemChange(this,"enter")},
                     mouseleave:function(){_self.naviItemChange(this,"leave")}
@@ -417,7 +419,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 // );
                 this.naviItemOverContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemOverContainer);
                     }.bind(this),
                     mouseenter:function(){ _self.naviItemChange(this,"enter")},
                     mouseleave:function(){_self.naviItemChange(this,"leave")}
@@ -632,8 +635,10 @@ MWF.xApplication.TeamWork.Project = new Class({
 
                 var drag = new Drag(taskItemContainer, {
                     "compensateScroll": true,
-
-                    container: this.taskContentLayout,
+                    //preventDefault:true,
+                    //stopPropagation:true,
+                    //container:this.contentLayout,
+                    //container: this.taskContentLayout,
                     "onStart": function(el, e){
                         this.dragMove(el,e);
                         drag.stop();
@@ -657,15 +662,16 @@ MWF.xApplication.TeamWork.Project = new Class({
         var time = 200;
         //this.cloneTaskItem = new Element("").inject()
         var position = el.getPosition(this.taskContentLayout);
+        //alert(JSON.stringify(position))
         //var clone = this.cloneTaskItem = el.clone(true,true).inject($(document.body));
         var clone = this.cloneTaskItem = el.clone(true,true).inject(this.taskContentLayout);
         this.cloneTaskItem.removeClass("dragin");
         this.cloneTaskItem.setStyles({
             "top":position.y+"px",
-            "left":(position.x+this.taskContentLayout.getScroll().x)+"px",
+            "left":(position.x + this.taskContentLayout.getScrollLeft())+"px",
             "z-index":"9999",
             "margin":"0px",
-            //"position":"position",
+            "position":"absolute",
             "cursor":"move"
         });
         el.setStyles({"border":"1px dotted #000000","opacity":"0.3"});
@@ -674,15 +680,23 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.ccc = 0;
         var drag = new Drag.Move(this.cloneTaskItem, {
             container: this.taskContentLayout,
-            //container: $$("#6a933366-5165-4153-bee2-30ec0c327d40"),
+            //container: this.contentLayout,
             //"stopPropagation": true,
             "compensateScroll": true,
             "droppables": $$(".dragin"),
             "onStart": function(){
                 // this.topBarTabItemStat.set("text",JSON.stringify(el.getPosition()));
-
             }.bind(this),
             "onDrag": function(el,e){
+                // this.topBarTabItemStat.set("text",JSON.stringify(el.getPosition()));
+                //if(el.getPosition().x + el.getWidth() >1900){
+                    //this.topBarTabItemStat.set("text",JSON.stringify("treeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
+                    //drag.cancel();
+                    //e.stopPropagation();return;
+                    //this.taskContentLayout.scrollTo( this.taskContentLayout.getScrollLeft() +500,0);
+                    //el.setStyles({"margin-right":"-500px"})
+                    //this.topBarTabItemStat.set("text","000000000000000000");
+                //}
                 // var _width = el.getWidth().toInt();
                 //
                 // var  _l= el.getPosition().x;
@@ -1000,7 +1014,12 @@ MWF.xApplication.TeamWork.Project = new Class({
         var tmpLoading = new Element("div.tmpLoading",{styles:{"background-color":"#ffffff"}}).inject(viewListContainer);
         this.app.setLoading(tmpLoading);
         this.searchLoading = false;
-        this.actions.taskListNext("(0)",100,data,function(json){
+
+        var filter = {
+            title:key
+        };
+
+        this.rootActions.TaskAction.listAllTaskNextWithFilter("(0)",100,this.data.id,filter,function(json){
             viewListContainer.empty();
             json.data.each(function(data){
                 this.loadViewItem(data)
@@ -1017,6 +1036,25 @@ MWF.xApplication.TeamWork.Project = new Class({
             }
             this.searchLoading = true;
         }.bind(this))
+
+
+        //this.actions.taskListNext("(0)",100,data,function(json){
+            // viewListContainer.empty();
+            // json.data.each(function(data){
+            //     this.loadViewItem(data)
+            // }.bind(this));
+            // if(json.count==0){
+            //     new Element("div.none",{styles:{
+            //             "height":"100px",
+            //             "line-height":"100px",
+            //             "width":"100%",
+            //             "text-align":"center",
+            //             "background-color":"#ffffff",
+            //             "font-size":"16px"
+            //         },text:"未查找到数据"}).inject(this.viewListContainer);
+            // }
+            // this.searchLoading = true;
+        //}.bind(this))
     },
     loadView:function(id){
         //this.curNaviItem  所有工作，我负责的任务。。。。。
@@ -1040,7 +1078,20 @@ MWF.xApplication.TeamWork.Project = new Class({
         // var filter = {
         //     //"title":this.viewSearchInput.get("value")||""
         // }
-        this.rootActions.TaskAction.listNextWithFilter(id||"(0)",10,data,function(json){
+
+        var action = "listAllTaskNextWithFilter";
+        if(this.curNaviItem == this.lp.viewItemMy){ //我负责的任务
+            action = "listMyExecutTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemFlow){ //未完成的任务
+            action = "listUncompletedTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemComplete){ //已完成的任务
+            action = "listCompletedTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemOver){ //逾期的任务
+            action = "listOverTimeTaskNextWithFilter"
+        }
+
+
+        this.rootActions.TaskAction[action](id||"(0)",10,this.data.id,data,function(json){
             this.viewListContainer.getElements(".tmpLoading").destroy();
             json.data.each(function(data){
                 this.loadViewItem(data);
@@ -1048,6 +1099,10 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.curCount = this.curCount + 1;
             }.bind(this));
             this.viewLoading = true;
+
+            if(json.count == 0){
+                new Element("div",{styles:this.css.taskSearchEmpty,text:this.lp.taskSearchEmpty}).inject(this.viewListContainer);
+            }
 
             var sHeight = this.viewListContainer.getHeight();
             var cHeight = this.viewContainer.getHeight();
@@ -1060,7 +1115,6 @@ MWF.xApplication.TeamWork.Project = new Class({
                     }.bind(this)
                 })
             }
-
         }.bind(this))
     },
     loadViewItem:function(data){
@@ -1082,12 +1136,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         })
     },
     createStatLayout:function(){
-
         MWF.xDesktop.requireApp("TeamWork", "Stat", function(){
-            var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{
-
-                }
-            );
+            var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{ });
             stat.load();
         }.bind(this));
     },

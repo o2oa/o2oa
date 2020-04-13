@@ -608,6 +608,14 @@
         "height":"100%",
         "overflow-y":"auto"
     },
+    taskSearchEmpty: {
+        "height":"100px",
+        "width":"100%",
+        "line-height":"100px",
+        "background-color":"#ffffff",
+        "text-align":"center",
+        "font-size":"18px"
+    },
     viewSearchContainer:{
         "width":"1000px",
         "height":"60px",
