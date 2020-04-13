@@ -1,7 +1,12 @@
 package com.x.organization.assemble.control.jaxrs.personcard;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
+
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,9 +20,11 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.DateTools;
 import com.x.organization.assemble.control.Business;
+import com.x.organization.assemble.control.jaxrs.personcard.ActionCreateCode.Wo;
 import com.x.organization.assemble.control.staticconfig.FollowConfig;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
@@ -26,25 +33,24 @@ import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
+import sun.misc.BASE64Decoder;
+
 
 
 
 class ActionPersonCode extends BaseAction {
 
 	//组织里管理_个人生成二维码。
-	ActionResult<String> personcode(EffectivePerson effectivePerson, String flag) throws Exception {
+	ActionResult<Wo> personcode(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<String> result = new ActionResult<>();
+			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Person personCard = emc.find(flag, Person.class);
 			if (null == personCard) {
 				throw new ExceptionPersonNotExist(flag);
 			}
 			
-			//String path = "D:\\tmp\\pilar666.png";
-			//String logopath = "D:\\tmp\\pilar666_logo.png";
-			String path = FollowConfig.QRPATH+personCard.getId()+".png";
-			String logopath = FollowConfig.LOGOPATH+personCard.getId()+"_logo.png";
+			String fname = personCard.getId()+".png";
 			String content = "BEGIN:VCARD\n" +
 	        	    "VERSION:3.0\n" +
 	        	    "N:"+personCard.getName()+"\n";
@@ -105,19 +111,32 @@ class ActionPersonCode extends BaseAction {
 			}
 			 
 			content = content+"END:VCARD";
+			/*
 			File logoFile = null;
 			if(personCard.getIconMdpi()!=null && !personCard.getIconMdpi().equals("")){
 				logoFile = CodeUtil.decoderBase64File(logopath,personCard.getIconMdpi());
 			}
-			File QrCodeFile = new File(path);
-			CodeUtil.drawLogoQRCode(logoFile, QrCodeFile, content, "");
-			result.setData(path);
+			
+			 File QrCodeFile = new File(path);
+			CodeUtil.drawLogoQRCode(logoFile, QrCodeFile, content, "");*/
+			
+			BufferedImage logoFile = null;
+			ByteArrayOutputStream QrCodeFile = new ByteArrayOutputStream();
+			if(personCard.getIconMdpi()!=null && !personCard.getIconMdpi().equals("")){
+				byte[] buffer = new BASE64Decoder().decodeBuffer(personCard.getIconMdpi());  
+				ByteArrayInputStream in = new ByteArrayInputStream(buffer);    //将b作为输入流；
+				logoFile = ImageIO.read(in);     //将in作为输入流，读取图片存入image中，而这里in可以为ByteArrayInputStream();
+			}
+			Wo wo = new Wo(CodeUtil.drawLogoQRCodeByte(logoFile, QrCodeFile, content, ""), this.contentType(false, fname), this.contentDisposition(false, fname));
+			result.setData(wo);
 			return result;
 		}
 	}
 	 
-	public static class Wo extends WoId {
-		
+	public static class Wo extends WoFile {
+		public Wo(byte[] bytes, String contentType, String contentDisposition) {
+			super(bytes, contentType, contentDisposition);
+		}
 	}
 	
 	public List<Identity> referenceIdentity(Business business,String flag) throws Exception {
