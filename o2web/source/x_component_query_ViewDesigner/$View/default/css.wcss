@@ -368,7 +368,6 @@
         "opacity": 1,
         "width": "auto",
         "margin": "3px 3px",
-        "padding" : "5px",
         "background-color": "#FFF",
         "cursor": "pointer"
     },

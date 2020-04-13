@@ -676,8 +676,8 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
                     this.json.data.styleConfig = (this.stylesList && this.json.data.viewStyleType) ? this.stylesList[this.json.data.viewStyleType] : null;
 
-                    if (oldTemplateStyles["table"]) this.clearTemplateStyles(oldTemplateStyles["table"]);
-                    if (this.templateStyles["table"]) this.setTemplateStyles(this.templateStyles["table"]);
+                    if (oldTemplateStyles["view"]) this.clearTemplateStyles(oldTemplateStyles["view"]);
+                    if (this.templateStyles["view"]) this.setTemplateStyles(this.templateStyles["view"]);
 
                     this.setAllStyles();
 
@@ -822,10 +822,17 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             this.loadTemplateStyles( this.stylesList[this.json.data.viewStyleType].file, this.stylesList[this.json.data.viewStyleType].extendFile,
                 function( templateStyles ){
                     this.templateStyles = templateStyles;
+
+                    debugger;
+
+                    if(!this.json.data.viewStyles && this.templateStyles["view"]){
+                        this.json.data.viewStyles = Object.clone(this.templateStyles["view"]);
+                    }
+
                     // this.loadDomModules();
 
-                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["table"]){
-                        this.setTemplateStyles(this.templateStyles["table"]);
+                    if (this.json.data.viewStyleType && this.templateStyles && this.templateStyles["view"]){
+                        this.setTemplateStyles(this.templateStyles["view"]);
                     }
 
                     this.setCustomStyles();
