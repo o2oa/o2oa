@@ -269,4 +269,40 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示未启用的流程版本.", action = ActionListDisableEdition.class)
+	@GET
+	@Path("application/{applicationId}/disable/edition")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDisableEdition(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("应用标识") @PathParam("applicationId") String applicationId) {
+		ActionResult<List<ActionListDisableEdition.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListDisableEdition().execute(effectivePerson, applicationId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "停用当前版本流程.", action = ActionDisable.class)
+	@GET
+	@Path("{id}/disable")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void disableProcess(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionDisable.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDisable().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
