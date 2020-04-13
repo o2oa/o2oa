@@ -64,7 +64,7 @@ public class ActionViewCompletedListNextWithFilter extends BaseAction {
 		if( Boolean.TRUE.equals( check ) ){
 			if( Boolean.TRUE.equals( check ) ){
 				wrapIn.setProject(projectId);
-				wrapIn.setCompleted("true");
+				wrapIn.setWorkStatus("completed");
 				queryFilter = wrapIn.getQueryFilter();
 			}
 		}
@@ -131,7 +131,6 @@ public class ActionViewCompletedListNextWithFilter extends BaseAction {
 		@FieldDescribe("工作等级：普通-normal | 紧急-urgent | 特急-extraurgent，单值，非必填")
 		private String priority = null;		
 		
-		@FieldDescribe("用于搜索的工作状态：草稿- draft  | 执行中- processing | 已完成- completed | 已归档- archived，单值，非必填")
 		private String workStatus = null;
 		
 		private String completed = null;		
@@ -294,7 +293,7 @@ public class ActionViewCompletedListNextWithFilter extends BaseAction {
 				}
 			}
 			if( StringUtils.isNotEmpty( this.getOvertime() )) {
-				if( "true".equalsIgnoreCase( this.getDeleted() )) {
+				if( "true".equalsIgnoreCase( this.getOvertime() )) {
 					queryFilter.addEqualsTerm( new EqualsTerm( "overtime", true ) );
 				}else {
 					queryFilter.addEqualsTerm( new EqualsTerm( "overtime", false ) );

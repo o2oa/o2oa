@@ -65,6 +65,13 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 												logger.error(e);
 											}																
 										}
+										if( task.getEndTime().after( now ) && task.getOvertime()) {
+											//超时变未超时,打上标识，不发送提醒
+											emc.beginTransaction( Task.class );
+											task.setOvertime( false );
+											emc.check( task, CheckPersistType.all );
+											emc.commit();														
+										}
 										
 										Date now_30 = DateUtils.addMinutes(task.getEndTime(), -30);
 										if( now_30.before( now ) && !task.getOvertime()) {
