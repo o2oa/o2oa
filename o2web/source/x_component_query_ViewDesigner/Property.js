@@ -716,7 +716,12 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         var viewAreas = this.propertyContent.getElements(".MWFViewStylesArea");
         viewAreas.each(function(node){
             var name = node.get("name");
-            var viewStyles = this.data[name] || {};
+
+            var d = this.data;
+            Array.each( name.split("."), function(n){
+                if(d)d = d[n];
+            })
+            var viewStyles = d || {};
             MWF.require("MWF.widget.Maplist", function(){
                 var maps = [];
                 Object.each(viewStyles, function(v, k){
