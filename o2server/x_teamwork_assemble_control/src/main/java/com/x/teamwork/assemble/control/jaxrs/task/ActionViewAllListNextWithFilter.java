@@ -294,7 +294,7 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 				}
 			}
 			if( StringUtils.isNotEmpty( this.getOvertime() )) {
-				if( "true".equalsIgnoreCase( this.getDeleted() )) {
+				if( "true".equalsIgnoreCase( this.getOvertime() )) {
 					queryFilter.addEqualsTerm( new EqualsTerm( "overtime", true ) );
 				}else {
 					queryFilter.addEqualsTerm( new EqualsTerm( "overtime", false ) );
