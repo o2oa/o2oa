@@ -119,7 +119,7 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.isLoaded = false;
 
         //this.data.data.project
-        this.rootActions.TaskListAction.listWithTaskGroup("9513cfc6-78f8-4650-a4a2-ccdc081831c3",function(json){
+        this.rootActions.TaskListAction.listWithTaskGroup(this.data.data.taskGroupId,function(json){
             tmploading.destroy();
             json.data.each(function(d){
                 this.loadGroupItem(d);
@@ -165,7 +165,7 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.okAction.addEvents({
             click:function(){
                 if(this.selectedItem){
-                    if(this.selectedItem.get("id")=="6a933366-5165-4153-bee2-30ec0c327d40"){
+                    if(this.selectedItem.get("id")==this.data.data.taskListId){
                         this.app.notice(this.lp.moveToSelf,"error");
                         return;
                     }

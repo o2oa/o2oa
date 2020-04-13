@@ -113,6 +113,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         //this._createTableContent();
     },
     _createTableContent: function () {
+        //data { taskId:xxx }
         var _self = this;
         this.getTaskData(function(){
             if(this.openType == "window"){
@@ -1715,13 +1716,34 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         this.lp = this.options.lp;
         //this.data
         //this.contentNode
-
+        //debugger;
         var topMoreTitle = new Element("div.topMoreTitle",{styles:this.css.topMoreTitle,text:this.lp.taskMenu}).inject(this.contentNode);
 
         var copyTask = new Element("div.copyTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
         copyTask.addEvents({
             mouseenter:function(){this.setStyles({"background-color":"#F7F7F7"})},
-            mouseleave:function(){this.setStyles({"background-color":""})}
+            mouseleave:function(){this.setStyles({"background-color":""})},
+            click:function(e){
+                _self.app.confirm("warn",e,_self.lp.taskCopy,_self.lp.taskContent,300,120,function(){
+                    _self.rootActions.TaskAction.copyTask(_self.explorer.data.taskId,function(json){ debugger;
+                        if(json.type == "success"){
+                            _self.explorer.data.taskId = json.data.id;
+                            _self.explorer._createTableContent();
+                        }
+                        this.close();
+                        _self.close();
+                    }.bind(this))
+
+                    // _self.rootActions.TaskAction.delete(_self.data.data.id,function(){
+                    //     var rd = {"act":"remove"};
+                    //     _self.close(rd);
+                    //     this.close()
+                    // }.bind(this))
+                },function(){
+                    this.close();
+                });
+
+            }.bind(this)
         });
         var copyTaskIcon = new Element("div.copyTaskIcon",{styles:this.css.topMoreItemIcon}).inject(copyTask);
         copyTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskcopy.png) no-repeat center"});
