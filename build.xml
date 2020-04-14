@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." name="main" default="default">
 	<property name="VERSION" value="4.3.6" />
+	<property name="preName" value="o2server"/>
 	<property name="targetdir" value="target"/>
 	<target name="default" depends="md5code" />
 	<target name="md5code" depends="default_zip">
-		<checksum file="o2server-windows-${VERSION}.zip" property="build_win.sha" algorithm="SHA-256" />
-		<length file="o2server-windows-${VERSION}.zip" property="length_win"/>
+		<checksum file="${preName}-windows-${VERSION}.zip" property="build_win.sha" algorithm="SHA-256" />
+		<length file="${preName}-windows-${VERSION}.zip" property="length_win"/>
 		<script language="javascript">
-		<![CDATA[
+			<![CDATA[
 			var length_win_bytes = project.getProperty("length_win");
 			var length_win_kbytes = Math.round((length_win_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_win_mbytes = Math.round((length_win_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_win_mb", length_win_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-linux-${VERSION}.zip" property="build_linux.sha" algorithm="SHA-256" />
-		<length file="o2server-linux-${VERSION}.zip" property="length_linux"/>
+		<checksum file="${preName}-linux-${VERSION}.zip" property="build_linux.sha" algorithm="SHA-256" />
+		<length file="${preName}-linux-${VERSION}.zip" property="length_linux"/>
 		<script language="javascript">
-		<![CDATA[
+			<![CDATA[
 			var length_linux_bytes = project.getProperty("length_linux");
 			var length_linux_kbytes = Math.round((length_linux_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_linux_mbytes = Math.round((length_linux_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_linux_mb", length_linux_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-macos-${VERSION}.zip" property="build_macos.sha" algorithm="SHA-256" />
-		<length file="o2server-macos-${VERSION}.zip" property="length_macos"/>
+		<checksum file="${preName}-macos-${VERSION}.zip" property="build_macos.sha" algorithm="SHA-256" />
+		<length file="${preName}-macos-${VERSION}.zip" property="length_macos"/>
 		<script language="javascript">
-		<![CDATA[
+			<![CDATA[
 			var length_macos_bytes = project.getProperty("length_macos");
 			var length_macos_kbytes = Math.round((length_macos_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_macos_mbytes = Math.round((length_macos_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_macos_mb", length_macos_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-aix-${VERSION}.zip" property="build_aix.sha" algorithm="SHA-256" />
-		<length file="o2server-aix-${VERSION}.zip" property="length_aix"/>
+		<checksum file="${preName}-aix-${VERSION}.zip" property="build_aix.sha" algorithm="SHA-256" />
+		<length file="${preName}-aix-${VERSION}.zip" property="length_aix"/>
 		<script language="javascript">
-		<![CDATA[
+			<![CDATA[
 			var length_aix_bytes = project.getProperty("length_aix");
 			var length_aix_kbytes = Math.round((length_aix_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_aix_mbytes = Math.round((length_aix_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_aix_mb", length_aix_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-raspberrypi-${VERSION}.zip" property="build_raspberrypi.sha" algorithm="SHA-256" />
-		<length file="o2server-raspberrypi-${VERSION}.zip" property="length_raspberrypi"/>
+		<checksum file="${preName}-raspberrypi-${VERSION}.zip" property="build_raspberrypi.sha" algorithm="SHA-256" />
+		<length file="${preName}-raspberrypi-${VERSION}.zip" property="length_raspberrypi"/>
 		<script language="javascript">
-		<![CDATA[
+			<![CDATA[
 			var length_raspberrypi_bytes = project.getProperty("length_raspberrypi");
 			var length_raspberrypi_kbytes = Math.round((length_raspberrypi_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			var length_raspberrypi_mbytes = Math.round((length_raspberrypi_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
 			project.setNewProperty("length_raspberrypi_mb", length_raspberrypi_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-neokylin-loongson-${VERSION}.zip" property="build_neokylin-loongson.sha" algorithm="SHA-256" />
-		<length file="o2server-neokylin-loongson-${VERSION}.zip" property="length_neokylin-loongson"/>
+		<checksum file="${preName}-risc-${VERSION}.zip" property="build_risc.sha" algorithm="SHA-256" />
+		<length file="${preName}-risc-${VERSION}.zip" property="length_risc"/>
 		<script language="javascript">
-		<![CDATA[
-			var length_neokylin_loongson_bytes = project.getProperty("length_neokylin-loongson");
-			var length_neokylin_loongson_kbytes = Math.round((length_neokylin_loongson_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_neokylin_loongson_mbytes = Math.round((length_neokylin_loongson_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_neokylin-loongson_mb", length_neokylin_loongson_mbytes);
+			<![CDATA[
+			var length_risc_bytes = project.getProperty("length_risc");
+			var length_risc_kbytes = Math.round((length_risc_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_risc_mbytes = Math.round((length_risc_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_risc_mb", length_risc_mbytes);
 		]]>
 		</script>
-		<checksum file="o2server-kylinos-phytium-${VERSION}.zip" property="build_kylinos_phytium.sha" algorithm="SHA-256" />
-		<length file="o2server-kylinos-phytium-${VERSION}.zip" property="length_kylinos_phytium"/>
+		<checksum file="${preName}-arm-${VERSION}.zip" property="build_arm.sha" algorithm="SHA-256" />
+		<length file="${preName}-arm-${VERSION}.zip" property="length_arm"/>
 		<script language="javascript">
-		<![CDATA[
-			var length_kylinos_phytium_bytes = project.getProperty("length_kylinos_phytium");
-			var length_kylinos_phytium_kbytes = Math.round((length_kylinos_phytium_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			var length_kylinos_phytium_mbytes = Math.round((length_kylinos_phytium_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
-			project.setNewProperty("length_kylinos_phytium_mb", length_kylinos_phytium_mbytes);
+			<![CDATA[
+			var length_arm_bytes = project.getProperty("length_arm");
+			var length_arm_kbytes = Math.round((length_arm_bytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			var length_arm_mbytes = Math.round((length_arm_kbytes / 1024) * Math.pow(10,2))/ Math.pow(10,2);
+			project.setNewProperty("length_arm_mb", length_arm_mbytes);
 		]]>
 		</script>
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
 		</tstamp>
 		<echo file="download_preview.jsonp">callback(
-		{
-		  "windows": {
+			{
+			"windows": {
 			"system": "windows",
 			"name": "o2server-windows-${VERSION}",
 			"fileName": "o2server-windows-${VERSION}.zip",
@@ -87,8 +88,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-windows-${VERSION}.zip",
 			"sha256": "${build_win.sha}"
-		  },
-		  "linux": {
+			},
+			"linux": {
 			"system": "linux",
 			"name": "o2server-linux-${VERSION}",
 			"fileName": "o2server-linux-${VERSION}.zip",
@@ -96,8 +97,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-linux-${VERSION}.zip",
 			"sha256": "${build_linux.sha}"
-		  },
-		  "macos": {
+			},
+			"macos": {
 			"system": "macos",
 			"name": "o2server-macos-${VERSION}",
 			"fileName": "o2server-macos-${VERSION}.zip",
@@ -105,8 +106,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-macos-${VERSION}.zip",
 			"sha256": "${build_macos.sha}"
-		  },
-		  "aix": {
+			},
+			"aix": {
 			"system": "aix",
 			"name": "o2server-aix-${VERSION}",
 			"fileName": "o2server-aix-${VERSION}.zip",
@@ -114,8 +115,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-aix-${VERSION}.zip",
 			"sha256": "${build_aix.sha}"
-		  },
-		  "raspberrypi": {
+			},
+			"raspberrypi": {
 			"system": "raspberrypi",
 			"name": "o2server-raspberrypi-${VERSION}",
 			"fileName": "o2server-raspberrypi-${VERSION}.zip",
@@ -123,32 +124,32 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-raspberrypi-${VERSION}.zip",
 			"sha256": "${build_raspberrypi.sha}"
-		  },
-		  "neokylin_loongson": {
-			"system": "neokylin_loongson",
-			"name": "o2server-neokylin-loongson-${VERSION}",
-			"fileName": "o2server-neokylin-loongson-${VERSION}.zip",
-			"fileSize": "${length_neokylin-loongson_mb}MB",
+			},
+			"risc": {
+			"system": "risc",
+			"name": "o2server-risc-${VERSION}",
+			"fileName": "o2server-risc-${VERSION}.zip",
+			"fileSize": "${length_risc_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-neokylin-loongson-${VERSION}.zip",
-			"sha256": "${build_neokylin-loongson.sha}"
-		  },
-		  "kylinos_phytium": {
-			"system": "kylinos_phytium",
-			"name": "o2server-kylinos-phytium-${VERSION}",
-			"fileName": "o2server-kylinos-phytium-${VERSION}.zip",
-			"fileSize": "${length_kylinos_phytium_mb}MB",
+			"url": "/download/o2server-risc-${VERSION}.zip",
+			"sha256": "${build_risc.sha}"
+			},
+			"arm": {
+			"system": "arm",
+			"name": "o2server-arm-${VERSION}",
+			"fileName": "o2server-arm-${VERSION}.zip",
+			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-kylinos-phytium-${VERSION}.zip",
-			"sha256": "${build_kylinos_phytium.sha}"
-		  },
-		  "jvm_windows": {}
-		}
-		)</echo>
+			"url": "/download/o2server-arm-${VERSION}.zip",
+			"sha256": "${build_arm.sha}"
+			},
+			"jvm_windows": {}
+			}
+			)</echo>
 		<echo file="download-pro.json">{
-		  "title": "O2OA V${VERSION}",
-		  "publishTime": "${TODAY}",
-		  "windows": {
+			"title": "O2OA V${VERSION}",
+			"publishTime": "${TODAY}",
+			"windows": {
 			"system": "windows",
 			"name": "o2server-windows-${VERSION}",
 			"fileName": "o2server-windows-${VERSION}.zip",
@@ -156,8 +157,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-windows-${VERSION}.zip",
 			"sha256": "${build_win.sha}"
-		  },
-		  "linux": {
+			},
+			"linux": {
 			"system": "linux",
 			"name": "o2server-linux-${VERSION}",
 			"fileName": "o2server-linux-${VERSION}.zip",
@@ -165,8 +166,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-linux-${VERSION}.zip",
 			"sha256": "${build_linux.sha}"
-		  },
-		  "macos": {
+			},
+			"macos": {
 			"system": "macos",
 			"name": "o2server-macos-${VERSION}",
 			"fileName": "o2server-macos-${VERSION}.zip",
@@ -174,8 +175,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-macos-${VERSION}.zip",
 			"sha256": "${build_macos.sha}"
-		  },
-		  "aix": {
+			},
+			"aix": {
 			"system": "aix",
 			"name": "o2server-aix-${VERSION}",
 			"fileName": "o2server-aix-${VERSION}.zip",
@@ -183,8 +184,8 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-aix-${VERSION}.zip",
 			"sha256": "${build_aix.sha}"
-		  },
-		  "raspberrypi": {
+			},
+			"raspberrypi": {
 			"system": "raspberrypi",
 			"name": "o2server-raspberrypi-${VERSION}",
 			"fileName": "o2server-raspberrypi-${VERSION}.zip",
@@ -192,34 +193,34 @@
 			"updateTime": "${TODAY}",
 			"url": "/download/o2server-raspberrypi-${VERSION}.zip",
 			"sha256": "${build_raspberrypi.sha}"
-		  },
-		  "neokylin_loongson": {
-			"system": "neokylin_loongson",
-			"name": "o2server-neokylin-loongson-${VERSION}",
-			"fileName": "o2server-neokylin-loongson-${VERSION}.zip",
-			"fileSize": "${length_neokylin-loongson_mb}MB",
+			},
+			"risc": {
+			"system": "risc",
+			"name": "o2server-risc-${VERSION}",
+			"fileName": "o2server-risc-${VERSION}.zip",
+			"fileSize": "${length_risc_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-neokylin-loongson-${VERSION}.zip",
-			"sha256": "${build_neokylin-loongson.sha}"
-		  },
-		  "kylinos_phytium": {
-			"system": "kylinos_phytium",
-			"name": "o2server-kylinos-phytium-${VERSION}",
-			"fileName": "o2server-kylinos-phytium-${VERSION}.zip",
-			"fileSize": "${length_kylinos_phytium_mb}MB",
+			"url": "/download/o2server-risc-${VERSION}.zip",
+			"sha256": "${build_risc.sha}"
+			},
+			"arm": {
+			"system": "arm",
+			"name": "o2server-arm-${VERSION}",
+			"fileName": "o2server-arm-${VERSION}.zip",
+			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-kylinos-phytium-${VERSION}.zip",
-			"sha256": "${build_kylinos_phytium.sha}"
-		  },
-		  "source":{
+			"url": "/download/o2server-arm-${VERSION}.zip",
+			"sha256": "${build_arm.sha}"
+			},
+			"source":{
 			"name":"o2oa-master",
 			"updateTime":"${TODAY}",
 			"fileSize":"990MB",
 			"url":"https://github.com/o2oa/o2oa"
-		  }
-		}</echo>
+			}
+			}</echo>
 	</target>
-	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspberrypi,zip_neokylin_loongson,zip_kylinos_phytium" />
+	<target name="default_zip" depends="version_o2,zip_windows,zip_linux,zip_macos,zip_aix,zip_raspberrypi,zip_risc,zip_arm" />
 	<target name="version_o2">
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
@@ -227,7 +228,7 @@
 		<echo file="${targetdir}/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
 	</target>
 	<target name="zip_windows">
-		<zip encoding="utf-8" destfile="o2server-windows-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-windows-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -248,7 +249,7 @@
 		</zip>
 	</target>
 	<target name="zip_linux">
-		<zip encoding="utf-8" destfile="o2server-linux-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-linux-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -268,7 +269,7 @@
 		</zip>
 	</target>
 	<target name="zip_macos">
-		<zip encoding="utf-8" destfile="o2server-macos-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-macos-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -288,7 +289,7 @@
 		</zip>
 	</target>
 	<target name="zip_aix">
-		<zip encoding="utf-8" destfile="o2server-aix-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-aix-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -308,7 +309,7 @@
 		</zip>
 	</target>
 	<target name="zip_raspberrypi">
-		<zip encoding="utf-8" destfile="o2server-raspberrypi-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-raspberrypi-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -327,8 +328,8 @@
 			</zipfileset>
 		</zip>
 	</target>
-	<target name="zip_neokylin_loongson">
-		<zip encoding="utf-8" destfile="o2server-neokylin-loongson-${VERSION}.zip" update="false">
+	<target name="zip_risc">
+		<zip encoding="utf-8" destfile="${preName}-risc-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -339,16 +340,16 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/neokylin_loongson/"/>
-				<include name="start_neokylin_loongson.sh"/>
-				<include name="start_neokylin_loongson_debug.sh"/>
-				<include name="console_neokylin_loongson.sh"/>
-				<include name="stop_neokylin_loongson.sh"/>
+				<include name="jvm/risc/"/>
+				<include name="start_risc.sh"/>
+				<include name="start_risc_debug.sh"/>
+				<include name="console_risc.sh"/>
+				<include name="stop_risc.sh"/>
 			</zipfileset>
 		</zip>
 	</target>
-	<target name="zip_kylinos_phytium">
-		<zip encoding="utf-8" destfile="o2server-kylinos-phytium-${VERSION}.zip" update="false">
+	<target name="zip_arm">
+		<zip encoding="utf-8" destfile="${preName}-arm-${VERSION}.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -359,11 +360,11 @@
 				<include name="index.html"/>
 				<include name="version.o2"/>
 				<include name="console.jar"/>
-				<include name="jvm/kylinos_phytium/"/>
-				<include name="start_kylinos_phytium.sh"/>
-				<include name="start_kylinos_phytium_debug.sh"/>
-				<include name="console_kylinos_phytium.sh"/>
-				<include name="stop_kylinos_phytium.sh"/>
+				<include name="jvm/arm/"/>
+				<include name="start_arm.sh"/>
+				<include name="start_arm_debug.sh"/>
+				<include name="console_arm.sh"/>
+				<include name="stop_arm.sh"/>
 			</zipfileset>
 		</zip>
 	</target>
