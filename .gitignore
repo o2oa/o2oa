@@ -153,6 +153,7 @@ typings/
 **/.vscode/
 
 **/pmd.xml
+**/cpd.xml
 **/pmd.html
 **/cpd.html
 
