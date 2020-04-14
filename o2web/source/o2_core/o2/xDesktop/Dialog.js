@@ -139,6 +139,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 }
                 button.set({
                     "value": bt.text,
+                    "title": bt.title,
                     "styles": styles,
                     "events": {
                         "click": function(e){bt.action.call(this, this, e)}.bind(this)

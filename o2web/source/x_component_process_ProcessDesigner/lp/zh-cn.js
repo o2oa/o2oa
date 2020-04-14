@@ -18,6 +18,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
     "condition": "条件",
     "unCategory": "未分类",
 	"ok": "确定",
+	"close": "关闭",
 	"cancel": "取消",
 
 	"notice":{
@@ -43,6 +44,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"merge": "合并活动",
 			"embed": "子流程活动",
 			"invoke": "调用活动",
+			"service": "服务活动",
+			"agent": "脚本活动",
+			"delay": "定时活动",
+			"message": "消息活动",
+			"choice": "选择活动",
+			"cancel": "取消活动",
 			"begin": "开始活动",
 			"end": "结束活动"
 		},
@@ -130,10 +137,40 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"inputDiscription": "请先输入版本描述",
 
 	"edition_list":{
+		"editionList": "查看流程版本",
 		"number": "版本号",
 		"update": "更新时间",
 		"updatePerson": "更新人",
-		"description": "版本描述"
+		"description": "版本描述",
+		"enabled": "启用",
+		"action": "操作",
+		"yes": "是",
+		"no": "否",
+		"newProcess": "创建了新的流程。",
+		"an": "个",
+
+		"modifyProcess": "修改了流程的 <b>\"{field}\"</b>，从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"modifyActivity": "修改了<b>“{name}”</b>活动的 <b>\"{field}\"</b>，从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"modifyActivity_addRoute": "增加了<b>“{name}”</b>活动的路由，指向<span style='color: #0000ff'>“{next}”</span>",
+		"modifyActivity_deleteRoute": "删除了<b>“{name}”</b>活动的路由，指向<span style='color: #ff0000'>“{next}”</span>",
+		"modifyActivity_modifyRouteNext": "修改了<b>“{name}”</b>活动的路由，从指向<span style='color: #ff0000'>“{oldnext}”</span>，修改为指向<span style='color: #0000ff'>“{newnext}”</span>",
+		"modifyActivity_modifyRouteField": "修改了<b>“{name}”</b>活动的路由，指向“{next}”， <b>\"{field}\"</b> 从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"deleteActivity": "删除了活动<b style='color: #ff0000'>“{name}”</b>",
+		"addActivity": "增加了活动<b style='color: #0000ff'>“{name}”</b>",
+		"noDiffs": "与上一版本无差异",
+		"hasDiffs": "与上一版本差异:",
+
+		"open": "切换",
+		"rollback": "回滚",
+		"override": "覆盖",
+
+		"openInfor": "保存当前打开的版本，并打开选定的版本。",
+		"rollbackInfor": "将流程设计回滚所选版本，所有所选版本之后的版本会被删除。",
+		"overrideInfor": "用所选版本的设计覆盖当前版本。",
+
+		"enabledProcessTitle": "启用流程确认",
+		"enabledProcessInfor": "将当前流程设置为”启用“，原来已启用的流程版本将被设置为”未启用“。<br><br>已经在流转的流程实例不会受到影响，下次启动流程时，会以已启用的流程版本为模板创建流程实例。<br><br>您确定要将当前流程设置为”启用“吗？"
+
 	}
 
 };

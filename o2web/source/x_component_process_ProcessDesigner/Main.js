@@ -734,6 +734,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
         }
     },
     recordStatus: function(){
+        debugger;
         return {"id": this.options.id};
     },
     saveProcess: function(){
