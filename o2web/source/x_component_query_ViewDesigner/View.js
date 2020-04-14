@@ -1661,6 +1661,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
     },
     setTemplateStyles: function(styles){
         this.json.style = styles.style;
+        this.json.iconStyle = styles.iconStyle || "";
         this.json.iconOverStyle = styles.iconOverStyle || "";
         this.json.customIconStyle = styles.customIconStyle;
         this.json.customIconOverStyle = styles.customIconOverStyle || "";
@@ -1668,6 +1669,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
     },
     clearTemplateStyles: function(styles){
         this.json.style = "form";
+        this.json.iconStyle = "";
         this.json.iconOverStyle = "";
         this.json.customIconStyle = "";
         this.json.customIconOverStyle = "";
@@ -1852,7 +1854,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         tools.each(function(tool){
             var actionNode = new Element("div", {
                 "MWFnodetype": tool.type,
-                "MWFButtonImage": this.imagePath_default+""+this.options.style+"/actionbar/"+tool.img,
+                "MWFButtonImage": this.imagePath_default+""+this.options.style+"/actionbar/"+( this.json.iconStyle || "default" )+"/"+tool.img,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
