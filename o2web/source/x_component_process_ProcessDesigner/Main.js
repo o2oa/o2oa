@@ -792,7 +792,9 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     saveNewEdition: function(el, e){
         this.process.saveNewEdition(e);
     },
-
+    listEdition: function(el, e){
+        this.process.listEdition(e);
+    },
 
     onPostClose: function() {
         if (this.process) {

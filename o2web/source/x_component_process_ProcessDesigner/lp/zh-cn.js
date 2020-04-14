@@ -17,10 +17,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
     "selectScript": "点击选择脚本: ",
     "condition": "条件",
     "unCategory": "未分类",
+	"ok": "确定",
+	"cancel": "取消",
 
 	"notice":{
         "no_name": "请先输入流程名称",
 		"save_success": "流程保存成功!",
+		"save_process": "请先保存流程!",
 		"one_begin": "每个流程只允许有一个“开始”活动",
 		"deleteRoute": "您确定要删除选中的路由吗？",
 		"deleteRouteTitle": "删除路由确认",
@@ -119,7 +122,18 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"enable": "已启用",
 	"notEnable": "未启用",
 	"currentEdition": "当前版本",
+	"editionUpdate": "最后修改",
+	"editionDiscription":"请输入版本描述",
 
 	"upgradeConfirm": "保存为新版本确认",
-	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>您是否确定要将当前流程保存为新版?<br/>选中\"同时启用新版本\"在保存完成之后,会将新版本设置为启用版本.</div><div style='margin-top:10px'><input type='checkbox' checked>同时启用新版本</div>"
+	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>您是否确定要将当前流程保存为新版?<br/>选中\"同时启用新版本\"在保存完成之后,会将新版本设置为启用版本.</div><div style='margin-top:10px'><input type='checkbox' checked>同时启用新版本</div>",
+	"inputDiscription": "请先输入版本描述",
+
+	"edition_list":{
+		"number": "版本号",
+		"update": "更新时间",
+		"updatePerson": "更新人",
+		"description": "版本描述"
+	}
+
 };
