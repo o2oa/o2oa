@@ -11,10 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -22,6 +19,9 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import net.sf.ehcache.Element;
 
@@ -90,7 +90,7 @@ public class ProcessFactory extends ElementFactory {
 	}
 
 	private Process pickObject(String flag) throws Exception {
-		Process o = this.business().entityManagerContainer().flag(flag, Process.class );
+		Process o = this.business().entityManagerContainer().flag(flag, Process.class);
 		if (o != null) {
 			this.entityManagerContainer().get(Process.class).detach(o);
 		}
@@ -168,6 +168,30 @@ public class ProcessFactory extends ElementFactory {
 		cq.select(root.get(Process_.id)).where(p).distinct(true);
 		list = em.createQuery(cq).getResultList();
 		return list;
+	}
+
+	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
+	public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
+			Process process) throws Exception {
+		if (effectivePerson.isManager()
+				|| (BooleanUtils.isTrue(this.business().organization().person().hasRole(effectivePerson,
+						OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager)))) {
+			return true;
+		}
+		if (ListTools.isEmpty(process.getStartableIdentityList())
+				&& ListTools.isEmpty(process.getStartableUnitList())) {
+			return true;
+		}
+		if (ListTools.isNotEmpty(process.getStartableIdentityList())
+				&& ListTools.containsAny(identities, process.getStartableIdentityList())) {
+			return true;
+		} else {
+			if (ListTools.isNotEmpty(process.getStartableUnitList())
+					&& ListTools.containsAny(units, process.getStartableUnitList())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<String> listControlableProcess(EffectivePerson effectivePerson, Application application)
