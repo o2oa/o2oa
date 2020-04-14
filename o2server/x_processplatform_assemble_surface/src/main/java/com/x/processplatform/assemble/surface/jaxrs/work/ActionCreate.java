@@ -357,7 +357,7 @@ class ActionCreate extends BaseAction {
 				return list.get(0);
 			}
 		}
-		throw new Exception("decideCreatorIdentity error:" + wi.toString());
+		throw new ExceptionDecideCreatorIdentity();
 	}
 
 	private void referenceTask(Business business, Wo wo) throws Exception {

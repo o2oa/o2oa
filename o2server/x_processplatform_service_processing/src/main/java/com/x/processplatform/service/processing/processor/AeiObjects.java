@@ -269,7 +269,7 @@ public class AeiObjects extends GsonPropertyObject {
 	public List<Route> getRoutes() throws Exception {
 		if (null == this.routes) {
 			this.routes = this.business.element().listRouteWithActvity(work.getActivity(),
-					this.activity.getActivityType());
+					work.getActivityType());
 		}
 		return this.routes;
 	}
