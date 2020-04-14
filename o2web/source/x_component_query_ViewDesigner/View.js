@@ -1737,6 +1737,8 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
         this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
         if (!this.json.actionStyles){
             this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+        }else{
+            this.toolbarWidget.css = Object.clone(this.json.actionStyles);
         }
 
         //MWF.getJSON(this.path+"toolbars.json", function(json){
