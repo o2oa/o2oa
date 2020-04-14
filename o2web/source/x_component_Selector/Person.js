@@ -1373,24 +1373,24 @@ MWF.xApplication.Selector.Person = new Class({
 
         if( this.options.width && this.options.width === "auto" ){
             //if (this.options.count.toInt() !== 1){
-                if( this.node )this.node.setStyle("width", "auto");
+            if( this.node )this.node.setStyle("width", "auto");
 
-                this.selectNode.setStyles({
-                    "width": "50%",
-                    "float" : "left"
-                });
-                //this.searchInput.setStyle("width", "99%");
-                if(this.letterAreaNode ){
-                    this.letterAreaNode.setStyle("width", "auto");
-                }
+            this.selectNode.setStyles({
+                "width": "50%",
+                "float" : "left"
+            });
+            //this.searchInput.setStyle("width", "99%");
+            if(this.letterAreaNode ){
+                this.letterAreaNode.setStyle("width", "auto");
+            }
 
-                this.selectedContainerNode.setStyle("width", "auto");
-                var overflowY = this.selectedScrollNode.getStyle("overflow-y");
-                if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") ){
-                    this.selectedScrollNode.setStyle("width", "auto");
-                }else{
-                    this.selectedScrollNode.setStyle("margin-right", "8px");
-                }
+            this.selectedContainerNode.setStyle("width", "auto");
+            var overflowY = this.selectedScrollNode.getStyle("overflow-y");
+            if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") ){
+                this.selectedScrollNode.setStyle("width", "auto");
+            }else{
+                this.selectedScrollNode.setStyle("margin-right", "8px");
+            }
             //}else{
             //    this.node.setStyle("width", "auto");
             //    this.selectNode.setStyle("width", "auto");
@@ -1412,22 +1412,22 @@ MWF.xApplication.Selector.Person = new Class({
             }
 
             //if (this.options.count.toInt() !== 1){
-                var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
-                var halfWidth = Math.floor(width / 2);
-                this.selectNode.setStyle("width", halfWidth);
-                //this.searchInput.setStyle("width", halfWidth - 6);
-                if(this.letterAreaNode ){
-                    this.letterAreaNode.setStyle("width", halfWidth - 19);
-                }
+            var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
+            var halfWidth = Math.floor(width / 2);
+            this.selectNode.setStyle("width", halfWidth);
+            //this.searchInput.setStyle("width", halfWidth - 6);
+            if(this.letterAreaNode ){
+                this.letterAreaNode.setStyle("width", halfWidth - 19);
+            }
 
-                this.selectedContainerNode.setStyle("width", halfWidth);
+            this.selectedContainerNode.setStyle("width", halfWidth);
 
-                var overflowY = this.selectedScrollNode.getStyle("overflow-y");
-                if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") ){
-                    this.selectedScrollNode.setStyle("width", halfWidth);
-                }else{
-                    this.selectedScrollNode.setStyle("width", halfWidth - 8);
-                }
+            var overflowY = this.selectedScrollNode.getStyle("overflow-y");
+            if( typeOf(overflowY)==="string" && (overflowY.toLowerCase() === "auto" || overflowY.toLowerCase() === "scroll") ){
+                this.selectedScrollNode.setStyle("width", halfWidth);
+            }else{
+                this.selectedScrollNode.setStyle("width", halfWidth - 8);
+            }
             //}else{
             //    var width = nodeWidth - getOffsetX(this.selectNode);
             //    this.selectNode.setStyle("width", width);
@@ -1678,7 +1678,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         //if (this.selector.options.count.toInt()===1){
         //    this.checkSelectedSingle();
         //}else{
-            this.checkSelected();
+        this.checkSelected();
         //}
     },
     checkSelectedSingle: function(){
@@ -2211,12 +2211,12 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }).inject(this.node, "after");
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
-        // var subIdList = this.selector._getChildrenItemIds(this.data);
-        // if (subIdList){
-        //     var count = subIdList.length;
-        //     this.childrenHeight = count*this.selector.options.itemHeight;
-        //     this.children.setStyle("height", ""+this.childrenHeight+"px");
-        // }
+        var subIdList = this.selector._getChildrenItemIds(this.data);
+        if (subIdList){
+            var count = subIdList.length;
+            this.childrenHeight = count*this.selector.options.itemHeight;
+            this.children.setStyle("height", ""+this.childrenHeight+"px");
+        }
 
         if (!this._hasChild()){
             this.actionNode.setStyle("background", "transparent");
@@ -2346,7 +2346,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }else if (display === "none"){
                 this.children.setStyles({
                     "display": "block",
-                    "height": this.childrenHeight+"px"
+                    "height": "auto"
                 });
                 this.node.setStyles( this.selector.css.flatCategoryItemNode_selected );
                 this.isExpand = true;
