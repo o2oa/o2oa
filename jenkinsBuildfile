@@ -5,7 +5,7 @@ pipeline {
             steps {
                 echo 'env.sshServer='+env.sshServer
 				echo 'env.preName='+env.preName
-				echo 'env.isbigTag='+env.isbigTag
+				echo 'env.isallTag='+env.isallTag
             }
         }
         stage('envtag') {
