@@ -107,6 +107,10 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         if (this.viewNode){
             this.node.setStyle("background", "transparent");
             this.actionbarNode = this.viewNode.getChildren("div")[0];
+            if( this.actionbarNode ){
+                this.actionbarNode.destroy();
+                this.actionbarNode = null;
+            }
             this.viewTable = this.viewNode.getElement("table").setStyles(this.css.viewTitleTableNode);
             this.viewLine = this.viewTable.getElement("tr").setStyles(this.css.viewTitleLineNode);
             this.viewSelectCell = this.viewLine.getElement("td");
@@ -192,7 +196,7 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
             this.node.set("id", this.json.id);
         }
         if(name=="actionbar"){
-            input.get("value") === "show" ? this._showActionbar() : this._hideActionbar();
+            this.json.actionbar === "show" ? this._showActionbar() : this._hideActionbar();
         }
 
         this._setEditStyle_custom(name, input, oldValue);
@@ -255,7 +259,9 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
         if(this.actionbarNode)this.actionbarNode.hide();
     },
     _showActionbar : function(){
+	    if( this.actionbarLoading )return;
 	    if( !this.actionbarNode )return;
+        this.actionbarLoading = true;
         MWF.require("MWF.widget.Toolbar", null, false);
         this.actionbarNode.show();
         if( !this.viewData.actionbarList )this.viewData.actionbarList = [];
@@ -273,10 +279,13 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 
                     toolbarWidget.load();
                     this.actionbarList.push( toolbarWidget );
+                    this.actionbarLoading = false;
                 }.bind(this));
             }else{
-
+                this.actionbarLoading = false;
             }
+        }else{
+            this.actionbarLoading = false;
         }
     },
     setToolbars: function(tools, node, json){

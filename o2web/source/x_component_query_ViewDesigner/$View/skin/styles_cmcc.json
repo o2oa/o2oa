@@ -85,6 +85,7 @@
   },
   "actionbar": {
     "style": "cmcc",
+    "iconStyle" : "white",
     "customIconStyle" : "white",
     "forceStyles" : {
       "container" : {
