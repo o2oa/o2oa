@@ -5,6 +5,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
@@ -320,4 +321,33 @@ public class DocumentPersistService {
 		}
 		permissionService.refreshDocumentPermission(docId, permissionList);
 	}
+
+	/**
+	 * 重新计算所有的文档的权限和review信息
+	 */
+    public void refreshAllDocumentPermission() throws Exception {
+    	//根据栏目一个一个来查询
+		AppInfoServiceAdv appInfoService = new AppInfoServiceAdv();
+		DocumentQueryService documentQueryService = new DocumentQueryService();
+		DocumentPersistService documentPersistService = new DocumentPersistService();
+		List<String> appIds = appInfoService.listAllIds("信息");
+		List<String> documentIds = null;
+		ReviewService reviewService = new ReviewService();
+		if( ListTools.isNotEmpty( appIds )){
+			for( String appId : appIds ){
+				//查询指定App中所有的文档Id
+				documentIds = documentQueryService.listIdsByAppId( appId, "信息", 20000 );
+				if( ListTools.isNotEmpty( documentIds )){
+					for( String documentId : documentIds ){
+						try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+							reviewService.refreshDocumentReview(emc, documentId);
+						} catch ( Exception e ) {
+							throw e;
+						}
+					}
+				}
+			}
+			ApplicationCache.notify(Document.class);
+		}
+    }
 }
