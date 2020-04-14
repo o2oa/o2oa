@@ -1,4 +1,4 @@
-gulpfile.jsgulpfile.jsvar gulp = require('gulp'),
+var gulp = require('gulp'),
     gutil = require('gulp-util'),
     del = require('del'),
     fs = require("fs"),
