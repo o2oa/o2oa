@@ -108,6 +108,7 @@ public class ReviewService {
 		Document document = emc.find( docId, Document.class );
 		
 		if( document != null ) {
+
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo categoryInfo = emc.find( document.getCategoryId(), CategoryInfo.class );		
 			
