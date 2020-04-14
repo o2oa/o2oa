@@ -259,7 +259,8 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             _requireApp(appNames, function (appNamespace) {
                 var appId = (options && options.appId) ? options.appId : ((appNamespace.options.multitask) ? "" : appName);
 
-                if (appId && layout.desktop.apps && layout.desktop.apps[appId] && layout.desktop.apps[appId].window){
+                //if (appId && layout.desktop.apps && layout.desktop.apps[appId] && layout.desktop.apps[appId].window){
+                if (appId && layout.desktop.apps && layout.desktop.apps[appId]){
                     layout.desktop.apps[appId].setCurrent();
                 }else{
                     if (options) options.appId = appId;
