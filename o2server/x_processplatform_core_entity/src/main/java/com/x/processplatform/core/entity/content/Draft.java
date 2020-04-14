@@ -55,7 +55,7 @@ public class Draft extends SliceJpaObject {
 
 	/* 更新运行方法 */
 	public void onPersist() throws Exception {
-
+		// do nothing
 	}
 
 	public void setTitle(String title) {
@@ -83,15 +83,6 @@ public class Draft extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
-
-	public static final String startTime_FIELDNAME = "startTime";
-	@FieldDescribe("开始时间.")
-	@Temporal(TemporalType.TIMESTAMP)
-	/* 开始时间不能为空,如果为空排序可能出错 */
-	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + startTime_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private Date startTime;
 
 	public static final String application_FIELDNAME = "application";
 	@FieldDescribe("应用.")
@@ -182,14 +173,6 @@ public class Draft extends SliceJpaObject {
 
 	public void setIdentity(String identity) {
 		this.identity = identity;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
 	}
 
 	public String getApplication() {
