@@ -250,7 +250,9 @@ class ActionAssignCreate extends BaseAction {
 		p = cb.or(p, cb.equal(root.get(Process_.alias), processFlag));
 		p = cb.or(p, cb.equal(root.get(Process_.id), processFlag));
 		p = cb.and(p, root.get(Process_.application).in(applicationIds));
-		cq.select(root).where(p);
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
+		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
 		List<Process> list = em.createQuery(cq).getResultList();
 		if (list.isEmpty()) {
 			throw new ExceptionEntityNotExist(processFlag, Process.class);
