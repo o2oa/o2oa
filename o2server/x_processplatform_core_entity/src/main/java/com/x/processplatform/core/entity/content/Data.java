@@ -1,15 +1,9 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +13,11 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class Data extends ListOrderedMap<String, Object> {
 
