@@ -1,0 +1,36 @@
+{
+    "node": {
+        "min-height": "300px",
+        "margin": "20px",
+        "min-width": "500px",
+        "height": "90%"
+    },
+    "leftNode": {
+        "height": "100%",
+        "float": "left",
+        "width": "60%"
+    },
+    "rightNode": {
+        "height": "100%",
+        "float": "right",
+        "width": "40%"
+    },
+    "listNode": {
+        "height": "100%",
+        "background-color": "#ffffff",
+        "border": "1px solid #cccccc"
+    },
+    "resizeNode": {
+        "float": "left",
+        "width": "10px",
+        "height": "100%",
+        "cursor": "col-resize"
+    },
+    "diffNode": {
+        "height": "100%",
+        "background-color": "#ffffff",
+        "border": "1px solid #cccccc",
+        "float-left": "20px",
+        "margin-left": "10px"
+    }
+}

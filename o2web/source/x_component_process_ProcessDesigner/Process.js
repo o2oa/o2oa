@@ -383,7 +383,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 				}.bind(this));
 			}
 			if (this.designer.processEditionInforNode){
-				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionName+"</span> "+"("+this.process.lastUpdatePerson+")";
+				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionNumber+"</span> "+this.designer.lp.editionUpdate+": <span class='mainColor_color'>"+o2.name.cn(this.process.lastUpdatePerson)+" ("+this.process.updateTime+")</span>";
 				this.designer.processEditionInforNode.set("html", text);
 			}
 		}
@@ -399,7 +399,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.unSelectedAll();
 			this.showProperty();
 	//		if (this.currentSelected){
-	//			this.currentSelected.unSelected();		
+	//			this.currentSelected.unSelected();
 	//		} 
 		}
 	},
@@ -513,20 +513,57 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		if (this.process.isNewProcess){
 			this.save();
 		}else{
+			var node = new Element("div", {"styles":this.designer.css.saveNewEditionNode});
+			var inforNode = new Element("div", {"html":this.designer.lp.upgradeInfor}).inject(node);
+			var descriptionNode = new Element("div", {"styles": this.designer.css.editionDescriptionNode}).inject(node);
+			var descriptionTitleNode = new Element("div", {"styles": this.designer.css.descriptionTitleNode, "text": this.designer.lp.editionDiscription}).inject(descriptionNode);
+			var descriptionTextAreaNode = new Element("textarea", {"styles": this.designer.css.descriptionTextAreaNode}).inject(descriptionNode);
+
 			var _self = this;
-			this.designer.confirm("infor", e, this.designer.lp.upgradeConfirm, {"html": this.designer.lp.upgradeInfor}, 520, 210, function(){
-				var checkbox = this.content.getElement("input");
-				var enable = (!!checkbox && checkbox.get("checked"));
-				_self.doSaveNewEdition(enable);
-				this.close();
-			}, function(){
-				this.close();
+			o2.DL.open({
+				"content": node,
+				"title": this.designer.lp.upgradeConfirm,
+				"offset": {"y": -100},
+				"height": 330,
+				"buttonList": [{
+					"type": "ok",
+					"text": this.designer.lp.ok,
+					"action": function(){
+						var textarea = this.content.getElement("textarea");
+						var discription = textarea.get("value");
+						if (!discription) {
+							_self.designer.notice(_self.designer.lp.inputDiscription, "error", descriptionNode);
+						}else{
+							var checkbox = this.content.getElement("input");
+							var enable = (!!checkbox && checkbox.get("checked"));
+
+							_self.doSaveNewEdition(enable, discription);
+							this.close();
+						}
+					}
+				},{
+					"text": this.designer.lp.cancel,
+					"action": function(){
+						this.close();
+					}
+				}]
 			});
+
+			// var _self = this;
+			// this.designer.confirm("infor", e, this.designer.lp.upgradeConfirm, {"html": this.designer.lp.upgradeInfor}, 520, 210, function(){
+			// 	var checkbox = this.content.getElement("input");
+			// 	var enable = (!!checkbox && checkbox.get("checked"));
+			// 	_self.doSaveNewEdition(enable);
+			// 	this.close();
+			// }, function(){
+			// 	this.close();
+			// });
 		}
 	},
-	doSaveNewEdition: function(enable){
+	doSaveNewEdition: function(enable, description){
 		debugger;
 		var process = Object.clone(this.process);
+		process.editionDes = description;
 		var oldIds = [];
 		oldIds.push(process.id);
 		if (process.begin) oldIds.push(process.begin.id);
@@ -572,6 +609,25 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}.bind(this));
 	},
 
+	listEdition: function(){
+		if (this.process.edition){
+			MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.EditionList", function(){
+				var list = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition);
+				list.load();
+			}.bind(this));
+
+			// o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.process.application, this.process.edition, function(json){
+			// 	var editionList = json.data;
+			// 	this.listEditionDlg(json.data);
+			// }.bind(this));
+		}else{
+			this.designer.notice("infor", this.designer.lp.save_process);
+		}
+	},
+	listEditionDlg: function(editionList){
+
+		//var node = new Element("div", )
+	},
 
 	switchGrid: function(item){
 		if (this.isGrid){
