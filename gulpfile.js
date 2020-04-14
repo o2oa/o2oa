@@ -25,9 +25,9 @@ var jvmUrls = {
     "all": "/build/jvm.tar.gz",
     "linux": "/build/linux.tar.gz",
     "aix": "/build/aix.tar.gz",
-    "kylinos": "/build/kylinos_phytium.tar",
+    "arm": "/build/arm.tar.gz",
     "macos": "/build/macos.tar.gz",
-    "neokylin": "/build/neokylin_loongson.tar.gz",
+    "risc": "/build/risc.tar.gz",
     "raspberrypi": "/build/raspberrypi.tar.gz",
     "windows": "/build/windows.tar.gz"
 };
@@ -35,9 +35,9 @@ var scripts = {
     "all": ["o2server/*.sh", "o2server/*.jar", "o2server/*.html", "o2server/*.bat", "o2server/version.o2"],
     "linux": ["o2server/*linux*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "aix": ["o2server/*aix*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "kylinos": ["o2server/*kylinos_phytium*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "arm": ["o2server/*arm*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "macos": ["o2server/*macos*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
-    "neokylin": ["o2server/*neokylin_loongson*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
+    "risc": ["o2server/*risc*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "raspberrypi": ["o2server/*raspberrypi*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
     "windows": ["o2server/*windows*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"]
 };
