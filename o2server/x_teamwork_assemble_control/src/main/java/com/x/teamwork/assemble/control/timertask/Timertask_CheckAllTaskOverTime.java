@@ -13,9 +13,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.TaskQueryService;
+import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 
 /**
@@ -45,6 +47,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 				try {
 					taskIds = taskQueryService.listAllTaskIdsWithProject( projectId );
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Business business = new Business( emc );
 						if( ListTools.isNotEmpty( taskIds )) {
 							for( String taskId : taskIds ) {
 								task = emc.find( taskId, Task.class );
@@ -59,6 +62,22 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 											emc.check( task, CheckPersistType.all );
 											emc.commit();
 											
+											//同时修改对应Review文档
+											List<String> subTaskReviewIds = null;
+											List<Review> subTaskReviews = null;
+											subTaskReviewIds = business.reviewFactory().listReviewByTask(taskId, 999);
+											if( ListTools.isNotEmpty( subTaskReviewIds ) ) {
+												subTaskReviews = emc.list( Review.class, subTaskReviewIds );
+												if( ListTools.isNotEmpty(subTaskReviews)) {
+													emc.beginTransaction( Task.class );
+													for( Review review : subTaskReviews ) {
+														review.setOvertime(true);
+														emc.check( review , CheckPersistType.all );
+													}
+													emc.commit();
+												}
+											}
+											
 											try {
 												MessageFactory.message_to_teamWorkOverTime( task, true );				
 											} catch (Exception e) {
@@ -66,11 +85,28 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 											}																
 										}
 										if( task.getEndTime().after( now ) && task.getOvertime()) {
+											logger.debug("超时变未超时,打上标识，不发送提醒");
 											//超时变未超时,打上标识，不发送提醒
 											emc.beginTransaction( Task.class );
 											task.setOvertime( false );
 											emc.check( task, CheckPersistType.all );
-											emc.commit();														
+											emc.commit();
+											
+											//同时修改对应Review文档
+											List<String> subTaskReviewIds = null;
+											List<Review> subTaskReviews = null;
+											subTaskReviewIds = business.reviewFactory().listReviewByTask(taskId, 999);
+											if( ListTools.isNotEmpty( subTaskReviewIds ) ) {
+												subTaskReviews = emc.list( Review.class, subTaskReviewIds );
+												if( ListTools.isNotEmpty(subTaskReviews)) {
+													emc.beginTransaction( Review.class );
+													for( Review review : subTaskReviews ) {
+														review.setOvertime(false);
+														emc.check( review , CheckPersistType.all );
+													}
+													emc.commit();
+												}
+											}
 										}
 										
 										Date now_30 = DateUtils.addMinutes(task.getEndTime(), -30);
