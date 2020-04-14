@@ -85,7 +85,8 @@
   },
   "actionbar": {
     "style": "xform_blue_flat",
-    "iconOverStyle": "xform_blue_flat_over",
+    "iconStyle" : "blue",
+    "iconOverStyle": "white",
     "customIconStyle" : "blue",
     "customIconOverStyle" : "white",
     "forceStyles" : {

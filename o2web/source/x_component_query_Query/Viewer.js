@@ -182,6 +182,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
+        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
             if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
             this.actionbar = new MWF.xApplication.query.Query.Viewer.Actionbar(this.actionbarAreaNode, this.viewJson.actionbarList[0], this, {});
@@ -1987,7 +1988,7 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
                 "MWFnodetype": tool.type,
                 //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
                 //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                "MWFButtonImage": path+this.options.style+"/actionbar/"+tool.img,
+                "MWFButtonImage": path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text

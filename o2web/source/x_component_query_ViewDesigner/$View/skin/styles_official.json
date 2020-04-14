@@ -13,13 +13,13 @@
     "titleTr":{  //viewTitleTrNode   viewTitleLineNode
       "line-height": "40px",
       "height": "40px",
-      "color": "#666666",
-      "background-color": "#EEE"
+      "color": "#fd1113",
+      "background-color": "#fff"
     },
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
       "font-weight": "bold",
       "padding": "0px 10px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #fd1113"
     },
     "contentTr" : {
       "background": "#ffffff"
@@ -31,7 +31,7 @@
       "height": "30px",
       "line-height": "30px",
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #fd1113"
     },
     "contentGroupTd": {
       "padding": "5px 5px",
