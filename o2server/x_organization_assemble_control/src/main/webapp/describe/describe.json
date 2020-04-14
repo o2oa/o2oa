@@ -8665,6 +8665,46 @@
           ]
         },
         {
+          "name": "code",
+          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionCreateCode",
+          "description": "个人通讯录生成二维码",
+          "type": "GET",
+          "path": "jaxrs/personcard/createQR/{cardId}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "cardId",
+              "type": "String",
+              "description": "名片id"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "contentDisposition",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
+            }
+          ]
+        },
+        {
           "name": "create",
           "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionCreate",
           "description": "创建名片.",
@@ -8939,6 +8979,86 @@
           ]
         },
         {
+          "name": "listPersonalVCf",
+          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionExportPersonalVcf",
+          "description": "导出个人通讯录vcf",
+          "type": "GET",
+          "path": "jaxrs/personcard/listPersonalVCf/{idList}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "idList",
+              "type": "String",
+              "description": "名片id组"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "contentDisposition",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
+            }
+          ]
+        },
+        {
+          "name": "listVCf",
+          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionExportVcf",
+          "description": "导出组织通讯录vcf",
+          "type": "GET",
+          "path": "jaxrs/personcard/listVCf/{idList}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "idList",
+              "type": "String",
+              "description": "名片id组"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "contentDisposition",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
+            }
+          ]
+        },
+        {
           "name": "mylist",
           "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionList",
           "description": "获取当前登录人的所有名片",
@@ -9066,6 +9186,46 @@
               "type": "Date",
               "isCollection": false,
               "description": "修改时间,自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
+          "name": "personcode",
+          "className": "com.x.organization.assemble.control.jaxrs.personcard.ActionPersonCode",
+          "description": "组织人员生成二维码",
+          "type": "GET",
+          "path": "jaxrs/personcard/createCode/{cardId}",
+          "contentType": "application/json",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "cardId",
+              "type": "String",
+              "description": "名片id"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "contentDisposition",
+              "type": "String",
+              "isCollection": false,
+              "description": "说明"
+            },
+            {
+              "name": "contentType",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型"
+            },
+            {
+              "name": "bytes",
+              "type": "byte[]",
+              "isCollection": false,
+              "description": "字节内容."
             }
           ]
         },
