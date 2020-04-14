@@ -25,7 +25,7 @@ var jvmUrls = {
     "all": "/build/jvm.tar.gz",
     "linux": "/build/linux.tar.gz",
     "aix": "/build/aix.tar.gz",
-    "arm": "/build/arm.tar",
+    "arm": "/build/arm.tar.gz",
     "macos": "/build/macos.tar.gz",
     "risc": "/build/risc.tar.gz",
     "raspberrypi": "/build/raspberrypi.tar.gz",
