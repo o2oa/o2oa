@@ -20,7 +20,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		private static final long serialVersionUID = 8148720363115902733L;
 	}
-	
 	// 初始化信息
 		public PersonCard initDefaultValue(EffectivePerson effectivePerson, PersonCard personCard,PersonCard newCard) {
 		    //System.out.println("personCard_groupType="+personCard.getStatus());

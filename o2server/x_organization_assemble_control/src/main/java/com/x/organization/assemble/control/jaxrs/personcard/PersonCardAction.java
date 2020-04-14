@@ -69,6 +69,7 @@ public class PersonCardAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
 	@JaxrsMethodDescribe(value = "更新个人名片.", action = ActionUpdate.class)
 	@PUT
 	@Path("{flag}")
@@ -176,6 +177,72 @@ public class PersonCardAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
 	
+	@JaxrsMethodDescribe(value = "个人通讯录生成二维码", action = ActionCreateCode.class) 
+	@GET
+	@Path("createQR/{cardId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void code(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("名片id") @PathParam("cardId") String cardId) {
+		ActionResult<ActionCreateCode.Wo> result = new ActionResult<>(); 
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreateCode().qrcode(effectivePerson, cardId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);  
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "组织人员生成二维码", action = ActionPersonCode.class) 
+	@GET
+	@Path("createCode/{cardId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void personcode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("名片id") @PathParam("cardId") String cardId) {
+		ActionResult<ActionPersonCode.Wo> result = new ActionResult<>(); 
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPersonCode().personcode(effectivePerson, cardId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);  
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "导出组织通讯录vcf", action = ActionExportVcf.class) 
+	@GET
+	@Path("listVCf/{idList}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("名片id组") @PathParam("idList") String idList) {
+		ActionResult<ActionExportVcf.Wo> result = new ActionResult<>(); 
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportVcf().exportVcf(effectivePerson, idList);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);  
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "导出个人通讯录vcf", action = ActionExportPersonalVcf.class) 
+	@GET
+	@Path("listPersonalVCf/{idList}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPersonalVCf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("名片id组") @PathParam("idList") String idList) {
+		ActionResult<ActionExportPersonalVcf.Wo> result = new ActionResult<>(); 
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportPersonalVcf().exportPersonalVcf(effectivePerson, idList);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);  
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
