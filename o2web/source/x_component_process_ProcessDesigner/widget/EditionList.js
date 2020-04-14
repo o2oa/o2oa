@@ -5,15 +5,17 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
 	options: {
 		"style": "default"
 	},
-	initialize: function(application, edition, options){
+	initialize: function(application, edition, process, options){
 		this.setOptions(options);
 		this.application = application;
         this.edition = edition;
+        this.process = process;
 		this.path = "/x_component_process_ProcessDesigner/widget/$EditionList/";
 		this.cssPath = "/x_component_process_ProcessDesigner/widget/$EditionList/"+this.options.style+"/css.wcss";
 		this._loadCss();
         this.selectedItem = null;
-        this.items = {};
+        this.items = [];
+        this.lp = MWF.xApplication.process.ProcessDesigner.LP;
 	},
     load: function(){
         o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.application, this.edition, function(json){
@@ -30,500 +32,262 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         this.resizeNode = new Element("div", {"styles": this.css.resizeNode}).inject(this.rightNode);
         this.diffNode = new Element("div", {"styles": this.css.diffNode}).inject(this.rightNode);
 
+        //this.listTable = new Element("table", {"styles": this.css.listNode}).inject(this.listNode);
+        var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3'><tr>" +
+            "<th></th>" +
+            "<th>"+this.lp.edition_list.number+"</th>" +
+            "<th>"+this.lp.edition_list.update+"</th>" +
+            "<th>"+this.lp.edition_list.updatePerson+"</th>" +
+            "<th>"+this.lp.edition_list.enabled+"</th>" +
+            "<th>"+this.lp.edition_list.description+"</th>" +
+            "</tr></table>";
+        this.listNode.set("html", tableHtml);
+        this.listTable = this.listNode.getElement("table");
+        this.listTable.setStyles(this.css.listTable);
+        var ths = this.listNode.getElements("th").setStyles(this.css.listTable_th);
+        ths[ths.length-1].setStyles(this.css.listTable_td_right);
+
         this.show();
     },
     show: function(){
 	    if (!this.dlg){
 	        this.dlg = o2.DL.open({
+                "title": this.lp.edition_list.editionList,
                 "content": this.node,
+                "offset": {"y": -100},
                 "isMax": true,
-                "width": 700,
+                "width": 900,
                 "height": 500,
                 "buttonList": [{
-                    "text": MWF.xApplication.process.ProcessDesigner.LP.ok,
+                    "text": this.lp.edition_list.open,
+                    "action": function(){ this.openCurrentEdition(); this.dlg.close();}.bind(this),
+                    "title": this.lp.edition_list.openInfor
+                },{
+                    "text": MWF.xApplication.process.ProcessDesigner.LP.close,
                     "action": function(){ this.close(); }
-                }]
+                }],
+                "onPostShow": function(){
+                    this.setEvent();
+                }.bind(this)
             });
         }
     },
     listEditionDlg: function(){
         this.editionList.each(function(edition){
-
+            var item = new MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item(this, edition);
+            this.items.push(item);
         }.bind(this));
     },
-
-
-
-
-
-    loadSelectNode: function(){
-        this.getSerialRule(function(){
-            this.loadSelectNodeItems();
-            this.loadSelectedNodeItems();
-        }.bind(this));
+    setEvent: function(){
+        var buttons = this.dlg.button.getElements("input");
+	    this.openCurrentEditionButton = buttons[0];
+	    var display = this.openCurrentEditionButton.getStyle("display");
+        this.openCurrentEditionButton.store("dsp", display);
+        this.openCurrentEditionButton.setStyle("display", "none");
+        var size, leftSize;
+	    var drag = new Drag(this.resizeNode, {
+            "onSnap": function(el){
+                el.setStyle("background", "#cccccc");
+            },
+            "onStart": function(el, e){
+                size = this.node.getSize();
+                leftSize = this.leftNode.getSize();
+                drag.x = e.event.x;
+            }.bind(this),
+            "onComplete": function(el){
+                el.setStyle("background-color", "transparent");
+            },
+	        "onDrag": function(el, e){
+                var x = drag.x - e.event.x;
+                var w = leftSize.x-x;
+                w = (w/size.x)*100;
+                this.leftNode.setStyle("width", ""+w+"%");
+                w = 100-w;
+                this.rightNode.setStyle("width", ""+w+"%");
+            }.bind(this)
+        });
     },
-
-    loadSelectedNodeItems: function(){
-        this.data.each(function(itemData){
-            this.selectedItems.push(new MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem[itemData.key.capitalize()](this.items[itemData.key], itemData));
-        }.bind(this));
-        this.fireEvent("change");
-    },
-
-    loadSelectNodeItems: function(){
-        Object.each(this.serialRuleJson, function(v, k){
-            this.loadSelectNodeItem(v, k);
-        }.bind(this));
-    },
-
-    loadSelectNodeItem: function(v, k){
-        this.items[k] = new MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.Item(v, k, this);
-    },
-
-    getSerialRule: function(callback){
-        if (!this.serialRuleJson){
-            var serialConifgUrl = "/x_component_process_ProcessDesigner/$Process/serialRule.json";
-            MWF.getJSON(serialConifgUrl, function(json){
-                this.serialRuleJson = json;
-                if (callback) callback();
+    openCurrentEdition: function(){
+	    debugger;
+	    if (this.currentItem && this.currentItem.edition.fullProcess.id != this.process.process.id){
+	        this.process.save(function(){
+                this.process.reload(this.currentItem.edition.fullProcess);
             }.bind(this));
-        }else{
-            if (callback) callback();
         }
     },
-    getData: function(){
-        var data = [];
-        this.selectedItems.each(function(item){
-            data.push(item.getData());
-        });
-        this.data = data;
-        return data;
+    checkButtonDisable: function(){
+	    if (this.currentItem && this.currentItem.edition.fullProcess.id != this.process.process.id){
+            this.openCurrentEditionButton.setStyle("display", this.openCurrentEditionButton.retrieve("dsp"));
+        }else{
+            this.openCurrentEditionButton.setStyle("display", "none");
+        }
     }
 });
 
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.Item = new Class({
-    initialize: function(value, key, editor){
-        this.editor = editor;
-        this.json = value;
-        this.key = key;
-        this.css = this.editor.css;
+MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
+    initialize: function(list, edition){
+        this.list = list;
+        this.edition = edition;
+        this.table = this.list.listTable;
+        this.css = this.list.css;
+        this.lp = this.list.lp;
+        this.isCurrentEdition = (this.list.process.process.id == this.edition.id);
         this.load();
     },
     load: function(){
-        this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.editor.selectNode);
-        this.iconNode = new Element("div", {"styles": this.css.itemIconNode}).inject(this.node);
-        this.textNode = new Element("div", {"styles": this.css.itemTextNode}).inject(this.node);
+        this.node = new Element("tr").inject(this.table);
+        var html = "<td></td>" +
+            "<td>"+this.edition.editionNumber+"</td>" +
+            "<td>"+this.edition.updateTime+"</td>" +
+            "<td>"+o2.name.cn(this.edition.lastUpdatePerson)+"</td>" +
+            "<td>"+(this.edition.editionEnable ? this.lp.edition_list.yes : this.lp.edition_list.no)+"</td>"+
+            "<td>"+(this.edition.editionDes || "")+"</td>";
+        this.node.set("html", html);
 
+        var tds = this.node.getElements("td").setStyles((this.isCurrentEdition) ? this.css.listTable_td_current : this.css.listTable_td);
+        tds[tds.length-1].setStyles(this.css.listTable_td_right);
+        this.actionTd = tds[0].setStyles(this.css.listTable_td_action);;
 
-        this.textNode.set({
-            "text": this.json.text,
-            "title": this.json.description
-        });
-        this.node.addEvents({
-            "mouseover": function(){this.node.setStyles(this.css.itemNode_over); this.iconNode.setStyles(this.css.itemIconNode_over);}.bind(this),
-            "mouseout": function(){this.node.setStyles(this.css.itemNode); this.iconNode.setStyles(this.css.itemIconNode);}.bind(this),
-            "click": function(){this.selectNumberItem();}.bind(this)
-        });
+        this.selectIconNode = new Element("div", {"styles": this.css.unselectIcon}).inject(this.actionTd);
+        this.setEvent();
     },
-    selectNumberItem: function(){
-        this.editor.selectedItems.push(new MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem[this.key.capitalize()](this));
-        this.editor.fireEvent("change");
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem = new Class({
-    initialize: function(item, itemData){
-        this.item = item;
-        this.json = item.json;
-        this.key = item.key;
-        this.editor = item.editor;
-        this.css = this.editor.css;
-        this.data = itemData;
-        this.load();
-    },
-    load: function(){
-        this.node = new Element("div", {"styles": this.css.selectedItemNode}).inject(this.editor.showNode);
-
-        this.textNode = new Element("div", {"styles": this.css.selectedItemTextNode}).inject(this.node);
-        this.textNode.set({
-            "text": this.json.text,
-            "title": this.json.description
-        });
-
-        this.node.addEvents({
-            "mouseover": function(){
-                if (this.editor.currentItem!=this) this.node.setStyles(this.css.selectedItemNode_over);
-            }.bind(this),
-            "mouseout": function(){
-                if (this.editor.currentItem!=this) this.node.setStyles(this.css.selectedItemNode);
-            }.bind(this),
-
-            "click": function(){this.selectItem();}.bind(this)
-        });
-
-        this.closeNode = new Element("div", {"styles": this.css.selectedItemCloseNode}).inject(this.node);
-        this.closeNode.addEvent("click", function(){
-            this.deleteItem();
+    setEvent: function(){
+        this.node.addEvent("click", function(){
+            this.selected();
         }.bind(this));
 
-        this.loadProperty();
-        this.selectItem();
     },
-    loadProperty: function(){},
-
-    deleteItem: function(){
-        this.node.destroy();
-        if (this.propertyNode) this.propertyNode.destroy();
-        this.editor.selectedItems.erase(this);
-        if (this.editor.currentItem === this) this.editor.currentItem = null;
-        this.editor.fireEvent("change");
-        MWF.release(this);
+    selected: function(){
+        if (this.list.currentItem) this.list.currentItem.unSelected();
+        this.node.setStyles(this.css.itemTr_selected).addClass("lightColor_bg");
+        this.selectIconNode.setStyles(this.css.selectIcon).addClass("mainColor_bg");
+        this.list.currentItem = this;
+        this.checkDiff();
+        this.list.checkButtonDisable();
     },
-    selectItem: function(){
-        if (this.editor.currentItem) this.editor.currentItem.unSelectItem();
-        if (this.propertyNode){
-            this.propertyNode.setStyle("display", "block");
-            if (this.key==="number"){
-                this.loadNumberBy();
-            }
-        }
-        this.node.setStyles(this.css.selectedItemNode_check);
-        this.editor.currentItem = this;
+    unSelected: function(){
+        this.node.setStyles(this.css.itemTr).removeClass("lightColor_bg");
+        this.selectIconNode.setStyles(this.css.unselectIcon).removeClass("mainColor_bg");
+        this.list.currentItem = null;
+        this.list.diffNode.empty();
     },
-    unSelectItem: function(){
-        this.node.setStyles(this.css.selectedItemNode);
-        if (this.propertyNode) this.propertyNode.setStyle("display", "none");
-        this.editor.currentItem = null;
-    }
-});
-
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Text = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-
-    loadProperty: function(){
-        this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
-        this.propertyTitleNode = new Element("div", {"styles": this.css.propertyTitleNode}).inject(this.propertyNode);
-        this.propertyTitleNode.set("text", MWF.xApplication.process.ProcessDesigner.LP.serialTextTitle);
-        this.propertyInputDivNode = new Element("div", {"styles": this.css.propertyInputDivNode}).inject(this.propertyNode);
-        this.propertyInputNode = new Element("input", {
-            "type": "text",
-            "value": (this.data) ? this.data.value: "",
-            "styles": this.css.propertyInputNode
-        }).inject(this.propertyInputDivNode);
-        this.changeText();
-
-        this.propertyInputNode.addEvents({
-            "change": function(){
-                this.changeText();
-            }.bind(this),
-            "blur": function(){},
-        });
-    },
-    changeText: function(){
-        var value = this.propertyInputNode.get("value");
-        if (value){
-            this.textNode.set("text", "\""+value+"\"");
-        }else{
-            this.textNode.set("text", this.json.text);
-        }
-        this.editor.fireEvent("change");
-    },
-    getData: function(){
-        var value = this.propertyInputNode.get("value");
-        var key = this.key;
-        var script = "return serial.text(\""+value+"\")";
-        return {
-            "key": key,
-            "value": value,
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Year = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    loadProperty: function(){
-        this.value = "created";
-        var i = Math.random();
-        this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
-        var propertyTitleNode = new Element("div", {"styles": this.css.propertyTitleNode}).inject(this.propertyNode);
-        propertyTitleNode.set("text", MWF.xApplication.process.ProcessDesigner.LP.serialDateTitle);
-        var propertyInputDivNode = new Element("div", {"styles": this.css.propertyInputDivNode}).inject(this.propertyNode);
-
-        var v = (this.data) ? this.data.value: "created";
-        html = "<input name=\"serialDateSelect"+i+"\" "+((v=="created") ? "checked" : "")+" type=\"radio\" value=\"created\"/>" + MWF.xApplication.process.ProcessDesigner.LP.serialCreatedDateTitle;
-        html += "<input name=\"serialDateSelect"+i+"\" "+((v=="current") ? "checked" : "")+" type=\"radio\" value=\"current\"/>" + MWF.xApplication.process.ProcessDesigner.LP.serialCurrentDateTitle;
-        propertyInputDivNode.set("html", html);
-        this.changeText((this.data) ? this.data.value: "created");
-        propertyInputDivNode.getElements("input").addEvent("click", function(e){
-            if (e.target.checked){
-                var v = e.target.get("value");
-                this.changeText(v);
+    checkDiff: function(){
+        this.getFullProcess(function(){
+            var prevItem  = this.getPrevItem();
+            if (prevItem){
+                prevItem.getFullProcess();
+                var diffs = this.getDiffWithProcess(prevItem.edition.fullProcess);
+                if (diffs.length){
+                    this.appendDiffLine(this.lp.edition_list.hasDiffs);
+                    diffs.each(function(v){
+                        this.appendDiffLine(v);
+                    }.bind(this));
+                }else{
+                    this.appendDiffLine(this.lp.edition_list.noDiffs);
+                }
+            }else{
+                this.appendDiffLine(this.lp.edition_list.newProcess);
+                this.appendDiffLine(this.getNewProcessInfor());
             }
         }.bind(this));
-    },
-    changeText: function(v){
-        var text = MWF.xApplication.process.ProcessDesigner.LP.serialCreated;
-        if (v=="current"){
-            text = MWF.xApplication.process.ProcessDesigner.LP.serialCurrent;
-        }
-        this.value = v;
-        this.textNode.set("text", this.json.text+"("+text+")");
-        this.editor.fireEvent("change");
-    },
-    getData: function(){
-        var key = this.key;
-        var f = (this.value=="current") ? "year" : "createYear";
-        var script = "return serial."+f+"(\"yyyy\")";
-        return {
-            "key": key,
-            "value": this.value,
-            "script": script
-        }
-    }
-});
-
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Month = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Year,
-    getData: function(){
-        var key = this.key;
-        var f = (this.value=="current") ? "month" : "createMonth";
-        var script = "return serial."+f+"(\"MM\")";
-        return {
-            "key": key,
-            "value": this.value,
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Day = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Year,
-    getData: function(){
-        var key = this.key;
-        var f = (this.value=="current") ? "day" : "createDay";
-        var script = "return serial."+f+"(\"dd\")";
-        return {
-            "key": key,
-            "value": this.value,
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Company = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    getData: function(){
-        var key = this.key;
-        var script = "return serial.company()";
-        return {
-            "key": key,
-            "value": "",
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Department = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    getData: function(){
-        var key = this.key;
-        var script = "return serial.department()";
-        return {
-            "key": key,
-            "value": "",
-            "script": script
-        }
-    }
-});
-
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.CompanyAttribute = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-
-    loadProperty: function(){
-        this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
-        this.propertyTitleNode = new Element("div", {"styles": this.css.propertyTitleNode}).inject(this.propertyNode);
-        this.propertyTitleNode.set("text", MWF.xApplication.process.ProcessDesigner.LP.serialAttributeTitle);
-        this.propertyInputDivNode = new Element("div", {"styles": this.css.propertyInputDivNode}).inject(this.propertyNode);
-        this.propertyInputNode = new Element("input", {
-            "type": "text",
-            "value": (this.data) ? this.data.value: "",
-            "styles": this.css.propertyInputNode
-        }).inject(this.propertyInputDivNode);
-        this.changeText();
-
-        this.propertyInputNode.addEvents({
-            "change": function(){
-                this.changeText();
-            }.bind(this),
-            "blur": function(){},
-        });
-    },
-    changeText: function(){
-        var value = this.propertyInputNode.get("value");
-        if (value){
-            this.textNode.set("text", this.json.text+"("+value+")");
-        }else{
-            this.textNode.set("text", this.json.text);
-        }
-        this.editor.fireEvent("change");
-    },
-    getData: function(){
-        var value = this.propertyInputNode.get("value");
-        var key = this.key;
-        var script = "return serial.companyAttribute(\""+value+"\")";
-        return {
-            "key": key,
-            "value": value,
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.DepartmentAttribute = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.CompanyAttribute,
-    getData: function(){
-        var value = this.propertyInputNode.get("value");
-        var key = this.key;
-        var script = "return serial.departmentAttribute(\""+value+"\")";
-        return {
-            "key": key,
-            "value": value,
-            "script": script
-        }
-    }
-});
-
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Number = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    loadProperty: function(){
-        this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
-
-        var lineNode = new Element("div", {"styles": this.css.lineNode}).inject(this.propertyNode);
-        var propertyTitleNode = new Element("div", {"styles": this.css.propertyTitleNode}).inject(lineNode);
-        propertyTitleNode.set("text", MWF.xApplication.process.ProcessDesigner.LP.serialNumberByTitle);
-        this.propertyNumberByDivNode = new Element("div", {"styles": this.css.propertyInputDivNode}).inject(lineNode);
-        this.loadNumberBy();
-
-        lineNode = new Element("div", {"styles": this.css.lineNode}).inject(this.propertyNode);
-        propertyTitleNode = new Element("div", {"styles": this.css.propertyTitleNode}).inject(lineNode);
-        propertyTitleNode.set("text", MWF.xApplication.process.ProcessDesigner.LP.serialNumberLongTitle);
-        this.propertyInputDivNode = new Element("div", {"styles": this.css.propertyInputDivNode}).inject(lineNode);
-        this.propertyInputNode = new Element("select").inject(this.propertyInputDivNode);
-        var value = (this.data) ? this.data.value: {};
-        var numberLong = value.lng || 0;
-        var optionsHtml = "<option "+((numberLong==0) ? "selected": "")+" value=\"0\">auto</option>";
-        optionsHtml += "<option "+((numberLong==2) ? "selected": "")+" value=\"2\">2</option>";
-        optionsHtml += "<option "+((numberLong==3) ? "selected": "")+" value=\"3\">3</option>";
-        optionsHtml += "<option "+((numberLong==4) ? "selected": "")+" value=\"4\">4</option>";
-        optionsHtml += "<option "+((numberLong==5) ? "selected": "")+" value=\"5\">5</option>";
-        optionsHtml += "<option "+((numberLong==6) ? "selected": "")+" value=\"6\">6</option>";
-        optionsHtml += "<option "+((numberLong==7) ? "selected": "")+" value=\"7\">7</option>";
-        optionsHtml += "<option "+((numberLong==8) ? "selected": "")+" value=\"8\">8</option>";
-        optionsHtml += "<option "+((numberLong==9) ? "selected": "")+" value=\"9\">9</option>";
-        this.propertyInputNode.set("html", optionsHtml);
-        this.propertyInputNode.addEvents({
-            "change": function(){
-                this.editor.fireEvent("change");
-            }.bind(this)
-        });
 
     },
-    loadNumberBy: function(){
-        this.propertyNumberByDivNode.empty();
-        var i = Math.random();
-
-        var value = (this.data) ? this.data.value: {};
-        var numberBy = value.by || [];
-
-        var html = "";
-        this.editor.selectedItems.each(function(item, n){
-            if (item.key!="number"){
-                var check = (numberBy.indexOf(n)==-1)? "" : "checked"
-                html += "<input "+check+" name=\"serialNumberBySelect"+i+"\" type=\"checkbox\" value=\""+n+"\"/>" + item.json.text;
-            }
-        });
-        this.propertyNumberByDivNode.set("html", html);
-        this.propertyNumberByDivNode.getElements("input").addEvent("click", function(e){
-            this.editor.fireEvent("change");
-        }.bind(this));
-
+    appendDiffLine: function(text){
+        new Element("div", {"styles": this.css.diffLine, "html": text}).inject(this.list.diffNode);
     },
-    getData: function(){
-        var numberLong = this.propertyInputNode.options[this.propertyInputNode.selectedIndex].value;
-        var numberBy = [];
-        var inputs = this.propertyNumberByDivNode.getElements("input");
-        inputs.each(function(input){
-            if (input.checked) numberBy.push(input.get("value").toInt());
-        }.bind(this));
-        var value = {"lng": numberLong, "by": numberBy};
-        var code = "return serial.nextSerialNumber("+JSON.encode(numberBy)+", "+numberLong+")"
-
-        return {
-            "key": this.key,
-            "value": value,
-            "script": code
-        }
-    }
-
-});
-
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Script = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    loadProperty: function(){
+    getDiffWithProcess: function(process){
         debugger;
-        this.code = (this.data) ? this.data.value: "";
-        this.propertyNode = new Element("div", {"styles": this.css.itemPropertyNode}).inject(this.editor.propertyNode);
-        this.scriptNode = new Element("div", {"styles": this.css.scriptNode}).inject(this.propertyNode);
-        this.scriptNode.set("title", MWF.xApplication.process.ProcessDesigner.LP.serialScriptTitle);
+        var diffs = [];
+        var notDiffFields = ["id", "editionName", "editionEnable", "editionNumber", "createTime", "updateTime", "creatorPerson", "lastUpdateTime", "lastUpdatePerson"];
+        Object.each(process, function(v, k){
+            var t = o2.typeOf(v);
+            if (t!="array" && t!="object"){
+                if (this.edition.fullProcess[k]!=v){
+                    if (notDiffFields.indexOf(k)==-1){
+                        var infor = this.lp.edition_list.modifyProcess;
+                        var oldV = (v.length>60) ? v.substring(0,60)+" ..." : v;
+                        var newV = (this.edition.fullProcess[k].length>60) ? this.edition.fullProcess[k].substring(0,60)+" ..." : this.edition.fullProcess[k];
+                        infor = infor.replace(/\{field\}/, k).replace(/\{old\}/, oldV).replace(/\{new\}/, newV);
+                        diffs.push(infor);
+                    }
+                }
+            }
+        }.bind(this));
 
-        this.scriptArea = new MWF.xApplication.process.ProcessDesigner.widget.ScriptText(this.scriptNode, (this.data) ? this.data.value: "", this.editor.process.designer, {
-            "maskNode": this.editor.process.designer.content,
-            "maxObj": this.editor.process.designer.paperNode,
-            "onChange": function(code){
-                this.code = code;
-                this.editor.fireEvent("change");
-            }.bind(this)
-        });
+        diffs = diffs.concat(this.getDiffActivityListCount(process, diffs));
+
+        return diffs;
     },
-    getData: function(){
-        var value = this.code;
-        var key = this.key;
-        return {
-            "key": key,
-            "value": value,
-            "script": value
+    getDiffActivityListCount: function(process){
+        var diffs = [];
+        diffs = diffs.concat(this.getDiffActivityCount(process.endList, this.edition.fullProcess.endList));
+        diffs = diffs.concat(this.getDiffActivityCount(process.manualList, this.edition.fullProcess.manualList));
+        return diffs;
+    },
+    getDiffActivityCount: function(prevList, currentList){
+        var diffs = [];
+        var prevNames = prevList.map(function(item){ return item.name; });
+        var currentNames = currentList.map(function(item){ return item.name; });
+
+        var deleteNames = prevNames.filter(function(name){
+            var i = currentNames.indexOf(name);
+            if (i!=-1){
+                currentNames.splice(i, 1);
+                return false;
+            }
+            return true;
+        });
+        currentNames.each(function(name){
+            var infor = this.lp.edition_list.addActivity;
+            infor = infor.replace(/\{name\}/, name);
+            diffs.push(infor);
+        }.bind(this));
+        deleteNames.each(function(name){
+            var infor = this.lp.edition_list.deleteActivity;
+            infor = infor.replace(/\{name\}/, name);
+            diffs.push(infor);
+        }.bind(this));
+        return diffs;
+    },
+
+    getNewProcessInfor: function(){
+        //this.getFullProcess(function(){
+            var process = this.edition.fullProcess;
+            var activityInfor = "";
+            var an = this.lp.edition_list.an;
+            activityInfor = "1 "+an+this.lp.menu.newActivityType.begin;
+            if (process.endList && process.endList.length) activityInfor += ", "+process.endList.length + " "+an +this.lp.menu.newActivityType.end;
+            if (process.agentList && process.agentList.length) activityInfor += ", "+process.agentList.length + " "+an +this.lp.menu.newActivityType.agent;
+            if (process.manualList && process.manualList.length) activityInfor += ", "+process.manualList.length + " "+an +this.lp.menu.newActivityType.manual;
+            if (process.conditionList && process.conditionList.length) activityInfor += ", "+process.conditionList.length + " "+an +this.lp.menu.newActivityType.condition;
+            if (process.choiceList && process.choiceList.length) activityInfor += ", "+process.choiceList.length + " "+an +this.lp.menu.newActivityType.choice;
+            if (process.parallelList && process.parallelList.length) activityInfor += ", "+process.parallelList.length + " "+an +this.lp.menu.newActivityType.parallel;
+            if (process.splitList && process.splitList.length) activityInfor += ", "+process.splitList.length + " "+an +this.lp.menu.newActivityType.split;
+            if (process.mergeList && process.mergeList.length) activityInfor += ", "+process.mergeList.length + " "+an +this.lp.menu.newActivityType.merge;
+            if (process.embedList && process.embedList.length) activityInfor += ", "+process.embedList.length + " "+an +this.lp.menu.newActivityType.embed;
+            if (process.invokeList && process.invokeList.length) activityInfor += ", "+process.invokeList.length + " "+an +this.lp.menu.newActivityType.invoke;
+            if (process.cancelList && process.cancelList.length) activityInfor += ", "+process.cancelList.length + " "+an +this.lp.menu.newActivityType.cancel;
+            if (process.delayList && process.delayList.length) activityInfor += ", "+process.delayList.length + " "+an +this.lp.menu.newActivityType.delay;
+            if (process.messageList && process.messageList.length) activityInfor += ", "+process.messageList.length + " "+an +this.lp.menu.newActivityType.message;
+            if (process.serviceList && process.serviceList.length) activityInfor += ", "+process.serviceList.length + " "+an +this.lp.menu.newActivityType.service;
+
+            return activityInfor;
+        //}.bind(this));
+    },
+    getFullProcess: function(callback){
+        if (this.edition.fullProcess){
+            if (callback) callback();
+        }else{
+            o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.get(this.edition.id, function(json){
+                this.edition.fullProcess = json.data;
+                if (callback) callback();
+            }.bind(this), null, false);
         }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Unit = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    getData: function(){
-        var key = this.key;
-        var script = "return serial.unit()";
-        return {
-            "key": key,
-            "value": "",
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.Unit = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem,
-    getData: function(){
-        var key = this.key;
-        var script = "return serial.unit()";
-        return {
-            "key": key,
-            "value": "",
-            "script": script
-        }
-    }
-});
-MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.UnitAttribute = new Class({
-    Extends: MWF.xApplication.process.ProcessDesigner.widget.SerialEditor.SelectedItem.CompanyAttribute,
-    getData: function(){
-        var value = this.propertyInputNode.get("value");
-        var key = this.key;
-        var script = "return serial.unitAttribute(\""+value+"\")";
-        return {
-            "key": key,
-            "value": value,
-            "script": script
-        }
+    },
+    getPrevItem: function(){
+        var idx = this.list.items.indexOf(this);
+        idx++;
+        if (idx<this.list.items.length) return this.list.items[idx];
+        return null;
     }
 });

@@ -190,6 +190,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.reload(this.process);
 	},
 	reload: function(process){
+		debugger;
 		//this.process = process;
 		this.panel.destroy();
 		this.paper.clear();
@@ -206,6 +207,15 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}.bind(this));
 		this.showProperty();
 		this.showEditionInfor();
+		if (process && this.designer.options.id != process.id){
+			var app = layout.desktop.apps["process.ProcessDesigner"+this.designer.options.id];
+			if (app){
+				delete layout.desktop.apps["process.ProcessDesigner"+this.designer.options.id];
+				this.designer.appId = "process.ProcessDesigner"+process.id;
+				layout.desktop.apps[this.designer.appId] = this.designer;
+			}
+			this.designer.setOptions({"id": process.id});
+		}
 	},
 	setEvent: function(){
 		this.paper.canvas.addEvent("selectstart", function(e){e.preventDefault();e.stopPropagation();});
@@ -370,17 +380,18 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	showEditionInfor: function(){
 		if (this.process.edition){
 			if (this.designer.processEditionNode){
+				this.designer.processEditionNode.removeEvents("click");
 				if (this.process.editionEnable){
 					this.designer.processEditionNode.set("text", this.designer.lp.enable);
+					this.designer.processEditionNode.addClass("mainColor_bg");
 				}else{
 					this.designer.processEditionNode.set("text", this.designer.lp.notEnable);
 					this.designer.processEditionNode.removeClass("mainColor_bg");
+
+					this.designer.processEditionNode.addEvent("click", function(e){
+						this.enableCurrentEdition(e);
+					}.bind(this));
 				}
-
-
-				this.designer.processEditionNode.addEvent("click", function(){
-					this.enableCurrentEdition();
-				}.bind(this));
 			}
 			if (this.designer.processEditionInforNode){
 				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionNumber+"</span> "+this.designer.lp.editionUpdate+": <span class='mainColor_color'>"+o2.name.cn(this.process.lastUpdatePerson)+" ("+this.process.updateTime+")</span>";
@@ -388,8 +399,20 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			}
 		}
 	},
-	enableCurrentEdition: function(){
-		//@todo enable edition
+	enableCurrentEdition: function(e){
+		var _self = this;
+		this.designer.confirm("infor", e, this.designer.lp.edition_list.enabledProcessTitle, {"html": this.designer.lp.edition_list.enabledProcessInfor}, 600, 120, function(){
+			_self.save(function(){
+				var actions = o2.Actions.load("x_processplatform_assemble_designer").ProcessAction;
+				actions.enableProcess(this.process.id, function(json){
+					actions.get(this.process.id, function(json){
+						this.reload(json.data);
+					}.bind(this))
+				}.bind(this));
+			}.bind(_self));
+			this.close();
+		},function(){this.close();})
+
 	},
 
 	unSelected: function(e){
@@ -612,7 +635,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	listEdition: function(){
 		if (this.process.edition){
 			MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.EditionList", function(){
-				var list = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition);
+				var list = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition, this);
 				list.load();
 			}.bind(this));
 
@@ -896,14 +919,15 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
                 this.process.isNewProcess = false;
                 this.designer.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"} );
                 this.isNewProcess = false;
-                if (reload){
-					this.designer.actions.getProcess(responseJSON.data.id, function(json){
-					   this.reload(json.data);
-					   if (callback) callback();
-					}.bind(this));
-				}
-
                 this.designer.options.id = responseJSON.data.id;
+				if (reload){
+					this.designer.actions.getProcess(responseJSON.data.id, function(json){
+						this.reload(json.data);
+						if (callback) callback();
+					}.bind(this));
+				}else{
+					if (callback) callback();
+				}
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
 
