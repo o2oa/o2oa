@@ -5075,6 +5075,98 @@
           ]
         },
         {
+          "name": "deleteEdition",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionDeleteEdition",
+          "description": "删除流程所有版本.",
+          "type": "DELETE",
+          "path": "jaxrs/process/{id}/{onlyRemoveNotCompleted}/edition",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            },
+            {
+              "name": "onlyRemoveNotCompleted",
+              "type": "boolean",
+              "description": "仅删除流转中Work"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "disableProcess",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionDisable",
+          "description": "停用当前版本流程.",
+          "type": "GET",
+          "path": "jaxrs/process/{id}/disable",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
+          "name": "enableProcess",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionEnable",
+          "description": "启用当前版本流程.",
+          "type": "GET",
+          "path": "jaxrs/process/{id}/enable",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
+            }
+          ]
+        },
+        {
           "name": "executeProjection",
           "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionExecuteProjection",
           "description": "执行流程数据映射.",
@@ -5398,7 +5490,7 @@
               "name": "edition",
               "type": "String",
               "isCollection": false,
-              "description": "版本,唯一编码."
+              "description": "版本编码,不同版本的流程编码需相同."
             },
             {
               "name": "editionName",
@@ -5416,7 +5508,372 @@
               "name": "editionNumber",
               "type": "Double",
               "isCollection": false,
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
+            },
+            {
+              "name": "distributeFactor",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "分布式存储标识位."
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "sequence",
+              "type": "String",
+              "isCollection": false,
+              "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
+          "name": "getEnabled",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionGetEnabled",
+          "description": "获取启用版本流程内容.含所有节点和路由信息",
+          "type": "GET",
+          "path": "jaxrs/process/{id}/enabled",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称."
+            },
+            {
+              "name": "alias",
+              "type": "String",
+              "isCollection": false,
+              "description": "别名."
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "描述."
+            },
+            {
+              "name": "creatorPerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程创建者."
+            },
+            {
+              "name": "lastUpdatePerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "最后的编辑者."
+            },
+            {
+              "name": "lastUpdateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "最后的编辑时间."
+            },
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程所属应用."
+            },
+            {
+              "name": "controllerList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "流程管理者."
+            },
+            {
+              "name": "icon",
+              "type": "String",
+              "isCollection": false,
+              "description": "icon Base64编码后的文本."
+            },
+            {
+              "name": "beforeBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "beforeBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "afterBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "afterBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "beforeEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "beforeEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "afterEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "afterEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "startableIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的用户."
+            },
+            {
+              "name": "startableUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的组织."
+            },
+            {
+              "name": "serialTexture",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号定义."
+            },
+            {
+              "name": "serialActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动ID."
+            },
+            {
+              "name": "serialPhase",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动阶段可以选择arrive或者inquire,默认情况下为空为arrive"
+            },
+            {
+              "name": "expireType",
+              "type": "ExpireType",
+              "isCollection": false,
+              "description": "过期方式.可选值never,appoint,script"
+            },
+            {
+              "name": "expireDay",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期日期."
+            },
+            {
+              "name": "expireHour",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期小时."
+            },
+            {
+              "name": "expireWorkTime",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "过期是否是工作时间."
+            },
+            {
+              "name": "expireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本."
+            },
+            {
+              "name": "expireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本文本."
+            },
+            {
+              "name": "checkDraft",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否进行无内容的草稿删除校验."
+            },
+            {
+              "name": "projection",
+              "type": "String",
+              "isCollection": false,
+              "description": "字段映射配置."
+            },
+            {
+              "name": "projectionFully",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "执行完全映射,在每次流转时会将所有的工作,待办,已办,待阅,已阅,参阅执行全部字段映射,默认false"
+            },
+            {
+              "name": "routeNameAsOpinion",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "如果没有默认意见那么将路由名称作为默认意见."
+            },
+            {
+              "name": "beforeArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本."
+            },
+            {
+              "name": "beforeArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本文本."
+            },
+            {
+              "name": "afterArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本."
+            },
+            {
+              "name": "afterArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本文本."
+            },
+            {
+              "name": "beforeExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本."
+            },
+            {
+              "name": "beforeExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本文本."
+            },
+            {
+              "name": "afterExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本."
+            },
+            {
+              "name": "afterExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本文本."
+            },
+            {
+              "name": "beforeInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本."
+            },
+            {
+              "name": "beforeInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本文本."
+            },
+            {
+              "name": "afterInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本."
+            },
+            {
+              "name": "afterInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本文本."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本编码,不同版本的流程编码需相同."
+            },
+            {
+              "name": "editionName",
+              "type": "String",
+              "isCollection": false,
               "description": "版本名"
+            },
+            {
+              "name": "editionEnable",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "启用版本"
+            },
+            {
+              "name": "editionNumber",
+              "type": "Double",
+              "isCollection": false,
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
             },
             {
               "name": "distributeFactor",
@@ -5739,7 +6196,7 @@
               "name": "edition",
               "type": "String",
               "isCollection": false,
-              "description": "版本,唯一编码."
+              "description": "版本编码,不同版本的流程编码需相同."
             },
             {
               "name": "editionName",
@@ -5757,7 +6214,19 @@
               "name": "editionNumber",
               "type": "Double",
               "isCollection": false,
-              "description": "版本名"
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
             },
             {
               "name": "distributeFactor",
@@ -5782,6 +6251,693 @@
               "type": "String",
               "isCollection": false,
               "description": "列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
+          "name": "listDisableEdition",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionListDisableEdition",
+          "description": "列示未启用的流程版本.",
+          "type": "GET",
+          "path": "jaxrs/process/application/{applicationId}/disable/edition",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "applicationId",
+              "type": "String",
+              "description": "应用标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称."
+            },
+            {
+              "name": "alias",
+              "type": "String",
+              "isCollection": false,
+              "description": "别名."
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "描述."
+            },
+            {
+              "name": "creatorPerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程创建者."
+            },
+            {
+              "name": "lastUpdatePerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "最后的编辑者."
+            },
+            {
+              "name": "lastUpdateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "最后的编辑时间."
+            },
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程所属应用."
+            },
+            {
+              "name": "controllerList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "流程管理者."
+            },
+            {
+              "name": "icon",
+              "type": "String",
+              "isCollection": false,
+              "description": "icon Base64编码后的文本."
+            },
+            {
+              "name": "beforeBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "beforeBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "afterBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "afterBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "beforeEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "beforeEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "afterEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "afterEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "startableIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的用户."
+            },
+            {
+              "name": "startableUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的组织."
+            },
+            {
+              "name": "serialTexture",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号定义."
+            },
+            {
+              "name": "serialActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动ID."
+            },
+            {
+              "name": "serialPhase",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动阶段可以选择arrive或者inquire,默认情况下为空为arrive"
+            },
+            {
+              "name": "expireType",
+              "type": "ExpireType",
+              "isCollection": false,
+              "description": "过期方式.可选值never,appoint,script"
+            },
+            {
+              "name": "expireDay",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期日期."
+            },
+            {
+              "name": "expireHour",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期小时."
+            },
+            {
+              "name": "expireWorkTime",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "过期是否是工作时间."
+            },
+            {
+              "name": "expireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本."
+            },
+            {
+              "name": "expireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本文本."
+            },
+            {
+              "name": "checkDraft",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否进行无内容的草稿删除校验."
+            },
+            {
+              "name": "projection",
+              "type": "String",
+              "isCollection": false,
+              "description": "字段映射配置."
+            },
+            {
+              "name": "projectionFully",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "执行完全映射,在每次流转时会将所有的工作,待办,已办,待阅,已阅,参阅执行全部字段映射,默认false"
+            },
+            {
+              "name": "routeNameAsOpinion",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "如果没有默认意见那么将路由名称作为默认意见."
+            },
+            {
+              "name": "beforeArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本."
+            },
+            {
+              "name": "beforeArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本文本."
+            },
+            {
+              "name": "afterArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本."
+            },
+            {
+              "name": "afterArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本文本."
+            },
+            {
+              "name": "beforeExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本."
+            },
+            {
+              "name": "beforeExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本文本."
+            },
+            {
+              "name": "afterExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本."
+            },
+            {
+              "name": "afterExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本文本."
+            },
+            {
+              "name": "beforeInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本."
+            },
+            {
+              "name": "beforeInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本文本."
+            },
+            {
+              "name": "afterInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本."
+            },
+            {
+              "name": "afterInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本文本."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本编码,不同版本的流程编码需相同."
+            },
+            {
+              "name": "editionName",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本名"
+            },
+            {
+              "name": "editionEnable",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "启用版本"
+            },
+            {
+              "name": "editionNumber",
+              "type": "Double",
+              "isCollection": false,
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
+            }
+          ]
+        },
+        {
+          "name": "listEdition",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionListEdition",
+          "description": "列示流程的所有版本.",
+          "type": "GET",
+          "path": "jaxrs/process/application/{applicationId}/edition/{edition}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "applicationId",
+              "type": "String",
+              "description": "应用标识"
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "description": "流程版本标志"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "数据库主键,自动生成."
+            },
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称."
+            },
+            {
+              "name": "alias",
+              "type": "String",
+              "isCollection": false,
+              "description": "别名."
+            },
+            {
+              "name": "description",
+              "type": "String",
+              "isCollection": false,
+              "description": "描述."
+            },
+            {
+              "name": "creatorPerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程创建者."
+            },
+            {
+              "name": "lastUpdatePerson",
+              "type": "String",
+              "isCollection": false,
+              "description": "最后的编辑者."
+            },
+            {
+              "name": "lastUpdateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "最后的编辑时间."
+            },
+            {
+              "name": "application",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程所属应用."
+            },
+            {
+              "name": "controllerList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "流程管理者."
+            },
+            {
+              "name": "icon",
+              "type": "String",
+              "isCollection": false,
+              "description": "icon Base64编码后的文本."
+            },
+            {
+              "name": "beforeBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "beforeBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "afterBeginScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本."
+            },
+            {
+              "name": "afterBeginScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程启动前事件脚本文本."
+            },
+            {
+              "name": "beforeEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "beforeEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "afterEndScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本."
+            },
+            {
+              "name": "afterEndScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程结束后事件脚本文本."
+            },
+            {
+              "name": "startableIdentityList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的用户."
+            },
+            {
+              "name": "startableUnitList",
+              "type": "List\u003cString\u003e",
+              "isCollection": true,
+              "description": "在指定启动时候,允许新建Work的组织."
+            },
+            {
+              "name": "serialTexture",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号定义."
+            },
+            {
+              "name": "serialActivity",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动ID."
+            },
+            {
+              "name": "serialPhase",
+              "type": "String",
+              "isCollection": false,
+              "description": "编号活动阶段可以选择arrive或者inquire,默认情况下为空为arrive"
+            },
+            {
+              "name": "expireType",
+              "type": "ExpireType",
+              "isCollection": false,
+              "description": "过期方式.可选值never,appoint,script"
+            },
+            {
+              "name": "expireDay",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期日期."
+            },
+            {
+              "name": "expireHour",
+              "type": "Integer",
+              "isCollection": false,
+              "description": "过期小时."
+            },
+            {
+              "name": "expireWorkTime",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "过期是否是工作时间."
+            },
+            {
+              "name": "expireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本."
+            },
+            {
+              "name": "expireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "过期时间设定脚本文本."
+            },
+            {
+              "name": "checkDraft",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "是否进行无内容的草稿删除校验."
+            },
+            {
+              "name": "projection",
+              "type": "String",
+              "isCollection": false,
+              "description": "字段映射配置."
+            },
+            {
+              "name": "projectionFully",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "执行完全映射,在每次流转时会将所有的工作,待办,已办,待阅,已阅,参阅执行全部字段映射,默认false"
+            },
+            {
+              "name": "routeNameAsOpinion",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "如果没有默认意见那么将路由名称作为默认意见."
+            },
+            {
+              "name": "beforeArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本."
+            },
+            {
+              "name": "beforeArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达前事件脚本文本."
+            },
+            {
+              "name": "afterArriveScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本."
+            },
+            {
+              "name": "afterArriveScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动到达后事件脚本文本."
+            },
+            {
+              "name": "beforeExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本."
+            },
+            {
+              "name": "beforeExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行前事件脚本文本."
+            },
+            {
+              "name": "afterExecuteScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本."
+            },
+            {
+              "name": "afterExecuteScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一活动执行后事件脚本文本."
+            },
+            {
+              "name": "beforeInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本."
+            },
+            {
+              "name": "beforeInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询前事件脚本文本."
+            },
+            {
+              "name": "afterInquireScript",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本."
+            },
+            {
+              "name": "afterInquireScriptText",
+              "type": "String",
+              "isCollection": false,
+              "description": "统一路由查询后事件脚本文本."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本编码,不同版本的流程编码需相同."
+            },
+            {
+              "name": "editionName",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本名"
+            },
+            {
+              "name": "editionEnable",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "启用版本"
+            },
+            {
+              "name": "editionNumber",
+              "type": "Double",
+              "isCollection": false,
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
+            },
+            {
+              "name": "createTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "创建时间,自动生成,索引创建在约束中."
+            },
+            {
+              "name": "updateTime",
+              "type": "Date",
+              "isCollection": false,
+              "description": "修改时间,自动生成,索引创建在约束中."
             }
           ]
         },
@@ -6080,7 +7236,7 @@
               "name": "edition",
               "type": "String",
               "isCollection": false,
-              "description": "版本,唯一编码."
+              "description": "版本编码,不同版本的流程编码需相同."
             },
             {
               "name": "editionName",
@@ -6098,7 +7254,19 @@
               "name": "editionNumber",
               "type": "Double",
               "isCollection": false,
-              "description": "版本名"
+              "description": "版本号"
+            },
+            {
+              "name": "editionDes",
+              "type": "String",
+              "isCollection": false,
+              "description": "版本描述."
+            },
+            {
+              "name": "defaultStartMode",
+              "type": "String",
+              "isCollection": false,
+              "description": "默认启动方式,draft,instance"
             },
             {
               "name": "createTime",
@@ -6163,6 +7331,58 @@
               "type": "String",
               "isCollection": false,
               "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "upgrade",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionUpgrade",
+          "description": "升级流程.",
+          "type": "POST",
+          "path": "jaxrs/process/{id}/upgrade",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": true,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "标识"
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "id",
+              "type": "String",
+              "isCollection": false,
+              "description": "id"
+            }
+          ]
+        },
+        {
+          "name": "upgradeAll",
+          "className": "com.x.processplatform.assemble.designer.jaxrs.process.ActionUpgradeAll",
+          "description": "给所有流程打上版本信息.",
+          "type": "GET",
+          "path": "jaxrs/process/upgrade/all",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": [
+            {
+              "name": "value",
+              "type": "Boolean",
+              "isCollection": false,
+              "description": "布尔值."
             }
           ]
         }

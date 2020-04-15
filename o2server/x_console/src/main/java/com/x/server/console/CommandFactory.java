@@ -59,7 +59,7 @@ public class CommandFactory {
 	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern debugDesignDetail_pattern = Pattern.compile("^(\\s*)ddd(\\s*)",
+	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)",
 			Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
@@ -126,7 +126,7 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " exit                                   exit after stop.";
 			help += StringUtils.LF;
-			help += " ddd -<argument> option                 debug design detail command with argument.";
+			help += " ctl -<argument> option                 system control command, no argument display help.";
 			help += StringUtils.LF;
 			System.out.println(help);
 		} catch (Exception e) {
