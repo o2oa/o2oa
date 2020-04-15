@@ -13,7 +13,7 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
 		this.path = "/x_component_process_ProcessDesigner/widget/$EditionList/";
 		this.cssPath = "/x_component_process_ProcessDesigner/widget/$EditionList/"+this.options.style+"/css.wcss";
 		this._loadCss();
-        this.selectedItem = null;
+        this.currentItem = null;
         this.items = [];
         this.lp = MWF.xApplication.process.ProcessDesigner.LP;
 	},
@@ -32,7 +32,10 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         this.resizeNode = new Element("div", {"styles": this.css.resizeNode}).inject(this.rightNode);
         this.diffNode = new Element("div", {"styles": this.css.diffNode}).inject(this.rightNode);
 
-        //this.listTable = new Element("table", {"styles": this.css.listNode}).inject(this.listNode);
+        this.createListTable();
+        this.show();
+    },
+    createListTable: function(){
         var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3'><tr>" +
             "<th></th>" +
             "<th>"+this.lp.edition_list.number+"</th>" +
@@ -40,14 +43,25 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
             "<th>"+this.lp.edition_list.updatePerson+"</th>" +
             "<th>"+this.lp.edition_list.enabled+"</th>" +
             "<th>"+this.lp.edition_list.description+"</th>" +
+            "<th>"+this.lp.edition_list.action+"</th>" +
             "</tr></table>";
         this.listNode.set("html", tableHtml);
         this.listTable = this.listNode.getElement("table");
         this.listTable.setStyles(this.css.listTable);
         var ths = this.listNode.getElements("th").setStyles(this.css.listTable_th);
         ths[ths.length-1].setStyles(this.css.listTable_td_right);
+    },
+    reloadList: function(){
+	    debugger;
+        this.items = [];
+        this.listNode.empty();
+        this.diffNode.empty();
 
-        this.show();
+        this.createListTable();
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.application, this.edition, function(json){
+            this.editionList = json.data;
+            this.listEditionDlg();
+        }.bind(this));
     },
     show: function(){
 	    if (!this.dlg){
@@ -58,14 +72,17 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
                 "isMax": true,
                 "width": 900,
                 "height": 500,
-                "buttonList": [{
-                    "text": this.lp.edition_list.open,
-                    "action": function(){ this.openCurrentEdition(); this.dlg.close();}.bind(this),
-                    "title": this.lp.edition_list.openInfor
-                },{
-                    "text": MWF.xApplication.process.ProcessDesigner.LP.close,
-                    "action": function(){ this.close(); }
-                }],
+                "buttonList": [
+                    {
+                        "text": this.lp.edition_list.open,
+                        "action": function(){ this.openCurrentEdition(); this.dlg.close();}.bind(this),
+                        "title": this.lp.edition_list.openInfor
+                    },
+                    {
+                        "text": MWF.xApplication.process.ProcessDesigner.LP.close,
+                        "action": function(){ this.close(); }
+                    }
+                ],
                 "onPostShow": function(){
                     this.setEvent();
                 }.bind(this)
@@ -101,6 +118,8 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
                 var x = drag.x - e.event.x;
                 var w = leftSize.x-x;
                 w = (w/size.x)*100;
+                if (w<30) w = 30;
+                if (w>70) w = 70;
                 this.leftNode.setStyle("width", ""+w+"%");
                 w = 100-w;
                 this.rightNode.setStyle("width", ""+w+"%");
@@ -108,7 +127,6 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         });
     },
     openCurrentEdition: function(){
-	    debugger;
 	    if (this.currentItem && this.currentItem.edition.fullProcess.id != this.process.process.id){
 	        this.process.save(function(){
                 this.process.reload(this.currentItem.edition.fullProcess);
@@ -141,21 +159,76 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
             "<td>"+this.edition.updateTime+"</td>" +
             "<td>"+o2.name.cn(this.edition.lastUpdatePerson)+"</td>" +
             "<td>"+(this.edition.editionEnable ? this.lp.edition_list.yes : this.lp.edition_list.no)+"</td>"+
-            "<td>"+(this.edition.editionDes || "")+"</td>";
+            "<td>"+(this.edition.editionDes || "")+"</td>"+
+            "<td></td>";
         this.node.set("html", html);
 
         var tds = this.node.getElements("td").setStyles((this.isCurrentEdition) ? this.css.listTable_td_current : this.css.listTable_td);
         tds[tds.length-1].setStyles(this.css.listTable_td_right);
-        this.actionTd = tds[0].setStyles(this.css.listTable_td_action);;
+        this.iconTd = tds[0].setStyles(this.css.listTable_td_icon);
+        this.selectIconNode = new Element("div", {"styles": this.css.unselectIcon}).inject(this.iconTd);
 
-        this.selectIconNode = new Element("div", {"styles": this.css.unselectIcon}).inject(this.actionTd);
+        this.actionTd = tds[tds.length-1].setStyles(this.css.listTable_td_action);
+        this.createActions();
+
         this.setEvent();
+    },
+    createActions: function(){
+        if (!this.edition.editionEnable){
+            this.enableAction = new Element("div.mainColor_bg", {"styles": this.css.enableAction, "text": this.lp.edition_list.enable}).inject(this.actionTd);
+            var text = this.lp.edition_list.enableInfor.replace(/{v}/, this.edition.editionNumber);
+            this.enableAction.set("title", text);
+        }
+        if (!this.isCurrentEdition && !this.edition.editionEnable){
+            this.delAction = new Element("div", {"styles": this.css.delAction, "text": this.lp.edition_list.del}).inject(this.actionTd);
+            text = this.lp.edition_list.delInfor.replace(/{v}/, this.edition.editionNumber);
+            this.delAction.set("title", text);
+        }
     },
     setEvent: function(){
         this.node.addEvent("click", function(){
             this.selected();
         }.bind(this));
 
+        if (this.enableAction) this.enableAction.addEvents({
+            "click": function(e){ this.enable(e); e.stopPropagation();}.bind(this),
+        });
+
+        if (this.delAction) this.delAction.addEvents({
+            "click": function(e){ this.del(e); e.stopPropagation();}.bind(this),
+        });
+    },
+    enable: function(e){
+        var actions = o2.Actions.load("x_processplatform_assemble_designer").ProcessAction;
+        var _self = this;
+        this.list.process.designer.confirm("infor", e, this.lp.edition_list.enabledProcessTitle, {"html": this.lp.edition_list.enabledProcessInfor}, 600, 120, function(){
+            _self.list.process.save(function(){
+                actions.enableProcess(this.edition.id, function(json){
+                    this.list.reloadList();
+                    actions.get(this.list.process.process.id, function(processJson){
+                        this.list.process.reload(processJson.data);
+                    }.bind(this));
+                }.bind(this));
+            }.bind(_self));
+            this.close();
+        },function(){this.close();})
+    },
+    del: function(e){
+        var _self = this;
+        var infor = this.lp.edition_list.deleteEditionInfor.replace(/{v}/g, this.edition.editionNumber);
+        this.list.process.designer.confirm("warn", e, this.lp.edition_list.deleteEditionTitle, infor, 460, 120, function(){
+            _self.deleteEdition();
+            this.close();
+        }, function(){
+            this.close();
+        });
+    },
+    deleteEdition: function(callback){
+        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction["delete"](this.edition.id, "true", function(){
+            this.unSelected();
+            this.node.destroy();
+            if (callback) callback();
+        }.bind(this));
     },
     selected: function(){
         if (this.list.currentItem) this.list.currentItem.unSelected();
@@ -179,9 +252,11 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
                 var diffs = this.getDiffWithProcess(prevItem.edition.fullProcess);
                 if (diffs.length){
                     this.appendDiffLine(this.lp.edition_list.hasDiffs);
-                    diffs.each(function(v){
-                        this.appendDiffLine(v);
-                    }.bind(this));
+                    //for (var i=0; i<10; i++){
+                        diffs.each(function(v){
+                            this.appendDiffLine(v);
+                        }.bind(this));
+                    //}
                 }else{
                     this.appendDiffLine(this.lp.edition_list.noDiffs);
                 }
@@ -274,14 +349,15 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
             return activityInfor;
         //}.bind(this));
     },
-    getFullProcess: function(callback){
+    getFullProcess: function(callback, async){
         if (this.edition.fullProcess){
             if (callback) callback();
         }else{
+            var asyncGet = !!async;
             o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.get(this.edition.id, function(json){
                 this.edition.fullProcess = json.data;
                 if (callback) callback();
-            }.bind(this), null, false);
+            }.bind(this), null, asyncGet);
         }
     },
     getPrevItem: function(){

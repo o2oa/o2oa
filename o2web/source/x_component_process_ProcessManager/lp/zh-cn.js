@@ -28,6 +28,9 @@ MWF.xApplication.process.ProcessManager.LP = {
     "deleteElementTitle": "删除设计确认",
     "deleteElement": "是否确定要删除选中的设计元素？",
 
+    "deleteProcessTitle": "删除设计确认",
+    "deleteProcess": "删除选中的流程，同时也会删除选中流程的流转中实例。确定要删除选中的流程吗？",
+
 	"process": {
         "create": "新建流程",
         "search": "搜索流程",
