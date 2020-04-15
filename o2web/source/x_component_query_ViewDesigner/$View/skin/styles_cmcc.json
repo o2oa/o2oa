@@ -91,7 +91,7 @@
       "container" : {
         "width" : "100%",
         "border-top" : "0px",
-        "border-bottom" : "1px solid #4a90e2"
+        "border-bottom" : "0px"
       }
     }
   },

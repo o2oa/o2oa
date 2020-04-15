@@ -14,7 +14,7 @@
       "line-height": "40px",
       "height": "40px",
       "color": "#666666",
-      "background-color": "#EEE"
+      "background-color": "#f1f1f1"
     },
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
       "font-weight": "bold",
@@ -37,7 +37,7 @@
       "padding": "5px 5px",
       "border-bottom": "1px solid #CCC",
       "font-weight": "bold",
-      "background-color": "#F6F6F6",
+      "background-color": "#F9F9F9",
       "cursor": "pointer"
     },
     "groupCollapseNode": {
