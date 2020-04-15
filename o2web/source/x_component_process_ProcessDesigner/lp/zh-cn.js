@@ -161,16 +161,22 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"hasDiffs": "与上一版本差异:",
 
 		"open": "切换",
+		"enable": "启用",
 		"rollback": "回滚",
 		"override": "覆盖",
+		"del": "删除",
 
-		"openInfor": "保存当前打开的版本，并打开选定的版本。",
+		"openInfor": "保存当前打开的版本，并打开版本”{v}“。",
+		"enableInfor": "启用流程版本”{v}“",
 		"rollbackInfor": "将流程设计回滚所选版本，所有所选版本之后的版本会被删除。",
 		"overrideInfor": "用所选版本的设计覆盖当前版本。",
+		"delInfor": "删除流程版本”{v}“。",
 
 		"enabledProcessTitle": "启用流程确认",
-		"enabledProcessInfor": "将当前流程设置为”启用“，原来已启用的流程版本将被设置为”未启用“。<br><br>已经在流转的流程实例不会受到影响，下次启动流程时，会以已启用的流程版本为模板创建流程实例。<br><br>您确定要将当前流程设置为”启用“吗？"
+		"enabledProcessInfor": "将当前流程设置为”启用“，原来已启用的流程版本将被设置为”未启用“。<br><br>已经在流转的流程实例不会受到影响，下次启动流程时，会以已启用的流程版本为模板创建流程实例。<br><br>您确定要将当前流程设置为”启用“吗？",
 
+		"deleteEditionTitle": "删除版本确认",
+		"deleteEditionInfor": "删除选中的流程版本”{v}“，同时也会删除流程版本”{v}“的流转中实例。您确定要删除流程版本”{v}“吗？",
 	}
 
 };
