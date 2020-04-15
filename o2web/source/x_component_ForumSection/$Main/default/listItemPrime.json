@@ -63,7 +63,7 @@
             "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
           },
           "createTime" : {
-            "value" : "function(d){ return this.app.getDateDiff( d.createTime ) }"
+            "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }"
           }
         }
       }
@@ -100,7 +100,7 @@
           },
           "latestReplyTime2" : {
             "show": "function( d ){ return !d.latestReplyUser ? false : true }",
-            "value" : "function(d){ return this.app.getDateDiff( d.latestReplyTime ) }"
+            "value" : "function(d){ return MWFForum.getDateDiff( d.latestReplyTime ) }"
           }
         }
       }
@@ -112,9 +112,10 @@
         "width": "10%"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='10%'>" +
-        " <span styles='documentActionNode' item='edit'></span>" +
+        "html": "<td styles='normalTdCenterNode' width='10%'>"+
         " <span styles='documentActionNode' item='remove'></span>" +
+        " <span styles='documentActionNode' item='edit'></span>" +
+        " <span style='width: 20px; height: 20px; line-height: 20px; margin-top: 5px; margin-right: 5px; display: inline-block;' item='placeholder'></span>" +
         "</td>",
         "items": {
           "edit": {
@@ -122,10 +123,13 @@
             "title": "edit",
             //"text": "edit",
             "action": "edit",
-            "condition": "function( d ){ return this.app.isAdmin || (d.creatorName == this.app.userName) }",
+            "condition": "function( d ){ return d.typeCategory!='投票' && (this.app.isAdmin || (d.creatorName == this.app.userName)) }",
             "styles": "actionEditNode",
             "mouseoverStyles": "actionEditNode_over",
             "mousedownStyles": "actionEditNode_over"
+          },
+          "placeholder" : {
+            "show": "function( d ){ return !(d.typeCategory!='投票' && (this.app.isAdmin || (d.creatorName == this.app.userName))) }"
           },
           "remove": {
             "title": "remove",
