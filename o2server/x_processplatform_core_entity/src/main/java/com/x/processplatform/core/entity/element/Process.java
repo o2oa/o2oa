@@ -46,6 +46,9 @@ public class Process extends SliceJpaObject {
 	public static final String SERIALPHASE_ARRIVE = "arrive";
 	public static final String SERIALPHASE_INQUIRE = "inquire";
 
+	public static final String DEFAULTSTARTMODE_DRAFT = "draft";
+	public static final String DEFAULTSTARTMODE_INSTANCE = "instance";
+
 	public String getId() {
 		return id;
 	}
@@ -66,7 +69,7 @@ public class Process extends SliceJpaObject {
 		if (this.routeNameAsOpinion == null) {
 			this.routeNameAsOpinion = true;
 		}
-		if(StringUtils.isEmpty(this.edition)){
+		if (StringUtils.isEmpty(this.edition)) {
 			this.edition = this.id;
 			this.editionEnable = true;
 			this.editionNumber = 1.0;
@@ -137,8 +140,7 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
 	/* 同一个应用下不可重名 */
 	@CitationNotExist(fields = { "name", "id",
-			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application"),
-			notEquals = @NotEqual(property = "edition", field = "edition")))
+			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application"), notEquals = @NotEqual(property = "edition", field = "edition")))
 	private String name;
 
 	public static final String alias_FIELDNAME = "alias";
@@ -148,8 +150,7 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists =
 	/* 同一个应用下不可重名 */
 	@CitationNotExist(fields = { "name", "id",
-			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application"),
-			notEquals = @NotEqual(property = "edition", field = "edition")))
+			"alias" }, type = Process.class, equals = @Equal(property = "application", field = "application"), notEquals = @NotEqual(property = "edition", field = "edition")))
 	private String alias;
 
 	public static final String description_FIELDNAME = "description";
@@ -496,6 +497,11 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String editionDes;
 
+	public static final String defaultStartMode_FIELDNAME = "defaultStartMode";
+	@FieldDescribe("默认启动方式,draft,instance")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + defaultStartMode_FIELDNAME)
+	private String defaultStartMode;
+
 	/* flag标志位 */
 
 	public String getName() {
@@ -833,4 +839,13 @@ public class Process extends SliceJpaObject {
 	public void setEditionDes(String editionDes) {
 		this.editionDes = editionDes;
 	}
+
+	public String getDefaultStartMode() {
+		return defaultStartMode;
+	}
+
+	public void setDefaultStartMode(String defaultStartMode) {
+		this.defaultStartMode = defaultStartMode;
+	}
+
 }
