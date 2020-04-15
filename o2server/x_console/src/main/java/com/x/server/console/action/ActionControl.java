@@ -19,9 +19,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 @author zhourui
 
 */
-public class ActionDebugDesignDetail extends ActionBase {
+public class ActionControl extends ActionBase {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDebugDesignDetail.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionControl.class);
 
 	private static Options options = new Options();
 
@@ -71,7 +71,7 @@ public class ActionDebugDesignDetail extends ActionBase {
 				uf(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("ddd (Debug Design Detail)", options);
+				formatter.printHelp("control command", options);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
