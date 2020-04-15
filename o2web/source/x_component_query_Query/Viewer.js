@@ -825,7 +825,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadCustomSearchContent();
             }
 
-            this.setContentHeightFun();
+            if(this.setContentHeightFun)this.setContentHeightFun();
         }.bind(this));
         this.searchCustomView();
     },
@@ -1061,7 +1061,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.viewSearchInputBoxNode.setStyle("display", "block");
                 this.viewSearchCustomActionNode.setStyle("display", "block");
 
-                this.setContentHeightFun();
+                if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
             this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
         }

@@ -14,12 +14,12 @@
       "line-height": "40px",
       "height": "40px",
       "color": "#666666",
-      "background-color": "#EEE"
+      "background-color": "#F1F4F9"
     },
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
       "font-weight": "bold",
       "padding": "0px 10px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #dcdfe6"
     },
     "contentTr" : {
       "background": "#ffffff"
@@ -31,13 +31,13 @@
       "height": "30px",
       "line-height": "30px",
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC"
+      "border-bottom": "1px solid #dcdfe6"
     },
     "contentGroupTd": {
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC",
+      "border-bottom": "1px solid #dcdfe6",
       "font-weight": "bold",
-      "background-color": "#F6F6F6",
+      "background-color": "#F1F4F9",
       "cursor": "pointer"
     },
     "groupCollapseNode": {
@@ -95,7 +95,7 @@
         "padding-left" : "10px",
         "padding-right" : "10px",
         "border-top" : "0px",
-        "border-bottom" : "1px solid #4a90e2"
+        "border-bottom" : "1px solid #F1F4F9"
       }
     }
   },
