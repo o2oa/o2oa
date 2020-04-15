@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.designer.jaxrs.output;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ import com.x.processplatform.core.entity.element.wrap.WrapForm;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 import com.x.processplatform.core.entity.element.wrap.WrapScript;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionList extends BaseAction {
 
@@ -36,6 +39,15 @@ class ActionList extends BaseAction {
 			List<Wo> wos = emc.fetchAll(Application.class, Wo.copier);
 
 			List<WrapProcess> processList = emc.fetchAll(Process.class, processCopier);
+			processList.stream().forEach( o -> {
+				if(StringUtils.isEmpty(o.getEdition())){
+					o.setName(o.getName() + "_V1.0");
+				}else{
+					o.setName(o.getEditionName());
+				}
+			});
+			processList = processList.stream().sorted(Comparator.comparing(WrapProcess::getName, Comparator.nullsLast(String::compareTo)))
+					.collect(Collectors.toList());
 
 			List<WrapForm> formList = emc.fetchAll(Form.class, formCopier);
 
