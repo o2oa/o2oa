@@ -265,6 +265,11 @@ public class Route extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String appendTaskIdentityScriptText;
 
+	public static final String edition_FIELDNAME = "edition";
+	@FieldDescribe("版本编码.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
+	private String edition;
+
 	public String getAppendTaskIdentityType() {
 		return appendTaskIdentityType;
 	}
@@ -491,6 +496,14 @@ public class Route extends SliceJpaObject {
 
 	public void setValidationScriptText(String validationScriptText) {
 		this.validationScriptText = validationScriptText;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
 	}
 
 }
