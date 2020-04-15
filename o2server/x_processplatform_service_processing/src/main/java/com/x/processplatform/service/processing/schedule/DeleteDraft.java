@@ -17,8 +17,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
@@ -26,6 +26,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.processplatform.core.entity.content.Draft;
+import com.x.processplatform.core.entity.content.Draft_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.Work_;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -49,8 +50,8 @@ public class DeleteDraft extends AbstractJob {
 			AtomicInteger draftCount = new AtomicInteger();
 			AtomicInteger workCount = new AtomicInteger();
 			List<Draft> drafts = new ArrayList<>();
+			List<Work> works = new ArrayList<>();
 			do {
-			
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					drafts = this.listDraft(emc, draftSequence);
 				}
@@ -73,22 +74,20 @@ public class DeleteDraft extends AbstractJob {
 					}
 				}
 			} while (!drafts.isEmpty());
-
-			
 			do {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					targets = this.listWork(emc, sequence);
+					works = this.listWork(emc, workSequence);
 				}
-				if (!targets.isEmpty()) {
-					sequence = targets.get(targets.size() - 1).getSequence();
-					for (Work work : targets) {
+				if (!works.isEmpty()) {
+					workSequence = works.get(works.size() - 1).getSequence();
+					for (Work work : works) {
 						try {
 							try {
 								ThisApplication.context().applications()
 										.deleteQuery(x_processplatform_service_processing.class,
 												Applications.joinQueryUri("work", work.getId(), "draft"), work.getJob())
 										.getData(WoId.class);
-								count.incrementAndGet();
+								workCount.incrementAndGet();
 							} catch (Exception e) {
 								throw new ExceptionDeleteDraft(e, work.getId(), work.getTitle(), work.getSequence());
 							}
@@ -97,8 +96,9 @@ public class DeleteDraft extends AbstractJob {
 						}
 					}
 				}
-			} while (!targets.isEmpty());
-			logger.print("删除{}个停滞草稿工作, 耗时:{}.", count.intValue(), stamp.consumingMilliseconds());
+			} while (!works.isEmpty());
+			logger.print("删除{}个处于拟稿环节的停滞工作, 删除{}个草稿. 耗时:{}.", workCount.intValue(), draftCount.intValue(),
+					stamp.consumingMilliseconds());
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
@@ -140,27 +140,23 @@ public class DeleteDraft extends AbstractJob {
 		EntityManager em = emc.get(Draft.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Work> root = cq.from(Work.class);
-		Path<String> idPath = root.get(Work_.id);
-		Path<String> jobPath = root.get(Work_.job);
+		Root<Draft> root = cq.from(Draft.class);
+		Path<String> idPath = root.get(Draft_.id);
 		Path<String> sequencePath = root.get(JpaObject_.sequence);
-		Path<Date> sequenceActivityArrivedTime = root.get(Work_.activityArrivedTime);
-		Predicate p = cb.lessThan(sequenceActivityArrivedTime, date);
-		p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), false));
-		p = cb.and(p, cb.equal(root.get(Work_.workCreateType), Work.WORKCREATETYPE_SURFACE));
+		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), date);
 		if (StringUtils.isNotEmpty(sequence)) {
 			p = cb.and(p, cb.greaterThan(sequencePath, sequence));
 		}
-		cq.multiselect(idPath, jobPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
+		cq.multiselect(idPath, sequencePath).where(p).orderBy(cb.asc(sequencePath));
 		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
 		List<Draft> list = new ArrayList<>();
 		for (Tuple o : os) {
-			Draft draft= new Draft();
+			Draft draft = new Draft();
 			draft.setId(o.get(idPath));
 			draft.setSequence(o.get(sequencePath));
 			list.add(draft);
 		}
 		return list;
-		
+	}
 
 }
