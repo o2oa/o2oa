@@ -1,5 +1,14 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
@@ -21,17 +30,9 @@ import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.Role;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -76,7 +77,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		t.setToken(effectivePerson.getToken());
 		t.setTokenType(tokenType);
 		/** 添加角色 */
-		t.setRoleList(listRole(business, person.getId()));
+		t.setRoleList(business.organization().role().listWithPerson(effectivePerson.getDistinguishedName()));
 		/** 添加身份 */
 		t.setIdentityList(listIdentity(business, person.getId()));
 		/** 判断密码是否过期需要修改密码 */
@@ -157,14 +158,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	private List<String> listRole(Business business, String personId) throws Exception {
-		List<String> roles = new ArrayList<>();
-		for (Role o : business.entityManagerContainer().fetch(business.role().listWithPerson(personId), Role.class,
-				ListTools.toList(Role.DISTINGUISHEDNAME))) {
-			roles.add(o.getDistinguishedName());
-		}
-		return roles;
-	}
+	// private List<String> listRole(Business business, String personId) throws Exception {
+	// 	List<String> roles = new ArrayList<>();
+	// 	for (Role o : business.entityManagerContainer().fetch(business.role().listWithPerson(personId), Role.class,
+	// 			ListTools.toList(Role.DISTINGUISHEDNAME))) {
+	// 		roles.add(o.getDistinguishedName());
+	// 	}
+	// 	return roles;
+	// }
 
 	private List<WoIdentity> listIdentity(Business business, String personId) throws Exception {
 		List<String> ids = business.identity().listWithPerson(personId);
