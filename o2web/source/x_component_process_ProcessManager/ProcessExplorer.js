@@ -284,6 +284,30 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
     _getItemObject: function(item){
         return new MWF.xApplication.process.ProcessManager.ProcessExplorer.Process(this, item)
     },
+    showDeleteAction: function(){
+        if (!this.deleteItemsAction){
+            this.deleteItemsAction = new Element("div", {
+                "styles": this.css.deleteItemsAction,
+                "text": this.app.lp.deleteItems
+            }).inject(this.node);
+            this.deleteItemsAction.fade("in");
+            this.deleteItemsAction.position({
+                relativeTo: this.elementContentListNode,
+                position: 'centerTop',
+                edge: 'centerTop',
+                "offset": {"y": this.elementContentNode.getScroll().y}
+            });
+            this.deleteItemsAction.addEvent("click", function(){
+                var _self = this;
+                this.app.confirm("warn", this.deleteItemsAction, MWF.APPPM.LP.deleteProcessTitle, MWF.APPPM.LP.deleteProcess, 430, 120, function(){
+                    _self.deleteItems();
+                    this.close();
+                }, function(){
+                    this.close();
+                });
+            }.bind(this));
+        }
+    },
     deleteItems: function(){
         this.hideDeleteAction();
         while (this.deleteMarkItems.length){

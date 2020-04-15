@@ -41,6 +41,9 @@
 .grayColor_bg {
     background-color: #e6e6e6 !important;
 }
+.lightColor_bg {
+    background-color: #FFFBF7 !important;
+}
 
 .logo_o2_40 {
     background-image: url(/o2_core/o2/xDesktop/$Default/tan/icons/logo_o2_40.png) !important;

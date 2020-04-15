@@ -243,6 +243,7 @@ o2.widget.Dialog = o2.DL = new Class({
 				var button = new Element("input", {
 					"type": "button",
 					"value": bt.text,
+					"title": bt.title,
 					"styles": styles,
 					"events": {
 						"click": function(e){bt.action.call(this, this, e)}.bind(this)

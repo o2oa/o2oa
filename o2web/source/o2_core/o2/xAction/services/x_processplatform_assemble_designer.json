@@ -33,7 +33,8 @@
 
   "getProcess": {"uri": "/jaxrs/process/{id}"},
   "addProcess": {"uri": "/jaxrs/process","method": "POST"},
-  "removeProcess": {"uri": "/jaxrs/process/{id}/true","method": "DELETE"},
+  //"removeProcess": {"uri": "/jaxrs/process/{id}/true","method": "DELETE"},
+  "removeProcess": {"uri": "/jaxrs/process/{id}/true/edition","method": "DELETE"},
   "updataProcess": {"uri": "/jaxrs/process/{id}","method": "PUT"},
 
   "listFormCategory": {"uri": "/jaxrs/formCategory/list/{id}/next/{count}"},
