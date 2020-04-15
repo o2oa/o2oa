@@ -166,6 +166,8 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         this.filterItems = [];
         this.searchStatus = "none"; //none, custom, default
 
+        this.originalJson = Object.clone(json);
+
         this.selectEnable = this.options.selectEnable;
 
         this.items = [];
@@ -184,14 +186,26 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         this.selectEnable = true;
         this.createSelectTh();
         this.items.each( function (it) {
-            it.createSelectTd();
+            if( it.clazzType == "category" ){
+                it.items.each( function(i){
+                    i.createSelectTd();
+                })
+            }else{
+                it.createSelectTd();
+            }
         }.bind(this));
     },
     disableSelectMode : function(){
         this.selectEnable = false;
         this.destroySelectTh();
         this.items.each( function (it) {
-            it.destroySelectTd();
+            if( it.clazzType == "category" ){
+                it.items.each( function(i){
+                    i.destroySelectTd();
+                })
+            }else{
+                it.destroySelectTd();
+            }
         }.bind(this));
     },
     destroySelectTh : function(){
@@ -201,7 +215,13 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         }
     },
     createSelectTh : function(){
-        this.selectTh = new Element("th",{styles:{width:"20px"}}).inject(this.viewTitleLine, "top");
+        var viewStyles = this.viewJson.viewStyles;
+        var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
+
+        this.selectTh = new Element("td",{
+            styles: viewTitleCellNode
+        }).inject(this.viewTitleLine, "top");
+        this.selectTh.setStyles({width:"20px"});
         this.checkboxElement = new Element("input", {
             "type": "checkbox"
         }).inject(this.selectTh);
@@ -212,14 +232,28 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     selectAll : function () {
         var flag = this.checkboxElement.get("checked");
         this.items.each(function (it) {
-            if (it.checkboxElement)it.checkboxElement.set("checked", flag)
+            if( it.clazzType == "category" ){
+                it.items.each( function(i){
+                    if (i.checkboxElement)i.checkboxElement.set("checked", flag)
+                })
+            }else{
+                if (it.checkboxElement)it.checkboxElement.set("checked", flag)
+            }
         }.bind(this))
     },
     getSelectedIds : function(){
         var checkedItems = [];
         this.items.each(function (it) {
-            if (it.checkboxElement.get("checked")) {
-                checkedItems.push( it.data.bundle )
+            if( it.clazzType == "category" ){
+                it.items.each( function(i){
+                    if (i.checkboxElement.get("checked")) {
+                        checkedItems.push( i.data.bundle )
+                    }
+                })
+            }else{
+                if (it.checkboxElement.get("checked")) {
+                    checkedItems.push( it.data.bundle )
+                }
             }
         }.bind(this));
         return checkedItems;
@@ -227,8 +261,16 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     getSelectedItems : function(){
         var checkedItems = [];
         this.items.each(function (it) {
-            if (it.checkboxElement.get("checked")) {
-                checkedItems.push( it )
+            if( it.clazzType == "category" ){
+                it.items.each( function(i){
+                    if (i.checkboxElement.get("checked")) {
+                        checkedItems.push( i )
+                    }
+                })
+            }else{
+                if (it.checkboxElement.get("checked")) {
+                    checkedItems.push( it )
+                }
             }
         }.bind(this));
         return checkedItems;
@@ -236,7 +278,12 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
     createViewNode: function(data){
         this.viewAreaNode.empty();
-        this.contentAreaNode = new Element("div.contentAreaNode", {"styles": this.css.contentAreaNode}).inject(this.viewAreaNode);
+
+        var viewStyles = this.viewJson.viewStyles;
+
+        this.contentAreaNode = new Element("div", {"styles":
+                (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
+        }).inject(this.viewAreaNode);
 
         this.viewTable = new Element("table.viewTable", {
             "styles": this.css.viewTitleTableNode,
@@ -244,34 +291,55 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             "cellPadding": "0",
             "cellSpacing": "0"
         }).inject(this.contentAreaNode);
+        if( viewStyles ){
+            if( viewStyles["tableProperties"] )this.viewTable.set(viewStyles["tableProperties"]);
+            if( viewStyles["table"] )this.viewTable.setStyles(viewStyles["table"]);
+        }
+
         this.createLoadding();
 
+        var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
+
         if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
+            this.viewTitleLine = new Element("tr", {
+                "styles": (viewStyles && viewStyles["titleTr"]) ? viewStyles["titleTr"] : this.css.viewTitleLineNode
+            }).inject(this.viewTable);
 
             if( this.selectEnable ){
                 this.createSelectTh();
             }
 
             //if (this.json.select==="single" || this.json.select==="multi") {
-            //this.selectTitleCell = new Element("td", {
-            //    "styles": this.css.viewTitleCellNode
-            //}).inject(this.viewTitleLine);
-            //this.selectTitleCell.setStyle("width", "10px");
-            //if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
+            this.selectTitleCell = new Element("td", {
+                "styles": viewTitleCellNode
+            }).inject(this.viewTitleLine);
+            this.selectTitleCell.setStyle("width", "10px");
+            // if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
+
+
+            //序号
+            if (this.viewJson.isSequence==="yes"){
+                this.sequenceTitleCell = new Element("td", {
+                    "styles": viewTitleCellNode
+                }).inject(this.viewTitleLine);
+                this.sequenceTitleCell.setStyle("width", "10px");
+                // if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
+            }
+
+
             this.entries = {};
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
 
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
-                        "styles": this.css.viewTitleCellNode,
+                        "styles": viewTitleCellNode,
                         "text": column.displayName
                     }).inject(this.viewTitleLine);
-                    var size = MWF.getTextSize(column.displayName, this.css.viewTitleCellNode);
+                    var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
-                    if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
+                    // if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
                 }else{
                     this.hideColumns.push(column.column);
                 }
@@ -280,7 +348,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 
             if( this.options.hasAction ){
                 var viewCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode,
+                    "styles": viewTitleCellNode,
                     "text": "操作"
                 }).inject(this.viewTitleLine);
                 viewCell.setStyle("width","40px");
@@ -298,11 +366,12 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
-        if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
+        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+        // if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.searchContainer || this.node );
         this.viewAreaNode = new Element("div.viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.node);
-        this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
-        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
+        // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
     },
     //loadData: function(){
     //    if (this.gridJson.length){
@@ -320,6 +389,8 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             }else{
                 this.loadPaging();
             }
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
     },
     loadPaging : function(){
@@ -361,18 +432,30 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         }
     },
     loadGroupData: function(){
-        if (this.selectTitleCell){
-            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+        if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
+            if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+                this.expandAllNode = new Element("span", {
+                    styles : this.viewJson.viewStyles["groupCollapseNode"]
+                }).inject( this.selectTitleCell );
+                this.selectTitleCell.setStyle("cursor", "pointer");
+            }else{
+                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+            }
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+            this.selectTitleCell.store("expandLoaded", true);
         }
-
+        this.expandAll = false;
         if (this.gridJson.length){
+            var i = 0;
             this.gridJson.each(function(data){
-                this.items.push(new MWF.xApplication.cms.Module.QueryViewer.ItemCategory(this, data));
+                this.items.push(new MWF.xApplication.cms.Module.QueryViewer.ItemCategory(this, data, i));
+                i += data.list.length;
             }.bind(this));
 
             if (this.json.isExpand=="yes")this.expandOrCollapseAll();
+        }else{
+            if (this.viewPageAreaNode) this.viewPageAreaNode.empty();
         }
     },
     createSearchNode: function(){
@@ -398,6 +481,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         }
     },
     loadSimpleSearch: function(){
+        return false;
         this.searchSimpleNode = new Element("div", {"styles": this.css.searchSimpleNode}).inject(this.searchAreaNode);
         this.searchSimpleButtonNode = new Element("div", {"styles": this.css.searchSimpleButtonNode}).inject(this.searchSimpleNode);
         this.searchSimpleWarpNode = new Element("div", {"style": "margin-right: 40px; margin-left: 5px; height: 24px; overflow: hidden;"}).inject(this.searchSimpleNode);
@@ -415,7 +499,6 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             }.bind(this)
         });
     },
-
     setContentHeight: function(){
         if( this.viewSearchCustomCloseActionNode && !this.setCustomSearchCloseEvent ){
             this.viewSearchCustomCloseActionNode.addEvent("click", function(){
@@ -424,9 +507,9 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             this.setCustomSearchCloseEvent = true;
         }
         if(this.viewSearchInputAreaNode)this.viewSearchInputAreaNode.setStyle("width","auto");
+        debugger;
         if( this.node && this.searchContainer && this.viewAreaNode ){
             var size = this.node.getSize();
-            debugger;
             var searchSize;
             var parent = this.searchContainer.getParent();
             if( parent ){
@@ -434,7 +517,13 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             }else{
                 searchSize = this.searchContainer.getSize();
             }
-            var h = size.y-searchSize.y - 80; //80是视图翻页条的高度
+            var h = size.y-searchSize.y; // - 80; //80是视图翻页条的高度
+            if( this.actionbarAreaNode ){
+                var exportSize = this.actionbarAreaNode.getComputedSize();
+                h = h-exportSize.totalHeight;
+            }
+            var pageSize = this.viewPageAreaNode.getComputedSize();
+            h = h-pageSize.totalHeight;
             this.viewAreaNode.setStyle("height", ""+h+"px");
         }
     }
@@ -443,8 +532,15 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
 MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
     Extends : MWF.xApplication.query.Query.Viewer.Item,
     load: function(){
+        this.view.fireEvent("queryLoadItemRow", [null, this]);
         var _self = this;
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
+
+        var viewStyles = this.view.viewJson.viewStyles;
+        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+
+        this.node = new Element("tr", {
+            "styles": ( viewStyles && viewStyles["contentTr"] ) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        });
         if (this.prev){
             this.node.inject(this.prev.node, "after");
         }else{
@@ -460,9 +556,9 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        //this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
-        //this.selectTd.setStyles({"cursor": "pointer"});
-        //if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
+        this.selectTd.setStyles({"cursor": "pointer"});
+        if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //Object.each(this.data.data, function(cell, k){
@@ -479,17 +575,22 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         //    }
         //}.bind(this));
 
-        debugger;
 
         this.view.viewJson.selectList.each(function(column){
             var k = column.column;
             var cell = this.data.data[column.column];
 
             if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
                 if (k!== this.view.viewJson.group.column){
                     //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
-                    td.set("text", cell);
+                    //td.set("text", cell);
+                    var v = cell;
+                    if (column.isHtml){
+                        td.set("html", v);
+                    }else{
+                        td.set("text", v);
+                    }
                 }
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, column)
@@ -506,6 +607,7 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         }
 
         this.setEvent();
+        this.view.fireEvent("postLoadItemRow", [null, this]);
     },
     destroySelectTd : function(){
         if( this.checboxTd ){
@@ -515,7 +617,11 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
     },
     createSelectTd : function(){
         if( this.checboxTd )return;
-        this.checboxTd = new Element("td").inject(this.node, "top");
+
+        var viewStyles = this.view.viewJson.viewStyles;
+        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+
+        this.checboxTd = new Element("td", {styles:viewContentTdNode}).inject(this.node, "top");
         this.checkboxElement = new Element("input", {
             "type": "checkbox",
             "events" : { click : function(ev){ ev.stopPropagation(); } }
@@ -553,19 +659,29 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
     setOpenWork: function(td, column){
         td.setStyle("cursor", "pointer");
         if( column.clickCode ) {
-            if (!this.view.Macro) {
-                MWF.require("MWF.xScript.Macro", function () {
-                    this.view.businessData = {};
-                    this.view.Macro = new MWF.Macro.PageContext(this.view);
-                }.bind(this), false);
-            }
+            // if( !this.view.Macro ){
+            //     MWF.require("MWF.xScript.Macro", function () {
+            //         this.view.businessData = {};
+            //         this.view.Macro = new MWF.Macro.PageContext(this.view);
+            //     }.bind(this), false);
+            // }
             td.addEvent("click", function( ev ){
-                return this.view.Macro.fire(column.clickCode, this, ev);
+                var result = this.view.Macro.fire(column.clickCode, this, ev);
+                ev.stopPropagation();
+                return result;
             }.bind(this));
         }else{
-            td.addEvent("click", function(){
-                this.openCMSDocument()
-            }.bind(this));
+            if (this.view.json.type==="cms"){
+                td.addEvent("click", function(ev){
+                    this.openCMSDocument(false)
+                    ev.stopPropagation();
+                }.bind(this));
+            }else{
+                td.addEvent("click", function(ev){
+                    this.openWorkAndCompleted(ev)
+                    ev.stopPropagation();
+                }.bind(this));
+            }
         }
     },
     openCMSDocument : function( isEdited ){
@@ -627,19 +743,27 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
 MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
     Extends : MWF.xApplication.query.Query.Viewer.ItemCategory,
     load: function(){
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
+        this.view.fireEvent("queryLoadCategoryRow", [null, this]);
+
+        var viewStyles = this.view.viewJson.viewStyles;
+
+        var viewContentCategoryTdNode = ( viewStyles && viewStyles["contentGroupTd"] ) ? viewStyles["contentGroupTd"] : this.css.viewContentCategoryTdNode;
+
+        this.node = new Element("tr", {
+            "styles": (viewStyles && viewStyles["contentTr"]) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+        this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
-        var colsapn = this.view.viewJson.selectList.length;
+        var colsapn = this.view.viewJson.selectList.length+1;
         if( this.view.options.hasAction ){
             colsapn ++
         }
 
         this.categoryTd = new Element("td", {
-            "styles": this.css.viewContentCategoryTdNode,
+            "styles": viewContentCategoryTdNode,
             "colspan": colsapn
         }).inject(this.node);
 
@@ -651,25 +775,45 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
             }
         }
         if (this.groupColumn){
-            var text = (this.groupColumn.code) ? MWF.Macro.exec(this.groupColumn.code, {"value": this.data.group, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : this.data.group;
+            //var text = (this.groupColumn.code) ? MWF.Macro.exec(this.groupColumn.code, {"value": this.data.group, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : this.data.group;
+            var text = this.data.group;
         }else{
             var text = this.data.group;
         }
 
-        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        if( viewStyles && viewStyles["groupCollapseNode"] ){
+            this.expandNode = new Element("span", {
+                styles : viewStyles["groupCollapseNode"]
+            }).inject( this.categoryTd );
+            new Element("span", { text : text }).inject( this.categoryTd );
+            // this.categoryTd.set("text", text );
+        }else{
+            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        }
+        this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
+
+        this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
     expand: function(){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+               if( this.expandNode ){
+            this.expandNode.setStyles( this.view.viewJson.viewStyles["groupExpandNode"] )
+        }else{
+            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        }
+        this.expanded = true;
         if (!this.loadChild){
             //window.setTimeout(function(){
-            this.data.list.each(function(line){
-                this.items.push(new MWF.xApplication.cms.Module.QueryViewer.Item(this.view, line, this));
+            this.data.list.each(function(line, i){
+                var s = this.idx+i;
+                this.lastItem = new MWF.xApplication.cms.Module.QueryViewer.Item(this.view, line, (this.lastItem || this), s);
+                this.items.push(this.lastItem);
+                //this.items.push(new MWF.xApplication.cms.Module.QueryViewer.Item(this.view, line, this));
             }.bind(this));
             this.loadChild = true;
             //}.bind(this), 10);
