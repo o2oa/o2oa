@@ -396,6 +396,10 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			if (this.designer.processEditionInforNode){
 				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionNumber+"</span> "+this.designer.lp.editionUpdate+": <span class='mainColor_color'>"+o2.name.cn(this.process.lastUpdatePerson)+" ("+this.process.updateTime+")</span>";
 				this.designer.processEditionInforNode.set("html", text);
+
+				this.designer.processEditionInforNode.addEvent("click", function(e){
+					this.listEdition(e);
+				}.bind(this));
 			}
 		}
 	},
