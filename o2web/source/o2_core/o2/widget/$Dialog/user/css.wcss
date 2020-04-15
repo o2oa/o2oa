@@ -59,11 +59,25 @@
 	},
 	"closeAction": {
 	    "height": "40px",
-	    "width": "40px",
+	    "width": "30px",
 	    "float": "right",
 	    "cursor": "pointer",
 	    "background": "url("+o2.session.path+"/widget/$Dialog/user/img/close.png) center center no-repeat",
 	},
+	"maxAction": {
+	    "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/max.png) center center no-repeat"
+	},
+	"restoreAction": {
+        "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/return.png) center center no-repeat"
+    },
 	"MWF_dialod_bottom_resize": {
 	    "height": "8px",
         "width": "8px",

@@ -12,7 +12,7 @@
 
 	//	"box-shadow": "0px 2px 5px #999", 
 		
-		"z-index": "10000"
+		"z-index": "200"
 	},
 	"container": {
 		"border-top": "1px solid #999",
@@ -27,7 +27,7 @@
 
 	//	"box-shadow": "0px 2px 5px #999", 
 		
-		"z-index": "10000"
+		"z-index": "200"
 	},
 	"panelTitleNode": {
 		"display":"block",

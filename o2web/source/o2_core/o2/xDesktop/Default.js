@@ -245,7 +245,6 @@ o2.xDesktop.Default = new Class({
 
                     this.apps[appStatus.appId] = app;
                     if ((this.status.currentApp === appStatus.appId)) currentTaskitem=taskitem;
-
                 }.bind(this));
 
                 if (currentTaskitem) {
