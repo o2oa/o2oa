@@ -67,32 +67,32 @@ MWF.xApplication.process.ViewDesigner.widget.ViewFilter = new Class({
     },
 
     getInputNodes: function(){
-        this.inputAreaNode = this.node.getElement(".inputAreaNode");
-        this.actionAreaNode = this.node.getElement(".actionAreaNode");
+        this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");
+        this.actionAreaNode = this.node.getElement(".actionAreaNode_vf");
         this.actionAreaNode.setStyles( this.css.actionAreaNode );
-        this.listAreaNode = this.node.getElement(".listAreaNode");
-        this.fieldListAreaNode = this.node.getElement(".fieldListAreaNode");
+        this.listAreaNode = this.node.getElement(".listAreaNode_vf");
+        this.fieldListAreaNode = this.node.getElement(".fieldListAreaNode_vf");
 
-        this.restrictViewFilterTable = this.node.getElement(".restrictViewFilterTable");
+        this.restrictViewFilterTable = this.node.getElement(".restrictViewFilterTable_vf");
 
         var scriptValueArea = this.node.getElement(".MWFFilterFormulaArea");
         if (scriptValueArea){
             this.createScriptArea(scriptValueArea);
         }
 
-        this.titleInput = this.inputAreaNode.getElement(".titleInput");
-        this.pathInput = this.inputAreaNode.getElement(".pathInput");
-        this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput");
+        this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
+        this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
+        this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
-        this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput");
-        this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput");
+        this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
+        this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput_vf");
 
-        this.logicInput = this.inputAreaNode.getElement(".logicInput");
-        this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput");
-        this.valueTextInput = this.inputAreaNode.getElement(".valueTextInput");
-        this.valueNumberInput = this.inputAreaNode.getElement(".valueNumberInput");
-        this.valueDatetimeInput = this.inputAreaNode.getElement(".valueDatetimeInput");
-        this.valueBooleanInput = this.inputAreaNode.getElement(".valueBooleanInput");
+        this.logicInput = this.inputAreaNode.getElement(".logicInput_vf");
+        this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput_vf");
+        this.valueTextInput = this.inputAreaNode.getElement(".valueTextInput_vf");
+        this.valueNumberInput = this.inputAreaNode.getElement(".valueNumberInput_vf");
+        this.valueDatetimeInput = this.inputAreaNode.getElement(".valueDatetimeInput_vf");
+        this.valueBooleanInput = this.inputAreaNode.getElement(".valueBooleanInput_vf");
 
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
