@@ -345,6 +345,11 @@ public class Begin extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String displayLogScriptText;
 
+	public static final String edition_FIELDNAME = "edition";
+	@FieldDescribe("版本编码.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
+	private String edition;
+
 	public String getDisplayLogScript() {
 		return displayLogScript;
 	}
@@ -671,6 +676,14 @@ public class Begin extends Activity {
 
 	public void setOpinionGroup(String opinionGroup) {
 		this.opinionGroup = opinionGroup;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
 	}
 
 }
