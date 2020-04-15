@@ -23,6 +23,10 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 public class ScriptFactory {
 
+	private ScriptFactory(){
+		
+	}
+
 	public static final ScriptEngine scriptEngine = (new ScriptEngineManager())
 			.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
 
@@ -253,7 +257,6 @@ public class ScriptFactory {
 			}
 		}
 		return list;
-
 	}
 
 }

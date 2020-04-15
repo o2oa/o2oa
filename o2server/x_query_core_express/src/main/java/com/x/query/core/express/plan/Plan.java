@@ -32,6 +32,8 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
@@ -49,8 +51,6 @@ public abstract class Plan extends GsonPropertyObject {
 	public static final String CALCULATE_SUM = "sum";
 	public static final String CALCULATE_AVERAGE = "average";
 	public static final String CALCULATE_COUNT = "count";
-
-	protected static Pattern DISTINGUISHEDNAME_PATTERN = Pattern.compile("^(\\S+)\\@(\\S+)\\@(P|PA|G|R|I|U|UA|UD)$");
 
 	protected static final int SQL_STATEMENT_IN_BATCH = 3000;
 
@@ -196,12 +196,12 @@ public abstract class Plan extends GsonPropertyObject {
 			} else {
 				bundles = this.listBundle(emc);
 			}
-//			if ((null != this.count) && (this.count > 0)) {
-//				/* 默认限制了数量 */
-//				if (this.count < bundles.size()) {
-//					bundles = bundles.subList(0, this.count);
-//				}
-//			}
+			// if ((null != this.count) && (this.count > 0)) {
+			// /* 默认限制了数量 */
+			// if (this.count < bundles.size()) {
+			// bundles = bundles.subList(0, this.count);
+			// }
+			// }
 			if ((null != this.runtime.count) && (this.runtime.count > 0)) {
 				/* runtime限制了数量 */
 				if (this.runtime.count < bundles.size()) {
@@ -382,7 +382,7 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	private String name(String str) {
-		Matcher m = DISTINGUISHEDNAME_PATTERN.matcher(str);
+		Matcher m = OrganizationDefinition.distinguishedName_pattern.matcher(str);
 		if (m.find()) {
 			return m.group(1);
 		}
@@ -489,57 +489,58 @@ public abstract class Plan extends GsonPropertyObject {
 		for (Tuple o : list) {
 			row = table.get(Objects.toString(o.get(0)));
 			switch (ItemPrimitiveType.valueOf(Objects.toString(o.get(1)))) {
-			case s:
-				switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
 				case s:
-					if (null != o.get(3)) {
-						if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
-							row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
-						} else {
-							row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
-						}
+					switch (ItemStringValueType.valueOf(Objects.toString(o.get(2)))) {
+						case s:
+							if (null != o.get(3)) {
+								if ((null != o.get(4)) && StringUtils.isNotEmpty(Objects.toString(o.get(4)))) {
+									row.put(selectEntry.getColumn(), Objects.toString(o.get(4)));
+								} else {
+									row.put(selectEntry.getColumn(), Objects.toString(o.get(3)));
+								}
+							}
+							break;
+						case d:
+							if (null != o.get(5)) {
+								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+							}
+							break;
+						case t:
+							if (null != o.get(6)) {
+								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
+							}
+							break;
+						case dt:
+							if (null != o.get(7)) {
+								row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+							}
+							break;
+						default:
+							break;
 					}
 					break;
-				case d:
-					if (null != o.get(5)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(5)));
+				case b:
+					if (null != o.get(8)) {
+						row.put(selectEntry.getColumn(), (Boolean) o.get(8));
 					}
 					break;
-				case t:
-					if (null != o.get(6)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(6)));
-					}
-					break;
-				case dt:
-					if (null != o.get(7)) {
-						row.put(selectEntry.getColumn(), JpaObjectTools.confirm((Date) o.get(7)));
+				case n:
+					if (null != o.get(9)) {
+						row.put(selectEntry.getColumn(), (Number) o.get(9));
 					}
 					break;
 				default:
 					break;
-				}
-				break;
-			case b:
-				if (null != o.get(8)) {
-					row.put(selectEntry.getColumn(), (Boolean) o.get(8));
-				}
-				break;
-			case n:
-				if (null != o.get(9)) {
-					row.put(selectEntry.getColumn(), (Number) o.get(9));
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}
 
 	/* 有两个地方用到了 */
 	private ScriptEngine getScriptEngine() {
-		ScriptEngineManager manager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = manager.getEngineByName("JavaScript");
-		return scriptEngine;
+		// ScriptEngineManager manager = new ScriptEngineManager();
+		// ScriptEngine scriptEngine = manager.getEngineByName("JavaScript");
+		// return scriptEngine;
+		return ScriptFactory.scriptEngine;
 	}
 
 	public static class ExtractObject {
