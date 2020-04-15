@@ -5,12 +5,102 @@ var href = locate.href;
 if (href.indexOf("debugger") != -1) layout.debugger = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
+o2.xApplication = o2.xApplication || {};
+
+(function (layout) {
+    var _requireApp = function (appNames, callback, clazzName) {
+        var appPath = appNames.split(".");
+        var baseObject = o2.xApplication;
+        appPath.each(function (path, i) {
+            if (i < (appPath.length - 1)) {
+                baseObject[path] = baseObject[path] || {};
+            } else {
+                baseObject[path] = baseObject[path] || { "options": Object.clone(o2.xApplication.Common.options) };
+            }
+            baseObject = baseObject[path];
+        }.bind(this));
+        if (!baseObject.options) baseObject.options = Object.clone(o2.xApplication.Common.options);
+
+        var _lpLoaded = false;
+        o2.xDesktop.requireApp(appNames, "lp." + o2.language, {
+            "failure": function () {
+                o2.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
+            }.bind(this)
+        }, false);
+
+        o2.xDesktop.requireApp(appNames, clazzName, function () {
+            if (callback) callback(baseObject);
+        });
+    };
+
+    var _createNewApplication = function (e, appNamespace, appName, options, statusObj) {
+        var app = new appNamespace["Main"](layout, options);
+        app.desktop = layout;
+        app.inBrowser = true;
+        app.status = statusObj;
+
+        app.load(true);
+
+        var appId = appName;
+        if (options.appId) {
+            appId = options.appId;
+        } else {
+            if (appNamespace.options.multitask) appId = appId + "-" + (new o2.widget.UUID());
+        }
+        app.appId = appId;
+        layout.app = app;
+        layout.desktop.currentApp = app;
+
+        var mask = document.getElementById("appContentMask");
+        if (mask) mask.destroy();
+    };
+    var _openWorkHTML = function (options) {
+        var uri = new URI(window.location.href);
+        var redirectlink = uri.getData("redirectlink");
+        if (!redirectlink) {
+            redirectlink = encodeURIComponent(locate.pathname + locate.search);
+        } else {
+            redirectlink = encodeURIComponent(redirectlink);
+        }
+        if (options.workId) {
+            window.location = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        } else if (options.workCompletedId) {
+            window.location = "workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        }
+    };
+
+    layout.openApplication = function (e, appNames, options, statusObj) {
+        if (layout.app) {
+            if (layout.mobile) {
+                _openWorkHTML(options, statusObj);
+            } else {
+                var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+
+                if (layout.app.$openWithSelf) {
+                    return window.location = "app.html?" + par + ((layout.debugger) ? "&debugger" : "");
+                } else {
+                    return window.open("app.html?" + par + ((layout.debugger) ? "&debugger" : ""), par);
+                }
+            }
+        } else {
+            var appPath = appNames.split(".");
+            var appName = appPath[appPath.length - 1];
+            debugger;
+            _requireApp(appNames, function (appNamespace) {
+                _createNewApplication(e, appNamespace, appName, options, statusObj);
+            }.bind(this));
+        }
+    };
+})(layout);
+
 o2.addReady(function () {
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
         MWF.loadLP("zh-cn");
+        MWF.require("MWF.widget.Common", null, false);
+        MWF.require("MWF.xDesktop.Common", null, false);
+        MWF.require("MWF.xAction.RestActions", null, false);
+        MWF.require("MWF.xDesktop.Authentication", null, false);
         MWF.require("MWF.xDesktop.Layout", function () {
-            MWF.require("MWF.xDesktop.Authentication", null, false);
-            MWF.require("MWF.xDesktop.Common", null, false);
 
             (function () {
                 layout.load = function () {
@@ -19,10 +109,10 @@ o2.addReady(function () {
                     var processId = uri.getData("processId");
                     var applicationId = uri.getData("appId");
 
-                    if (!layout.isAuthentication(function () {
+                    layout.isAuthentication(function () {
                         //开始启动
                         layout.startProcess(applicationId, processId, redirect);
-                    })) {
+                    }, function(){
                         MWF.require("MWF.xDesktop.Actions.RestActions", function () {
                             var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                             action.getActions = function (actionCallback) {
@@ -45,7 +135,7 @@ o2.addReady(function () {
                                 }.bind(this)
                             });
                         });
-                    }
+                    });
                 };
 
                 layout.startProcess = function (appId, pId, redirect) {
@@ -79,7 +169,7 @@ o2.addReady(function () {
                                                 // var workUrl = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=appMobile.html%3Fapp%3Dprocess.TaskCenter";
                                                 // workUrl.toURI().go();
                                             }
-                                            layout.app = null;
+                                            // layout.app = null;
                                             layout.openApplication(null, "process.Work", options);
                                         } else { }
 
@@ -91,26 +181,32 @@ o2.addReady(function () {
                                 starter.load();
                             }.bind(this));
                         }
-                    });
+                    }.bind(this));
                 };
 
-                layout.isAuthentication = function (callback) {
+                layout.isAuthentication = function (callback, failure) {
                     layout.authentication = new MWF.xDesktop.Authentication({
                         "onLogin": layout.load.bind(layout)
                     });
 
-                    var returnValue = true;
+                    // var returnValue = true;
                     this.authentication.isAuthenticated(function (json) {
-                        //基础数据。。。。
-                        layout.session.user = json.data;
-                        layout.content = $(document.body);
-                        layout.app = layout;
-                        if (callback) callback();
+                        if (json.data.tokenType != "anonymous") {
+                            //基础数据。。。。
+                            layout.session.user = json.data;
+                            layout.content = $(document.body);
+                            layout.app = layout;
+                            if (callback) callback();
+                        } else {
+                            // returnValue = false;
+                            if (failure) failure();
+                        }
                     }.bind(this), function () {
-                        // this.authentication.loadLogin(this.node);
-                        returnValue = false;
+                        // returnValue = false;
+                        if (failure) failure();
                     }.bind(this));
-                    return returnValue;
+                    // console.log("back................."+returnValue);
+                    // return returnValue;
                 };
 
 
@@ -161,73 +257,3 @@ o2.addReady(function () {
     });
 });
 
-(function (layout) {
-    var _requireApp = function (appNames, callback, clazzName) {
-        var appPath = appNames.split(".");
-        var baseObject = o2.xApplication;
-        appPath.each(function (path, i) {
-            if (i < (appPath.length - 1)) {
-                baseObject[path] = baseObject[path] || {};
-            } else {
-                baseObject[path] = baseObject[path] || { "options": Object.clone(MWF.xApplication.Common.options) };
-            }
-            baseObject = baseObject[path];
-        }.bind(this));
-        if (!baseObject.options) baseObject.options = Object.clone(MWF.xApplication.Common.options);
-
-        var _lpLoaded = false;
-        MWF.xDesktop.requireApp(appNames, "lp." + o2.language, {
-            "failure": function () {
-                MWF.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
-            }.bind(this)
-        }, false);
-
-        MWF.xDesktop.requireApp(appNames, clazzName, function () {
-            if (callback) callback(baseObject);
-        });
-    };
-    var _createNewApplication = function (e, appNamespace, appName, options, statusObj) {
-        var app = new appNamespace["Main"](this, options);
-        app.desktop = layout;
-        app.inBrowser = true;
-        app.status = statusObj;
-
-        app.load(true);
-
-        var appId = appName;
-        if (options.appId) {
-            appId = options.appId;
-        } else {
-            if (appNamespace.options.multitask) appId = appId + "-" + (new MWF.widget.UUID());
-        }
-        app.appId = appId;
-        layout.app = app;
-        layout.desktop.currentApp = app;
-
-        var mask = document.getElementById("appContentMask");
-        if (mask) mask.destroy();
-    };
-
-    layout.openApplication = function (e, appNames, options, statusObj) {
-        if (layout.app) {
-            if (layout.mobile) {
-                _openApplicationMobile(appNames, options, statusObj);
-            } else {
-                var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-
-                if (layout.app.$openWithSelf) {
-                    return window.location = "app.html?" + par + ((layout.debugger) ? "&debugger" : "");
-                } else {
-                    return window.open("app.html?" + par + ((layout.debugger) ? "&debugger" : ""), par);
-                }
-            }
-        } else {
-            var appPath = appNames.split(".");
-            var appName = appPath[appPath.length - 1];
-
-            _requireApp(appNames, function (appNamespace) {
-                _createNewApplication(e, appNamespace, appName, options, statusObj);
-            }.bind(this));
-        }
-    };
-})(layout);
