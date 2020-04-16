@@ -226,14 +226,14 @@ public class BBSReplyInfoService {
 		}
 	}
 
-	public List<BBSReplyInfo> listReplyByUserNameForPage(String creatorName, int maxCount ) throws Exception {
+	public List<BBSReplyInfo> listReplyByUserNameForPage(String creatorName, String orderType, int maxCount ) throws Exception {
 		if( creatorName == null ){
 			throw new Exception( "creatorName can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listReplyForPage( creatorName, null, null, null, null, maxCount );
+			return business.replyInfoFactory().listReplyForPage( creatorName, null, null, null, null, orderType, maxCount );
 		}catch( Exception e ){
 			throw e;
 		}
