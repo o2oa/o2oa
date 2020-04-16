@@ -569,6 +569,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 						}
 					}
 				},{
+					"type": "cancel",
 					"text": this.designer.lp.cancel,
 					"action": function(){
 						this.close();

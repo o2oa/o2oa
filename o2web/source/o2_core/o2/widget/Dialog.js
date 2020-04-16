@@ -228,12 +228,14 @@ o2.widget.Dialog = o2.DL = new Class({
 			var button = new Element("input", {
 				"type": "button",
 				"value": i,
+				"class": "mainColor_bg",
 				"styles": this.css.button,
 				"events": {
 					"click": this.options.buttons[i].bind(this)
 				}
 			}).inject(this.button);
 		}
+		debugger;
 		if (this.options.buttonList){
 			this.options.buttonList.each(function(bt){
 				var styles = this.css.button;
@@ -244,6 +246,7 @@ o2.widget.Dialog = o2.DL = new Class({
 					"type": "button",
 					"value": bt.text,
 					"title": bt.title,
+					"class": "mainColor_bg",
 					"styles": styles,
 					"events": {
 						"click": function(e){bt.action.call(this, this, e)}.bind(this)
