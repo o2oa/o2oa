@@ -42,7 +42,7 @@
                 "build_ci:macos": "npm run clear && npm run preperation:macos && npm run build_parallel && npm run deploy:macos && npm run typeInfor",
                 "build_ci:risc": "npm run clear && npm run preperation:risc && npm run build_parallel && npm run deploy:risc && npm run typeInfor",
                 "build_ci:rpi": "npm run clear && npm run preperation:rpi && npm run build_parallel && npm run deploy:rpi && npm run typeInfor",
-               "test": "type welcome"
+                "test": "type welcome"
         },
         "repository": {
                 "type": "git",
