@@ -30,11 +30,16 @@
                     if (layout.config.app_protocol=="auto"){
                         layout.config.app_protocol = window.location.protocol;
                     }
+
+
                     //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
                     MWF.loadLP(MWF.language);
+                    MWF.require("MWF.widget.Common", null, false);
+                    MWF.require("MWF.xDesktop.Common", null, false);
+                    MWF.require("MWF.xAction.RestActions", null, false);
                     MWF.require("MWF.xDesktop.Layout", function(){
                         //MWF.require("MWF.xDesktop.Authentication", null, false);
-
+                        MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
                         (function(){
                             layout.load = function(){
                                 //        if (this.isAuthentication()){
@@ -67,7 +72,12 @@
                                 //        }
                             };
 
-                            layout.load();
+                            // layout.load();
+                            MWF.xDesktop.getServiceAddress(layout.config, function (service, center) {
+                                layout.serviceAddressList = service;
+                                layout.centerServer = center;
+                                layout.load();
+                            }.bind(this));
                         })();
 
                     });

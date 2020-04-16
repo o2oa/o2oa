@@ -124,7 +124,7 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
-        "background-color": "#4a90e2",
+        "background-color": "#cc3d3d",
         "color": "#ffffff"
     },
     "pageJumper" : {
@@ -137,7 +137,7 @@
         "border" : "1px solid #ddd"
     },
     "pageJumper_over" : {
-        "border" : "1px solid #43AAFA"
+        "border" : "1px solid #cc3d3d"
     },
     "pageJumperText" : {
         "float" : "left",
