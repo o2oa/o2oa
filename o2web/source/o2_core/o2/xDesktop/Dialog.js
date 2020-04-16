@@ -114,11 +114,13 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 "type": "button",
                 "value": i,
                 "styles": this.css.button,
+                "class": "mainColor_bg",
                 "events": {
                     "click": this.options.buttons[i].bind(this)
                 }
             }).inject(this.button);
         }
+        debugger;
         if (this.options.buttonList){
             this.options.buttonList.each(function(bt){
                 var styles = this.css.button;
@@ -141,6 +143,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                     "value": bt.text,
                     "title": bt.title,
                     "styles": styles,
+                    "class": "mainColor_bg",
                     "events": {
                         "click": function(e){bt.action.call(this, this, e)}.bind(this)
                     }
