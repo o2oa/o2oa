@@ -7,6 +7,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @ContainerEntity
 @Entity
@@ -68,6 +69,10 @@ public class AttendanceDingtalkDetail extends SliceJpaObject  {
     @FieldDescribe("实际打卡时间,  用户打卡时间的毫秒数")
     @Column(name = ColumnNamePrefix + "userCheckTime")
     private long userCheckTime;
+
+    @FieldDescribe("实际打卡时间,  用Date格式存储")
+    @Column(name = ColumnNamePrefix + "userCheckTimeDate")
+    private Date userCheckTimeDate;
 
     @FieldDescribe("工作日")
     @Column(name = ColumnNamePrefix + "workDate")
@@ -260,5 +265,13 @@ public class AttendanceDingtalkDetail extends SliceJpaObject  {
 
     public void setRecordId(long recordId) {
         this.recordId = recordId;
+    }
+
+    public Date getUserCheckTimeDate() {
+        return userCheckTimeDate;
+    }
+
+    public void setUserCheckTimeDate(Date userCheckTimeDate) {
+        this.userCheckTimeDate = userCheckTimeDate;
     }
 }
