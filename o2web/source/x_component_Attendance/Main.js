@@ -158,6 +158,16 @@ MWF.xApplication.Attendance.Main = new Class({
 			this.explorer.load();
 		}.bind(this));
 	},
+	openUnitDingdingIndex: function () {
+		MWF.xDesktop.requireApp("Attendance", "UnitDingdingIndex", function () {
+			this.clearContent();
+			this.explorerContent = new Element("div", {
+				"styles": this.css.rightContentNode
+			}).inject(this.node);
+			this.explorer = new MWF.xApplication.Attendance.UnitDingdingIndex(this.explorerContent, this, this.restActions, { "isAdmin": this.isAdmin() });
+			this.explorer.load();
+		}.bind(this));
+	},
 	openUnitDetail: function () {
 		MWF.xDesktop.requireApp("Attendance", "UnitDetail", function () {
 			this.clearContent();
