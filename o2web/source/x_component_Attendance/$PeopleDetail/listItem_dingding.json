@@ -1,0 +1,42 @@
+[
+  {
+    "title": "姓名",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( d ){ return d.o2User.split('@')[0] }",
+    "name": "o2User",
+    "width": "20%"
+  },
+  {
+    "title": "日期",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();}",
+    "name": "userCheckTime",
+    "width": "20%"
+  },
+  {
+    "title": "打卡类型",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ if(data.checkType == 'OffDuty'){return '下班打卡';}else{return '上班打卡';}  }",
+    "name": "checkType",
+    "width": "20%"
+  },
+  {
+    "title": "打卡结果",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function( data ){ if(data.timeResult == 'Normal'){return '正常';}else if(data.timeResult == 'Early'){return '早退';}else if(data.timeResult == 'Late'){return '迟到';}else if(data.timeResult == 'SeriousLate'){return '严重迟到';}else if(data.timeResult == 'Absenteeism'){return '旷工迟到';}else {return '未打卡';}  }",
+    "name": "timeResult",
+    "width": "20%"
+  },
+  {
+    "title": "打卡时间",
+    "headStyles": "normalThNode",
+    "contentStyles": "normalTdNode",
+    "item": "function(d){ var date = new Date(d.userCheckTime);     return date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();}",
+    "name": "userCheckTime",
+    "width": "20%"
+  }
+]

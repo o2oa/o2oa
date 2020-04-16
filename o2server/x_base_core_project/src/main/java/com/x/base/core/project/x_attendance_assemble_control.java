@@ -15,7 +15,8 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.attendance.entity.StatisticTopUnitForDay", "com.x.attendance.entity.StatisticTopUnitForMonth",
 		"com.x.attendance.entity.StatisticUnitForDay", "com.x.attendance.entity.StatisticUnitForMonth",
 		"com.x.attendance.entity.AttendanceDingtalkDetail", "com.x.attendance.entity.AttendanceQywxDetail",
-		"com.x.attendance.entity.DingdingQywxSyncRecord"}, storeJars = {
+		"com.x.attendance.entity.DingdingQywxSyncRecord", "com.x.attendance.entity.StatisticDingdingPersonForMonth",
+		"com.x.attendance.entity.StatisticDingdingUnitForDay", "com.x.attendance.entity.StatisticDingdingUnitForMonth"}, storeJars = {
 				"x_attendance_core_entity", "x_organization_core_express", "x_organization_core_entity" })
 public class x_attendance_assemble_control extends Deployable {
 }

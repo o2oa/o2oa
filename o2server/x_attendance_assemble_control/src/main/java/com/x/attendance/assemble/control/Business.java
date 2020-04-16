@@ -1,24 +1,6 @@
 package com.x.attendance.assemble.control;
 
-import com.x.attendance.assemble.control.factory.AttendanceAdminFactory;
-import com.x.attendance.assemble.control.factory.AttendanceAppealInfoFactory;
-import com.x.attendance.assemble.control.factory.AttendanceDetailFactory;
-import com.x.attendance.assemble.control.factory.AttendanceDetailMobileFactory;
-import com.x.attendance.assemble.control.factory.AttendanceDetailStatisticFactory;
-import com.x.attendance.assemble.control.factory.AttendanceEmployeeConfigFactory;
-import com.x.attendance.assemble.control.factory.AttendanceImportFileInfoFactory;
-import com.x.attendance.assemble.control.factory.AttendanceScheduleSettingFactory;
-import com.x.attendance.assemble.control.factory.AttendanceSelfHolidayFactory;
-import com.x.attendance.assemble.control.factory.AttendanceSettingFactory;
-import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
-import com.x.attendance.assemble.control.factory.AttendanceStatisticalCycleFactory;
-import com.x.attendance.assemble.control.factory.AttendanceWorkDayConfigFactory;
-import com.x.attendance.assemble.control.factory.AttendanceWorkPlaceFactory;
-import com.x.attendance.assemble.control.factory.StatisticPersonForMonthFactory;
-import com.x.attendance.assemble.control.factory.StatisticTopUnitForDayFactory;
-import com.x.attendance.assemble.control.factory.StatisticTopUnitForMonthFactory;
-import com.x.attendance.assemble.control.factory.StatisticUnitForDayFactory;
-import com.x.attendance.assemble.control.factory.StatisticUnitForMonthFactory;
+import com.x.attendance.assemble.control.factory.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
 
@@ -34,6 +16,8 @@ public class Business {
 		return this.emc;
 	}
 
+	//钉钉同步数据处理
+	private DingdingAttendanceFactory dingdingAttendanceFactory;
 	// 人员组织业务处理类
 	private Organization organization;
 	// 系统配置业务处理类
@@ -73,6 +57,13 @@ public class Business {
 	private AttendanceStatisticRequireLogFactory attendanceStatisticRequireLogFactory;
 
 	private AttendanceDetailStatisticFactory attendanceDetailStatisticFactory;
+
+	public DingdingAttendanceFactory dingdingAttendanceFactory() throws Exception {
+		if (null == this.dingdingAttendanceFactory) {
+			this.dingdingAttendanceFactory = new DingdingAttendanceFactory(this);
+		}
+		return this.dingdingAttendanceFactory;
+	}
 
 	public AttendanceWorkPlaceFactory attendanceWorkPlaceFactory() throws Exception {
 		if (null == this.attendanceWorkPlaceFactory) {
