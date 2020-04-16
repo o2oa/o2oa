@@ -73,6 +73,8 @@ public class DingdingPersonStatisticQueue extends AbstractQueue<Date> {
                     personForMonth.setOnDutyTimes(onduty);
                     personForMonth.setOffDutyTimes(business.dingdingAttendanceFactory().dingdingPersonForMonthDutyTimesCount(year, month,
                             person.getDistinguishedName(), AttendanceDingtalkDetail.OffDuty));
+                    personForMonth.setResultNormal(business.dingdingAttendanceFactory().dingdingPersonForMonthTimeResultCount(year, month,
+                            person.getDistinguishedName(), AttendanceDingtalkDetail.TIMERESULT_NORMAL));
                     personForMonth.setLateTimes(business.dingdingAttendanceFactory().dingdingPersonForMonthTimeResultCount(year, month,
                             person.getDistinguishedName(), AttendanceDingtalkDetail.TIMERESULT_Late));
                     personForMonth.setLeaveEarlyTimes(business.dingdingAttendanceFactory().dingdingPersonForMonthTimeResultCount(year, month,

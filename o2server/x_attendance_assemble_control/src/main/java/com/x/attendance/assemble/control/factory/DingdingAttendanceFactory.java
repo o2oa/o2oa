@@ -393,6 +393,18 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         query.select(cb.sum(root.get(StatisticDingdingUnitForDay_.offDutyTimes))).where(p);
         return em.createQuery(query).getSingleResult();
     }
+
+    public Long sumNormalUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticDingdingUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticDingdingUnitForDay> root = query.from(StatisticDingdingUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticDingdingUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticDingdingUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticDingdingUnitForDay_.resultNormal))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
     public Long sumLateTimesUnitForDayWithMonth(String year, String month, String unit) throws Exception {
         EntityManager em = this.entityManagerContainer().get(StatisticDingdingUnitForDay.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
