@@ -639,15 +639,14 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 	listEdition: function(){
 		if (this.process.edition){
-			MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.EditionList", function(){
-				var list = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition, this);
-				list.load();
-			}.bind(this));
-
-			// o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.process.application, this.process.edition, function(json){
-			// 	var editionList = json.data;
-			// 	this.listEditionDlg(json.data);
-			// }.bind(this));
+			if (!this.editionListDlg){
+				MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.EditionList", function(){
+					this.editionListDlg = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition, this);
+					this.editionListDlg.load();
+				}.bind(this));
+			}else{
+				this.editionListDlg.show();
+			}
 		}else{
 			this.designer.notice("infor", this.designer.lp.save_process);
 		}

@@ -18,10 +18,10 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         this.lp = MWF.xApplication.process.ProcessDesigner.LP;
 	},
     load: function(){
-        o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.application, this.edition, function(json){
-            this.editionList = json.data;
-            this.listEditionDlg();
-        }.bind(this));
+        // o2.Actions.load("x_processplatform_assemble_designer").ProcessAction.listEdition(this.application, this.edition, function(json){
+        //     this.editionList = json.data;
+        //     this.listEditionDlg();
+        // }.bind(this));
 
         this.node = new Element("div", {"styles": this.css.node});
         this.leftNode = new Element("div", {"styles": this.css.leftNode}).inject(this.node);
@@ -52,7 +52,6 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         ths[ths.length-1].setStyles(this.css.listTable_td_right);
     },
     reloadList: function(){
-	    debugger;
         this.items = [];
         this.listNode.empty();
         this.diffNode.empty();
@@ -65,31 +64,44 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
     },
     show: function(){
 	    if (!this.dlg){
-	        this.dlg = o2.DL.open({
-                "title": this.lp.edition_list.editionList,
-                "content": this.node,
-                "offset": {"y": -100},
-                "isMax": true,
-                "width": 900,
-                "height": 500,
-                "buttonList": [
-                    {
-                        "text": this.lp.edition_list.open,
-                        "action": function(){ this.openCurrentEdition(); this.dlg.close();}.bind(this),
-                        "title": this.lp.edition_list.openInfor
-                    },
-                    {
-                        "type": "cancel",
-                        "text": MWF.xApplication.process.ProcessDesigner.LP.close,
-                        "action": function(){ this.close(); }
-                    }
-                ],
-                "onPostShow": function(){
-                    this.setEvent();
-                }.bind(this)
-            });
+            this.dlg = this.createDlg();
+        }else{
+
         }
     },
+    createDlg: function(callback){
+        return o2.DL.open({
+            "title": this.lp.edition_list.editionList,
+            "content": this.node,
+            "offset": {"y": -100},
+            "isMax": true,
+            "width": 900,
+            "height": 500,
+            "buttonList": [
+                {
+                    "text": this.lp.edition_list.open,
+                    "action": function(){ this.openCurrentEdition(); this.dlg.close();}.bind(this),
+                    "title": this.lp.edition_list.openInfor
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.xApplication.process.ProcessDesigner.LP.close,
+                    "action": function(){ this.close(); }
+                }
+            ],
+            "onPostShow": function(){
+                this.setEvent();
+                this.reloadList();
+                if (callback) callback();
+            }.bind(this),
+            "onPostClose": function(){
+                this.dlg = null;
+            }.bind(this)
+        });
+    },
+
+
+
     listEditionDlg: function(){
 	    //for (var i=0; i<10; i++){
         this.editionList.each(function(edition){
