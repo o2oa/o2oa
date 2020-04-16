@@ -294,6 +294,28 @@ function build_web_move() {
 }
 exports.build_web_move = build_web_move;
 
+function build_web_v_html() {
+    var src = 'o2web/source/x_desktop/*.html';
+    var dest = 'target/o2server/servers/webServer/x_desktop/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+}
+function build_web_v_o2() {
+    var src = 'o2web/source/o2_core/o2.js';
+    var dest = 'target/o2server/servers/webServer/o2_core/';
+    return gulp.src(src)
+        .pipe(assetRev())
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+        .pipe(gutil.noop());
+}
+
+
+
 function clear_build(cb){
     console.log(`---------------------------------------------------------------------
   . clear old build ...
@@ -338,5 +360,5 @@ exports.build_server = function(){
 ---------------------------------------------------------------------`);
     return (shell.task('npm run build_server_script'))();
 };
-exports.build_web = gulp.series(build_web_minimize, build_web_move);
+exports.build_web = gulp.series(build_web_minimize, build_web_move, build_web_v_html, build_web_v_o2);
 exports.deploy = deploy_server;
