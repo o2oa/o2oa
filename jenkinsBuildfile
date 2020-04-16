@@ -33,7 +33,7 @@ pipeline {
 					bat 'npm install'
 					bat 'npm run build_ci'
 					bat 'ant -DVERSION='+env.tag+'   -DpreName='+env.preName
-					sshPublisher(publishers: [sshPublisherDesc(configName: ''+env.sshServer+'', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*'+env.tag+'*.zip')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+					sshPublisher(publishers: [sshPublisherDesc(configName: ''+env.sshServer+'', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: ''+env.preName+env.tag+'*.zip')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 					sshPublisher(publishers: [sshPublisherDesc(configName: ''+env.sshServer+'', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'download-pro.json,download_preview.jsonp')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 					script {
 						env.buildResult='SUCCESS'
