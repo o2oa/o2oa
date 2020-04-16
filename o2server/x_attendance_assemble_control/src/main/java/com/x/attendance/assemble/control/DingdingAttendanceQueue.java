@@ -28,6 +28,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,13 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
         }
     }
 
+    private boolean isSameDay(Date startDate, Date endDate) {
+        Calendar start = Calendar.getInstance();
+        start.setTime( startDate );
+        Calendar end = Calendar.getInstance();
+        end.setTime(endDate);
+        return (start.get(Calendar.YEAR) == end.get(Calendar.YEAR) && start.get(Calendar.DAY_OF_YEAR) == end.get(Calendar.DAY_OF_YEAR));
+    }
     private void dingdingSync(DingdingQywxSyncRecord record) throws Exception {
         Application app = ThisApplication.context().applications().randomWithWeight(x_organization_assemble_control.class.getName());
         //开始分页查询人员
@@ -124,7 +132,21 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
             }
         }
         logger.info("结束 插入："+saveNumber+" 条");
+        //插入数据成功 开始统计程序
 
+        boolean hasNextDate = true;
+        Date statisticDate = fromDate;
+        while (hasNextDate) {
+            logger.info("发起钉钉考勤数据统计， date:"+ DateTools.format(statisticDate));
+            ThisApplication.personStatisticQueue.send(statisticDate);
+            ThisApplication.unitStatisticQueue.send(statisticDate);
+            if (!isSameDay(statisticDate, toDate)) {
+                statisticDate = DateTools.addDay(statisticDate, 1);
+            }else {
+                hasNextDate = false;
+            }
+        }
+        logger.info("发起数据统计程序 完成。。。。。。。。。。");
     }
     private void deleteDingdingAttendance(Date fromDate, Date toDate) throws Exception{
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -161,6 +183,10 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                     DingdingAttendanceResultItem item = list.get(i);
                     AttendanceDingtalkDetail detail = DingdingAttendanceResultItem.copier.copy(item);
                     detail.setDdId(item.getId());
+                    if (detail.getUserCheckTime() > 0) {
+                        Date date = new Date(detail.getUserCheckTime());
+                        detail.setUserCheckTimeDate(date);
+                    }
                     //添加o2组织和用户
                     Optional<Person> first = personList.stream().filter(p -> item.userId.equals(p.getDingdingId())).findFirst();
                     if (first.isPresent()) {

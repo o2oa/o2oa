@@ -145,7 +145,7 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
             logger.info("删除");
             if (detailList != null) {
                 logger.info("删除 list:"+detailList.size());
-                emc.beginTransaction(AttendanceDingtalkDetail.class);
+                emc.beginTransaction(AttendanceQywxDetail.class);
                 for (int i = 0; i < detailList.size(); i++) {
                     emc.remove(detailList.get(i));
                 }

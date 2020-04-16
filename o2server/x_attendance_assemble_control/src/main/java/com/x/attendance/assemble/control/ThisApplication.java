@@ -31,8 +31,9 @@ public class ThisApplication {
 				personStatisticQueue.start();
 				unitStatisticQueue.start();
 				context.schedule(DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
-				context().schedule(DingdingAttendanceStatisticScheduleTask.class, "0 0 3 * * ?");
-				context().schedule(DingdingAttendanceStatisticPersonScheduleTask.class, "0 0 3 * * ?");
+				//已经将任务 放到了同步结束后执行 暂时不需要开定时任务了
+//				context.schedule(DingdingAttendanceStatisticScheduleTask.class, "0 0 3 * * ?");
+//				context.schedule(DingdingAttendanceStatisticPersonScheduleTask.class, "0 0 3 * * ?");
 			}
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getAttendanceSyncEnable())) {
 				qywxQueue.start();
