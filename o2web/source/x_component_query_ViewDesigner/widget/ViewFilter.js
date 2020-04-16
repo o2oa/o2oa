@@ -133,8 +133,6 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
             }
         }
 
-        this.datatypeInput.addEvent("change");
-
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
                 "style": "xform",
@@ -1020,7 +1018,9 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                 break;
         }
         this.scriptData = data.code;
-        if (this.scriptArea && this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
+        try{
+            if (this.scriptArea && this.scriptArea.editor) this.scriptArea.editor.setValue(this.scriptData.code);
+        }catch (e) {}
 
         debugger;
         if( data.type === "custom" ){
