@@ -818,12 +818,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _checkScale: function(offset){
         offset = 0;
         if (this.pages.length){
-            var pageSize = this.pages[0].getSize();
+            //var pageSize = this.pages[0].getSize();
+            var pageSize_x = this.options.docPageFullWidth
             var contentSize = this.contentNode.getSize();
             var contentWidth = (offset) ? contentSize.x-20-offset : contentSize.x-20;
-            if (contentWidth<pageSize.x){
+            if (contentWidth<pageSize_x){
                 this.isScale = true;
-                var scale = (contentWidth)/pageSize.x;
+                var scale = (contentWidth)/pageSize_x;
                 this.scale = scale;
                 this.zoom();
                 this.resetNodeSize();
@@ -1782,7 +1783,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.setData(this.data, diffFiletext);
             //this._checkSplitPage(this.pages[0]);
-
+debugger;
             this._repage();
         }.bind(this));
     },

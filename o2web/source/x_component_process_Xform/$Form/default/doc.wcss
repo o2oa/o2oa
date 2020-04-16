@@ -149,11 +149,25 @@
         "position": "absolute",
         "opacity": 1
     },
+    "historyInforMobileNode": {
+        "width": "100%",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "0px",
+        "box-shadow": "0px 0px 0px #CCCCCC",
+        "position": "absolute",
+        "bottom": "0px",
+        "opacity": 1
+    },
     "historyListAreaNode": {
         "width": "260px",
         "float": "right",
         "background-color": "#f3f3f3",
-        "border-left": "1px solid #cccccc"
+        "border-left": "1px solid #cccccc",
+        "position": "absolute",
+        "z-index": "20000",
+        "right": "0px"
     },
     "historyListTitleAreaNode":{
         "height": "80px",
