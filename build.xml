@@ -345,7 +345,7 @@
 				<include name="start_risc_debug.sh"/>
 				<include name="console_risc.sh"/>
 				<include name="stop_risc.sh"/>
-			</zipfileset>build.xml
+			</zipfileset>
 		</zip>
 	</target>
 	<target name="zip_arm">
