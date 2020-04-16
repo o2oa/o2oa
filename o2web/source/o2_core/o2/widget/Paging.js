@@ -56,7 +56,9 @@ o2.widget.Paging = new Class({
     createNode: function() {
         var _self = this;
 
-        this.node = new Element("div.pagingBar", {styles: this.css.pagingBar}).inject(this.container);
+        this.wraper = new Element("div.pagingBarWraper", {styles: this.css.pagingBarWraper}).inject(this.container);
+
+        this.node = new Element("div.pagingBar", {styles: this.css.pagingBar}).inject(this.wraper);
 
         var i, max, min;
 

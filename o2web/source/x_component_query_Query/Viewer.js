@@ -9,6 +9,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     Extends: MWF.widget.Common,
     options: {
         "style": "default",
+        "skin" : null,
         "resizeNode": true,
         "paging" : "scroll",
         "perPageCount" : 50,
@@ -44,7 +45,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.parentMacro = parentMacro;
 
-        debugger;
         this.originalJson = Object.clone(json);
 
         this.viewJson = null;
@@ -107,12 +107,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     loadLayout: function(){
         this.node = new Element("div", {"styles": this.css.node}).inject(this.container);
-        this.actionbarAreaNode =  new Element("div", {"styles": this.css.actionbarAreaNode}).inject(this.node);
+        this.actionbarAreaNode =  new Element("div.actionbarAreaNode", {"styles": this.css.actionbarAreaNode}).inject(this.node);
         //if (this.options.export) this.exportAreaNode = new Element("div", {"styles": this.css.exportAreaNode}).inject(this.node);
         this.searchAreaNode = new Element("div", {"styles": this.css.searchAreaNode}).inject(this.node);
         this.viewAreaNode = new Element("div", {"styles": this.css.viewAreaNode}).inject(this.node);
-        this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
-        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.viewPageNode);
+        // this.viewPageNode = new Element("div", {"styles": this.css.viewPageNode}).inject(this.node);
+        this.viewPageAreaNode = new Element("div", {"styles": this.css.viewPageAreaNode}).inject(this.node);
     },
     loadMacro: function (callback) {
         MWF.require("MWF.xScript.Macro", function () {
@@ -168,7 +168,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             var exportSize = this.actionbarAreaNode.getComputedSize();
             h = h-exportSize.totalHeight;
         }
-        var pageSize = this.viewPageNode.getComputedSize();
+        var pageSize = this.viewPageAreaNode.getComputedSize();
         h = h-pageSize.totalHeight;
         this.viewAreaNode.setStyle("height", ""+h+"px");
     },
@@ -182,6 +182,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     createActionbarNode : function(){
         this.actionbarAreaNode.empty();
+        if( typeOf(this.json.showActionbar) === "boolean" && this.json.showActionbar !== true )return;
         if( typeOf( this.viewJson.actionbarHidden ) === "boolean" ){
             if( this.viewJson.actionbarHidden === true || !this.viewJson.actionbarList || !this.viewJson.actionbarList.length )return;
             this.actionbar = new MWF.xApplication.query.Query.Viewer.Actionbar(this.actionbarAreaNode, this.viewJson.actionbarList[0], this, {});
@@ -192,7 +193,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     createViewNode: function(data){
         this.viewAreaNode.empty();
-        this.contentAreaNode = new Element("div", {"styles": this.css.contentAreaNode}).inject(this.viewAreaNode);
+
+        var viewStyles = this.viewJson.viewStyles;
+
+        this.contentAreaNode = new Element("div", {"styles":
+                (viewStyles && viewStyles["container"]) ? viewStyles["container"] : this.css.contentAreaNode
+        }).inject(this.viewAreaNode);
 
         this.viewTable = new Element("table", {
             "styles": this.css.viewTitleTableNode,
@@ -200,14 +206,22 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             "cellPadding": "0",
             "cellSpacing": "0"
         }).inject(this.contentAreaNode);
+        if( viewStyles ){
+            if( viewStyles["tableProperties"] )this.viewTable.set(viewStyles["tableProperties"]);
+            if( viewStyles["table"] )this.viewTable.setStyles(viewStyles["table"]);
+        }
+
         this.createLoadding();
 
+        var viewTitleCellNode = (viewStyles && viewStyles["titleTd"]) ? viewStyles["titleTd"] : this.css.viewTitleCellNode;
         if (this.json.isTitle!=="no"){
-            this.viewTitleLine = new Element("tr", {"styles": this.css.viewTitleLineNode}).inject(this.viewTable);
+            this.viewTitleLine = new Element("tr", {
+                "styles": (viewStyles && viewStyles["titleTr"]) ? viewStyles["titleTr"] : this.css.viewTitleLineNode
+            }).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
             this.selectTitleCell = new Element("td", {
-                "styles": this.css.viewTitleCellNode
+                "styles": viewTitleCellNode
             }).inject(this.viewTitleLine);
             this.selectTitleCell.setStyle("width", "10px");
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
@@ -216,7 +230,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             //序号
             if (this.viewJson.isSequence==="yes"){
                 this.sequenceTitleCell = new Element("td", {
-                    "styles": this.css.viewTitleCellNode
+                    "styles": viewTitleCellNode
                 }).inject(this.viewTitleLine);
                 this.sequenceTitleCell.setStyle("width", "10px");
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
@@ -228,10 +242,10 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 if (!column.hideColumn){
                     var viewCell = new Element("td", {
-                        "styles": this.css.viewTitleCellNode,
+                        "styles": viewTitleCellNode,
                         "text": column.displayName
                     }).inject(this.viewTitleLine);
-                    var size = MWF.getTextSize(column.displayName, this.css.viewTitleCellNode);
+                    var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
                 }else{
@@ -320,36 +334,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     // },
     _loadPageNode : function(){
         this.viewPageAreaNode.empty();
-        this.paging = new o2.widget.Paging(this.viewPageAreaNode, {
-            countPerPage: this.json.pageSize || this.options.perPageCount,
-            visiblePages: this.viewJson.visiblePages ? this.viewJson.visiblePages.toInt() : 9,
-            currentPage: this.currentPage,
-            itemSize: this.count,
-            pageSize: this.pages,
-            hasNextPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasPrevPage: typeOf( this.viewJson.hasPreNextPage ) === "boolean" ? this.viewJson.hasPreNextPage : true,
-            hasTruningBar: typeOf( this.viewJson.hasTruningBar ) === "boolean" ? this.viewJson.hasTruningBar : true,
-            hasBatchTuring: typeOf( this.viewJson.hasBatchTuring ) === "boolean" ? this.viewJson.hasBatchTuring : true,
-            hasFirstPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasLastPage: typeOf( this.viewJson.hasFirstLastPage ) === "boolean" ? this.viewJson.hasFirstLastPage : true,
-            hasJumper: typeOf( this.viewJson.hasPageJumper ) === "boolean" ? this.viewJson.hasPageJumper : true,
-            hiddenWithDisable: false,
-            hiddenWithNoItem: true,
-            text: {
-                prePage: "",
-                nextPage: "",
-                firstPage: this.lp.firstPage,
-                lastPage: this.lp.lastPage
-            },
-            onJumpingPage : function( pageNum, itemNum ){
-                this.currentPage = pageNum;
-                this.loadCurrentPageData();
-            }.bind(this),
-            onPostLoad : function () {
-                if(this.setContentHeightFun)this.setContentHeightFun();
-            }.bind(this)
-        });
-        this.paging.load();
+        if( !this.paging ){
+            var json;
+            if( !this.viewJson.pagingList || !this.viewJson.pagingList.length ){
+                json = {
+                    "firstPageText": this.lp.firstPage,
+                    "lastPageText": this.lp.lastPage
+                };
+            }else{
+                json = this.viewJson.pagingList[0];
+            }
+            this.paging = new MWF.xApplication.query.Query.Viewer.Paging(this.viewPageAreaNode, json, this, {});
+            this.paging.load();
+        }else{
+            this.paging.reload();
+        }
     },
     _initPage: function(){
         this.count = this.bundleItems.length;
@@ -478,11 +477,20 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadGroupData: function(){
-        if (this.selectTitleCell){
-            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+        if (this.selectTitleCell && !this.selectTitleCell.retrieve("expandLoaded") ){
+            if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+                this.expandAllNode = new Element("span", {
+                    styles : this.viewJson.viewStyles["groupCollapseNode"]
+                }).inject( this.selectTitleCell );
+                this.selectTitleCell.setStyle("cursor", "pointer");
+            }else{
+                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+            }
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
+            this.selectTitleCell.store("expandLoaded", true);
         }
+        this.expandAll = false;
 
         if (this.gridJson.length){
             var i = 0;
@@ -497,20 +505,42 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     expandOrCollapseAll: function(){
-        var icon = this.selectTitleCell.getElement("span");
-        if (icon.get("html").indexOf("expand.png")===-1){
-            this.items.each(function(item){
-                item.collapse();
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
-            }.bind(this));
-        }else{
-            this.items.each(function(item, i){
-                window.setTimeout(function(){
-                    item.expand();
-                }.bind(this), 10*i+5);
+        if( this.viewJson.viewStyles && this.viewJson.viewStyles["groupCollapseNode"] ){
+            var span = this.selectTitleCell.getElement("span");
+            if( this.expandAll ){
+                this.items.each(function(item){
+                    item.collapse();
+                    span.setStyles( this.viewJson.viewStyles["groupCollapseNode"] );
+                }.bind(this));
+                this.expandAll = false;
+            }else{
+                this.items.each(function(item, i){
+                    window.setTimeout(function(){
+                        item.expand();
+                    }.bind(this), 10*i+5);
 
-                icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
-            }.bind(this));
+                    span.setStyles( this.viewJson.viewStyles["groupExpandNode"] );
+                    this.expandAll = true;
+                }.bind(this));
+            }
+        }else{
+            var icon = this.selectTitleCell.getElement("span");
+            if (icon.get("html").indexOf("expand.png")===-1){
+                this.items.each(function(item){
+                    item.collapse();
+                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+                }.bind(this));
+                this.expandAll = false;
+            }else{
+                this.items.each(function(item, i){
+                    window.setTimeout(function(){
+                        item.expand();
+                    }.bind(this), 10*i+5);
+
+                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+                }.bind(this));
+                this.expandAll = true;
+            }
         }
     },
     getView: function(callback){
@@ -772,6 +802,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadCustomSearch: function(){
+        debugger;
         this.viewSearchIconNode.setStyle("display", "none");
         this.viewSearchInputBoxNode.setStyle("display", "none");
         this.viewSearchCustomActionNode.setStyle("display", "none");
@@ -794,7 +825,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.loadCustomSearchContent();
             }
 
-            this.setContentHeightFun();
+            if(this.setContentHeightFun)this.setContentHeightFun();
         }.bind(this));
         this.searchCustomView();
     },
@@ -1030,7 +1061,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 this.viewSearchInputBoxNode.setStyle("display", "block");
                 this.viewSearchCustomActionNode.setStyle("display", "block");
 
-                this.setContentHeightFun();
+                if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
             this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
         }
@@ -1219,7 +1250,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
     load: function(){
         this.view.fireEvent("queryLoadItemRow", [null, this]);
 
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode});
+        var viewStyles = this.view.viewJson.viewStyles;
+        var viewContentTdNode = ( viewStyles && viewStyles["contentTd"] ) ? viewStyles["contentTd"] : this.css.viewContentTdNode;
+
+        this.node = new Element("tr", {
+            "styles": ( viewStyles && viewStyles["contentTr"] ) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        });
         if (this.prev){
             this.node.inject(this.prev.node, "after");
         }else{
@@ -1227,14 +1263,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
 
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+        this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
 
         //序号
         if (this.view.viewJson.isSequence==="yes"){
-            this.sequenceTd = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+            this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
             this.sequenceTd.setStyle("width", "10px");
             var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
             this.sequenceTd.set("text", s);
@@ -1245,7 +1281,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if (cell === undefined) cell = "";
             //if (cell){
             if (this.view.hideColumns.indexOf(k)===-1){
-                var td = new Element("td", {"styles": this.css.viewContentTdNode}).inject(this.node);
+                var td = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
                 if (k!== this.view.viewJson.group.column){
                     //var v = (this.view.entries[k].code) ? MWF.Macro.exec(this.view.entries[k].code, {"value": cell, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : cell;
                     var v = cell;
@@ -1447,9 +1483,18 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.node.addEvents({
                 "mouseover": function(){
                     if (!this.isSelected){
-                        var iconName = "checkbox";
-                        if (flag==="single") iconName = "radiobox";
-                        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                        var viewStyles = this.view.viewJson.viewStyles;
+                        if( viewStyles ){
+                            if( flag === "single" ){
+                                this.selectTd.setStyles( viewStyles["radioNode"] );
+                            }else{
+                                this.selectTd.setStyles( viewStyles["checkboxNode"] );
+                            }
+                        }else{
+                            var iconName = "checkbox";
+                            if (flag==="single") iconName = "radiobox";
+                            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                        }
                     }
                 }.bind(this),
                 "mouseout": function(){
@@ -1480,15 +1525,26 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
 
     selected: function(){
         this.view.selectedItems.push(this);
-        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
-        this.node.setStyles(this.css.viewContentTrNode_selected);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.selectTd.setStyles( viewStyles["checkedCheckboxNode"] );
+            this.node.setStyles( viewStyles["contentSelectedTr"] );
+        }else{
+            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
+            this.node.setStyles(this.css.viewContentTrNode_selected);
+        }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
     },
     unSelected: function(){
         this.view.selectedItems.erase(this);
         this.selectTd.setStyles({"background": "transparent"});
-        this.node.setStyles(this.css.viewContentTrNode);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.node.setStyles( viewStyles["contentTr"] );
+        }else{
+            this.node.setStyles(this.css.viewContentTrNode);
+        }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
     },
@@ -1496,8 +1552,14 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
         this.view.selectedItems = [this];
         this.view.currentSelectedItem = this;
-        this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
-        this.node.setStyles(this.css.viewContentTrNode_selected);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
+            this.node.setStyles( viewStyles["contentSelectedTr"] );
+        }else {
+            this.selectTd.setStyles({"background": "url(" + "/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
+            this.node.setStyles(this.css.viewContentTrNode_selected);
+        }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
     },
@@ -1505,7 +1567,12 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.view.selectedItems = [];
         this.view.currentSelectedItem = null;
         this.selectTd.setStyles({"background": "transparent"});
-        this.node.setStyles(this.css.viewContentTrNode);
+        var viewStyles = this.view.viewJson.viewStyles;
+        if( viewStyles ){
+            this.node.setStyles( viewStyles["contentTr"] );
+        }else{
+            this.node.setStyles(this.css.viewContentTrNode);
+        }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
     }
@@ -1525,13 +1592,19 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
     load: function(){
         this.view.fireEvent("queryLoadCategoryRow", [null, this]);
 
-        this.node = new Element("tr", {"styles": this.css.viewContentTrNode}).inject(this.view.viewTable);
+        var viewStyles = this.view.viewJson.viewStyles;
+
+        var viewContentCategoryTdNode = ( viewStyles && viewStyles["contentGroupTd"] ) ? viewStyles["contentGroupTd"] : this.css.viewContentCategoryTdNode;
+
+        this.node = new Element("tr", {
+            "styles": (viewStyles && viewStyles["contentTr"]) ? viewStyles["contentTr"] : this.css.viewContentTrNode
+        }).inject(this.view.viewTable);
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
-        this.selectTd = new Element("td", {"styles": this.css.viewContentCategoryTdNode}).inject(this.node);
+        this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
         //}
         this.categoryTd = new Element("td", {
-            "styles": this.css.viewContentCategoryTdNode,
+            "styles": viewContentCategoryTdNode,
             "colspan": this.view.viewJson.selectList.length+1
         }).inject(this.node);
 
@@ -1549,7 +1622,16 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             var text = this.data.group;
         }
 
-        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        if( viewStyles && viewStyles["groupCollapseNode"] ){
+            this.expandNode = new Element("span", {
+                styles : viewStyles["groupCollapseNode"]
+            }).inject( this.categoryTd );
+            new Element("span", { text : text }).inject( this.categoryTd );
+            // this.categoryTd.set("text", text );
+        }else{
+            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        }
+        this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
@@ -1564,8 +1646,13 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //}
     },
     expandOrCollapse: function(){
-        var t = this.node.getElement("span").get("html");
-        if (t.indexOf("expand.png")===-1){
+        // var t = this.node.getElement("span").get("html");
+        // if (t.indexOf("expand.png")===-1){
+        //     this.collapse();
+        // }else{
+        //     this.expand();
+        // }
+        if( this.expanded ){
             this.collapse();
         }else{
             this.expand();
@@ -1575,13 +1662,23 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.items.each(function(item){
             item.node.setStyle("display", "none");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+        if( this.expandNode ){
+            this.expandNode.setStyles( this.view.viewJson.viewStyles["groupCollapseNode"] )
+        }else{
+            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+        }
+        this.expanded = false;
     },
     expand: function(){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        if( this.expandNode ){
+            this.expandNode.setStyles( this.view.viewJson.viewStyles["groupExpandNode"] )
+        }else{
+            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        }
+        this.expanded = true;
         if (!this.loadChild){
             //window.setTimeout(function(){
             this.data.list.each(function(line, i){
@@ -1891,7 +1988,7 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
                 "MWFnodetype": tool.type,
                 //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
                 //"MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                "MWFButtonImage": path+this.options.style+"/actionbar/"+tool.img,
+                "MWFButtonImage": path+this.options.style+"/actionbar/"+ ( this.json.iconStyle || "default" ) +"/"+tool.img,
                 "title": tool.title,
                 "MWFButtonAction": tool.action,
                 "MWFButtonText": tool.text
@@ -1923,5 +2020,179 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     },
     deleteWork: function(){
         this.form.deleteWork();
+    }
+});
+
+MWF.xApplication.query.Query.Viewer.Paging = new Class({
+    Implements: [Events],
+    options: {
+        "style" : "default",
+        "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad","jump"]
+    },
+    initialize: function(node, json, form, options){
+        this.node = $(node);
+        this.node.store("module", this);
+        this.json = json;
+        this.form = form;
+        this.view = form;
+    },
+    hide: function(){
+        var dsp = this.node.getStyle("display");
+        if (dsp!=="none") this.node.store("mwf_display", dsp);
+        this.node.setStyle("display", "none");
+    },
+    show: function(){
+        var dsp = this.node.retrieve("mwf_display", dsp);
+        this.node.setStyle("display", dsp);
+    },
+    load: function(){
+
+        this._loadModuleEvents();
+        if (this.fireEvent("queryLoad")){
+            //this._queryLoaded();
+            this._loadUserInterface();
+            this._loadStyles();
+            this._loadDomEvents();
+            //this._loadEvents();
+
+            //this._afterLoaded();
+            this.fireEvent("postLoad");
+        }
+    },
+
+    _loadStyles: function(){
+        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+                if (value.indexOf("/x_cms_assemble_control")!==-1){
+                    value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }else if (value.indexOf("x_cms_assemble_control")!==-1){
+                    value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+                }
+            }
+            this.node.setStyle(key, value);
+        }.bind(this));
+
+        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
+        //     var host = MWF.Actions.getHost(root);
+        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
+        // }
+        //if (this.json.styles) this.node.setStyles(this.json.styles);
+    },
+    _loadModuleEvents : function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadDomEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)===-1){
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    _loadEvents: function(){
+        Object.each(this.json.events, function(e, key){
+            if (e.code){
+                if (this.options.moduleEvents.indexOf(key)!==-1){
+                    this.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }else{
+                    this.node.addEvent(key, function(event){
+                        return this.form.Macro.fire(e.code, this, event);
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
+    },
+    addModuleEvent: function(key, fun){
+        if (this.options.moduleEvents.indexOf(key)!==-1){
+            this.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }else{
+            this.node.addEvent(key, function(event){
+                return (fun) ? fun(this, event) : null;
+            }.bind(this));
+        }
+    },
+    _loadUserInterface: function(){
+        // if (this.form.json.mode == "Mobile"){
+        //     this.node.empty();
+        // }else if (COMMON.Browser.Platform.isMobile){
+        //     this.node.empty();
+        // }else{
+        this.loadPaging( true )
+    },
+    reload : function(){
+        this.loadPaging( false )
+    },
+    loadPaging : function( firstLoading ){
+        // this.pagingNode = this.node.getFirst("div");
+        // if( !this.pagingNode ){
+        //     this.pagingNode = new Element("div").inject( this.node );
+        // }
+        // this.pagingNode.empty();
+        this.node.empty();
+
+        this.paging = new o2.widget.Paging(this.node, {
+            //style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
+            countPerPage: this.view.json.pageSize || this.view.options.perPageCount,
+            visiblePages: this.json.visiblePages ? this.json.visiblePages.toInt() : 9,
+            currentPage: this.view.currentPage,
+            itemSize: this.view.count,
+            pageSize: this.view.pages,
+            hasNextPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasPrevPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
+            hasTruningBar: typeOf( this.json.hasTruningBar ) === "boolean" ? this.json.hasTruningBar : true,
+            hasBatchTuring: typeOf( this.json.hasBatchTuring ) === "boolean" ? this.json.hasBatchTuring : true,
+            hasFirstPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasLastPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
+            hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : true,
+            hiddenWithDisable: false,
+            hiddenWithNoItem: true,
+            text: {
+                prePage: this.json.prePageText,
+                nextPage: this.json.nextPageText,
+                firstPage: this.json.firstPageText,
+                lastPage: this.json.lastPageText
+            },
+            onJumpingPage : function( pageNum, itemNum ){
+                this.view.currentPage = pageNum;
+                this.fireEvent("jump");
+                this.view.loadCurrentPageData();
+            }.bind(this),
+            onPostLoad : function () {
+                if( firstLoading ){
+                    if(this.view.setContentHeightFun)this.view.setContentHeightFun();
+                    this.fireEvent("load");
+                }
+                this.fireEvent("afterLoad");
+            }.bind(this)
+        }, this.json.pagingStyles || {});
+        this.paging.load();
     }
 });
