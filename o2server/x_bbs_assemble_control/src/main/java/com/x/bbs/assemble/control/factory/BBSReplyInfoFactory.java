@@ -198,7 +198,7 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 	}
 
 	//@MethodDescribe( "根据指定用户姓名、论坛ID，主版块ID， 版块ID查询符合条件的所有回复对象列表" )
-	public List<BBSReplyInfo> listReplyForPage( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId, Integer maxCount ) throws Exception {
+	public List<BBSReplyInfo> listReplyForPage( String creatorName, String forumId, String mainSectionId, String sectionId, String subjectId, String orderType, Integer maxCount ) throws Exception {
 		Boolean allFilterNull = true;
 		if( StringUtils.isNotEmpty( creatorName ) ){
 			allFilterNull = false;
@@ -241,7 +241,11 @@ public class BBSReplyInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( subjectId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSReplyInfo_.subjectId ), subjectId ) );
 		}
-		cq.orderBy( cb.asc( root.get( BBSReplyInfo_.orderNumber ) ) );
+		if( StringUtils.equalsIgnoreCase(orderType, "DESC")){
+			cq.orderBy( cb.desc( root.get( BBSReplyInfo_.createTime ) ) );
+		}else{
+			cq.orderBy( cb.asc( root.get( BBSReplyInfo_.createTime ) ) );
+		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount ).getResultList();
 	}
 	

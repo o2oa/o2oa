@@ -33,6 +33,7 @@ public class ActionListMyReplyForPages extends BaseAction {
 		List<BBSReplyInfo> replyInfoList_out = new ArrayList<BBSReplyInfo>();
 		Long total = 0L;
 		Boolean check = true;
+		String config_BBS_MYREPLY_SORTTYPE = configSettingService.getValueWithConfigCode("BBS_MYREPLY_SORTTYPE");
 
 		if (check) {
 			if (page == null) {
@@ -62,7 +63,7 @@ public class ActionListMyReplyForPages extends BaseAction {
 		if (check) {
 			if (total > 0) {
 				try {
-					replyInfoList = replyInfoService.listReplyByUserNameForPage(effectivePerson.getDistinguishedName(),
+					replyInfoList = replyInfoService.listReplyByUserNameForPage(effectivePerson.getDistinguishedName(), config_BBS_MYREPLY_SORTTYPE,
 							page * count);
 				} catch (Exception e) {
 					check = false;
