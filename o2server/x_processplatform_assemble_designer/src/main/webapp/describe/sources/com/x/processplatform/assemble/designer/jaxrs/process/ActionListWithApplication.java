@@ -35,7 +35,7 @@ class ActionListWithApplication extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
-			List<Wo> wos = Wo.copier.copy(this.listWithApplication(business, application));
+			List<Wo> wos = Wo.copier.copy(business.process().listWithApplicationObject(applicationId));
 			wos = business.process().sort(wos);
 			result.setData(wos);
 			return result;
@@ -48,16 +48,6 @@ class ActionListWithApplication extends BaseAction {
 
 		static WrapCopier<Process, Wo> copier = WrapCopierFactory.wo(Process.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
-	}
-
-	private List<Process> listWithApplication(Business business, Application application) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Process.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
-		Root<Process> root = cq.from(Process.class);
-		Predicate p = cb.equal(root.get(Process_.application), application.getId());
-		cq.select(root).where(p);
-		return em.createQuery(cq).getResultList();
 	}
 
 }

@@ -18,14 +18,6 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.quartz.Scheduler;
-
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
 import com.x.base.core.project.config.Config;
@@ -35,13 +27,20 @@ import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.action.ActionConfig;
+import com.x.server.console.action.ActionControl;
 import com.x.server.console.action.ActionCreateEncryptKey;
-import com.x.server.console.action.ActionDebugDesignDetail;
 import com.x.server.console.action.ActionSetPassword;
-import com.x.server.console.action.UpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.deploy.App;
+import org.eclipse.jetty.deploy.DeploymentManager;
+import org.quartz.Scheduler;
 
 public class Main {
 
@@ -219,9 +218,9 @@ public class Main {
 				continue;
 			}
 
-			matcher = CommandFactory.debugDesignDetail_pattern.matcher(cmd);
+			matcher = CommandFactory.control_pattern.matcher(cmd);
 			if (matcher.find()) {
-				debugDesignDetail(cmd);
+				control(cmd);
 				continue;
 			}
 
@@ -402,34 +401,26 @@ public class Main {
 	private static void startAll() {
 		try {
 			DataServer dataServer = Config.currentNode().getData();
-			if (null != dataServer) {
-				if (BooleanUtils.isTrue(dataServer.getEnable())) {
-					startDataServer();
-				}
+			if ((null != dataServer) && (BooleanUtils.isTrue(dataServer.getEnable()))) {
+				startDataServer();
 			}
+
 			StorageServer storageServer = Config.currentNode().getStorage();
-			if (null != storageServer) {
-				if (BooleanUtils.isTrue(storageServer.getEnable())) {
-					startStorageServer();
-				}
+			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
+				startStorageServer();
 			}
+
 			CenterServer centerServer = Config.currentNode().getCenter();
-			if (null != centerServer) {
-				if (BooleanUtils.isTrue(centerServer.getEnable())) {
-					startCenterServer();
-				}
+			if ((null != centerServer) && (BooleanUtils.isTrue(centerServer.getEnable()))) {
+				startCenterServer();
 			}
 			ApplicationServer applicationServer = Config.currentNode().getApplication();
-			if (null != applicationServer) {
-				if (BooleanUtils.isTrue(applicationServer.getEnable())) {
-					startApplicationServer();
-				}
+			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
+				startApplicationServer();
 			}
 			WebServer webServer = Config.currentNode().getWeb();
-			if (null != webServer) {
-				if (BooleanUtils.isTrue(webServer.getEnable())) {
-					startWebServer();
-				}
+			if ((null != webServer) && (BooleanUtils.isTrue(webServer.getEnable()))) {
+				startWebServer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -444,42 +435,34 @@ public class Main {
 	private static void stopAll() {
 		try {
 			WebServer webServer = Config.currentNode().getWeb();
-			if (null != webServer) {
-				if (BooleanUtils.isTrue(webServer.getEnable())) {
-					stopWebServer();
-				}
+			if ((null != webServer) && (BooleanUtils.isTrue(webServer.getEnable()))) {
+				stopWebServer();
 			}
 			ApplicationServer applicationServer = Config.currentNode().getApplication();
-			if (null != applicationServer) {
-				if (BooleanUtils.isTrue(applicationServer.getEnable())) {
-					stopApplicationServer();
-				}
+			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
+				stopApplicationServer();
 			}
-			if (Config.currentNode().getIsPrimaryCenter()) {
+			if (BooleanUtils.isTrue(Config.currentNode().getIsPrimaryCenter())) {
 				stopCenterServer();
 			}
 			StorageServer storageServer = Config.currentNode().getStorage();
-			if (null != storageServer) {
-				if (BooleanUtils.isTrue(storageServer.getEnable())) {
-					stopStorageServer();
-				}
+			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
+				stopStorageServer();
 			}
 			DataServer dataServer = Config.currentNode().getData();
-			if (null != dataServer) {
-				if (BooleanUtils.isTrue(dataServer.getEnable())) {
-					stopDataServer();
-				}
+			if ((null != dataServer) && (BooleanUtils.isTrue(dataServer.getEnable()))) {
+				stopDataServer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void debugDesignDetail(String cmd) {
+	private static void control(String cmd) {
 		try {
 			String[] args = StringTools.translateCommandline(cmd);
 			args = Arrays.copyOfRange(args, 1, args.length);
-			ActionDebugDesignDetail action = new ActionDebugDesignDetail();
+			ActionControl action = new ActionControl();
 			action.execute(args);
 		} catch (Exception e) {
 			e.printStackTrace();

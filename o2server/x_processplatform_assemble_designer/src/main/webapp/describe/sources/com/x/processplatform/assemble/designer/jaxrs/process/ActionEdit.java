@@ -1,7 +1,9 @@
 package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.Date;
+import java.util.UUID;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,6 +56,7 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(),
 						application.getName(), application.getId());
 			}
+			Process oldProcess = (Process) BeanUtils.cloneBean(process);
 			emc.beginTransaction(Process.class);
 			emc.beginTransaction(Agent.class);
 			emc.beginTransaction(Begin.class);
@@ -71,7 +74,8 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			WrapProcess.inCopier.copy(wrap, process);
-			updateCreatePersonLastUpdatePerson(effectivePerson, business, process);
+			this.updateCreatePersonLastUpdatePerson(effectivePerson, business, process);
+			this.updateEdition(oldProcess, process);
 			process.setLastUpdateTime(new Date());
 			emc.check(process, CheckPersistType.all);
 			update_agent(business, wrap.getAgentList(), process);
@@ -89,7 +93,6 @@ class ActionEdit extends BaseAction {
 			update_route(business, wrap.getRouteList(), process);
 			update_service(business, wrap.getServiceList(), process);
 			update_split(business, wrap.getSplitList(), process);
-			this.updateEdition(business, process);
 			emc.commit();
 			cacheNotify();
 			/* 保存历史版本 */
@@ -117,13 +120,18 @@ class ActionEdit extends BaseAction {
 		}
 	}
 
-	private void updateEdition(Business business, Process process) throws Exception {
-		if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isTrue(process.getEditionEnable())) {
-			for (Process p : business.entityManagerContainer().listEqual(Process.class, Process.edition_FIELDNAME,
-					process.getEdition())) {
-				p.setEditionEnable(false);
-				p.setEditionName(process.getEditionName());
-			}
+	private void updateEdition(Process oldProcess, Process process) throws Exception {
+		//更新流程时保持流程的版本信息不变，但当不存在版本信息则添加版本信息
+		if (StringUtils.isEmpty(oldProcess.getEdition())) {
+			process.setEdition(process.getId());
+			process.setEditionEnable(true);
+			process.setEditionNumber(1.0);
+			process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
+		}else{
+			process.setEdition(oldProcess.getEdition());
+			process.setEditionEnable(oldProcess.getEditionEnable());
+			process.setEditionNumber(oldProcess.getEditionNumber());
+			process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
 		}
 	}
 }
