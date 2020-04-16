@@ -13,6 +13,13 @@ pipeline {
             }
     	}
 	}catch(all) {
-        	echo 'env.qqUrl='+env.qqUrl
+        stages {
+    		stage('error') {
+                steps {
+                    echo 'errorr='+env.sshServer
+    				
+                }
+            }
+    	}
     }
 }
