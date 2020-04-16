@@ -5,8 +5,8 @@
 	<property name="targetdir" value="target"/>
 	<target name="default" depends="md5code" />
 	<target name="md5code" depends="default_zip">
-		<checksum file="${preName}-windows-${VERSION}.zip" property="build_win.sha" algorithm="SHA-256" />
-		<length file="${preName}-windows-${VERSION}.zip" property="length_win"/>
+		<checksum file="${preName}-${VERSION}-windows.zip" property="build_win.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-windows.zip" property="length_win"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_win_bytes = project.getProperty("length_win");
@@ -15,8 +15,8 @@
 			project.setNewProperty("length_win_mb", length_win_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-linux-${VERSION}.zip" property="build_linux.sha" algorithm="SHA-256" />
-		<length file="${preName}-linux-${VERSION}.zip" property="length_linux"/>
+		<checksum file="${preName}-${VERSION}-linux.zip" property="build_linux.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-linux.zip" property="length_linux"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_linux_bytes = project.getProperty("length_linux");
@@ -25,8 +25,8 @@
 			project.setNewProperty("length_linux_mb", length_linux_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-macos-${VERSION}.zip" property="build_macos.sha" algorithm="SHA-256" />
-		<length file="${preName}-macos-${VERSION}.zip" property="length_macos"/>
+		<checksum file="${preName}-${VERSION}-macos.zip" property="build_macos.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-macos.zip" property="length_macos"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_macos_bytes = project.getProperty("length_macos");
@@ -35,8 +35,8 @@
 			project.setNewProperty("length_macos_mb", length_macos_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-aix-${VERSION}.zip" property="build_aix.sha" algorithm="SHA-256" />
-		<length file="${preName}-aix-${VERSION}.zip" property="length_aix"/>
+		<checksum file="${preName}-${VERSION}-aix.zip" property="build_aix.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-aix.zip" property="length_aix"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_aix_bytes = project.getProperty("length_aix");
@@ -45,8 +45,8 @@
 			project.setNewProperty("length_aix_mb", length_aix_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-raspberrypi-${VERSION}.zip" property="build_raspberrypi.sha" algorithm="SHA-256" />
-		<length file="${preName}-raspberrypi-${VERSION}.zip" property="length_raspberrypi"/>
+		<checksum file="${preName}-${VERSION}-raspberrypi.zip" property="build_raspberrypi.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-raspberrypi.zip" property="length_raspberrypi"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_raspberrypi_bytes = project.getProperty("length_raspberrypi");
@@ -55,8 +55,8 @@
 			project.setNewProperty("length_raspberrypi_mb", length_raspberrypi_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-risc-${VERSION}.zip" property="build_risc.sha" algorithm="SHA-256" />
-		<length file="${preName}-risc-${VERSION}.zip" property="length_risc"/>
+		<checksum file="${preName}-${VERSION}-risc.zip" property="build_risc.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-risc.zip" property="length_risc"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_risc_bytes = project.getProperty("length_risc");
@@ -65,8 +65,8 @@
 			project.setNewProperty("length_risc_mb", length_risc_mbytes);
 		]]>
 		</script>
-		<checksum file="${preName}-arm-${VERSION}.zip" property="build_arm.sha" algorithm="SHA-256" />
-		<length file="${preName}-arm-${VERSION}.zip" property="length_arm"/>
+		<checksum file="${preName}-${VERSION}-arm.zip" property="build_arm.sha" algorithm="SHA-256" />
+		<length file="${preName}-${VERSION}-arm.zip" property="length_arm"/>
 		<script language="javascript">
 			<![CDATA[
 			var length_arm_bytes = project.getProperty("length_arm");
@@ -83,64 +83,64 @@
 			"windows": {
 			"system": "windows",
 			"name": "o2server-windows-${VERSION}",
-			"fileName": "o2server-windows-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-windows.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-windows-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-windows.zip",
 			"sha256": "${build_win.sha}"
 			},
 			"linux": {
 			"system": "linux",
 			"name": "o2server-linux-${VERSION}",
-			"fileName": "o2server-linux-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-linux.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-linux-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-linux.zip",
 			"sha256": "${build_linux.sha}"
 			},
 			"macos": {
 			"system": "macos",
 			"name": "o2server-macos-${VERSION}",
-			"fileName": "o2server-macos-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-macos.zip",
 			"fileSize": "${length_macos_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-macos-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-macos.zip",
 			"sha256": "${build_macos.sha}"
 			},
 			"aix": {
 			"system": "aix",
 			"name": "o2server-aix-${VERSION}",
-			"fileName": "o2server-aix-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-aix.zip",
 			"fileSize": "${length_aix_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-aix-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-aix.zip",
 			"sha256": "${build_aix.sha}"
 			},
 			"raspberrypi": {
 			"system": "raspberrypi",
-			"name": "o2server-raspberrypi-${VERSION}",
-			"fileName": "o2server-raspberrypi-${VERSION}.zip",
+			"name": "o2server-${VERSION}-raspberrypi.zip",
+			"fileName": "o2server-${VERSION}-raspberrypi.zip",
 			"fileSize": "${length_raspberrypi_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-raspberrypi-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-raspberrypi.zip",
 			"sha256": "${build_raspberrypi.sha}"
 			},
 			"risc": {
 			"system": "risc",
-			"name": "o2server-risc-${VERSION}",
-			"fileName": "o2server-risc-${VERSION}.zip",
+			"name": "o2server-${VERSION}-risc",
+			"fileName": "o2server-${VERSION}-risc.zip",
 			"fileSize": "${length_risc_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-risc-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-risc.zip",
 			"sha256": "${build_risc.sha}"
 			},
 			"arm": {
 			"system": "arm",
-			"name": "o2server-arm-${VERSION}",
-			"fileName": "o2server-arm-${VERSION}.zip",
+			"name": "o2server-${VERSION}-arm",
+			"fileName": "o2server-${VERSION}-arm.zip",
 			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-arm-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-arm.zip",
 			"sha256": "${build_arm.sha}"
 			},
 			"jvm_windows": {}
@@ -152,64 +152,64 @@
 			"windows": {
 			"system": "windows",
 			"name": "o2server-windows-${VERSION}",
-			"fileName": "o2server-windows-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-windows.zip",
 			"fileSize": "${length_win_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-windows-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-windows.zip",
 			"sha256": "${build_win.sha}"
 			},
 			"linux": {
 			"system": "linux",
 			"name": "o2server-linux-${VERSION}",
-			"fileName": "o2server-linux-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-linux.zip",
 			"fileSize": "${length_linux_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-linux-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-linux.zip",
 			"sha256": "${build_linux.sha}"
 			},
 			"macos": {
 			"system": "macos",
 			"name": "o2server-macos-${VERSION}",
-			"fileName": "o2server-macos-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-macos.zip",
 			"fileSize": "${length_macos_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-macos-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-macos.zip",
 			"sha256": "${build_macos.sha}"
 			},
 			"aix": {
 			"system": "aix",
 			"name": "o2server-aix-${VERSION}",
-			"fileName": "o2server-aix-${VERSION}.zip",
+			"fileName": "o2server-${VERSION}-aix.zip",
 			"fileSize": "${length_aix_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-aix-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-aix.zip",
 			"sha256": "${build_aix.sha}"
 			},
 			"raspberrypi": {
 			"system": "raspberrypi",
-			"name": "o2server-raspberrypi-${VERSION}",
-			"fileName": "o2server-raspberrypi-${VERSION}.zip",
+			"name": "o2server-${VERSION}-raspberrypi.zip",
+			"fileName": "o2server-${VERSION}-raspberrypi.zip",
 			"fileSize": "${length_raspberrypi_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-raspberrypi-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-raspberrypi.zip",
 			"sha256": "${build_raspberrypi.sha}"
 			},
 			"risc": {
 			"system": "risc",
-			"name": "o2server-risc-${VERSION}",
-			"fileName": "o2server-risc-${VERSION}.zip",
+			"name": "o2server-${VERSION}-risc",
+			"fileName": "o2server-${VERSION}-risc.zip",
 			"fileSize": "${length_risc_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-risc-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-risc.zip",
 			"sha256": "${build_risc.sha}"
 			},
 			"arm": {
 			"system": "arm",
-			"name": "o2server-arm-${VERSION}",
-			"fileName": "o2server-arm-${VERSION}.zip",
+			"name": "o2server-${VERSION}-arm",
+			"fileName": "o2server-${VERSION}-arm.zip",
 			"fileSize": "${length_arm_mb}MB",
 			"updateTime": "${TODAY}",
-			"url": "/download/o2server-arm-${VERSION}.zip",
+			"url": "/download/o2server-${VERSION}-arm.zip",
 			"sha256": "${build_arm.sha}"
 			},
 			"source":{
@@ -228,7 +228,7 @@
 		<echo file="${targetdir}/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
 	</target>
 	<target name="zip_windows">
-		<zip encoding="utf-8" destfile="${preName}-windows-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -249,7 +249,7 @@
 		</zip>
 	</target>
 	<target name="zip_linux">
-		<zip encoding="utf-8" destfile="${preName}-linux-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-linux.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -269,7 +269,7 @@
 		</zip>
 	</target>
 	<target name="zip_macos">
-		<zip encoding="utf-8" destfile="${preName}-macos-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-macos.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -289,7 +289,7 @@
 		</zip>
 	</target>
 	<target name="zip_aix">
-		<zip encoding="utf-8" destfile="${preName}-aix-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-aix.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -309,7 +309,7 @@
 		</zip>
 	</target>
 	<target name="zip_raspberrypi">
-		<zip encoding="utf-8" destfile="${preName}-raspberrypi-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-raspberrypi.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -329,7 +329,7 @@
 		</zip>
 	</target>
 	<target name="zip_risc">
-		<zip encoding="utf-8" destfile="${preName}-risc-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-risc.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
@@ -349,7 +349,7 @@
 		</zip>
 	</target>
 	<target name="zip_arm">
-		<zip encoding="utf-8" destfile="${preName}-arm-${VERSION}.zip" update="false">
+		<zip encoding="utf-8" destfile="${preName}-${VERSION}-arm.zip" update="false">
 			<zipfileset dir="${targetdir}/o2server" filemode="777" dirmode="777" encoding="utf-8" prefix="o2server">
 				<include name="commons/"/>
 				<include name="configSample/"/>
