@@ -49,6 +49,12 @@
   },
   {
     "access": "dingding",
+    "title": "钉钉部门考勤月报",
+    "id": "151",
+    "action": "openUnitDingdingIndex"
+  },
+  {
+    "access": "dingding",
     "title": "钉钉个人考勤统计",
     "id": "161",
     "action": "openDingdingPeopleDetail"
