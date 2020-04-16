@@ -17,20 +17,35 @@ var fg = require('fast-glob');
 var logger = require('gulp-logger');
 
 //var downloadHost = "download.o2oa.net";
-var downloadHost = "release.o2oa.net";
-var protocol = "http";
-var commonUrl = "/build/commons.tar.gz";
+// var downloadHost = "release.o2oa.net";
+// var protocol = "http";
+// var commonUrl = "/build/commons.tar.gz";
 
+// var jvmUrls = {
+//     "all": "/build/jvm.tar.gz",
+//     "linux": "/build/linux.tar.gz",
+//     "aix": "/build/aix.tar.gz",
+//     "arm": "/build/arm.tar.gz",
+//     "macos": "/build/macos.tar.gz",
+//     "risc": "/build/risc.tar.gz",
+//     "raspberrypi": "/build/raspberrypi.tar.gz",
+//     "windows": "/build/windows.tar.gz"
+// };
+
+var downloadHost = "git.o2oa.net";
+var protocol = "https";
+var commonUrl = "/o2oa/evn-o2server-commons/-/archive/master/evn-o2server-commons-master.tar.gz?path=commons";
 var jvmUrls = {
-    "all": "/build/jvm.tar.gz",
-    "linux": "/build/linux.tar.gz",
-    "aix": "/build/aix.tar.gz",
-    "arm": "/build/arm.tar.gz",
-    "macos": "/build/macos.tar.gz",
-    "risc": "/build/risc.tar.gz",
-    "raspberrypi": "/build/raspberrypi.tar.gz",
-    "windows": "/build/windows.tar.gz"
+    "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
+    "linux": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux",
+    "aix": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/aix",
+    "arm": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/arm",
+    "macos": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/macos",
+    "risc": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/risc",
+    "raspberrypi": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/raspberrypi",
+    "windows": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/windows"
 };
+
 var scripts = {
     "all": ["o2server/*.sh", "o2server/*.jar", "o2server/*.html", "o2server/*.bat", "o2server/version.o2"],
     "linux": ["o2server/*linux*", "o2server/*.jar", "o2server/*.html", "o2server/version.o2"],
@@ -164,7 +179,7 @@ function download_commons_and_jvm(cb){
     var downloader = new Promise((resolve, reject) => {
         var commonLoaded = false;
         var jvmLoaded = false;
-        downloadFile(commonUrl, "commons.tar.gz", (length)=>{
+        downloadFile(commonUrl, "commons_git.tar.gz", (length)=>{
             commonsLength = +length;
             initProgress();
         }, (progress)=>{
@@ -177,7 +192,7 @@ function download_commons_and_jvm(cb){
         // var jvmName = jvmUrl.substr(jvmUrl.lastIndexOf("/"+1, jvmUrl.length));
         // console.log(jvmName);
         // console.log(jvmUrl);
-        downloadFile(jvmUrl, "jvm.tar.gz", (length)=>{
+        downloadFile(jvmUrl, "jvm_git.tar.gz", (length)=>{
             jvmLenght = +length;
             initProgress();
         }, (progress)=>{
@@ -205,7 +220,7 @@ function decompress_commons_and_jvm(cb){
         var commonUnziped = false;
         var jvmUnziped = false;
         targz.decompress({
-            src: 'o2server/commons.tar.gz',
+            src: 'o2server/commons_git.tar.gz',
             dest: 'o2server',
             tar: {map: function(header){
                 count++;
@@ -222,7 +237,7 @@ function decompress_commons_and_jvm(cb){
             }
         });
         targz.decompress({
-            src: 'o2server/jvm.tar.gz',
+            src: 'o2server/jvm_git.tar.gz',
             dest: 'o2server',
             tar: {map: function(header){
                     count++;
@@ -244,6 +259,41 @@ function decompress_commons_and_jvm(cb){
         gutil.log(gutil.colors.green("decompress commons and jvm completed. " + count+" files"));
         cb();
     });
+}
+function move_commons(){
+    console.log(`---------------------------------------------------------------------
+  . move commons files to o2server/commons ...
+---------------------------------------------------------------------`);
+    return gulp.src("o2server/evn-o2server-commons-master-commons/commons/**/*")
+        .pipe(gulp.dest("o2server/commons/"));
+}
+function move_jvm(){
+    console.log(`---------------------------------------------------------------------
+  . move jvm files to o2server/jvm ...
+---------------------------------------------------------------------`);
+    var path;
+    if (options.ev=="all"){
+        path = "o2server/evn-o2server-jvm-master-jvm/jvm/**/*"
+    }else{
+        path = "o2server/evn-o2server-jvm-master-jvm-"+options.ev+"/jvm/**/*"
+    }
+    return gulp.src(path)
+        .pipe(gulp.dest("o2server/jvm/"));
+}
+function clear_commons_git(cb){
+    var dest = ['o2server/evn-o2server-commons-master-commons/', 'o2server/commons_git.tar.gz'];
+    del(dest, { force: true });
+    cb();
+}
+function clear_jvm_git(cb){
+    var path;
+    if (options.ev=="all"){
+        path = "o2server/evn-o2server-jvm-master-jvm/"
+    }else{
+        path = "o2server/evn-o2server-jvm-master-jvm-"+options.ev+"/"
+    }
+    del([path, 'o2server/jvm_git.tar.gz'], { force: true });
+    cb();
 }
 
 function build_web_minimize(cb) {
@@ -351,7 +401,7 @@ function deploy_server(){
         }));
 }
 
-exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm);
+exports.preperation =  gulp.series(download_commons_and_jvm, decompress_commons_and_jvm, move_commons, move_jvm, clear_commons_git, clear_jvm_git);
 
 var shell = require('gulp-shell')
 exports.build_server = function(){
