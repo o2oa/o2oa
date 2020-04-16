@@ -5,7 +5,7 @@
   "alias": "",
   "description": "",
   "display": true,
-  "type": "process",
+  "type": "View",
 
   "data": {
     "exportGrid": true,

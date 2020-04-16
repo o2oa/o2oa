@@ -43,7 +43,7 @@
         "      <div styles='itemUserStat2count' item='todayReply'></div>"+
         "   </div>"+
         "   <div styles='itemToolsLeft'>"+
-        "       <div styles='messageAction' item='messageAction'></div>"+
+//        "       <div styles='messageAction' item='messageAction'></div>"+
         "   </div>"+
         " </div>"+
         " <div styles='itemRightNode'>"+
