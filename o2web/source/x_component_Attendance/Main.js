@@ -84,7 +84,6 @@ MWF.xApplication.Attendance.Main = new Class({
 		var action = o2.Actions.load("x_attendance_assemble_control");
 		action.AttendanceSettingAction.enableType(//平台封装好的方法
 			function (json) { //服务调用成功的回调函数, json为服务传回的数据
-				console.log(json);
 				if (json.data && json.data.value) {
 					debugger;
 					this.enableType = json.data.value;

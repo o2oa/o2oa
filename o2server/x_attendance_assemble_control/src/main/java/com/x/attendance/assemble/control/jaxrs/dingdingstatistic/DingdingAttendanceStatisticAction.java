@@ -96,7 +96,7 @@ public class DingdingAttendanceStatisticAction extends StandardJaxrsAction {
                             @JaxrsParameterDescribe("部门") @PathParam("unit") String unit,
                             @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
                             @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month) {
-        ActionResult<List<ActionUnitStatistic.Wo>> result = new ActionResult<>();
+        ActionResult<ActionUnitStatistic.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionUnitStatistic().execute(unit, year, month);
