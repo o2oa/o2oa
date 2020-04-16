@@ -47,6 +47,11 @@ MWF.xApplication.Attendance.LP = {
 	"leaveEarlyTimes" : "早退次数",
 	"lackOfTimeCount" : "工时不足人次",
 	"abNormalDutyCount" : "异常打卡人次",
+	"resultNormal" : "正常打卡次数",
+	"seriousLateTimes": "严重迟到次数",
+	"leaveEarlyTimes": "早退次数",
+	"absenteeismTimes": "矿工次数",
+	"notSignedCount": "未打卡次数",
 
 	"topUnitAttendanceDetail" : "公司出勤明细",
 	"topUnitAttendanceStatic" : "公司出勤率统计",
