@@ -5,6 +5,7 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         this.data = data;
         this.process = process;
         this.paper = this.process.paper;
+        if (!this.data.edition) this.data.edition = (new o2.widget.UUID()).toString();
 
         this.loaded = false;
 
@@ -36,7 +37,6 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
             this.listItem = new MWF.APPPD.Route.List(this);
             this.listItem.load();
         }
-
     },
     getRoutePoint: function () {
         var points = [];

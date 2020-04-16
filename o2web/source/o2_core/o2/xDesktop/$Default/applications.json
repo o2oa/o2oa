@@ -4,7 +4,8 @@
     "path": "Setting",
     "title": "系统设置",
     "iconPath": "appicon.png",
-    "allowList": ["xadmin", "Manager"]
+    "allowList": ["xadmin", "Manager"],
+    "denyList": []
   },
   {
     "name": "AppMarket",
