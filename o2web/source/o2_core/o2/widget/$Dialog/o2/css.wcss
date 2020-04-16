@@ -16,14 +16,14 @@
 		"padding": "3px",
 
 		"opacity": 0,
-        "border-radius": "5px"
+        "border-radius": "8px"
 	},
 	"to": {
 		"background-color": "#fff",
 		"border-style": "solid",
 		"border-color": "#fff",
 		"border-width": "1",
-		"box-shadow": "0px 0px 20px #999",
+		"box-shadow": "0px 0px 18px 0px rgba(153,153,153,1)",
 		"z-index": "20000",
 		"overflow": "hidden",
 		"font-size": "14px",
@@ -34,7 +34,7 @@
 		"top": "0",
 		"left": "0",
 		"opacity": 1,
-		"border-radius": "5px"
+		"border-radius": "8px"
 	},
 	"mark": {
 		"height": "0",
@@ -53,8 +53,27 @@
 		"background-color": "#3C76B7",
 		"color": "#fff",
 		"height": "30px",
-		"border-radius": "5px",
+		"border-radius": "20px",
 		"min-width": "80px",
 		"margin": "10px 5px"
-	}
+	},
+	"okButton": {
+        "border": "0px",
+        "background-color": "#3C76B7",
+        "color": "#fff",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px"
+    },
+    cancelButton: {
+        "border": "0px",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px",
+        "color": "#fff",
+        "background-color": "#999999 !important",
+
+    },
 }

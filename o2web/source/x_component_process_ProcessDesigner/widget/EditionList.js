@@ -30,13 +30,13 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         this.listNode = new Element("div", {"styles": this.css.listNode}).inject(this.leftNode);
 
         this.resizeNode = new Element("div", {"styles": this.css.resizeNode}).inject(this.rightNode);
-        this.diffNode = new Element("div", {"styles": this.css.diffNode}).inject(this.rightNode);
+        this.diffNode = new Element("ul", {"styles": this.css.diffNode}).inject(this.rightNode);
 
         this.createListTable();
         this.show();
     },
     createListTable: function(){
-        var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3'><tr>" +
+        var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
             "<th></th>" +
             "<th>"+this.lp.edition_list.number+"</th>" +
             "<th>"+this.lp.edition_list.update+"</th>" +
@@ -79,6 +79,7 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
                         "title": this.lp.edition_list.openInfor
                     },
                     {
+                        "type": "cancel",
                         "text": MWF.xApplication.process.ProcessDesigner.LP.close,
                         "action": function(){ this.close(); }
                     }
@@ -90,10 +91,12 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
         }
     },
     listEditionDlg: function(){
+	    //for (var i=0; i<10; i++){
         this.editionList.each(function(edition){
             var item = new MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item(this, edition);
             this.items.push(item);
         }.bind(this));
+        //}
     },
     setEvent: function(){
         var buttons = this.dlg.button.getElements("input");
@@ -268,62 +271,262 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
 
     },
     appendDiffLine: function(text){
-        new Element("div", {"styles": this.css.diffLine, "html": text}).inject(this.list.diffNode);
+        new Element("li", {"styles": this.css.diffLine, "html": text}).inject(this.list.diffNode);
     },
     getDiffWithProcess: function(process){
-        debugger;
         var diffs = [];
         var notDiffFields = ["id", "editionName", "editionEnable", "editionNumber", "createTime", "updateTime", "creatorPerson", "lastUpdateTime", "lastUpdatePerson"];
         Object.each(process, function(v, k){
             var t = o2.typeOf(v);
             if (t!="array" && t!="object"){
-                if (this.edition.fullProcess[k]!=v){
-                    if (notDiffFields.indexOf(k)==-1){
-                        var infor = this.lp.edition_list.modifyProcess;
-                        var oldV = (v.length>60) ? v.substring(0,60)+" ..." : v;
-                        var newV = (this.edition.fullProcess[k].length>60) ? this.edition.fullProcess[k].substring(0,60)+" ..." : this.edition.fullProcess[k];
-                        infor = infor.replace(/\{field\}/, k).replace(/\{old\}/, oldV).replace(/\{new\}/, newV);
-                        diffs.push(infor);
+                if (notDiffFields.indexOf(k)==-1){
+                    if (this.edition.fullProcess[k]!=v){
+                        diffs.push(this.getModifyFieldDiffInfor("modifyProcess", v, k, this.edition.fullProcess[k]));
+                    }
+                }
+            }else if (k=="controllerList" || k=="startableIdentityList" || k=="startableUnitList"){
+                var newArrValue = JSON.stringify(o2.name.cns(this.edition.fullProcess[k]));
+                var oldArrValue = JSON.stringify(o2.name.cns(v));
+                if (newArrValue!=oldArrValue){
+                    if (this.edition.fullProcess[k]!=v){
+                        diffs.push(this.getModifyFieldDiffInfor("modifyProcess", oldArrValue, k, newArrValue));
                     }
                 }
             }
         }.bind(this));
 
-        diffs = diffs.concat(this.getDiffActivityListCount(process, diffs));
+        var diffActivitys = this.getAllDiffActivitys(process);
+        diffs = diffs.concat(this.getDiffActivityListAddDelete(diffActivitys));
+        diffs = diffs.concat(this.getDiffActivityListModify(diffActivitys, process));
 
         return diffs;
     },
-    getDiffActivityListCount: function(process){
-        var diffs = [];
-        diffs = diffs.concat(this.getDiffActivityCount(process.endList, this.edition.fullProcess.endList));
-        diffs = diffs.concat(this.getDiffActivityCount(process.manualList, this.edition.fullProcess.manualList));
-        return diffs;
+    getModifyFieldDiffInfor: function(lp, v, k, nv, next, act, rname){
+        var infor = this.lp.edition_list[lp];
+        var oldV = (v.length>60) ? v.substring(0,60)+" ..." : v;
+        var newV = (nv.length>60) ? nv.substring(0,60)+" ..." : nv;
+        infor = infor.replace(/\{field\}/, k).replace(/\{old\}/, oldV).replace(/\{new\}/, newV).replace(/\{next\}/, next).replace(/\{name\}/, act).replace(/\{rname\}/, rname);
+        return infor;
     },
-    getDiffActivityCount: function(prevList, currentList){
-        var diffs = [];
-        var prevNames = prevList.map(function(item){ return item.name; });
-        var currentNames = currentList.map(function(item){ return item.name; });
 
-        var deleteNames = prevNames.filter(function(name){
-            var i = currentNames.indexOf(name);
+    getAllDiffActivitys: function(process){
+        var diffActivitys ={ "addActivitys": [], "deleteActivitys": [], "sameActivitys": [] };
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys([process.begin], [this.edition.fullProcess.begin]));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.manualList, this.edition.fullProcess.manualList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.conditionList, this.edition.fullProcess.conditionList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.choiceList, this.edition.fullProcess.choiceList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.splitList, this.edition.fullProcess.splitList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.parallelList, this.edition.fullProcess.parallelList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.mergeList, this.edition.fullProcess.mergeList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.embedList, this.edition.fullProcess.embedList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.delayList, this.edition.fullProcess.delayList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.invokeList, this.edition.fullProcess.invokeList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.serviceList, this.edition.fullProcess.serviceList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.agentList, this.edition.fullProcess.agentList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.messageList, this.edition.fullProcess.messageList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.cancelList, this.edition.fullProcess.cancelList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.endList, this.edition.fullProcess.endList));
+
+
+        return diffActivitys;
+    },
+    concatDiffActivitys:function(diffActivitys, diffActivity){
+        diffActivitys.addActivitys = diffActivitys.addActivitys.concat(diffActivity.addActivitys);
+        diffActivitys.deleteActivitys = diffActivitys.deleteActivitys.concat(diffActivity.deleteActivitys);
+        diffActivitys.sameActivitys = diffActivitys.sameActivitys.concat(diffActivity.sameActivitys);
+    },
+    getDiffActivitys: function(prevList, currentList){
+        prevList = prevList || [];
+        currentList = currentList || [];
+        var deleteActivitys = [];
+        var addActivitys = [];
+        var sameActivitys = [];
+        deleteActivitys = prevList.filter(function(item){
+            var i = currentList.findIndex(function(n){
+                return (item.edition==n.edition);
+            });
             if (i!=-1){
-                currentNames.splice(i, 1);
+                sameActivitys.push({"prev": item, "current": currentList[i]});
                 return false;
             }
             return true;
         });
-        currentNames.each(function(name){
+        addActivitys = currentList.filter(function(item){
+            var i = prevList.findIndex(function(n){
+                return (item.edition==n.edition);
+            });
+            return (i==-1);
+        });
+        return {"addActivitys": addActivitys, "deleteActivitys": deleteActivitys, "sameActivitys": sameActivitys};
+    },
+
+    getDiffActivityListAddDelete: function(diffActivitys){
+        var diffs = [];
+        diffActivitys.addActivitys.each(function(n){
             var infor = this.lp.edition_list.addActivity;
-            infor = infor.replace(/\{name\}/, name);
+            infor = infor.replace(/\{name\}/, n.name);
             diffs.push(infor);
         }.bind(this));
-        deleteNames.each(function(name){
+
+        diffActivitys.deleteActivitys.each(function(n){
             var infor = this.lp.edition_list.deleteActivity;
-            infor = infor.replace(/\{name\}/, name);
+            infor = infor.replace(/\{name\}/, n.name);
             diffs.push(infor);
+        }.bind(this));
+
+        return diffs;
+    },
+    getDiffActivityListModify: function(diffActivitys, process){
+        var diffs = [];
+        var notDiffFields = ["id", "process", "edition", "createTime", "updateTime", "routeList", "route", "position"];
+        var unitFields = [
+            "readIdentityList", "readUnitList", "readGroupList", "readDataPathList",
+            "reviewIdentityList", "reviewUnitList", "reviewIdentityList", "reviewUnitList",
+            "taskIdentityList", "taskUnitList", "taskGroupList", "taskDataPathList"
+        ];
+
+        diffActivitys.sameActivitys.each(function(activity){
+            var cur = activity.current;
+            Object.each(activity.prev, function(v, k){
+                var t = o2.typeOf(v);
+                if (k=="routeList" || k=="route") {
+                    var prevRouteList = this.getProcessRoutes(((k == "route") ? [v] : v), process);
+                    var curRouteList = this.getProcessRoutes(((k == "route") ? [cur[k]] : cur[k]), this.edition.fullProcess);
+                    var diffRoutes = this.getDiffRoutes(prevRouteList, curRouteList)
+
+                    diffs = diffs.concat(this.getDiffRouteListAddDelete(diffRoutes, cur));
+                    diffs = diffs.concat(this.getDiffRouteListModify(diffRoutes, cur, process));
+                }else if (t!="array" && t!="object"){
+                    if (notDiffFields.indexOf(k)==-1){
+                        if (cur[k]!=v){
+                            diffs.push(this.getModifyFieldDiffInfor("modifyActivity", v, k, cur[k], "", cur.name));
+                        }
+                    }
+                }else if (unitFields.indexOf(k)!==-1){
+                    var newArrValue = JSON.stringify(o2.name.cns(cur[k]));
+                    var oldArrValue = JSON.stringify(o2.name.cns(v));
+                    if (newArrValue!=oldArrValue){
+                        if (this.edition.fullProcess[k]!=v){
+                            diffs.push(this.getModifyFieldDiffInfor("modifyActivity", oldArrValue, k, newArrValue, "", cur.name));
+                        }
+                    }
+                }
+            }.bind(this));
         }.bind(this));
         return diffs;
     },
+    getDiffRoutes: function(prevRouteList, curRouteList){
+        prevRouteList = prevRouteList || [];
+        curRouteList = curRouteList || [];
+        var deleteRoutes = [];
+        var addRoutes = [];
+        var sameRoutes = [];
+
+        deleteRoutes = prevRouteList.filter(function(item){
+            var i = curRouteList.findIndex(function(n){
+                return (item.edition==n.edition);
+            });
+            if (i!=-1){
+                sameRoutes.push({"prev": item, "current": curRouteList[i]});
+                return false;
+            }
+            return true;
+        });
+        addRoutes = curRouteList.filter(function(item){
+            var i = prevRouteList.findIndex(function(n){
+                return (item.edition==n.edition);
+            });
+            return (i==-1);
+        });
+
+        return {"addRoutes": addRoutes, "deleteRoutes": deleteRoutes, "sameRoutes": sameRoutes};
+    },
+    getDiffRouteListAddDelete: function(diffRoutes, activity, toActivity){
+        var diffs = [];
+        diffRoutes.addRoutes.each(function(n){
+            var infor = this.lp.edition_list.modifyActivity_addRoute;
+            infor = infor.replace(/\{name\}/, activity.name).replace(/\{next\}/, n.toActivity.name).replace(/\{rname\}/, n.name);
+            diffs.push(infor);
+        }.bind(this));
+
+        diffRoutes.deleteRoutes.each(function(n){
+            var infor = this.lp.edition_list.modifyActivity_deleteRoute;
+            infor = infor.replace(/\{name\}/, activity.name).replace(/\{next\}/, n.toActivity.name).replace(/\{rname\}/, n.name);
+            diffs.push(infor);
+        }.bind(this));
+
+        return diffs;
+    },
+    getDiffRouteListModify: function(diffRoutes, curActivity, process){
+        var diffs = [];
+        var notDiffFields = ["id", "process", "edition", "createTime", "updateTime", "activityType", "activity"];
+        diffRoutes.sameRoutes.each(function(route){
+            var cur = route.current;
+            Object.each(route.prev, function(v, k){
+                var t = o2.typeOf(v);
+                if (k=="activity"){
+                    var newToActivity = this.getProcessActivity(cur[k], cur["activityType"], this.edition.fullProcess);
+                    var oldToActivity = this.getProcessActivity(v, route.prev["activityType"], process);
+                    if ((newToActivity && oldToActivity) && newToActivity.edition!=oldToActivity.edition){
+                        var infor = this.lp.edition_list.modifyActivity_modifyRouteNext;
+                        infor = infor.replace(/\{name\}/, curActivity.name).replace(/\{oldnext\}/, oldToActivity.name).replace(/\{newnext\}/, newToActivity.name).replace(/\{rname\}/, cur.name);
+                        diffs.push(infor);
+                    }
+                }else if (t!="array" && t!="object"){
+                    if (notDiffFields.indexOf(k)==-1){
+                        if (cur[k]!=v){
+                            var toActivity = this.getProcessActivity(cur["activity"], cur["activityType"], this.edition.fullProcess) || {};
+                            diffs.push(this.getModifyFieldDiffInfor("modifyActivity_modifyRouteField", v, k, cur[k], (toActivity.name || ""), curActivity.name, cur.name));
+                        }
+                    }
+                }
+            }.bind(this));
+        }.bind(this));
+        return diffs;
+    },
+
+    getProcessRoutes: function(idList, process){
+        var routes = [];
+        idList.each(function(id){
+            var route = process.routeList.find(function(r){ return id== r.id;});
+            if (route){
+                route.toActivity = this.getProcessActivity(route.activity, route.activityType, process);
+                routes.push(route);
+            }
+        }.bind(this));
+        return routes;
+    },
+    getProcessActivity: function(id, tp, process){
+        return process[tp+"List"].find(function(a){ return id== a.id;})
+    },
+    //
+    // getDiffActivityCount: function(prevList, currentList){
+    //     var diffs = [];
+    //     var prevItems = prevList.map(function(item){ return {"name": item.name, "id": item.edition}; });
+    //     var currentItems = currentList.map(function(item){ return{"name": item.name, "id": item.edition}; });
+    //
+    //     var deleteItems = prevItems.filter(function(item){
+    //         var i = currentItems.findIndex(function(n){
+    //             return (item.id==n.id);
+    //         });
+    //         if (i!=-1){
+    //             currentItems.splice(i, 1);
+    //             return false;
+    //         }
+    //         return true;
+    //     });
+    //     currentItems.each(function(n){
+    //         var infor = this.lp.edition_list.addActivity;
+    //         infor = infor.replace(/\{name\}/, n.name);
+    //         diffs.push(infor);
+    //     }.bind(this));
+    //     deleteItems.each(function(n){
+    //         var infor = this.lp.edition_list.deleteActivity;
+    //         infor = infor.replace(/\{name\}/, n.name);
+    //         diffs.push(infor);
+    //     }.bind(this));
+    //     return diffs;
+    // },
 
     getNewProcessInfor: function(){
         //this.getFullProcess(function(){

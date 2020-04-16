@@ -6,6 +6,8 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         this.process = process;
         this.paper = this.process.paper;
 
+        if (!this.data.edition) this.data.edition = (new o2.widget.UUID()).toString();
+
         this.routes = [];
         this.fromRoutes = [];
 
