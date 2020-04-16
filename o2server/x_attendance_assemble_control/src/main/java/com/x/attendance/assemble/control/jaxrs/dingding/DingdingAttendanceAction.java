@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.dingding;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -18,6 +19,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 @Path("dingding")
@@ -47,20 +49,56 @@ public class DingdingAttendanceAction extends StandardJaxrsAction {
     }
 
 
-    //获取一年的数据 ？？？不知道是否能成 接口限制
-
-    //获取7天数据   可以做定时每天晚上更新
+    //
     @JaxrsMethodDescribe(value = "同步钉钉考勤结果", action = ActionSyncData.class)
-    @POST
-    @Path("sync")
+    @GET
+    @Path("sync/from/{dateFrom}/to/{dateTo}/start")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void syncData(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                         JsonElement jsonElement) {
+                         @JaxrsParameterDescribe("开始时间: yyyy-MM-dd") @PathParam("dateFrom") String dateFrom,
+                         @JaxrsParameterDescribe("结束时间: yyyy-MM-dd") @PathParam("dateTo") String dateTo) {
         ActionResult<WrapBoolean> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionSyncData().execute(effectivePerson, jsonElement);
+            result = new ActionSyncData().execute(effectivePerson, dateFrom, dateTo);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "查询钉钉同步记录信息", action = ActionListDingdingSyncRecord.class)
+    @GET
+    @Path("sync/list")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listDingdingSyncRecord(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<List<ActionListDingdingSyncRecord.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListDingdingSyncRecord().execute();
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "查询钉钉打卡结果", action = ActionListDDAttendanceDetail.class)
+    @PUT
+    @Path("attendance/list/{id}/next/{count}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listNextDingdingAttendance(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                       @JaxrsParameterDescribe("最后一条数据ID") @PathParam("id") String id,
+                                       @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+                                       JsonElement jsonElement) {
+        ActionResult<List<ActionListDDAttendanceDetail.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListDDAttendanceDetail().execute(id, count, jsonElement);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);
@@ -69,5 +107,45 @@ public class DingdingAttendanceAction extends StandardJaxrsAction {
     }
 
 
+
+    @JaxrsMethodDescribe(value = "钉钉考勤全部个人数据统计", action = ActionStatisticPersonMonthData.class)
+    @GET
+    @Path("statistic/person/year/{year}/month/{month}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statisticPerson(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                         @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
+                         @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month) {
+        ActionResult<WrapBoolean> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticPersonMonthData().execute(year, month);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "钉钉考勤全部组织数据统计", action = ActionStatisticUnitDayData.class)
+    @GET
+    @Path("statistic/unit/year/{year}/month/{month}/day/{day}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statisticUnit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                @JaxrsParameterDescribe("年份: yyyy") @PathParam("year") String year,
+                                @JaxrsParameterDescribe("月份: MM") @PathParam("month") String month,
+                                @JaxrsParameterDescribe("日期: dd") @PathParam("day") String day) {
+        ActionResult<WrapBoolean> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticUnitDayData().execute(year, month, day);
+        }catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
 }

@@ -22,14 +22,14 @@ public class ActionDeleteAllData extends BaseAction {
         ActionResult<WrapBoolean> result = new ActionResult<>();
 
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            List<AttendanceDingtalkDetail> details  = emc.fetchAll(AttendanceDingtalkDetail.class);
+            List<AttendanceDingtalkDetail> details  = emc.listAll(AttendanceDingtalkDetail.class);
             if ( null == details ) {
                 result.error( new FindEmptyException() );
             }else{
                 //进行数据库持久化操作
                 emc.beginTransaction( AttendanceDingtalkDetail.class );
                 for (AttendanceDingtalkDetail d : details) {
-                    emc.remove(d, CheckRemoveType.all);
+                    emc.remove(d);
                 }
                 emc.commit();
                 result.setData(new WrapBoolean(true));

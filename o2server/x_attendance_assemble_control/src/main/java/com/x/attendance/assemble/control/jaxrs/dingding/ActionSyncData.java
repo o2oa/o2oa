@@ -1,50 +1,58 @@
 package com.x.attendance.assemble.control.jaxrs.dingding;
 
-import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class ActionSyncData extends BaseAction {
 
     private static final Logger logger = LoggerFactory.getLogger(ActionSyncData.class);
 
-    public ActionResult<WrapBoolean> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+    public ActionResult<WrapBoolean> execute(EffectivePerson effectivePerson, String dateFrom, String dateTo) throws Exception {
         ActionResult<WrapBoolean> result = new ActionResult<>();
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            if (null == wi.getWay() ||
-                    (!DingdingQywxSyncRecord.syncWay_week.equals(wi.getWay()) && !DingdingQywxSyncRecord.syncWay_year.equals(wi.getWay()))) {
+            if (null == dateFrom || null == dateTo) {
                 throw new SyncWayException();
             }
+            Date from = DateTools.parse(dateFrom);
+            Date to = DateTools.parse(dateTo);
+            long gap = to.getTime() - from.getTime();
+            if (gap < 0) {
+                throw new SyncWayException();
+            }
+            if ((gap / (1000 * 60 * 60 * 24)) > 6 ) {
+                throw new MoreThanSevenDayException();
+            }
+//            Business business = new Business(emc);
+//            List<DingdingQywxSyncRecord> conflictList = business.dingdingAttendanceFactory().findConflictSyncRecord(from.getTime(), to.getTime());
+//            if (conflictList != null && !conflictList.isEmpty()) {
+//                throw new ConflictSyncRecordException();
+//            }
             DingdingQywxSyncRecord record = new DingdingQywxSyncRecord();
-            record.setWay(wi.getWay());
+            record.setDateFrom(from.getTime());
+            record.setDateTo(to.getTime());
             record.setStartTime(new Date());
             record.setType(DingdingQywxSyncRecord.syncType_dingding);
             record.setStatus(DingdingQywxSyncRecord.status_loading);
             emc.beginTransaction(DingdingQywxSyncRecord.class);
             emc.persist(record);
             emc.commit();
-            ThisApplication.dingdingQueue.executing(record);
+            ThisApplication.dingdingQueue.send(record);
             result.setData(new WrapBoolean(true));
         }
         return result;
     }
 
-    public static class Wi extends DingdingQywxSyncRecord {
-        public static WrapCopier<Wi, DingdingQywxSyncRecord> copier = WrapCopierFactory.wi(Wi.class,
-                DingdingQywxSyncRecord.class, null, JpaObject.FieldsUnmodify);
-    }
 }
