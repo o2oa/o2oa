@@ -11,20 +11,25 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.documentEditor = documentEditor;
         this.css = this.documentEditor.css;
     },
+    is_iPad: function(){
+        var ua = navigator.userAgent.toLowerCase();
+        return (ua.match(/iPad/i)=="ipad");
+    },
     load: function(callback){
         this.getHistroyDocumentList(function(){
             if (this.historyDocumentList && this.historyDocumentList.length){
                 this.getHistoryDataList(function(){
                     this.createHistoryToolbar();
-                    this.createHistoryListNode();
+                    if (!layout.mobile || this.is_iPad()) this.createHistoryListNode();
 
                     this.documentEditor.options.pageShow = "single";
+                    debugger;
                     this.documentEditor.resetData();
 
                     this.beginDiffHistory();
 
                     this.loadHistoryToolbar();
-                    this.loadHistoryList();
+                    if (!layout.mobile) this.loadHistoryList();
                     if (callback) callback();
                 }.bind(this));
             }
@@ -140,7 +145,6 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.historyListTitleNode = new Element("div", {"styles": this.css.historyListTitleNode}).inject(this.historyListTitleAreaNode);
         this.historyListTitleInsertNode = new Element("div", {"styles": this.css.historyListTitleInsertNode}).inject(this.historyListTitleAreaNode);
         this.historyListTitleDeleteNode = new Element("div", {"styles": this.css.historyListTitleDeleteNode}).inject(this.historyListTitleAreaNode);
-
     },
     loadHistoryList: function(){
         var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
@@ -439,7 +443,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.documentEditor.resizeToolbar();
         }
 
-        this.historyListAreaNode.destroy();
+        if (this.historyListAreaNode) this.historyListAreaNode.destroy();
         this.historyListAreaNode = null;
         this.documentEditor.zoom(1);
         this.documentEditor._checkScale();
@@ -468,8 +472,10 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     text = text.replace(/{history}/, this.historyDataList.length).replace(/{diff}/, this.diffCount);
                     this.toolbarNode.getLast().set("html", text);
 
-                    this.createHistoryListNode();
-                    this.loadHistoryList();
+                    if (!layout.mobile || this.is_iPad()) {
+                        this.createHistoryListNode();
+                        this.loadHistoryList();
+                    }
 
                     this.documentEditor.options.pageShow = "single";
                     this.documentEditor.resetData();
@@ -564,20 +570,39 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
             this.historyInforDiv.dispose();
             this.historyInforDiv = null;
         }
-        var insertInforDiv = new Element("div", { "styles": this.css.historyInforNode }).inject(this.documentEditor.node);
+        var styles =  (!layout.mobile) ? this.css.historyInforNode : this.css.historyInforMobileNode
+        var insertInforDiv = new Element("div", { "styles": styles }).inject(this.documentEditor.node);
         insertInforDiv.setStyle("background", color);
         insertInfor = insertInfor.replace(/{name}/, o2.name.cn(obj.person))
             .replace(/{activity}/, obj.activityName)
             .replace(/{time}/, obj.createTime);
         insertInforDiv.set("html", insertInfor);
-        insertInforDiv.position({
-            "relativeTo": node,
-            "position": 'upperCenter',
-            "edge": 'bottomCenter',
-            "offset": {
-                "x": 0, "y": -10
-            }
-        });
+        if (!layout.mobile){
+            insertInforDiv.position({
+                "relativeTo": node,
+                "position": 'upperCenter',
+                "edge": 'bottomCenter',
+                "offset": {
+                    "x": 0, "y": -10
+                }
+            });
+        }else{
+
+        }
+
+        // debugger;
+        // var p = node.getPosition(node.getOffsetParent());
+        // if (p.x<0) p.x=0;
+        // var y = (p.y-10-insertInforDiv.getSize().y);
+        // var x = p.x;
+        // alert(x)
+        // var scale = (this.documentEditor.scale<0.7) ? 0.7 : this.documentEditor.scale;
+        // insertInforDiv.setStyles({
+        //     "left": ""+x+"px",
+        //     "top": ""+y+"px",
+        //     "transform":"scale("+scale+")",
+        //     "transform-origin": "0px 0px",
+        // });
         this.historyInforDiv = insertInforDiv;
         return insertInforDiv;
     },
