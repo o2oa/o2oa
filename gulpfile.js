@@ -15,6 +15,7 @@ var gulp = require('gulp'),
     http = require('http');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
+var assetRev = require('gulp-tm-asset-rev');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
