@@ -69,6 +69,8 @@ public class DingdingUnitStatisticQueue extends AbstractQueue<Date> {
                 unitForDay.setOnDutyTimes(on);
                 unitForDay.setOffDutyTimes(business.dingdingAttendanceFactory().
                         dingdingUnitForDayDutyTimesCount(dateString, unit, AttendanceDingtalkDetail.OffDuty));
+                unitForDay.setResultNormal(business.dingdingAttendanceFactory().dingdingUnitForDayTimeResultCount(dateString, unit,
+                        AttendanceDingtalkDetail.TIMERESULT_NORMAL));
                 unitForDay.setLateTimes(business.dingdingAttendanceFactory().dingdingUnitForDayTimeResultCount(dateString, unit,
                         AttendanceDingtalkDetail.TIMERESULT_Late));
                 unitForDay.setLeaveEarlyTimes(business.dingdingAttendanceFactory().dingdingUnitForDayTimeResultCount(dateString, unit,
@@ -108,6 +110,7 @@ public class DingdingUnitStatisticQueue extends AbstractQueue<Date> {
             Long workDay = business.dingdingAttendanceFactory().sumWorkDayUnitForDayWithMonth(year, month, unit);
             Long onduty = business.dingdingAttendanceFactory().sumOnDutyUnitForDayWithMonth(year, month, unit);
             Long offDuty = business.dingdingAttendanceFactory().sumOffDutyUnitForDayWithMonth(year, month, unit);
+            Long normal = business.dingdingAttendanceFactory().sumNormalUnitForDayWithMonth(year, month, unit);
             Long late = business.dingdingAttendanceFactory().sumLateTimesUnitForDayWithMonth(year, month, unit);
             Long leaveearly = business.dingdingAttendanceFactory().sumLeaveEarlyUnitForDayWithMonth(year, month, unit);
             Long notSign = business.dingdingAttendanceFactory().sumNotSignedUnitForDayWithMonth(year, month, unit);
@@ -128,6 +131,7 @@ public class DingdingUnitStatisticQueue extends AbstractQueue<Date> {
             unitForMonth.setWorkDayCount(workDay);
             unitForMonth.setOnDutyTimes(onduty);
             unitForMonth.setOffDutyTimes(offDuty);
+            unitForMonth.setResultNormal(normal);
             unitForMonth.setLateTimes(late);
             unitForMonth.setLeaveEarlyTimes(leaveearly);
             unitForMonth.setNotSignedCount(notSign);

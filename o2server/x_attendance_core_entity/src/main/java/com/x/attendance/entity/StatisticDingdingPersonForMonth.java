@@ -83,6 +83,10 @@ public class StatisticDingdingPersonForMonth extends SliceJpaObject {
 	@Column(name = "xoffDutyTimes")
 	private Long offDutyTimes;
 
+	@FieldDescribe("正常签到次数")
+	@Column(name = "xresultNormal")
+	private Long resultNormal;
+
 	@FieldDescribe("迟到次数")
 	@Column(name = "xlateTimes")
 	private Long lateTimes;
@@ -103,6 +107,14 @@ public class StatisticDingdingPersonForMonth extends SliceJpaObject {
 	@Column(name = "xNotSignedCount")
 	private Long notSignedCount;
 
+
+	public Long getResultNormal() {
+		return resultNormal;
+	}
+
+	public void setResultNormal(Long resultNormal) {
+		this.resultNormal = resultNormal;
+	}
 
 	public String getO2User() {
 		return o2User;
