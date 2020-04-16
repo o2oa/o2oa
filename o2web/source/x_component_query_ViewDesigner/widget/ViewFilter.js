@@ -109,7 +109,12 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput_vf");
 
         this.logicInput = this.inputAreaNode.getElement(".logicInput_vf");
+
         this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput_vf");
+        this.comparisonInput.addEvent("change", function(){
+            this.switchInputDisplay();
+        }.bind(this))
+
         this.valueTextInput = this.inputAreaNode.getElement(".valueTextInput_vf");
         this.valueNumberInput = this.inputAreaNode.getElement(".valueNumberInput_vf");
         this.valueDatetimeInput = this.inputAreaNode.getElement(".valueDatetimeInput_vf");
@@ -157,7 +162,8 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         }.bind(this));
 
         this.datatypeInput.addEvent("change", function(){
-            this.changeValueInput();
+            // this.changeValueInput();
+            this.switchInputDisplay();
         }.bind(this));
 
         this.valueTextInput.addEvent("keydown", function(e){
@@ -212,6 +218,304 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
                     if (e.code==13) this.modifyOrAddFilterItem();
                 }.bind(this));
             }
+        }
+    },
+    switchInputDisplay : function(){
+        var id = "";
+        if( this.app.view ){
+            id = this.app.view.data.id;
+        }
+
+        var config = {
+            "textValue": {
+                "equals": {
+                    "selectorArea" : ["#"+id+"viewFilterTextFormulaSelector"] //["input", "@person", "@unitList", "@unitAllList", "@identityList" ],
+                },
+                "notEquals": {
+                    "selectorArea" : ["#"+id+"viewFilterTextFormulaSelector"] //["input", "@person", "@unitList", "@unitAllList", "@identityList" ],
+                },
+                "greaterThan": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "greaterThanOrEqualTo": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "lessThan": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "lessThanOrEqualTo": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "like": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "notLike": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                },
+                "range": {
+                    "invalidValue" : ["@person", "@unitList", "@unitAllList", "@identityList" ]
+                }
+            },
+            "numberValue": {
+                "equals": {}, //["input"]
+                "notEquals": {},
+                "greaterThan": {},
+                "greaterThanOrEqualTo": {},
+                "lessThan": {},
+                "lessThanOrEqualTo": {},
+                "range": {}
+            },
+            "dateTimeValue": {
+                "equals": {
+                    "invalidValue" : ["@year","@season","@month","@time","@date"]
+                },
+                "notEquals": {
+                    "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
+                },
+                "greaterThan": {
+                    "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
+                },
+                "greaterThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
+                },
+                "lessThan": {
+                    "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
+                },
+                "lessThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterDateFormulaSelector"]
+                },
+                "range": {
+                    "invalidValue" : ["@year","@season","@month","@time","@date"]
+                }
+            },
+            "dateValue": {
+                "equals": {
+                    "invalidValue" : ["@year","@season","@month","@date"]
+                },
+                "notEquals": {
+                    "selectorArea" : ["#"+id+"viewFilterDateOnlyFormulaSelector"]
+                },
+                "greaterThan":{
+                    "selectorArea" : ["#"+id+"viewFilterDateOnlyFormulaSelector"]
+                },
+                "greaterThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterDateOnlyFormulaSelector"]
+                },
+                "lessThan": {
+                    "selectorArea" : ["#"+id+"viewFilterDateOnlyFormulaSelector"]
+                },
+                "lessThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterDateOnlyFormulaSelector"]
+                },
+                "range": {
+                    "invalidValue" : ["@year","@season","@month","@date"]
+                }
+            },
+            "timeValue": {
+                "equals": {
+                    "invalidValue" : ["@time"]
+                },
+                "notEquals": {
+                    "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
+                },
+                "greaterThan": {
+                    "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
+                },
+                "greaterThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
+                },
+                "lessThan": {
+                    "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
+                },
+                "lessThanOrEqualTo": {
+                    "selectorArea" : ["#"+id+"viewFilterTimeOnlyFormulaSelector"]
+                },
+                "range": {
+                    "invalidValue" : ["@time"]
+                }
+            },
+            "booleanValue": {
+                "equals": {},
+                "notEquals": {}
+            }
+        };
+
+        debugger;
+
+        var formulaSelectorIdList = [
+            "#"+id+"viewFilterTextFormulaSelector",
+            "#"+id+"viewFilterDateFormulaSelector",
+            "#"+id+"viewFilterDateOnlyFormulaSelector",
+            "#"+id+"viewFilterTimeOnlyFormulaSelector"
+        ];
+
+        var formatType = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
+        var object = config[formatType];
+
+        var availableComparisonList = Object.keys( object );
+        var options = this.comparisonInput.options;
+
+        var comparison = options[this.comparisonInput.selectedIndex].value;
+
+        if( !this.originalComparisonOptions ){
+            this.originalComparisonOptions = [];
+            for( var i=0; i< options.length; i++ ){
+                this.originalComparisonOptions.push({
+                    "text" : options[i].text,
+                    "value" : options[i].value
+                });
+            }
+        }
+
+        while( this.comparisonInput.options && this.comparisonInput.options.length ){
+            this.comparisonInput.options[0].destroy();
+        }
+
+        for( var i=0; i<this.originalComparisonOptions.length; i++ ){
+            var opt = this.originalComparisonOptions[i];
+            if( availableComparisonList.contains( opt.value )){
+                var option = new Element("option", {
+                    text : opt.text,
+                    value : opt.value
+                }).inject( this.comparisonInput );
+                if( opt.value === comparison )option.selected = true;
+            }
+        }
+
+        var availableInputArray = [];
+        var invalidValue = [];
+        for( var key in object ){
+            if( comparison === key ){
+                availableInputArray = object[key].selectorArea || [];
+                invalidValue = object[key].invalidValue || [];
+                break;
+            }
+        }
+        for( var i=0; i<invalidValue.length; i++ ){
+            invalidValue[i] = invalidValue[i].toLowerCase();
+        }
+
+        formulaSelectorIdList.each( function(id) {
+            var el = this.inputAreaNode.getElement( id );
+            if( !el )return;
+            el.setStyle("display", availableInputArray.contains(id) ? "block" : "none" );
+        }.bind(this));
+
+        var viewFilterValue2Area, viewFilterValueTitleArea;
+        if ( availableComparisonList.contains("range") && comparison=="range"){
+            viewFilterValue2Area = this.inputAreaNode.getElement("#"+id+"viewFilterValue2Area");
+            if(viewFilterValue2Area)viewFilterValue2Area.setStyle('display', 'block');
+
+            viewFilterValueTitleArea = this.inputAreaNode.getElement("#"+id+"viewFilterValueTitleArea");
+            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', '从');
+        }else{
+            viewFilterValue2Area = this.inputAreaNode.getElement("#"+id+"viewFilterValue2Area");
+            if(viewFilterValue2Area)viewFilterValue2Area.setStyle('display', 'none');
+
+            viewFilterValueTitleArea = this.inputAreaNode.getElement("#"+id+"viewFilterValueTitleArea");
+            if(viewFilterValueTitleArea)viewFilterValueTitleArea.set('text', '值');
+        }
+        switch (formatType){
+            case "textValue":
+                this.valueTextInput.setStyle("display", "block");
+                if( invalidValue.contains( (this.valueTextInput.get("value") || "" ).toLowerCase() )){
+                    this.valueTextInput.set("value","");
+                }
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "block");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "numberValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "block");
+                if( invalidValue.contains( (this.valueNumberInput.get("value") || "" ).toLowerCase() )){
+                    this.valueNumberInput.set("value","");
+                }
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "block");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "datetimeValue":
+            case "dateTimeValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "block");
+                if( invalidValue.contains( (this.valueDatetimeInput.get("value") || "" ).toLowerCase() )){
+                    this.valueDatetimeInput.set("value","");
+                }
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "block");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "dateValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "block");
+                if( invalidValue.contains( (this.valueDateInput.get("value") || "" ).toLowerCase() )){
+                    this.valueDateInput.set("value","");
+                }
+                this.valueTimeInput.setStyle("display", "none");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "block");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "timeValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "block");
+                if( invalidValue.contains( (this.valueTimeInput.get("value") || "" ).toLowerCase() )){
+                    this.valueTimeInput.set("value","");
+                }
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "block");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+                break;
+            case "booleanValue":
+                this.valueTextInput.setStyle("display", "none");
+                this.valueNumberInput.setStyle("display", "none");
+                this.valueDatetimeInput.setStyle("display", "none");
+                this.valueDateInput.setStyle("display", "none");
+                this.valueTimeInput.setStyle("display", "none");
+                this.valueBooleanInput.setStyle("display", "block");
+                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "block");
+                break;
         }
     },
     // getInputNodes: function(){
@@ -338,95 +642,95 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
     //         }.bind(this));
     //     }
     // },
-    changeValueInput: function(){
-        var type = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
-        switch (type){
-            case "textValue":
-                this.valueTextInput.setStyle("display", "block");
-                this.valueNumberInput.setStyle("display", "none");
-                this.valueDatetimeInput.setStyle("display", "none");
-                this.valueDateInput.setStyle("display", "none");
-                this.valueTimeInput.setStyle("display", "none");
-                this.valueBooleanInput.setStyle("display", "none");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "block");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
-                break;
-            case "numberValue":
-                this.valueTextInput.setStyle("display", "none");
-                this.valueNumberInput.setStyle("display", "block");
-                this.valueDatetimeInput.setStyle("display", "none");
-                this.valueBooleanInput.setStyle("display", "none");
-                this.valueDateInput.setStyle("display", "none");
-                this.valueTimeInput.setStyle("display", "none");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "block");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
-                break;
-            case "datetimeValue":
-            case "dateTimeValue":
-                this.valueTextInput.setStyle("display", "none");
-                this.valueNumberInput.setStyle("display", "none");
-                this.valueDatetimeInput.setStyle("display", "block");
-                this.valueBooleanInput.setStyle("display", "none");
-                this.valueDateInput.setStyle("display", "none");
-                this.valueTimeInput.setStyle("display", "none");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "block");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
-                break;
-            case "dateValue":
-                this.valueTextInput.setStyle("display", "none");
-                this.valueNumberInput.setStyle("display", "none");
-                this.valueDatetimeInput.setStyle("display", "none");
-                this.valueBooleanInput.setStyle("display", "none");
-                this.valueDateInput.setStyle("display", "block");
-                this.valueTimeInput.setStyle("display", "none");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "block");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
-                break;
-            case "timeValue":
-                this.valueTextInput.setStyle("display", "none");
-                this.valueNumberInput.setStyle("display", "none");
-                this.valueDatetimeInput.setStyle("display", "none");
-                this.valueBooleanInput.setStyle("display", "none");
-                this.valueDateInput.setStyle("display", "none");
-                this.valueTimeInput.setStyle("display", "block");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "block");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
-                break;
-            case "booleanValue":
-                this.valueTextInput.setStyle("display", "none");
-                this.valueNumberInput.setStyle("display", "none");
-                this.valueDatetimeInput.setStyle("display", "none");
-                this.valueTimeInput.setStyle("display", "none");
-                this.valueBooleanInput.setStyle("display", "block");
-                if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
-                if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
-                if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
-                if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
-                if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
-                if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "block");
-                break;
-        }
-    },
+    // changeValueInput: function(){
+    //     var type = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
+    //     switch (type){
+    //         case "textValue":
+    //             this.valueTextInput.setStyle("display", "block");
+    //             this.valueNumberInput.setStyle("display", "none");
+    //             this.valueDatetimeInput.setStyle("display", "none");
+    //             this.valueDateInput.setStyle("display", "none");
+    //             this.valueTimeInput.setStyle("display", "none");
+    //             this.valueBooleanInput.setStyle("display", "none");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "block");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+    //             break;
+    //         case "numberValue":
+    //             this.valueTextInput.setStyle("display", "none");
+    //             this.valueNumberInput.setStyle("display", "block");
+    //             this.valueDatetimeInput.setStyle("display", "none");
+    //             this.valueBooleanInput.setStyle("display", "none");
+    //             this.valueDateInput.setStyle("display", "none");
+    //             this.valueTimeInput.setStyle("display", "none");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "block");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+    //             break;
+    //         case "datetimeValue":
+    //         case "dateTimeValue":
+    //             this.valueTextInput.setStyle("display", "none");
+    //             this.valueNumberInput.setStyle("display", "none");
+    //             this.valueDatetimeInput.setStyle("display", "block");
+    //             this.valueBooleanInput.setStyle("display", "none");
+    //             this.valueDateInput.setStyle("display", "none");
+    //             this.valueTimeInput.setStyle("display", "none");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "block");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+    //             break;
+    //         case "dateValue":
+    //             this.valueTextInput.setStyle("display", "none");
+    //             this.valueNumberInput.setStyle("display", "none");
+    //             this.valueDatetimeInput.setStyle("display", "none");
+    //             this.valueBooleanInput.setStyle("display", "none");
+    //             this.valueDateInput.setStyle("display", "block");
+    //             this.valueTimeInput.setStyle("display", "none");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "block");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+    //             break;
+    //         case "timeValue":
+    //             this.valueTextInput.setStyle("display", "none");
+    //             this.valueNumberInput.setStyle("display", "none");
+    //             this.valueDatetimeInput.setStyle("display", "none");
+    //             this.valueBooleanInput.setStyle("display", "none");
+    //             this.valueDateInput.setStyle("display", "none");
+    //             this.valueTimeInput.setStyle("display", "block");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "block");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "none");
+    //             break;
+    //         case "booleanValue":
+    //             this.valueTextInput.setStyle("display", "none");
+    //             this.valueNumberInput.setStyle("display", "none");
+    //             this.valueDatetimeInput.setStyle("display", "none");
+    //             this.valueTimeInput.setStyle("display", "none");
+    //             this.valueBooleanInput.setStyle("display", "block");
+    //             if (this.valueTextInput2) this.valueTextInput2.setStyle("display", "none");
+    //             if (this.valueNumberInput2) this.valueNumberInput2.setStyle("display", "none");
+    //             if (this.valueDatetimeInput2) this.valueDatetimeInput2.setStyle("display", "none");
+    //             if (this.valueDateInput2) this.valueDateInput2.setStyle("display", "none");
+    //             if (this.valueTimeInput2) this.valueTimeInput2.setStyle("display", "none");
+    //             if (this.valueBooleanInput2) this.valueBooleanInput2.setStyle("display", "block");
+    //             break;
+    //     }
+    // },
     createActionNode: function(){
         this.actionNode = new Element("div", {"styles": this.css.actionNode}).inject(this.actionAreaNode);
         this.actionNode.addEvent("click", function(){
@@ -741,7 +1045,7 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         }
 
 
-        this.changeValueInput();
+        this.switchInputDisplay();
         if(this.datatypeInput.onchange){
             this.datatypeInput.onchange();
         }
