@@ -995,4 +995,23 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = ActionManagerRetract.class)
+	@PUT
+	@Path("v2/{id}/person/{person}/retract/manager")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							   @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+							   @JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person,JsonElement jsonElement) {
+		ActionResult<ActionManagerRetract.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerRetract().execute(effectivePerson, id, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
