@@ -95,6 +95,8 @@
     }
   },
   "paging" : {
-    "style" : "red"
+    "style" : "red_round",
+    "style_rect" : "red",
+    "style_round" : "red_round"
   }
 }
