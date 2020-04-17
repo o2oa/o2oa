@@ -96,6 +96,8 @@
     }
   },
   "paging" : {
-    "style" : "default"
+    "style" : "blue_round",
+    "style_rect" : "default",
+    "style_round" : "blue_round"
   }
 }
