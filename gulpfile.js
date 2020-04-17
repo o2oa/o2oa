@@ -466,5 +466,18 @@ exports.build_server = function(){
 ---------------------------------------------------------------------`);
     return (shell.task('npm run build_server_script'))();
 };
+function chmod_jvm(){
+    return (shell.task('chmod 777 -R target/o2server/jvm'))();
+}
+function chmod_commons(){
+    return (shell.task('chmod 777 -R target/o2server/commons'))();
+}
+function chmod_sh(){
+    return (shell.task('chmod 777 target/o2server/*.sh'))();
+}
 exports.build_web = gulp.series(build_web_minimize, build_web_move, build_web_v_html, build_web_v_o2);
-exports.deploy = deploy_server;
+if (options.ev!="windows"){
+    exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh);
+}else{
+    exports.deploy = gulp.series(deploy_server);
+}
