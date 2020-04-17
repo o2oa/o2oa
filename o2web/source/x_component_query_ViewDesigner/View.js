@@ -1969,11 +1969,17 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
         });
     },
     setTemplateStyles: function(styles){
-        this.json.style = styles.style;
+        if( this.json.buttonStyle === "rect" ){
+            this.json.style = styles.style_rect;
+        }else if( this.json.buttonStyle === "round" ){
+            this.json.style = styles.style_round;
+        }else{
+            this.json.style = styles.style;
+        }
         this.json.forceStyles = styles.forceStyles || "";
     },
     clearTemplateStyles: function(styles){
-        this.json.style = "default";
+        this.json.style = "blue_round";
         this.json.forceStyles = "";
     },
     setAllStyles: function(){
@@ -2100,6 +2106,13 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
             "firstPageText","lastPageText","prePageText","nextPageText",
             "pagingStyles"].contains(name)){
             this._refreshPaging();
+        }else if( name === "buttonStyle" ){
+            if( this.json.buttonStyle === "rect" ){
+                this.json.style = this.view.templateStyles.paging.style_rect;
+            }else{
+                this.json.style = this.view.templateStyles.paging.style_round;
+            }
+            this._resetPaging();
         }
     }
 
