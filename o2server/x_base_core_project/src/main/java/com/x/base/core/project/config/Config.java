@@ -74,6 +74,7 @@ public class Config {
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
+	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -123,8 +124,6 @@ public class Config {
 	public static final String RESOURCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
 
 	public static final String SCRIPTING_ENGINE_NAME = "JavaScript";
-
-	// public static final String RESOUCE_CONFIG = "config";
 
 	public static final String RESOURCE_NODE_PREFIX = "node/";
 	public static final String RESOURCE_NODE_EVENTQUEUE = RESOURCE_NODE_PREFIX + "eventQueue";
@@ -1225,6 +1224,23 @@ public class Config {
 			}
 		}
 		return instance().portal;
+	}
+
+	private Components components = null;
+
+	public static Components components() throws Exception {
+		if (null == instance().components) {
+			synchronized (Config.class) {
+				if (null == instance().components) {
+					Components obj = BaseTools.readConfigObject(PATH_CONFIG_COMPONENTS, Components.class);
+					if (null == obj) {
+						obj = Components.defaultInstance();
+					}
+					instance().components = obj;
+				}
+			}
+		}
+		return instance().components;
 	}
 
 	public static Object resource(String name) throws Exception {
