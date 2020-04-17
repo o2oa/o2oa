@@ -3,7 +3,7 @@
   "name": "",
   "type": "Paging",
   "description": "",
-  "style": "default",
+  "style": "blue_round",
   "visiblePages" : 9,
   "prePageText" : "",
   "nextPageText" : "",

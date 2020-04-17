@@ -17,6 +17,13 @@
 		</table>
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
+				<td class="editTableTitleNoWidth">按钮样式:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="buttonStyle" text{($.buttonStyle==='round')?'checked':''} type="radio" value="round"/>圆角
+					<input class="editTableRadio" name="buttonStyle" text{($.buttonStyle==='rect')?'checked':''} type="radio" value="rect"/>方角
+				</td>
+			</tr>
+			<tr>
 				<td class="editTableTitleNoWidth">显示数字分页:</td>
 				<td class="editTableValue">
 					<input class="editTableRadio" name="hasTruningBar" text{($.hasTruningBar!==false)?'checked':''}  onclick="
