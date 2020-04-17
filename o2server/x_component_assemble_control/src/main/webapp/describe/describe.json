@@ -116,7 +116,7 @@
               "isBaseType": true
             },
             {
-              "name": "orderNumber",
+              "name": "order",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后",
@@ -254,7 +254,7 @@
               "isBaseType": true
             },
             {
-              "name": "orderNumber",
+              "name": "order",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后",
@@ -344,7 +344,7 @@
               "description": "是否是可见的应用."
             },
             {
-              "name": "orderNumber",
+              "name": "order",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后"
@@ -372,6 +372,12 @@
               "type": "List\u003cString\u003e",
               "isCollection": true,
               "description": "拒绝访问人员."
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型:system|custom"
             },
             {
               "name": "createTime",
@@ -427,7 +433,7 @@
               "description": "是否是可见的应用."
             },
             {
-              "name": "orderNumber",
+              "name": "order",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后"
@@ -455,6 +461,12 @@
               "type": "List\u003cString\u003e",
               "isCollection": true,
               "description": "拒绝访问人员."
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型:system|custom"
             },
             {
               "name": "createTime",
