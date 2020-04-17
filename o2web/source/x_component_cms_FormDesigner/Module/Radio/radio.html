@@ -20,6 +20,13 @@
 		    	<input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}selectEditItemScript').setStyle('display', 'block'); $('text{$.pid}selectEditItemValues').setStyle('display', 'none')}" name="itemType" text{($.itemType=='script')?'checked':''} type="radio" value="script"/>脚本
 		    </td>
 		  </tr>
+			<tr>
+				<td class="editTableTitle">是否只读:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>是
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>否
+				</td>
+			</tr>
 		</table>
 		
 		<div id="text{$.pid}selectEditItemValues" style="display: text{($.itemType=='values')?'block':'none'}" class="MWFArraylist" name="itemValues" title="可选值"></div>

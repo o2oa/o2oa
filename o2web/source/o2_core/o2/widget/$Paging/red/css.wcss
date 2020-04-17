@@ -14,6 +14,7 @@
         "height": "24px",
         "width": "80px",
         "border": "1px solid #e6e6e6",
+        "border-radius" : "0px",
         "text-align": "center",
         "line-height": "24px",
         "cursor": "pointer",
@@ -22,12 +23,14 @@
         "float": "left"
     },
     "firstPage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "lastPage" : {
         "height": "24px",
         "width": "80px",
         "border": "1px solid #e6e6e6",
+        "border-radius" : "0px",
         "text-align": "center",
         "line-height": "24px",
         "cursor": "pointer",
@@ -35,11 +38,13 @@
         "float": "left"
     },
     "lastPage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "prePage" : {
         "width": "24px",
         "height": "24px",
+        "border-radius" : "0px",
         "border": "1px solid #e6e6e6",
         "text-align": "center",
         "line-height": "24px",
@@ -55,6 +60,7 @@
     "nextPage" : {
         "width": "24px",
         "height": "24px",
+        "border-radius" : "0px",
         "border": "1px solid #e6e6e6",
         "text-align": "center",
         "line-height": "24px",
@@ -74,6 +80,7 @@
         "padding-left": "5px",
         "padding-right" : "5px",
         "height": "24px",
+        "border-radius" : "0px",
         "border": "1px solid #e6e6e6",
         "text-align": "center",
         "line-height": "24px",
@@ -89,9 +96,10 @@
         "padding-left": "5px",
         "padding-right" : "5px",
         "height": "24px",
+        "line-height": "normal",
         "border": "1px solid #e6e6e6",
         "text-align": "center",
-        "line-height": "24px",
+        "border-radius" : "0px",
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
@@ -104,9 +112,10 @@
         "padding-left": "5px",
         "padding-right" : "5px",
         "height": "24px",
+        "line-height": "normal",
         "border": "1px solid #e6e6e6",
         "text-align": "center",
-        "line-height": "24px",
+        "border-radius" : "0px",
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
@@ -121,6 +130,7 @@
         "border": "1px solid #e6e6e6",
         "text-align": "center",
         "line-height": "24px",
+        "border-radius" : "0px",
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
@@ -130,6 +140,7 @@
     "pageJumper" : {
         "float" : "left",
         "height" : "20px",
+        "border-radius" : "0px",
         "line-height" : "20px",
         "text-align" : "center",
         "width" : "20px",
