@@ -16,6 +16,7 @@ var gulp = require('gulp'),
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
 var assetRev = require('gulp-tm-asset-rev');
+const os = require('os');
 
 //var downloadHost = "download.o2oa.net";
 // var downloadHost = "release.o2oa.net";
@@ -476,7 +477,7 @@ function chmod_sh(){
     return (shell.task('chmod 777 target/o2server/*.sh'))();
 }
 exports.build_web = gulp.series(build_web_minimize, build_web_move, build_web_v_html, build_web_v_o2);
-if (options.ev!="windows"){
+if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh);
 }else{
     exports.deploy = gulp.series(deploy_server);
