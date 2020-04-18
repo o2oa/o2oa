@@ -1,7 +1,6 @@
 package com.x.component.core.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,12 +13,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -27,6 +20,12 @@ import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
+
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 @ContainerEntity
 @Entity
@@ -40,6 +39,10 @@ public class Component extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 
 	private static final String TABLE = PersistenceProperties.Component.table;
+
+	public static final String TYPE_SYSTEM = "system";
+
+	public static final String TYPE_CUSTOM = "custom";
 
 	public String getId() {
 		return id;
@@ -57,6 +60,7 @@ public class Component extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	/* 更新运行方法 */
@@ -123,22 +127,11 @@ public class Component extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> denyList = new ArrayList<String>();
 
-	/** flag标志位 */
-
-	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME,
-	// name_FIELDNAME };
-	// @FieldDescribe("管理人员.")
-	// public static final String title_FIELDNAME = "title";
-	// @PersistentCollection(fetch = FetchType.EAGER)
-	// @OrderColumn(name = ORDERCOLUMNCOLUMN)
-	// @ContainerTable(name = TABLE + "_controllerList", joinIndex = @Index(name =
-	// TABLE + "_controllerList_join"))
-	// @ElementColumn(length =
-	// AbstractPersistenceProperties.organization_name_length, name =
-	// "xcontrollerList")
-	// @ElementIndex(name = TABLE + "_controllerList_element")
-	// @CheckPersist(allowEmpty = true)
-	// private List<String> controllerList = new ArrayList<String>();
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("类型:system|custom")
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + type_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String type;
 
 	public String getName() {
 		return name;
@@ -194,6 +187,14 @@ public class Component extends SliceJpaObject {
 
 	public void setIconPath(String iconPath) {
 		this.iconPath = iconPath;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public Integer getOrderNumber() {

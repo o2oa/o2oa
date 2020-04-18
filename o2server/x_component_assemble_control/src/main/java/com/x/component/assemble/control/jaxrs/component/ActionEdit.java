@@ -13,6 +13,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.ListTools;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
 
@@ -46,7 +47,7 @@ class ActionEdit extends ActionBase {
 
 		private static final long serialVersionUID = 8867806242224800105L;
 		static WrapCopier<Wi, Component> copier = WrapCopierFactory.wi(Wi.class, Component.class, null,
-				JpaObject.FieldsUnmodify);
+				ListTools.toList(JpaObject.FieldsUnmodify, Component.type_FIELDNAME));
 
 	}
 

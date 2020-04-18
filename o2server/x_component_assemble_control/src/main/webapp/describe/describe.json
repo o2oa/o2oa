@@ -374,6 +374,12 @@
               "description": "拒绝访问人员."
             },
             {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型:system|custom"
+            },
+            {
               "name": "createTime",
               "type": "Date",
               "isCollection": false,
@@ -455,6 +461,12 @@
               "type": "List\u003cString\u003e",
               "isCollection": true,
               "description": "拒绝访问人员."
+            },
+            {
+              "name": "type",
+              "type": "String",
+              "isCollection": false,
+              "description": "类型:system|custom"
             },
             {
               "name": "createTime",
