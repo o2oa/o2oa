@@ -24,8 +24,8 @@ class ActionListPrev extends BaseAction {
 
 		private static final long serialVersionUID = 2279846765261247910L;
 
-		static WrapCopier<Draft, Wo> copier = WrapCopierFactory.wo(Draft.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+		static WrapCopier<Draft, Wo> copier = WrapCopierFactory.wo(Draft.class, Wo.class,
+				JpaObject.singularAttributeField(Draft.class, true, true), null);
 
 		@FieldDescribe("排序号")
 		private Long rank;
