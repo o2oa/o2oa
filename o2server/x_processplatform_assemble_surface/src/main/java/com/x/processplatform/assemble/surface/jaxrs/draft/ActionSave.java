@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.draft;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -10,6 +11,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -54,14 +56,14 @@ class ActionSave extends BaseAction {
 			if (StringUtils.isEmpty(wi.getWork().getId())) {
 				draft = new Draft();
 				this.update(draft, wi, application, process, person, identity, unit);
-				emc.check(draft, CheckPersistType.all);
+				emc.persist(draft, CheckPersistType.all);
 			} else {
 				draft = emc.find(wi.getWork().getId(), Draft.class);
 				if (null == draft) {
 					throw new ExceptionEntityNotExist(wi.getWork().getId(), Draft.class);
 				}
 				this.update(draft, wi, application, process, person, identity, unit);
-				emc.persist(draft, CheckPersistType.all);
+				emc.check(draft, CheckPersistType.all);
 			}
 			emc.commit();
 			Wo wo = new Wo();
@@ -82,14 +84,26 @@ class ActionSave extends BaseAction {
 		draft.setPerson(person);
 		draft.setIdentity(identity);
 		draft.setUnit(unit);
-		draft.setTitle(wi.getWork().getTitle());
+		String title = wi.getWork().getTitle();
+		if (null != wi.getData()) {
+			Object value = wi.getData().getOrDefault("subject", null);
+			if (null != value) {
+				title = Objects.toString(value);
+			} else {
+				value = wi.getData().getOrDefault("title", null);
+				if (null != value) {
+					title = Objects.toString(value);
+				}
+			}
+		}
+		draft.setTitle(title);
 		draft.getProperties().setData(wi.getData());
 	}
 
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("数据")
-		private Data data;
+		private Data data = new Data();
 
 		@FieldDescribe("工作")
 		private Work work;
