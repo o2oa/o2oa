@@ -88,34 +88,16 @@ public class DraftAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@POST
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@JaxrsMethodDescribe(value = "创建草稿.", action = ActionCreate.class)
-	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			JsonElement jsonElement) {
-		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionCreate().execute(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@PUT
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("{id}")
-	@JaxrsMethodDescribe(value = "编辑草稿.", action = ActionEdit.class)
+	@JaxrsMethodDescribe(value = "保存草稿.", action = ActionSave.class)
 	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
+			JsonElement jsonElement) {
+		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
+			result = new ActionSave().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
