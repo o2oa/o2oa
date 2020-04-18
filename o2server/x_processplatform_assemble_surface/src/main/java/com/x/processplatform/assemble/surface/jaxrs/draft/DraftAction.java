@@ -92,7 +92,7 @@ public class DraftAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@JaxrsMethodDescribe(value = "保存草稿.", action = ActionSave.class)
-	public void edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
