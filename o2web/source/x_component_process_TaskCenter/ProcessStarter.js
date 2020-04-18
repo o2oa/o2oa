@@ -51,10 +51,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
                                 this.mask = new MWF.widget.Mask({"style": "desktop"});
                                 this.mask.loadNode(this.app.content);
                                 this.getWorkAction(function(){
-
-
-
                                     this.workAction.startWork(function(json){
+                                        debugger;
                                         this.mask.hide();
                                         //this.markNode.destroy();
                                         //this.areaNode.destroy();
