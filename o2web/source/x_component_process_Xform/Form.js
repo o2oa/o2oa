@@ -991,8 +991,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveWork: function (callback, silent ) {
+        debugger;
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
+
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
@@ -1000,11 +1002,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
             }.bind(this));
+
         } else {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             //if (failure) failure(null, "Permission Denied", "");
         }
     },
+
     getSectionList: function () {
         return Object.keys(this.sectionListObj).map(function (p) {
             var o = { "path": p };
@@ -1072,22 +1076,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveFormData: function (callback, failure, history, data, issubmit) {
+        if (this.businessData.activity && this.businessData.activity.id){
+            this.saveFormDataInstance(callback, failure, history, data, issubmit);
+        }else{
+            this.saveFormDataDraft(callback, failure, history, data, issubmit);
+        }
+    },
+    saveFormDataInstance: function(callback, failure, history, data, issubmit){
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
             });
         }
         var data = data || this.getData(issubmit);
-
-        //this.setProcessorSectionOrgList(data);
-        //
-        //var sectionList = this.getSectionList();
-        //var formData = {
-        //    "data": data,
-        //    "sectionList": sectionList
-        //};
-
-        debugger;
 
         this.modifedData = {};
         this.setModifedData(data);
@@ -1096,10 +1097,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         this.businessData.originalData = null;
         this.businessData.originalData = Object.clone(data);
-
-        //this.workAction.saveSectionData(callback, failure, this.businessData.work.id, formData);
     },
+    saveFormDataDraft:function(callback, failure, history, data, issubmit){
+        if (this.officeList) {
+            this.officeList.each(function (module) {
+                module.save(history);
+            });
+        }
+        var data = data || this.getData(issubmit);
+        var draft = {
+            "data": data,
+            "work": this.businessData.work,
+            "identity": this.businessData.work.creatorIdentity
+        }
+        this.workAction.saveDraft(draft, function(json){
+            this.workAction.getDraft(json.data.id, function(json){
+                this.businessData.work = json.data.work;
+                this.app.options.draftId = json.data.work.id;
+                this.app.options.desktopReload = true;
 
+                this.app.appId = "process.Work"+json.data.work.id,
+                delete layout.desktop.apps[this.app.options.appId];
+                layout.desktop.apps[this.app.appId] = this.app;
+
+                if (callback) callback();
+            }.bind(this));
+        }.bind(this), failure);
+        this.businessData.originalData = null;
+        this.businessData.originalData = Object.clone(data);
+    },
     setProcessorSectionOrgList: function (data) {
         if (!this.routeDataList) this.getRouteDataList();
         var routeList = this.routeDataList;
@@ -1131,7 +1157,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    this.fireEvent("afterClose");
         }
         if (!this.options.readonly) {
-            if (this.businessData.work){
+            if (this.businessData.work && this.businessData.work.id){
                 if (this.app.inBrowser && navigator.sendBeacon){
                     debugger;
                     var obj = this.workAction.action.actions["checkDraft"];

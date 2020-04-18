@@ -96,7 +96,22 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
     getJobDataByPath: function(id, path, success, failure, async){
         var p = path.replace(/\./g, "/");
         this.action.invoke({"name": "getJobDataByPath","async": async, "parameter": {"id": id, "path": p},	"success": success,	"failure": failure, "urlEncode":false});
+    },
+
+    startWork: function(par1, par2, par3, par4, async){
+        var process = par3, data = par4, success = par1, failure = par2;
+        if (o2.typeOf(par1)==="string"){
+            process = par1;
+            data = par2;
+            success = par3;
+            failure = par4;
+        }
+        this.getProcess(process, function(json){
+            if (json.data.defaultStartMode=="draft"){
+                this.draw(process, data, success, failure, async)
+            }else{
+                this.createtWork(process, data, success, failure, async)
+            }
+        }.bind(this), failure, async);
     }
-
-
 });
