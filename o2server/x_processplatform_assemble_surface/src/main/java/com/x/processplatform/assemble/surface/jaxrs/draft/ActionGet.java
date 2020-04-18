@@ -48,6 +48,8 @@ class ActionGet extends BaseAction {
 			wo.setData(draft.getProperties().getData());
 			Work work = this.mockWork(application, process, draft.getPerson(), draft.getIdentity(), draft.getUnit(),
 					draft.getTitle());
+//设置id值与workid相同.save可以判断
+			work.setId(draft.getId());
 			String form = this.findForm(business, process);
 			if (StringUtils.isEmpty(form)) {
 				throw new ExceptionNoneForm();

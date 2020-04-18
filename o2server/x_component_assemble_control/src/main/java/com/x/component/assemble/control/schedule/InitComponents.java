@@ -1,12 +1,12 @@
 package com.x.component.assemble.control.schedule;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -23,42 +23,58 @@ public class InitComponents extends AbstractJob {
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			emc.beginTransaction(Component.class);
-			this.init(emc);
-			emc.commit();
+		try {
+			this.init();
 		} catch (Exception e) {
 			logger.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
 
-	private void init(EntityManagerContainer emc) throws Exception {
-		List<String> names = ListTools.extractProperty(Config.components().getSystems(), "name", String.class, true,
-				true);
-		List<Component> os = emc.listEqual(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM);
-		for (Component o : os) {
-			names.remove(o.getName());
-		}
-		for (com.x.base.core.project.config.Components.Component o : Config.components().getSystems()) {
-			if (names.contains(o.getName())) {
-				Component component = new Component();
-				component.setName(o.getName());
-				component.setPath(o.getPath());
-				component.setTitle(o.getTitle());
-				component.setIconPath(o.getIconPath());
-				component.setOrder(o.getOrder());
-				component.setVisible(true);
-				emc.persist(component, CheckPersistType.all);
+	private void init() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			List<String> names = ListTools.extractProperty(Config.components().getSystems(), "name", String.class, true,
+					true);
+			List<Component> os = emc.listEqual(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM);
+			List<Component> removes = new ArrayList<>();
+			for (Component o : os) {
+				if (!names.contains(o.getName())) {
+					removes.add(o);
+				}
+			}
+			if (!removes.isEmpty()) {
+				emc.beginTransaction(Component.class);
+				for (Component o : removes) {
+					emc.remove(o, CheckRemoveType.all);
+				}
+				emc.commit();
+			}
+			for (Component o : os) {
+				names.remove(o.getName());
+			}
+			List<Component> adds = new ArrayList<>();
+			for (com.x.base.core.project.config.Components.Component o : Config.components().getSystems()) {
+				if (!names.contains(o.getName())) {
+					Component component = new Component();
+					component.setName(o.getName());
+					component.setPath(o.getPath());
+					component.setTitle(o.getTitle());
+					component.setIconPath(o.getIconPath());
+					component.setOrderNumber(o.getOrderNumber());
+					component.setVisible(true);
+					component.setType(Component.TYPE_SYSTEM);
+					adds.add(component);
+				}
+			}
+			if (!adds.isEmpty()) {
+				emc.beginTransaction(Component.class);
+				for (Component o : adds) {
+					emc.persist(o, CheckPersistType.all);
+				}
+				emc.commit();
 			}
 		}
-		Iterator<Component> iterator = os.iterator();
-		while (iterator.hasNext()) {
-			Component o = iterator.next();
-			if (!names.contains(o.getName())) {
-				iterator.remove();
-			}
-		}
+
 	}
 
 }

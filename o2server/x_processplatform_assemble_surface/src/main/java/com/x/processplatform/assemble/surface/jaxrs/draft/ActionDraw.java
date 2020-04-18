@@ -46,6 +46,8 @@ class ActionDraw extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, application);
 			}
 			Work work = this.mockWork(application, process, person, identity, unit, wi.getTitle());
+			//设置id值与workid相同.save可以判断
+			work.setId("");
 			String form = this.findForm(business, process);
 			if (StringUtils.isEmpty(form)) {
 				throw new ExceptionNoneForm();
