@@ -7,6 +7,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.config.Components;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -33,7 +34,7 @@ public class InitComponents extends AbstractJob {
 
 	private void init() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<String> names = ListTools.extractProperty(Config.components().getSystems(), "name", String.class, true,
+			List<String> names = ListTools.extractProperty(Config.components().getSystems(), Component.name_FIELDNAME, String.class, true,
 					true);
 			List<Component> os = emc.listEqual(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM);
 			List<Component> removes = new ArrayList<>();
@@ -53,7 +54,7 @@ public class InitComponents extends AbstractJob {
 				names.remove(o.getName());
 			}
 			List<Component> adds = new ArrayList<>();
-			for (com.x.base.core.project.config.Components.Component o : Config.components().getSystems()) {
+			for (Components.Component o : Config.components().getSystems()) {
 				if (!names.contains(o.getName())) {
 					Component component = new Component();
 					component.setName(o.getName());
