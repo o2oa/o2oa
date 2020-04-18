@@ -35,7 +35,8 @@ public class InitComponents extends AbstractJob {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<String> names = ListTools.extractProperty(Config.components().getSystems(), "name", String.class, true,
 					true);
-			List<Component> os = emc.listEqual(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM);
+			List<Component> os = emc.listEqualOrIn(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM,
+					Component.type_FIELDNAME, names);
 			List<Component> removes = new ArrayList<>();
 			for (Component o : os) {
 				if (!names.contains(o.getName())) {
