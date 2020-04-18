@@ -116,7 +116,7 @@
               "isBaseType": true
             },
             {
-              "name": "order",
+              "name": "orderNumber",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后",
@@ -254,7 +254,7 @@
               "isBaseType": true
             },
             {
-              "name": "order",
+              "name": "orderNumber",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后",
@@ -344,7 +344,7 @@
               "description": "是否是可见的应用."
             },
             {
-              "name": "order",
+              "name": "orderNumber",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后"
@@ -433,7 +433,7 @@
               "description": "是否是可见的应用."
             },
             {
-              "name": "order",
+              "name": "orderNumber",
               "type": "Integer",
               "isCollection": false,
               "description": "排序号,升序排列,为空在最后"
