@@ -87,11 +87,11 @@ public class Component extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean visible;
 
-	public static final String order_FIELDNAME = "order";
+	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号,升序排列,为空在最后")
-	@Column(name = ColumnNamePrefix + order_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + order_FIELDNAME)
-	private Integer order;
+	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + orderNumber_FIELDNAME)
+	private Integer orderNumber;
 
 	public static final String path_FIELDNAME = "path";
 	@FieldDescribe("应用路径.")
@@ -189,12 +189,20 @@ public class Component extends SliceJpaObject {
 		this.iconPath = iconPath;
 	}
 
-	public Integer getOrder() {
-		return order;
+	public String getType() {
+		return type;
 	}
 
-	public void setOrder(Integer order) {
-		this.order = order;
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 }

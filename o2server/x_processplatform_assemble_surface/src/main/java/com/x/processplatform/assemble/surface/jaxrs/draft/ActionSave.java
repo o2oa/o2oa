@@ -20,7 +20,9 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-class ActionCreate extends BaseAction {
+import org.apache.commons.lang3.StringUtils;
+
+class ActionSave extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -47,26 +49,41 @@ class ActionCreate extends BaseAction {
 			if (!business.process().startable(effectivePerson, identities, units, process)) {
 				throw new ExceptionAccessDenied(effectivePerson, process);
 			}
-			Draft draft = new Draft();
 			emc.beginTransaction(Draft.class);
-			draft.setApplication(application.getId());
-			draft.setApplicationAlias(application.getAlias());
-			draft.setApplicationName(application.getName());
-			draft.setProcess(process.getId());
-			draft.setProcessAlias(process.getAlias());
-			draft.setProcessName(process.getName());
-			draft.setPerson(person);
-			draft.setIdentity(identity);
-			draft.setUnit(unit);
-			draft.setTitle(wi.getWork().getTitle());
-			draft.getProperties().setData(wi.getData());
-			emc.persist(draft,CheckPersistType.all);
+			Draft draft = null;
+			if (StringUtils.isEmpty(wi.getWork().getId())) {
+				draft = new Draft();
+				this.update(draft, wi, application, process, person, identity, unit);
+				emc.check(draft, CheckPersistType.all);
+			} else {
+				draft = emc.find(wi.getWork().getId(), Draft.class);
+				if (null == draft) {
+					throw new ExceptionEntityNotExist(wi.getWork().getId(), Draft.class);
+				}
+				this.update(draft, wi, application, process, person, identity, unit);
+				emc.persist(draft, CheckPersistType.all);
+			}
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setId(draft.getId());
 			result.setData(wo);
 			return result;
 		}
+	}
+
+	private void update(Draft draft, Wi wi, Application application, Process process, String person, String identity,
+			String unit) {
+		draft.setApplication(application.getId());
+		draft.setApplicationAlias(application.getAlias());
+		draft.setApplicationName(application.getName());
+		draft.setProcess(process.getId());
+		draft.setProcessAlias(process.getAlias());
+		draft.setProcessName(process.getName());
+		draft.setPerson(person);
+		draft.setIdentity(identity);
+		draft.setUnit(unit);
+		draft.setTitle(wi.getWork().getTitle());
+		draft.getProperties().setData(wi.getData());
 	}
 
 	public static class Wi extends GsonPropertyObject {
@@ -103,7 +120,6 @@ class ActionCreate extends BaseAction {
 		public void setIdentity(String identity) {
 			this.identity = identity;
 		}
-
 	}
 
 	public static class Wo extends WoId {
