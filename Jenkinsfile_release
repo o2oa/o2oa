@@ -16,7 +16,7 @@ pipeline {
         }
         stage('dependency') {
             steps {
-                sh 'npm run preperation:linux'
+                sh 'npm run preperation:win'
             }
         }
         stage('build') {
@@ -36,15 +36,12 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                sh 'npm run deploy:linux'
-                sh 'chmod 777 -R target/o2server/jvm'
-                sh 'chmod 777 -R target/o2server/commons'
-                sh 'chmod 777 target/o2server/*.sh'
+                sh 'npm run deploy:win'
             }
         }
         stage('run') {
             steps {
-                sh 'JENKINS_NODE_COOKIE=dontKillMe nohup target/o2server/start_linux.sh > nohup.out &'
+                sh 'JENKINS_NODE_COOKIE=dontKillMe start /min target/o2server/start_windows.bat>>output.txt'
             }
         }
     }
