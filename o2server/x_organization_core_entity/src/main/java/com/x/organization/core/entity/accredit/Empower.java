@@ -111,6 +111,13 @@ public class Empower extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
+	public static final String edition_FIELDNAME = "edition";
+	@FieldDescribe("流程版本.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + edition_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + edition_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String edition;
+
 	public static final String process_FIELDNAME = "process";
 	@FieldDescribe("流程ID.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + process_FIELDNAME)
@@ -285,6 +292,14 @@ public class Empower extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
 	}
 
 }
