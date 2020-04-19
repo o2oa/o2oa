@@ -12,7 +12,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -30,6 +29,27 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class ProcessAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
+
+
+	@JaxrsMethodDescribe(value = "获取流程.", action = ActionGet.class)
+	@GET
+	@Path("{flag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("流程标识") @PathParam("flag") String flag) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+
 
 	@JaxrsMethodDescribe(value = "获取流程内容,附带所有的Activity信息", action = ActionGetComplex.class)
 	@GET
