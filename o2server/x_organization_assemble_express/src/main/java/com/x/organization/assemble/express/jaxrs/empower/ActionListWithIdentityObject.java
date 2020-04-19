@@ -14,8 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -23,10 +21,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -39,7 +35,7 @@ import com.x.organization.core.entity.accredit.Empower;
 import com.x.organization.core.entity.accredit.Empower_;
 import com.x.organization.core.entity.accredit.Filter;
 
-import net.sf.ehcache.Element;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionListWithIdentityObject extends BaseAction {
 
@@ -60,6 +56,9 @@ class ActionListWithIdentityObject extends BaseAction {
 
 		@FieldDescribe("应用")
 		private String application;
+
+		@FieldDescribe("流程版本")
+		private String edition;
 
 		@FieldDescribe("流程")
 		private String process;
@@ -102,6 +101,14 @@ class ActionListWithIdentityObject extends BaseAction {
 			this.work = work;
 		}
 
+		public String getEdition() {
+			return edition;
+		}
+
+		public void setEdition(String edition) {
+			this.edition = edition;
+		}
+
 	}
 
 	public static class Wo extends Empower {
@@ -131,25 +138,7 @@ class ActionListWithIdentityObject extends BaseAction {
 			List<Empower> list = map.get(str);
 
 			if (ListTools.isNotEmpty(list)) {
-				list.sort(new Comparator<Empower>() {
-					public int compare(Empower o1, Empower o2) {
-						if (StringUtils.equals(Empower.TYPE_FILTER, o1.getType())) {
-							return -1;
-						} else if (StringUtils.equals(Empower.TYPE_FILTER, o2.getType())) {
-							return 1;
-						} else if (StringUtils.equals(Empower.TYPE_PROCESS, o1.getType())) {
-							return -1;
-						} else if (StringUtils.equals(Empower.TYPE_PROCESS, o2.getType())) {
-							return 1;
-						} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o1.getType())) {
-							return -1;
-						} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o2.getType())) {
-							return 1;
-						} else {
-							return 0;
-						}
-					}
-				});
+				list.sort(new EmpowerComparator());
 				Empower empower = this.pick(business, list, wi.getWork());
 				if (null != empower) {
 					Wo wo = new Wo(str, str);
@@ -163,6 +152,7 @@ class ActionListWithIdentityObject extends BaseAction {
 
 	private Empower pick(Business business, List<Empower> list, String work) throws Exception {
 		for (Empower empower : list) {
+
 			if (StringUtils.equals(Empower.TYPE_FILTER, empower.getType())
 					&& StringUtils.isNotEmpty(empower.getFilterListData())) {
 				List<Filter> filters = gson.fromJson(empower.getFilterListData(), Filter.LISTTYPE);
@@ -171,12 +161,8 @@ class ActionListWithIdentityObject extends BaseAction {
 						x_processplatform_assemble_surface.class, Applications.joinQueryUri("data", "work", work) + "/"
 								+ StringUtils.replace(filter.path, ".", "/"));
 				if (null != response.getData()) {
-					switch (Objects.toString(filter.formatType, "")) {
-					default:
-						if (StringUtils.equals(filter.value, response.getData().getAsString())) {
-							return empower;
-						}
-						break;
+					if (StringUtils.equals(filter.value, response.getData().getAsString())) {
+						return empower;
 					}
 				} else {
 					return empower;
@@ -184,6 +170,26 @@ class ActionListWithIdentityObject extends BaseAction {
 			}
 		}
 		return list.get(0);
+	}
+
+	private class EmpowerComparator implements Comparator<Empower> {
+		public int compare(Empower o1, Empower o2) {
+			if (StringUtils.equals(Empower.TYPE_FILTER, o1.getType())) {
+				return -1;
+			} else if (StringUtils.equals(Empower.TYPE_FILTER, o2.getType())) {
+				return 1;
+			} else if (StringUtils.equals(Empower.TYPE_PROCESS, o1.getType())) {
+				return -1;
+			} else if (StringUtils.equals(Empower.TYPE_PROCESS, o2.getType())) {
+				return 1;
+			} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o1.getType())) {
+				return -1;
+			} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o2.getType())) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
 	}
 
 	private List<Empower> list(Business business, Wi wi) throws Exception {
@@ -198,18 +204,19 @@ class ActionListWithIdentityObject extends BaseAction {
 		Predicate p = cb.or(cb.equal(root.get(Empower_.type), Empower.TYPE_ALL),
 				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_APPLICATION),
 						cb.equal(root.get(Empower_.application), wi.getApplication())),
-				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS),
-						cb.equal(root.get(Empower_.process), wi.getProcess())),
-				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER),
-						cb.equal(root.get(Empower_.process), wi.getProcess())));
+				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS), cb.or(
+						cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
+								cb.equal(root.get(Empower_.edition), wi.getEdition())),
+						cb.equal(root.get(Empower_.process), wi.getProcess()))),
+				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER), cb.or(
+						cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
+								cb.equal(root.get(Empower_.edition), wi.getEdition())),
+						cb.equal(root.get(Empower_.process), wi.getProcess()))));
 		p = cb.and(p, root.get(Empower_.fromIdentity).in(names));
-		// p = cb.and(p, cb.isMember(root.get(Empower_.fromIdentity),
-		// cb.literal(names)));
 		p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
 		p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
 				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
 		return em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-
 	}
 
 }
