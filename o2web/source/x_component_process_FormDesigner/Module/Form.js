@@ -85,7 +85,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selected();
     },
 	load : function(data){
-		debugger;
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
