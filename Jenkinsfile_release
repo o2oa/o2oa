@@ -4,44 +4,43 @@ pipeline {
         stage('Stop Server') {
             steps {
                 catchError(buildResult: 'SUCCESS') {
-                    sh 'target/o2server/stop_windows.sh'
+                    bat 'target/o2server/stop_windows.sh'
                 }
             }
         }
         stage('init') {
             steps {
-                sh 'npm install'
-                sh 'npm run clear'
+                bat 'npm install'
+                bat 'npm run clear'
             }
         }
         stage('dependency') {
             steps {
-                sh 'npm run preperation:win'
+                bat 'npm run preperation:win'
             }
         }
         stage('build') {
             parallel {
                 stage('build server') {
                     steps {
-                        sh 'id'
-                        sh 'npm run build_server'
+                        bat 'npm run build_server'
                     }
                 }
                 stage('build web') {
                     steps {
-                        sh 'npm run build_web'
+                        bat 'npm run build_web'
                     }
                 }
             }
         }
         stage('deploy') {
             steps {
-                sh 'npm run deploy:win'
+                bat 'npm run deploy:win'
             }
         }
         stage('run') {
             steps {
-                sh 'JENKINS_NODE_COOKIE=dontKillMe start /min target/o2server/start_windows.bat>>output.txt'
+                bat 'JENKINS_NODE_COOKIE=dontKillMe start /min target/o2server/start_windows.bat>>output.txt'
             }
         }
     }
