@@ -4,7 +4,7 @@ pipeline {
         stage('Stop Server') {
             steps {
                 catchError(buildResult: 'SUCCESS') {
-                    sh 'target/o2server/stop_linux.sh'
+                    sh 'target/o2server/stop_windows.sh'
                 }
             }
         }
