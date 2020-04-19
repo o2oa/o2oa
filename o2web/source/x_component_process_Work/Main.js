@@ -11,6 +11,8 @@ MWF.xApplication.process.Work.Main = new Class({
 		"height": "800",
 		"title": MWF.xApplication.process.Work.LP.title,
         "workId": "",
+        "draftId": "",
+        "draft": null,
         "workCompletedId": "",
         "taskId": "",
         "jobId": "",
@@ -22,12 +24,14 @@ MWF.xApplication.process.Work.Main = new Class({
         "worklogType": "record" //record, worklog
 	},
 	onQueryLoad: function(){
+	    debugger;
 		this.lp = MWF.xApplication.process.Work.LP;
         if (!this.status) {
         } else {
             this.options.workId = this.status.workId;
             this.options.workCompletedId = this.status.workCompletedId;
             this.options.jobId = this.status.jobId;
+            this.options.draftId = this.status.draftId;
             this.options.priorityWork = this.status.priorityWork;
             this.options.readonly = (this.status.readonly === "true");
         }
@@ -108,7 +112,6 @@ MWF.xApplication.process.Work.Main = new Class({
         }
     },
     loadWork: function(){
-        // var method = "";
         var id = this.options.workCompletedId || this.options.workId || this.options.workid || this.options.workcompletedid;
         // var methods = {
         //     "loadWork": false,
@@ -116,36 +119,32 @@ MWF.xApplication.process.Work.Main = new Class({
         //     "getForm": false
         // };
         if (id){
-
-            // o2.Actions.invokeAsync2([
-            //     {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm", "par": [id], "cache": true},
-            //     {"action": this.action, "name": "loadWork", "par": [id]},
-            //     {"action": this.action, "name": "getWorkControl", "par": [id]},
-            //     {"action": this.action, "name": "getWorkLog", "par": [id]},
-            //     {"action": this.action, "name": "listAttachments", "par": [id]}
-            // ], {
-            //     "success": function(json_form, json_work, json_control, json_log, json_att){
-            //         if (json_work && json_control && json_form && json_log && json_att){
-            //             this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_att.data);
-            //
-            //             //if (layout.mobile) this.loadMobileActions();
-            //             this.openWork();
-            //         } else{
-            //             this.close();
-            //         }
-            //     }.bind(this), "failure": function(){}
-            // });
-            //var getWorkLogMothed = "getWorkLog";    //以前使用worklog，现在改成record了
-            var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
-            if (this.options.form && this.options.form.id && this.options.form.app){
-                o2.Actions.invokeAsync([
-                    {"action": this.action, "name": "getForm"},
-                    {"action": this.action, "name": "loadWork"},
-                    {"action": this.action, "name": "getWorkControl"},
-                    {"action": this.action, "name": "getWorkLog"},
-                    {"action": this.action, "name": "getRecordLog"},
-                    {"action": this.action, "name": "listAttachments"}
-                ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
+            this.loadWorkByWork(id);
+           // }.bind(this), "failure": function(){}}, [id, true, true, true], id);
+        }else if (this.options.draftId || this.options.draftid){
+            var draftId = this.options.draftId || this.options.draftid;
+            MWF.Actions.get("x_processplatform_assemble_surface").getDraft(draftId, function(json){
+                this.loadWorkByDraft(json.data.work, json.data.data);
+            }.bind(this));
+        }else if (this.options.draft){
+            this.loadWorkByDraft(this.options.draft);
+        }else if (this.options.jobId || this.options.jobid || this.options.job){
+            var jobId = this.options.jobId || this.options.jobid || this.options.job;
+            this.loadWorkByJob(jobId);
+        }
+    },
+    loadWorkByWork: function(id){
+        //var getWorkLogMothed = "getWorkLog";    //以前使用worklog，现在改成record了
+        var getWorkLogMothed = (this.options.worklogType.toLowerCase()==="worklog") ? "getWorkLog" : "getRecordLog";
+        if (this.options.form && this.options.form.id && this.options.form.app){
+            o2.Actions.invokeAsync([
+                {"action": this.action, "name": "getForm"},
+                {"action": this.action, "name": "loadWork"},
+                {"action": this.action, "name": "getWorkControl"},
+                {"action": this.action, "name": "getWorkLog"},
+                {"action": this.action, "name": "getRecordLog"},
+                {"action": this.action, "name": "listAttachments"}
+            ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
                     if (json_work && json_control && json_form && json_log && json_att){
                         this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
                         if (this.mask) this.mask.hide();
@@ -164,15 +163,15 @@ MWF.xApplication.process.Work.Main = new Class({
                         }
                     }
                 }.bind(this), "failure": function(){}}, [this.options.form.id, this.options.form.app], id);
-            }else{
-                o2.Actions.invokeAsync([
-                    {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
-                    {"action": this.action, "name": "loadWork"},
-                    {"action": this.action, "name": "getWorkControl"},
-                    {"action": this.action, "name": "getWorkLog"},
-                    {"action": this.action, "name": "getRecordLog"},
-                    {"action": this.action, "name": "listAttachments"}
-                ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
+        }else{
+            o2.Actions.invokeAsync([
+                {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
+                {"action": this.action, "name": "loadWork"},
+                {"action": this.action, "name": "getWorkControl"},
+                {"action": this.action, "name": "getWorkLog"},
+                {"action": this.action, "name": "getRecordLog"},
+                {"action": this.action, "name": "listAttachments"}
+            ], {"success": function(json_form, json_work, json_control, json_log, json_record, json_att){
                     if (json_work && json_control && json_form && json_log && json_att){
                         this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
                         if (this.mask) this.mask.hide();
@@ -191,42 +190,69 @@ MWF.xApplication.process.Work.Main = new Class({
                         }
                     }
                 }.bind(this), "failure": function(){}}, id);
-            }
-           // }.bind(this), "failure": function(){}}, [id, true, true, true], id);
-        }else if (this.options.jobId || this.options.jobid || this.options.job){
-            var jobId = this.options.jobId || this.options.jobid || this.options.job;
-            MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(jobId, function(json){
-                var workCompletedCount = json.data.workCompletedList.length;
-                var workCount = json.data.workList.length;
-                var count = workCount+workCompletedCount;
-                if (count===1){
-                    this.options.workId = (json.data.workList.length) ? json.data.workList[0].id : json.data.workCompletedList[0].id;
-                    this.loadWork();
-                }else if (count>1){
-                    var id = this.filterId(json.data.workList, json.data.workCompletedList, this.options.priorityWork);
-                    if (id) {
-                        this.options.workId = id;
-                        this.loadWork();
-                    }else{
-                        var worksAreaNode = this.createWorksArea();
-                        // for (var x=0;x<3;x++){
-                        json.data.workList.each(function(work){
-                            this.createWorkNode(work, worksAreaNode);
-                        }.bind(this));
-                        json.data.workCompletedList.each(function(work){
-                            this.createWorkCompletedNode(work, worksAreaNode);
-                        }.bind(this));
-                        // }
-                        if (this.mask) this.mask.hide();
-                        this.formNode.setStyles(this.css.formNode_bg);
-
-                    }
-                }else{
-
-                }
-            }.bind(this));
         }
     },
+    loadWorkByJob: function(jobId){
+        MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(jobId, function(json){
+            var workCompletedCount = json.data.workCompletedList.length;
+            var workCount = json.data.workList.length;
+            var count = workCount+workCompletedCount;
+            if (count===1){
+                this.options.workId = (json.data.workList.length) ? json.data.workList[0].id : json.data.workCompletedList[0].id;
+                this.loadWork();
+            }else if (count>1){
+                var id = this.filterId(json.data.workList, json.data.workCompletedList, this.options.priorityWork);
+                if (id) {
+                    this.options.workId = id;
+                    this.loadWork();
+                }else{
+                    var worksAreaNode = this.createWorksArea();
+                    // for (var x=0;x<3;x++){
+                    json.data.workList.each(function(work){
+                        this.createWorkNode(work, worksAreaNode);
+                    }.bind(this));
+                    json.data.workCompletedList.each(function(work){
+                        this.createWorkCompletedNode(work, worksAreaNode);
+                    }.bind(this));
+                    // }
+                    if (this.mask) this.mask.hide();
+                    this.formNode.setStyles(this.css.formNode_bg);
+
+                }
+            }else{
+
+            }
+        }.bind(this));
+    },
+    loadWorkByDraft: function(work, data){
+	    debugger;
+        o2.Actions.invokeAsync([
+            {"action": this.action, "name": (layout.mobile) ? "getFormMobile": "getForm"}
+        ], {"success": function(json_form){
+            if (json_form){
+                var workData = {
+                    "activity": {},
+                    "data": data || {},
+                    "taskList": [],
+                    "work": work
+                };
+                var control = {
+                    "allowVisit": true,
+                    "allowProcessing": true,
+                    "allowSave": true,
+                    "allowDelete": true
+                };
+
+                this.parseData(workData, control, json_form.data, [], [], []);
+                if (this.mask) this.mask.hide();
+                //if (layout.mobile) this.loadMobileActions();
+                this.openWork();
+                this.unLoading();
+
+            }
+        }.bind(this), "failure": function(){}}, [work.form, work.application]);
+    },
+
     createWorkNode: function(work, node, completed){
 	    var contentNode = node.getLast();
 	    var workNode = new Element("div", {"styles": this.css.workItemNode}).inject(contentNode);
@@ -323,9 +349,11 @@ MWF.xApplication.process.Work.Main = new Class({
         //this.inheritedAttachmentList = data.inheritedAttachmentList;
 
         this.control = controlData;
-        this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
-        delete formData.data;
-        this.formInfor = formData;
+        if (formData){
+            this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+            delete formData.data;
+            this.formInfor = formData;
+        }
     },
 
     // loadWork2: function(){
@@ -540,7 +568,7 @@ MWF.xApplication.process.Work.Main = new Class({
 
     recordStatus: function(){
 	    debugger;
-        return {"workId": this.options.workId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
+        return {"workId": this.options.workId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
     },
     onPostClose: function(){
         if (this.appForm){
