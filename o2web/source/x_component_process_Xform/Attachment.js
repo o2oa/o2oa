@@ -1031,8 +1031,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
 
     _loadUserInterface: function () {
         this.node.empty();
-        this.loadAttachmentController();
-        this.fireEvent("load");
+        if (this.form.businessData.activity && this.form.businessData.activity.id){
+            this.loadAttachmentController();
+            this.fireEvent("load");
+        }
     },
     loadAttachmentController: function () {
         //MWF.require("MWF.widget.AttachmentController", function() {
@@ -1103,7 +1105,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
 
     },
     getData: function () {
-        return this.attachmentController.getAttachmentNames();
+        return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
     createUploadFileNode: function () {
         var accept = "*";

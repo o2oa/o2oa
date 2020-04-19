@@ -820,6 +820,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
     }
 });
 o2.DL.open = function(options){
+    debugger;
     if (!options) options = {};
     if (!options.style) options.style = "user";
     //if (!options.transition) options.transition = Fx.Transitions.Back.easeOut;
@@ -827,14 +828,14 @@ o2.DL.open = function(options){
     if (options.isClose!==false) options.isClose = true;
 
     var size;
-    if (!options.width && !options.contentWidth){
+    if ((!options.width || options.width=="auto") && !options.contentWidth){
         if (options.content){
             options.content.show();
             size = options.content.getComputedSize();
             options.contentWidth = size.totalWidth.toFloat();
         }
     }
-    if (!options.height && !options.contentHeight){
+    if ((!options.height || options.height=="auto") && !options.contentHeight){
         if (options.content){
             if (!size){
                 options.content.show();
