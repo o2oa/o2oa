@@ -18,13 +18,13 @@ public class EmpowerFactory {
 	/** 根据应用和流程获取指定身份是否有委托 */
 	public List<Empower> listWithIdentityObject(String application, String edition, String process, String work,
 			String value) throws Exception {
-		return ActionListWithIdentityObject.execute(context, application, process, work, Arrays.asList(value));
+		return ActionListWithIdentityObject.execute(context, application, edition, process, work, Arrays.asList(value));
 	}
 
 	/** 根据应用和流程获取指定身份是否有委托 */
 	public List<Empower> listWithIdentityObject(String application, String edition, String process, String work,
 			Collection<String> values) throws Exception {
-		return ActionListWithIdentityObject.execute(context, application, process, work, values);
+		return ActionListWithIdentityObject.execute(context, application, edition, process, work, values);
 	}
 
 }
