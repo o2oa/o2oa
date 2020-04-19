@@ -1065,12 +1065,12 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
         this.app.desktop.openApplication(null, "process.Work", options);
 
-        var msg = {
-            "subject": this.app.lp.processStarted,
-            "content": "<div>"+this.app.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"
-        };
-        var tooltip = layout.desktop.message.addTooltip(msg);
-        var item = layout.desktop.message.addMessage(msg);
+        // var msg = {
+        //     "subject": this.app.lp.processStarted,
+        //     "content": "<div>"+this.app.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"
+        // };
+        // var tooltip = layout.desktop.message.addTooltip(msg);
+        // var item = layout.desktop.message.addMessage(msg);
     },
     startProcessInstance: function(data, title, processName){
         var workInfors = [];
