@@ -12,7 +12,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 
-class ActionGetWithApplication extends BaseAction {
+class ActionGetWithApplicationMobile extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String applicationFlag, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -25,7 +25,7 @@ class ActionGetWithApplication extends BaseAction {
 			Form form = business.form().pick(application, flag);
 			//Wo wo = Wo.copier.copy(form);
 			Wo wo = new Wo();
-			wo.setData(form.getDataOrMobileData());
+			wo.setData(form.getMobileDataOrData());
 			result.setData(wo);
 			return result;
 		}
