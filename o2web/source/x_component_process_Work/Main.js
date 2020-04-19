@@ -240,7 +240,7 @@ MWF.xApplication.process.Work.Main = new Class({
                     "allowVisit": true,
                     "allowProcessing": true,
                     "allowSave": true,
-                    "allowDelete": false
+                    "allowDelete": true
                 };
 
                 this.parseData(workData, control, json_form.data, [], [], []);
@@ -349,9 +349,11 @@ MWF.xApplication.process.Work.Main = new Class({
         //this.inheritedAttachmentList = data.inheritedAttachmentList;
 
         this.control = controlData;
-        this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
-        delete formData.data;
-        this.formInfor = formData;
+        if (formData){
+            this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+            delete formData.data;
+            this.formInfor = formData;
+        }
     },
 
     // loadWork2: function(){

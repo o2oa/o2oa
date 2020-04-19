@@ -113,8 +113,8 @@
   "listDraftPrev": {"uri": "/jaxrs/draft/list/{id}/prev/{count}"},
   "listDraftPage": {"uri": "/jaxrs/draft/list/my/paging/{page}/size/{size}", "method": "POST"},
   "listDraftApplication": {"uri": "/jaxrs/draft/list/count/application"},
-
-
+  "startDraft": {"uri": "/jaxrs/draft/{id}/start"},
+  "deleteDraftWork": {"uri":  "/jaxrs/draft/{id}", "method": "DELETE"},
 
   "getTask": {"uri": "/jaxrs/task/{id}"},
   "saveTask": {"uri": "/jaxrs/task/{id}", "method": "POST"},

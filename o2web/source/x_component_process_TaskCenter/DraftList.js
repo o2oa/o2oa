@@ -23,7 +23,7 @@ MWF.xApplication.process.TaskCenter.DraftList = new Class({
         this.initData();
         this.filterData = null;
         if (this.applicationFilterAreaNode) this.applicationFilterAreaNode.empty();
-        //this.createAppFilterNodes();
+        this.createAppFilterNodes();
         this.listAreaNode.empty();
         this.resetListAreaHeight();
         this.app.getWorkCounts();
