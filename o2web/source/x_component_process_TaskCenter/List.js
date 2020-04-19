@@ -50,7 +50,7 @@ MWF.xApplication.process.TaskCenter.List = new Class({
         this.mask.loadNode(this.app.content);
         this.initData();
         this.filterData = null;
-        this.applicationFilterAreaNode.empty();
+        if (this.applicationFilterAreaNode) this.applicationFilterAreaNode.empty();
         this.createAppFilterNodes();
         this.listAreaNode.empty();
         this.resetListAreaHeight();
@@ -435,8 +435,11 @@ MWF.xApplication.process.TaskCenter.List = new Class({
         this.contentNode.setStyle("width", ""+contentSize.x+"px");
 
         var size = this.contentNode.getSize();
-        var barSize = this.actionBarNode.getSize();
-        var y = size.y - barSize.y;
+        var y = size.y;
+        if (this.actionBarNode){
+            var barSize = this.actionBarNode.getSize();
+            y = size.y - barSize.y;
+        }
 
         this.listScrollAreaNode.setStyle("height", ""+y+"px");
         if (this.listAreaNode){
@@ -467,8 +470,13 @@ MWF.xApplication.process.TaskCenter.List = new Class({
         this.contentNode.setStyle("width", ""+contentSize.x+"px");
 
         var size = this.contentNode.getSize();
-        var barSize = this.actionBarNode.getSize();
-        var y = size.y - barSize.y;
+        var y = size.y;
+        if (this.actionBarNode){
+            var barSize = this.actionBarNode.getSize();
+            y = size.y - barSize.y;
+        }
+        // var barSize = this.actionBarNode.getSize();
+        // var y = size.y - barSize.y;
 
         this.listScrollAreaNode.setStyle("height", ""+y+"px");
 

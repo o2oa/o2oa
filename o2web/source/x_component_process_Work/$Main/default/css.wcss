@@ -32,6 +32,8 @@
     },
     "processNode_Area": {
         "height": "300px",
+        "width": "700px",
+        "padding": "10px",
         "background-color": "#FFF",
         "overflow": "hidden"
     },

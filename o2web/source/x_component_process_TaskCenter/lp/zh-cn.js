@@ -16,6 +16,7 @@ MWF.xApplication.process.TaskCenter.LP = {
     "startProcess": "可启动流程",
     "back": "返回",
     "unnamed": "无标题",
+    "draftTab": "草稿",
 
 
     "list_title": "标题",

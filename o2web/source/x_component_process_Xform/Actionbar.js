@@ -123,11 +123,23 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
             var hideFlag = this.form.Macro.exec(tool.condition, this);
             flag = flag && (!hideFlag);
         }
-        if (tool.id == "action_processWork"){
-            if (!this.form.businessData.task){
+        // if (tool.id == "action_processWork"){
+        //     if (!this.form.businessData.task){
+        //         flag = false;
+        //     }
+        // }
+        if (tool.id == "action_downloadAll" || tool.id == "action_print"){
+            if (!this.form.businessData.activity || !this.form.businessData.activity.id){
                 flag = false;
             }
         }
+        if (tool.id == "action_delete"){
+            if (!this.form.businessData.work || !this.form.businessData.work.id){
+                flag = false;
+            }
+        }
+
+
         if (tool.id == "action_rollback") tool.read = true;
         if (readonly) if (!tool.read) flag = false;
         if (flag){
