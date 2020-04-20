@@ -31,6 +31,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
 import com.x.processplatform.service.processing.ApplicationDictHelper;
@@ -104,8 +105,9 @@ class ActionAppend extends BaseAction {
 							}
 						}
 					}
+					Process process = business.element().get(task.getProcess(), Process.class);
 					identities = business.organization().identity().list(ListTools.trim(identities, true, true));
-					TaskIdentities taskIdentities = empower(business, task, identities);
+					TaskIdentities taskIdentities = empower(business,process, task, identities);
 					identities = taskIdentities.identities();
 					if (ListTools.isNotEmpty(identities)) {
 						List<TaskCompleted> os = emc.listEqualAndInAndNotEqual(TaskCompleted.class,
@@ -160,10 +162,10 @@ class ActionAppend extends BaseAction {
 		return scriptContext;
 	}
 
-	private TaskIdentities empower(Business business, Task task, List<String> identities) throws Exception {
+	private TaskIdentities empower(Business business,Process process, Task task, List<String> identities) throws Exception {
 		TaskIdentities taskIdentities = new TaskIdentities();
 		taskIdentities.addIdentities(identities);
-		taskIdentities.empower(business.organization().empower().listWithIdentityObject(task.getApplication(),
+		taskIdentities.empower(business.organization().empower().listWithIdentityObject(task.getApplication(),process.getEdition(),
 				task.getProcess(), task.getWork(), identities));
 		return taskIdentities;
 	}
