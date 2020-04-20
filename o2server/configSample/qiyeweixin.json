@@ -13,6 +13,9 @@
   "messageRedirectPortal": "",
   "messageEnable": false,
   "scanLoginEnable": false,
+  "attendanceSyncEnable": false,
+  "attendanceSyncAgentId": "",
+  "attendanceSyncSecret": "",
   "###enable": "是否启用.###",
   "###syncCron": "拉入同步cron,默认每10分钟同步一次.###",
   "###forceSyncCron": "强制拉入同步cron,默认在每天的8点和12点强制进行同步.###",
@@ -26,5 +29,8 @@
   "###workUrl": "企业微信消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/###",
   "###messageRedirectPortal": "企业微信消息处理完成后跳转到特定的门户页面的Id###",
   "###messageEnable": "推送消息到企业微信###",
-  "###scanLoginEnable": "企业微信扫码登录###"
+  "###scanLoginEnable": "企业微信扫码登录###",
+  "###attendanceSyncEnable": "是否启用考勤信息###",
+  "###attendanceSyncAgentId": "企业微信考勤打卡应用id###",
+  "###attendanceSyncSecret": "企业微信考勤打卡应用secret###"
 }
