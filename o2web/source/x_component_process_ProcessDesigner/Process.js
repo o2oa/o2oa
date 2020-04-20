@@ -551,7 +551,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 				"content": node,
 				"title": this.designer.lp.upgradeConfirm,
 				"offset": {"y": -100},
-				"height": 330,
+				"height": 340,
+				"width": 580,
 				"buttonList": [{
 					"type": "ok",
 					"text": this.designer.lp.ok,
