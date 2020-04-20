@@ -23,7 +23,9 @@ MWF.xApplication.Homepage.TaskContent = new Class({
         }.bind(this));
     },
     startProcess: function(){
-        o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", function(){
+        // o2.requireApp("process.TaskCenter", "lp."+o2.language, null, false);
+        // o2.requireApp("process.TaskCenter", "", null, false);
+         o2.requireApp([["process.TaskCenter", "lp."+o2.language], ["process.TaskCenter", ""]],"", function(){
             var obj = {
                 "lp": MWF.xApplication.process.TaskCenter.LP,
                 "content": this.app.content,
@@ -52,7 +54,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
                 }.bind(this)
             });
             this.processStarter.load();
-        }.bind(this));
+         }.bind(this), true, true);
     },
     initSize: function(){
         this.setContentSize();
