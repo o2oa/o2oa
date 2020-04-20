@@ -387,6 +387,13 @@
               "isBaseType": true
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本.",
+              "isBaseType": true
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -580,6 +587,13 @@
               "isBaseType": true
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本.",
+              "isBaseType": true
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -744,6 +758,12 @@
               "description": "应用别名."
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -886,6 +906,12 @@
               "description": "应用别名."
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -1022,6 +1048,12 @@
               "description": "应用别名."
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -1139,6 +1171,12 @@
               "type": "String",
               "isCollection": false,
               "description": "应用别名."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
             },
             {
               "name": "process",
@@ -1278,6 +1316,12 @@
               "description": "应用别名."
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -1415,6 +1459,12 @@
               "description": "应用别名."
             },
             {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
+            },
+            {
               "name": "process",
               "type": "String",
               "isCollection": false,
@@ -1550,6 +1600,12 @@
               "type": "String",
               "isCollection": false,
               "description": "应用别名."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
             },
             {
               "name": "process",
@@ -1693,6 +1749,12 @@
               "type": "String",
               "isCollection": false,
               "description": "应用别名."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
             },
             {
               "name": "process",
@@ -1863,6 +1925,12 @@
               "type": "String",
               "isCollection": false,
               "description": "应用别名."
+            },
+            {
+              "name": "edition",
+              "type": "String",
+              "isCollection": false,
+              "description": "流程版本."
             },
             {
               "name": "process",
