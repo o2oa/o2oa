@@ -10,7 +10,6 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -113,11 +112,30 @@ public class FormAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getWithApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
-			@JaxrsParameterDescribe("表单标识") @PathParam("applicationFlag") String applicationFlag) {
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<ActionGetWithApplication.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetWithApplication().execute(effectivePerson, applicationFlag, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据标识和应用标识获取移动端表单.", action = ActionGetWithApplicationMobile.class)
+	@GET
+	@Path("{flag}/application/{applicationFlag}/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getWithApplicationMobile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("表单标识") @PathParam("flag") String flag,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<ActionGetWithApplicationMobile.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetWithApplicationMobile().execute(effectivePerson, applicationFlag, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
