@@ -167,6 +167,11 @@
     "text": "流程记录",
     "className": "Log"
   },
+  "readLog": {
+    "icon": "readLog.png",
+    "text": "阅读记录",
+    "className": "ReadLog"
+  },
   "monitor": {
     "icon": "monitor.png",
     "text": "流程监控",

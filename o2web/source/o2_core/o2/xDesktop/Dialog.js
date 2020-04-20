@@ -120,7 +120,6 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 }
             }).inject(this.button);
         }
-        debugger;
         if (this.options.buttonList){
             this.options.buttonList.each(function(bt){
                 var styles = this.css.button;
@@ -143,7 +142,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                     "value": bt.text,
                     "title": bt.title,
                     "styles": styles,
-                    "class": "mainColor_bg",
+                    "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
                     "events": {
                         "click": function(e){bt.action.call(this, this, e)}.bind(this)
                     }
@@ -224,19 +223,6 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             }
         }
 
-        //this.options.top = 0;
-        //this.options.left = 0;
-        //this.options.fromTop = 0;
-        //this.options.fromLeft = 0;
-        //this.options.contentHeight = 0;
-        //this.options.contentWidth = 0;
-        //this.options.maxHeightPercent = null;
-        //this.options.maxHeight = null;
-        //this.options.maxWidth = null;
-
-        //this.height = null;
-        //this.width = null;
-
         var container = $(document.body);
         if (layout.desktop.currentApp){
             container = layout.desktop.currentApp.content;
@@ -263,27 +249,6 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         this.fireEvent("max");
     },
     restoreSize : function(){
-        //if( this.oldCoordinate){
-        //    this.options.height = this.oldCoordinate.height;
-        //    this.options.width = this.oldCoordinate.width;
-        //    this.options.top = this.oldCoordinate.top;
-        //    this.options.left = this.oldCoordinate.left;
-        //    this.options.fromTop = this.oldCoordinate.fromTop;
-        //    this.options.fromLeft = this.oldCoordinate.fromLeft;
-        //    this.options.contentHeight = this.oldCoordinate.contentHeight;
-        //    this.options.contentWidth = this.oldCoordinate.contentWidth;
-        //    this.options.maxHeightPercent = this.oldCoordinate.maxHeightPercent;
-        //    this.options.maxHeight = this.oldCoordinate.maxHeight;
-        //    this.options.maxWidth = this.oldCoordinate.maxWidth;
-        //}
-        //
-        //if( this.oldSize ){
-        //    this.width = this.oldSize.width;
-        //    this.height = this.oldSize.height;
-        //}
-
-        //this.setContentSize( this.oldNodeSize.height, this.oldNodeSize.width );
-        //this.node.setStyles( this.getNodeSize() );
 
         this.contentHeight = this.oldContentSize.height;
         this.contentWidth = this.oldContentSize.width;
