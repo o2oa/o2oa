@@ -35,9 +35,9 @@
     },
     "contentGroupTd": {
       "padding": "5px 5px",
-      "border-bottom": "1px solid #CCC",
+      "border-bottom": "1px solid #fd1113",
       "font-weight": "bold",
-      "background-color": "#F6F6F6",
+      "background-color": "#ffffff",
       "cursor": "pointer"
     },
     "groupCollapseNode": {
