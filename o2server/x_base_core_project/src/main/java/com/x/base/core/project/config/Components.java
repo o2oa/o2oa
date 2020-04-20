@@ -55,7 +55,7 @@ public class Components extends ConfigObject {
 			case NAME_ORG:
 				return new Component(NAME_ORG, NAME_ORG, "组织管理", APPICON_PNG, 2, Component.TYPE_SYSTEM);
 			case NAME_CMSMANAGER:
-				return new Component(NAME_CMSMANAGER, "cms.column", "内容管理平台", APPICON_PNG, 3, Component.TYPE_SYSTEM);
+				return new Component(NAME_CMSMANAGER, "cms.Column", "内容管理平台", APPICON_PNG, 3, Component.TYPE_SYSTEM);
 			case NAME_APPLICATIONEXPLORER:
 				return new Component(NAME_APPLICATIONEXPLORER, "process.ApplicationExplorer", "流程管理平台", APPICON_PNG, 4,
 						Component.TYPE_SYSTEM);
