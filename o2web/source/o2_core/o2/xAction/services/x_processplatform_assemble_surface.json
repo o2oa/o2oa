@@ -60,8 +60,6 @@
 
   "checkDraft": {"uri": "/jaxrs/work/{id}/close/check", "method": "GET"},
 
-
-
   "removeTask": {"uri": "/jaxrs/task/{id}/manage", "method": "DELETE"},
   "removeDone": {"uri": "/jaxrs/taskcompleted/{id}/manage", "method": "DELETE"},
   "removeRead": {"uri": "/jaxrs/read/{id}/manage", "method": "DELETE"},
@@ -106,6 +104,17 @@
   "startWork": {"uri": "/jaxrs/work/process/{processId}", "method": "POST"},
   "processWork": {"uri": "/jaxrs/work/{id}/processing", "method": "PUT"},
 
+  "createtWork": {"uri": "/jaxrs/work/process/{processId}", "method": "POST"},
+
+  "draw": {"uri": "/jaxrs/draft/process/{processFlag}", "method": "POST"},
+  "saveDraft": {"uri": "/jaxrs/draft", "method": "PUT"},
+  "getDraft": {"uri": "/jaxrs/draft/{id}"},
+  "listDraftNext": {"uri": "/jaxrs/draft/list/{id}/next/{count}"},
+  "listDraftPrev": {"uri": "/jaxrs/draft/list/{id}/prev/{count}"},
+  "listDraftPage": {"uri": "/jaxrs/draft/list/my/paging/{page}/size/{size}", "method": "POST"},
+  "listDraftApplication": {"uri": "/jaxrs/draft/list/count/application"},
+  "startDraft": {"uri": "/jaxrs/draft/{id}/start"},
+  "deleteDraftWork": {"uri":  "/jaxrs/draft/{id}", "method": "DELETE"},
 
   "getTask": {"uri": "/jaxrs/task/{id}"},
   "saveTask": {"uri": "/jaxrs/task/{id}", "method": "POST"},
@@ -246,6 +255,7 @@
   "getView": {"uri": "/jaxrs/view/{id}"},
 
   "getForm": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}"},
+  "getFormMobile": {"uri": "/jaxrs/form/{id}/application/{applicationFlag}/mobile"},
   "getScript": {"uri": "/jaxrs/script/{flag}/application/{applicationFlag}"},
   "getScriptByName": {"uri": "/jaxrs/script/{name}/application/{applicationId}","method": "POST"},
 
