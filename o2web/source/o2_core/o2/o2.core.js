@@ -102,7 +102,7 @@
                 thisLoaded.push(m);
                 o2.runCallback(callback, "every", [m]);
                 if (module.length){
-                    _requireSequence(module, thisLoaded, thisErrorLoaded, callback);
+                    _requireSequence(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression);
                 }else{
                     if (thisErrorLoaded.length){
                         o2.runCallback(callback, "failure", [thisLoaded, thisErrorLoaded]);
