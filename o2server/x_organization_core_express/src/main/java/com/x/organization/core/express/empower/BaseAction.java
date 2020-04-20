@@ -19,6 +19,9 @@ abstract class BaseAction {
 		@FieldDescribe("应用")
 		private String application;
 
+		@FieldDescribe("流程版本")
+		private String edition;
+
 		@FieldDescribe("流程")
 		private String process;
 
@@ -55,6 +58,14 @@ abstract class BaseAction {
 
 		public void setProcess(String process) {
 			this.process = process;
+		}
+
+		public String getEdition() {
+			return edition;
+		}
+
+		public void setEdition(String edition) {
+			this.edition = edition;
 		}
 
 	}
