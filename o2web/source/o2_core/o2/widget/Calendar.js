@@ -246,7 +246,29 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this.showDay(year, month);
 
+		this.showMonthYearButton();
+
 		this.fireEvent("changeViewToDay");
+	},
+	hideMonthYearButton : function(){
+		if(this.clearButton_month){
+			this.clearButton_month.hide();
+		}
+	},
+	showMonthYearButton : function(){
+		if( this.buttonArea && !this.clearButton_month ){
+			this.container.setStyle("height","auto");
+			this.clearButton_month = new Element("div", {"text": "清除"}).inject(this.buttonArea);
+			this.clearButton_month.addEvent("click", function(){
+				this.node.set("value", "");
+				this.fireEvent("clear");
+				this.hide();
+			}.bind(this));
+			this.clearButton_month.setStyles(this.css.calendarMonthActionButton);
+		}
+		if(this.clearButton_month){
+			this.clearButton_month.show();
+		}
 	},
 	getNext: function(){
 		switch (this.currentView) {
@@ -524,6 +546,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this._setYearTitle(null, beginYear, endYear, thisYear);
 		this._setYearDate(null, beginYear, endYear, thisYear);
 
+		this.showMonthYearButton();
+
 		//	if (!this.move){
 		//		this.move = true;
 		//		this.containerDrag = new Drag.Move(this.container);
@@ -559,6 +583,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this._setMonthTitle(null, thisYear, thisMonth);
 		this._setMonthDate(null, thisYear, thisMonth);
+
+		this.showMonthYearButton();
 
 		//	if (!this.move){
 		//		this.move = true;
@@ -697,6 +723,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisDate = date || this.options.baseDate;
 
 		this.showTime(thisDate);
+
+		this.hideMonthYearButton();
 	},
 
 	showTime: function(date){
@@ -1086,6 +1114,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.contentNode = div.getElement(".MWF_calendar_content");
 		this.contentDateNode = div.getElement(".MWF_calendar_content_date");
 		this.contentTimeNode = div.getElement(".MWF_calendar_content_time");
+		this.buttonArea = div.getElement(".MWF_calendar_button_area");
 		this.bottomNode = div.getElement(".MWF_calendar_bottom");
 
 		div.setStyles(this.css.container);
@@ -1095,6 +1124,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.currentTextNode.setStyles(this.css.dateCurrentText);
 		this.nextNode.setStyles(this.css.dateNext);
 		this.contentNode.setStyles(this.css.calendarContent);
+		if(this.buttonArea)this.buttonArea.setStyles(this.css.buttonArea);
 		this.bottomNode.setStyles(this.css.dateBottom);
 
 		return div;
