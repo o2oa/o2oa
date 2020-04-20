@@ -550,6 +550,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new ArrayList<T>(query.getResultList());
 	}
 
+	public <T extends JpaObject, W extends Object> List<T> listEqualOrIn(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Collection<W> otherValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(attribute), value);
+		p = cb.or(p, cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
 	public <T extends JpaObject> List<T> listNotEqual(Class<T> cls, String attribute, Object value) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -9,6 +9,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.Components;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
@@ -34,12 +35,15 @@ public class InitComponents extends AbstractJob {
 
 	private void init() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<String> names = ListTools.extractProperty(Config.components().getSystems(), Component.name_FIELDNAME, String.class, true,
-					true);
-			List<Component> os = emc.listEqual(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM);
+
+			List<Component> os = emc.listEqualOrIn(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM,
+					Component.name_FIELDNAME, Components.SYSTEM_NAME_NAMES);
+
+			List<String> existNames = ListTools.extractProperty(os, Component.name_FIELDNAME, String.class, true, true);
+
 			List<Component> removes = new ArrayList<>();
 			for (Component o : os) {
-				if (!names.contains(o.getName())) {
+				if (!Components.SYSTEM_NAME_NAMES.contains(o.getName())) {
 					removes.add(o);
 				}
 			}
@@ -50,12 +54,9 @@ public class InitComponents extends AbstractJob {
 				}
 				emc.commit();
 			}
-			for (Component o : os) {
-				names.remove(o.getName());
-			}
 			List<Component> adds = new ArrayList<>();
-			for (Components.Component o : Config.components().getSystems()) {
-				if (!names.contains(o.getName())) {
+			for (com.x.base.core.project.config.Components.Component o : Config.components().getSystems()) {
+				if (!existNames.contains(o.getName())) {
 					Component component = new Component();
 					component.setName(o.getName());
 					component.setPath(o.getPath());

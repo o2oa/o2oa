@@ -18,6 +18,11 @@ MWF.xApplication.process.Xform.LP = {
     "arrivedUsers": "到达处理人",
     "replace": "代",
 
+    "processStarted": "文件已启动",
+    "processStartedMessage": "您启动了一个新的工作：",
+
+    "draftStart": "流程已启动",
+
     "taskCompleted": "待办已处理",
     "workCompleted": "工作流转已完成",
     "arrivedActivity": "工作已到达活动：",
