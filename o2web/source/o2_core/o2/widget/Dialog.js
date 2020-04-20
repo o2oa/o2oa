@@ -236,7 +236,7 @@ o2.widget.Dialog = o2.DL = new Class({
 				}
 			}).inject(this.button);
 		}
-		debugger;
+
 		if (this.options.buttonList){
 			this.options.buttonList.each(function(bt){
 				var styles = this.css.button;
@@ -247,7 +247,7 @@ o2.widget.Dialog = o2.DL = new Class({
 					"type": "button",
 					"value": bt.text,
 					"title": bt.title,
-					"class": "mainColor_bg",
+					"class": (bt.type!=="cancel") ? "mainColor_bg" : "",
 					"styles": styles,
 					"events": {
 						"click": function(e){bt.action.call(this, this, e)}.bind(this)
