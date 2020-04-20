@@ -41,5 +41,24 @@
 		"font-size": "12px",
 		"color": "#333",
 		"margin": "0px 5px"
-	}
+	},
+	"okButton": {
+        "border": "0px",
+        "background-color": "#3C76B7",
+        "color": "#fff",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px"
+    },
+    cancelButton: {
+        "border": "0px",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px",
+        "color": "#fff",
+        "background-color": "#999999 !important",
+
+    },
 }
