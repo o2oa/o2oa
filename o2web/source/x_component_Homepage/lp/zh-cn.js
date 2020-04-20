@@ -5,6 +5,7 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"myRead": "待阅",
 	"myReadCompleted": "已阅",
 	"myDraft": "拟稿",
+	"myProcessDraft": "草稿",
 	"startProcess": "发起流程",
 	"noSubject": "无标题",
 	"noWork": "暂时没有工作",

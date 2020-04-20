@@ -151,9 +151,11 @@ o2.xDesktop.Default = new Class({
 
     loadLayout: function(callback){
         this.session.user.iconUrl = o2.Actions.get("x_organization_assemble_control").getPersonIcon(this.session.user.id);
-        var css = this.path+this.options.style+ ((o2.session.isMobile || layout.mobile) ? "/style-mobile.css" : "/style-pc.css");
+        //var css = this.path+this.options.style+ ((o2.session.isMobile || layout.mobile) ? "/style-mobile.css" : "/style-pc.css");
+        var css = this.path+this.options.style+ ((o2.session.isMobile || layout.mobile) ? "/style-pc.css" : "/style-pc.css");
         var skinCss = this.path+this.options.style+ "/style-skin.css";
-        var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-mobile.html" : "/layout-pc.html");
+        //var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-mobile.html" : "/layout-pc.html");
+        var html = this.path+this.options.style+((o2.session.isMobile || layout.mobile) ? "/layout-pc.html" : "/layout-pc.html");
 
         this.node.loadAll({ "css": [css], "html": [html]}, {"bind": {"user": this.session.user}, "module": this},function(){
             this.node.loadCss(skinCss);
