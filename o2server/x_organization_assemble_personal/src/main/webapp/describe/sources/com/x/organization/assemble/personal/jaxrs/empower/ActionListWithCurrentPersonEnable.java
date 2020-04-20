@@ -7,13 +7,10 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.accredit.Empower;
-
-import net.sf.ehcache.Element;
 
 class ActionListWithCurrentPersonEnable extends BaseAction {
 
