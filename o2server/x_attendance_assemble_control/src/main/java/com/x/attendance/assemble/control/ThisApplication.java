@@ -18,8 +18,12 @@ public class ThisApplication {
 
 	public static DingdingAttendanceQueue dingdingQueue = new DingdingAttendanceQueue();
 	public static QywxAttendanceSyncQueue qywxQueue = new QywxAttendanceSyncQueue();
+	public static QywxUnitStatisticQueue unitQywxStatisticQueue = new QywxUnitStatisticQueue();
+	public static QywxPersonStatisticQueue personQywxStatisticQueue = new QywxPersonStatisticQueue();
+
 	public static DingdingPersonStatisticQueue personStatisticQueue = new DingdingPersonStatisticQueue();
 	public static DingdingUnitStatisticQueue unitStatisticQueue = new DingdingUnitStatisticQueue();
+
 
 	public static void init() throws Exception {
 		try {
@@ -37,6 +41,8 @@ public class ThisApplication {
 			}
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getAttendanceSyncEnable())) {
 				qywxQueue.start();
+				unitQywxStatisticQueue.start();
+				personQywxStatisticQueue.start();
 				context.schedule(QywxAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
 			}
 		} catch (Exception e) {
@@ -72,6 +78,16 @@ public class ThisApplication {
 		}
 		try {
 			qywxQueue.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			unitQywxStatisticQueue.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			personQywxStatisticQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
