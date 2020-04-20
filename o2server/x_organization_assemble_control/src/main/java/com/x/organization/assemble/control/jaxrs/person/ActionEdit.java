@@ -1,18 +1,11 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -25,13 +18,19 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
 import com.x.organization.assemble.control.message.OrgBodyMessage;
 import com.x.organization.assemble.control.message.OrgMessage;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionEdit extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
@@ -47,6 +46,10 @@ class ActionEdit extends BaseAction {
 			}
 			if (!this.editable(business, effectivePerson, person)) {
 				throw new ExceptionAccessDenied(effectivePerson);
+			}
+			boolean isNameUpdate = false;
+			if(!person.getName().equals(wi.getName())){
+				isNameUpdate = true;
 			}
 			Wi.copier.copy(wi, person);
 
@@ -69,7 +72,9 @@ class ActionEdit extends BaseAction {
 				List<Unit> topUnits = business.unit().pick(person.getTopUnitList());
 				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
 			}
+			List<Identity> identityList = business.entityManagerContainer().listEqual(Identity.class, Identity.person_FIELDNAME, person.getId());
 			emc.beginTransaction(Person.class);
+			emc.beginTransaction(Identity.class);
 			/*
 			 * 从内存中pick出来的无法作为实体保存,不能在前面执行,以为后面的convertControllerList也有一个pick,
 			 * 会导致一当前这个对象再次被detech
@@ -79,8 +84,17 @@ class ActionEdit extends BaseAction {
 			String strOriginalPerson = gsontool.toJson(entityPerson);
 			person.copyTo(entityPerson);
 			emc.check(entityPerson, CheckPersistType.all);
+			if(isNameUpdate && !identityList.isEmpty()){
+				for(Identity identity : identityList){
+					identity.setName(person.getName());
+					emc.check(identity, CheckPersistType.all);
+				}
+			}
 			emc.commit();
 			/** 刷新缓存 */
+			if(isNameUpdate) {
+				ApplicationCache.notify(Identity.class);
+			}
 			ApplicationCache.notify(Person.class);
 			/** 通知x_collect_service_transmit同步数据到collect */
 			business.instrument().collect().person();
