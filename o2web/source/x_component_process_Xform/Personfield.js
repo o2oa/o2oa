@@ -48,9 +48,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
-                "mousedown": function(){
+                "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
                     this.clickSelect();
+                    ev.stopPropagation();
                 }.bind(this)
             });
         }
