@@ -65,6 +65,7 @@ class ActionSimulate extends BaseAction {
 
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+				this.setProcessEdition(business, processPlatformPlan);
 				processPlatformPlan.runtime = runtime;
 				processPlatformPlan.access();
 				result.setData(processPlatformPlan);
