@@ -66,6 +66,7 @@ public class ActionViewUncompletedListNextWithFilter extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				wrapIn.setProject(projectId);
 				wrapIn.setWorkStatus("processing");
+				wrapIn.setDeleted("false");
 				queryFilter = wrapIn.getQueryFilter();
 			}
 		}

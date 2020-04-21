@@ -64,6 +64,7 @@ public class ActionViewMyExecutListNextWithFilter extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				wrapIn.setProject(projectId);
 				wrapIn.setExecutor(effectivePerson.getDistinguishedName());
+				wrapIn.setDeleted("false");
 				queryFilter = wrapIn.getQueryFilter();
 				//queryFilter.addEqualsTerm( new EqualsTerm( "executor", effectivePerson.getDistinguishedName() ) );
 			}

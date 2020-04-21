@@ -64,6 +64,7 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 		if( Boolean.TRUE.equals( check ) ){
 			if( Boolean.TRUE.equals( check ) ){
 				wrapIn.setProject(projectId);
+				wrapIn.setDeleted("false");
 				queryFilter = wrapIn.getQueryFilter();
 			}
 		}

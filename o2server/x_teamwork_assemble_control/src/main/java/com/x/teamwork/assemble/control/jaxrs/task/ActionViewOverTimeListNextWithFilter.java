@@ -65,6 +65,7 @@ public class ActionViewOverTimeListNextWithFilter extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				wrapIn.setProject(projectId);
 				wrapIn.setOvertime("true");
+				wrapIn.setDeleted("false");
 				queryFilter = wrapIn.getQueryFilter();
 			}
 		}
