@@ -7,6 +7,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @ContainerEntity
 @Entity
@@ -44,6 +45,14 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
      */
 
 
+    @FieldDescribe("O2用户")
+    @Column(name = ColumnNamePrefix + "o2User", length = length_128B)
+    private String o2User;
+
+    @FieldDescribe("O2用户所在的组织")
+    @Column(name = ColumnNamePrefix + "o2Unit", length = length_128B)
+    private String o2Unit;
+
     @FieldDescribe("用户id")
     @Column(name = ColumnNamePrefix + "userid", length = length_96B)
     private String userid;
@@ -51,6 +60,11 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
     @FieldDescribe("打卡规则名称")
     @Column(name = ColumnNamePrefix + "groupname", length = length_128B)
     private String groupname;
+
+    //打卡类型
+    public static final String CHECKIN_TYPE_ON = "上班打卡";
+    public static final String CHECKIN_TYPE_OFF = "下班打卡";
+    public static final String CHECKIN_TYPE_OUTSIDE = "外出打卡";
 
     @FieldDescribe("打卡类型。字符串，目前有：上班打卡，下班打卡，外出打卡")
     @Column(name = ColumnNamePrefix + "checkin_type", length = length_128B)
@@ -60,6 +74,17 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
     @Column(name = ColumnNamePrefix + "checkin_time")
     private long checkin_time;
 
+    @FieldDescribe("实际打卡时间,  用Date格式存储")
+    @Column(name = ColumnNamePrefix + "checkin_time_date")
+    private Date checkin_time_date;
+
+    //异常类型
+    public static final String EXCEPTION_TYPE_TIME = "时间异常";
+    public static final String EXCEPTION_TYPE_ADDRESS = "地点异常";
+    public static final String EXCEPTION_TYPE_WIFI = "wifi异常";
+    public static final String EXCEPTION_TYPE_UNKOWN_DEVICE = "非常用设备";
+    public static final String EXCEPTION_TYPE_NOSIGN = "未打卡";
+    public static final String EXCEPTION_TYPE_NORMAL = "正常";
     @FieldDescribe("异常类型，字符串，包括：时间异常，地点异常，未打卡，wifi异常，非常用设备。如果有多个异常，以分号间隔")
     @Column(name = ColumnNamePrefix + "exception_type", length = length_255B)
     private String exception_type;
@@ -80,10 +105,30 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
     @Column(name = ColumnNamePrefix + "notes", length = length_255B)
     private String notes;
 
-//    @FieldDescribe("用户id")
-//    @Column(name = ColumnNamePrefix + "userid", length = length_96B)
-//    private String wifimac;
 
+    public String getO2User() {
+        return o2User;
+    }
+
+    public void setO2User(String o2User) {
+        this.o2User = o2User;
+    }
+
+    public String getO2Unit() {
+        return o2Unit;
+    }
+
+    public void setO2Unit(String o2Unit) {
+        this.o2Unit = o2Unit;
+    }
+
+    public Date getCheckin_time_date() {
+        return checkin_time_date;
+    }
+
+    public void setCheckin_time_date(Date checkin_time_date) {
+        this.checkin_time_date = checkin_time_date;
+    }
 
     public String getUserid() {
         return userid;

@@ -116,9 +116,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
 
         Predicate p = null;
         if (startTime != null && endTime != null) {
-            long start = startTime.getTime();
-            long end = endTime.getTime();
-            p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start, end);
+            p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
         }
         if (userId != null && !userId.isEmpty()) {
             if (p != null) {
@@ -127,7 +125,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
                 p = cb.equal(root.get(AttendanceQywxDetail_.userid), userId);
             }
         }
-        query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceQywxDetail_.checkin_time)));
+        query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceQywxDetail_.checkin_time_date)));
         return em.createQuery(query).getResultList();
 
     }
@@ -464,8 +462,300 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         return em.createQuery(query).getSingleResult();
     }
 
+    /*********************企业微信统计 ******************************/
 
 
+    /**
+     * 部门统计数据
+     * @param unit
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxUnitForMonth> findQywxUnitStatistic(String unit, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxUnitForMonth> query = cb.createQuery(StatisticQywxUnitForMonth.class);
+        Root<StatisticQywxUnitForMonth> root = query.from(StatisticQywxUnitForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForMonth_.o2Unit), unit);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 人员统计数据
+     * @param unit
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxPersonForMonth> findQywxPersonStatisticWithUnit(String unit, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxPersonForMonth> query = cb.createQuery(StatisticQywxPersonForMonth.class);
+        Root<StatisticQywxPersonForMonth> root = query.from(StatisticQywxPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxPersonForMonth_.o2Unit), unit);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+
+
+    /**
+     * 人员统计数据
+     * @param person
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxPersonForMonth> findQywxPersonStatistic(String person, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxPersonForMonth> query = cb.createQuery(StatisticQywxPersonForMonth.class);
+        Root<StatisticQywxPersonForMonth> root = query.from(StatisticQywxPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxPersonForMonth_.o2User), person);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 个人 月份 所有数据
+     * @param year
+     * @param month
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceQywxDetail> qywxPersonForMonthList(String year, String month, String person)  throws Exception {
+        Date start = monthFirstDay(year, month);
+        Date end = monthLastDay(year, month);
+
+        EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
+        Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), start, end);
+        p = cb.and(p, cb.equal(root.get(AttendanceQywxDetail_.o2User), person));
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+    /**
+     * StatisticDingdingPersonForMonth ids
+     * @param year
+     * @param month
+     * @param person
+     * @return
+     * @throws Exception
+     */
+    public List<String> getQywxStatPersonForMonthIds(String year, String month, String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> query = cb.createQuery(String.class);
+        Root<StatisticQywxPersonForMonth> root = query.from(StatisticQywxPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxPersonForMonth_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.o2User), person));
+        query.select(root.get(StatisticQywxPersonForMonth_.id)).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+
+    /**
+     * 单位 日期 所有数据
+     * @param year
+     * @param month
+     * @param day
+     * @param unit
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceQywxDetail> qywxUnitForDayList(String year, String month, String day,  String unit)  throws Exception {
+        Date startTime = DateTools.parse(year+"-"+month+"-"+day);
+        startTime = startOneDate(startTime);
+        Date endTime = endOneDate(startTime);
+        EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
+        Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
+        p = cb.and(p, cb.equal(root.get(AttendanceQywxDetail_.o2Unit), unit));
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 查询所有有数据的组织 去重的
+     * @param date
+     * @return
+     * @throws Exception
+     */
+    public List<String> qywxUnitDistinct(String date) throws Exception {
+        Date startTime = DateTools.parse(date);
+        startTime = startOneDate(startTime);
+        Date endTime = endOneDate(startTime);
+        EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> query = cb.createQuery(String.class);
+        Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
+        query.select(root.get(AttendanceQywxDetail_.o2Unit)).where(p).distinct(true);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 查询单位 日期 统计数据的id 删除用的
+     * @param year
+     * @param month
+     * @param day
+     * @param unit
+     * @return
+     * @throws Exception
+     */
+    public List<String> getQywxStatUnitForDayIds(String year, String month, String day, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> query = cb.createQuery(String.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticDate), day));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(root.get(StatisticQywxUnitForDay_.id)).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 查询单位 月份统计数据的id 删除用的
+     * @param year
+     * @param month
+     * @param unit
+     * @return
+     * @throws Exception
+     */
+    public List<String> getQywxStatUnitForMonthIds(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<String> query = cb.createQuery(String.class);
+        Root<StatisticQywxUnitForMonth> root = query.from(StatisticQywxUnitForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForMonth_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.o2Unit), unit));
+        query.select(root.get(StatisticQywxUnitForMonth_.id)).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    public Long sumQywxWorkDayUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.workDayCount))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+
+    public Long sumQywxOndutyUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.onDutyTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxOffDutyUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.offDutyTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxOutsideUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.outsideDutyTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxResultNormalUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.resultNormal))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxLatetimeUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.lateTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxLeaveEarlyUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.leaveEarlyTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxAbsenteeismUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.absenteeismTimes))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
+    public Long sumQywxNotSignUnitForDayWithMonth(String year, String month, String unit) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForDay.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<StatisticQywxUnitForDay> root = query.from(StatisticQywxUnitForDay.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForDay_.statisticYear), year);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.statisticMonth), month));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForDay_.o2Unit), unit));
+        query.select(cb.sum(root.get(StatisticQywxUnitForDay_.notSignedCount))).where(p);
+        return em.createQuery(query).getSingleResult();
+    }
 
     private Date monthLastDay(String year, String month) throws Exception {
         Calendar cal = Calendar.getInstance();
