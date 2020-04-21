@@ -22,6 +22,7 @@ import com.x.attendance.assemble.control.jaxrs.dingding.DingdingAttendanceAction
 import com.x.attendance.assemble.control.jaxrs.dingdingstatistic.DingdingAttendanceStatisticAction;
 import com.x.attendance.assemble.control.jaxrs.fileimport.AttendanceDetailFileImportAction;
 import com.x.attendance.assemble.control.jaxrs.qywx.QywxAttendanceAction;
+import com.x.attendance.assemble.control.jaxrs.qywxstatistic.QywxAttendanceStatisticAction;
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidayAction;
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidaySimpleAction;
 import com.x.attendance.assemble.control.jaxrs.uuid.UUIDAction;
@@ -54,6 +55,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(DingdingAttendanceAction.class);
 		this.classes.add(QywxAttendanceAction.class);
 		this.classes.add(DingdingAttendanceStatisticAction.class);
+		this.classes.add(QywxAttendanceStatisticAction.class);
 		return this.classes;
 	}
 
