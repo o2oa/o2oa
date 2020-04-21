@@ -25,9 +25,10 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
-                "mousedown": function(){
+                "mousedown": function(ev){
                     this.descriptionNode.setStyle("display", "none");
                     this.clickSelect();
+                    ev.stopPropagation();
                 }.bind(this)
             });
         }
