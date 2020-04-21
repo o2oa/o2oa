@@ -321,7 +321,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	private String title;
 
 	public static final String startTime_FIELDNAME = "startTime";
-	@FieldDescribe("开始时间.")
+	@FieldDescribe("待办.已办的开始时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	/* 开始时间不能为空,如果为空排序可能出错 */
 	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
