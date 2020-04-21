@@ -51,6 +51,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), person );
 		p = cb.and( p, cb.equal( root.get( Review_.project ), project ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		cq.select(root.get( Review_.taskId)).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
@@ -65,6 +66,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal(root.get( Review_.project ), project );
 		p = cb.and( p, cb.equal(root.get( Review_.permissionObj ), person ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		cq.select( root.get( Review_.taskId) ).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
@@ -184,6 +186,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), personName );
 		p = cb.and( p, root.get( Review_.taskId ).in( taskIds ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		cq.select(root.get( Review_.taskId)).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
@@ -201,6 +204,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), person );
 		p = cb.and( p, cb.equal( root.get( Review_.parent ), taskId ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
 }

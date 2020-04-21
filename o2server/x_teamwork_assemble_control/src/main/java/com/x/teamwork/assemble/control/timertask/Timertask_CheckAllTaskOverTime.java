@@ -19,6 +19,7 @@ import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.TaskQueryService;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskStatuType;
 
 /**
  * 定时代理: 定期将所有的工作任务的截止时间核对一次，标识超时的工作任务
@@ -54,7 +55,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 								if( task != null ) {
 									logger.debug("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
 									
-									if( task.getEndTime()  != null ) {
+									if( task.getEndTime()  != null && !TaskStatuType.completed.name().equalsIgnoreCase( task.getWorkStatus() )) {
 										if( task.getEndTime().before( now ) && !task.getOvertime()) {
 											//超时了,打上标识，并且发送提醒
 											emc.beginTransaction( Task.class );

@@ -16,6 +16,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_PROJECTDETAIL";
 	}
 	
+	public static class ProjectTemplate { 
+		public static final String table = "TEW_PROJECTTEMPLATE";
+	}
+	
 	public static class TaskExtField {
 		public static final String table = "TEW_TASKEXTFIELD";
 	}

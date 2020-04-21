@@ -54,6 +54,7 @@ public class ActionListNextWithFilter extends BaseAction {
 		}
 
 		if( Boolean.TRUE.equals( check ) ){
+			wrapIn.setDeleted("false");
 			queryFilter = wrapIn.getQueryFilter();
 		}
 		

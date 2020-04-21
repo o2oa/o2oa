@@ -48,7 +48,7 @@ public class ActionListPageWithFilter extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		
+		wrapIn.setDeleted("false");
 		if( Boolean.TRUE.equals( check ) ){
 			if( Boolean.TRUE.equals( check ) ){
 				queryFilter = wrapIn.getQueryFilter();

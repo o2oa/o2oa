@@ -13,6 +13,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
+import com.x.teamwork.assemble.control.service.UserManagerService;
 import com.x.teamwork.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +27,7 @@ import java.util.List;
 public class ActionCopyTask extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCopyTask.class);
+	private UserManagerService userManagerService = new UserManagerService();
 
 	/**
 	 * 将指定的任务复制为新的工作任务
@@ -48,6 +50,8 @@ public class ActionCopyTask extends BaseAction {
 		TaskExtField taskExtField = null;
 		List<Dynamic> dynamics  = new ArrayList<>();
 		Boolean check = true;
+		List<String> groupIds = null;
+		List<String> listIds = null;
 
 		if ( StringUtils.isEmpty( sourceTaskId ) ) {
 			check = false;
@@ -63,6 +67,8 @@ public class ActionCopyTask extends BaseAction {
 					Exception exception = new TaskNotExistsException(sourceTaskId);
 					result.error( exception );
 				}
+				groupIds = taskGroupQueryService.listGroupIdsByTask( sourceTask.getId() );
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new TaskQueryException(e, "根据指定ID查询工作任务信息对象时发生异常。ID:" + sourceTaskId );
@@ -96,6 +102,7 @@ public class ActionCopyTask extends BaseAction {
 		Task newTask = new Task();
 		TaskDetail newTaskDetail = new TaskDetail();
 		TaskExtField newTaskExtField = new TaskExtField();
+		
 		if( Boolean.TRUE.equals( check ) ){
 			//COPY对象
 			sourceTask.copyTo( newTask );
@@ -104,6 +111,10 @@ public class ActionCopyTask extends BaseAction {
 
 			//重新命名
 			newTask.setName( sourceTask.getName() + " - 副本");
+			
+			//调整负责人为当前用户
+			newTask.setExecutor(effectivePerson.getDistinguishedName());
+			newTask.setExecutorIdentity(userManagerService.getIdentityWithPerson( newTask.getExecutor(), "min"));
 
 			//调整ID
 			newTask.setId( Task.createId() );
@@ -113,6 +124,18 @@ public class ActionCopyTask extends BaseAction {
 			try {
 				newTask = taskPersistService.save( newTask, newTaskDetail, newTaskExtField, effectivePerson );
 				wo.setId( newTask.getId() );
+				if(ListTools.isNotEmpty( groupIds )){
+					if( !taskGroupQueryService.existsWithTaskAndGroup( groupIds.get(0), newTask.getId() )){
+						//添加任务和任务组的关联
+						taskGroupPersistService.addTaskToGroup( newTask.getId(),groupIds.get(0) );
+						taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), newTask.getId() );
+						listIds = taskListQueryService.listTaskListIdWithTaskId( sourceTask.getId(), groupIds.get(0));
+					}
+				}
+				if(ListTools.isNotEmpty( listIds )){
+					taskListPersistService.addTaskToTaskListWithOrderNumber( newTask.getId(), listIds.get(0), null,  effectivePerson);
+				}
+				
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new TaskPersistException(e, "工作上级任务ID信息更新时发生异常。");
