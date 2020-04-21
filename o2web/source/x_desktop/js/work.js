@@ -22,7 +22,7 @@ layout.addReady(function(){
                 }catch(e){}
             }
 
-            if (options.job && !options.workid){
+            if (options.job && !options.workid && !options.draftid && !options.draft){
                 var workData = null;
                 o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(options.job, function(json){
                     if (json.data) workData = json.data;
@@ -108,6 +108,7 @@ layout.addReady(function(){
                     }
                 }
             }else{
+                if (options.draft) options.draft = JSON.parse(options.draft);
                 layout.openApplication(null, appName, option||{}, m_status);
             }
         };
