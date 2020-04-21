@@ -12,6 +12,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
+import com.x.teamwork.core.entity.tools.filter.term.EqualsTerm;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
 /**
@@ -311,6 +312,7 @@ public class ProjectQueryService {
 			unitNames = userManagerService.listUnitNamesWithPerson( personName );
 			groupNames = userManagerService.listGroupNamesByPerson( personName );
 			identityNames = userManagerService.listIdentitiesWithPerson( personName );
+			queryFilter.addEqualsTerm( new EqualsTerm( "deleted", false ) );
 			return projectService.listAllViewableProjectIds( emc, maxCount, personName,  identityNames, unitNames, groupNames, queryFilter );
 		} catch (Exception e) {
 			throw e;

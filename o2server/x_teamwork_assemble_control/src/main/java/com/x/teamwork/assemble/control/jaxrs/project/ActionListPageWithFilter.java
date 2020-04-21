@@ -51,6 +51,8 @@ public class ActionListPageWithFilter extends BaseAction {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
+			//添加过滤条件未删除状态才被查询
+			wrapIn.setDeleted("false");
 			queryFilter = wrapIn.getQueryFilter();
 			if( StringUtils.isNotEmpty( wrapIn.getGroup() )) {
 				//如果项目分组不为空，那么需要先根据项目分组来查询这个分组下的所有项目ID集合

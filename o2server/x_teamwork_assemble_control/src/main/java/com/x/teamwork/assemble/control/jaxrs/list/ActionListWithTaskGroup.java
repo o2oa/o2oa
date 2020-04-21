@@ -29,14 +29,14 @@ public class ActionListWithTaskGroup extends BaseAction {
 		List<Wo> wos = null;
 		List<TaskList> taskLists = null;
 		Boolean check = true;
-
-		String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", taskGroupId, effectivePerson.getDistinguishedName() );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", taskGroupId, effectivePerson.getDistinguishedName() );
 		Element element = taskListCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
+			System.out.println("111");
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
-		} else {
+		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskLists = taskListQueryService.listWithTaskGroup( effectivePerson.getDistinguishedName(), taskGroupId );
@@ -53,7 +53,7 @@ public class ActionListWithTaskGroup extends BaseAction {
 								}
 							}
 						}
-						taskListCache.put(new Element(cacheKey, wos));
+						//taskListCache.put(new Element(cacheKey, wos));
 						result.setData(wos);
 					}
 				} catch (Exception e) {
@@ -63,7 +63,7 @@ public class ActionListWithTaskGroup extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 

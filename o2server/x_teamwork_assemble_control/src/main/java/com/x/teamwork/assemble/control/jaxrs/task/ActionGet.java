@@ -41,7 +41,7 @@ public class ActionGet extends BaseAction {
 			result.error( exception );
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
+		String cacheKey = ApplicationCache.concreteCacheKey( flag,effectivePerson );
 		Element element = taskCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -133,7 +133,8 @@ public class ActionGet extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				List<String> groupIds = null;
 				try {
-					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
+					//groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
+					groupIds = taskGroupQueryService.listGroupIdsByPersonAndProject(effectivePerson,task.getProject());
 					if( ListTools.isNotEmpty( groupIds )){
 						wo.setTaskGroupId( groupIds.get(0) );
 					}
@@ -153,6 +154,13 @@ public class ActionGet extends BaseAction {
 						listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), wo.getTaskGroupId() );
 						if( ListTools.isNotEmpty( listIds )){
 							wo.setTaskListId( listIds.get(0) );
+						}else{
+							//返回当前项目的未分类taskListId
+							List<TaskList> taskList= null;
+							taskList = taskListQueryService.listWithTaskGroup( effectivePerson.getDistinguishedName(), wo.getTaskGroupId() );
+							if(taskList !=null){
+								wo.setTaskListId(taskList.get(0).getId());
+							}
 						}
 					} catch (Exception e) {
 						Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
@@ -161,50 +169,6 @@ public class ActionGet extends BaseAction {
 					}
 				}
 			}
-
-//			//查询任务所在的Group信息
-//			if( Boolean.TRUE.equals( check ) ){
-//				List<String> groupIds = null;
-//				List<TaskGroup> groupList = null;
-//				List<WoTaskGroup> woGroupList = new ArrayList<>();
-//				try {
-//					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
-//					groupList = taskGroupQueryService.list( groupIds );
-//					if( ListTools.isNotEmpty( groupList )){
-//						woGroupList = WoTaskGroup.copier.copy( groupList );
-//					}
-//					wo.setTaskgroups( woGroupList );
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-//
-//			//查询任务所在的List信息
-//			if( Boolean.TRUE.equals( check ) ){
-//				if( ListTools.isNotEmpty(wo.getTaskgroups() )){
-//					List<String> listIds = null;
-//					List<TaskList> taskLists = null;
-//					List<WoTaskList> woTaskLists = new ArrayList<>();
-//					for( WoTaskGroup woGroup : wo.getTaskgroups() ){
-//						try {
-//							listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), woGroup.getId() );
-//							taskLists = taskListQueryService.list( listIds );
-//							if( ListTools.isNotEmpty( taskLists )){
-//								woTaskLists = WoTaskList.copier.copy( taskLists );
-//							}
-//							woGroup.setTaskLists( woTaskLists );
-//						} catch (Exception e) {
-//							check = false;
-//							Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//							result.error(exception);
-//							logger.error(e, effectivePerson, request, null);
-//						}
-//					}
-//				}
-//			}
 		}
 		taskCache.put(new Element( cacheKey, wo ));
 		result.setData(wo);
