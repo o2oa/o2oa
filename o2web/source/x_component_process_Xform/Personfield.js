@@ -52,7 +52,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                     this.descriptionNode.setStyle("display", "none");
                     this.clickSelect();
                     ev.stopPropagation();
-                }.bind(this)
+                }.bind(this),
+                "click" : function (ev) {
+                    ev.stopPropagation();
+                }
             });
         }
     },
@@ -521,7 +524,11 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect();
+                        ev.stopPropagation();
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 }
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
@@ -558,13 +565,21 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "id": this.json.id,
             "MWFType": this.json.type,
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this)
+                //this.clickSelect.bind(this)
             }
         });
         if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) this.iconNode = new Element("div", {
             "styles": this.form.css[this.iconStyle],
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this)
+                //this.clickSelect.bind(this)
             }
         }).inject(this.node, "before");
 
