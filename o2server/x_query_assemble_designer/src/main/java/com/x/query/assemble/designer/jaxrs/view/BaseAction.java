@@ -6,6 +6,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.query.core.express.plan.ProcessPlatformPlan;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -13,6 +17,8 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.View_;
+
+import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -42,6 +48,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Integer viewCount = view.getCount();
 		Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
 		return NumberUtils.min(viewCount, wiCount);
+	}
+
+	protected void setProcessEdition(Business business, ProcessPlatformPlan processPlatformPlan) throws Exception {
+		if(!processPlatformPlan.where.processList.isEmpty()){
+			List<String> _process_ids = ListTools.extractField(processPlatformPlan.where.processList, Process.id_FIELDNAME, String.class,
+					true, true);
+			List<Process> processList = business.process().listObjectWithProcess(_process_ids, true);
+			List<ProcessPlatformPlan.WhereEntry.ProcessEntry> listProcessEntry = gson.fromJson(gson.toJson(processList),
+					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>(){}.getType());
+			if(!listProcessEntry.isEmpty()) {
+				processPlatformPlan.where.processList = listProcessEntry;
+			}
+		}
 	}
 
 }
