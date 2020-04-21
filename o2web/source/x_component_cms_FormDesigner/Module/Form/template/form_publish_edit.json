@@ -18,7 +18,27 @@
         "html": ""
       },
       "events": {
+        "queryLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeLoad" : {
+          "code": "",
+          "html": ""
+        },
+        "beforeModulesLoad":{
+          "code": "",
+          "html": ""
+        },
+        "afterModulesLoad":{
+          "code": "",
+          "html": ""
+        },
         "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
           "code": "",
           "html": ""
         },
@@ -47,10 +67,6 @@
           "html": ""
         },
         "help": {
-          "code": "",
-          "html": ""
-        },
-        "load": {
           "code": "",
           "html": ""
         },

@@ -25,9 +25,13 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
-                "mousedown": function(){
+                "mousedown": function(ev){
                     this.descriptionNode.setStyle("display", "none");
                     this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this),
+                "click" : function (ev) {
+                    ev.stopPropagation();
                 }.bind(this)
             });
         }
@@ -193,7 +197,10 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
         if (this.json.showIcon!='no') this.iconNode = new Element("div", {
             "styles": this.form.css[this.iconStyle],
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this)
             }
         }).inject(this.node, "before");
 
@@ -231,7 +238,11 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 		if( !this.readonly ) {
 			this.node.setStyle("cursor" , "pointer");
 			this.node.addEvents({
-				"click": this.clickSelect.bind(this)
+				"click": function (ev) {
+                    this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this)
+                //this.clickSelect.bind(this)
 			});
 			if (this.json.showIcon!='no')this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
 				"styles": {
@@ -244,7 +255,11 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 			if (this.iconNode){
                 this.iconNode.setStyle("cursor" , "pointer");
                 this.iconNode.addEvents({
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect();
+                        ev.stopPropagation();
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 });
 			}
 		}
