@@ -17,6 +17,8 @@ import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCreateWi;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionStart extends BaseAction {
 
@@ -41,6 +43,9 @@ class ActionStart extends BaseAction {
 			process = business.process().pick(draft.getProcess());
 			if (null == process) {
 				throw new ExceptionEntityNotExist(draft.getProcess(), Process.class);
+			}
+			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 
 		}
