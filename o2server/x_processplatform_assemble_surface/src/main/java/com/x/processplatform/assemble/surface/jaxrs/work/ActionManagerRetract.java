@@ -38,6 +38,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,10 +116,7 @@ class ActionManagerRetract extends BaseAction {
 				throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
 			}
 
-			taskCompleted = emc.firstEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-					workLog.getJob(), TaskCompleted.activityToken_FIELDNAME, workLog.getFromActivityToken(),
-					TaskCompleted.person_FIELDNAME, distinguishedName);
-
+			taskCompleted = findLastTaskCompleted(business);
 			if (null == taskCompleted) {
 				throw new ExceptionNoTaskCompletedToRetract(workLog.getId(), distinguishedName);
 			}
@@ -137,6 +135,15 @@ class ActionManagerRetract extends BaseAction {
 
 	}
 
+
+	private TaskCompleted findLastTaskCompleted(Business business) throws Exception {
+		List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
+				TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
+				workLog.getFromActivityToken(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
+		return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
+				.orElse(null);
+	}
+	
 	private void retract() throws Exception {
 		Req req = new Req();
 		req.setTaskCompleted(taskCompleted.getId());
@@ -213,6 +220,8 @@ class ActionManagerRetract extends BaseAction {
 			throw new ExceptionRetract(this.work.getId());
 		}
 	}
+
+
 
 	public static class Req extends V2RetractWi {
 
