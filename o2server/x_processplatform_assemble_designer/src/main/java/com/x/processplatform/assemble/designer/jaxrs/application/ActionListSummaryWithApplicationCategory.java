@@ -118,6 +118,8 @@ class ActionListSummaryWithApplicationCategory extends BaseAction {
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application.getId());
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}

@@ -128,6 +128,8 @@ class ActionListSummary extends BaseAction {
 		CriteriaQuery<Process> cq = cb.createQuery(Process.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = root.get(Process_.application).in(applicationIds);
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
+				cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root).where(p);
 		List<Process> os = em.createQuery(cq).getResultList();
 		List<WoProcess> wos = WoProcess.copier.copy(os);
