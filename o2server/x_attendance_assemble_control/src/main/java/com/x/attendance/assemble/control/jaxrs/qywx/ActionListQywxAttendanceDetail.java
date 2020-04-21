@@ -205,7 +205,16 @@ public class ActionListQywxAttendanceDetail extends BaseAction {
 
         @FieldDescribe("实际打卡时间")
         private Date checkTimeFormat;
+        @FieldDescribe("排序号")
+        private Long rank;
 
+        public Long getRank() {
+            return rank;
+        }
+
+        public void setRank(Long rank) {
+            this.rank = rank;
+        }
 
         public void formatDateTime() {
             if (checkTimeFormat == null) {

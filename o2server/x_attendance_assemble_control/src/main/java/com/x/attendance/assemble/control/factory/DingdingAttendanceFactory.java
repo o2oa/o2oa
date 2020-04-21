@@ -116,9 +116,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
 
         Predicate p = null;
         if (startTime != null && endTime != null) {
-            long start = startTime.getTime();
-            long end = endTime.getTime();
-            p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start, end);
+            p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
         }
         if (userId != null && !userId.isEmpty()) {
             if (p != null) {
@@ -127,7 +125,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
                 p = cb.equal(root.get(AttendanceQywxDetail_.userid), userId);
             }
         }
-        query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceQywxDetail_.checkin_time)));
+        query.select(root).where(p).orderBy(cb.desc(root.get(AttendanceQywxDetail_.checkin_time_date)));
         return em.createQuery(query).getResultList();
 
     }
@@ -466,6 +464,72 @@ public class DingdingAttendanceFactory extends AbstractFactory {
 
     /*********************企业微信统计 ******************************/
 
+
+    /**
+     * 部门统计数据
+     * @param unit
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxUnitForMonth> findQywxUnitStatistic(String unit, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxUnitForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxUnitForMonth> query = cb.createQuery(StatisticQywxUnitForMonth.class);
+        Root<StatisticQywxUnitForMonth> root = query.from(StatisticQywxUnitForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxUnitForMonth_.o2Unit), unit);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxUnitForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+    /**
+     * 人员统计数据
+     * @param unit
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxPersonForMonth> findQywxPersonStatisticWithUnit(String unit, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxPersonForMonth> query = cb.createQuery(StatisticQywxPersonForMonth.class);
+        Root<StatisticQywxPersonForMonth> root = query.from(StatisticQywxPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxPersonForMonth_.o2Unit), unit);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
+
+
+    /**
+     * 人员统计数据
+     * @param person
+     * @param year
+     * @param month
+     * @return
+     * @throws Exception
+     */
+    public List<StatisticQywxPersonForMonth> findQywxPersonStatistic(String person, String year, String month) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(StatisticQywxPersonForMonth.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<StatisticQywxPersonForMonth> query = cb.createQuery(StatisticQywxPersonForMonth.class);
+        Root<StatisticQywxPersonForMonth> root = query.from(StatisticQywxPersonForMonth.class);
+        Predicate p = cb.equal(root.get(StatisticQywxPersonForMonth_.o2User), person);
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticYear), year));
+        p = cb.and(p, cb.equal(root.get(StatisticQywxPersonForMonth_.statisticMonth), month));
+
+        query.select(root).where(p);
+        return em.createQuery(query).getResultList();
+    }
+
     /**
      * 个人 月份 所有数据
      * @param year
@@ -477,11 +541,12 @@ public class DingdingAttendanceFactory extends AbstractFactory {
     public List<AttendanceQywxDetail> qywxPersonForMonthList(String year, String month, String person)  throws Exception {
         Date start = monthFirstDay(year, month);
         Date end = monthLastDay(year, month);
+
         EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
         Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
-        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start.getTime(), end.getTime());
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), start, end);
         p = cb.and(p, cb.equal(root.get(AttendanceQywxDetail_.o2User), person));
         query.select(root).where(p);
         return em.createQuery(query).getResultList();
@@ -524,7 +589,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
         Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
-        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), startTime.getTime(), endTime.getTime());
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
         p = cb.and(p, cb.equal(root.get(AttendanceQywxDetail_.o2Unit), unit));
         query.select(root).where(p);
         return em.createQuery(query).getResultList();
@@ -544,7 +609,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<String> query = cb.createQuery(String.class);
         Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
-        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), startTime.getTime(), endTime.getTime());
+        Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), startTime, endTime);
         query.select(root.get(AttendanceQywxDetail_.o2Unit)).where(p).distinct(true);
         return em.createQuery(query).getResultList();
     }
