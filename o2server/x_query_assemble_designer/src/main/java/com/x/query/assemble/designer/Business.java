@@ -15,6 +15,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
+import com.x.query.assemble.designer.factory.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -37,12 +38,6 @@ import com.x.base.core.project.tools.JarTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.express.Organization;
-import com.x.query.assemble.designer.factory.QueryFactory;
-import com.x.query.assemble.designer.factory.RevealFactory;
-import com.x.query.assemble.designer.factory.StatFactory;
-import com.x.query.assemble.designer.factory.StatementFactory;
-import com.x.query.assemble.designer.factory.TableFactory;
-import com.x.query.assemble.designer.factory.ViewFactory;
 import com.x.query.assemble.designer.jaxrs.table.ExceptionCompileError;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Enhance;
@@ -126,6 +121,15 @@ public class Business {
 			this.reveal = new RevealFactory(this);
 		}
 		return reveal;
+	}
+
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
 	}
 
 	public boolean controllable(EffectivePerson effectivePerson) throws Exception {
