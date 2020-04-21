@@ -2,6 +2,7 @@ package com.x.query.assemble.surface;
 
 import java.util.List;
 
+import com.x.query.assemble.surface.factory.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,10 +13,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
-import com.x.query.assemble.surface.factory.QueryFactory;
-import com.x.query.assemble.surface.factory.RevealFactory;
-import com.x.query.assemble.surface.factory.StatFactory;
-import com.x.query.assemble.surface.factory.ViewFactory;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
@@ -88,6 +85,15 @@ public class Business {
 			this.reveal = new RevealFactory(this);
 		}
 		return reveal;
+	}
+
+	private ProcessFactory process;
+
+	public ProcessFactory process() throws Exception {
+		if (null == this.process) {
+			this.process = new ProcessFactory(this);
+		}
+		return process;
 	}
 
 	@SuppressWarnings("unchecked")

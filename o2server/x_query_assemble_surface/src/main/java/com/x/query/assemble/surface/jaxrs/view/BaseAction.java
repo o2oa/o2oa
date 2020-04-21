@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -42,16 +45,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 			if ((null != element) && (null != element.getObjectValue())) {
 				plan = (Plan) element.getObjectValue();
 			} else {
-				plan = this.accessPlan(view, runtime);
+				plan = this.dealPlan(business, view, runtime);
 				business.cache().put(new Element(cacheKey, plan));
 			}
 		} else {
-			plan = this.accessPlan(view, runtime);
+			plan = this.dealPlan(business, view, runtime);
 		}
 		return plan;
 	}
 
-	private Plan accessPlan(View view, Runtime runtime) throws Exception {
+	private Plan dealPlan(Business business, View view, Runtime runtime) throws Exception {
 		Plan plan = null;
 		switch (StringUtils.trimToEmpty(view.getType())) {
 		case View.TYPE_CMS:
@@ -62,6 +65,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			break;
 		default:
 			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+			this.setProcessEdition(business, processPlatformPlan);
 			processPlatformPlan.runtime = runtime;
 			processPlatformPlan.access();
 			plan = processPlatformPlan;
@@ -73,7 +77,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return plan;
 	}
 
-	private List<String> fetchBundle(View view, Runtime runtime) throws Exception {
+	private void setProcessEdition(Business business, ProcessPlatformPlan processPlatformPlan) throws Exception {
+		if(!processPlatformPlan.where.processList.isEmpty()){
+			List<String> _process_ids = ListTools.extractField(processPlatformPlan.where.processList, Process.id_FIELDNAME, String.class,
+					true, true);
+			List<Process> processList = business.process().listObjectWithProcess(_process_ids, true);
+			List<ProcessPlatformPlan.WhereEntry.ProcessEntry> listProcessEntry = gson.fromJson(gson.toJson(processList),
+					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>(){}.getType());
+			if(!listProcessEntry.isEmpty()) {
+				processPlatformPlan.where.processList = listProcessEntry;
+			}
+		}
+	}
+
+	private List<String> dealBundle(Business business, View view, Runtime runtime) throws Exception {
 		List<String> os = null;
 		switch (StringUtils.trimToEmpty(view.getType())) {
 		case View.TYPE_CMS:
@@ -83,6 +100,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			break;
 		default:
 			ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+			this.setProcessEdition(business, processPlatformPlan);
 			processPlatformPlan.runtime = runtime;
 			os = processPlatformPlan.fetchBundles();
 			break;
@@ -99,11 +117,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			if ((null != element) && (null != element.getObjectValue())) {
 				os = (List<String>) element.getObjectValue();
 			} else {
-				os = this.fetchBundle(view, runtime);
+				os = this.dealBundle(business, view, runtime);
 				business.cache().put(new Element(cacheKey, os));
 			}
 		} else {
-			os = this.fetchBundle(view, runtime);
+			os = this.dealBundle(business, view, runtime);
 		}
 		return os;
 	}
