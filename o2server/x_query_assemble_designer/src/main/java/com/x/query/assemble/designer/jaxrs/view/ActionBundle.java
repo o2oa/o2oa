@@ -61,6 +61,7 @@ class ActionBundle extends BaseAction {
 				break;
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+				this.setProcessEdition(business, processPlatformPlan);
 				processPlatformPlan.runtime = runtime;
 				os = processPlatformPlan.fetchBundles();
 				break;
