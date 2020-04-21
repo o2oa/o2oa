@@ -160,6 +160,10 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
                         detail.setO2Unit(unit);
                         detail.setO2User(person.getDistinguishedName());
                     }
+                    //设置正常的类型
+                    if (StringUtils.isEmpty(detail.getException_type())){
+                        detail.setException_type(AttendanceQywxDetail.EXCEPTION_TYPE_NORMAL);
+                    }
                     emc.persist(detail);
                 }
                 emc.commit();
@@ -193,9 +197,7 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
             Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
-            long start = fromDate.getTime();
-            long end = toDate.getTime();
-            Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start, end);
+            Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), fromDate, toDate);
             query.select(root).where(p);
             List<AttendanceQywxDetail> detailList = em.createQuery(query).getResultList();
             //先删除
