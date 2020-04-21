@@ -91,7 +91,7 @@ public class ProcessFactory extends ElementFactory {
 			return null;
 		}
 		Process o = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(application, edition);
+		String cacheKey = ApplicationCache.concreteCacheKey(application, "e:" + edition);
 		Element element = cache.get(cacheKey);
 		if (null != element) {
 			if (null != element.getObjectValue()) {
