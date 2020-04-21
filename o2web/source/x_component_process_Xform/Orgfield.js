@@ -29,7 +29,10 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
                     this.descriptionNode.setStyle("display", "none");
                     this.clickSelect();
                     ev.stopPropagation();
-                }.bind(this)
+                }.bind(this),
+                "click" : function (ev) {
+                    ev.stopPropagation();
+                }
             });
         }
     },
@@ -196,7 +199,11 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect();
+                        ev.stopPropagation();
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 }
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
@@ -237,7 +244,11 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 		if( !this.readonly ) {
 			this.node.setStyle("cursor" , "pointer");
 			this.node.addEvents({
-				"click": this.clickSelect.bind(this)
+				"click": function (ev) {
+                    this.clickSelect();
+                    ev.stopPropagation();
+                }.bind(this)
+                //this.clickSelect.bind(this)
 			});
             if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
                 this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
@@ -254,7 +265,11 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             if (this.iconNode){
                 this.iconNode.setStyle("cursor" , "pointer");
                 this.iconNode.addEvents({
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect();
+                        ev.stopPropagation();
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 });
 			}
 
