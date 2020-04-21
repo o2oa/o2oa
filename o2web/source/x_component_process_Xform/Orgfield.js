@@ -27,12 +27,8 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
-                    ev.stopPropagation();
-                }.bind(this),
-                "click" : function (ev) {
-                    ev.stopPropagation();
-                }
+                    this.clickSelect( ev );
+                }.bind(this)
             });
         }
     },
@@ -200,8 +196,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
                 "styles": this.form.css[this.iconStyle],
                 "events": {
                     "click": function (ev) {
-                        this.clickSelect();
-                        ev.stopPropagation();
+                        this.clickSelect( ev );
                     }.bind(this)
                     //this.clickSelect.bind(this)
                 }
@@ -245,8 +240,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 			this.node.setStyle("cursor" , "pointer");
 			this.node.addEvents({
 				"click": function (ev) {
-                    this.clickSelect();
-                    ev.stopPropagation();
+                    this.clickSelect( ev );
                 }.bind(this)
                 //this.clickSelect.bind(this)
 			});
@@ -266,8 +260,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
                 this.iconNode.setStyle("cursor" , "pointer");
                 this.iconNode.addEvents({
                     "click": function (ev) {
-                        this.clickSelect();
-                        ev.stopPropagation();
+                        this.clickSelect( ev );
                     }.bind(this)
                     //this.clickSelect.bind(this)
                 });
@@ -507,8 +500,9 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 	_loadValue: function(){
 		this._setValue(this.getValue());
 	},
-	clickSelect: function(){
-		this.validationMode();
+	clickSelect: function( ev ){
+        debugger;
+        this.validationMode();
 		var count = (this.json.count) ? this.json.count : 0;
 
 		var selectType = typeOf( this.json.selectType ) == "array" ? this.json.selectType : [this.json.selectType];
@@ -575,7 +569,11 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 		};
         if( this.form.json.selectorStyle )options = Object.merge( options, this.form.json.selectorStyle );
 
-		var selector = new MWF.O2Selector(this.form.app.content, options);
+        if( this.selector && this.selector.loading ) {
+        }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+        }else{
+            this.selector = new MWF.O2Selector(this.form.app.content, options);
+        }
 	},
     _loadStyles: function(){
         if (this.readonly || this.json.isReadonly){

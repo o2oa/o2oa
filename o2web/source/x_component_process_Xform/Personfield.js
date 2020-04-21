@@ -50,12 +50,8 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
-                    ev.stopPropagation();
-                }.bind(this),
-                "click" : function (ev) {
-                    ev.stopPropagation();
-                }
+                    this.clickSelect( ev );
+                }.bind(this)
             });
         }
     },
@@ -384,9 +380,14 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
 
-	clickSelect: function(){
+	clickSelect: function( ev ){
+        debugger;
         var options = this.getOptions();
-        var selector = new MWF.O2Selector(this.form.app.content, options);
+        if( this.selector && this.selector.loading ) {
+        }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+        }else{
+            this.selector = new MWF.O2Selector(this.form.app.content, options);
+        }
 	},
     resetData: function(){
         var v = this.getValue();
@@ -525,8 +526,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 "styles": this.form.css[this.iconStyle],
                 "events": {
                     "click": function (ev) {
-                        this.clickSelect();
-                        ev.stopPropagation();
+                        this.clickSelect( ev );
                     }.bind(this)
                     //this.clickSelect.bind(this)
                 }
@@ -566,8 +566,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "MWFType": this.json.type,
             "events": {
                 "click": function (ev) {
-                    this.clickSelect();
-                    ev.stopPropagation();
+                    this.clickSelect( ev );
                 }.bind(this)
                 //this.clickSelect.bind(this)
             }
@@ -576,8 +575,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "styles": this.form.css[this.iconStyle],
             "events": {
                 "click": function (ev) {
-                    this.clickSelect();
-                    ev.stopPropagation();
+                    this.clickSelect( ev );
                 }.bind(this)
                 //this.clickSelect.bind(this)
             }

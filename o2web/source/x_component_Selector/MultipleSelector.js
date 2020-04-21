@@ -22,6 +22,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         "injectToBody" : false //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
     },
     initialize: function(container, options){
+        this.active = true;
         this.setOptions(options);
 
         this.path = "/x_component_Selector/$Selector/";
@@ -376,6 +377,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.fireEvent("close");
         this.node.destroy();
         (this.maskRelativeNode || this.container).unmask();
+        this.active = false;
         MWF.release(this);
         delete this;
     },
