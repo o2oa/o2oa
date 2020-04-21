@@ -9,8 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,9 +19,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sf.ehcache.Element;
 
@@ -71,10 +73,18 @@ class ActionListWithPerson extends BaseAction {
 		List<Person> os = business.person().pick(wi.getPersonList());
 		List<String> groupIds = new ArrayList<>();
 		List<String> personIds = new ArrayList<>();
+		List<String> unitIds = new ArrayList<>();
 		for (Person person : os) {
 			personIds.add(person.getId());
 			groupIds.addAll(business.group().listSupNestedWithPerson(person.getId()));
 		}
+		groupIds = ListTools.trim(groupIds, true, true);
+		List<Identity> identities = this.identities(business, personIds);
+		for (Identity o : identities) {
+			unitIds.add(o.getUnit());
+		}
+		unitIds = ListTools.trim(unitIds, true, true);
+		groupIds.addAll(this.groupsContainsUnit(business, unitIds));
 		groupIds = ListTools.trim(groupIds, true, true);
 		EntityManager em = business.entityManagerContainer().get(Role.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -86,6 +96,16 @@ class ActionListWithPerson extends BaseAction {
 		Wo wo = new Wo();
 		wo.getRoleList().addAll(business.role().listRoleDistinguishedNameSorted(roleIds));
 		return wo;
+	}
+
+	private List<Identity> identities(Business business, List<String> personIds) throws Exception {
+		return business.entityManagerContainer().fetchIn(Identity.class,
+				ListTools.toList(Identity.unit_FIELDNAME), Identity.person_FIELDNAME,
+				personIds);
+	}
+
+	private List<String> groupsContainsUnit(Business business, List<String> units) throws Exception {
+		return business.entityManagerContainer().idsIn(Group.class, Group.unitList_FIELDNAME, units);
 	}
 
 }

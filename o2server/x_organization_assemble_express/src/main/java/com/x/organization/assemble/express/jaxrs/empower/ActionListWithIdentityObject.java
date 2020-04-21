@@ -203,8 +203,6 @@ class ActionListWithIdentityObject extends BaseAction {
 				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER),
 						cb.equal(root.get(Empower_.process), wi.getProcess())));
 		p = cb.and(p, root.get(Empower_.fromIdentity).in(names));
-		// p = cb.and(p, cb.isMember(root.get(Empower_.fromIdentity),
-		// cb.literal(names)));
 		p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
 		p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
 				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
