@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,10 +108,7 @@ class V2Retract extends BaseAction {
 				throw new ExceptionRetractNoneTaskCompleted(work.getTitle(), work.getId());
 			}
 
-			taskCompleted = emc.firstEqualAndEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-					workLog.getJob(), TaskCompleted.activityToken_FIELDNAME, workLog.getFromActivityToken(),
-					TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-
+			taskCompleted = findLastTaskCompleted(business);
 			if (null == taskCompleted) {
 				throw new ExceptionNoTaskCompletedToRetract(workLog.getId(), effectivePerson.getDistinguishedName());
 			}
@@ -127,6 +125,14 @@ class V2Retract extends BaseAction {
 
 		return result;
 
+	}
+
+	private TaskCompleted findLastTaskCompleted(Business business) throws Exception {
+		List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
+				TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
+				workLog.getFromActivityToken(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
+		return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
+				.orElse(null);
 	}
 
 	private void retract() throws Exception {
