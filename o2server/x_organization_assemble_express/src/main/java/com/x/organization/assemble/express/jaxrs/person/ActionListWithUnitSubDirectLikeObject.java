@@ -9,8 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,12 +20,13 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.jaxrs.person.ActionListWithUnitSubDirectObject.Wo;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 import com.x.organization.core.entity.Unit;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sf.ehcache.Element;
 
