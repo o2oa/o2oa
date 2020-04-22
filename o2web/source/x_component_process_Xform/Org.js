@@ -50,12 +50,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
-                    ev.stopPropagation();
-                }.bind(this),
-                "click" : function (ev) {
-                    ev.stopPropagation();
-                }
+                    this.clickSelect( ev );
+                }.bind(this)
             });
         }
     },
@@ -305,19 +301,27 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
 
-    clickSelect: function(){
+    clickSelect: function( ev ){
         if (this.readonly)return;
         if( layout.mobile ){
             setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                 var options = this.getOptions();
                 if(options){
-                    var selector = new MWF.O2Selector(this.form.app.content, options);
+                    if( this.selector && this.selector.loading ) {
+                    }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+                    }else{
+                        this.selector = new MWF.O2Selector(this.form.app.content, options);
+                    }
                 }
             }.bind(this), 100 )
         }else{
             var options = this.getOptions();
             if(options){
-                var selector = new MWF.O2Selector(this.form.app.content, options);
+                if( this.selector && this.selector.loading ) {
+                }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+                }else {
+                    this.selector = new MWF.O2Selector(this.form.app.content, options);
+                }
             }
         }
     },
@@ -549,8 +553,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 "styles": this.form.css[this.iconStyle],
                 "events": {
                     "click": function (ev) {
-                        this.clickSelect();
-                        ev.stopPropagation();
+                        this.clickSelect(ev);
                     }.bind(this)
                     //this.clickSelect.bind(this)
                 }
@@ -590,8 +593,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             "MWFType": this.json.type,
             "events": {
                 "click": function (ev) {
-                    this.clickSelect();
-                    ev.stopPropagation();
+                    this.clickSelect(ev);
                 }.bind(this)
                 //this.clickSelect.bind(this)
             }
@@ -601,8 +603,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 "styles": this.form.css[this.iconStyle],
                 "events": {
                     "click": function (ev) {
-                        this.clickSelect();
-                        ev.stopPropagation();
+                        this.clickSelect(ev);
                     }.bind(this)
                     //this.clickSelect.bind(this)
                 }
