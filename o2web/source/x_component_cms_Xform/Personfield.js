@@ -115,6 +115,10 @@ MWF.xApplication.cms.Xform.Personfield = MWF.CMSPersonfield =  new Class({
 
 			}.bind(this)
 		};
-		var selector = new MWF.O2Selector(this.form.app.content, options);
+		if( this.selector && this.selector.loading ) {
+		}else if( this.selector && this.selector.selector && this.selector.selector.active ){
+		}else {
+			this.selector = new MWF.O2Selector(this.form.app.content, options);
+		}
 	}
 }); 

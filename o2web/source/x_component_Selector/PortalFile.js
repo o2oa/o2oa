@@ -80,6 +80,7 @@ MWF.xApplication.Selector.PortalFile = new Class({
         this.items.each(function(item){
             item.destroy();
         });
+        this.active = false;
 
         MWF.release(this);
         delete this;
