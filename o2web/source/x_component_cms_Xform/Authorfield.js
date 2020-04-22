@@ -31,7 +31,10 @@ MWF.xApplication.cms.Xform.Authorfield = MWF.CMSAuthorfield =  new Class({
 		if( !this.readonly ) {
 			this.node.setStyle("cursor" , "pointer");
 			this.node.addEvents({
-				"click": this.clickSelect.bind(this)
+				"click": function (ev) {
+					this.clickSelect(ev);
+				}.bind(this)
+				//this.clickSelect.bind(this)
 			});
 			if (this.json.showIcon!='no')this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
 				"styles": {
@@ -44,7 +47,10 @@ MWF.xApplication.cms.Xform.Authorfield = MWF.CMSAuthorfield =  new Class({
 			if (this.iconNode){
                 this.iconNode.setStyle("cursor" , "pointer");
                 this.iconNode.addEvents({
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+						this.clickSelect(ev);
+					}.bind(this)
+					//this.clickSelect.bind(this)
                 });
 			}
 		}

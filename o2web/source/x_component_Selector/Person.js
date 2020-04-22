@@ -35,6 +35,7 @@ MWF.xApplication.Selector.Person = new Class({
         "itemHeight" : 29
     },
     initialize: function(container, options){
+        this.active = true;
         this.setOptions(options);
 
         this.path = "/x_component_Selector/$Selector/";
@@ -403,6 +404,7 @@ MWF.xApplication.Selector.Person = new Class({
             window.clearInterval(this.maskInterval);
             this.maskInterval = null;
         }
+        this.active = false;
         MWF.release(this);
         delete this;
     },
