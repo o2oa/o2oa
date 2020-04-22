@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_work_web_view.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.muliba.fancyfilepickerlibrary.PicturePicker
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
@@ -33,6 +34,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.tbs.FileReaderActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.WorkNewActionItem
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.WorkControl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessDraftWorkData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkOpinionData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
@@ -52,6 +54,7 @@ import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.io.File
+import java.net.URLEncoder
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -66,12 +69,19 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         val WORK_WEB_VIEW_TITLE = "xbpm.work.web.view.title"
         val WORK_WEB_VIEW_WORK = "xbpm.work.web.view.work"
         val WORK_WEB_VIEW_WORK_COMPLETED = "xbpm.work.web.view.work.completed"
+        val WORK_WEB_VIEW_DRAFT = "xbpm.work.web.view.work.draft"
 
         fun start(work: String?, workCompleted: String?, title: String?):  Bundle {
             val bundle = Bundle()
             bundle.putString(WORK_WEB_VIEW_TITLE, title)
             bundle.putString(WORK_WEB_VIEW_WORK, work)
             bundle.putString(WORK_WEB_VIEW_WORK_COMPLETED, workCompleted)
+            return bundle
+        }
+
+        fun startDraft(draft: ProcessDraftWorkData?):  Bundle {
+            val bundle = Bundle()
+            bundle.putSerializable(WORK_WEB_VIEW_DRAFT, draft)
             return bundle
         }
     }
@@ -86,6 +96,7 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
     private  var workCompletedId = ""
     private  var isWorkCompleted = false
     private  var url = ""
+    private var draft: ProcessDraftWorkData? = null
 
     private var control: WorkControl? = null
     private var read: ReadData? = null
@@ -110,15 +121,34 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         title = intent.extras?.getString(WORK_WEB_VIEW_TITLE) ?: ""
         workId = intent.extras?.getString(WORK_WEB_VIEW_WORK) ?: ""
         workCompletedId = intent.extras?.getString(WORK_WEB_VIEW_WORK_COMPLETED) ?: ""
-
-        isWorkCompleted = !TextUtils.isEmpty(workCompletedId)
-
-        if (isWorkCompleted) {
-            url = APIAddressHelper.instance().getWorkCompletedUrl()
-            url = String.format(url, workCompletedId)
+        draft = if (intent.extras?.getSerializable(WORK_WEB_VIEW_DRAFT) != null){
+            intent.extras?.getSerializable(WORK_WEB_VIEW_DRAFT) as ProcessDraftWorkData
         } else {
-            url = APIAddressHelper.instance().getWorkUrlPre()
-            url = String.format(url, workId)
+            null
+        }
+
+        //草稿文档处理
+        if (draft != null) {
+            if (!TextUtils.isEmpty(draft!!.id)){
+                url = APIAddressHelper.instance().getProcessDraftWithIdUrl()
+                url = String.format(url, draft!!.id)
+            }else {
+                url = APIAddressHelper.instance().getProcessDraftUrl()
+                val json = O2SDKManager.instance().gson.toJson(draft)
+                XLog.debug("草稿对象:$json")
+                val enJson = URLEncoder.encode(json, "utf-8")
+                XLog.debug("草稿对象 encode:$enJson")
+                url = String.format(url, enJson)
+            }
+        }else {
+            isWorkCompleted = !TextUtils.isEmpty(workCompletedId)
+            if (isWorkCompleted) {
+                url = APIAddressHelper.instance().getWorkCompletedUrl()
+                url = String.format(url, workCompletedId)
+            } else {
+                url = APIAddressHelper.instance().getWorkUrlPre()
+                url = String.format(url, workId)
+            }
         }
         url += "&time=" + System.currentTimeMillis()
 
