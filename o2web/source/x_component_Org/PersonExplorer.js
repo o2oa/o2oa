@@ -687,7 +687,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             MWF.xDesktop.requireApp("Selector", "package", function(){
                 var options = {
                     "type": "person",
-                    "values": [this.data.superior],
+                    "values": (this.data.superior) ? [this.data.superior] : [],
                     "count": 1,
                     "onComplete": function(items){
                         this.data.superior = items[0].data.distinguishedName;
