@@ -8,6 +8,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessW
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessStartBo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessWorkData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
@@ -18,10 +19,10 @@ class StartProcessStepTwoPresenter : BasePresenterImpl<StartProcessStepTwoContra
             service.availableIdentityWithProcess(processId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler<List<ProcessWOIdentityJson>>({ list ->
+                    .subscribe(ResponseHandler<List<ProcessWOIdentityJson>> { list ->
                         XLog.debug("identities: $list")
                         mView?.loadCurrentPersonIdentity(list)
-                    }),
+                    },
                             ExceptionHandler(mView?.getContext(), { e -> mView?.loadCurrentPersonIdentityFail() }))
         }
     }
@@ -38,16 +39,44 @@ class StartProcessStepTwoPresenter : BasePresenterImpl<StartProcessStepTwoContra
                 service.startProcess(processId, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler<List<ProcessWorkData>>({ list ->
+                    .subscribe(ResponseHandler<List<ProcessWorkData>> { list ->
                         try {
                             mView?.startProcessSuccess(list[0].taskList[0].work)
                         } catch (e: Exception) {
                             XLog.error("", e)
                             mView?.startProcessFail("返回数据异常！${e.message}")
                         }
-                    }), ExceptionHandler(mView?.getContext(), { e ->
+                    }, ExceptionHandler(mView?.getContext()) { e ->
                         mView?.startProcessFail(e.message ?: "")
-                    }))
+                    })
+        }
+    }
+
+    override fun startDraft(title: String, identity: String, processId: String) {
+        if (TextUtils.isEmpty(identity) || TextUtils.isEmpty(processId)) {
+            mView?.startProcessFail("传入参数为空，无法启动流程, identity:$identity,processId:$processId")
+            return
+        }
+        val body = ProcessStartBo()
+        body.title = ""
+        body.identity = identity
+        getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service->
+            service.startDraft(processId, body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .o2Subscribe {
+                        onNext {
+                            if (it.data != null) {
+                                mView?.startDraftSuccess(it.data.work)
+                            }else {
+                                mView?.startDraftFail("打开草稿异常！")
+                            }
+                        }
+                        onError { e, _ ->
+                            XLog.error("", e)
+                            mView?.startDraftFail(e?.message ?: "")
+                        }
+                    }
         }
     }
 }

@@ -244,6 +244,19 @@ interface ProcessAssembleSurfaceService {
     fun getTask(@Path("taskId") taskId: String): Observable<ApiResponse<TaskData>>
 
 
+
+    /**
+     * 启动草稿
+     * @param processId
+     * *
+     * @param body
+     * *
+     * @return
+     */
+    @Headers("Content-Type:application/json;charset=UTF-8")
+    @POST("jaxrs/draft/process/{processId}")
+    fun startDraft(@Path("processId") processId: String, @Body body: ProcessStartBo): Observable<ApiResponse<ProcessDraftData>>
+
     /**
      * 启动流程
      * @param processId

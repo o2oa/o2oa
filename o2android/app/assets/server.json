@@ -1,7 +1,7 @@
 {
   "id" : "o2CenterServer",
-  "name" : "qywx",
-  "centerHost" : "qywx.o2oa.net",
+  "name" : "develop",
+  "centerHost" : "dev.o2oa.net",
   "centerContext" : "/x_program_center",
   "centerPort" : 20030,
   "httpProtocol" : "http"
