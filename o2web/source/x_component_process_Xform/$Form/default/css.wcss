@@ -258,14 +258,14 @@
     },
     "logTaskTextNode": {
         "margin-right": "10px",
-        "overflow": "hidden",
+        "overflow": "hidden"
         //"float": "left",
         //"margin-left": "28px"
     },
     "logTaskFloatTextNode": {
         "margin-right": "10px",
-        "overflow": "hidden",
-        "float": "left",
+        "overflow": "hidden"
+//        "float": "left",
         //"margin-left": "28px"
     },
     "logReadTextNode": {

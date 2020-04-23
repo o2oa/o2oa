@@ -103,16 +103,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
                     var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
-
-                    //var code = "return this.org.getDepartmentDuty({\"name\": \""+duty.name+"\", \"departmentName\": \""+par+"\"})";
                     var d = this.form.Macro.exec(code, this);
                     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
                     d.each(function(dd){if (dd) values.push(dd);});
-
-                    // code = "return this.org.getCompanyDuty({\"name\": \""+duty.name+"\", \"compName\": \""+par+"\"})";
-                    // d = this.form.Macro.exec(code, this);
-                    // if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    // d.each(function(dd){values.push(dd);});
                 }.bind(this));
             }
         }

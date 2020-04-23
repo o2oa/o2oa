@@ -407,6 +407,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             left = iconNode.getStyle("margin-left").toInt();
             left = left + 28;
         }
+        if( !nodeStyle ){
+            textNode.setStyle("margin-left",left+"px");
+        }
         var html;
         var company = "";
         if (!isTask){
@@ -1451,6 +1454,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             if (margin) iconNode.setStyle("margin-left", margin);
             left = iconNode.getStyle("margin-left").toInt();
             left = left + 28;
+        }
+        if( !nodeStyle ){
+            textNode.setStyle("margin-left",left+"px");
         }
         var html;
         var company = "";
