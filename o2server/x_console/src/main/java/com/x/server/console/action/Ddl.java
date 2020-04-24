@@ -50,8 +50,11 @@ public class Ddl {
 		if (StringUtils.equalsIgnoreCase(type, "dropDB")) {
 			flag = "dropDB";
 		}
-		if (StringUtils.equalsIgnoreCase(type, "retain")) {
-			flag = "retain";
+		if (StringUtils.equalsIgnoreCase(type, "refresh")) {
+			flag = "refresh";
+		}
+		if (StringUtils.equalsIgnoreCase(type, "add")) {
+			flag = "add";
 		}
 		List<String> containerEntityNames = new ArrayList<>();
 		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
@@ -63,13 +66,20 @@ public class Ddl {
 				persistence.getName());
 		EntityManagerImpl em = (EntityManagerImpl) emf.createEntityManager();
 		String[] arguments = new String[4];
+		File file = new File(Config.dir_local_temp_sql(true), flag + ".sql");
 		arguments[0] = "-schemaAction";
 		arguments[1] = flag;
 		arguments[2] = "-sql";
-		arguments[3] = Config.dir_local_temp_sql(true) + "/" + flag + ".sql";
+		arguments[3] = file.getAbsolutePath();
 		Options opts = new Options();
 		final String[] args = opts.setFromCmdLine(arguments);
 		MappingTool.run((JDBCConfiguration) em.getConfiguration(), args, opts, null);
+		em.close();
+		emf.close();
+		if (StringUtils.equalsIgnoreCase(flag, "build") || StringUtils.equalsIgnoreCase(flag, "createDB")
+				|| StringUtils.equalsIgnoreCase(flag, "dropDB")) {
+			logger.print("file : {}.", file.getAbsolutePath());
+		}
 		return true;
 	}
 

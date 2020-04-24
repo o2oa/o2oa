@@ -30,6 +30,39 @@ public class PersistenceXmlHelper {
 
 	}
 
+	public static List<String> directWrite(String path, List<String> classNames) throws Exception {
+		try {
+			Document document = DocumentHelper.createDocument();
+			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
+			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+					"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
+			persistence.addAttribute("version", "2.0");
+			for (String className : classNames) {
+				Element unit = persistence.addElement("persistence-unit");
+				unit.addAttribute("name", className);
+				unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+				Element provider = unit.addElement("provider");
+				provider.addText(PersistenceProviderImpl.class.getName());
+				Element mapped_element = unit.addElement("class");
+				mapped_element.addText(className);
+				Element sliceJpaObject_element = unit.addElement("class");
+				sliceJpaObject_element.addText("com.x.base.core.entity.SliceJpaObject");
+				Element jpaObject_element = unit.addElement("class");
+				jpaObject_element.addText("com.x.base.core.entity.JpaObject");
+			}
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding("UTF-8");
+			File file = new File(path);
+			FileUtils.touch(file);
+			XMLWriter writer = new XMLWriter(new FileWriter(file), format);
+			writer.write(document);
+			writer.close();
+			return classNames;
+		} catch (Exception e) {
+			throw new Exception("registContainerEntity error.className:" + ListTools.toStringJoin(classNames), e);
+		}
+	}
+	
 	public static void writeForDdl(String path) throws Exception {
 		try {
 			Document document = DocumentHelper.createDocument();
