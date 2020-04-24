@@ -46,15 +46,12 @@ public class Ddl {
 		String flag = "build";
 		if (StringUtils.equalsIgnoreCase(type, "createDB")) {
 			flag = "createDB";
-		}
-		if (StringUtils.equalsIgnoreCase(type, "dropDB")) {
+		} else if (StringUtils.equalsIgnoreCase(type, "dropDB")) {
 			flag = "dropDB";
-		}
-		if (StringUtils.equalsIgnoreCase(type, "refresh")) {
-			flag = "refresh";
-		}
-		if (StringUtils.equalsIgnoreCase(type, "add")) {
-			flag = "add";
+		} else if (StringUtils.equalsIgnoreCase(type, "drop")) {
+			flag = "drop";
+			// } else if (StringUtils.equalsIgnoreCase(type, "deleteTableContents")) {
+			// flag = "deleteTableContents";
 		}
 		List<String> containerEntityNames = new ArrayList<>();
 		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
@@ -65,21 +62,30 @@ public class Ddl {
 		OpenJPAEntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory("enhance",
 				persistence.getName());
 		EntityManagerImpl em = (EntityManagerImpl) emf.createEntityManager();
-		String[] arguments = new String[4];
-		File file = new File(Config.dir_local_temp_sql(true), flag + ".sql");
-		arguments[0] = "-schemaAction";
-		arguments[1] = flag;
-		arguments[2] = "-sql";
-		arguments[3] = file.getAbsolutePath();
+		String[] arguments = null;
+		String[] args = null;
 		Options opts = new Options();
-		final String[] args = opts.setFromCmdLine(arguments);
-		MappingTool.run((JDBCConfiguration) em.getConfiguration(), args, opts, null);
+		if (StringUtils.equals(flag, "build") || StringUtils.equals(flag, "drop")
+				|| StringUtils.equals(flag, "createDB") || StringUtils.equals(flag, "dropDB")) {
+			arguments = new String[4];
+			File file = new File(Config.dir_local_temp_sql(true), flag + ".sql");
+			arguments[0] = "-schemaAction";
+			arguments[1] = flag;
+			arguments[2] = "-sql";
+			arguments[3] = file.getAbsolutePath();
+			args = opts.setFromCmdLine(arguments);
+			MappingTool.run((JDBCConfiguration) em.getConfiguration(), args, opts, null);
+			logger.print("file : {}.", file.getAbsolutePath());
+		} else if (StringUtils.equals(flag, "deleteTableContents")) {
+			// arguments = new String[2];
+			// arguments[0] = "-schemaAction";
+			// arguments[1] = flag;
+			// args = opts.setFromCmdLine(arguments);
+			// MappingTool.run((JDBCConfiguration) em.getConfiguration(), args, opts, null);
+			// logger.print("delete all table contents.");
+		}
 		em.close();
 		emf.close();
-		if (StringUtils.equalsIgnoreCase(flag, "build") || StringUtils.equalsIgnoreCase(flag, "createDB")
-				|| StringUtils.equalsIgnoreCase(flag, "dropDB")) {
-			logger.print("file : {}.", file.getAbsolutePath());
-		}
 		return true;
 	}
 

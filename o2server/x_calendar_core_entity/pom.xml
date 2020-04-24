@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>${global.version}</version>
+		<version>5</version>
 	</parent>
 	<artifactId>x_calendar_core_entity</artifactId>
 	<packaging>jar</packaging>
