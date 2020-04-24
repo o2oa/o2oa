@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebFilter;
  */
 @WebFilter(urlPatterns = { 
 		"/jaxrs/document/cipher/*",
-		"/jaxrs/permission/manager*"
+		"/jaxrs/permission/management/*"
 }, asyncSupported = true )
 public class CmsJaxrsCipherFilter extends CipherManagerJaxrsFilter {
 
