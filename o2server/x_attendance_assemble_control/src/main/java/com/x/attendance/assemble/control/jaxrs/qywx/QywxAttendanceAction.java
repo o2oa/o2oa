@@ -86,14 +86,17 @@ public class QywxAttendanceAction  extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "查询企业微信打卡结果", action = ActionListQywxAttendanceDetail.class)
     @PUT
-    @Path("attendance/list")
+    @Path("attendance/list/{id}/next/{count}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void listDingdingAttendance(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+    public void listDingdingAttendance(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                       @JaxrsParameterDescribe("最后一条数据ID") @PathParam("id") String id,
+                                       @JaxrsParameterDescribe("每页显示的条目数量") @PathParam("count") Integer count,
+                                       JsonElement jsonElement) {
         ActionResult<List<ActionListQywxAttendanceDetail.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListQywxAttendanceDetail().execute(jsonElement);
+            result = new ActionListQywxAttendanceDetail().execute(id, count, jsonElement);
         }catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

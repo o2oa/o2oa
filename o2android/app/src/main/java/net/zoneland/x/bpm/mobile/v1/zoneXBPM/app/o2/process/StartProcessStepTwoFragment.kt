@@ -1,24 +1,20 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.View
-import android.view.ViewTreeObserver
-import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import kotlinx.android.synthetic.main.fragment_start_process_step_two.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.TaskWebViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessWOIdentityJson
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessDraftWorkData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import org.jetbrains.anko.dip
 
 
@@ -29,76 +25,48 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
     override fun layoutResId(): Int = R.layout.fragment_start_process_step_two
 
     companion object {
-        val PROCESS_ID_KEY = "processId"
-        val PROCESS_NAME_KEY = "processName"
-        fun newInstance(processId:String, processName:String): StartProcessStepTwoFragment {
+        const val PROCESS_ID_KEY = "processId"
+        const val PROCESS_NAME_KEY = "processName"
+        const val PROCESS_START_MODE_KEY = "startMode"
+        fun newInstance(processId:String, processName:String, defaultStartMode: String): StartProcessStepTwoFragment {
             val stepTwo = StartProcessStepTwoFragment()
             val bundle = Bundle()
             bundle.putString(PROCESS_ID_KEY, processId)
             bundle.putString(PROCESS_NAME_KEY, processName)
+            bundle.putString(PROCESS_START_MODE_KEY, defaultStartMode)
             stepTwo.arguments = bundle
             return stepTwo
         }
     }
-    val identityList = ArrayList<ProcessWOIdentityJson>()
-    var processId = ""
-    var processName = ""
-    var identity = ""
-//    var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+    private val identityList = ArrayList<ProcessWOIdentityJson>()
+    private var processId = ""
+    private var processName = ""
+    private var processStartMode = ""
+    private var identity = ""
     override fun initUI() {
         val startString = getString(R.string.title_activity_start_process_step_two)
         (activity as StartProcessActivity).setToolBarTitle(startString)
         processId = arguments?.getString(PROCESS_ID_KEY) ?: ""
         processName = arguments?.getString(PROCESS_NAME_KEY) ?: ""
+        processStartMode = arguments?.getString(PROCESS_START_MODE_KEY) ?: ""
         tv_start_process_step_two_process_title.text = "$startString-$processName"
         tv_start_process_step_two_time.text = DateHelper.nowByFormate("yyyy-MM-dd HH:mm")
-        btn_start_process_step_two_positive.setOnClickListener { startProcess() }
+        btn_start_process_step_two_positive.setOnClickListener {
+            if (processStartMode == O2.O2_Process_start_mode_draft){
+                startDraft()
+            }else {
+                startProcess()
+            }
+        }
         btn_start_process_step_two_cancel.setOnClickListener { (activity as StartProcessActivity).finish() }
-//        edit_start_process_step_two_title.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//                globalLayoutListener = this
-//                val screenHeight = activity.window.decorView.rootView.height
-//                val screenWidth = activity.window.decorView.rootView.width
-//                val rect = Rect()
-//                activity.window.decorView.getWindowVisibleDisplayFrame(rect)
-//                val height = screenHeight - (rect.bottom -rect.top)
-//                if (height > screenHeight/3) {
-//                    emptySpaceView(true, screenWidth, height)
-//                }else {
-//                    emptySpaceView(false)
-//                }
-//            }
-//        })
-
         mPresenter.loadCurrentPersonIdentityWithProcess(processId)
     }
 
     override fun onDestroyView() {
-//        if (globalLayoutListener!=null) {
-//            edit_start_process_step_two_title.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-//        }
         super.onDestroyView()
         XLog.debug("StartProcessStepTwoFragment onDestroyView...............")
     }
 
-    var emptyView: View ? = null
-
-    private fun emptySpaceView(isShow:Boolean, width:Int=-1, height:Int=-1){
-        XLog.debug("emptySpaceView $isShow, $width, $height")
-        if (isShow) {
-            if (emptyView ==null) {
-                emptyView = View(activity)
-                val param = LinearLayout.LayoutParams(width, height)
-                linear_start_process_step_two_content.addView(emptyView, param)
-            }
-            emptyView?.visible()
-            scroll_start_process_step_two.postDelayed({
-                scroll_start_process_step_two.fullScroll(View.FOCUS_DOWN)
-            }, 200)
-        }else {
-            emptyView?.gone()
-        }
-    }
 
     override fun loadCurrentPersonIdentity(list: List<ProcessWOIdentityJson>) {
         radio_group_process_step_two_department.removeAllViews()
@@ -137,8 +105,7 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
         val bundle = Bundle()
         bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
         bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, "拟稿")
-        (activity as StartProcessActivity).go<TaskWebViewActivity>(bundle)
-        (activity as StartProcessActivity).finish()
+        (activity as StartProcessActivity).goThenKill<TaskWebViewActivity>(bundle)
     }
 
     override fun startProcessFail(message:String) {
@@ -146,17 +113,24 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
         hideLoadingDialog()
     }
 
+    override fun startDraftSuccess(work: ProcessDraftWorkData) {
+        hideLoadingDialog()
+        (activity as StartProcessActivity).goThenKill<TaskWebViewActivity>(TaskWebViewActivity.startDraft(work))
+    }
 
+    override fun startDraftFail(message: String) {
+        hideLoadingDialog()
+        XToast.toastShort(activity, message)
+    }
 
     private fun startProcess() {
-//        var title = edit_start_process_step_two_title.text.toString()
-//        if (TextUtils.isEmpty(title)) {
-////            XToast.toastShort(activity, "请输入文件标题")
-////            return
-//            title = "无标题"
-//        }
         showLoadingDialog()
         mPresenter.startProcess("", identity, processId)
+    }
+
+    private fun startDraft() {
+        showLoadingDialog()
+        mPresenter.startDraft("", identity, processId)
     }
 
 }

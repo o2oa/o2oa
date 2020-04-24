@@ -625,6 +625,26 @@ public class DateTools {
 		return date;
 	}
 
+
+	/**
+	 * 时间戳转Unix时间戳
+	 * @param timestamp
+	 * @return
+	 */
+	public static long toUnixTimeStamp(long timestamp){
+		return timestamp/1000;
+	}
+
+	/**
+	 * Unix时间戳转时间戳
+	 * @param unixTimeStamp
+	 * @return
+	 */
+	public static long toTimestamp(long unixTimeStamp){
+		return unixTimeStamp*1000;
+	}
+
+
 	public static void main(String[] args) {
 		try {
 			Date today = new Date();

@@ -10,6 +10,8 @@ public class ProcessInfoData {
     private String alias;
     private String description;
 
+    private String defaultStartMode;	//默认启动方式,draft,instance
+
     public String getId() {
         return id;
     }
@@ -40,5 +42,13 @@ public class ProcessInfoData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getDefaultStartMode() {
+        return defaultStartMode;
+    }
+
+    public void setDefaultStartMode(String defaultStartMode) {
+        this.defaultStartMode = defaultStartMode;
     }
 }

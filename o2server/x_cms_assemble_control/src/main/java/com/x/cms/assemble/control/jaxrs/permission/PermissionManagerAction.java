@@ -19,7 +19,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-@Path("permission/manager")
+@Path("permission/management")
 @JaxrsDescribe("文档权限操作服务（管理员）")
 public class PermissionManagerAction extends StandardJaxrsAction {
 

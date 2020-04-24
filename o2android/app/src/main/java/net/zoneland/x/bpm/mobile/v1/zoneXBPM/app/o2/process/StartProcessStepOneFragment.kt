@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_start_process_step_one.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2CustomStyle
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPFragment
@@ -14,9 +15,11 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessWOIdentityJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ApplicationData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessDraftWorkData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessInfoData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
@@ -115,7 +118,12 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
     override fun loadCurrentPersonIdentity(list: List<ProcessWOIdentityJson>) {
         if (list.isNotEmpty() ) {
             if (list.size == 1) {
-                startProcess(list[0].distinguishedName)
+                //是否走草稿
+                if (clickProcess != null && clickProcess?.defaultStartMode == O2.O2_Process_start_mode_draft) {
+                    startDraft(list[0].distinguishedName)
+                }else {
+                    startProcess(list[0].distinguishedName)
+                }
             }else {
                 goToStepTwo()
             }
@@ -132,10 +140,7 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
 
     override fun startProcessSuccess(workId: String) {
         hideLoadingDialog()
-        val bundle = Bundle()
-        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
-        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, "拟稿")
-        (activity as StartProcessActivity).go<TaskWebViewActivity>(bundle)
+        (activity as StartProcessActivity).go<TaskWebViewActivity>(TaskWebViewActivity.start(workId, "", "拟稿"))
         (activity as StartProcessActivity).finish()
     }
 
@@ -144,9 +149,24 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
         XToast.toastShort(activity, message)
     }
 
+    override fun startDraftSuccess(work: ProcessDraftWorkData) {
+        hideLoadingDialog()
+        (activity as StartProcessActivity).goThenKill<TaskWebViewActivity>(TaskWebViewActivity.startDraft(work))
+    }
+
+    override fun startDraftFail(message: String) {
+        hideLoadingDialog()
+        XToast.toastShort(activity, message)
+    }
+
     private fun startProcess(identity: String) {
         //启动流程
         mPresenter.startProcess(identity, clickProcess!!.id)
+    }
+
+    private fun startDraft(identity: String) {
+        //启动草稿
+        mPresenter.startDraft(identity, clickProcess!!.id)
     }
 
     private fun onProcessItemClick(processInfoData: ProcessInfoData) {
@@ -158,7 +178,7 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
     private fun goToStepTwo() {
         hideLoadingDialog()
         if (clickProcess != null) {
-            val stepTwo = StartProcessStepTwoFragment.newInstance(clickProcess!!.id, clickProcess!!.name)
+            val stepTwo = StartProcessStepTwoFragment.newInstance(clickProcess!!.id, clickProcess!!.name, clickProcess?.defaultStartMode ?: "")
             (activity as StartProcessActivity).addFragment(stepTwo)
         }
     }

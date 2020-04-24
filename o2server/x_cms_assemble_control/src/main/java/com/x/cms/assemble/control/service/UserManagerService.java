@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.cms.core.entity.AppInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -527,6 +528,72 @@ public class UserManagerService {
 			}
 		} catch (Exception e) {
 			throw e;
+		}
+		return false;
+	}
+
+	public boolean hasCategoryManagerPermission( EffectivePerson person, String appId) throws Exception {
+		//xadmin或者Cipher
+		if( person.isManager() || person.isCipher() ){
+			return true;
+		}
+		if( StringUtils.equalsIgnoreCase("xadmin", person.getName() ) || StringUtils.equalsIgnoreCase("xadmin", person.getDistinguishedName() ) ){
+			return true;
+		}
+		UserManagerService userManagerService = new UserManagerService();
+		//Manager管理员
+		if( userManagerService.isHasPlatformRole( person.getDistinguishedName(), ThisApplication.ROLE_Manager )){
+			return true;
+		}
+		//CMS管理员
+		if( userManagerService.isHasPlatformRole( person.getDistinguishedName(), ThisApplication.ROLE_CMSManager )){
+			return true;
+		}
+
+		//查询用户是否为该栏目的管理者
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			AppInfo appInfo = emc.find( appId, AppInfo.class );
+			//是管理员
+			if( ListTools.isNotEmpty(appInfo.getManageablePersonList()) && ListTools.contains( appInfo.getManageablePersonList(), person.getDistinguishedName() )){
+				return true;
+			}
+			if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )){
+				List<String> unitNames = userManagerService.listUnitNamesWithPerson( person.getDistinguishedName() );
+				if( ListTools.isNotEmpty( unitNames )){
+					unitNames.retainAll( appInfo.getManageableUnitList() );
+					if( ListTools.isNotEmpty( unitNames )){
+						return true;
+					}
+				}
+			}
+			if( ListTools.isNotEmpty( appInfo.getManageableGroupList() )){
+				List<String> groupNames = userManagerService.listGroupNamesByPerson( person.getDistinguishedName() );
+				if( ListTools.isNotEmpty( groupNames )){
+					groupNames.retainAll( appInfo.getManageableGroupList() );
+					if( ListTools.isNotEmpty( groupNames )){
+						return true;
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+
+		return false;
+	}
+
+	public boolean hasAppInfoManagerPermission( EffectivePerson person ) throws Exception {
+		//系统管理员
+		if( person.isManager() || person.isCipher() ){
+			return true;
+		}
+		if( StringUtils.equalsIgnoreCase("xadmin", person.getName() ) || StringUtils.equalsIgnoreCase("xadmin", person.getDistinguishedName() ) ){
+			return true;
+		}
+		//CMS管理员
+		UserManagerService userManagerService = new UserManagerService();
+		if( userManagerService.isHasPlatformRole( person.getDistinguishedName(), ThisApplication.ROLE_CMSManager )){
+			return true;
 		}
 		return false;
 	}

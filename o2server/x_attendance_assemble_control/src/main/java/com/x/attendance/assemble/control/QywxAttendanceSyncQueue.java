@@ -1,7 +1,9 @@
 package com.x.attendance.assemble.control;
 
 import com.x.attendance.assemble.control.exception.DingDingRequestException;
-import com.x.attendance.entity.*;
+import com.x.attendance.entity.AttendanceQywxDetail;
+import com.x.attendance.entity.AttendanceQywxDetail_;
+import com.x.attendance.entity.DingdingQywxSyncRecord;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,11 +16,11 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.base.core.project.x_organization_assemble_control;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -26,8 +28,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncRecord> {
@@ -76,8 +80,8 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
 
                 if(ListTools.isNotEmpty(qywxUsers)){
                     QywxPost post = new QywxPost();
-                    post.setStarttime(fromDate.getTime());
-                    post.setEndtime(toDate.getTime());
+                    post.setStarttime(DateTools.toUnixTimeStamp(fromDate.getTime()));
+                    post.setEndtime(DateTools.toUnixTimeStamp(toDate.getTime()));
                     post.setUseridlist(qywxUsers);
                     post.setOpencheckindatatype(3);//全部打卡信息
                     logger.info("企业微信 post ：" + post.toString());
@@ -85,7 +89,7 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
                     logger.info("返回结果："+result.toString());
                     if (result.errcode == 0) {
                         List<QywxResultItem> resultList = result.getCheckindata();
-                        saveQywxAttendance(resultList);
+                        saveQywxAttendance(resultList, list);
                         saveNumber += resultList.size();
                     } else {
                         //请求结果异常 结束
@@ -112,21 +116,78 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
         }
         logger.info("结束 插入："+saveNumber+" 条");
 
+        boolean hasNextDate = true;
+        Date statisticDate = fromDate;
+        while (hasNextDate) {
+            logger.info("发起企业微信考勤数据统计， date:"+ DateTools.format(statisticDate));
+            ThisApplication.personQywxStatisticQueue.send(statisticDate);
+            ThisApplication.unitQywxStatisticQueue.send(statisticDate);
+            if (!isSameDay(statisticDate, toDate)) {
+                statisticDate = DateTools.addDay(statisticDate, 1);
+            }else {
+                hasNextDate = false;
+            }
+        }
+        logger.info("发起数据统计程序 完成。。。。。。。。。。");
 
     }
 
-    private void saveQywxAttendance(List<QywxResultItem> resultList) throws Exception {
+    private boolean isSameDay(Date startDate, Date endDate) {
+        Calendar start = Calendar.getInstance();
+        start.setTime( startDate );
+        Calendar end = Calendar.getInstance();
+        end.setTime(endDate);
+        return (start.get(Calendar.YEAR) == end.get(Calendar.YEAR) && start.get(Calendar.DAY_OF_YEAR) == end.get(Calendar.DAY_OF_YEAR));
+    }
+
+    private void saveQywxAttendance(List<QywxResultItem> resultList, List<Person> personList) throws Exception {
         if (resultList != null && !resultList.isEmpty()) {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                Business business = new Business(emc);
                 emc.beginTransaction(AttendanceQywxDetail.class);
                 for (int i = 0; i < resultList.size(); i++) {
                     QywxResultItem item = resultList.get(i);
                     AttendanceQywxDetail detail = QywxResultItem.copier.copy(item);
+                    if (detail.getCheckin_time() > 0) {
+                        long timestamp = DateTools.toTimestamp(detail.getCheckin_time());
+                        detail.setCheckin_time_date(new Date(timestamp));
+                    }
+                    //添加o2组织和用户
+                    Optional<Person> first = personList.stream().filter(p -> item.userid.equals(p.getQiyeweixinId())).findFirst();
+                    if (first.isPresent()) {
+                        Person person = first.get();
+                        String unit = getUnitWithPerson(person.getDistinguishedName(), business);
+                        detail.setO2Unit(unit);
+                        detail.setO2User(person.getDistinguishedName());
+                    }
+                    //设置正常的类型
+                    if (StringUtils.isEmpty(detail.getException_type())){
+                        detail.setException_type(AttendanceQywxDetail.EXCEPTION_TYPE_NORMAL);
+                    }
                     emc.persist(detail);
                 }
                 emc.commit();
             }
         }
+    }
+
+    private String getUnitWithPerson(String person, Business business) throws Exception {
+        String result = null;
+        Integer level = 0;
+        Unit unit = null;
+        List<String> unitNames = business.organization().unit().listWithPerson( person );
+        if( ListTools.isNotEmpty( unitNames ) ) {
+            for( String unitName : unitNames ) {
+                if( StringUtils.isNotEmpty( unitName ) && !"null".equals( unitName ) ) {
+                    unit = business.organization().unit().getObject( unitName );
+                    if( level < unit.getLevel() ) {
+                        level = unit.getLevel();
+                        result = unitName;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     private void deleteQywxAttendance(Date fromDate, Date toDate) throws Exception {
@@ -136,9 +197,7 @@ public class QywxAttendanceSyncQueue  extends AbstractQueue<DingdingQywxSyncReco
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<AttendanceQywxDetail> query = cb.createQuery(AttendanceQywxDetail.class);
             Root<AttendanceQywxDetail> root = query.from(AttendanceQywxDetail.class);
-            long start = fromDate.getTime();
-            long end = toDate.getTime();
-            Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time), start, end);
+            Predicate p = cb.between(root.get(AttendanceQywxDetail_.checkin_time_date), fromDate, toDate);
             query.select(root).where(p);
             List<AttendanceQywxDetail> detailList = em.createQuery(query).getResultList();
             //先删除

@@ -93,6 +93,24 @@ class APIAddressHelper private constructor() {
     }
 
     /**
+     * 流程草稿打开的url
+     */
+    fun getProcessDraftUrl(): String {
+        return webServerData?.let {
+            "$httpHead${webServerData?.host}:${webServerData?.port}/x_desktop/workmobilewithaction.html?draft=%s"
+        } ?: ""
+    }
+
+    /**
+     * 流程草稿打开的url
+     */
+    fun getProcessDraftWithIdUrl(): String {
+        return webServerData?.let {
+            "$httpHead${webServerData?.host}:${webServerData?.port}/x_desktop/workmobilewithaction.html?draftid=%s"
+        } ?: ""
+    }
+
+    /**
      * 查看帖子的url
      * @param subjectId 帖子id
      * @param page 评论页数
