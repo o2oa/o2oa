@@ -38,13 +38,13 @@ MWF.xApplication.cms.Column.Main = new Class({
         }).inject(this.content);
     },
     reload: function(appType, callback){
-        if( appType ){
+        // if( appType ){
             this.reloadTop(appType, callback);
-        }else{
-            this.reloadTop();
-            this.columnContentAreaNode.empty();
-            this.createColumnNodes(callback);
-        }
+        // }else{
+        //     this.reloadTop();
+            // this.columnContentAreaNode.empty();
+            // this.createColumnNodes(callback);
+        // }
     },
     loadApplicationContent: function () {
         //this.columnAreaNode = new Element("div", {
