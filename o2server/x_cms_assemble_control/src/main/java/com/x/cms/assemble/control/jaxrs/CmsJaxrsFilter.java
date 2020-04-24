@@ -31,13 +31,13 @@ import javax.servlet.annotation.WebFilter;
         "/jaxrs/surface/appdict/*",
         "/jaxrs/script/*",
         "/jaxrs/uuid/*",
-        "/jaxrs/docpermission/*",
         "/jaxrs/viewrecord/*",
         "/jaxrs/searchfilter/*",
         "/jaxrs/templateform/*",
         "/jaxrs/input/*",
         "/jaxrs/output/*",
         "/jaxrs/permission/*",
+        "/jaxrs/docpermission/*",
         "/jaxrs/comment/*",
         "/servlet/*"
 }, asyncSupported = true)
