@@ -51,7 +51,16 @@ public class ActionSave extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		
+
+		//判断用户是否有权限来进行分类的管理
+		if (check) {
+			if( !userManagerService.hasCategoryManagerPermission( effectivePerson, wi.getAppId() ) ){
+				check = false;
+				Exception exception = new ExceptionCategoryInfoProcess("用户操作权限不足，无法在此栏目中管理分类信息。" );
+				result.error(exception);
+			}
+		}
+
 		if (check) {
 			if ( StringUtils.isEmpty( identityName ) && !"xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
 				try {
