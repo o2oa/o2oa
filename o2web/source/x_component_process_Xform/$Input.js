@@ -203,7 +203,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 //				"left": "-18px"
 //			});
 //		}
-        if (!this.readonly){
+        if (!this.readonly && !this.json.isReadonly ){
             this.loadDescription();
         }
 	},
