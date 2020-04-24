@@ -225,7 +225,7 @@
 		<tstamp>
 			<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss"/>
 		</tstamp>
-		<echo file="${targetdir}/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
+		<echo file="${targetdir}/o2server/version.o2">{"version":"${VERSION}","date":"${TODAY}"}</echo>
 	</target>
 	<target name="zip_windows">
 		<zip encoding="utf-8" destfile="${preName}-${VERSION}-windows.zip" update="false">
