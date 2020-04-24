@@ -40,7 +40,6 @@ public class ActionListDDAttendanceDetail extends BaseAction {
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             Wi wi = this.convertToWrapIn(jsonElement , Wi.class);
-            logger.info("传入参数："+wi.toString());
             if (StringUtils.isEmpty(wi.getYear())) {
                 throw new TimeEmptyException();
             }
@@ -61,11 +60,8 @@ public class ActionListDDAttendanceDetail extends BaseAction {
                     endDay = getEndDay(wi.getYear(), wi.getMonth(), wi.getDay());
                 }
             }
-            logger.info("startDay:"+DateTools.format(startDay));
-            logger.info("endDay:"+DateTools.format(endDay));
             BetweenTerms betweenTerms = new BetweenTerms();
             betweenTerms.put("userCheckTime", ListTools.toList(startDay.getTime(), endDay.getTime()));
-            logger.info("between :"+betweenTerms.toString());
             String id = EMPTY_SYMBOL;
             /** 如果不是空位标志位 */
             if (!StringUtils.equals(EMPTY_SYMBOL, flag)) {
@@ -80,7 +76,6 @@ public class ActionListDDAttendanceDetail extends BaseAction {
                 if (isTimeResultEnable(wi.getTimeResult())) {
                     equals.put("timeResult", wi.getTimeResult());
                 }
-                logger.info("equals :"+equals.toString());
                 result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null,
                         null, null, null, null, null, betweenTerms, true, DESC);
             }
