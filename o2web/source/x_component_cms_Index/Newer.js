@@ -469,7 +469,15 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 //this.app.refreshAll();
                 this.app.notice(this.lp.Started, "success");
                 //    this.app.processConfig();
-            }.bind(this), null);
+            }.bind(this), function(xhr, text, error){
+                if( xhr && xhr.response && typeOf(xhr.response)==="string" ){
+                    try{
+                        var eObj = JSON.parse(xhr.response);
+                        this.app.notice( eObj.message, "error");
+                    }catch (e) {}
+                }
+                if( this.mask )this.mask.hide();
+            }.bind(this));
         }
     },
     _openDocument: function(id,el){
