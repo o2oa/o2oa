@@ -1350,7 +1350,7 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 		var _self = this;
 		this.node = new Element("div.viewNaviNode", {
 			"styles": this.css.viewNaviNode,
-			"text" : this.isDefault ? this.app.lp.defaultView : this.data.showName
+			"text" : (this.isDefault && !this.data.showName) ? this.app.lp.defaultView : this.data.showName
 		}).inject(this.container);
 
 		this.node.addEvents({
