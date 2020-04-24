@@ -1,18 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>o2oa</groupId>
+	<artifactId>o2server</artifactId>
+	<version>5</version>
+	<packaging>pom</packaging>
 	<properties>
-		<global.version>4.3.5</global.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8
 		</project.reporting.outputEncoding>
 	</properties>
-	<groupId>o2oa</groupId>
-	<artifactId>o2server</artifactId>
-	<version>${global.version}</version>
-	<packaging>pom</packaging>
 	<modules>
 		<module>x_base_core_project</module>
 		<!-- 顺序 -->
@@ -735,142 +734,147 @@
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_okr_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
+			</dependency>
+			<dependency>
+				<groupId>o2oa</groupId>
+				<artifactId>x_jpush_core_entity</artifactId>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_report_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_assemble_control</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_teamwork_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_workschedu_core_entity</artifactId>
-				<version>${global.version}</version>
+				<version>5</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
