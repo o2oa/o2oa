@@ -2519,18 +2519,21 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             "value" : "",
             "text" : this.lp.selectProcessApp
         }).inject( this.processAppSelect );
-        new Element( "option" ,　{
-            "value" : "",
-            "text" : this.lp.noProcess
-        }).inject( this.processAppSelect );
         MWF.Actions.get("x_processplatform_assemble_designer").listApplication( null, function( json ){
-            json.data.each( function( d ){
-                var opt = new Element( "option" ,　{
-                    "value" : d.id,
-                    "text" : d.name
+            if( json.data.length === 0 ){
+                new Element( "option" ,　{
+                    "value" : "",
+                    "text" : this.lp.noProcess
                 }).inject( this.processAppSelect );
-                if( d.id == appId )opt.selected = true;
-            }.bind(this))
+            }else{
+                json.data.each( function( d ){
+                    var opt = new Element( "option" ,　{
+                        "value" : d.id,
+                        "text" : d.name
+                    }).inject( this.processAppSelect );
+                    if( d.id == appId )opt.selected = true;
+                }.bind(this))
+            }
         }.bind(this));
         this.processAppSelect.addEvent( "change" , function( ev ){
             var app = this.getSelectProcessApp();
