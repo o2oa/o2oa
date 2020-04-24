@@ -12,6 +12,7 @@ public class ThisApplication {
 	protected static Context context;
 	
 	public static final String ROLE_CMSManager = "CMSManager@CMSManagerSystemRole@R";
+	public static final String ROLE_Manager = "Manager@ManagerSystemRole@R";
 	public static QueueDataRowImport queueDataRowImport;
 	public static QueueDocumentDelete queueDocumentDelete;
 	public static QueueDocumentUpdate queueDocumentUpdate;

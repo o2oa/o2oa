@@ -9,4 +9,8 @@ class ExceptionCategoryInfoProcess extends PromptException {
 	ExceptionCategoryInfoProcess( Throwable e, String message ) {
 		super( message, e );
 	}
+
+	ExceptionCategoryInfoProcess( String message ) {
+		super( message );
+	}
 }
