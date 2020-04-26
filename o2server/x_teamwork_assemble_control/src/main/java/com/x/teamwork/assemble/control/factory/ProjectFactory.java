@@ -238,10 +238,6 @@ public class ProjectFactory extends AbstractFactory {
 		Root<Project> root = cq.from(Project.class);
 		Predicate p_permission = null;
 		
-		System.out.println("personName="+personName);
-		System.out.println("identityNames="+identityNames);
-		System.out.println("unitNames="+unitNames);
-		System.out.println("groupNames="+groupNames);
 		
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息

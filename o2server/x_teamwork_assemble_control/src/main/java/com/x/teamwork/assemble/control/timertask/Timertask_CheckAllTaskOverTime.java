@@ -37,6 +37,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 		Date now = new Date();
 		List<String> projectIds = null;
 		List<String> taskIds = null;
+		logger.info("Timertask_CheckAllTaskOverTime -> Check task excute start.");
 		try {
 			projectIds = projectQueryService.listAllProjectIds();
 		} catch (Exception e) {
@@ -53,11 +54,12 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 							for( String taskId : taskIds ) {
 								task = emc.find( taskId, Task.class );
 								if( task != null ) {
-									logger.debug("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
+									//logger.info("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
 									
 									if( task.getEndTime()  != null && !TaskStatuType.completed.name().equalsIgnoreCase( task.getWorkStatus() )) {
 										if( task.getEndTime().before( now ) && !task.getOvertime()) {
 											//超时了,打上标识，并且发送提醒
+											logger.info("Timertask_CheckAllTaskOverTime check  task:"+task.getName()+"超时,打上标识，并发送提醒");
 											emc.beginTransaction( Task.class );
 											task.setOvertime( true );
 											emc.check( task, CheckPersistType.all );
@@ -86,7 +88,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 											}																
 										}
 										if( task.getEndTime().after( now ) && task.getOvertime()) {
-											logger.debug("超时变未超时,打上标识，不发送提醒");
+											logger.info("Timertask_CheckAllTaskOverTime check  task:"+task.getName()+"超时变未超时,打上标识，不发送提醒");
 											//超时变未超时,打上标识，不发送提醒
 											emc.beginTransaction( Task.class );
 											task.setOvertime( false );
@@ -132,6 +134,6 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 				}
 			}
 		}
-		logger.debug("Timertask_BatchOperationTask -> batch operations timer task excute completed.");
+		logger.info("Timertask_CheckAllTaskOverTime -> Check task excute completed.");
 	}
 }

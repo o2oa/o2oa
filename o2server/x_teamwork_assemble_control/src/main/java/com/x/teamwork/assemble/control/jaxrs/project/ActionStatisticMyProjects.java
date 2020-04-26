@@ -53,7 +53,7 @@ public class ActionStatisticMyProjects extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					//查询我参与的所有项目
-					projectIds = projectQueryService.listAllViewableProjectIds( effectivePerson, 2000,  new QueryFilter() );
+					projectIds = projectQueryService.listAllProjectIds( effectivePerson, 2000,  new QueryFilter() );
 					if( ListTools.isNotEmpty( projectIds )) {
 						projectList = projectQueryService.list( projectIds );
 					}
@@ -87,26 +87,28 @@ public class ActionStatisticMyProjects extends BaseAction {
 			if( Boolean.TRUE.equals( check ) ){
 				if( ListTools.isNotEmpty( projectList )) {
 					for(  Project project : projectList ) {
-						allCount++;						
-						if( project.getStarPersonList() != null  && project.getStarPersonList().contains( effectivePerson.getDistinguishedName() ) ) {
-							starCount++;
-						}
-						if( project.getCreatorPerson().equalsIgnoreCase(effectivePerson.getDistinguishedName()  )) {
-							myCount++;
-						}
-						if( project.getGroupCount() == null || project.getGroupCount() == 0 ) {
-							unGroupCount++;
-						}
-						if( project.getCompleted() != null && project.getCompleted() ) {
-							completedCount++;
-						}
-						if( project.getArchive() != null && project.getArchive() ) {
-							archiveCount++;
-						}
-						if( project.getDeleted() != null && project.getDeleted() ) {
+						if(project.getDeleted() != null && project.getDeleted() ){
 							deleteCount++;
+						}else{
+							allCount++;						
+							if( project.getStarPersonList() != null  && project.getStarPersonList().contains( effectivePerson.getDistinguishedName() ) ) {
+								starCount++;
+							}
+							if( project.getCreatorPerson().equalsIgnoreCase(effectivePerson.getDistinguishedName()  )) {
+								myCount++;
+							}
+							if( project.getGroupCount() == null || project.getGroupCount() == 0 ) {
+								unGroupCount++;
+							}
+							if( project.getCompleted() != null && project.getCompleted() ) {
+								completedCount++;
+							}
+							if( project.getArchive() != null && project.getArchive() ) {
+								archiveCount++;
+							}
+							woGroupList = checkGroup( project, woGroupList );
 						}
-						woGroupList = checkGroup( project, woGroupList );
+						
 					}
 				}
 			}
