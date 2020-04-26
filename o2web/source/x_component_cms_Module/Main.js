@@ -1172,6 +1172,7 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		}
 	},
 	getRevealData: function(){
+		debugger;
 		var j = this.data.extContent;
 		if( j ){
 			this.extContent = JSON.parse( j );
@@ -1195,10 +1196,10 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 			}.bind(this), null, false );
 		}
 
-		this.extContent.reveal.each( function( r ){
+		this.extContent.reveal.each( function( r, i ){
 			if(this.data.defaultViewName && r.id == this.data.defaultViewName ){
 				this.defaultRevealData = r;
-			}else{
+			}else if( i>0 ){
 				this.isExpended = true;
 				this.hasSub = true;
 			}
