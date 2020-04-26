@@ -15,6 +15,7 @@ import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
+import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
 import com.x.teamwork.core.entity.TaskList;
@@ -175,6 +176,37 @@ public class DynamicPersistService {
 	}
 	
 	/**
+	 * 保存项目模板创建或者更新动态信息
+	 * @param old_object
+	 * @param object
+	 * @param effectivePerson
+	 * @param content
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> projectTemplateSaveDynamic( ProjectTemplate old_object, ProjectTemplate object, EffectivePerson effectivePerson, String content ) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> dynamics = dynamicService.getProjectTemplateSaveDynamic( old_object, object, effectivePerson );	
+		List<Dynamic> result = new ArrayList<>();
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			if( ListTools.isNotEmpty( dynamics )) {
+				 for( Dynamic dynamic : dynamics ) {
+					 dynamic = dynamicService.save( emc, dynamic, content );
+					 result.add( dynamic );
+				 }
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+	
+	/**
 	 * 保存动态信息
 	 * @param object_old
 	 * @param object
@@ -307,7 +339,6 @@ public class DynamicPersistService {
 			throw new Exception("effectivePerson is null.");
 		}
 		List<Dynamic> result = new ArrayList<>();
-		List<Dynamic> dynamics = null;
 
 		//记录一个添加子任务转换的动态信息
 		result.add(dynamicService.getTaskTransformDynamic( parentTask, subTask, effectivePerson));

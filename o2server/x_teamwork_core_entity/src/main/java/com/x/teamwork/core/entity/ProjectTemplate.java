@@ -119,6 +119,12 @@ public class ProjectTemplate extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + taskList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> taskList;
+	
+	public static final String deleted_FIELDNAME = "deleted";
+	@FieldDescribe("是否已经删除")
+	@Column( name = ColumnNamePrefix + deleted_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + deleted_FIELDNAME )
+	private Boolean deleted = false;
 
 	public String getTitle() {
 		return title;
@@ -174,6 +180,14 @@ public class ProjectTemplate extends SliceJpaObject {
 
 	public void setTaskList(List<String> taskList) {
 		this.taskList = taskList;
+	}
+	
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	
