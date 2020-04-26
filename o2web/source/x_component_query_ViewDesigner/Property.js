@@ -450,7 +450,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             personUnitNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "unit",
-                    "names": (this.data.data.where) ? this.data.data.where.unitList : [],
+                    "names": (this.data.data.where) ? this.data.data.where.creatorUnitList : [],
                     "onChange": function(ids){this.savePersonSelectItem(node, ids);}.bind(this)
                 });
             }.bind(this));
@@ -458,7 +458,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             personNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "person",
-                    "names": (this.data.data.where) ? this.data.data.where.personList : [],
+                    "names": (this.data.data.where) ? this.data.data.where.creatorPersonList : [],
                     "onChange": function(ids){this.savePersonSelectItem(node, ids);}.bind(this)
                 });
             }.bind(this));
@@ -466,7 +466,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             identityNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.view.designer, {
                     "type": "identity",
-                    "names": (this.data.data.where) ? this.data.data.where.identityList : [],
+                    "names": (this.data.data.where) ? this.data.data.where.creatorIdentityList : [],
                     "onChange": function(ids){this.savePersonSelectItem(node, ids);}.bind(this)
                 });
             }.bind(this));
