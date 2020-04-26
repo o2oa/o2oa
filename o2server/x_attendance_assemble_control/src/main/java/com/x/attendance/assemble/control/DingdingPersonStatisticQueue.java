@@ -7,6 +7,7 @@ import com.x.attendance.entity.StatisticDingdingUnitForMonth;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
@@ -95,7 +96,8 @@ public class DingdingPersonStatisticQueue extends AbstractQueue<Date> {
                     hasNextPerson = false;
                 } else {
                     //还有更多用户继续查询
-                    uri = "person/list/" + list.get(list.size() - 1).getDistinguishedName() + "/next/50";
+//                    uri = "person/list/" + list.get(list.size() - 1).getDistinguishedName() + "/next/50";
+                    uri = Applications.joinQueryUri("person","list", list.get(list.size() - 1).getDistinguishedName(), "next", "50");
                 }
             }else {
                 //没有用户查询到结束
