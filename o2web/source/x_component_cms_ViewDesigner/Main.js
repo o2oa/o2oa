@@ -22,9 +22,25 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 	onQueryLoad: function(){
         this.shortcut = true;
         if (!this.options.id && this.status){
-            this.options.application = this.status.applicationId;
-            this.application = this.status.application;
             this.options.id = this.status.id;
+            // this.options.application = this.status.applicationId;
+        }else if( this.options.id && this.options.id.toLowerCase().indexOf("viewdesigner") > -1 ){
+            if( this.status && this.status.id ){
+                this.options.id = this.status.id;
+            }else{
+                this.options.id = "";
+            }
+        }
+
+        if( !this.options.formId && this.status && this.status.formId ){
+            this.options.formId = this.status.formId;
+        }
+
+        if( !this.application && this.status && this.status.applicationId ){
+            this.application = {
+                id : this.status.applicationId,
+                appName : this.status.applicationName
+            }
         }
 
 		if (!this.options.id){
@@ -145,7 +161,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 
     loadViewList: function(){
         this.actions.listView(this.application.id, function (json) {
-            json.data.each(function(view){
+            ( json.data || [] ).each(function(view){
                 this.createListViewItem(view);
             }.bind(this));
         }.bind(this), null, false);
@@ -185,7 +201,14 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 
     loadRelativeForm : function( formId, callback ){
         this.actions.getForm(formId, function(json){
+            debugger;
             this.relativeFormData = (json.data.data) ? JSON.decode(MWF.decodeJsonString(json.data.data)): null;
+            if( !this.relativeForm ){
+                this.relativeForm = {
+                    id : this.relativeFormData.json.id,
+                    name : this.relativeFormData.json.name
+                }
+            }
            this.getFields( callback );
         }.bind(this));
     },
@@ -386,26 +409,26 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 		}
 	},
 	loadNewViewData: function(callback){
-        var data = {
-            "content": {
-                "isNew" : true,
-                "name": "",
-                "id": this.actions.getUUID(),
-                "application": this.application.id,
-                "applicationName" : this.application.appName,
-                "alias": "",
-                "description": "",
-                "relativeForm" : this.relativeForm,
-                "events" : null,
-                "columns" :[],
-                "jsheader" : null,
-                "sortType" : "DESC"
-            }
-        };
-        this.createListViewItem(data, true); 
         this.loadRelativeForm( this.options.formId || this.relativeForm.id, function(){
+            var data = {
+                "content": {
+                    "isNew" : true,
+                    "name": "",
+                    "id": this.actions.getUUID(),
+                    "application": this.application.id,
+                    "applicationName" : this.application.appName,
+                    "alias": "",
+                    "description": "",
+                    "relativeForm" : this.relativeForm,
+                    "events" : null,
+                    "columns" :[],
+                    "jsheader" : null,
+                    "sortType" : "DESC"
+                }
+            };
+            this.createListViewItem(data, true);
             if (callback) callback(data);
-        })
+        }.bind(this))
 	},
 	loadViewData: function(id, callback){
 		this.actions.getView(id, function(data){
@@ -463,12 +486,19 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
             var currentId = this.tab.showPage.view.data.id;
             var status = {
                 "id": this.options.id,
-                "application": this.application,
+                "applicationId": this.application.id,
+                "applicationName" : this.application.appName,
+                "formId" : this.options.formId || this.relativeForm.id,
                 "openViews": openViews,
                 "currentId": currentId
             };
             return status;
         }
-        return {"id": this.options.id, "application": this.application};
+        return {
+            "id": this.options.id,
+            "applicationId": this.application.id,
+            "applicationName" : this.application.appName,
+            "formId" : this.options.formId || this.relativeForm.id
+        };
     }
 });
