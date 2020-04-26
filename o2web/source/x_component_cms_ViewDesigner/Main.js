@@ -20,7 +20,6 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 		"processData": null
 	},
 	onQueryLoad: function(){
-	    debugger;
         this.shortcut = true;
         if (!this.options.id && this.status){
             this.options.id = this.status.id;
