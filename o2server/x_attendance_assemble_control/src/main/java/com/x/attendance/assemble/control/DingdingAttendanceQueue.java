@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Application;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -78,6 +79,7 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
         String dingdingUrl = "https://oapi.dingtalk.com/attendance/list?access_token=" + Config.dingding().corpAccessToken();
         int saveNumber = 0;
         while (hasNextPerson) {
+            logger.info("uri:"+ uri);
             List<Person> list = ThisApplication.context().applications().getQuery(false, app, uri).getDataAsList(Person.class);
             if (list != null && list.size() > 0) {
                 //钉钉用户id
@@ -122,7 +124,8 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                     updateSyncRecord(record, null);
                 } else {
                     //还有更多用户继续查询
-                    uri = "person/list/" + list.get(list.size() - 1).getDistinguishedName() + "/next/50";
+                    uri = Applications.joinQueryUri("person","list", list.get(list.size() - 1).getDistinguishedName(), "next", "50");
+//                    uri = "person/list/" + list.get(list.size() - 1).getDistinguishedName() + "/next/50";
                 }
             } else {
                 //没有用户查询到结束
