@@ -628,6 +628,28 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             return false;
         }
 
+        var list;
+        if( this.data.data && this.data.data.where ){
+            if( this.data.data.where.creatorIdentityList ){
+                list = this.data.data.where.creatorIdentityList;
+                for( var i=0; i< list.length ; i++){
+                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                }
+            }
+            if( this.data.data.where.creatorPersonList ){
+                list = this.data.data.where.creatorPersonList;
+                for( var i=0; i< list.length ; i++){
+                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                }
+            }
+            if( this.data.data.where.creatorUnitList ){
+                list = this.data.data.where.creatorIdentityList;
+                for( var i=0; i< list.length ; i++){
+                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                }
+            }
+        }
+
         this.designer.actions.saveView(this.data, function(json){
             this.data.id = json.data.id;
             this.isNewView = false;
@@ -645,6 +667,30 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 return false;
             }
         //}
+
+        debugger;
+            var list;
+            if( this.data.data && this.data.data.where ){
+                if( this.data.data.where.creatorIdentityList ){
+                    list = this.data.data.where.creatorIdentityList;
+                    for( var i=0; i< list.length ; i++){
+                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                    }
+                }
+                if( this.data.data.where.creatorPersonList ){
+                    list = this.data.data.where.creatorPersonList;
+                    for( var i=0; i< list.length ; i++){
+                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                    }
+                }
+                if( this.data.data.where.creatorUnitList ){
+                    list = this.data.data.where.creatorUnitList;
+                    for( var i=0; i< list.length ; i++){
+                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+                    }
+                }
+            }
+
         this.designer.actions.saveView(this.data, function(json){
             this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
             this.isNewView = false;
