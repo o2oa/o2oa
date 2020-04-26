@@ -6,7 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.x.base.core.container.FactorDistributionPolicy;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.tools.JpaObjectTools;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Node;
+import com.x.base.core.project.tools.ListTools;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.PersistenceProviderImpl;
 import org.dom4j.Document;
@@ -16,13 +24,11 @@ import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.x.base.core.container.FactorDistributionPolicy;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.tools.JpaObjectTools;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.tools.ListTools;
-
 public class PersistenceXmlHelper {
+
+	private PersistenceXmlHelper() {
+
+	}
 
 	public static List<String> directWrite(String path, List<String> classNames) throws Exception {
 		try {
@@ -55,6 +61,88 @@ public class PersistenceXmlHelper {
 		} catch (Exception e) {
 			throw new Exception("registContainerEntity error.className:" + ListTools.toStringJoin(classNames), e);
 		}
+	}
+	
+	public static void writeForDdl(String path) throws Exception {
+		try {
+			Document document = DocumentHelper.createDocument();
+			Element persistence = document.addElement("persistence", "http://java.sun.com/xml/ns/persistence");
+			persistence.addAttribute(QName.get("schemaLocation", "xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+					"http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
+			persistence.addAttribute("version", "2.0");
+			Element unit = persistence.addElement("persistence-unit");
+			unit.addAttribute("name", "enhance");
+			unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+			Element provider = unit.addElement("provider");
+			provider.addText(PersistenceProviderImpl.class.getName());
+			List<String> entities = new ArrayList<>();
+			for (String className : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
+				Class<? extends JpaObject> clazz = (Class<JpaObject>) Class.forName(className);
+				for (Class<?> o : JpaObjectTools.scanMappedSuperclass(clazz)) {
+					entities.add(o.getName());
+				}
+			}
+			entities = ListTools.trim(entities, true, true);
+			for (String className : entities) {
+				Element class_element = unit.addElement("class");
+				class_element.addText(className);
+			}
+			Element properties = unit.addElement("properties");
+			if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
+				writeForDdlExternalProperty(properties);
+			} else {
+				writeForDdlInternalProperty(properties);
+			}
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding("UTF-8");
+			File file = new File(path);
+			FileUtils.touch(file);
+			XMLWriter writer = new XMLWriter(new FileWriter(file), format);
+			writer.write(document);
+			writer.close();
+		} catch (Exception e) {
+			throw new Exception("writeForDdl error.", e);
+		}
+	}
+
+	private static void writeForDdlExternalProperty(Element properties) throws Exception {
+		Element property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.driver");
+		property.addAttribute("value", Config.externalDataSources().get(0).getDriverClassName());
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.url");
+		property.addAttribute("value", Config.externalDataSources().get(0).getUrl());
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.user");
+		property.addAttribute("value", Config.externalDataSources().get(0).getUsername());
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.password");
+		property.addAttribute("value", Config.externalDataSources().get(0).getPassword());
+		property = properties.addElement("property");
+		property.addAttribute("name", "openjpa.DynamicEnhancementAgent");
+		property.addAttribute("value", "false");
+	}
+
+	private static void writeForDdlInternalProperty(Element properties) throws Exception {
+		Element property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.driver");
+		property.addAttribute("value", SlicePropertiesBuilder.driver_h2);
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.url");
+		Node node = Config.currentNode();
+		String url = "jdbc:h2:tcp://" + Config.node() + ":" + node.getData().getTcpPort() + "/X;JMX="
+				+ (node.getData().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
+				+ (node.getData().getCacheSize() * 1024);
+		property.addAttribute("value", url);
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.user");
+		property.addAttribute("value", "sa");
+		property = properties.addElement("property");
+		property.addAttribute("name", "javax.persistence.jdbc.password");
+		property.addAttribute("value", Config.token().getPassword());
+		property = properties.addElement("property");
+		property.addAttribute("name", "openjpa.DynamicEnhancementAgent");
+		property.addAttribute("value", "false");
 	}
 
 	public static List<String> write(String path, List<String> entities) throws Exception {
@@ -90,7 +178,7 @@ public class PersistenceXmlHelper {
 			writer.close();
 			return names;
 		} catch (Exception e) {
-			throw new Exception("registContainerEntity error.className:" + name, e);
+			throw new Exception("write error.className:" + name, e);
 		}
 	}
 
@@ -108,7 +196,6 @@ public class PersistenceXmlHelper {
 				return properties_internal_single(className);
 			}
 		}
-
 	}
 
 	private static Properties properties_base_slice(String className) throws Exception {
