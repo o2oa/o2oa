@@ -37,6 +37,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_RS = "rs";
 	private static final String CMD_CLH2 = "clh2";
 	private static final String CMD_UF = "uf";
+	private static final String CMD_DDL = "ddl";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -69,6 +70,8 @@ public class ActionControl extends ActionBase {
 				clh2(cmd);
 			} else if (cmd.hasOption(CMD_UF)) {
 				uf(cmd);
+			} else if (cmd.hasOption(CMD_DDL)) {
+				ddl(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", options);
@@ -91,6 +94,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(rsOption());
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
+		options.addOption(ddlOption());
 		return options;
 	}
 
@@ -150,6 +154,11 @@ public class ActionControl extends ActionBase {
 	private static Option ufOption() {
 		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg()
 				.desc("升级服务器,升级前请注意备份.").build();
+	}
+
+	private static Option ddlOption() {
+		return Option.builder("ddl").longOpt("DataDefinitionLanguage").argName("type").hasArg()
+				.desc("导出数据定义语句:建表语句:build,数据库创建:createDB,数据库删除dropDB.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -236,6 +245,12 @@ public class ActionControl extends ActionBase {
 		String path = Objects.toString(cmd.getOptionValue(CMD_UF), "");
 		UpdateFile updateFile= new UpdateFile();
 		updateFile.execute(path);
+	}
+
+	private void ddl(CommandLine cmd) throws Exception {
+		String type = Objects.toString(cmd.getOptionValue(CMD_DDL), "");
+		Ddl ddl= new Ddl();
+		ddl.execute(type);
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {
