@@ -1,5 +1,6 @@
 MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "title": "Select",
+    "multiSelectTitle": "Select",
     "selectPerson": "Select Person",
     "selectIdentity": "Select Identity",
     "selectUnit": "Select Unit",
