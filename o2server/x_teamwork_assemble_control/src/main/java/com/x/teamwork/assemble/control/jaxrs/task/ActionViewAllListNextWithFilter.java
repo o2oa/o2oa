@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -19,6 +21,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskTag;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
@@ -42,6 +45,7 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 		Element element = null;
 		QueryFilter  queryFilter = null;
 		List<TaskTag> tags = null; 
+		WrapOutControl control = null;
 		
 		if ( StringUtils.isEmpty( projectId ) ) {
 			check = false;
@@ -78,7 +82,11 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {				
+			} else {	
+				Business business = null;
+				try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
+					business = new Business(bc);
+				}
 				try {
 					
 					Long total = taskQueryService.countWithFilter( effectivePerson, queryFilter );
@@ -90,6 +98,36 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 							tags = taskTagQueryService.listWithTaskAndPerson(effectivePerson, wo );
 							if( ListTools.isNotEmpty( tags )) {
 								wo.setTags( WoTaskTag.copier.copy( tags ));
+							}
+							try {
+								control = new WrapOutControl();
+								if( business.isManager(effectivePerson) 
+										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getCreatorPerson() )
+										|| wo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
+									control.setDelete( true );
+									control.setEdit( true );
+									control.setSortable( true );
+									control.setChangeExecutor(true);
+								}else{
+									control.setDelete( false );
+									control.setEdit( false );
+									control.setSortable( false );
+									control.setChangeExecutor(false);
+								}
+								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getExecutor())){
+									control.setChangeExecutor( true );
+								}
+								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getCreatorPerson())){
+									control.setFounder( true );
+								}else{
+									control.setFounder( false );
+								}
+								wo.setControl(control);
+							} catch (Exception e) {
+								check = false;
+								Exception exception = new TaskQueryException(e, "根据指定flag查询工作任务权限信息时发生异常。flag:" + wo.getId());
+								result.error(exception);
+								logger.error(e, effectivePerson, request, null);
 							}
 						}
 					}
@@ -252,6 +290,7 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 			this.executor = executor;
 		}
 		
+		
 		/**
 		 * 根据传入的查询参数，组织一个完整的QueryFilter对象
 		 * @return
@@ -310,6 +349,9 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 		@FieldDescribe("任务标签")
 		private List<WoTaskTag> tags = null;
 		
+		@FieldDescribe("任务权限")
+		private WrapOutControl control = null;	
+		
 		public List<WoTaskTag> getTags() {
 			return tags;
 		}
@@ -327,7 +369,14 @@ public class ActionViewAllListNextWithFilter extends BaseAction {
 		public void setRank(Long rank) {
 			this.rank = rank;
 		}
+		
+		public WrapOutControl getControl() {
+			return control;
+		}
 
+		public void setControl(WrapOutControl control) {
+			this.control = control;
+		}
 		private static final long serialVersionUID = -5076990764713538973L;
 
 		public static List<String> Excludes = new ArrayList<String>();

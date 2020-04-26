@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -34,6 +37,7 @@ public class ActionGet extends BaseAction {
 		List<ProjectExtFieldRele> extFieldReleList = null;
 		List<TaskTag> tags = null;
 		Boolean check = true;
+		WrapOutControl control = null;
 
 		if ( StringUtils.isEmpty( flag ) ) {
 			check = false;
@@ -123,12 +127,51 @@ public class ActionGet extends BaseAction {
 					}
 
 				} catch (Exception e) {
+					check = false;
 					Exception exception = new TaskQueryException(e, "将查询出来的工作任务信息对象转换为可输出的数据信息时发生异常。");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-
+			
+			//计算权限
+			if( Boolean.TRUE.equals( check ) ){
+				Business business = null;
+				try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
+					business = new Business(bc);
+				}
+				try {
+					control = new WrapOutControl();
+					if( business.isManager(effectivePerson) 
+							|| effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getCreatorPerson() )
+							|| task.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
+						control.setDelete( true );
+						control.setEdit( true );
+						control.setSortable( true );
+						control.setChangeExecutor( true );
+					}else{
+						control.setDelete( false );
+						control.setEdit( false );
+						control.setSortable( false );
+						control.setChangeExecutor( false );
+					}
+					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getExecutor())){
+						control.setChangeExecutor( true );
+					}
+					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getCreatorPerson())){
+						control.setFounder( true );
+					}else{
+						control.setFounder( false );
+					}
+					wo.setControl(control);
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new TaskQueryException(e, "根据指定flag查询工作任务权限信息时发生异常。flag:" + flag);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+			
 			//查询任务所在的Group信息
 			if( Boolean.TRUE.equals( check ) ){
 				List<String> groupIds = null;
@@ -191,6 +234,9 @@ public class ActionGet extends BaseAction {
 		
 		@FieldDescribe("所属项目的扩展列设定(配置列表)")
 		private List<WoExtFieldRele> extFieldConfigs;
+		
+		@FieldDescribe("任务权限")
+		private WrapOutControl control = null;	
 
 		@FieldDescribe("工作任务所属的工作任务组信息ID")
 		String taskGroupId = null;
@@ -263,7 +309,14 @@ public class ActionGet extends BaseAction {
 		public void setTags(List<WoTaskTag> tags) {
 			this.tags = tags;
 		}
+		
+		public WrapOutControl getControl() {
+			return control;
+		}
 
+		public void setControl(WrapOutControl control) {
+			this.control = control;
+		}
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
