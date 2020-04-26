@@ -70,26 +70,25 @@
       "name":"creatorPerson",
       "type":"string"
     },
-    {
-      "name":"creatorPersonShort",
-      "type":"string"
-    },
+//    {
+//      "name":"creatorPersonShort",
+//      "type":"string"
+//    },
     {
       "name":"creatorUnitName",
       "type":"string"
     },
-    {
-      "name":"creatorUnitNameShort",
-      "type":"string"
-    },
+//    {
+//      "name":"creatorUnitNameShort",
+//      "type":"string"
+//    },
     {
       "name":"creatorTopUnitName",
       "type":"string"
-    },
-
-    {
-      "name":"creatorTopUnitNameShort",
-      "type":"string"
     }
+//    {
+//      "name":"creatorTopUnitNameShort",
+//      "type":"string"
+//    }
   ]
 }
