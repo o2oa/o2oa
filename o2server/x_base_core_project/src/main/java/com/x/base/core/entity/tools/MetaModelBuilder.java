@@ -88,12 +88,6 @@ public class MetaModelBuilder {
 		for (URL url : urls) {
 			cp.add(new File(url.getFile()));
 		}
-
-//		filter = new WildcardFileFilter("*.jar");
-//		File dir = new File(o2oadir, "o2server/commons/ext");
-//		for (File o : FileUtils.listFiles(dir, filter, null)) {
-//			cp.add(o);
-//		}
 		return cp;
 	}
 

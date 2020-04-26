@@ -159,3 +159,6 @@ typings/
 
 *.swp
 
+#pom.xml.versionsBackup
+*.versionsBackup
+

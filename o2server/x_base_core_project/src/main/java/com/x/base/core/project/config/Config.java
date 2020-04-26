@@ -96,6 +96,7 @@ public class Config {
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
+	public static final String DIR_LOCAL_TEMP_SQL = "local/temp/sql";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_TARGET = "local/temp/dynamic/target";
@@ -321,6 +322,20 @@ public class Config {
 
 	public static File dir_local_temp_dynamic(Boolean force) throws Exception {
 		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_local_temp_sql() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP_SQL);
+	}
+
+	public static File dir_local_temp_sql(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_SQL);
 		if (force) {
 			if ((!dir.exists()) || dir.isFile()) {
 				FileUtils.forceMkdir(dir);
@@ -790,9 +805,12 @@ public class Config {
 					/* 添加默认格式 */
 					mimeTypes.addMimeMapping("", "application/octet-stream");
 					/* 添加新版office格式 */
-					mimeTypes.addMimeMapping("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-					mimeTypes.addMimeMapping("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-					mimeTypes.addMimeMapping("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+					mimeTypes.addMimeMapping("docx",
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+					mimeTypes.addMimeMapping("xlsx",
+							"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					mimeTypes.addMimeMapping("pptx",
+							"application/vnd.openxmlformats-officedocument.presentationml.presentation");
 					/* 名片 */
 					mimeTypes.addMimeMapping("vcf", "text/x-vcard");
 					instance().mimeTypes = mimeTypes;
