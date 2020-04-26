@@ -226,7 +226,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 						//if(this.options.columnData.ignoreTitle===undefined) this.options.columnData.ignoreTitle = false;
 
 						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
-							restrictToColumn : true
+							restrictToColumn : true,
+							onPostPublish : function () {
+								debugger;
+								try{
+									if(this.view && this.view.reload){
+										this.view.reload();
+									}
+								}catch (e) {
+								}
+							}.bind(this)
 							//ignoreTitle : this.options.columnData.ignoreTitle,
 							//latest : this.options.columnData.latest
 						});
