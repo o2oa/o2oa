@@ -587,4 +587,15 @@ public class ListTools {
 		return targetList;
 	}
 
+	public static <E> List<E> paging(List<E> list, Integer page, Integer size) {
+		if (isEmpty(list)) {
+			return list;
+		}
+		int start = (page - 1) * size;
+		int end = page * size;
+		start = Math.min(start, list.size());
+		end = Math.min(end, list.size());
+		return list.subList(start, end);
+	}
+
 }
