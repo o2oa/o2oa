@@ -11,7 +11,7 @@ pipeline {
         stage('init') {
             steps {
                 sh 'npm install'
-                sh 'npm run clear'
+                sh 'npm run clear_deploy'
             }
         }
         stage('dependency') {
