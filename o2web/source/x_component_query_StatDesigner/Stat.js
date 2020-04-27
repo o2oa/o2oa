@@ -589,7 +589,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
         });
         form.edit()
     },
-        cloneObject : function( obj ){
+    cloneObject : function( obj ){
         if (null == obj || "object" != typeof obj) return obj;
 
         if ( typeof obj.length==='number'){ //数组
