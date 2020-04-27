@@ -121,6 +121,8 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
         this.form.checkSubformLoaded();
     },
     getSubform: function(callback){
+        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm": "getFormMobile";
+
         if (this.json.subformType==="script"){
             if (this.json.subformScript.code){
                 var data = this.form.Macro.exec(this.json.subformScript.code, this);
@@ -134,7 +136,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                     }
                     if( formName ){
                         if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
-                        MWF.Actions.get("x_processplatform_assemble_surface").getForm(formName, app, function(json){
+                        MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function(json){
                             this.getSubformData(json.data);
                             if (callback) callback();
                         }.bind(this));
@@ -153,7 +155,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                 }else{
                     app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
                 }
-                MWF.Actions.get("x_processplatform_assemble_surface").getForm(this.json.subformSelected, app, function(json){
+                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.subformSelected, app, function(json){
                     this.getSubformData(json.data);
                     if (callback) callback();
                 }.bind(this));
@@ -165,11 +167,12 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
     getSubformData: function(data){
         if( !data || typeOf(data)!=="object" )return;
         var subformDataStr = null;
-        if ( this.form.json.mode !== "Mobile" && !layout.mobile){
-            subformDataStr = data.data;
-        }else{
-            subformDataStr = data.mobileData;
-        }
+        // if ( this.form.json.mode !== "Mobile" && !layout.mobile){
+        //     subformDataStr = data.data;
+        // }else{
+        //     subformDataStr = data.mobileData;
+        // }
+        subformDataStr = data.data;
         this.subformData = null;
         if (subformDataStr){
             this.subformData = JSON.decode(MWF.decodeJsonString(subformDataStr));
