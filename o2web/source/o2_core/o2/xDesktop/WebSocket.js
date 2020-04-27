@@ -256,8 +256,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.taskMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             this.openWork(task.work,e);
@@ -278,8 +278,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.readMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             this.openWork(read.work,e);
@@ -312,8 +312,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.reviewMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "process.TaskCenter", null, {
@@ -340,8 +340,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.fileEditorMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+        var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "File", null, {
@@ -370,8 +370,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.fileShareMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+        var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "File", null, {
@@ -432,8 +432,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingInviteMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -460,8 +460,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingCancelMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -489,8 +489,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingAcceptMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -518,8 +518,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingRejectMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
