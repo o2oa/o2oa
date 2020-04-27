@@ -751,7 +751,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		delete doc.appId;
 		delete doc.appName;
 		delete doc.appAlias;
-		delete doc.categoryId;
+		// delete doc.categoryId;
 		delete doc.categoryName;
 		delete doc.categoryAlias;
 		delete doc.form;
@@ -771,6 +771,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 				if (failure) failure();
 			}.bind(this));
 		}.bind(this);
+
+		debugger;
 
 		if( newCategory ){
 			doc.categoryId = newCategory.id;
