@@ -13,10 +13,13 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.TaskQueryService;
+import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.TaskStatuType;
 
 /**
  * 定时代理: 定期将所有的工作任务的截止时间核对一次，标识超时的工作任务
@@ -34,6 +37,7 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 		Date now = new Date();
 		List<String> projectIds = null;
 		List<String> taskIds = null;
+		logger.info("Timertask_CheckAllTaskOverTime -> Check task excute start.");
 		try {
 			projectIds = projectQueryService.listAllProjectIds();
 		} catch (Exception e) {
@@ -45,25 +49,67 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 				try {
 					taskIds = taskQueryService.listAllTaskIdsWithProject( projectId );
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Business business = new Business( emc );
 						if( ListTools.isNotEmpty( taskIds )) {
 							for( String taskId : taskIds ) {
 								task = emc.find( taskId, Task.class );
 								if( task != null ) {
-									logger.debug("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
+									//logger.info("Timertask_CheckAllTaskOverTime check  task:" +  task.getName());
 									
-									if( task.getEndTime()  != null ) {
+									if( task.getEndTime()  != null && !TaskStatuType.completed.name().equalsIgnoreCase( task.getWorkStatus() )) {
 										if( task.getEndTime().before( now ) && !task.getOvertime()) {
 											//超时了,打上标识，并且发送提醒
+											logger.info("Timertask_CheckAllTaskOverTime check  task:"+task.getName()+"超时,打上标识，并发送提醒");
 											emc.beginTransaction( Task.class );
 											task.setOvertime( true );
 											emc.check( task, CheckPersistType.all );
 											emc.commit();
+											
+											//同时修改对应Review文档
+											List<String> subTaskReviewIds = null;
+											List<Review> subTaskReviews = null;
+											subTaskReviewIds = business.reviewFactory().listReviewByTask(taskId, 999);
+											if( ListTools.isNotEmpty( subTaskReviewIds ) ) {
+												subTaskReviews = emc.list( Review.class, subTaskReviewIds );
+												if( ListTools.isNotEmpty(subTaskReviews)) {
+													emc.beginTransaction( Task.class );
+													for( Review review : subTaskReviews ) {
+														review.setOvertime(true);
+														emc.check( review , CheckPersistType.all );
+													}
+													emc.commit();
+												}
+											}
 											
 											try {
 												MessageFactory.message_to_teamWorkOverTime( task, true );				
 											} catch (Exception e) {
 												logger.error(e);
 											}																
+										}
+										if( task.getEndTime().after( now ) && task.getOvertime()) {
+											logger.info("Timertask_CheckAllTaskOverTime check  task:"+task.getName()+"超时变未超时,打上标识，不发送提醒");
+											//超时变未超时,打上标识，不发送提醒
+											emc.beginTransaction( Task.class );
+											task.setOvertime( false );
+											emc.check( task, CheckPersistType.all );
+											emc.commit();
+											
+											//同时修改对应Review文档
+											List<String> subTaskReviewIds = null;
+											List<Review> subTaskReviews = null;
+											subTaskReviewIds = business.reviewFactory().listReviewByTask(taskId, 999);
+											if( ListTools.isNotEmpty( subTaskReviewIds ) ) {
+												subTaskReviews = emc.list( Review.class, subTaskReviewIds );
+												if( ListTools.isNotEmpty(subTaskReviews)) {
+													emc.beginTransaction( Review.class );
+													for( Review review : subTaskReviews ) {
+														review.setOvertime(false);
+														emc.check( review , CheckPersistType.all );
+													}
+													emc.commit();
+												}
+											}
 										}
 										
 										Date now_30 = DateUtils.addMinutes(task.getEndTime(), -30);
@@ -88,6 +134,6 @@ public class Timertask_CheckAllTaskOverTime extends AbstractJob {
 				}
 			}
 		}
-		logger.debug("Timertask_BatchOperationTask -> batch operations timer task excute completed.");
+		logger.info("Timertask_CheckAllTaskOverTime -> Check task excute completed.");
 	}
 }
