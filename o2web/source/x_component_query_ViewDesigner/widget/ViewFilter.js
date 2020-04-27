@@ -396,7 +396,12 @@ MWF.xApplication.query.ViewDesigner.widget.ViewFilter = new Class({
         formulaSelectorIdList.each( function(id) {
             var el = this.inputAreaNode.getElement( id );
             if( !el )return;
-            el.setStyle("display", availableInputArray.contains(id) ? "block" : "none" );
+            if( availableInputArray.contains(id) ){
+                el.setStyle("display", "block");
+            }else{
+                el.getElements("input").set("checked", false);
+                el.setStyle("display", "none");
+            }
         }.bind(this));
 
         var viewFilterValue2Area, viewFilterValueTitleArea;

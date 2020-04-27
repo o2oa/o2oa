@@ -6,7 +6,7 @@ MWF.O2Selector = new Class({
     options: {
         "count": 0,
         "type": "person",
-        "title": "Select Person",
+        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
         "groups": [],
         "roles": [],
         "units": [],
