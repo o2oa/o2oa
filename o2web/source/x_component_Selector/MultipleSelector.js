@@ -9,7 +9,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         "style": "default",
         "types" : [],
         "count": 0,
-        "title": "Select",
+        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
         "groups": [], //选person, group, role 时的范围
         "roles": [], //选选person, group, role 时的范围
         "units": [], //选 company, department, duty, identity 时的范围
