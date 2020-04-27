@@ -51,7 +51,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var opt={
                     axis: "y"      //箭头在x轴还是y轴上展现
                 };
-                this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
+                //this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
+                //this.app.tips(this.topBarBackHomeIcon,this.lp.backProject);
             }.bind(this)
         });
         this.topBarBackHomeNext = new Element("div.topBarBackHomeNext",{styles:this.css.topBarBackHomeNext}).inject(this.topBarBackContainer);
@@ -168,8 +169,51 @@ MWF.xApplication.TeamWork.Project = new Class({
     createTaskLayout:function(){
         if(this.contentLayout) this.contentLayout.empty();
         this.createNaviContent();
+        this.createFoldContainer();
         this.createTaskContent();
 
+    },
+    createFoldContainer:function(){
+        if(this.foldContainer) this.foldContainer.destroy();
+        this.foldContainer = new Element("div.foldContainer",{styles:this.css.foldContainer}).inject(this.contentLayout);
+        this.foldIcon = new Element("div.foldIcon",{styles:this.css.foldIcon,text:"<"}).inject(this.foldContainer);
+        this.app.tips(this.foldIcon,"折叠");
+        this.foldIcon.addEvents({
+            mouseover:function(){
+                this.naviLayout.setStyles({"box-shadow": "1px 2px 6px 0px #1b9aee"});
+                this.foldIcon.setStyles({"background-color":"#1b9aee","color":"#ffffff"});
+            }.bind(this),
+            mouseout:function(){
+                this.naviLayout.setStyles({"box-shadow": "0px 2px 4px 0 #888888"});
+                this.foldIcon.setStyles({"background-color":"#ffffff","color":""});
+            }.bind(this),
+            click:function(){
+                if(this.naviFold){
+                    var fx = new Fx.Tween(this.naviLayout,{duration:100});
+                    this.naviLayout.show();
+                    fx.start(["width"] ,"0", "300")
+                        .chain(function(){
+                            this.foldIcon.set("text","<");
+                            this.naviFold = false;
+                            this.app.tips(this.foldIcon,"折叠11");
+                        }.bind(this));
+
+                }else{ //aaaaa
+                    var fx = new Fx.Tween(this.naviLayout,{duration:100});
+                    fx.start(["width"] ,"300", "0")
+                        .chain(function(){
+                            this.naviLayout.hide();
+                            this.foldIcon.set("text",">");
+                            this.naviFold = true;
+                            //console.log("zzzzzzzzzzzzzzzzzzzzzk");
+                            this.app.tips(this.foldIcon,"展开22");
+                        }.bind(this));
+
+                }
+            }.bind(this)
+        })
+        var _margin_height = (this.foldContainer.getHeight())/2 - (this.foldIcon.getHeight())/2;
+        this.foldIcon.setStyles({"margin-top":_margin_height+"px"});
     },
     createNaviContent:function(){
         if(this.naviLayout) this.naviLayout.destroy();
@@ -237,7 +281,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviTopTaskAdd.setStyles({
                     "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
                 });
-                this.app.showTips(this.naviTopTaskAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskAdd+"</div>"});
+                //this.app.showTips(this.naviTopTaskAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskAdd+"</div>"});
+                this.app.tips(this.naviTopTaskAdd,this.lp.taskAdd)
             }.bind(this),
             mouseout:function(){
                 this.naviTopTaskAdd.setStyles({
@@ -273,13 +318,16 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.completeLine = new Element("div.completeLine",{styles:this.css.completeLine}).inject(this.naviTopTaskLine);
         this.completeLine.addEvents({
             mouseover:function(){
-                this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
+                //this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
+                this.app.tips(this.completeLine,this.lp.taskCompleteText + ": " + this.currentProjectGroupData.completedTotal);
             }.bind(this)
         });
         this.overLine = new Element("div.overLine",{styles:this.css.overLine}).inject(this.naviTopTaskLine);
         this.overLine.addEvents({
             mouseover:function(){
-                this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
+                //this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
+                //alert(this.currentProjectGroupData.overtimeTotal)
+                this.app.tips(this.overLine,this.lp.taskovertimeText + ": " + this.currentProjectGroupData.overtimeTotal)
             }.bind(this)
         });
 
@@ -382,8 +430,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                         this.curNaviItem = json.name;
                         this.openView(this.naviItemFlowContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else if(json.name==this.lp.viewItemComplete){
                 //已完成任务
@@ -402,8 +450,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                         this.curNaviItem = json.name;
                         this.openView(this.naviItemCompleteContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else if(json.name==this.lp.viewItemOver){
                 //已逾期任务
@@ -422,8 +470,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                         this.curNaviItem = json.name;
                         this.openView(this.naviItemOverContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else{
                 //自定义视图
@@ -488,6 +536,9 @@ MWF.xApplication.TeamWork.Project = new Class({
                     //if(i>0) return;
                     var taskGroupLayout = new Element("div.taskGroupLayout",{styles:this.css.taskGroupLayout,id:data.id}).inject(this.taskContentLayout);
                     taskGroupLayout.set("sortable",data.control.sortable); //控制是否能排序
+                    // if(!data.control.sortable){
+                    //     taskGroupLayout.set()
+                    // }
                     this.createTaskGroupItemLayout(taskGroupLayout,data);
                 }.bind(this));
                 //新建任务列表按钮
@@ -600,7 +651,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.app.setLoading(taskGroupItemContainer);
 
         //this.actions.taskListByListId(this.data.id,data.id,function(json){
-        this.rootActions.TaskAction.listMyTaskWithTaskListId(this.data.id,data.id,function(json){
+        this.rootActions.TaskAction.listAllTaskWithTaskListId(this.data.id,data.id,function(json){
             titleCount.set("text","("+json.count+")")
             taskGroupItemContainer.empty();
             var taskListData = json.data;
@@ -870,7 +921,13 @@ MWF.xApplication.TeamWork.Project = new Class({
         if(d.priority == this.lp.urgency)taskItemHover.setStyle("background-color","#ffaf38");
         else if(d.priority == this.lp.emergency)taskItemHover.setStyle("background-color","#ff0000");
         var taskItemContent = new Element("div.taskItemContent",{styles:this.css.taskItemContent}).inject(taskItemContainer);
-        var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle,text:d.name}).inject(taskItemContent);
+        var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle}).inject(taskItemContent);
+        var taskItemName = new Element("div.taskItemName",{styles:this.css.taskItemName,text:d.name}).inject(taskItemTitle);
+
+        var executor = d.executor.split("@")[0];
+        var shortE = executor.substring(0,1);
+        var taskItemExecutor = new Element("div",{styles:this.css.taskItemExecutor,text:shortE,title:executor}).inject(taskItemTitle);
+
         var taskItemDetail = new Element("div.taskItemDetail",{styles:this.css.taskItemDetail}).inject(taskItemContent);
         //时限
         var taskItemLimit = new Element("div.taskItemLimit",{styles:this.css.taskItemLimit}).inject(taskItemDetail);
@@ -897,8 +954,18 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this));
         }.bind(this),null,false);
 
-        taskItemHover.setStyles({"height":taskItemContainer.getHeight()});
 
+        if(d.workStatus=="completed"){ //如果已完成
+            new Element("div.",{styles:this.css.taskItemComplete,title:this.lp.taskCompleteText}).inject(taskItemTitle,"top");
+            //taskItemContainer.setStyles({"opacity":"0.5"});
+            taskItemContainer.setStyles({"color":"grey"});
+            taskItemLimit.destroy();
+
+            taskItemHover.setStyles({"background-color":"#DEDEDE"});
+            taskItemExecutor.setStyles({"opacity":"0.5"})
+        }
+
+        taskItemHover.setStyles({"height":taskItemContainer.getHeight()});
 
         // var drag = new Drag(taskItemContainer, {
         //     "stopPropagation": true,
@@ -927,7 +994,7 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this)
         };
         MWF.xDesktop.requireApp("TeamWork", "Task", function(){
-            var task = new MWF.xApplication.TeamWork.Task(this,data,opt);
+            var task = new MWF.xApplication.TeamWork.Task(this,data,opt,{projectObj:this});
             task.open();
         }.bind(this));
     },
@@ -1091,7 +1158,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         }
 
 
-        this.rootActions.TaskAction[action](id||"(0)",10,this.data.id,data,function(json){
+        this.rootActions.TaskAction[action](id||"(0)",20,this.data.id,data,function(json){
             this.viewListContainer.getElements(".tmpLoading").destroy();
             json.data.each(function(data){
                 this.loadViewItem(data);
@@ -1119,6 +1186,16 @@ MWF.xApplication.TeamWork.Project = new Class({
     },
     loadViewItem:function(data){
         var viewItem = new Element("div.viewItem",{styles:this.css.viewItem}).inject(this.viewListContainer);
+        var viewColor = new Element("div.viewColor",{styles:this.css.viewColor}).inject(viewItem);
+
+        if(data.priority==this.lp.urgency){
+            //紧急
+            viewColor.setStyles({"background-color":"#fa8c15"});
+        }else if(data.priority==this.lp.emergency){
+            //特级
+            viewColor.setStyles({"background-color":"#E6240E"});
+        }
+
         var viewName = new Element("div.viewName",{styles:this.css.viewName,text:data.name}).inject(viewItem);
         var viewStatus = new Element("div.viewStatus",{styles:this.css.viewStatus,text:data.priority}).inject(viewItem);
         var viewDuty = new Element("div.viewDuty",{styles:this.css.viewDuty}).inject(viewItem);
@@ -1127,6 +1204,15 @@ MWF.xApplication.TeamWork.Project = new Class({
             viewDutyIcon.set("text",data.executor.split("@")[0].substr(0,1));
             viewDutyIcon.set("title",data.executor.split("@")[0])
         }
+
+        if(data.workStatus == "completed"){
+            var completeIcon = new Element("div",{styles:this.css.taskItemComplete,title:this.lp.taskCompleteText}).inject(viewName,"top");
+            completeIcon.setStyles({"margin-top":"16px"});
+            viewItem.setStyles({"color":"#DEDEDE"});
+            viewColor.destroy();
+            viewDutyIcon.setStyles({"opacity":"0.5"});
+        }
+
         viewItem.addEvents({
             mouseover:function(){ this.setStyles({"background-color":"#F2F5F7"}) },
             mouseout:function(){ this.setStyles({"background-color":"#ffffff"}) },
@@ -1140,6 +1226,24 @@ MWF.xApplication.TeamWork.Project = new Class({
             var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{ });
             stat.load();
         }.bind(this));
+    },
+    reloadTaskGroup:function(id){
+        var node;
+        if(id) node = this.taskContentLayout.getElementById(id);
+        if(!node)node = this.taskContentLayout.getElement("div[sortable='false']");
+
+        if(node){ //alert(id)
+            //console.log("id=============="+id);
+            this.rootActions.TaskListAction.get(this.currentProjectGroupData.id,id,function(json){
+                this.createTaskGroupItemLayout(node,json.data);
+            }.bind(this))
+        }
+
+    },
+
+    reloadInfor:function(){
+        //刷新页面上的一些信息，比如数量等未想好
+
     },
     test:function(){
 
@@ -1172,6 +1276,17 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
         //this.formTableArea
         this.titleContainer = new Element("div.titleContainer",{styles:this.css.titleContainer}).inject(this.formTableArea);
         this.titleValue = new Element("input.titleValue",{styles:this.css.titleValue,placeholder:this.lp.newTaskPlaceholder}).inject(this.titleContainer);
+        this.titleValue.addEvents({
+            keyup:function(e){
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                //console.log(keycode)
+                if (keycode == 13 || keycode == 10) {
+                    this.okAction.click();
+                }else if(keycode == 27){
+                    this.closeAction.click();
+                }
+            }.bind(this),
+        });
 
         this.actionContainer = new Element("div.actionContainer",{styles:this.css.actionContainer}).inject(this.formTableArea);
         this.okAction = new Element("div.okAction",{styles:this.css.okAction,text:this.lp.newTaskOk}).inject(this.actionContainer);
@@ -1193,7 +1308,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
 
                         };
                         MWF.xDesktop.requireApp("TeamWork", "Task", function(){
-                            var task = new MWF.xApplication.TeamWork.Task(this,data,opt);
+                            var task = new MWF.xApplication.TeamWork.Task(this,data,opt,{projectObj:this.explorer});
                             task.open();
                         }.bind(this));
                         this.fireEvent("createTask");
@@ -1208,6 +1323,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
                 this.close();
             }.bind(this)
         });
+
     }
 
 });
@@ -1334,7 +1450,6 @@ MWF.xApplication.TeamWork.Project.TaskGroupMenu = new Class({
             mouseover:function(){this.setStyles({"background-color":"#F7F7F7"})},
             mouseout:function(){this.setStyles({"background-color":""})}
         });
-
 
         if(callback)callback();
     }
