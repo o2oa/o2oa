@@ -21,7 +21,7 @@ MWF.xApplication.TeamWork.Group = new Class({
         this.groupInContainer = new Element("div.groupInContainer",{styles:this.css.tooltip.group.groupInContainer}).inject(this.contentNode);
         this.groupIn = new Element("input.groupIn",{styles:this.css.tooltip.group.groupIn,type:"text",placeholder:this.lp.group.groupIn}).inject(this.groupInContainer);
         if(this.data.do == "edit"){
-            if(this.data.name) this.groupIn.set("value",this.data.name)
+            if(this.data.name) this.groupIn.set("value",this.data.name);
         }
         this.groupIn.addEvents({
             keyup:function(){
@@ -31,14 +31,20 @@ MWF.xApplication.TeamWork.Group = new Class({
                         "cursor":"",
                         "background-color":"#F0F0F0",
                         "color":"#666666"
-                    })
+                    });
                 }else{
                     this.groupAdd.setStyles({
                         "cursor":"pointer",
                         "background-color":"#4A90E2",
                         "color":"#FFFFFF"
-                    })
+                    });
                 }
+            }.bind(this),
+            focus:function(){
+                this.groupInContainer.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.groupInContainer.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
 

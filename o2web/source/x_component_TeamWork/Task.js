@@ -1,10 +1,11 @@
+// this.taskData 任务对象
 MWF.xApplication.TeamWork = MWF.xApplication.TeamWork || {};
 MWF.xApplication.TeamWork.Task = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": 1000,
+        "width": 1200,
         "height": "90%",
         "top": null,
         "left": null,
@@ -37,10 +38,28 @@ MWF.xApplication.TeamWork.Task = new Class({
     },
     initialize: function (explorer, data, options, para) {
         this.setOptions(options);
-        this.explorer = explorer;
+        if(this.options.type && this.options.type=="window"){
+            // this.options.width = "100%";
+            // this.options.height = "100%";
+            this.explorer = explorer;
+            this.app = explorer;
+            this.container = this.app.content;
+            this.openType = "window"
+        }else{
+            this.explorer = explorer;
+            this.app = this.explorer.app;
+            this.container = this.app.content;
+            this.openType = "dialog"
+        }
 
-        this.app = this.explorer.app;
-        this.container = this.app.content;
+        this.projectObj = this.explorer;
+        if(para){
+            if(para.projectObj) this.projectObj = para.projectObj
+        }
+        // this.explorer = explorer;
+        //
+        // this.app = this.explorer.app;
+        // this.container = this.app.content;
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.TaskAction;
 
@@ -51,7 +70,9 @@ MWF.xApplication.TeamWork.Task = new Class({
 
         this.load();
         this.lp = this.app.lp.task;
+        // this.lp = MWF.xApplication.TeamWork.LP.task;
     },
+
     close: function (data) {
         //愤愤愤愤
         this.fireEvent("queryClose");
@@ -95,8 +116,13 @@ MWF.xApplication.TeamWork.Task = new Class({
         //this._createTableContent();
     },
     _createTableContent: function () {
+        //data { taskId:xxx }
         var _self = this;
         this.getTaskData(function(){
+            if(this.openType == "window"){
+                this.app.setTitle(this.taskData.name);
+            }
+
             this.formTableArea.empty();
             this.topLayout = new Element("div.topLayout",{styles:this.css.topLayout}).inject(this.formTableArea);
             //this.topImage = new Element("div.topImage",{styles:this.css.topImage}).inject(this.topLayout);
@@ -104,6 +130,11 @@ MWF.xApplication.TeamWork.Task = new Class({
             if(this.isNew){
                 this.topContent.set("text",this.lp.newTask)
             }
+            this.topContent.addEvents({
+                click:function(e){
+                    layout.openApplication(e,"TeamWork.Task",null,{"taskId":this.data.taskId})
+                }.bind(this)
+            })
             this.topIconContainer = new Element("div.topIconContainer",{styles:this.css.topIconContainer}).inject(this.topLayout);
 
             //更多
@@ -151,7 +182,10 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.topIconClose = new Element("div.topIconClose",{styles:this.css.topIconClose,title:this.lp.close}).inject(this.topIconContainer);
             this.topIconClose.addEvents({
                 click:function(){
-                    this.close()
+                    this.close();
+                    if(this.openType=="window"){
+                        this.app.close();
+                    }
                 }.bind(this),
                 mouseover:function(){
                     this.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_off_click.png)"});
@@ -442,7 +476,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.tmpdynamicLoading = new Element("div").inject(this.dynamicContent,"top");
         this.app.setLoading(this.tmpdynamicLoading);
         this.rootActions.DynamicAction.listNextWithTask(id,count,taskId,data||{},function(json){
-        //this.actions.taskDynamicListNext(id,count,taskId,data||{},function(json){
+            //this.actions.taskDynamicListNext(id,count,taskId,data||{},function(json){
             if(this.tmpdynamicLoading)this.tmpdynamicLoading.destroy();
             //this.getDynamicStatus = false;
             if(json.type == "success"){
@@ -511,7 +545,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             //转换表情
             for(var item in this.app.lp.emoji){
                 var val = this.app.lp.emoji[item]; //alert(val)
-                chattext = chattext.split("["+val+"]").join('<img style="margin:0px 2px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
+                chattext = chattext.split("["+val+"]").join('<img style="margin:0px 2px; width:30px;height:30px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
             }
             new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
         }else{
@@ -519,7 +553,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         }
         var dynamicItemTime = new Element("div.dynamicItemTime",{styles:this.css.dynamicItemTime}).inject(dynamicItem);
 
-        dynamicItemTime.set("text",this.app.compareWithNow(data.createTime).text);
+        dynamicItemTime.set("text",this.compareWithNow(data.createTime).text);
 
         //最后加一层清除浮动
         new Element("div.dynamicItemTime",{styles:{"clear":"both"}}).inject(dynamicItem);
@@ -554,8 +588,8 @@ MWF.xApplication.TeamWork.Task = new Class({
                         },
                         nodeStyles : {
                             "min-width":"200px",
-                            "max-width":"210px",
-                            "height":"80px",
+                            "max-width":"350px",
+                            "height":"150px",
                             "padding":"2px",
                             "border-radius":"5px",
                             "box-shadow":"0px 0px 4px 0px #999999",
@@ -569,7 +603,8 @@ MWF.xApplication.TeamWork.Task = new Class({
                         onClose:function(rd){
                             if(!rd) return;
                             if(rd.value && rd.value !=""){
-                                this.chatTextarea.set("value",this.chatTextarea.get("value")+"["+rd.value+"]")
+                                this.chatTextarea.set("value",this.chatTextarea.get("value")+"["+rd.value+"]");
+                                this.chatTextarea.focus();
                             }
                         }.bind(this)
                     });
@@ -587,7 +622,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                 };
 
                 //this.actions.chatCreate(data,function(json){
-                 this.rootActions.ChatAction.create(data,function(json){
+                this.rootActions.ChatAction.create(data,function(json){
                     if(json.data.id){
                         this.rootActions.ChatAction.get(json.data.id,function(json){
                             var person = json.data.sender;
@@ -602,7 +637,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                             var chattext = content.split("\n").join("<br/>");
                             for(var item in this.app.lp.emoji){
                                 var val = this.app.lp.emoji[item];
-                                chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
+                                chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px; width:30px;height:30px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
                             }
 
                             new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
@@ -1096,7 +1131,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                     click:function(){
                         _self.rootActions.TaskTagAction.removeTagRele(_self.taskData.id,data.id,function(json){
                             if(json.data.dynamics){
-                                json.data.dynamics.each(function(dd){ 
+                                json.data.dynamics.each(function(dd){
                                     _self.loadDynamicItem(dd,"bottom")
                                 })
                             }
@@ -1181,7 +1216,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                 "autoUpdateElement": true,
                 "enterMode": 1,
                 "height": 100,
-                "width": 480,
+                "width": 580,
                 "readOnly": false,
                 "startupFocus" : true,
                 toolbar : [
@@ -1246,7 +1281,7 @@ MWF.xApplication.TeamWork.Task = new Class({
 
         }.bind(this));
     },
-    loadAttachment: function( area ){ alert("loadtaskatt")
+    loadAttachment: function( area ){
         MWF.xDesktop.requireApp("TeamWork", "TaskAttachment", function(){
             this.attachment = new MWF.xApplication.TeamWork.TaskAttachment( area, this.app, this.actions, this.app.lp, {
                 size:"max",
@@ -1333,6 +1368,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                             name:this.subTaskNewInput.get("value").trim(),
                             project:this.taskData.project,
                             parent:this.taskData.id,
+                            taskGroupId:this.taskData.taskGroupId,
                             executor:this.taskSubNewPerson || ""
                         };
 
@@ -1551,20 +1587,20 @@ MWF.xApplication.TeamWork.Task = new Class({
                     var closeIcon = new Element("div.closeIcon",{styles:closeStyles}).inject(this);
                     closeIcon.addEvents({
                         click:function(e){
-                             var index = _self.taskData.participantList.indexOf(identity);
-                             if(index>-1){
-                                 _self.taskData.participantList.erase(identity)
-                             }
+                            var index = _self.taskData.participantList.indexOf(identity);
+                            if(index>-1){
+                                _self.taskData.participantList.erase(identity)
+                            }
 
-                             _self.actions.updateParticipant(_self.taskData.id,{participantList:_self.taskData.participantList},function(json){
-                                 _self.createParticipateContainer();
-                                 if(json.data.dynamics){
-                                     json.data.dynamics.each(function(dd){
-                                         _self.loadDynamicItem(dd,"bottom")
-                                     })
-                                 }
-                                 _self.dynamicContent.scrollTo(0,_self.dynamicContent.getScrollSize().y);
-                             });
+                            _self.actions.updateParticipant(_self.taskData.id,{participantList:_self.taskData.participantList},function(json){
+                                _self.createParticipateContainer();
+                                if(json.data.dynamics){
+                                    json.data.dynamics.each(function(dd){
+                                        _self.loadDynamicItem(dd,"bottom")
+                                    })
+                                }
+                                _self.dynamicContent.scrollTo(0,_self.dynamicContent.getScrollSize().y);
+                            });
                             e.stopPropagation();
                         }
                     });
@@ -1620,7 +1656,52 @@ MWF.xApplication.TeamWork.Task = new Class({
         };
 
         var selector = new MWF.O2Selector(this.app.content, options);
-    }
+    },
+    compareWithNow:function(dstr){
+        var result = {};
+
+        try{
+            var ct = Date.parse(dstr);
+            var intervalDay = 0;
+            var now = new Date();
+            var sep = now.getTime()-ct.getTime();
+            sep = sep/1000; //毫秒
+            //一分钟内，刚刚，一小时内，多少分钟前，2小时内，显示一小时前，2小时到今天00：00：00 显示 今天几点，本周内，显示本周几，几点几分，其他显示几月几日
+            var cttext = "";
+            if(sep<60){
+                cttext = "刚刚"
+            }else if(sep<3600){
+                cttext = Math.floor(sep/60)+"分钟前"
+            }else if(sep<7200){
+                cttext = "1小时前"
+            }else if(sep>7200 && ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()){
+                cttext = "今天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes())
+            }else if(ct.getFullYear() == now.getFullYear() && ct.getMonth()==now.getMonth() && ct.getDate() == now.getDate()-1){
+                cttext = "昨天"+(ct.getHours()<10?("0"+ct.getHours()):ct.getHours())+":"+(ct.getMinutes()<10?"0"+ct.getMinutes():ct.getMinutes());
+            }else{
+                cttext = (ct.getMonth()+1) + "月"+ct.getDay()+"日"
+            }
+
+            var sepd = ct.getTime() - now.getTime();
+            sepd = sepd/1000;
+
+            if(sepd<0){
+                intervalDay = -1 //超时
+            }else if(sepd /(3600*24)<2){
+                intervalDay = 0 //一两天内
+            }else{
+                intervalDay = 1 //正常
+            }
+
+            result.intervalDay = intervalDay;
+            result.text = cttext;
+        }catch(e){
+            result.text = dstr;
+        }
+        //alert(dstr + "##############" + result.intervalDay)
+        return result;
+
+    },
 
 
 });
@@ -1639,13 +1720,35 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         this.lp = this.options.lp;
         //this.data
         //this.contentNode
-
+        //debugger;
         var topMoreTitle = new Element("div.topMoreTitle",{styles:this.css.topMoreTitle,text:this.lp.taskMenu}).inject(this.contentNode);
 
         var copyTask = new Element("div.copyTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
         copyTask.addEvents({
             mouseenter:function(){this.setStyles({"background-color":"#F7F7F7"})},
-            mouseleave:function(){this.setStyles({"background-color":""})}
+            mouseleave:function(){this.setStyles({"background-color":""})},
+            click:function(e){
+                _self.app.confirm("warn",e,_self.lp.taskCopy,_self.lp.taskContent,300,120,function(){
+                    _self.rootActions.TaskAction.copyTask(_self.explorer.data.taskId,function(json){
+                        if(json.type == "success"){
+                            _self.explorer.data.taskId = json.data.id;
+                            _self.explorer._createTableContent();
+                            _self.explorer.projectObj.reloadTaskGroup(_self.explorer.taskData.taskListId) //ffffffffffffff
+                        }
+                        this.close();
+                        _self.close();
+                    }.bind(this))
+
+                    // _self.rootActions.TaskAction.delete(_self.data.data.id,function(){
+                    //     var rd = {"act":"remove"};
+                    //     _self.close(rd);
+                    //     this.close()
+                    // }.bind(this))
+                },function(){
+                    this.close();
+                });
+
+            }.bind(this)
         });
         var copyTaskIcon = new Element("div.copyTaskIcon",{styles:this.css.topMoreItemIcon}).inject(copyTask);
         copyTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskcopy.png) no-repeat center"});
@@ -1659,7 +1762,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
                 var data = this.data;
                 var opt = {};
                 MWF.xDesktop.requireApp("TeamWork", "TaskMove", function(){
-                    var taskmove = new MWF.xApplication.TeamWork.TaskMove(this.explorer,data,opt);
+                    var taskmove = new MWF.xApplication.TeamWork.TaskMove(this.explorer,data,opt,{projectObj:this.explorer.projectObj});
                     taskmove.open();
                     var fx = new Fx.Tween(this.node,{duration:200});
                     fx.start(["opacity"] ,"1", "0").chain(function(){this.close()}.bind(this));

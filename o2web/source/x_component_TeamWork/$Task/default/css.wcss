@@ -84,7 +84,7 @@
         "float":"left",
         "height":"100%",
         "overflow":"hidden",
-        "width":"650px",
+        "width":"750px",
         "font-size":"14px",
         "border-right":"1px solid #bebebe"
     },
@@ -305,11 +305,11 @@
         "float":"left",
         "border-radius":"4px",
         //"min-height":"50px",
-        "width":"490px",
+        "width":"580px",
         "height":"100%"
     },
     taskRemarkActionContainer:{
-        "width":"480px",
+        "width":"580px",
         "height":"50px",
     },
     taskRemarkActionOk:{
@@ -502,7 +502,7 @@
         "line-height":"50px"
     },
     subTaskValueContent:{
-        "width":"588px",
+        "width":"688px",
         "margin-left":"40px",
         "border":"1px solid #dedede",
         "border-radius":"4px",
@@ -563,7 +563,7 @@
     },
     subTaskNewInput:{
         "float":"left",
-        "width":"500px",
+        "width":"600px",
         "height":"30px",
         "color":"#666666",
         "margin-top":"4px",
@@ -603,7 +603,7 @@
         "float":"left",
         "height":"30px",
         "margin-top":"4px",
-        "margin-left":"346px",
+        "margin-left":"446px",
         "line-height":"30px",
         "width":"75px",
         "text-align":"center",
@@ -613,7 +613,7 @@
     taskDetailLayout:{
         "float":"left",
         "height":"100%",
-        "width":"340px",
+        "width":"440px",
         "position":"relative"
     },
     taskParticipateContainer:{
@@ -643,13 +643,13 @@
     },
     participateValue:{
         "margin-left":"20px",
-        "height":"50px",
+        "height":"60px",
         "overflow":"hidden"
     },
     taskDynamicContainer:{
         "position":"absolute",
         "left":"0px",
-        "top":"100px",
+        "top":"110px",
         "bottom":"120px",
         "width":"100%"
     },
@@ -697,7 +697,7 @@
     },
     dynamicItemText:{
         "float":"left",
-        "width":"200px"
+        "width":"300px"
     },
     dynamicItemTime:{
         "width":"60px",

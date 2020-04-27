@@ -17,7 +17,7 @@
         "line-height":"50px"
     },
     valueContent:{
-        "width":"588px",
+        "width":"688px",
         "margin-left":"40px",
         "border":"1px solid #dedede",
         "border-radius":"4px",
@@ -40,7 +40,7 @@
     attachmentName:{
         "cursor":"pointer",
         "float":"left",
-        "width":"450px",
+        "width":"550px",
         "overflow":"hidden",
         "text-overflow": "ellipsis",
         "white-space": "nowrap",
