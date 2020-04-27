@@ -74,7 +74,6 @@ o2.widget.JavascriptEditor = new Class({
     },
 
     loadMonaco: function(callback){
-	    debugger;
         if (o2.editorData.javascriptEditor){
             this.theme = o2.editorData.javascriptEditor.monaco_theme;
             this.fontSize = o2.editorData.javascriptEditor.fontSize;
@@ -99,9 +98,31 @@ o2.widget.JavascriptEditor = new Class({
             });
             this.focus();
 
+            o2.require("o2.xScript.Macro", function(){
+                var json = null;
+                o2.getJSON("/o2_core/o2/widget/$JavascriptEditor/environment.json", function(data){ json = data; }, false);
+                this.Macro = new o2.Macro.FormContext(json);
+
+
+
+
+            }.bind(this));
+
+
             this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
                 this.fireEvent("save");
             }.bind(this));
+
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_I, function(e){
+                this.format();
+            }.bind(this));
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F, function(e){
+                this.format();
+            }.bind(this));
+
+            if( this.fontSize ){
+                this.editor.updateOptions( {"fontSize": this.fontSize} );
+            }
 
             this.fireEvent("postLoad");
             if (callback) callback();
@@ -109,90 +130,6 @@ o2.widget.JavascriptEditor = new Class({
         }.bind(this));
     },
 
-    setValue: function(v){
-        //if (this.options.type.toLowerCase()=="ace"){
-        if (this.editor) this.editor.setValue(v);
-        //}
-        // if (this.options.type.toLowerCase()=="monaco"){
-        //     setValue
-        //
-        //     setTimeout(function() {
-        //         this.editor.updateOptions({
-        //             "value": v
-        //         });
-        //     }, 1000);
-        // }
-    },
-    getValue: function(){
-        return (this.editor) ? this.editor.getValue() : "";
-    },
-    resize: function(y){
-        if (this.editor){
-            if (this.options.type.toLowerCase()=="ace"){
-                this.editor.resize();
-            }
-            if (this.options.type.toLowerCase()=="monaco"){
-                this.editor.layout();
-            }
-        }
-    },
-    addEditorEvent: function(name, fun){
-        if (this.editor){
-            if (this.options.type.toLowerCase()=="ace"){
-                this.editor.on(name, fun);
-            }
-            if (this.options.type.toLowerCase()=="monaco"){
-                var ev = name;
-                switch (ev) {
-                    case "change": ev = "onDidChangeModelContent";
-                }
-                if (this.editor[ev]) this.editor[ev](fun);
-            }
-        }else{
-            this.unbindEvents.push({"name": name, "fun": fun});
-        }
-    },
-    validatedAce: function(){
-        var session = this.editor.getSession();
-        var annotations = session.getAnnotations();
-        for (var i=0; i<annotations.length; i++){
-            if (annotations[i].type=="error") return false;
-        }
-        return true;
-    },
-    validatedMonaco: function(){
-        var mod = this.editor.getModel();
-        var ms = monaco.editor.getModelMarkers({"resource": mod.uri});
-        for (var i=0; i<ms.length; i++){
-            if (ms[i].severity==8) return false;
-        }
-        return true;
-    },
-
-    validated: function(){
-        if (this.editor){
-           switch (this.options.type.toLowerCase()) {
-               case "ace": return this.validatedAce();
-               case "monaco": return this.validatedMonaco();
-           }
-            return true;
-        }
-        return true
-    },
-
-    focus: function(){
-        if (this.editor){
-            this.editor.focus();
-            if (this.options.type.toLowerCase()=="ace") this.goto();
-        }
-    },
-    goto: function(){
-        var p = this.editor.getCursorPosition();
-        if (p.row==0){
-            p.row = this.editor.renderer.getScrollBottomRow();
-        }
-        this.editor.gotoLine(p.row+1, p.column+1, true);
-    },
     loadAce: function(callback){
         if (o2.editorData.javascriptEditor){
             this.theme = o2.editorData.javascriptEditor.theme;
@@ -267,18 +204,6 @@ o2.widget.JavascriptEditor = new Class({
                     }.bind(this)
                 });
             }.bind(this));
-            // this.editor.on("change", function(e){
-            //     if (e.start.row!==e.end.row){
-            //         debugger;
-            //         var code = "";
-            //         for (var i=e.start.row; i<e.end.row; i++){
-            //             code+=this.editor.getSession().getLine(i);
-            //         }
-            //         code = "try{"+code+"}catch(e){}";
-            //         this.Macro.exec(code);
-            //     }
-            // }.bind(this));
-
 
             this.editor.commands.addCommand({
                 name: 'save',
@@ -286,44 +211,16 @@ o2.widget.JavascriptEditor = new Class({
                 exec: function(editor) {
                     this.fireEvent("save");
                 }.bind(this),
-                readOnly: false // false if this command should not apply in readOnly mode
+                readOnly: false
             });
-            // this.editor.commands.addCommand({
-            //     name: 'help',
-            //     bindKey: {win: 'Ctrl-Q|Ctrl-Alt-Space|Ctrl-Space|Alt-/',  mac: 'Command-Q'},
-            //     exec: function(editor, e, e1) {
-            //         this.fireEvent("reference", [editor, e, e1]);
-            //     }.bind(this),
-            //     readOnly: false // false if this command should not apply in readOnly mode
-            // });
 
             this.editor.commands.addCommand({
                 name: 'format',
                 bindKey: {win: 'Ctrl-Alt-i|Ctrl-Alt-f',  mac: 'Command-i|Command-f'},
                 exec: function(editor, e, e1) {
-                    var mode = this.options.option.mode.toString().toLowerCase();
-                    if (mode==="javascript"){
-                        o2.load("JSBeautifier", function(){
-                            editor.setValue(js_beautify(editor.getValue()));
-                        }.bind(this));
-                    }else if (mode==="html"){
-                        o2.load("JSBeautifier_html", function(){
-                            editor.setValue(html_beautify(editor.getValue()));
-                        }.bind(this));
-                    }else if (mode==="css"){
-                        o2.load("JSBeautifier_css", function(){
-                            editor.setValue(css_beautify(editor.getValue()));
-                        }.bind(this));
-                    }else{
-                        o2.load("JSBeautifier", function(){
-                            editor.setValue(js_beautify(editor.getValue()));
-                        }.bind(this));
-                    }
-
-
-                    //this.fireEvent("reference", [editor, e, e1]);
+                    this.format();
                 }.bind(this),
-                readOnly: false // false if this command should not apply in readOnly mode
+                readOnly: false
             });
 
             this.editor.commands.addCommand({
@@ -348,6 +245,112 @@ o2.widget.JavascriptEditor = new Class({
             this.fireEvent("postLoad");
             if (callback) callback();
         }.bind(this));
+    },
+
+    setValue: function(v){
+        if (this.editor) this.editor.setValue(v);
+    },
+    getValue: function(){
+        return (this.editor) ? this.editor.getValue() : "";
+    },
+    resize: function(y){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.editor.resize(); break;
+                case "monaco": this.editor.layout(); break;
+            }
+        }
+    },
+    addEditorEvent: function(name, fun){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.editor.on(name, fun); break;
+                case "monaco":
+                    var ev = name;
+                    switch (ev) {
+                        case "change": ev = "onDidChangeModelContent"; break;
+                    }
+                    if (this.editor[ev]) this.editor[ev](fun);
+                    break;
+            }
+        }else{
+            this.unbindEvents.push({"name": name, "fun": fun});
+        }
+    },
+    validatedAce: function(){
+        var session = this.editor.getSession();
+        var annotations = session.getAnnotations();
+        for (var i=0; i<annotations.length; i++){
+            if (annotations[i].type=="error") return false;
+        }
+        return true;
+    },
+    validatedMonaco: function(){
+        var mod = this.editor.getModel();
+        var ms = monaco.editor.getModelMarkers({"resource": mod.uri});
+        for (var i=0; i<ms.length; i++){
+            if (ms[i].severity==8) return false;
+        }
+        return true;
+    },
+
+    validated: function(){
+        if (this.editor){
+           switch (this.options.type.toLowerCase()) {
+               case "ace": return this.validatedAce();
+               case "monaco": return this.validatedMonaco();
+           }
+            return true;
+        }
+        return true
+    },
+
+    formatAce: function(){
+        var mode = this.options.option.mode.toString().toLowerCase();
+        if (mode==="javascript"){
+            o2.load("JSBeautifier", function(){
+                this.editor.setValue(js_beautify(editor.getValue()));
+            }.bind(this));
+        }else if (mode==="html"){
+            o2.load("JSBeautifier_html", function(){
+                this.editor.setValue(html_beautify(editor.getValue()));
+            }.bind(this));
+        }else if (mode==="css"){
+            o2.load("JSBeautifier_css", function(){
+                this.editor.setValue(css_beautify(editor.getValue()));
+            }.bind(this));
+        }else{
+            o2.load("JSBeautifier", function(){
+                this.editor.setValue(js_beautify(editor.getValue()));
+            }.bind(this));
+        }
+    },
+    formatMonaco: function(){
+        this.editor.getAction("editor.action.formatDocument").run();
+    },
+    format: function(){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.formatAce();
+                case "monaco": this.formatMonaco();
+            }
+        }
+    },
+
+    focus: function(){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.editor.focus(); this.goto(); break;
+                case "monaco": this.editor.focus();
+            }
+        }
+    },
+    goto: function(){
+        var p = this.editor.getCursorPosition();
+        if (p.row==0){
+            p.row = this.editor.renderer.getScrollBottomRow();
+        }
+        this.editor.gotoLine(p.row+1, p.column+1, true);
     },
 
 
