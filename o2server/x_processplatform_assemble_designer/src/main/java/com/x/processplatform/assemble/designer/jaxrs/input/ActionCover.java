@@ -95,14 +95,14 @@ class ActionCover extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), application.getName(),
 						application.getId());
 			}
-			this.cover(business, wi, application);
+			this.cover(business, wi, application, effectivePerson);
 			wo.setId(application.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private void cover(Business business, Wi wi, Application application) throws Exception {
+	private void cover(Business business, Wi wi, Application application, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		List<JpaObject> removeObjects = new ArrayList<>();
 		for (WrapForm _o : wi.getFormList()) {
@@ -210,13 +210,14 @@ class ActionCover extends BaseAction {
 				process.setName(this.idleNameWithApplication(business, application.getId(), process.getName(),
 						Process.class, process.getId()));
 			}
+			process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+			process.setLastUpdateTime(new Date());
 			process.setApplication(application.getId());
 			if (StringUtils.isNotEmpty(process.getEdition())) {
 				if(BooleanUtils.isTrue(process.getEditionEnable())) {
 					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
 							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
 						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
-							p.setLastUpdateTime(new Date());
 							p.setEditionEnable(false);
 						}
 					}
