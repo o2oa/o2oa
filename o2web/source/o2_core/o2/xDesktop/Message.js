@@ -153,14 +153,16 @@ MWF.xDesktop.Message = new Class({
 	resize: function(){
 		this.setPosition();
 	},
-	addMessage: function(msg){
-		var item = new MWF.xDesktop.Message.Item(this,msg);
+	addMessage: function(msg, time){
+		var showTime = (time) ? (new Date()).parse(time) : new Date();
+		var item = new MWF.xDesktop.Message.Item(this,msg, showTime);
         this.items.push(item);
 		this.addUnread();
 		return item;
 	},
-    addTooltip: function(msg){
-        var tooltop = new MWF.xDesktop.Message.Tooltip(this,msg);
+    addTooltip: function(msg, time){
+		var showTime = (time) ? (new Date()).parse(time) : new Date();
+        var tooltop = new MWF.xDesktop.Message.Tooltip(this,msg,showTime);
         return tooltop;
     },
 	getUnread: function(){
@@ -191,11 +193,12 @@ MWF.xDesktop.Message = new Class({
 });
 MWF.xDesktop.Message.Item = new Class({
     Implements: [Events],
-	initialize: function(message, msg){
+	initialize: function(message, msg, showTime){
 		this.message = message;
 		this.container = this.message.contentNode;
 		this.css = this.message.css;
 		this.msg = msg;
+		this.showTime = showTime;
 		
 //		msg = {
 //			"subject": "",
@@ -223,7 +226,7 @@ MWF.xDesktop.Message.Item = new Class({
 		this.subjectNode.set({"text": this.msg.subject, "title": this.msg.subject});
 		this.contentNode.set({"html": this.msg.content});
 		this.contentNode.set({"title": this.contentNode.get("text")});
-		this.dateNode.set("text", (new Date()).format("db"));
+		this.dateNode.set("text", this.showTime.format("db"));
 		
 		this.node.inject(this.container, "top");
 		
