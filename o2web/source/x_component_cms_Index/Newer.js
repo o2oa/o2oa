@@ -491,7 +491,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "readonly" :false,
                 "documentId": id,
                 "appId": appId,
-                "postPublish" : function(){
+                "onPostPublish" : function(){
+                    debugger;
                     if(_self.view && _self.view.reload )_self.view.reload();
                     this.fireEvent( "postPublish" );
                 }.bind(this)
