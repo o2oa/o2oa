@@ -1,11 +1,13 @@
 o2.widget = o2.widget || {};
 o2.require("o2.widget.codemirror", null, false);
 o2.require("o2.widget.ace", null, false);
+o2.require("o2.widget.monaco", null, false);
 o2.require("o2.xDesktop.UserData", null, false);
 o2.widget.JavascriptEditor = new Class({
 	Implements: [Options, Events],
 	options: {
-        "type": "ace",
+        //"type": "ace",
+        "type": "monaco",
 		"title": "JavascriptEditor",
 		"style": "default",
 		"option": {
@@ -16,53 +18,172 @@ o2.widget.JavascriptEditor = new Class({
 	},
 	initialize: function(node, options){
 		this.setOptions(options);
+		this.unbindEvents = [];
 		this.editorClass = o2.widget[this.options.type];
 		this.node = $(node);
 	},
+    getDefaultEditorData: function(){
+	    switch (this.options.type) {
+            case "ace":
+                return {
+                    "javascriptEditor": {
+                        "theme": "tomorrow",
+                        "fontSize" : "12px"
+                    }
+                };
+            case "monaco":
+                return {
+                    "javascriptEditor": {
+                        "monaco_theme": "vs",
+                        "fontSize" : "12px"
+                    }
+                };
+        }
+    },
     getEditorTheme: function(callback){
         if (!o2.editorData){
             o2.UD.getData("editor", function(json){
                 if (json.data){
                     o2.editorData = JSON.decode(json.data);
                 }else{
-                    o2.editorData = {
-                        "javascriptEditor": {
-                            "theme": "tomorrow",
-                            "fontSize" : "12px"
-                        }
-                    };
+                    o2.editorData = this.getDefaultEditorData();
                 }
                 if (callback) callback();
-            });
+            }.bind(this));
         }else{
             if (callback) callback();
         }
     },
     load: function(callback){
         this.getEditorTheme(function(json){
-            if (o2.editorData.javascriptEditor){
-                this.theme = o2.editorData.javascriptEditor.theme;
-                this.fontSize = o2.editorData.javascriptEditor.fontSize;
-            }else{
-                o2.editorData.javascriptEditor = {
-                    "theme": "tomorrow",
-                    "fontSize" : "12px"
-                };
-            }
-            if (!this.theme) this.theme = "tomorrow";
-            if( !this.fontSize )this.fontSize = "12px";
             if (this.options.type.toLowerCase()=="ace"){
                 this.loadAce(callback);
+            }
+            if (this.options.type.toLowerCase()=="monaco"){
+                this.loadMonaco(callback);
             }
             if (this.options.type.toLowerCase()=="codeMirror"){
                 this.loadCodeMirror(callback);
             }
+
+            while (this.unbindEvents.length){
+                var ev = this.unbindEvents.shift();
+                this.addEditorEvent(ev.name, ev.fun);
+            }
         }.bind(this));
     },
+
+    loadMonaco: function(callback){
+	    debugger;
+        if (o2.editorData.javascriptEditor){
+            this.theme = o2.editorData.javascriptEditor.monaco_theme;
+            this.fontSize = o2.editorData.javascriptEditor.fontSize;
+        }else{
+            o2.editorData.javascriptEditor = {
+                "monaco_theme": "vs",
+                "fontSize" : "12px"
+            };
+        }
+        if (!this.theme) this.theme = "vs";
+        if( !this.fontSize )this.fontSize = "12px";
+
+        this.editorClass.load(function(){
+            this.editor = monaco.editor.create(this.node, {
+                value: this.options.option.value,
+                language: "javascript",
+                theme: this.theme,
+                fontSize: this.fontSize,
+                lineNumbersMinChars: 3,
+                mouseWheelZoom: true,
+                automaticLayout: true
+            });
+            this.focus();
+
+            this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
+                this.fireEvent("save");
+            }.bind(this));
+
+            this.fireEvent("postLoad");
+            if (callback) callback();
+
+        }.bind(this));
+    },
+
+    setValue: function(v){
+        //if (this.options.type.toLowerCase()=="ace"){
+        if (this.editor) this.editor.setValue(v);
+        //}
+        // if (this.options.type.toLowerCase()=="monaco"){
+        //     setValue
+        //
+        //     setTimeout(function() {
+        //         this.editor.updateOptions({
+        //             "value": v
+        //         });
+        //     }, 1000);
+        // }
+    },
+    getValue: function(){
+        return (this.editor) ? this.editor.getValue() : "";
+    },
+    resize: function(y){
+        if (this.editor){
+            if (this.options.type.toLowerCase()=="ace"){
+                this.editor.resize();
+            }
+            if (this.options.type.toLowerCase()=="monaco"){
+                this.editor.layout();
+            }
+        }
+    },
+    addEditorEvent: function(name, fun){
+        if (this.editor){
+            if (this.options.type.toLowerCase()=="ace"){
+                this.editor.on(name, fun);
+            }
+            if (this.options.type.toLowerCase()=="monaco"){
+                var ev = name;
+                switch (ev) {
+                    case "change": ev = "onDidChangeModelContent";
+                }
+                if (this.editor[ev]) this.editor[ev](fun);
+            }
+        }else{
+            this.unbindEvents.push({"name": name, "fun": fun});
+        }
+    },
+    validatedAce: function(){
+        var session = this.editor.getSession();
+        var annotations = session.getAnnotations();
+        for (var i=0; i<annotations.length; i++){
+            if (annotations[i].type=="error") return false;
+        }
+        return true;
+    },
+    validatedMonaco: function(){
+        var mod = this.editor.getModel();
+        var ms = monaco.editor.getModelMarkers({"resource": mod.uri});
+        for (var i=0; i<ms.length; i++){
+            if (ms[i].severity==8) return false;
+        }
+        return true;
+    },
+
+    validated: function(){
+        if (this.editor){
+           switch (this.options.type.toLowerCase()) {
+               case "ace": return this.validatedAce();
+               case "monaco": return this.validatedMonaco();
+           }
+            return true;
+        }
+        return true
+    },
+
     focus: function(){
         if (this.editor){
             this.editor.focus();
-            this.goto();
+            if (this.options.type.toLowerCase()=="ace") this.goto();
         }
     },
     goto: function(){
@@ -73,6 +194,18 @@ o2.widget.JavascriptEditor = new Class({
         this.editor.gotoLine(p.row+1, p.column+1, true);
     },
     loadAce: function(callback){
+        if (o2.editorData.javascriptEditor){
+            this.theme = o2.editorData.javascriptEditor.theme;
+            this.fontSize = o2.editorData.javascriptEditor.fontSize;
+        }else{
+            o2.editorData.javascriptEditor = {
+                "theme": "tomorrow",
+                "fontSize" : "12px"
+            };
+        }
+        if (!this.theme) this.theme = "tomorrow";
+        if( !this.fontSize )this.fontSize = "12px";
+
         this.editorClass.load(function(){
             var exports = ace.require("ace/ext/language_tools");
             this.editor = ace.edit(this.node);
@@ -155,14 +288,14 @@ o2.widget.JavascriptEditor = new Class({
                 }.bind(this),
                 readOnly: false // false if this command should not apply in readOnly mode
             });
-            this.editor.commands.addCommand({
-                name: 'help',
-                bindKey: {win: 'Ctrl-Q|Ctrl-Alt-Space|Ctrl-Space|Alt-/',  mac: 'Command-Q'},
-                exec: function(editor, e, e1) {
-                    this.fireEvent("reference", [editor, e, e1]);
-                }.bind(this),
-                readOnly: false // false if this command should not apply in readOnly mode
-            });
+            // this.editor.commands.addCommand({
+            //     name: 'help',
+            //     bindKey: {win: 'Ctrl-Q|Ctrl-Alt-Space|Ctrl-Space|Alt-/',  mac: 'Command-Q'},
+            //     exec: function(editor, e, e1) {
+            //         this.fireEvent("reference", [editor, e, e1]);
+            //     }.bind(this),
+            //     readOnly: false // false if this command should not apply in readOnly mode
+            // });
 
             this.editor.commands.addCommand({
                 name: 'format',
@@ -216,6 +349,7 @@ o2.widget.JavascriptEditor = new Class({
             if (callback) callback();
         }.bind(this));
     },
+
 
 	loadCodeMirror: function(callback){
 		if (this.fireEvent("queryLoad")){
