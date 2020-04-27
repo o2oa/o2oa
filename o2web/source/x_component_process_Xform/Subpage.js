@@ -123,12 +123,14 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
         this.form.checkSubformLoaded();
     },
     getSubpage: function(callback){
+        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getPageByName": "getPageByNameMobile";
+
         if (this.json.subpageType==="script"){
             if (this.json.subpageScript.code){
                 var formNome = this.form.Macro.exec(this.json.subpageScript.code, this);
                 if (formNome){
                     var app = this.form.businessData.pageInfor.portal;
-                    o2.Actions.get("x_portal_assemble_surface").getPageByName(formNome, app, function(json){
+                    o2.Actions.get("x_portal_assemble_surface")[method](formNome, app, function(json){
                         this.getSubpageData(json.data);
                         if (callback) callback();
                     }.bind(this));
@@ -139,7 +141,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
         }else{
             if (this.json.subpageSelected && this.json.subpageSelected!=="none"){
                 var app = this.form.businessData.pageInfor.portal;
-                o2.Actions.get("x_portal_assemble_surface").getPageByName(this.json.subpageSelected, app, function(json){
+                o2.Actions.get("x_portal_assemble_surface")[method](this.json.subpageSelected, app, function(json){
                     this.getSubpageData(json.data);
                     if (callback) callback();
                 }.bind(this));
@@ -150,11 +152,12 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
     },
     getSubpageData: function(data){
         var subpageDataStr = null;
-        if (this.form.json.mode !== "Mobile" && !layout.mobile){
-            subpageDataStr = data.data;
-        }else{
-            subpageDataStr = data.mobileData;
-        }
+        // if (this.form.json.mode !== "Mobile" && !layout.mobile){
+        //     subpageDataStr = data.data;
+        // }else{
+        //     subpageDataStr = data.mobileData;
+        // }
+        subpageDataStr = data.data;
         this.subpageData = null;
         if (subpageDataStr){
             this.subpageData = JSON.decode(MWF.decodeJsonString(subpageDataStr));
