@@ -2,16 +2,13 @@ MWF.xApplication = MWF.xApplication || {};
 MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.TableDesigner = MWF.xApplication.query.TableDesigner || {};
 MWF.APPDTBD = MWF.xApplication.query.TableDesigner;
-MWF.require("MWF.widget.Common", null, false);
-MWF.require("MWF.xScript.Macro", null, false);
 
 MWF.xDesktop.requireApp("query.TableDesigner", "lp."+MWF.language, null, false);
-//MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
+MWF.xDesktop.requireApp("query.ViewDesigner", "ViewBase", null, false);
 MWF.xDesktop.requireApp("query.TableDesigner", "Property", null, false);
 
 MWF.xApplication.query.TableDesigner.Table = new Class({
-    //Extends: MWF.xApplication.query.ViewDesigner.View,
-    Extends: MWF.widget.Common,
+    Extends: MWF.xApplication.query.ViewDesigner.ViewBase,
     Implements: [Options, Events],
     options: {
         "style": "default",
@@ -52,37 +49,9 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
     },
-    autoSave: function(){
-        this.autoSaveTimerID = window.setInterval(function(){
-            if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFDictionaryAutoSaveCheck");
-            if (this.autoSaveCheckNode){
-                if (this.autoSaveCheckNode.get("checked")){
-                    this.save();
-                }
-            }
-        }.bind(this), 60000);
-    },
     parseData: function(){
         this.json = this.data;
     },
-
-    showProperty: function(){
-        if (!this.property){
-            this.property = new MWF.xApplication.query.ViewDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
-                "path": this.options.propertyPath,
-                "onPostLoad": function(){
-                    this.property.show();
-                }.bind(this)
-            });
-            this.property.load();
-        }else{
-            this.property.show();
-        }
-    },
-    hideProperty: function(){
-        if (this.property) this.property.hide();
-    },
-
     load : function(){
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
@@ -391,125 +360,13 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
     },
-    setContentColumnWidth: function(){
-        var titleTds = this.viewTitleTrNode.getElements("td");
-        var widthList = [];
-        titleTds.each(function(td){widthList.push(td.getSize().x);});
 
-        var flag = false;
-
-        if (this.viewContentTableNode){
-            trs = this.viewContentTableNode.getElements("tr");
-            for (var i=0; i<trs.length; i++){
-                var tr = trs[i];
-                var tds = tr.getElements("td");
-                tds.each(function(contentTd, i){
-                    if (contentTd.get("colSpan")==1){
-                        contentTd.setStyle("width", ""+widthList[i]+"px");
-                        flag = true;
-                    }
-                });
-                if (flag) break;
-            }
-
-            //var tr = this.viewContentTableNode.getFirst("tr");
-            //if (tr){
-            //    var tds = tr.getElements("td");
-            //    tds.each(function(contentTd, i){
-            //        if (!contentTd.get("colSpan")){
-            //            contentTd.setStyle("width", ""+widthList[i]+"px");
-            //        }
-            //    });
-            //}
-        }
-    },
-     selected: function(){
-        if (this.currentSelectedModule){
-            if (this.currentSelectedModule==this){
-                return true;
-            }else{
-                this.currentSelectedModule.unSelected();
-            }
-        }
-        this.currentSelectedModule = this;
-        this.showProperty();
-    },
-    unSelected: function(){
-        this.currentSelectedModule = null;
-        return true;
-    },
-    loadViewNodes: function(){
-        this.viewAreaNode = new Element("div#viewAreaNode", {"styles": this.css.viewAreaNode}).inject(this.areaNode);
-        this.viewTitleNode = new Element("div#viewTitleNode", {"styles": this.css.viewTitleNode}).inject(this.viewAreaNode);
-
-        this.refreshNode = new Element("div", {"styles": this.css.refreshNode}).inject(this.viewTitleNode);
-        this.addColumnNode = new Element("div", {"styles": this.css.addColumnNode}).inject(this.viewTitleNode);
-
-        this.viewTitleContentNode = new Element("div", {"styles": this.css.viewTitleContentNode}).inject(this.viewTitleNode);
-        this.viewTitleTableNode = new Element("table", {
-            "styles": this.css.viewTitleTableNode,
-            "border": "0px",
-            "cellPadding": "0",
-            "cellSpacing": "0"
-        }).inject(this.viewTitleContentNode);
-        this.viewTitleTrNode = new Element("tr", {"styles": this.css.viewTitleTrNode}).inject(this.viewTitleTableNode);
-
-
-        this.viewContentScrollNode = new Element("div", {"styles": this.css.viewContentScrollNode}).inject(this.viewAreaNode);
-        this.viewContentNode = new Element("div", {"styles": this.css.viewContentNode}).inject(this.viewContentScrollNode);
-        MWF.require("MWF.widget.ScrollBar", function(){
-            new MWF.widget.ScrollBar(this.viewContentScrollNode, {"style": "view", "distance": 100, "indent": false});
-        }.bind(this));
-
-        this.contentLeftNode = new Element("div", {"styles": this.css.contentLeftNode}).inject(this.viewContentNode);
-        this.contentRightNode = new Element("div", {"styles": this.css.contentRightNode}).inject(this.viewContentNode);
-        this.viewContentBodyNode = new Element("div", {"styles": this.css.viewContentBodyNode}).inject(this.viewContentNode);
-        this.viewContentTableNode = new Element("table", {
-            "styles": this.css.viewContentTableNode,
-            "border": "0px",
-            "cellPadding": "0",
-            "cellSpacing": "0"
-        }).inject(this.viewContentBodyNode);
-    },
     loadViewColumns: function(){
         if (this.json.draftData.fieldList) {
             this.json.draftData.fieldList.each(function (json) {
                 this.items.push(new MWF.xApplication.query.TableDesigner.Table.Column(json, this));
             }.bind(this));
         }
-    },
-    loadView: function(){
-        this.loadViewNodes();
-        this.loadViewColumns();
-//        this.addTopItemNode.addEvent("click", this.addTopItem.bind(this));
-    },
-    setViewWidth: function(){
-        this.viewAreaNode.setStyle("width", "auto");
-        this.viewTitleNode.setStyle("width", "auto");
-
-        var s1 = this.viewTitleTableNode.getSize();
-        var s2 = this.refreshNode.getSize();
-        var s3 = this.addColumnNode.getSize();
-        var width = s1.x+s2.x+s2.x;
-        var size = this.areaNode.getSize();
-
-        if (width>size.x){
-            this.viewTitleNode.setStyle("width", ""+width+"px");
-            this.viewAreaNode.setStyle("width", ""+width+"px");
-        }else{
-            this.viewTitleNode.setStyle("width", ""+size.x+"px");
-            this.viewAreaNode.setStyle("width", ""+size.x+"px");
-        }
-        this.setContentColumnWidth();
-        this.setContentHeight();
-    },
-    setAreaNodeSize: function(){
-        //var size = this.node.getSize();
-        ////var tabSize = this.tab.tabNodeContainer.getSize();
-        //var tabSize = this.node.getSize();
-        //var y = size.y - tabSize.y;
-        //this.areaNode.setStyle("height", ""+y+"px");
-        //if (this.editor) if (this.editor.editor) this.editor.editor.resize();
     },
     saveSilence: function(callback){
         if (!this.data.name){
@@ -548,6 +405,10 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.checkToolbars();
             if (callback) callback();
         }.bind(this));
+    },
+    unSelected: function(){
+        this.currentSelectedModule = null;
+        return true;
     },
     statusBuild: function(e){
         var _self = this;
@@ -588,6 +449,19 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
+    buildAllView: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.buildAllViewTitle, MWF.APPDTBD.LP.buildAllViewInfor, 480, 120, function(){
+            _self.designer.actions.buildAllTable(function(json){
+                this.designer.notice(this.designer.lp.buildAllView_success, "success", this.node, {"x": "left", "y": "bottom"});
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+
     buildAllView: function(e){
         var _self = this;
         if (!e) e = this.node;
@@ -761,7 +635,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
 
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
-    //Extends:MWF.xApplication.query.ViewDesigner.View.Column,
+    Extends:MWF.xApplication.query.ViewDesigner.ViewBase.Column,
     initialize: function(json, view, next){
         this.propertyPath = "/x_component_query_TableDesigner/$Table/column.html";
         this.view = view;
@@ -772,33 +646,6 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
         this.domListNode = this.view.domListNode;
         this.load();
     },
-    load: function(){
-        this.areaNode = new Element("td", {"styles": this.css.viewTitleColumnAreaNode});
-        this.areaNode.store("column", this);
-
-        if (this.next){
-            this.areaNode.inject(this.next.areaNode, "before");
-        }else{
-            this.areaNode.inject(this.content);
-        }
-
-        this.node = new Element("div", {
-            "styles": this.css.viewTitleColumnNode
-        }).inject(this.areaNode);
-        this.textNode = new Element("div", {
-            "styles": this.css.viewTitleColumnTextNode,
-            "text": this.json.displayName
-        }).inject(this.node);
-
-        this.createDomListItem();
-
-
-        this._createIconAction();
-
-        //if (!this.json.export) this.hideMode();
-
-        this.setEvent();
-    },
     createDomListItem: function(){
         //this.view.columnListEditTr;
         var idx = this.view.columnListTable.rows.length;
@@ -808,75 +655,6 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
         this.listNode.insertCell().setStyles(this.css.columnListTd).set("text", this.json.type);
         this.resetTextNode();
     },
-    setEvent: function(){
-        this.node.addEvents({
-            "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
-            "mouseover": function(){if (!this.isSelected) this.node.setStyles(this.css.viewTitleColumnNode_over)}.bind(this),
-            "mouseout": function(){if (!this.isSelected) if (this.isError){
-                this.node.setStyles(this.css.viewTitleColumnNode_error)
-            }else{
-                this.node.setStyles(this.css.viewTitleColumnNode)
-            }}.bind(this)
-        });
-        this.listNode.addEvents({
-            "click": function(e){this.selected(); e.stopPropagation();}.bind(this),
-            "mouseover": function(){debugger; if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode_over)}.bind(this),
-            "mouseout": function(){if (!this.isSelected) this.listNode.setStyles(this.css.cloumnListNode)}.bind(this)
-        });
-    },
-    _createIconAction: function(){
-        if (!this.actionArea){
-            this.actionArea = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.view.areaNode, "after");
-            this._createAction({
-                "name": "add",
-                "icon": "add.png",
-                "event": "click",
-                "action": "addColumn",
-                "title": MWF.APPDVD.LP.action.add
-            });
-            this._createAction({
-                "name": "delete",
-                "icon": "delete1.png",
-                "event": "click",
-                "action": "delete",
-                "title": MWF.APPDVD.LP.action["delete"]
-            });
-        }
-    },
-    _createAction: function(action){
-        var actionNode = new Element("div", {
-            "styles": this.css.actionNodeStyles,
-            "title": action.title
-        }).inject(this.actionArea);
-        actionNode.setStyle("background", "url("+this.view.path+this.view.options.style+"/action/"+action.icon+") no-repeat left center");
-        actionNode.addEvent(action.event, function(e){
-            this[action.action](e);
-        }.bind(this));
-        actionNode.addEvents({
-            "mouseover": function(e){
-                e.target.setStyle("border", "1px solid #999");
-            }.bind(this),
-            "mouseout": function(e){
-                e.target.setStyle("border", "1px solid #F1F1F1");
-            }.bind(this)
-        });
-    },
-    _setActionAreaPosition: function(){
-        var p = this.node.getPosition(this.view.areaNode.getOffsetParent());
-        var y = p.y-25;
-        var x = p.x;
-        this.actionArea.setPosition({"x": x, "y": y});
-    },
-    _showActions: function(){
-        if (this.actionArea){
-            this._setActionAreaPosition();
-            this.actionArea.setStyle("display", "block");
-        }
-    },
-    _hideActions: function(){
-        if (this.actionArea) this.actionArea.setStyle("display", "none");
-    },
-
     selected: function(){
         debugger;
         if (this.view.currentSelectedModule){
@@ -1007,18 +785,6 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
         tds[1].empty().set("text", this.json.description);
         tds[2].empty().set("text", this.json.type);
     },
-    _setEditStyle: function(name, input, oldValue){
-        if (name=="displayName") this.resetTextNode();
-        if (name=="selectType") this.resetTextNode();
-        if (name=="attribute") this.resetTextNode();
-        if (name=="path") this.resetTextNode();
-        if (name=="column"){
-            this.view.json.data.orderList.each(function(order){
-                if (order.column==oldValue) order.column = this.json.column
-            }.bind(this));
-            if (this.view.json.data.group.column == oldValue) this.view.json.data.group.column = this.json.column;
-        }
-    },
     resetColumnTextNode: function(){
         var text = (this.json.description) ? this.json.name+"("+this.json.description+")" : this.json.name;
         this.textNode.set("text", text);
@@ -1099,6 +865,26 @@ MWF.xApplication.query.TableDesigner.Table.Column = new Class({
         }
         this.view.setViewWidth();
         this.view.addColumnNode.scrollIntoView(true);
+    },
+
+    _createIconAction: function(){
+        if (!this.actionArea){
+            this.actionArea = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.view.areaNode, "after");
+            this._createAction({
+                "name": "add",
+                "icon": "add.png",
+                "event": "click",
+                "action": "addColumn",
+                "title": MWF.APPDVD.LP.action.add
+            });
+            this._createAction({
+                "name": "delete",
+                "icon": "delete1.png",
+                "event": "click",
+                "action": "delete",
+                "title": MWF.APPDVD.LP.action["delete"]
+            });
+        }
     }
 });
 
