@@ -62,7 +62,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
                 naviTitle.addEvents({
                     click:function(){
-                        alert(1)
+
                     }.bind(this)
                 });
 
@@ -82,7 +82,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                             e.stopPropagation();
                         }.bind(this),
                         mouseover:function(){
-                            this.app.showTips(this.allItemAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.content.addProjectBlockText+"</div>"});
+                            //this.app.showTips(this.allItemAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.content.addProjectBlockText+"</div>"});
+                            this.app.tips(this.allItemAdd,this.lp.content.addProjectBlockText)
                         }.bind(this)
                     });
                     this.allItem.addEvents({
@@ -307,7 +308,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         e.stopPropagation();
                     }.bind(this),
                     mouseover:function(e){
-                        this.app.showTips(this.groupMenuAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.navi.addGroup+"</div>"});
+                        //this.app.showTips(this.groupMenuAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.navi.addGroup+"</div>"});
+                        this.app.tips(this.groupMenuAdd,this.lp.navi.addGroup)
                         e.stopPropagation();
                     }.bind(this)
                 });
@@ -392,7 +394,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         //this.reloadLayoutList();
                         if(json.data && json.data.id){
                             //this.actions.projectGet(json.data.id,function(jsonr){
-                              this.actions.get(json.data.id,function(jsonr){
+                            this.actions.get(json.data.id,function(jsonr){
                                 if(jsonr.data){
                                     this.openProject(jsonr.data)
                                 }
@@ -495,9 +497,11 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var _self = this;
         //his.actions.groupList(function(json){
         this.rootActions.ProjectGroupAction.listGroups(function(json){
-            var data = json.data;
-            if(data.length == 0) return;
+
             this.customGroup.empty();
+            var data = json.data;
+            if(!data || data.length == 0) return;
+
             data.each(function(d){
 
                 var customGroupItemContainer = new Element("div.customGroupItemContainer",{styles:this.css.customGroupItemContainer}).inject(this.customGroup);
@@ -600,7 +604,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 onClose:function(d){
                     //if(d && d.title){
                     //    data1.push({"title":d.title});
-                        if(d)this.reloadProjectGroup();
+                    if(d)this.reloadProjectGroup();
 
                     //}
                 }.bind(this)
@@ -785,37 +789,40 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 this.addProjectListText = new Element("div.addProjectListText",{styles:this.css.addProjectListText,text:this.lp.content.addProjectListText}).inject(this.addProjectList);
 
             }else{
-                if(!projectItemData) return;
-                projectItemData.each(function(d){
-                    var projectBlockItem = new Element("div.projectBlockItem",{styles:this.css.projectBlockItem}).inject(this.layoutList);
-                    projectBlockItem.set("id",d.id);
-                    if(d.icon && d.icon!=""){
-                        projectBlockItem.setStyles({
-                            "background-image":"url('"+MWF.xDesktop.getImageSrc( d.icon )+"')"
-                        });
-                    }
-                    projectBlockItem.addEvents({
-                        click:function(){
-                            _self.openProject(d);
-                        },
-                        mouseenter:function(){
-                            this.setStyles({
-                                "box-shadow":"0px 0px 10px #4a90e2"
-                            });
-                            //projectBlockItem.getElements(".projectBlockItemIconSetting").setStyles({"display":"block"});
-                            //projectBlockItem.getElements(".projectBlockItemIconRemove").setStyles({"display":"block"});
-                        },
-                        mouseleave:function(){
-                            this.setStyles({
-                                "box-shadow":"0px 0px 0px #DFDFDF"
-                            });
-                            //projectBlockItem.getElements(".projectBlockItemIconSetting").setStyles({"display":"none"});
-                            //projectBlockItem.getElements(".projectBlockItemIconRemove").setStyles({"display":"none"});
-                        }
-                    });
-                    this.loadSingleBlockItem(projectBlockItem,d);
+                if(projectItemData) {
 
-                }.bind(this));
+                    projectItemData.each(function(d){
+                        var projectBlockItem = new Element("div.projectBlockItem",{styles:this.css.projectBlockItem}).inject(this.layoutList);
+                        projectBlockItem.set("id",d.id);
+                        if(d.icon && d.icon!=""){
+                            projectBlockItem.setStyles({
+                                "background-image":"url('"+MWF.xDesktop.getImageSrc( d.icon )+"')"
+                            });
+                        }
+                        projectBlockItem.addEvents({
+                            click:function(){
+                                _self.openProject(d);
+                            },
+                            mouseenter:function(){
+                                this.setStyles({
+                                    "box-shadow":"0px 0px 10px #4a90e2"
+                                });
+                                //projectBlockItem.getElements(".projectBlockItemIconSetting").setStyles({"display":"block"});
+                                //projectBlockItem.getElements(".projectBlockItemIconRemove").setStyles({"display":"block"});
+                            },
+                            mouseleave:function(){
+                                this.setStyles({
+                                    "box-shadow":"0px 0px 0px #DFDFDF"
+                                });
+                                //projectBlockItem.getElements(".projectBlockItemIconSetting").setStyles({"display":"none"});
+                                //projectBlockItem.getElements(".projectBlockItemIconRemove").setStyles({"display":"none"});
+                            }
+                        });
+                        this.loadSingleBlockItem(projectBlockItem,d);
+
+                    }.bind(this));
+                }
+
                 this.addProjectBlock = new Element("div.addProjectBlock",{styles:this.css.addProjectBlock}).inject(this.layoutList);
                 this.addProjectBlockIcon = new Element("div.addProjectBlockIcon",{styles:this.css.addProjectBlockIcon}).inject(this.addProjectBlock);
                 this.addProjectBlockText = new Element("div.addProjectBlockText",{styles:this.css.addProjectBlockText,text:this.lp.content.addProjectBlockText}).inject(this.addProjectBlock);
@@ -921,8 +928,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             }.bind(this)
         });
 
-         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
-         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
+        var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
+        var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
     },
     loadSingleListItem:function(container,d){
         if(container) container.empty();
@@ -1020,12 +1027,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     setFav:function(d,callback){
         if(d.star){
             this.actions.unStar(d.id,function(d){
-            //this.actions.projectUnStar(d.id,function(d){
+                //this.actions.projectUnStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }else if(!d.star){
             this.actions.star(d.id,function(d){
-            //this.actions.projectStar(d.id,function(d){
+                //this.actions.projectStar(d.id,function(d){
                 if(callback)callback(d)
             }.bind(this))
         }

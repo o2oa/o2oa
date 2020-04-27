@@ -93,7 +93,8 @@
                 "margin-left":"20px",
                 "font-size":"14px",
                 "color":"#666666",
-                "outline":"none"
+                "outline":"none",
+                "margin-top":"2px"
             },
             dynamicLayout:{
                 "height":"30px",
