@@ -483,7 +483,7 @@ MWF.xApplication.Profile.Main = new Class({
                 type:"checkbox"
             })).setStyle("float","left").addEvent("click",function(){
                 if(this.getElement("input").get("checked")){
-                   this.getParent().getParent().getParent().getElements("input[type=checkbox]").set("checked",true);
+                    this.getParent().getParent().getParent().getElements("input[type=checkbox]").set("checked",true);
                     this.getParent().getParent().getParent().getElements("label").addClass("o2_profile_empower_checkbox__checked o2_profile_empower_checkbox_checked");
                     this.getParent().getParent().getParent().getElements("tr").addClass("selected");
                 }else{
@@ -589,7 +589,10 @@ MWF.xApplication.Profile.Main = new Class({
                                 "endTime" : null,
                                 "isWholeday" : false,
                                 "title" : _self.lp.empower.editEmpower,
-                                "configData":{Process:(_data.type=="process"?[{name:_data.processName,id:_data.process}]:[]),Application:(_data.type=="application"?[{name:_data.applicationName,id:_data.application}]:[])},
+                                "configData":{
+                                    Process:(_data.type=="process"?[{name:_data.processName,id:_data.process,editon:_data.edition}]:[]),
+                                    Application:(_data.type=="application"?[{name:_data.applicationName,id:_data.application}]:[])
+                                },
                                 "defaultCalendarId" : ""
                             }, {
                                 app: _self,
@@ -1219,10 +1222,10 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
             height: "30",
         }).inject(this.applicationNode).setStyles(this.css.selectNode).addEvents({
             "hover":function(){
-                    this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat");
-             },
+                this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat");
+            },
             "blur":function(){
-                    this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat");
+                this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat");
             }
         });
         this.showApplicationNode = new Element("div.showNode", {
@@ -1281,6 +1284,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                 subData["process"] = item.id;
                 subData["processName"] = item.name;
                 subData["processAlias"] = item.alias;
+                subData["edition"] = !!item.edition?item.edition:(item.id);
                 subData.type = "process";
                 submitData.push(subData);
             });
@@ -1348,6 +1352,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
                                 this[type] = {
                                     "name": item.data.name,
                                     "id": item.data.id,
+                                    "edition":item.data.edition,
                                     "application": item.data.application,
                                     "applicationName": item.data.applicationName,
                                     "alias": item.data.alias
