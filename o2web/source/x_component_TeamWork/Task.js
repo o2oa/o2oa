@@ -52,7 +52,10 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.openType = "dialog"
         }
 
-
+        this.projectObj = this.explorer;
+        if(para){
+            if(para.projectObj) this.projectObj = para.projectObj
+        }
         // this.explorer = explorer;
         //
         // this.app = this.explorer.app;
@@ -1365,6 +1368,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                             name:this.subTaskNewInput.get("value").trim(),
                             project:this.taskData.project,
                             parent:this.taskData.id,
+                            taskGroupId:this.taskData.taskGroupId,
                             executor:this.taskSubNewPerson || ""
                         };
 
@@ -1725,10 +1729,11 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
             mouseleave:function(){this.setStyles({"background-color":""})},
             click:function(e){
                 _self.app.confirm("warn",e,_self.lp.taskCopy,_self.lp.taskContent,300,120,function(){
-                    _self.rootActions.TaskAction.copyTask(_self.explorer.data.taskId,function(json){ debugger;
+                    _self.rootActions.TaskAction.copyTask(_self.explorer.data.taskId,function(json){
                         if(json.type == "success"){
                             _self.explorer.data.taskId = json.data.id;
                             _self.explorer._createTableContent();
+                            _self.explorer.projectObj.reloadTaskGroup(_self.explorer.taskData.taskListId) //ffffffffffffff
                         }
                         this.close();
                         _self.close();
@@ -1757,7 +1762,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
                 var data = this.data;
                 var opt = {};
                 MWF.xDesktop.requireApp("TeamWork", "TaskMove", function(){
-                    var taskmove = new MWF.xApplication.TeamWork.TaskMove(this.explorer,data,opt);
+                    var taskmove = new MWF.xApplication.TeamWork.TaskMove(this.explorer,data,opt,{projectObj:this.explorer.projectObj});
                     taskmove.open();
                     var fx = new Fx.Tween(this.node,{duration:200});
                     fx.start(["opacity"] ,"1", "0").chain(function(){this.close()}.bind(this));

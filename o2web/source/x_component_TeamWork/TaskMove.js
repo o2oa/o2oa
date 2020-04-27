@@ -45,6 +45,11 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.TaskAction;
 
+        this.projectObj = this.explorer;
+        if(para){
+            if(para.projectObj) this.projectObj = para.projectObj;
+        }
+
         this.data = data || {};
         this.cssPath = "/x_component_TeamWork/$TaskMove/"+this.options.style+"/css.wcss";
 
@@ -160,23 +165,38 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         // var taskPerson = new Element("div.taskPerson",{styles:this.css.taskPerson,text:n}).inject(taskItem);
     },
     createBottomLayout:function(){
+
         this.bottomLayout.empty();
         this.okAction = new Element("div.okAction",{styles:this.css.okAction,text:this.lp.ok}).inject(this.bottomLayout);
         this.okAction.addEvents({
             click:function(){
                 if(this.selectedItem){
                     if(this.selectedItem.get("id")==this.data.data.taskListId){
-                        this.app.notice(this.lp.moveToSelf,"error");
+                        this.app.notice(this.lp.moveToSelf,"info");
                         return;
                     }
-                    // var data = {
-                    //     parent : this.selectedItem.get("id"),
-                    //     id:this.data.data.id
-                    // };
-                    // this.actions.save(data,function(json){
-                    //     this.explorer._createTableContent();
-                    //     this.close();
-                    // }.bind(this))
+
+                    var data = {
+                        taskId:this.data.data.id
+                    }
+
+                    this.rootActions.TaskListAction.addTask2ListWithBehindTask(this.selectedItem.get("id"),data,function(json){
+                        if(json.data.id){
+                            //this.app.notice(json.data.message,"success");
+                            this.projectObj.reloadTaskGroup(json.data.id);  //reload to list
+                            this.projectObj.reloadTaskGroup(this.data.data.taskListId); //reload from list
+
+                            //this.explorer.projectObj.reloadTaskGroup(json.data.id);
+                            //this.explorer.projectObj.reloadTaskGroup(this.data.data.taskListId);
+                            // if(this.explorer.explorer){
+                            //     this.explorer.explorer.reloadTaskGroup(json.data.id);
+                            //     this.explorer.explorer.reloadTaskGroup(this.data.data.taskListId);
+                            // }
+                        }else{
+                            this.app.notice("不允许转移到未分类列表","error")
+                        }
+                        this.close();
+                    }.bind(this))
                 }
             }.bind(this)
         })
