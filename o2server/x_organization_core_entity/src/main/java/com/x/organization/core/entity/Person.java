@@ -433,7 +433,7 @@ public class Person extends SliceJpaObject {
 			+ IndexNameMiddle + topUnitList_FIELDNAME + JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + topUnitList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + topUnitList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Unit.class))
+	@CheckPersist(allowEmpty = true)
 	private List<String> topUnitList;
 
 	public void setLastLoginAddress(String lastLoginAddress) {
