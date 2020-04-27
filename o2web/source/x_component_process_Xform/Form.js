@@ -1,4 +1,4 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity","MWF.widget.O2Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity", "MWF.widget.O2Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
@@ -990,7 +990,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return obj;
     },
 
-    saveWork: function (callback, silent ) {
+    saveWork: function (callback, silent) {
         debugger;
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
@@ -1076,13 +1076,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveFormData: function (callback, failure, history, data, issubmit) {
-        if (this.businessData.activity && this.businessData.activity.id){
+        if (this.businessData.activity && this.businessData.activity.id) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
-        }else{
+        } else {
             this.saveFormDataDraft(callback, failure, history, data, issubmit);
         }
     },
-    saveFormDataInstance: function(callback, failure, history, data, issubmit){
+    saveFormDataInstance: function (callback, failure, history, data, issubmit) {
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
@@ -1098,7 +1098,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this.businessData.originalData = null;
         this.businessData.originalData = Object.clone(data);
     },
-    saveFormDataDraft:function(callback, failure, history, data, issubmit){
+    saveFormDataDraft: function (callback, failure, history, data, issubmit) {
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
@@ -1110,14 +1110,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             "work": this.businessData.work,
             "identity": this.businessData.work.creatorIdentity
         }
-        this.workAction.saveDraft(draft, function(json){
-            this.workAction.getDraft(json.data.id, function(json){
+        this.workAction.saveDraft(draft, function (json) {
+            this.workAction.getDraft(json.data.id, function (json) {
                 this.businessData.work = json.data.work;
                 this.app.options.draftId = json.data.work.id;
                 this.app.options.desktopReload = true;
 
-                this.app.appId = "process.Work"+json.data.work.id,
-                delete layout.desktop.apps[this.app.options.appId];
+                this.app.appId = "process.Work" + json.data.work.id,
+                    delete layout.desktop.apps[this.app.options.appId];
                 layout.desktop.apps[this.app.appId] = this.app;
 
                 if (callback) callback();
@@ -1157,14 +1157,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    this.fireEvent("afterClose");
         }
         if (!this.options.readonly) {
-            if (this.businessData.work && this.businessData.work.id){
-                if (this.app.inBrowser && navigator.sendBeacon){
+            if (this.businessData.work && this.businessData.work.id) {
+                if (this.app.inBrowser && navigator.sendBeacon) {
                     debugger;
                     var obj = this.workAction.action.actions["checkDraft"];
-                    var url = this.workAction.action.address+obj.uri;
+                    var url = this.workAction.action.address + obj.uri;
                     url = url.replace("{id}", this.businessData.work.id);
                     navigator.sendBeacon(url);
-                }else{
+                } else {
                     this.workAction.checkDraft(this.businessData.work.id, function () {
                         if (layout.desktop.apps) {
                             if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
@@ -1476,7 +1476,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     if (this.closeImmediatelyOnProcess) {
                         this.app.close();
-                    }else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+                    } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
                         this.showCustomSubmitedDialog(json.data);
                     } else if (layout.mobile) {
                         //移动端页面关闭
@@ -1608,7 +1608,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var dlg = o2.DL.open(options);
 
     },
-    startDraftProcess: function(){
+    startDraftProcess: function () {
         if (!this.formCustomValidation("", "")) {
             this.app.content.unmask();
             //    if (callback) callback();
@@ -1619,12 +1619,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    if (callback) callback();
             return false;
         }
-        this.saveFormData(function(){
-            this.workAction.startDraft(this.businessData.work.id, function(json){
+        this.saveFormData(function () {
+            this.workAction.startDraft(this.businessData.work.id, function (json) {
                 this.app.options.workId = json.data[0].work;
                 var msg = {
                     "subject": MWF.xApplication.process.Xform.LP.processStarted,
-                    "content": "<div>"+MWF.xApplication.process.Xform.LP.processStartedMessage+"“["+json.data[0].processName+"]"+(this.businessData.data.title || this.businessData.data.subject)+"”</div>"
+                    "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
                 };
                 var tooltip = layout.desktop.message.addTooltip(msg);
                 var item = layout.desktop.message.addMessage(msg);
@@ -1669,8 +1669,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }.bind(this));
         }.bind(this), null, false, null, false)
     },
-    getCurrentTaskData: function(data){
-        if ((data.currentTaskIndex || data.currentTaskIndex===0) && data.currentTaskIndex != -1){
+    getCurrentTaskData: function (data) {
+        if ((data.currentTaskIndex || data.currentTaskIndex === 0) && data.currentTaskIndex != -1) {
             this.app.options.taskId = this.businessData.taskList[data.currentTaskIndex].id;
             return this.businessData.taskList[data.currentTaskIndex];
         }
@@ -1678,9 +1678,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     processWork: function () {
-        if (!this.businessData.activity || !this.businessData.activity.id){
+        if (!this.businessData.activity || !this.businessData.activity.id) {
             this.startDraftProcess();
-        }else {
+        } else {
             if (this.json.mode == "Mobile") {
                 this.processWork_mobile();
             } else {
@@ -1721,7 +1721,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 }
 
                 //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
-                var processNode = new Element("div", {"styles": this.app.css.processNode_Area}).inject(this.node);
+                var processNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
                 this.setProcessNode(processNode, "process", function () {
                     this.processDlg = o2.DL.open({
                         "title": this.app.lp.process,
@@ -2577,16 +2577,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         });
     },
-    downloadAll:function(){
+    downloadAll: function () {
         var htmlFormId = "";
-        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id,"pdf",{
-            "workHtml":this.app.content.get("html")
-        },function( json ){
+        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
+            "workHtml": this.app.content.get("html")
+        }, function (json) {
             htmlFormId = json.data.id;
-        }.bind(this),null,false);
-        htmlFormId = htmlFormId.replace("#","%23");
-        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/"+this.businessData.work.id+"/site/(0)/stream";
-        window.open( o2.Actions.getHost( "x_processplatform_assemble_surface" )+url + "?fileName=&flag=" + htmlFormId);
+        }.bind(this), null, false);
+        htmlFormId = htmlFormId.replace("#", "%23");
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
+        window.open(o2.Actions.getHost("x_processplatform_assemble_surface") + url + "?fileName=&flag=" + htmlFormId);
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
@@ -3254,12 +3254,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
 
-    deleteDraftWork: function(){
+    deleteDraftWork: function () {
         var _self = this;
         if (this.json.mode === "Mobile") {
             if (window.confirm(MWF.xApplication.process.Xform.LP.deleteWorkText.text)) {
                 MWF.require("MWF.widget.Mask", function () {
-                    _self.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+                    _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                     _self.mask.loadNode(_self.app.content);
 
                     _self.doDeleteWork(function () {
@@ -3292,7 +3292,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             };
             this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.deleteWorkTitle, MWF.xApplication.process.Xform.LP.deleteWorkText, 380, 120, function () {
                 MWF.require("MWF.widget.Mask", function () {
-                    _self.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+                    _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                     _self.mask.loadNode(_self.app.content);
 
                     _self.doDeleteWork(function () {
@@ -3321,12 +3321,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     deleteWork: function () {
         if (!this.businessData.activity || !this.businessData.activity.id) {
             this.deleteDraftWork();
-        }else {
+        } else {
             var _self = this;
             if (this.json.mode === "Mobile") {
                 if (window.confirm(MWF.xApplication.process.Xform.LP.deleteWorkText.text)) {
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                         _self.mask.loadNode(_self.app.content);
 
                         _self.fireEvent("beforeDelete");
@@ -3372,7 +3372,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
 
                     MWF.require("MWF.widget.Mask", function () {
-                        _self.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                         _self.mask.loadNode(_self.app.content);
 
                         _self.fireEvent("beforeDelete");
@@ -3412,7 +3412,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         }
     },
-    doDeleteDraftWork: function(success, failure){
+    doDeleteDraftWork: function (success, failure) {
         this.workAction.deleteDraftWork(function (json) {
             if (success) success(json);
         }.bind(this), function (xhr, text, error) {
@@ -3422,7 +3422,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     doDeleteWork: function (success, failure) {
         if (!this.businessData.activity || !this.businessData.activity.id) {
             this.doDeleteDraftWork(success, failure);
-        }else {
+        } else {
             if (this.businessData.control["allowDelete"]) {
                 this.workAction.deleteWork(function (json) {
                     if (success) success(json);
@@ -3541,6 +3541,20 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
     //移动端页面 工作处理完成后 
     finishOnMobile: function () {
+        var _self = this;
+        //新建检查
+        this.workAction.checkDraft(this.businessData.work.id, function (json) {
+            var str = JSON.stringify(json);
+            // console.log("===========success==============");
+            _self.finishOnMobileReal();
+        }.bind(this), function () {
+            console.log("===========fail..==============");
+            _self.finishOnMobileReal();
+        }, false);
+
+    },
+
+    finishOnMobileReal: function () {
         if (window.o2android && window.o2android.closeWork) {
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
