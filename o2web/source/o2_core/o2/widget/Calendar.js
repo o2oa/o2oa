@@ -728,14 +728,14 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 
 	showTime: function(date){
-		//	var thisHour = this.options.baseDate.getHours();
-		//	var thisMinutes = this.options.baseDate.getMinutes();
-		//	var thisSeconds = this.options.baseDate.getSeconds();
-		var times = this.options.defaultTime.split(":");
-
-		var thisHour = (times[0]) ? times[0] : "0";
-		var thisMinutes = (times[1]) ? times[1] : "0";
-		var thisSeconds = (times[2]) ? times[2] : "0";
+		var thisHour = (date || this.options.baseDate).getHours();
+		var thisMinutes = (date || this.options.baseDate).getMinutes();
+		var thisSeconds = (date || this.options.baseDate).getSeconds();
+		// var times = this.options.defaultTime.split(":");
+		//
+		// var thisHour = (times[0]) ? times[0] : "0";
+		// var thisMinutes = (times[1]) ? times[1] : "0";
+		// var thisSeconds = (times[2]) ? times[2] : "0";
 
 		this._setTimeTitle(null, date);
 
@@ -880,6 +880,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_setTimeDate: function(node, h, m, s){
+		debugger;
 		if( !this.options.secondEnable ){
 			var div = this.contentTimeTable.getElement(".MWF_calendar_time_s");
 			if( div )div.hide();
@@ -952,6 +953,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.itmeHNode.getFirst().set("text", tmp);
 				}.bind(this)
 			});
+			this.itmeHNode.getFirst().set("text", h);
 
 			var mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
 				range: [0, 59],
@@ -965,20 +967,22 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.itmeMNode.getFirst().set("text", tmp);
 				}.bind(this)
 			});
+			this.itmeMNode.getFirst().set("text", m);
 
 			if( this.options.secondEnable && this.itmeSNode ){
-				var sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
-					range: [0, 59],
-					initialStep: parseInt(s),
-					onChange: function(value){
-						var tmp = (value.toInt().toString());
-						if (tmp.length<2){
-							tmp = "0"+tmp
-						}
-						this.showSNode.set("text", tmp);
-						this.itmeSNode.getFirst().set("text", tmp);
-					}.bind(this)
+					var sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
+						range: [0, 59],
+						initialStep: parseInt(s),
+						onChange: function(value){
+							var tmp = (value.toInt().toString());
+							if (tmp.length<2){
+								tmp = "0"+tmp
+							}
+							this.showSNode.set("text", tmp);
+							this.itmeSNode.getFirst().set("text", tmp);
+						}.bind(this)
 				});
+				this.itmeSNode.getFirst().set("text", s);
 			}
 		}
 		this.showHNode.set("text", this.addZero( h.toInt(), 2) );
