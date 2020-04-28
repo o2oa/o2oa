@@ -75,9 +75,9 @@ public class ActionGet extends BaseAction {
 						}
 					}
 					if( "NoneList".equalsIgnoreCase( wo.getMemo() )) {
-						wo.setControl( new Control(false, false, false ));
+						wo.setControl( new Control(false, false, false, false ));
 					}else {
-						wo.setControl( new Control(true, true, true ));
+						wo.setControl( new Control(true, true, true, true));
 					}
 					taskListCache.put(new Element(cacheKey, wo));
 					result.setData(wo);

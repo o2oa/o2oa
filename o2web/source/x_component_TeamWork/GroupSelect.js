@@ -102,14 +102,20 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
                         "cursor":"",
                         "background-color":"#F0F0F0",
                         "color":"#666666"
-                    })
+                    });
                 }else{
                     this.groupAdd.setStyles({
                         "cursor":"pointer",
                         "background-color":"#4A90E2",
                         "color":"#FFFFFF"
-                    })
+                    });
                 }
+            }.bind(this),
+            focus:function(){
+                this.groupInContainer.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.groupInContainer.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
 
@@ -158,7 +164,7 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
         var _self = this;
         this.app.setLoading(this.commonGroupContainer);
         this.rootActions.ProjectGroupAction.listGroups(function(json){
-        //this.actions.groupList(function(json){
+            //this.actions.groupList(function(json){
             this.commonGroupContainer.empty();
             var data = json.data;
             this.allProjectGroup = json.data;

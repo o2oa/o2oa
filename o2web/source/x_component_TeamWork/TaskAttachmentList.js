@@ -271,7 +271,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         this.actions.attachmentDownloadUrl(attachment.id, this.data.id, callback);
     },
     getAttachment:function(id,callback){
-       this.actions.get(id,function(json){
+        this.actions.get(id,function(json){
             if(json.type == "success"){
                 if(callback)callback(json.data)
             }
