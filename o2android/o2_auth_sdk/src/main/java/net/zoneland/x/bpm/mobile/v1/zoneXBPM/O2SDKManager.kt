@@ -244,6 +244,9 @@ class O2SDKManager private constructor()  {
 
     private fun saveCollectInfo(unit: CollectUnitData, showState:(state: LaunchState)->Unit) {
         Log.d(TAG, "unit: ${unit.centerHost}, port: ${unit.centerPort} , id: ${unit.id}")
+        //更新http协议
+        RetrofitClient.instance().setO2ServerHttpProtocol(unit.httpProtocol)
+        APIAddressHelper.instance().setHttpProtocol(unit.httpProtocol)
         val host = unit.centerHost
         val newUrl = APIAddressHelper.instance().getCenterUrl(unit.centerHost, unit.centerContext, unit.centerPort)
         O2SDKManager.instance().prefs().edit {
@@ -258,9 +261,7 @@ class O2SDKManager private constructor()  {
         Log.d(TAG, "保存 服务器信息成功！！！！newUrl：$newUrl")
         Log.d(TAG, "httpProtocol:${unit.httpProtocol}")
         Log.d(TAG, "host:$host")
-        //更新http协议
-        RetrofitClient.instance().setO2ServerHttpProtocol(unit.httpProtocol)
-        APIAddressHelper.instance().setHttpProtocol(unit.httpProtocol)
+
         /////////////////////////// 开始业务逻辑  ////////////////////////////////////
 
         Log.d(TAG, "开始连接center......$newUrl")
