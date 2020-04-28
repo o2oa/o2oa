@@ -28,6 +28,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+
 @Path("projectTemplate")
 @JaxrsDescribe("项目模板信息管理")
 public class ProjectTemplateAction extends StandardJaxrsAction {
@@ -53,35 +54,19 @@ public class ProjectTemplateAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "查询用户创建的所有项目组信息列表.", action = ActionList.class)
-	@GET
-	@Path("list/my")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listGroups(@Suspended final AsyncResponse asyncResponse, 
-			@Context HttpServletRequest request ) {
-		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);	
-		try {
-			result = new ActionList().execute( request, effectivePerson );
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-	
-	@JaxrsMethodDescribe(value = "根据ID列表查询项目组信息列表.", action = ActionListWithFilter.class)
+	@JaxrsMethodDescribe(value = "列示项目信息,下一页.", action = ActionListNextWithFilter.class)
 	@PUT
+	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithIds(@Suspended final AsyncResponse asyncResponse, 
-			@Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("传入的ID列表") JsonElement jsonElement ) {
-		ActionResult<List<ActionListWithFilter.Wo>> result = new ActionResult<>();
+	public void listNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionListNextWithFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithFilter().execute(request, effectivePerson, jsonElement);
+			result = new ActionListNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
