@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.AbstractFactory;
 import com.x.teamwork.assemble.control.Business;
+import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.Project_;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Review_;
 import com.x.teamwork.core.entity.tools.CriteriaBuilderTools;
@@ -51,6 +53,9 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), person );
 		p = cb.and( p, cb.equal( root.get( Review_.project ), project ));
+		if(!this.getProject(project)){
+			p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
+		}
 		cq.select(root.get( Review_.taskId)).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
@@ -65,6 +70,9 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal(root.get( Review_.project ), project );
 		p = cb.and( p, cb.equal(root.get( Review_.permissionObj ), person ));
+		if(!this.getProject(project)){
+			p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
+		}
 		cq.select( root.get( Review_.taskId) ).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
@@ -184,6 +192,7 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), personName );
 		p = cb.and( p, root.get( Review_.taskId ).in( taskIds ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		cq.select(root.get( Review_.taskId)).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
@@ -201,6 +210,20 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal( root.get( Review_.permissionObj ), person );
 		p = cb.and( p, cb.equal( root.get( Review_.parent ), taskId ));
+		p = cb.and( p, cb.equal( root.get( Review_.deleted ), false ));
 		return em.createQuery( cq.where(p) ).getResultList();
+	}
+	
+	public Boolean getProject(String project) throws Exception {
+		if( StringUtils.isEmpty( project ) ) {
+			throw new Exception("project id can not be empty!");
+		}
+		EntityManager em = this.entityManagerContainer().get( Project.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Boolean> cq = cb.createQuery(Boolean.class);
+		Root<Project> root = cq.from(Project.class);
+		Predicate p = cb.equal( root.get(Project_.id), project );
+		cq.select(root.get( Project_.deleted)).where(p);
+		return em.createQuery(cq).getSingleResult();
 	}
 }

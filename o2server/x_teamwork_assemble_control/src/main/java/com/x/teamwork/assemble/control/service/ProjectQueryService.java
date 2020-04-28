@@ -12,6 +12,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
+import com.x.teamwork.core.entity.tools.filter.term.EqualsTerm;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
 /**
@@ -292,7 +293,7 @@ public class ProjectQueryService {
 	}
 
 	/**
-	 * 根据条件查询项目ID列表，最大查询2000条
+	 * 根据条件查询项目ID列表，最大查询2000条,查询未删除
 	 * @param effectivePerson
 	 * @param i
 	 * @param queryFilter
@@ -300,6 +301,32 @@ public class ProjectQueryService {
 	 * @throws Exception 
 	 */
 	public List<String> listAllViewableProjectIds(EffectivePerson effectivePerson, int maxCount, QueryFilter queryFilter) throws Exception {
+		List<String> unitNames = null;
+		List<String> groupNames = null;
+		List<String> identityNames = null;
+		String personName = effectivePerson.getDistinguishedName();
+		if( maxCount ==  0) {
+			maxCount = 1000;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			unitNames = userManagerService.listUnitNamesWithPerson( personName );
+			groupNames = userManagerService.listGroupNamesByPerson( personName );
+			identityNames = userManagerService.listIdentitiesWithPerson( personName );
+			queryFilter.addEqualsTerm( new EqualsTerm( "deleted", false ) );
+			return projectService.listAllViewableProjectIds( emc, maxCount, personName,  identityNames, unitNames, groupNames, queryFilter );
+		} catch (Exception e) {
+			throw e;
+		}
+	}	
+	/**
+	 * 根据条件查询项目ID列表，最大查询2000条
+	 * @param effectivePerson
+	 * @param i
+	 * @param queryFilter
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<String> listAllProjectIds(EffectivePerson effectivePerson, int maxCount, QueryFilter queryFilter) throws Exception {
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		List<String> identityNames = null;

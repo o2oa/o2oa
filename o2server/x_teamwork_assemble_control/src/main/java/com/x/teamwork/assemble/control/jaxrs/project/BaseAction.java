@@ -8,6 +8,7 @@ import com.x.teamwork.assemble.control.service.ProjectGroupQueryService;
 import com.x.teamwork.assemble.control.service.ProjectPersistService;
 import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
+import com.x.teamwork.assemble.control.service.TaskPersistService;
 import com.x.teamwork.core.entity.Project;
 
 import net.sf.ehcache.Ehcache;

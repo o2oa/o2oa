@@ -12,8 +12,10 @@ import com.x.teamwork.assemble.control.jaxrs.dynamic.DynamicAction;
 import com.x.teamwork.assemble.control.jaxrs.extfield.ProjectExtFieldReleAction;
 import com.x.teamwork.assemble.control.jaxrs.list.TaskListAction;
 import com.x.teamwork.assemble.control.jaxrs.project.ProjectAction;
+import com.x.teamwork.assemble.control.jaxrs.projectTemplate.ProjectTemplateAction;
 import com.x.teamwork.assemble.control.jaxrs.projectgroup.ProjectGroupAction;
 import com.x.teamwork.assemble.control.jaxrs.task.TaskAction;
+import com.x.teamwork.assemble.control.jaxrs.taskListTemplate.TaskListTemplateAction;
 import com.x.teamwork.assemble.control.jaxrs.taskgroup.TaskGroupAction;
 import com.x.teamwork.assemble.control.jaxrs.tasktag.TaskTagAction;
 import com.x.teamwork.assemble.control.jaxrs.taskview.TaskViewAction;
@@ -35,6 +37,8 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add( ChatAction.class );
 		this.classes.add( SystemConfigAction.class );
 		this.classes.add( ProjectExtFieldReleAction.class );
+		this.classes.add( ProjectTemplateAction.class );
+		this.classes.add( TaskListTemplateAction.class );
 		return this.classes;
 	}
 

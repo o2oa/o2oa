@@ -80,6 +80,12 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
                     this.createBottomLayout();
                     delete this.selectedItem;
                 }
+            }.bind(this),
+            focus:function(){
+                this.searchDiv.setStyles({"border":"1px solid #4A90E2"});
+            }.bind(this),
+            blur:function(){
+                this.searchDiv.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
         this.searchReset = new Element("div.searchReset",{styles:this.css.searchReset}).inject(this.searchDiv);
@@ -191,10 +197,15 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
                         return ;
                     }
 
-                    this.actions.save(data,function(json){
+                    this.actions.transformAsSubTask(this.data.data.id,this.selectedItem.get("id"),function(json){
                         this.explorer._createTableContent();
                         this.close();
-                    }.bind(this))
+                    }.bind(this));
+
+                    // this.actions.save(data,function(json){
+                    //     this.explorer._createTableContent();
+                    //     this.close();
+                    // }.bind(this))
                 }
             }.bind(this)
         })
