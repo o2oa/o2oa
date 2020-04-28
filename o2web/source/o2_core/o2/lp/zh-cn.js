@@ -189,6 +189,9 @@ o2.LP.desktop = {
         "attendanceAppealRejectMessage": "考勤申述未通过",
         "attendanceAppealReject": "{subject}",
 
+        "canlendarAlarmMessage" : "日程提醒",
+        "canlendarAlarm" : "{title}",
+
         "teamwork":{
             "executor":"责任人",
             "creatorPerson":"创建者"

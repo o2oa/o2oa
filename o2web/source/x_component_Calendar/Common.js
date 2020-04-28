@@ -145,22 +145,26 @@ MWFCalendar.EventForm = new Class({
 
         var remind;
         if( data.valarmTime_config ){ //天、时、分、秒
-            var valarmTime_configList = data.valarmTime_config.split(",");
-            valarmTime_configList.each( function( v, i ){
-                var unit;
-                if( i == 0 ){
-                    unit = "天"
-                }else if( i == 1 ){
-                    unit = "小时";
-                }else if( i==2 ){
-                    unit = "分钟"
-                }else{
-                    unit = "秒"
-                }
-                if( v && v!="0" ){
-                    remind = "提前"+ Math.abs(v)+unit+"提醒";
-                }
-            }.bind(this))
+            if( data.valarmTime_config === "0,0,0,-5" ){
+                remind = "开始时提醒";
+            }else{
+                var valarmTime_configList = data.valarmTime_config.split(",");
+                valarmTime_configList.each( function( v, i ){
+                    var unit;
+                    if( i == 0 ){
+                        unit = "天"
+                    }else if( i == 1 ){
+                        unit = "小时";
+                    }else if( i==2 ){
+                        unit = "分钟"
+                    }else{
+                        unit = "秒"
+                    }
+                    if( v && v!="0" ){
+                        remind = "提前"+ Math.abs(v)+unit+"提醒";
+                    }
+                }.bind(this))
+            }
         }
 
         var calendarName =  this.calendarNames[ this.calendarIds.indexOf( data.calendarId ) ];
@@ -866,7 +870,7 @@ MWFCalendar.EventForm = new Class({
         var _self = this;
         var data = this.data;
         var postDelete = function(){
-            this.view.reload();
+            if(this.view)this.view.reload();
             this.close();
         }.bind(this);
         if( this.oldRecurrenceRule ) { //如果是原来是重复的
@@ -893,7 +897,7 @@ MWFCalendar.EventForm = new Class({
     _cancelEvent: function(){
         var view = this.view;
         this.app.actions.deleteSingleEvent(this.data.id, function(){
-            view.reload();
+            if(view)view.reload();
             this.close();
         }.bind(this))
     },
@@ -1031,7 +1035,7 @@ MWFCalendar.EventForm = new Class({
         if( this.formMaskNode )this.formMaskNode.destroy();
         this.formAreaNode.destroy();
         this.fireEvent("postClose");
-        if( this.waitReload )this.view.reload();
+        if( this.waitReload && this.view)this.view.reload();
         delete this;
     }
 });
@@ -1292,7 +1296,7 @@ MWFCalendar.CalendarForm = new Class({
         if( this.formMaskNode )this.formMaskNode.destroy();
         this.formAreaNode.destroy();
         this.fireEvent("postClose");
-        if( this.waitReload )this.view.reload();
+        if( this.waitReload && this.view)this.view.reload();
         delete this;
     }
 });
@@ -1476,6 +1480,7 @@ MWFCalendar.EventTooltip = new Class({
                 "color" : "#fff"
             },
             events : { click : function() {
+                debugger;
                 var form = new MWFCalendar.EventForm(this, this.data, {
                     isFull : true
                 }, {app:this.app});
