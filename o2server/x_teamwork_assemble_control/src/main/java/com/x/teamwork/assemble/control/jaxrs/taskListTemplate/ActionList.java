@@ -16,6 +16,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.teamwork.core.entity.ProjectGroup;
+import com.x.teamwork.core.entity.TaskListTemplate;
 
 import net.sf.ehcache.Element;
 
@@ -27,16 +28,17 @@ public class ActionList extends BaseAction {
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
-		List<ProjectGroup> projectGroups = null;
+		List<TaskListTemplate> taskListTemplates = null;
 		Boolean check = true;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "list.my", effectivePerson.getDistinguishedName() );
-		/*Element element = projectGroupCache.get( cacheKey );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( "list.taskListTemplates", effectivePerson.getDistinguishedName() );
+		Element element = projectGroupCache.get( cacheKey );
 		
 		if ((null != element) && (null != element.getObjectValue())) {
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
 		} else {
+		
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					projectGroups = projectGroupQueryService.listGroupByPerson( effectivePerson.getDistinguishedName() );
@@ -55,7 +57,7 @@ public class ActionList extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}*/
+		//}*/
 		return result;
 	}
 

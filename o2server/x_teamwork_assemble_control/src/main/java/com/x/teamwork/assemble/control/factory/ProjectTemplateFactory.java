@@ -20,6 +20,7 @@ import com.x.teamwork.core.entity.Dynamic_;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectTemplate;
+import com.x.teamwork.core.entity.ProjectTemplate_;
 import com.x.teamwork.core.entity.Project_;
 import com.x.teamwork.core.entity.tools.CriteriaBuilderTools;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
@@ -173,44 +174,34 @@ public class ProjectTemplateFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Project> listWithFilter( Integer maxCount, Object sequenceFieldValue, String orderField, String orderType, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter) throws Exception {
-		EntityManager em = this.entityManagerContainer().get( Project.class );
+	public List<ProjectTemplate> listWithFilter( Integer maxCount, Object sequenceFieldValue, String orderField, String orderType, String personName, QueryFilter queryFilter) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( ProjectTemplate.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Project> cq = cb.createQuery(Project.class);
-		Root<Project> root = cq.from(Project.class);
+		CriteriaQuery<ProjectTemplate> cq = cb.createQuery(ProjectTemplate.class);
+		Root<ProjectTemplate> root = cq.from(ProjectTemplate.class);
 		Predicate p_permission = null;
 		
-		if( StringUtils.isNotEmpty( personName )) {
+		/*if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.participantPersonList )) );
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.manageablePersonList )) );
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.creatorPerson ), personName ) );
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.executor ), personName ) );
-		}
+		}*/
 		
-		if( ListTools.isNotEmpty( identityNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantIdentityList).in(identityNames));
-		}
-		if( ListTools.isNotEmpty( unitNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantUnitList).in(unitNames));
-		}
-		if( ListTools.isNotEmpty( groupNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantGroupList).in(groupNames));
-		}
-		
-		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Project_.class, cb, p_permission, root, queryFilter );
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( ProjectTemplate_.class, cb, p_permission, root, queryFilter );
 		
 		if( sequenceFieldValue != null && StringUtils.isNotEmpty( sequenceFieldValue.toString() )) {
 			Predicate p_seq = cb.isNotNull( root.get( Dynamic_.sequence ) );
 			if( "desc".equalsIgnoreCase( orderType )){
-				p_seq = cb.and( p_seq, cb.lessThan( root.get( Project_.sequence ), sequenceFieldValue.toString() ));
+				p_seq = cb.and( p_seq, cb.lessThan( root.get( ProjectTemplate_.sequence ), sequenceFieldValue.toString() ));
 			}else{
-				p_seq = cb.and( p_seq, cb.greaterThan( root.get( Project_.sequence ), sequenceFieldValue.toString() ));
+				p_seq = cb.and( p_seq, cb.greaterThan( root.get( ProjectTemplate_.sequence ), sequenceFieldValue.toString() ));
 			}
 			p = cb.and( p, p_seq);
 		}		
 		
-		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Project_.class, orderField, orderType );
+		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, ProjectTemplate_.class, orderField, orderType );
 		if( orderWithField != null ){
 			cq.orderBy( orderWithField );
 		}
@@ -219,46 +210,34 @@ public class ProjectTemplateFactory extends AbstractFactory {
 	}
 	
 	/**
-	 * 根据条件查询所有符合条件的项目信息ID，项目信息不会很多 ，所以直接查询出来
+	 * 根据条件查询所有符合条件的项目模板信息ID，项目信息不会很多 ，所以直接查询出来
 	 * @param maxCount
 	 * @param sequenceFieldValue
 	 * @param orderField
 	 * @param orderType
 	 * @param personName
-	 * @param identityNames
-	 * @param unitNames
-	 * @param groupNames
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listAllViewableProjectIds( Integer maxCount, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter) throws Exception {
-		EntityManager em = this.entityManagerContainer().get( Project.class );
+	public List<String> listAllProjectTemplateIds( Integer maxCount, String personName, QueryFilter queryFilter) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( ProjectTemplate.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Project> root = cq.from(Project.class);
+		Root<ProjectTemplate> root = cq.from(ProjectTemplate.class);
 		Predicate p_permission = null;
 		
 		
-		if( StringUtils.isNotEmpty( personName )) {
+		/*if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.participantPersonList )) );
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( ProjectTemplate_.participantPersonList )) );
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.manageablePersonList )) );
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.creatorPerson ), personName ) );
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Project_.executor ), personName ) );
-		}
-		if( ListTools.isNotEmpty( identityNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantIdentityList).in(identityNames));
-		}
-		if( ListTools.isNotEmpty( unitNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantUnitList).in(unitNames));
-		}
-		if( ListTools.isNotEmpty( groupNames )) {
-			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission,  root.get( Project_.participantGroupList).in(groupNames));
-		}
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( ProjectTemplate_.creatorPerson ), personName ) );
+			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( ProjectTemplate_.executor ), personName ) );
+		}*/
 		
-		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Project_.class, cb, p_permission, root, queryFilter );
-		cq.distinct(true).select( root.get(Project_.id) );
+		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( ProjectTemplate_.class, cb, p_permission, root, queryFilter );
+		cq.distinct(true).select( root.get(ProjectTemplate_.id) );
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
 

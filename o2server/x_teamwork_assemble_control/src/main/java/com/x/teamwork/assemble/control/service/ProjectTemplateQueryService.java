@@ -12,6 +12,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectTemplate;
+import com.x.teamwork.core.entity.TaskListTemplate;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.EqualsTerm;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
@@ -24,6 +25,8 @@ import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 public class ProjectTemplateQueryService {
 
 	private ProjectTemplateService projectTemplateService = new ProjectTemplateService();
+	private TaskListTemplateService taskListTemplateService = new TaskListTemplateService();
+	
 	private UserManagerService userManagerService = new UserManagerService();
 	
 	/**
@@ -38,6 +41,23 @@ public class ProjectTemplateQueryService {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return projectTemplateService.get(emc, id );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据项目的标识查询项目信息
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<TaskListTemplate> getTaskListTemplateWithTemplateId( String id ) throws Exception {
+		if ( StringUtils.isEmpty( id )) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return taskListTemplateService.getTaskListTemplateWithTemplateId(emc, id );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -153,8 +173,8 @@ public class ProjectTemplateQueryService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Project> listWithProjectIdFilter( Integer pageSize, String lastId, String orderField, String orderType, List<String> projectIds ) throws Exception {
-		Project project = null;
+	public List<ProjectTemplate> listWithProjectIdFilter( Integer pageSize, String lastId, String orderField, String orderType, List<String> projectIds ) throws Exception {
+		ProjectTemplate project = null;
 		if( pageSize == 0 ) { pageSize = 20; }
 		if( StringUtils.isEmpty( orderField ) ) { 
 			orderField = "createTime";
@@ -166,7 +186,7 @@ public class ProjectTemplateQueryService {
 		queryFilter.addInTerm( new InTerm("id", new ArrayList<>(projectIds) ));
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if( lastId != null ) {
-				project = emc.find( lastId, Project.class );
+				project = emc.find( lastId, ProjectTemplate.class );
 			}
 			if( project != null ) {
 				return projectTemplateService.listWithFilter(emc, pageSize, project.getSequence(), orderField, orderType, null, null, null, null, queryFilter );
@@ -294,27 +314,21 @@ public class ProjectTemplateQueryService {
 	}
 
 	/**
-	 * 根据条件查询项目ID列表，最大查询2000条,查询未删除
+	 * 根据条件查询项目模板ID列表，最大查询2000条,查询未删除
 	 * @param effectivePerson
 	 * @param i
 	 * @param queryFilter
 	 * @return
 	 * @throws Exception 
 	 */
-	public List<String> listAllViewableProjectIds(EffectivePerson effectivePerson, int maxCount, QueryFilter queryFilter) throws Exception {
-		List<String> unitNames = null;
-		List<String> groupNames = null;
-		List<String> identityNames = null;
+	public List<String> listAllProjectTemplateIds(EffectivePerson effectivePerson, int maxCount, QueryFilter queryFilter) throws Exception {
 		String personName = effectivePerson.getDistinguishedName();
 		if( maxCount ==  0) {
 			maxCount = 1000;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			unitNames = userManagerService.listUnitNamesWithPerson( personName );
-			groupNames = userManagerService.listGroupNamesByPerson( personName );
-			identityNames = userManagerService.listIdentitiesWithPerson( personName );
 			queryFilter.addEqualsTerm( new EqualsTerm( "deleted", false ) );
-			return projectTemplateService.listAllViewableProjectIds( emc, maxCount, personName,  identityNames, unitNames, groupNames, queryFilter );
+			return projectTemplateService.listAllProjectTemplateIds( emc, maxCount, personName, queryFilter );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -339,7 +353,7 @@ public class ProjectTemplateQueryService {
 			unitNames = userManagerService.listUnitNamesWithPerson( personName );
 			groupNames = userManagerService.listGroupNamesByPerson( personName );
 			identityNames = userManagerService.listIdentitiesWithPerson( personName );
-			return projectTemplateService.listAllViewableProjectIds( emc, maxCount, personName,  identityNames, unitNames, groupNames, queryFilter );
+			return projectTemplateService.listAllProjectTemplateIds( emc, maxCount, personName, queryFilter );
 		} catch (Exception e) {
 			throw e;
 		}

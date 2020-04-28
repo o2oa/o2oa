@@ -543,6 +543,21 @@ class DynamicService {
 	}
 	
 	/**
+	 * 组织一个项目模板删除操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 */
+	protected Dynamic getProjectTemplateDeleteDynamic( ProjectTemplate object, EffectivePerson effectivePerson ) {
+		String objectType =  "PROJECT_TEMPLATE";
+		String title =  "项目模板信息删除";
+		String viewUrl = null;
+		String optType =  "DELETE";
+		String description = effectivePerson.getName() +"删除了项目模板信息：" + object.getTitle();
+		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, true );
+	}
+	
+	/**
 	 * 组织项目扩展信息配置保存操作动态
 	 * @param object_old
 	 * @param object
