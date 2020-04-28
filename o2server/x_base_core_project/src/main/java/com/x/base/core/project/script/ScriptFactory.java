@@ -23,8 +23,8 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 public class ScriptFactory {
 
-	private ScriptFactory(){
-		
+	private ScriptFactory() {
+
 	}
 
 	public static final ScriptEngine scriptEngine = (new ScriptEngineManager())
@@ -61,6 +61,10 @@ public class ScriptFactory {
 	public static final String BINDING_NAME_EXPIRE = "expire";
 	public static final String BINDING_NAME_SERIAL = "serial";
 	public static final String BINDING_NAME_PROCESS = "process";
+
+	public static ScriptEngine newScriptEngine() {
+		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
+	}
 
 	public static CompiledScript initialServiceScriptText() throws Exception {
 		if (COMPILEDSCRIPT_INITIALSERVICESCRIPTTEXT == null) {
