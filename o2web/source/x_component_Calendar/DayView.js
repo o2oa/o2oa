@@ -890,6 +890,7 @@ MWFCalendarDayView.Calendar.wholeDayDocument = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getCoordinate : function(){
         var data = this.data;
@@ -1092,7 +1093,7 @@ MWFCalendarDayView.Calendar.Document = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "x", "delay" : 350
         });
-
+        this.tooltip.view = this.view;
     },
     resize : function(){
         this.node.setStyles(this.getCoordinate());
