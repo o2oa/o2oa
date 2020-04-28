@@ -1476,6 +1476,7 @@ MWFCalendar.EventTooltip = new Class({
                 "color" : "#fff"
             },
             events : { click : function() {
+                debugger;
                 var form = new MWFCalendar.EventForm(this, this.data, {
                     isFull : true
                 }, {app:this.app});
