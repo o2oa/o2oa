@@ -8,6 +8,7 @@ import com.x.base.core.project.annotation.ModuleType;
 containerEntities = {
 		"com.x.teamwork.core.entity.Project", "com.x.teamwork.core.entity.ProjectDetail",
 		"com.x.teamwork.core.entity.ProjectExtFieldRele", "com.x.teamwork.core.entity.ProjectGroup",
+		"com.x.teamwork.core.entity.ProjectTemplate","com.x.teamwork.core.entity.TaskListTemplate",
 		"com.x.teamwork.core.entity.ProjectGroupRele", "com.x.teamwork.core.entity.Task",
 		"com.x.teamwork.core.entity.TaskGroup", "com.x.teamwork.core.entity.TaskGroupRele",
 		"com.x.teamwork.core.entity.TaskDetail", "com.x.teamwork.core.entity.TaskExtField", "com.x.teamwork.core.entity.TaskList",
