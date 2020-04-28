@@ -171,7 +171,7 @@
 	},
     naviTopSearchIn:{
         "width":"90%",
-        "margin":"0 10px",
+        "margin":"1px 10px",
         "border":"0px",
         "height":"32px",
         "line-height":"32px",
@@ -377,16 +377,31 @@
         "font-size":"13px",
         "margin-left":"10px"
     },
-
+    foldContainer:{
+        float:"left", width:"12px", height:"100%","border-left":"0px solid #ffffff","margin-left":"1px"
+    },
+    foldIcon:{
+         "width":"12px",
+         "height":"30px",
+         "line-height":"30px",
+         "background-color":"#ffffff",
+         "border-top-right-radius":"4px",
+         "border-bottom-right-radius":"4px",
+         "border-top":"1px solid #D9D9D9",
+         "border-right":"1px solid #D9D9D9",
+         "border-bottom":"1px solid #D9D9D9",
+         "cursor":"pointer"
+     },
 	taskContentLayout:{
         flex:"1",
 	    "overflow-x":"auto",
 	    "overflow-y":"hidden",
-        "padding-left":"10px",
+        //"padding-left":"10px",
         //"padding-right":"10px",
         "width":"100%",
         "height":"99%",
-        "display":"flex"
+        "display":"flex",
+        "position":"relative"
 	},
 	taskGroupLayout:{
 	    //"display":"inline-table",
@@ -454,7 +469,7 @@
         "overflow":"hidden",
         "background-color":"#fff",
         "padding-bottom":"10px",
-        //"position":"absolute"
+        "position":"relative"
     },
     taskItemContainerDrag:{
         "width":"290px",
@@ -493,7 +508,35 @@
         "width":"230px"
     },
     taskItemTitle:{
-        "font-size":"14px"
+        "font-size":"14px",
+        "height":"24px"
+    },
+    taskItemComplete:{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "margin-right":"2px",
+        "margin-top":"4px",
+        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_complete.png) no-repeat center "
+    },
+    taskItemName:{
+        "float":"left",
+        "line-height":"24px",
+        "height":"24px",
+        "width":"190px",
+        "overflow":"hidden",
+        "text-overflow": "ellipsis",
+        "white-space": "nowrap"
+    },
+    taskItemExecutor:{
+        "float":"right",
+        "width":"20px",
+        "height":"20px",
+        "background-color":"#189AEE",
+        "color":"#ffffff",
+        "line-height":"20px",
+        "text-align":"center",
+        "border-radius":"10px"
     },
     taskItemDetail:{
         "font-size":"12px",
@@ -607,6 +650,56 @@
         "height":"100%",
         "overflow-y":"auto"
     },
+    taskSearchEmpty: {
+        "height":"100px",
+        "width":"100%",
+        "line-height":"100px",
+        "background-color":"#ffffff",
+        "text-align":"center",
+        "font-size":"18px"
+    },
+    viewSearchContainer:{
+        "width":"1000px",
+        "height":"60px",
+        "margin":"10px auto 0px auto",
+        "font-size":"14px",
+        "color":"#666666",
+        "border-radius":"2px",
+        "background-color":"#ffffff"
+    },
+    viewSearchContent:{
+        "float":"left",
+        "width":"700px",
+        "height":"40px",
+        "margin-left":"150px",
+        "margin-top":"10px",
+        "border":"1px solid #cccccc"
+    },
+    viewSearchInput:{
+        "float":"left",
+        "font-size":"16px",
+        "outline":"none",
+        "width":"620px",
+        "height":"30px",
+        "margin":"2px",
+        "text-indent":"5px",
+        "border":"0px"
+    },
+    viewSearchReset:{
+        "display":"none",
+        "float":"right",
+        "width":"30px",
+        "height":"100%",
+        "cursor":"pointer",
+        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_off_click24.png) no-repeat center"
+    },
+    viewSearchSearch:{
+        "float":"right",
+        "width":"30px",
+        "height":"100%",
+        "cursor":"pointer",
+        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_search24.png) no-repeat center"
+    },
     viewListContainer:{
         "width":"1000px",
         "margin":"10px auto",
@@ -619,6 +712,12 @@
         "cursor":"pointer",
         "background-color":"#ffffff",
         "border-bottom":"1px solid #EEEEEE"
+    },
+    viewColor:{
+        "float":"left",
+        "width":"5px",
+        "height":"50px",
+        "background-color":""
     },
     viewName:{
         "float":"left",
