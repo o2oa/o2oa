@@ -26,6 +26,7 @@
                 "deploy:rpi": "gulp deploy --e raspberrypi",
                 "typeInfor": "type welcome && echo Your server is build success: target/o2server/",
                 "clear": "gulp clear_build",
+                "clear_deploy": "gulp clear_deploy",
                 "build": "npm run clear && npm run build_parallel && npm run deploy && npm run typeInfor",
                 "build:win": "npm run clear && npm run build_parallel && npm run deploy:win && npm run typeInfor",
                 "build:linux": "npm run clear  && npm run build_parallel && npm run deploy:linux && npm run typeInfor",
