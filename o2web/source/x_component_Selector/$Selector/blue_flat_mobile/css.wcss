@@ -209,7 +209,7 @@
 	  "margin-left" : "10px"
 	},
 	"searchInputDiv": {
-	  	"padding" : "0px 35px",
+	  	"padding" : "0px 30px",
 		"height": "100px",
 		"color": "#999",
         "background": "#fff",
