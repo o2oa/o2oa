@@ -154,6 +154,11 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
         XLog.debug("title:$title ,  url:$url")
         setupToolBar(title, true)
+        toolbar?.setNavigationOnClickListener {
+            XLog.debug("测试。。。。。。。。。。。。。。。。。。")
+            processCheckNew()
+//            finish()
+        }
 
         web_view.addJavascriptInterface(this, "o2android")
         jsNotification.setupWebView(web_view)
@@ -581,6 +586,16 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
 
 
     //region  private function
+
+    /**
+     * 检查新建
+     * 关闭页面的时候检查一下 是否要删除草稿
+     */
+    private fun processCheckNew() {
+        web_view.evaluateJavascript("layout.app.appForm.finishOnMobile()"){
+            _ -> XLog.debug("finishOnMobile /。。。。。。。。。。。。。。")
+        }
+    }
 
     /**
      * 生成操作按钮

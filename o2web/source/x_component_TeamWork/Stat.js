@@ -31,27 +31,27 @@ MWF.xApplication.TeamWork.Stat = new Class({
         var url = this.path+this.options.style+"/view.html";
         //o2.Actions.load("x_processplatform_assemble_surface").TaskAction.listMyPaging(1,20, function(json){
 
-            this.container.loadHtml(url, {"bind": {"lp": this.lp, "data": {}}, "module": this}, function(){
+        this.container.loadHtml(url, {"bind": {"lp": this.lp, "data": {}}, "module": this}, function(){
 
-            }.bind(this));
+        }.bind(this));
 
-            // this.content.loadHtml(url, {"bind": {"lp": this.lp, "data": json}, "module": this}, function(){
-            // 	this.doSomething();
-            // }.bind(this));
-            //
-            // o2.load(["js1", "js2"], {}, function(){});	//js
-            //
-            // o2.loadCss	//css
-            // o2.loadHtml("", {"dom": this.content})
-            // o2.loadAll	//js,css,html
-            //
-            // o2.loadAll({
-            // 	"css": [],
-            // 	"js":[],
-            // 	"html": []
-            // },
-            // 	)
-            //
+        // this.content.loadHtml(url, {"bind": {"lp": this.lp, "data": json}, "module": this}, function(){
+        // 	this.doSomething();
+        // }.bind(this));
+        //
+        // o2.load(["js1", "js2"], {}, function(){});	//js
+        //
+        // o2.loadCss	//css
+        // o2.loadHtml("", {"dom": this.content})
+        // o2.loadAll	//js,css,html
+        //
+        // o2.loadAll({
+        // 	"css": [],
+        // 	"js":[],
+        // 	"html": []
+        // },
+        // 	)
+        //
 
 
 

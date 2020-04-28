@@ -144,7 +144,8 @@
         "font-size":"14px",
         "border":"1px solid #dedede",
         "padding-left":"5px",
-        "border-radius":"10px"
+        "border-radius":"10px",
+        "outline":"none"
     },
     projectSettingGroupContainer:{
         "float":"left",

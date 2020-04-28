@@ -4,11 +4,11 @@ MWF.xApplication.query.StatDesigner = MWF.xApplication.query.StatDesigner || {};
 MWF.APPDSTD = MWF.xApplication.query.StatDesigner;
 
 MWF.xDesktop.requireApp("query.StatDesigner", "lp."+MWF.language, null, false);
-MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
+MWF.xDesktop.requireApp("query.ViewDesigner", "ViewBase", null, false);
 MWF.xDesktop.requireApp("query.StatDesigner", "Property", null, false);
 
 MWF.xApplication.query.StatDesigner.Stat = new Class({
-    Extends: MWF.xApplication.query.ViewDesigner.View,
+    Extends: MWF.xApplication.query.ViewDesigner.ViewBase,
     Implements: [Options, Events],
     options: {
         "style": "default",
@@ -169,7 +169,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
                                 // if (groupColumn){
                                 //     td.set("text", (groupColumn.code) ? MWF.Macro.exec(groupColumn.code, {"value": d.group, "data": json.data}) : d.group);
                                 // }else{
-                                     td.set("text", d.group);
+                                td.set("text", d.group);
                                 // }
 
                                 //td.set("text", d.group);
@@ -243,13 +243,13 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
     },
 
     loadViewColumns: function(){
-    //    for (var i=0; i<10; i++){
+        //    for (var i=0; i<10; i++){
         if (this.json.data.calculate.calculateList) {
             this.json.data.calculate.calculateList.each(function (json) {
                 this.items.push(new MWF.xApplication.query.StatDesigner.Stat.Column(json, this));
             }.bind(this));
         }
-    //    }
+        //    }
     },
 
     saveSilence: function(callback){
@@ -423,17 +423,17 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
 
 
 MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
-    Extends:MWF.xApplication.query.ViewDesigner.View.Column,
-	initialize: function(json, view, next){
+    Extends:MWF.xApplication.query.ViewDesigner.ViewBase.Column,
+    initialize: function(json, view, next){
         this.propertyPath = "/x_component_query_StatDesigner/$Stat/column.html";
-		this.view = view;
+        this.view = view;
         this.json = json;
         this.next = next;
         this.css = this.view.css;
         this.content = this.view.viewTitleTrNode;
         this.domListNode = this.view.domListNode;
         this.load();
-	},
+    },
 
     showProperty: function(){
         if (!this.property){
