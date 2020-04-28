@@ -18,6 +18,7 @@ MWF.xApplication.Calendar.Main = new Class({
         "height": "600",
         "isResize": true,
         "isMax": true,
+        "eventId" : "",
         "title": MWF.xApplication.Calendar.LP.title
     },
     onQueryLoad: function(){
@@ -320,6 +321,10 @@ MWF.xApplication.Calendar.Main = new Class({
         this.getListView(function(){
             this.listView.show();
             this.currentView = this.listView;
+            if( this.options.eventId ){
+                this.openEvent( this.options.eventId );
+                this.options.eventId = "";
+            }
         }.bind(this));
     },
     getListView: function(callback){
@@ -350,6 +355,11 @@ MWF.xApplication.Calendar.Main = new Class({
         this.getMonthView(function(){
             this.monthView.show();
             this.currentView = this.monthView;
+            debugger;
+            if( this.options.eventId ){
+                this.openEvent( this.options.eventId );
+                this.options.eventId = "";
+            }
         }.bind(this));
     },
     getMonthView: function(callback){
@@ -380,6 +390,10 @@ MWF.xApplication.Calendar.Main = new Class({
         this.getWeekView(function(){
             this.weekView.show();
             this.currentView = this.weekView;
+            if( this.options.eventId ){
+                this.openEvent( this.options.eventId );
+                this.options.eventId = "";
+            }
         }.bind(this));
     },
     getWeekView: function(callback){
@@ -410,6 +424,10 @@ MWF.xApplication.Calendar.Main = new Class({
         this.getDayView(function(){
             this.dayView.show();
             this.currentView = this.dayView;
+            if( this.options.eventId ){
+                this.openEvent( this.options.eventId );
+                this.options.eventId = "";
+            }
         }.bind(this), d);
     },
     getDayView: function(callback, d){
@@ -597,6 +615,16 @@ MWF.xApplication.Calendar.Main = new Class({
             this.currentView.resetNodeSize();
         }
         if( this.leftNavi )this.leftNavi.resizeNode();
+    },
+    openEvent : function (id) {
+        debugger;
+        this.actions.getEvent( id, function (json) {
+            var form = new MWF.xApplication.Calendar.EventForm(this, json.data, {
+                isFull : true
+            }, {app:this});
+            form.view = this.currentView;
+            form.open();
+        }.bind(this))
     }
 });
 

@@ -149,7 +149,7 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
                             case "calendar_alarm":
-                                this.receiveAttendanceAppealRejectMessage(data);
+                                this.receiveCalendarAlarmMessage(data);
                                 break;
                             case "teamwork_taskCreate":
                             case "teamwork_taskUpdate":
@@ -593,6 +593,52 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
+        });
+    },
+    receiveCalendarAlarmMessage: function(data){
+        debugger;
+        var content = MWF.LP.desktop.messsage.canlendarAlarm;
+        content = content.replace(/{title}/g, data.title);
+
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.canlendarAlarmMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
         });
     },
     receiveTeamWorkMessage: function(data){
