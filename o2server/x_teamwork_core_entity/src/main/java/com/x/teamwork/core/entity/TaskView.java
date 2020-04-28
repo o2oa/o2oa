@@ -86,7 +86,8 @@ public class TaskView extends SliceJpaObject {
 	
 	public static final String executeCode_FIELDNAME = "executeCode";
 	@FieldDescribe("任务视图执行代号，系统视图使用，自定义视图不使用")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + name_FIELDNAME)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + executeCode_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + executeCode_FIELDNAME)
 	private String executeCode;
 	
 	public static final String memo_FIELDNAME = "memo";
