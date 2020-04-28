@@ -1031,7 +1031,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
 
     _loadUserInterface: function () {
         this.node.empty();
-        if (this.form.businessData.activity && this.form.businessData.activity.id){
+        if (this.form.businessData.work.startTime){
             this.loadAttachmentController();
             this.fireEvent("load");
         }
