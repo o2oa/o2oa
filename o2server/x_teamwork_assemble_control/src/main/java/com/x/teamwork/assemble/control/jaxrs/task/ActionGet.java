@@ -5,9 +5,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -34,6 +37,7 @@ public class ActionGet extends BaseAction {
 		List<ProjectExtFieldRele> extFieldReleList = null;
 		List<TaskTag> tags = null;
 		Boolean check = true;
+		WrapOutControl control = null;
 
 		if ( StringUtils.isEmpty( flag ) ) {
 			check = false;
@@ -41,7 +45,7 @@ public class ActionGet extends BaseAction {
 			result.error( exception );
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
+		String cacheKey = ApplicationCache.concreteCacheKey( flag,effectivePerson );
 		Element element = taskCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
@@ -123,17 +127,57 @@ public class ActionGet extends BaseAction {
 					}
 
 				} catch (Exception e) {
+					check = false;
 					Exception exception = new TaskQueryException(e, "将查询出来的工作任务信息对象转换为可输出的数据信息时发生异常。");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-
+			
+			//计算权限
+			if( Boolean.TRUE.equals( check ) ){
+				Business business = null;
+				try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
+					business = new Business(bc);
+				}
+				try {
+					control = new WrapOutControl();
+					if( business.isManager(effectivePerson) 
+							|| effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getCreatorPerson() )
+							|| task.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
+						control.setDelete( true );
+						control.setEdit( true );
+						control.setSortable( true );
+						control.setChangeExecutor( true );
+					}else{
+						control.setDelete( false );
+						control.setEdit( false );
+						control.setSortable( false );
+						control.setChangeExecutor( false );
+					}
+					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getExecutor())){
+						control.setChangeExecutor( true );
+					}
+					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getCreatorPerson())){
+						control.setFounder( true );
+					}else{
+						control.setFounder( false );
+					}
+					wo.setControl(control);
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new TaskQueryException(e, "根据指定flag查询工作任务权限信息时发生异常。flag:" + flag);
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+			
 			//查询任务所在的Group信息
 			if( Boolean.TRUE.equals( check ) ){
 				List<String> groupIds = null;
 				try {
-					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
+					//groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
+					groupIds = taskGroupQueryService.listGroupIdsByPersonAndProject(effectivePerson,task.getProject());
 					if( ListTools.isNotEmpty( groupIds )){
 						wo.setTaskGroupId( groupIds.get(0) );
 					}
@@ -153,6 +197,13 @@ public class ActionGet extends BaseAction {
 						listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), wo.getTaskGroupId() );
 						if( ListTools.isNotEmpty( listIds )){
 							wo.setTaskListId( listIds.get(0) );
+						}else{
+							//返回当前项目的未分类taskListId
+							List<TaskList> taskList= null;
+							taskList = taskListQueryService.listWithTaskGroup( effectivePerson.getDistinguishedName(), wo.getTaskGroupId() );
+							if(taskList !=null){
+								wo.setTaskListId(taskList.get(0).getId());
+							}
 						}
 					} catch (Exception e) {
 						Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
@@ -161,50 +212,6 @@ public class ActionGet extends BaseAction {
 					}
 				}
 			}
-
-//			//查询任务所在的Group信息
-//			if( Boolean.TRUE.equals( check ) ){
-//				List<String> groupIds = null;
-//				List<TaskGroup> groupList = null;
-//				List<WoTaskGroup> woGroupList = new ArrayList<>();
-//				try {
-//					groupIds = taskGroupQueryService.listGroupIdsByTask( task.getId() );
-//					groupList = taskGroupQueryService.list( groupIds );
-//					if( ListTools.isNotEmpty( groupList )){
-//						woGroupList = WoTaskGroup.copier.copy( groupList );
-//					}
-//					wo.setTaskgroups( woGroupList );
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-//
-//			//查询任务所在的List信息
-//			if( Boolean.TRUE.equals( check ) ){
-//				if( ListTools.isNotEmpty(wo.getTaskgroups() )){
-//					List<String> listIds = null;
-//					List<TaskList> taskLists = null;
-//					List<WoTaskList> woTaskLists = new ArrayList<>();
-//					for( WoTaskGroup woGroup : wo.getTaskgroups() ){
-//						try {
-//							listIds = taskListQueryService.listTaskListIdWithTaskId( task.getId(), woGroup.getId() );
-//							taskLists = taskListQueryService.list( listIds );
-//							if( ListTools.isNotEmpty( taskLists )){
-//								woTaskLists = WoTaskList.copier.copy( taskLists );
-//							}
-//							woGroup.setTaskLists( woTaskLists );
-//						} catch (Exception e) {
-//							check = false;
-//							Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
-//							result.error(exception);
-//							logger.error(e, effectivePerson, request, null);
-//						}
-//					}
-//				}
-//			}
 		}
 		taskCache.put(new Element( cacheKey, wo ));
 		result.setData(wo);
@@ -227,6 +234,9 @@ public class ActionGet extends BaseAction {
 		
 		@FieldDescribe("所属项目的扩展列设定(配置列表)")
 		private List<WoExtFieldRele> extFieldConfigs;
+		
+		@FieldDescribe("任务权限")
+		private WrapOutControl control = null;	
 
 		@FieldDescribe("工作任务所属的工作任务组信息ID")
 		String taskGroupId = null;
@@ -299,7 +309,14 @@ public class ActionGet extends BaseAction {
 		public void setTags(List<WoTaskTag> tags) {
 			this.tags = tags;
 		}
+		
+		public WrapOutControl getControl() {
+			return control;
+		}
 
+		public void setControl(WrapOutControl control) {
+			this.control = control;
+		}
 
 		private static final long serialVersionUID = -5076990764713538973L;
 

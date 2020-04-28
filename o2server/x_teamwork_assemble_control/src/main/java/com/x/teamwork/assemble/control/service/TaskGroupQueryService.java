@@ -78,6 +78,35 @@ public class TaskGroupQueryService {
 		}
 		return taskGroupList;
 	}
+	
+	/**
+	 * 根据用户列示所有的工作任务组信息ID列表
+	 * @param person
+	 * @param project
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listGroupIdsByPersonAndProject( EffectivePerson effectivePerson, String project ) throws Exception {
+		if ( effectivePerson == null ) {
+			return new ArrayList<>();
+		}
+		if ( StringUtils.isEmpty( project ) ) {
+			return new ArrayList<>();
+		}
+		List<String> taskGroupListIds = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {		
+			taskGroupListIds = taskGroupService.listGroupIdsByPersonAndProject(emc, effectivePerson.getDistinguishedName(), project );
+			//如果用户在该项目中没有工作任务组，则需要创建一个默认的工作任务组			
+			if( ListTools.isEmpty( taskGroupListIds )) {
+				List<TaskGroup> taskGroupList = null;
+				taskGroupList = createDefaultTaskGroupForPerson( emc, effectivePerson, project );
+				taskGroupListIds.add(taskGroupList.get(0).getId());
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return taskGroupListIds;
+	}
 
 	/**
 	 * 为指定项目初始化一个工作任务组，并且将所有的工作任务加入到工作任务组中

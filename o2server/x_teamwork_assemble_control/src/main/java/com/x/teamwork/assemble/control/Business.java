@@ -1,6 +1,11 @@
 package com.x.teamwork.assemble.control;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.core.express.Organization;
 import com.x.teamwork.assemble.control.factory.AttachmentFactory;
 import com.x.teamwork.assemble.control.factory.BatchOperationFactory;
@@ -10,12 +15,14 @@ import com.x.teamwork.assemble.control.factory.ProjectExtFieldReleFactory;
 import com.x.teamwork.assemble.control.factory.ProjectFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupReleFactory;
+import com.x.teamwork.assemble.control.factory.ProjectTemplateFactory;
 import com.x.teamwork.assemble.control.factory.ReviewFactory;
 import com.x.teamwork.assemble.control.factory.SystemConfigFactory;
 import com.x.teamwork.assemble.control.factory.TaskFactory;
 import com.x.teamwork.assemble.control.factory.TaskGroupFactory;
 import com.x.teamwork.assemble.control.factory.TaskGroupReleFactory;
 import com.x.teamwork.assemble.control.factory.TaskListFactory;
+import com.x.teamwork.assemble.control.factory.TaskListTemplateFactory;
 import com.x.teamwork.assemble.control.factory.TaskTagFactory;
 import com.x.teamwork.assemble.control.factory.TaskViewFactory;
 
@@ -33,6 +40,8 @@ public class Business {
 	private Organization organization;
 	private ProjectFactory projectFactory;
 	private TaskFactory taskFactory;
+	private ProjectTemplateFactory projectTemplateFactory;
+	private TaskListTemplateFactory taskListTemplateFactory;
 	private DynamicFactory dynamicFactory;
 	private SystemConfigFactory systemConfigFactory;
 	private ProjectGroupFactory projectGroupFactory;
@@ -188,6 +197,30 @@ public class Business {
 	}
 	
 	/**
+	 * 获取项目模板数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public ProjectTemplateFactory projectTemplateFactory() throws Exception {
+		if (null == this.projectTemplateFactory) {
+			this.projectTemplateFactory = new ProjectTemplateFactory( this );
+		}
+		return projectTemplateFactory;
+	}
+	
+	/**
+	 * 获取项目模板对应的泳道数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public TaskListTemplateFactory taskListTemplateFactory() throws Exception {
+		if (null == this.taskListTemplateFactory) {
+			this.taskListTemplateFactory = new TaskListTemplateFactory( this );
+		}
+		return taskListTemplateFactory;
+	}
+	
+	/**
 	 * 获取项目与项目组关联信息数据库访问类
 	 * @return
 	 * @throws Exception
@@ -245,5 +278,47 @@ public class Business {
 			this.dynamicFactory = new DynamicFactory( this );
 		}
 		return dynamicFactory;
+	}
+	
+	/**
+	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
+	 * 
+	 * @param request
+	 * @param personName
+	 * @return
+	 * @throws Exception
+	 */
+
+	public boolean isManager(EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if (person.isManager()) {
+			return true;
+		}
+		if ("xadmin".equalsIgnoreCase(person.getDistinguishedName())) {
+			return true;
+		}
+		if (isHasPlatformRole(person.getDistinguishedName(), "TeamWorkManager@TeamWorkManager@R")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isHasPlatformRole(String personName, String roleName) throws Exception {
+		if (StringUtils.isEmpty(personName)) {
+			throw new Exception("personName is null!");
+		}
+		if (StringUtils.isEmpty(roleName)) {
+			throw new Exception("roleName is null!");
+		}
+		List<String> roleList = null;
+		roleList = organization().role().listWithPerson(personName);
+		if (roleList != null && !roleList.isEmpty()) {
+			if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
+				return true;
+			}
+		} else {
+			return false;
+		}
+		return false;
 	}
 }
