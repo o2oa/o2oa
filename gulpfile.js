@@ -431,7 +431,18 @@ function clear_build(cb){
     del(dest, { force: true });
     cb();
 }
+function clear_deploy(cb){
+    console.log(`---------------------------------------------------------------------
+  . clear old deploy ...
+---------------------------------------------------------------------`);
+    var dest = ["target/o2server/store/", "target/o2server/commons/", "target/o2server/jvm/", "target/o2server/configSample/", "target/o2server/localSample/", "target/o2server/servers/"];
+    dest = dest.concat(["target/o2server/*.sh", "target/o2server/*.jar", "target/o2server/*.html", "target/o2server/*.bat", "target/o2server/version.o2"]);
+    del(dest, { force: true });
+    cb();
+}
 exports.clear_build = clear_build;
+exports.clear_deploy = clear_deploy;
+
 
 
 function deploy_server(){
