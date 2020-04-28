@@ -19,6 +19,8 @@ import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+
 class ActionChangePassword extends ActionBase {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionChangePassword.class);
@@ -84,8 +86,13 @@ class ActionChangePassword extends ActionBase {
 
 	public static class Wi extends GsonPropertyObject {
 
+		@FieldDescribe("原密码")
 		private String oldPassword;
+
+		@FieldDescribe("新密码")
 		private String newPassword;
+
+		@FieldDescribe("确认新密码")
 		private String confirmPassword;
 
 		public String getOldPassword() {
