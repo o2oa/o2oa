@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -19,11 +18,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
+import javax.script.ScriptException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -37,6 +32,10 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
+
+import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class Plan extends GsonPropertyObject {
 
@@ -87,6 +86,8 @@ public abstract class Plan extends GsonPropertyObject {
 	public Boolean exportGroupGrid;
 
 	public Integer count;
+
+	private ScriptEngine scriptEngine;
 
 	private Table order(Table table) {
 		Comparator<Row> comparator = new Comparator<Row>() {
@@ -231,7 +232,6 @@ public abstract class Plan extends GsonPropertyObject {
 			if (!this.selectList.emptyColumnCode()) {
 				ScriptEngine engine = this.getScriptEngine();
 				engine.put("gird", table);
-				engine.eval(Config.mooToolsScriptText());
 				for (SelectEntry selectEntry : this.selectList) {
 					if (StringUtils.isNotBlank(selectEntry.code)) {
 						List<ExtractObject> extractObjects = new TreeList<>();
@@ -536,11 +536,15 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	/* 有两个地方用到了 */
-	private ScriptEngine getScriptEngine() {
+	private ScriptEngine getScriptEngine() throws ScriptException, Exception {
 		// ScriptEngineManager manager = new ScriptEngineManager();
 		// ScriptEngine scriptEngine = manager.getEngineByName("JavaScript");
 		// return scriptEngine;
-		return ScriptFactory.scriptEngine;
+		if (null == this.scriptEngine) {
+			scriptEngine = ScriptFactory.newScriptEngine();
+			scriptEngine.eval(Config.mooToolsScriptText());
+		}
+		return scriptEngine;
 	}
 
 	public static class ExtractObject {
