@@ -157,7 +157,6 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
         toolbar?.setNavigationOnClickListener {
             XLog.debug("测试。。。。。。。。。。。。。。。。。。")
             processCheckNew()
-//            finish()
         }
 
         web_view.addJavascriptInterface(this, "o2android")
@@ -593,7 +592,12 @@ class TaskWebViewActivity : BaseMVPActivity<TaskWebViewContract.View, TaskWebVie
      */
     private fun processCheckNew() {
         web_view.evaluateJavascript("layout.app.appForm.finishOnMobile()"){
-            _ -> XLog.debug("finishOnMobile /。。。。。。。。。。。。。。")
+            value -> XLog.debug("finishOnMobile /。。。。。。。。。。。。。。$value")
+            try {
+                finish()
+            }catch (e: Exception){
+                XLog.error("", e)
+            }
         }
     }
 
