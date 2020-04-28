@@ -103,7 +103,36 @@ o2.widget.JavascriptEditor = new Class({
                 o2.getJSON("/o2_core/o2/widget/$JavascriptEditor/environment.json", function(data){ json = data; }, false);
                 this.Macro = new o2.Macro.FormContext(json);
 
+                monaco.languages.registerCompletionItemProvider('json', {
+                    provideCompletionItems: function(model, position) {
+                        // find out if we are completing a property in the 'dependencies' object.
+                        var textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+                        var match = textUntilPosition.match(/[a-zA-Z_0-9\$\-\u00A2-\uFFFF\.]/);
+                        if (!match) {
+                            return { suggestions: [] };
+                        }
+                        var word = model.getWordUntilPosition(position);
+                        var range = {
+                            startLineNumber: position.lineNumber,
+                            endLineNumber: position.lineNumber,
+                            startColumn: word.startColumn,
+                            endColumn: word.endColumn
+                        };
+                        return {
+                            suggestions: function (range) {
 
+                                return [{
+                                    label: '"my-third-party-library"',
+                                        kind: monaco.languages.CompletionItemKind.Function,
+                                    documentation: "Describe your library here",
+                                    insertText: '"${1:my-third-party-library}": "${2:1.2.3}"',
+                                    insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                                    range: range
+                                }];
+                            }
+                        };
+                    }
+                });
 
 
             }.bind(this));
