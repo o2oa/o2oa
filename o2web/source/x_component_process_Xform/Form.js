@@ -1076,7 +1076,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveFormData: function (callback, failure, history, data, issubmit) {
-        if (this.businessData.activity && this.businessData.activity.id) {
+        if (this.businessData.work.startTime) {
             this.saveFormDataInstance(callback, failure, history, data, issubmit);
         } else {
             this.saveFormDataDraft(callback, failure, history, data, issubmit);
@@ -1678,7 +1678,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     processWork: function () {
-        if (!this.businessData.activity || !this.businessData.activity.id) {
+        if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else {
             if (this.json.mode == "Mobile") {
@@ -3319,7 +3319,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
     deleteWork: function () {
-        if (!this.businessData.activity || !this.businessData.activity.id) {
+        if (!this.businessData.work.startTime) {
             this.deleteDraftWork();
         } else {
             var _self = this;
@@ -3420,7 +3420,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }, this.businessData.work.id);
     },
     doDeleteWork: function (success, failure) {
-        if (!this.businessData.activity || !this.businessData.activity.id) {
+        if (!this.businessData.work.startTime) {
             this.doDeleteDraftWork(success, failure);
         } else {
             if (this.businessData.control["allowDelete"]) {
