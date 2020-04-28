@@ -1682,7 +1682,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             this.startDraftProcess();
         } else {
             if (this.json.mode == "Mobile") {
-                this.processWork_mobile();
+                setTimeout(function () {
+                    this.processWork_mobile();
+                }.bind(this), 100);
+
             } else {
                 this.fireEvent("beforeProcessWork");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
