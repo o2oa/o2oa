@@ -62,7 +62,7 @@ class ProjectTemplateService {
 	}
 	
 	/**
-	 * 根据条件查询符合条件的项目信息ID，根据上一条的sequnce查询指定数量的信息
+	 * 根据条件查询符合条件的项目模板信息ID，根据上一条的sequnce查询指定数量的信息
 	 * @param emc
 	 * @param maxCount
 	 * @param sequnce
@@ -77,9 +77,9 @@ class ProjectTemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<Project> listWithFilter( EntityManagerContainer emc, Integer maxCount, String sequnce, String orderField, String orderType, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter ) throws Exception {
+	protected List<ProjectTemplate> listWithFilter( EntityManagerContainer emc, Integer maxCount, String sequnce, String orderField, String orderType, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter ) throws Exception {
 		Business business = new Business( emc );
-		return business.projectFactory().listWithFilter(maxCount, sequnce, orderField, orderType, personName, identityNames, unitNames, groupNames, queryFilter);
+		return business.projectTemplateFactory().listWithFilter(maxCount, sequnce, orderField, orderType, personName, queryFilter);
 	}
 
 	/**
@@ -98,8 +98,7 @@ class ProjectTemplateService {
 		
 		projectTemplate = emc.find( object.getId(), ProjectTemplate.class );
 		
-		emc.beginTransaction( Project.class );
-		emc.beginTransaction( ProjectDetail.class );
+		emc.beginTransaction( ProjectTemplate.class );
 		
 		if( projectTemplate == null ){ // 保存一个新的对象
 			projectTemplate = new ProjectTemplate();
@@ -138,12 +137,12 @@ class ProjectTemplateService {
 				emc.check( projectTemplate , CheckPersistType.all );
 			}
 			//还需要删除所有的TaskListTemplate
-			List<TaskListTemplate> TaskListTemplates = business.taskListTemplateFactory().list(projectTemplate.getId());
-			if( ListTools.isNotEmpty(TaskListTemplates)) {
-				for( TaskListTemplate TaskListTemplate : TaskListTemplates ) {
+			List<TaskListTemplate> taskListTemplates = business.taskListTemplateFactory().list(projectTemplate.getId());
+			if( ListTools.isNotEmpty(taskListTemplates)) {
+				for( TaskListTemplate taskListTemplate : taskListTemplates ) {
 					//emc.remove( task , CheckRemoveType.all );
-					TaskListTemplate.setDeleted(true);
-					emc.check( TaskListTemplate , CheckPersistType.all );
+					taskListTemplate.setDeleted(true);
+					emc.check( taskListTemplate , CheckPersistType.all );
 				}
 			}
 			emc.commit();
@@ -241,15 +240,26 @@ class ProjectTemplateService {
 		TaskListTemplate taskList = null;
 		List<String> taskListsTemplate = template.getTaskList();
 		
+		//检查是否已有模板对应的泳道，如有则先删除
+		Business business = new Business( emc );
+		List<TaskListTemplate> tlTemplates = business.taskListTemplateFactory().list(template.getId());
+		if( ListTools.isNotEmpty(tlTemplates)) {
+			for( TaskListTemplate tlemplate : tlTemplates ) {
+				//emc.remove( task , CheckRemoveType.all );
+				tlemplate.setDeleted(true);
+				emc.check( tlemplate , CheckPersistType.all );
+			}
+		}
+		
 		if( !ListTools.isEmpty( taskListsTemplate )) {
-			emc.beginTransaction( TaskList.class );
+			emc.beginTransaction( TaskListTemplate.class );
+			//添加模板对应的泳道
 			for( String taskListTemplate: taskListsTemplate ) {
 				taskList = composeTaskListObject( template.getId(), taskListTemplate, 1, "SYSTEM", person, "" );
 				emc.persist( taskList, CheckPersistType.all );
 			}
-			
-			emc.commit();
 		}
+		emc.commit();
 	}
 	
 	private TaskListTemplate  composeTaskListObject( String projectTemplateId, String listName, int orderNum, String creatorName, String owner, String memo ) {
@@ -267,7 +277,7 @@ class ProjectTemplateService {
 	}
 
 	/**
-	 * 根据条件查询项目ID列表，最大查询2000条
+	 * 根据条件查询项目模板ID列表，最大查询2000条
 	 * @param emc
 	 * @param maxCount
 	 * @param personName
@@ -278,9 +288,9 @@ class ProjectTemplateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listAllViewableProjectIds(EntityManagerContainer emc, int maxCount, String personName, List<String> identityNames, List<String> unitNames, List<String> groupNames, QueryFilter queryFilter) throws Exception {
+	public List<String> listAllProjectTemplateIds(EntityManagerContainer emc, int maxCount, String personName, QueryFilter queryFilter) throws Exception {
 		Business business = new Business( emc );
-		return business.projectFactory().listAllViewableProjectIds(maxCount, personName, identityNames, unitNames, groupNames, queryFilter);
+		return business.projectTemplateFactory().listAllProjectTemplateIds(maxCount, personName, queryFilter);
 	}
 
 	public List<String> listAllProjectIds(EntityManagerContainer emc ) throws Exception {

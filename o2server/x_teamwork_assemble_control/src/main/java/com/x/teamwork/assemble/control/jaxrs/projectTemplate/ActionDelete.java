@@ -70,9 +70,9 @@ public class ActionDelete extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		/*if( Boolean.TRUE.equals( check ) ){
+		if( Boolean.TRUE.equals( check ) ){
 			try {					
-				Dynamic dynamic = dynamicPersistService.projectGroupDeleteDynamic( projectGroup, effectivePerson );
+				Dynamic dynamic = dynamicPersistService.projectTemplateDeleteDynamic( projectTemplate, effectivePerson );
 				if( dynamic != null ) {
 					List<WoDynamic> dynamics = new ArrayList<>();
 					dynamics.add( WoDynamic.copier.copy( dynamic ) );
@@ -83,7 +83,7 @@ public class ActionDelete extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}	
-		}*/
+		}
 		result.setData( wo );
 		return result;
 	}

@@ -408,6 +408,28 @@ public class DynamicPersistService {
 		}
 		return dynamic;
 	}
+	/**
+	 * 保存项目模板删除动态信息
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectTemplateDeleteDynamic( ProjectTemplate object, EffectivePerson effectivePerson ) throws Exception {
+		if ( object == null) {
+			throw new Exception("ProjectTemplate object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		Dynamic dynamic = dynamicService.getProjectTemplateDeleteDynamic(object, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
 	
 	/**
 	 * 保存工作任务删除动态信息
