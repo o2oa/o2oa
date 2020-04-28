@@ -19,7 +19,7 @@ MWF.xApplication.TeamWork.Main = new Class({
 		// "isMax": true,
 		"title": MWF.xApplication.TeamWork.LP.title
 	},
-	onQueryLoad: function(){
+	onQueryLoad: function(){ //111
 		this.lp = MWF.xApplication.TeamWork.LP;
 	},
 
@@ -67,6 +67,57 @@ MWF.xApplication.TeamWork.Main = new Class({
 		this.st = new MWF.xApplication.TeamWork.Common.Tips(this.content, target, this.app, data, opt);
 		this.st.load();
 	},
+	tips:function(target,title){
+		//if(myTips) delete myTips;
+		var myTips = new Tips(target, {
+			onShow:function(tip, el){
+
+				console.log("ttt="+title);
+				tip.setStyles({
+					visibility: 'hidden',
+					display: 'block',
+					"background-color":"#000000",
+					"border-radius":"5px",
+					"padding":"5px",
+					"color":"#ffffff",
+					"offset":{
+						x:200,
+						y:200
+					}
+				}).fade('in');
+
+			},
+			onHide:function(tip,el){
+				myTips.setTitle("");
+			},
+			title:function(){
+				return title
+			}
+		});
+
+		myTips.setTitle(title);
+		//if you want to add this after init
+		// myTips.removeEvents('show').addEvent('show', function(tip, el){
+		// 	console.log("ttt="+title)
+		// 	tip.setStyles({
+		// 		visibility: 'hidden',
+		// 		display: 'block',
+		// 		"background-color":"#000000",
+		// 		"border-radius":"5px",
+		// 		"padding":"5px",
+		// 		"color":"#ffffff",
+		// 		"offset":{
+		// 			x:200,
+		// 			y:200
+		// 		},
+		// 		title:function(){
+		// 			return title
+		// 		}
+		// 	}).fade('in');
+		// });
+	},
+
+
 	selectCalendar : function( target, container, options, callback ){
 		var type = options.type;
 		var calendarOptions = {
@@ -233,6 +284,12 @@ MWF.xApplication.TeamWork.Main = new Class({
 			});
 		}
 
+		if(this.content.getElements(".foldIcon").length>0){
+			var fo = this.content.getElements(".foldIcon")[0];
+			var p = fo.getParent();
+			var _margin_height = (p.getHeight())/2 - (fo.getHeight())/2;
+			fo.setStyles({"margin-top":_margin_height+"px"});
+		}
 
 
 

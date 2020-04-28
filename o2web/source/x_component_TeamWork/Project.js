@@ -51,7 +51,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var opt={
                     axis: "y"      //箭头在x轴还是y轴上展现
                 };
-                this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
+                //this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
+                //this.app.tips(this.topBarBackHomeIcon,this.lp.backProject);
             }.bind(this)
         });
         this.topBarBackHomeNext = new Element("div.topBarBackHomeNext",{styles:this.css.topBarBackHomeNext}).inject(this.topBarBackContainer);
@@ -102,6 +103,20 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.createStatLayout();
             }.bind(this)
         });
+
+
+        //********************************
+
+
+
+
+
+
+        //************************************
+
+
+
+
         this.topBarSettingContainer = new Element("div.topBarSettingContainer",{styles:this.css.topBarSettingContainer}).inject(this.topBarLayout);
         this.topBarSettingMenuContainer = new Element("div.topBarSettingMenuContainer",{styles:this.css.topBarSettingMenuContainer}).inject(this.topBarSettingContainer);
         this.topBarSettingMenuContainer.addEvents({
@@ -154,8 +169,51 @@ MWF.xApplication.TeamWork.Project = new Class({
     createTaskLayout:function(){
         if(this.contentLayout) this.contentLayout.empty();
         this.createNaviContent();
+        this.createFoldContainer();
         this.createTaskContent();
 
+    },
+    createFoldContainer:function(){
+        if(this.foldContainer) this.foldContainer.destroy();
+        this.foldContainer = new Element("div.foldContainer",{styles:this.css.foldContainer}).inject(this.contentLayout);
+        this.foldIcon = new Element("div.foldIcon",{styles:this.css.foldIcon,text:"<"}).inject(this.foldContainer);
+        this.app.tips(this.foldIcon,"折叠");
+        this.foldIcon.addEvents({
+            mouseover:function(){
+                this.naviLayout.setStyles({"box-shadow": "1px 2px 6px 0px #1b9aee"});
+                this.foldIcon.setStyles({"background-color":"#1b9aee","color":"#ffffff"});
+            }.bind(this),
+            mouseout:function(){
+                this.naviLayout.setStyles({"box-shadow": "0px 2px 4px 0 #888888"});
+                this.foldIcon.setStyles({"background-color":"#ffffff","color":""});
+            }.bind(this),
+            click:function(){
+                if(this.naviFold){
+                    var fx = new Fx.Tween(this.naviLayout,{duration:100});
+                    this.naviLayout.show();
+                    fx.start(["width"] ,"0", "300")
+                        .chain(function(){
+                            this.foldIcon.set("text","<");
+                            this.naviFold = false;
+                            this.app.tips(this.foldIcon,"折叠11");
+                        }.bind(this));
+
+                }else{ //aaaaa
+                    var fx = new Fx.Tween(this.naviLayout,{duration:100});
+                    fx.start(["width"] ,"300", "0")
+                        .chain(function(){
+                            this.naviLayout.hide();
+                            this.foldIcon.set("text",">");
+                            this.naviFold = true;
+                            //console.log("zzzzzzzzzzzzzzzzzzzzzk");
+                            this.app.tips(this.foldIcon,"展开22");
+                        }.bind(this));
+
+                }
+            }.bind(this)
+        })
+        var _margin_height = (this.foldContainer.getHeight())/2 - (this.foldIcon.getHeight())/2;
+        this.foldIcon.setStyles({"margin-top":_margin_height+"px"});
     },
     createNaviContent:function(){
         if(this.naviLayout) this.naviLayout.destroy();
@@ -182,16 +240,21 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.naviTopSearchContainer = new Element("div.naviTopSearchContainer",{styles:this.css.naviTopSearchContainer}).inject(this.naviTop);
         this.naviTopSearchIn = new Element("input.naviTopSearchIn",{styles:this.css.naviTopSearchIn,placeholder:this.lp.searchTask}).inject(this.naviTopSearchContainer);
         this.naviTopSearchIn.addEvents({
-           keypress:function(e){
-               this.searchLoading = true;
-               var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
-               if (keycode == 13 || keycode == 10) {
-                   var key = this.naviTopSearchIn.get("value").trim();
-                   if(key=="") return;
-                   if(this.searchLoading) this.openSearch(key)
-               }
-
-           }.bind(this)
+            keypress:function(e){
+                this.searchLoading = true;
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                if (keycode == 13 || keycode == 10) {
+                    var key = this.naviTopSearchIn.get("value").trim();
+                    if(key=="") return;
+                    if(this.searchLoading) this.openSearch(key)
+                }
+            }.bind(this),
+            focus:function(){
+                this.naviTopSearchContainer.setStyles({"border":"1px solid #4A90E2"})
+            }.bind(this),
+            blur:function(){
+                this.naviTopSearchContainer.setStyles({"border":"1px solid #DEDEDE"})
+            }.bind(this)
         });
 
         this.naviTopTaskContainer = new Element("div.naviTopTaskContainer",{styles:this.css.naviTopTaskContainer}).inject(this.naviTop);
@@ -218,7 +281,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviTopTaskAdd.setStyles({
                     "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
                 });
-                this.app.showTips(this.naviTopTaskAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskAdd+"</div>"});
+                //this.app.showTips(this.naviTopTaskAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskAdd+"</div>"});
+                this.app.tips(this.naviTopTaskAdd,this.lp.taskAdd)
             }.bind(this),
             mouseout:function(){
                 this.naviTopTaskAdd.setStyles({
@@ -254,13 +318,16 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.completeLine = new Element("div.completeLine",{styles:this.css.completeLine}).inject(this.naviTopTaskLine);
         this.completeLine.addEvents({
             mouseover:function(){
-                this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
+                //this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
+                this.app.tips(this.completeLine,this.lp.taskCompleteText + ": " + this.currentProjectGroupData.completedTotal);
             }.bind(this)
         });
         this.overLine = new Element("div.overLine",{styles:this.css.overLine}).inject(this.naviTopTaskLine);
         this.overLine.addEvents({
             mouseover:function(){
-                this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
+                //this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
+                //alert(this.currentProjectGroupData.overtimeTotal)
+                this.app.tips(this.overLine,this.lp.taskovertimeText + ": " + this.currentProjectGroupData.overtimeTotal)
             }.bind(this)
         });
 
@@ -284,6 +351,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.naviView = new Element("div.naviView",{styles:this.css.naviView}).inject(this.naviLayout);
         this.naviViewTitleContainer = new Element("div.naviViewTitleContainer",{styles:this.css.naviViewTitleContainer}).inject(this.naviView);
         this.naviViewTitle = new Element("div.naviViewTitle",{styles:this.css.naviViewTitle,text:this.lp.viewTitle}).inject(this.naviViewTitleContainer);
+
+        /*  新增按钮
         this.naviViewAdd = new Element("div.naviViewAdd",{styles:this.css.naviViewAdd}).inject(this.naviViewTitleContainer);
         this.naviViewAdd.addEvents({
             click:function(){
@@ -301,6 +370,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 });
             }.bind(this)
         });
+        */
+
         this.createNaviViewItem();
     },
     createNaviViewItem:function(){
@@ -327,13 +398,13 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemMyContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemMyIcon = new Element("div.naviItemMyIcon",{styles:this.css.naviItemMyIcon}).inject(this.naviItemMyContainer);
                 this.naviItemMyText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemMy}).inject(this.naviItemMyContainer);
-                this.naviItemMyMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemMyContainer);
-                this.naviItemMyMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemMyMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                // this.naviItemMyMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemMyContainer);
+                // this.naviItemMyMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemMyMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemMyContainer.addEvents({
                     click:function(){
                         this.curNaviItem = json.name;
@@ -347,57 +418,60 @@ MWF.xApplication.TeamWork.Project = new Class({
                 this.naviItemFlowContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemFlowIcon = new Element("div.naviItemFlowIcon",{styles:this.css.naviItemFlowIcon}).inject(this.naviItemFlowContainer);
                 this.naviItemFlowText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemFlow}).inject(this.naviItemFlowContainer);
-                this.naviItemFlowMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemFlowContainer);
-                this.naviItemFlowMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemFlowMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                //this.naviItemFlowMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemFlowContainer);
+                // this.naviItemFlowMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemFlowMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemFlowContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemFlowContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else if(json.name==this.lp.viewItemComplete){
                 //已完成任务
                 this.naviItemCompleteContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemCompleteIcon = new Element("div.naviItemCompleteIcon",{styles:this.css.naviItemCompleteIcon}).inject(this.naviItemCompleteContainer);
                 this.naviItemCompleteText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemComplete}).inject(this.naviItemCompleteContainer);
-                this.naviItemCompleteMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemCompleteContainer);
-                this.naviItemCompleteMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemCompleteMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                //this.naviItemCompleteMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemCompleteContainer);
+                // this.naviItemCompleteMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemCompleteMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemCompleteContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemCompleteContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else if(json.name==this.lp.viewItemOver){
                 //已逾期任务
                 this.naviItemOverContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
                 this.naviItemOverIcon = new Element("div.naviItemOverIcon",{styles:this.css.naviItemOverIcon}).inject(this.naviItemOverContainer);
                 this.naviItemOverText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemOver}).inject(this.naviItemOverContainer);
-                this.naviItemOverMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemOverContainer);
-                this.naviItemOverMore.addEvent(
-                    "click",function(e){
-                        this.openNaviViewMore(this.naviItemOverMore);
-                        e.stopPropagation();
-                    }.bind(this)
-                );
+                // this.naviItemOverMore = new Element("div.naviItemMore",{styles:this.css.naviItemMore}).inject(this.naviItemOverContainer);
+                // this.naviItemOverMore.addEvent(
+                //     "click",function(e){
+                //         this.openNaviViewMore(this.naviItemOverMore);
+                //         e.stopPropagation();
+                //     }.bind(this)
+                // );
                 this.naviItemOverContainer.addEvents({
                     click:function(){
-                        alert("open")
+                        this.curNaviItem = json.name;
+                        this.openView(this.naviItemOverContainer);
                     }.bind(this),
-                    mouseenter:function(){ _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){_self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
                 });
             }else{
                 //自定义视图
@@ -462,6 +536,9 @@ MWF.xApplication.TeamWork.Project = new Class({
                     //if(i>0) return;
                     var taskGroupLayout = new Element("div.taskGroupLayout",{styles:this.css.taskGroupLayout,id:data.id}).inject(this.taskContentLayout);
                     taskGroupLayout.set("sortable",data.control.sortable); //控制是否能排序
+                    // if(!data.control.sortable){
+                    //     taskGroupLayout.set()
+                    // }
                     this.createTaskGroupItemLayout(taskGroupLayout,data);
                 }.bind(this));
                 //新建任务列表按钮
@@ -500,7 +577,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         node.empty();
         var taskGroupItemTitleContainer = new Element("div.taskGroupItemTitleContainer",{styles:this.css.taskGroupItemTitleContainer}).inject(node);
         new Element("div.taskGroupItemTitleText",{styles:this.css.taskGroupItemTitleText,text:data.name}).inject(taskGroupItemTitleContainer);
-        new Element("div.taskGroupItemTitleCount",{styles:this.css.taskGroupItemTitleCount,text:"("+data.taskCount+")"}).inject(taskGroupItemTitleContainer);
+        var titleCount = new Element("div.taskGroupItemTitleCount",{styles:this.css.taskGroupItemTitleCount,text:"(-)"}).inject(taskGroupItemTitleContainer);
         if(data.control.sortable){
             var taskGroupItemTitleMore = new Element("div.taskGroupItemTitleMore",{styles:this.css.taskGroupItemTitleMore}).inject(taskGroupItemTitleContainer);
             taskGroupItemTitleMore.addEvents({
@@ -574,7 +651,8 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.app.setLoading(taskGroupItemContainer);
 
         //this.actions.taskListByListId(this.data.id,data.id,function(json){
-         this.rootActions.TaskAction.listMyTaskWithTaskListId(this.data.id,data.id,function(json){
+        this.rootActions.TaskAction.listAllTaskWithTaskListId(this.data.id,data.id,function(json){
+            titleCount.set("text","("+json.count+")")
             taskGroupItemContainer.empty();
             var taskListData = json.data;
             //alert(JSON.stringify(taskListData));
@@ -589,11 +667,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var time = 200;
                 taskItemContainer.addEvents({
                     click:function(e){
-                        //解决click和mousedown事件冲突
-                        if(upTime>0){
-                            this.openTask(d.id,function(){ taskItemContainer.destroy() }.bind(this));
-                            upTime = 0
-                        }
+                        this.openTask(d.id,function(){ taskItemContainer.destroy() }.bind(this));
                     }.bind(this),
                     mouseenter:function(){
                         int = window.setInterval(function(){
@@ -607,177 +681,239 @@ MWF.xApplication.TeamWork.Project = new Class({
                         window.clearInterval(int);
                         taskItemContainer.getElement(".taskItemHover").setStyles({"width":"5px"});
                     }.bind(this),
-                    mouseup:function(){
-                        upTime = new Date().getTime();
 
-                    },
-                    mousedown:function(e){
-                        var position = taskItemContainer.getPosition();
-                        var clone = taskItemContainer.clone(true,true);
-                        clone.removeClass("dragin");
-                        clone.setStyles({
-                            "top":position.y+"px",
-                            "left":position.x+"px",
-                            "z-index":"9999",
-                            "position":"absolute",
-                            "cursor":"move"
-                        });
-                        var _height = clone.getHeight().toInt() - 2;
+                });
 
-                        var myDrag = new Drag.Move(clone, {
-                            container: this.taskContentLayout,
-                            //handle: taskItemHover,
-                            droppables: $$('.dragin'),
-                            onStart:function(el){
-                                if(upTime>0){
-                                    myDrag.stop();
-                                }else{
-                                    el.inject($(document.body));
-                                    taskItemContainer.setStyles({"border":"1px dotted #000000","opacity":"0.3"});
-                                }
-                            },
-                            onLeave:function(el,dr){
-                                var pre = dr.getPrevious();
-                                if(pre && pre.get("class")=="taskItemInsertLine") {
-                                    pre.destroy();
-                                }
-                            },
-                            onEnter:function(el,dr){
-                                var pre = dr.getPrevious();
-                                if(!pre || (pre && pre.get("class")!="taskItemInsertLine")){
-                                    if(el.get("id")!=dr.get("id")){
-                                        new Element("div.taskItemInsertLine",{styles:_self.css.taskItemInsertLine}).inject(dr,"before");
-                                    }
-                                }
-                            },
-                            onDrop:function(el, dr, e){
-                                var taskId = el.get("id");
-                                var taskInId = null;
-                                var taskGroupInId = null;
-                                var taskGroupFromId = null;
-                                var taskGroupFromSortable = null;
-                                var taskGroupInSortable = null;
-                                el.setStyles({"cursor":""});
-                                if(!dr){
-                                    //没有移入，还原
-                                    var fx = new Fx.Tween(el,{duration:time});
-                                    fx.start(["top"] ,el.getPosition().y+"px", taskItemContainer.getPosition().y+"px");
-                                    var fx2 = new Fx.Tween(el,{duration:time});
-                                    fx2.start(["left"] ,el.getPosition().x+"px", taskItemContainer.getPosition().x+"px");
-                                    window.setTimeout(function(){
-                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                        el.destroy()
-                                    },time)
-                                }else{
-                                    if(el.get("id")==dr.get("id")){ //如果移动的是本身的拷贝,恢复
-                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                        el.destroy();
-                                    }else{
-                                        taskInId = dr.get("id");
-                                        taskGroupFromId = taskItemContainer.getParent().getParent().get("id");
-                                        taskGroupInId = dr.getParent().getParent().get("id");
-                                        taskGroupFromSortable = taskItemContainer.getParent().getParent().get("sortable");
-                                        taskGroupInSortable = dr.getParent().getParent().get("sortable");
-                                        var pre = dr.getPrevious();
-                                        if(pre && pre.get("class")=="taskItemInsertLine") {
-                                            //alert("taskid="+taskId+",taskInId="+taskInId+",taskgroupFromid="+taskGroupFromId+",taskGroupInId="+taskGroupInId);
-                                            if(taskGroupInSortable == "false"){
-                                                //未分类视图不允许移入，还原并删除el对象
-                                                _self.app.notice("未分类列表不允许移入","error");
-                                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                    pre.destroy();
-                                                    el.destroy();
-                                                }
-                                                return ;
-                                            }
-                                            var data = {
-                                                taskId:taskId,
-                                                behindTaskId:taskInId
-                                            };
-                                            _self.rootActions.TaskListAction.addTask2ListWithBehindTask(taskGroupInId,data,function(json){
-                                                if(json.type == "success"){ //返回成功后再换位置
-
-                                                    //fx fx2 动画clone到移入位置
-                                                    var fx = new Fx.Tween(el,{duration:time});
-                                                    fx.start(["top"] ,el.getPosition().y+"px", pre.getPosition().y+"px");
-                                                    var fx2 = new Fx.Tween(el,{duration:time});
-                                                    fx2.start(["left"] ,el.getPosition().x+"px", pre.getPosition().x+"px");
-                                                    //利用pre撑大高度
-                                                    pre.setStyles({"border":"0px","background-color":"#ffffff","height":(el.getHeight().toInt())+"px"});
-                                                    //var fx3 = new Fx.Tween(pre,{duration:time});
-                                                    //fx3.start(["height"] ,"0px", _height+"px");
-
-                                                    //新建一个占用原来位置
-                                                    var tmpdiv = taskItemContainer.clone();
-                                                    tmpdiv.setStyles({"border":"0px"});
-                                                    tmpdiv.empty();
-                                                    tmpdiv.inject(taskItemContainer,"before");
-
-                                                    //设置原有位置none
-                                                    taskItemContainer.setStyles({"display":"none"});
-
-                                                    //动画完成后插入真正的对象，恢复原位，并删除pre和clone
-                                                    window.setTimeout(function(){
-                                                        pre.destroy();
-                                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","height":_height+"px","display":"block","opacity":"1"});
-                                                        taskItemContainer.inject(dr,"before");
-                                                        //fx4把临时占用的位置删除
-                                                        var fx4 = new Fx.Tween(tmpdiv,{duration:time});
-                                                        fx4.start(["height"] ,_height+"px", "0px");
-                                                        window.setTimeout(function(){
-                                                            if(tmpdiv) tmpdiv.destroy()
-                                                        },time);
-                                                        //删除clone即el对象
-                                                        el.destroy();
-                                                    },time);
-
-                                                    //刷新其他需要加载的位置，比如数量
-                                                    var taskGroupFrom = taskItemContainer.getParent().getParent();
-                                                    var taskGroupIn = dr.getParent().getParent();
-                                                    //_self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
-                                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
-                                                        taskGroupFrom.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
-                                                    });
-                                                    _self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupInId,function(json){
-                                                        taskGroupIn.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
-                                                    })
-                                                }else{
-                                                    //返回失败，还原并删除el对象
-                                                    taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                    if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                        pre.destroy();
-                                                        el.destroy();
-                                                    }
-                                                }
-                                            },function(xhr,text,error){
-                                                _self.app.showErrorMessage(xhr,text,error);
-                                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
-                                                if(pre && pre.get("class")=="taskItemInsertLine"){
-                                                    pre.destroy();
-                                                    el.destroy();
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                        //传递鼠标事件e
-                        myDrag.start(e)
+                var drag = new Drag(taskItemContainer, {
+                    "compensateScroll": true,
+                    //preventDefault:true,
+                    //stopPropagation:true,
+                    //container:this.contentLayout,
+                    //container: this.taskContentLayout,
+                    "onStart": function(el, e){
+                        this.dragMove(el,e);
+                        drag.stop();
                     }.bind(this)
                 });
+
             }.bind(this));
 
             //最后加一行占位
             var emptyDrag = new Element("div.empty.dragin",{name:"item",styles:{
-                "width":"100%",
-                    "height":"50px"
+                    "width":"100%", "height":"50px"
                 }}).inject(taskGroupItemContainer);
 
-
         }.bind(this));
+
     },
+
+    dragMove:function(el,e){
+        var _self = this;
+        var taskItemContainer = el;
+        var time = 200;
+        //this.cloneTaskItem = new Element("").inject()
+        var position = el.getPosition(this.taskContentLayout);
+        //alert(JSON.stringify(position))
+        //var clone = this.cloneTaskItem = el.clone(true,true).inject($(document.body));
+        var clone = this.cloneTaskItem = el.clone(true,true).inject(this.taskContentLayout);
+        this.cloneTaskItem.removeClass("dragin");
+        this.cloneTaskItem.setStyles({
+            "top":position.y+"px",
+            "left":(position.x + this.taskContentLayout.getScrollLeft())+"px",
+            "z-index":"9999",
+            "margin":"0px",
+            "position":"absolute",
+            "cursor":"move"
+        });
+        el.setStyles({"border":"1px dotted #000000","opacity":"0.3"});
+        var _height = this.cloneTaskItem.getHeight().toInt() - 2;
+
+        this.ccc = 0;
+        var drag = new Drag.Move(this.cloneTaskItem, {
+            container: this.taskContentLayout,
+            //container: this.contentLayout,
+            //"stopPropagation": true,
+            "compensateScroll": true,
+            "droppables": $$(".dragin"),
+            "onStart": function(){
+                // this.topBarTabItemStat.set("text",JSON.stringify(el.getPosition()));
+            }.bind(this),
+            "onDrag": function(el,e){
+                // this.topBarTabItemStat.set("text",JSON.stringify(el.getPosition()));
+                //if(el.getPosition().x + el.getWidth() >1900){
+                    //this.topBarTabItemStat.set("text",JSON.stringify("treeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"));
+                    //drag.cancel();
+                    //e.stopPropagation();return;
+                    //this.taskContentLayout.scrollTo( this.taskContentLayout.getScrollLeft() +500,0);
+                    //el.setStyles({"margin-right":"-500px"})
+                    //this.topBarTabItemStat.set("text","000000000000000000");
+                //}
+                // var _width = el.getWidth().toInt();
+                //
+                // var  _l= el.getPosition().x;
+                // var _sl = this.taskContentLayout.getScrollLeft();
+                // var _w = this.container.getWidth().toInt() + _sl;
+                //
+                //
+                // //this.topBarTabItemStat.set("text",_width+p.x-_w_w);
+                //
+                // //this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+2,0);
+                //
+                // this.topBarTabItemStat.set("text",_l);
+                // var p1 = this.taskContentLayout.getPosition();
+                //
+                // this.ccc ++;
+                // //this.topBarTabItemStat.set("text",this.ccc);
+                //
+                // if(_l + _width == _w){ this.topBarTabItemStat.set("text","AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                //     //this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+100,0);
+                //     // scrInt =  window.setInterval(function(){
+                //     //     this.taskContentLayout.scrollTo(this.taskContentLayout.getScrollLeft()+500,0);
+                //     //
+                //     //     this.ccc ++;
+                //     //     this.topBarTabItemStat.set("text",this.ccc);
+                //     // }.bind(this),20)
+                // }
+
+
+            }.bind(this),
+            "onEnter": function(el,dr){
+                var pre = dr.getPrevious();
+                if(!pre || (pre && pre.get("class")!="taskItemInsertLine")){
+                    if(el.get("id")!=dr.get("id")){
+                        new Element("div.taskItemInsertLine",{styles:_self.css.taskItemInsertLine}).inject(dr,"before");
+                    }
+                }
+            }.bind(this),
+            "onLeave": function(el,dr){
+                var pre = dr.getPrevious();
+                if(pre && pre.get("class")=="taskItemInsertLine") {
+                    pre.destroy();
+                }
+            }.bind(this),
+            "onDrop": function(el, dr, e){
+
+                var taskId = el.get("id");
+                var taskInId = null;
+                var taskGroupInId = null;
+                var taskGroupFromId = null;
+                var taskGroupFromSortable = null;
+                var taskGroupInSortable = null;
+                el.setStyles({"cursor":""});
+                if(!dr){
+                    //没有移入，还原
+                    var fx = new Fx.Tween(el,{duration:time});
+                    fx.start(["top"] ,(el.getPosition(this.taskContentLayout).y)+"px", taskItemContainer.getPosition(this.taskContentLayout).y+"px");
+                    var fx2 = new Fx.Tween(el,{duration:time});
+                    fx2.start(["left"] ,(el.getPosition(this.taskContentLayout).x + this.taskContentLayout.getScrollLeft())+"px", (taskItemContainer.getPosition(this.taskContentLayout).x +  this.taskContentLayout.getScrollLeft())+"px");
+                    window.setTimeout(function(){
+                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                        el.destroy()
+                    },time)
+                }else{
+                    if(el.get("id")==dr.get("id")){ //如果移动的是本身的拷贝,恢复
+                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                        el.destroy();
+                    }else{
+                        taskInId = dr.get("id");
+                        taskGroupFromId = taskItemContainer.getParent().getParent().get("id");
+                        taskGroupInId = dr.getParent().getParent().get("id");
+                        taskGroupFromSortable = taskItemContainer.getParent().getParent().get("sortable");
+                        taskGroupInSortable = dr.getParent().getParent().get("sortable");
+                        var pre = dr.getPrevious();
+                        if(pre && pre.get("class")=="taskItemInsertLine") {  //this.topBarTabItemStat.set("text","change");
+                            //alert("taskid="+taskId+",taskInId="+taskInId+",taskgroupFromid="+taskGroupFromId+",taskGroupInId="+taskGroupInId);
+                            if(taskGroupInSortable == "false"){
+                                //未分类视图不允许移入，还原并删除el对象
+                                _self.app.notice("未分类列表不允许移入","error");
+                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                if(pre && pre.get("class")=="taskItemInsertLine"){
+                                    pre.destroy();
+                                    el.destroy();
+                                }
+                                return ;
+                            }
+                            var data = {
+                                taskId:taskId,
+                                behindTaskId:taskInId
+                            };
+                            _self.rootActions.TaskListAction.addTask2ListWithBehindTask(taskGroupInId,data,function(json){
+                                if(json.type == "success"){ //返回成功后再换位置
+
+                                    //fx fx2 动画clone到移入位置
+                                    var fx = new Fx.Tween(el,{duration:time});
+                                    fx.start(["top"] ,el.getPosition(_self.taskContentLayout).y+"px", pre.getPosition(_self.taskContentLayout).y+"px");
+                                    var fx2 = new Fx.Tween(el,{duration:time});
+                                    fx2.start(["left"] ,(el.getPosition(_self.taskContentLayout).x + _self.taskContentLayout.getScrollLeft())+"px", (pre.getPosition(_self.taskContentLayout).x +  _self.taskContentLayout.getScrollLeft())+"px");
+                                    //利用pre撑大高度
+                                    pre.setStyles({"border":"0px","background-color":"#ffffff"});
+                                    //var fx3 = new Fx.Tween(pre,{duration:time});
+                                    //fx3.start(["height"] ,"0px", _height+"px");
+
+                                    //新建一个占用原来位置
+                                    var tmpdiv = taskItemContainer.clone();
+                                    tmpdiv.setStyles({"border":"0px","margin":"0px","height":(el.getHeight())+"px"});
+                                    tmpdiv.empty();
+                                    tmpdiv.inject(taskItemContainer,"before");
+
+                                    //设置原有位置none
+                                    taskItemContainer.setStyles({"display":"none"});
+
+                                    var __height = tmpdiv.getHeight().toInt() - 2;
+                                    //动画完成后插入真正的对象，恢复原位，并删除pre和clone
+                                    window.setTimeout(function(){
+                                        pre.destroy();
+                                        taskItemContainer.setStyles({"border":"1px solid #e6e6e6","display":"block","opacity":"1"});
+                                        taskItemContainer.inject(dr,"before");
+                                        //fx4把临时占用的位置删除
+                                        var fx4 = new Fx.Tween(tmpdiv,{duration:time});
+                                        fx4.start(["height"] ,__height+"px", "0px");
+                                        window.setTimeout(function(){
+                                            if(tmpdiv) tmpdiv.destroy()
+                                        },time);
+                                        //删除clone即el对象
+                                        el.destroy();
+                                    },time);
+
+                                    //刷新其他需要加载的位置，比如数量
+                                    var taskGroupFrom = taskItemContainer.getParent().getParent();
+                                    var taskGroupIn = dr.getParent().getParent();
+                                    //_self.actions.taskGroupGet(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupFromId,function(json){
+                                        taskGroupFrom.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
+                                    });
+                                    _self.rootActions.TaskListAction.get(_self.currentProjectGroupData.id,taskGroupInId,function(json){
+                                        taskGroupIn.getElement(".taskGroupItemTitleCount").set("text","("+json.data.taskCount +")")
+                                    })
+                                }else{
+                                    //返回失败，还原并删除el对象
+                                    taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                    if(pre && pre.get("class")=="taskItemInsertLine"){
+                                        pre.destroy();
+                                        el.destroy();
+                                    }
+                                }
+                            },function(xhr,text,error){
+                                _self.app.showErrorMessage(xhr,text,error);
+                                taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
+                                if(pre && pre.get("class")=="taskItemInsertLine"){
+                                    pre.destroy();
+                                    el.destroy();
+                                }
+                            });
+                        }
+                    }
+                }
+            }.bind(this),
+            // "onCancel": function(el, e){ this._drag_cancel(dragging); }.bind(this),
+            //"onComplete": function(el, e){ if(scrInt) window.clearInterval(scrInt);}.bind(this),
+        });
+        drag.start(e);
+    },
+
+
+
+
     loadTaskNode:function(taskItemContainer,d){
         taskItemContainer.empty();
 
@@ -785,7 +921,13 @@ MWF.xApplication.TeamWork.Project = new Class({
         if(d.priority == this.lp.urgency)taskItemHover.setStyle("background-color","#ffaf38");
         else if(d.priority == this.lp.emergency)taskItemHover.setStyle("background-color","#ff0000");
         var taskItemContent = new Element("div.taskItemContent",{styles:this.css.taskItemContent}).inject(taskItemContainer);
-        var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle,text:d.name}).inject(taskItemContent);
+        var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle}).inject(taskItemContent);
+        var taskItemName = new Element("div.taskItemName",{styles:this.css.taskItemName,text:d.name}).inject(taskItemTitle);
+
+        var executor = d.executor.split("@")[0];
+        var shortE = executor.substring(0,1);
+        var taskItemExecutor = new Element("div",{styles:this.css.taskItemExecutor,text:shortE,title:executor}).inject(taskItemTitle);
+
         var taskItemDetail = new Element("div.taskItemDetail",{styles:this.css.taskItemDetail}).inject(taskItemContent);
         //时限
         var taskItemLimit = new Element("div.taskItemLimit",{styles:this.css.taskItemLimit}).inject(taskItemDetail);
@@ -812,8 +954,30 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this));
         }.bind(this),null,false);
 
+
+        if(d.workStatus=="completed"){ //如果已完成
+            new Element("div.",{styles:this.css.taskItemComplete,title:this.lp.taskCompleteText}).inject(taskItemTitle,"top");
+            //taskItemContainer.setStyles({"opacity":"0.5"});
+            taskItemContainer.setStyles({"color":"grey"});
+            taskItemLimit.destroy();
+
+            taskItemHover.setStyles({"background-color":"#DEDEDE"});
+            taskItemExecutor.setStyles({"opacity":"0.5"})
+        }
+
         taskItemHover.setStyles({"height":taskItemContainer.getHeight()});
+
+        // var drag = new Drag(taskItemContainer, {
+        //     "stopPropagation": true,
+        //     "compensateScroll": true,
+        //     "onStart": function(el, e){
+        //         this.doDragMove(e,taskItemContainer);
+        //         drag.stop();
+        //     }.bind(this)
+        // });
+
     },
+
     openTask:function(id,callback){
         var data = {
             taskId:id
@@ -830,7 +994,7 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this)
         };
         MWF.xDesktop.requireApp("TeamWork", "Task", function(){
-            var task = new MWF.xApplication.TeamWork.Task(this,data,opt);
+            var task = new MWF.xApplication.TeamWork.Task(this,data,opt,{projectObj:this});
             task.open();
         }.bind(this));
     },
@@ -844,6 +1008,7 @@ MWF.xApplication.TeamWork.Project = new Class({
 
         if(this.viewContainer) delete this.viewContainer;
         if(this.viewListContainer) delete this.viewListContainer;
+        if(this.viewSearchInput) delete this.viewSearchInput;
         this.taskContentLayout.empty();
         var viewContainer = this.viewContainer = new Element("div.viewContainer",{styles:this.css.viewContainer}).inject(this.taskContentLayout);
         viewContainer.addEvents({
@@ -852,13 +1017,53 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var sHeight = this.getScrollHeight();
                 var cHeight = viewContainer.getHeight();
 
-                if(sHeight - sTop < cHeight+10){ //偏移量
+                if(sHeight - sTop < cHeight+10 ){ //偏移量
                     if(_self.viewLoading){
                         _self.loadView(_self.curViewTaskId)
                     }
                 }
             }
         });
+        var viewSearchContainer = new Element("div.viewSearchContainer",{styles:this.css.viewSearchContainer}).inject(viewContainer);
+        var viewSearchContent = new Element("div.viewSearchContent",{styles:this.css.viewSearchContent}).inject(viewSearchContainer);
+        var viewSearchInput = this.viewSearchInput = new Element("input",{styles:this.css.viewSearchInput,"name":"viewSearchInput","placeholder":this.lp.searchTask}).inject(viewSearchContent);
+        viewSearchInput.addEvents({
+            keypress:function(e){
+                this.searchLoading = true;
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                if (keycode == 13 || keycode == 10) {
+                    var key = viewSearchInput.get("value").trim();
+                    if(key=="") return;
+                    //alert(key)
+                    viewSearchReset.show();
+                    if(this.searchLoading) this.loadView()
+                }
+            }.bind(this),
+            focus:function(){
+                viewSearchContent.setStyles({"border":"1px solid #4A90E2"})
+            }.bind(this),
+            blur:function(){
+                viewSearchContent.setStyles({"border":"1px solid #DEDEDE"})
+            }.bind(this)
+        })
+
+        var viewSearchSearch = new Element("div",{styles:this.css.viewSearchSearch}).inject(viewSearchContent);
+        viewSearchSearch.addEvents({
+            click:function(){
+                if(viewSearchInput.get("value").trim()=="") return;
+                viewSearchReset.show();
+                this.loadView();
+            }.bind(this)
+        });
+        var viewSearchReset = new Element("div",{styles:this.css.viewSearchReset}).inject(viewSearchContent);
+        viewSearchReset.addEvents({
+            click:function(){
+                viewSearchReset.hide();
+                viewSearchInput.set("value","");
+                this.loadView();
+            }.bind(this)
+        });
+
         var viewListContainer = this.viewListContainer = new Element("div.viewListContainer",{styles:this.css.viewListContainer}).inject(viewContainer);
         this.loadView()
     },
@@ -876,7 +1081,12 @@ MWF.xApplication.TeamWork.Project = new Class({
         var tmpLoading = new Element("div.tmpLoading",{styles:{"background-color":"#ffffff"}}).inject(viewListContainer);
         this.app.setLoading(tmpLoading);
         this.searchLoading = false;
-        this.actions.taskListNext("(0)",100,data,function(json){
+
+        var filter = {
+            title:key
+        };
+
+        this.rootActions.TaskAction.listAllTaskNextWithFilter("(0)",100,this.data.id,filter,function(json){
             viewListContainer.empty();
             json.data.each(function(data){
                 this.loadViewItem(data)
@@ -893,27 +1103,78 @@ MWF.xApplication.TeamWork.Project = new Class({
             }
             this.searchLoading = true;
         }.bind(this))
+
+
+        //this.actions.taskListNext("(0)",100,data,function(json){
+            // viewListContainer.empty();
+            // json.data.each(function(data){
+            //     this.loadViewItem(data)
+            // }.bind(this));
+            // if(json.count==0){
+            //     new Element("div.none",{styles:{
+            //             "height":"100px",
+            //             "line-height":"100px",
+            //             "width":"100%",
+            //             "text-align":"center",
+            //             "background-color":"#ffffff",
+            //             "font-size":"16px"
+            //         },text:"未查找到数据"}).inject(this.viewListContainer);
+            // }
+            // this.searchLoading = true;
+        //}.bind(this))
     },
     loadView:function(id){
+        //this.curNaviItem  所有工作，我负责的任务。。。。。
+        //key 搜索关键字
+
+        if(!(id)) {
+            this.viewListContainer.empty();
+            this.curCount = 0;
+        }
+
         this.viewListContainer.getElements(".viewNext").destroy();
         var data = {
             project:this.data.id
         };
+        if(this.viewSearchInput.get("value").trim()!=""){
+            data.title = this.viewSearchInput.get("value").trim();
+        }
         var tmpLoading = new Element("div.tmpLoading",{styles:{"background-color":"#ffffff"}}).inject(this.viewListContainer);
         this.app.setLoading(tmpLoading);
         this.viewLoading = false;
-        this.actions.taskListNext(id||"(0)",10,data,function(json){
+        // var filter = {
+        //     //"title":this.viewSearchInput.get("value")||""
+        // }
+
+        var action = "listAllTaskNextWithFilter";
+        if(this.curNaviItem == this.lp.viewItemMy){ //我负责的任务
+            action = "listMyExecutTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemFlow){ //未完成的任务
+            action = "listUncompletedTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemComplete){ //已完成的任务
+            action = "listCompletedTaskNextWithFilter"
+        }else if(this.curNaviItem == this.lp.viewItemOver){ //逾期的任务
+            action = "listOverTimeTaskNextWithFilter"
+        }
+
+
+        this.rootActions.TaskAction[action](id||"(0)",20,this.data.id,data,function(json){
             this.viewListContainer.getElements(".tmpLoading").destroy();
             json.data.each(function(data){
                 this.loadViewItem(data);
                 this.curViewTaskId = data.id;
+                this.curCount = this.curCount + 1;
             }.bind(this));
             this.viewLoading = true;
+
+            if(json.count == 0){
+                new Element("div",{styles:this.css.taskSearchEmpty,text:this.lp.taskSearchEmpty}).inject(this.viewListContainer);
+            }
 
             var sHeight = this.viewListContainer.getHeight();
             var cHeight = this.viewContainer.getHeight();
 
-            if(sHeight<cHeight){
+            if(sHeight<cHeight && this.curCount < json.count){
                 var viewNext = new Element("div.viewNext",{styles:this.css.viewNext,text:"下一页"}).inject(this.viewListContainer);
                 viewNext.addEvents({
                     click:function(){
@@ -921,16 +1182,20 @@ MWF.xApplication.TeamWork.Project = new Class({
                     }.bind(this)
                 })
             }
-
-            // if(sHeight - sTop < cHeight+10){ //偏移量
-            //     if(_self.viewLoading){
-            //         _self.loadView(_self.curViewTaskId)
-            //     }
-            // }
         }.bind(this))
     },
     loadViewItem:function(data){
         var viewItem = new Element("div.viewItem",{styles:this.css.viewItem}).inject(this.viewListContainer);
+        var viewColor = new Element("div.viewColor",{styles:this.css.viewColor}).inject(viewItem);
+
+        if(data.priority==this.lp.urgency){
+            //紧急
+            viewColor.setStyles({"background-color":"#fa8c15"});
+        }else if(data.priority==this.lp.emergency){
+            //特级
+            viewColor.setStyles({"background-color":"#E6240E"});
+        }
+
         var viewName = new Element("div.viewName",{styles:this.css.viewName,text:data.name}).inject(viewItem);
         var viewStatus = new Element("div.viewStatus",{styles:this.css.viewStatus,text:data.priority}).inject(viewItem);
         var viewDuty = new Element("div.viewDuty",{styles:this.css.viewDuty}).inject(viewItem);
@@ -939,6 +1204,15 @@ MWF.xApplication.TeamWork.Project = new Class({
             viewDutyIcon.set("text",data.executor.split("@")[0].substr(0,1));
             viewDutyIcon.set("title",data.executor.split("@")[0])
         }
+
+        if(data.workStatus == "completed"){
+            var completeIcon = new Element("div",{styles:this.css.taskItemComplete,title:this.lp.taskCompleteText}).inject(viewName,"top");
+            completeIcon.setStyles({"margin-top":"16px"});
+            viewItem.setStyles({"color":"#DEDEDE"});
+            viewColor.destroy();
+            viewDutyIcon.setStyles({"opacity":"0.5"});
+        }
+
         viewItem.addEvents({
             mouseover:function(){ this.setStyles({"background-color":"#F2F5F7"}) },
             mouseout:function(){ this.setStyles({"background-color":"#ffffff"}) },
@@ -948,14 +1222,28 @@ MWF.xApplication.TeamWork.Project = new Class({
         })
     },
     createStatLayout:function(){
-
         MWF.xDesktop.requireApp("TeamWork", "Stat", function(){
-            var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{
-
-                }
-            );
+            var stat = new MWF.xApplication.TeamWork.Stat(this.contentLayout,this.app,this.data,{ });
             stat.load();
         }.bind(this));
+    },
+    reloadTaskGroup:function(id){
+        var node;
+        if(id) node = this.taskContentLayout.getElementById(id);
+        if(!node)node = this.taskContentLayout.getElement("div[sortable='false']");
+
+        if(node){ //alert(id)
+            //console.log("id=============="+id);
+            this.rootActions.TaskListAction.get(this.currentProjectGroupData.id,id,function(json){
+                this.createTaskGroupItemLayout(node,json.data);
+            }.bind(this))
+        }
+
+    },
+
+    reloadInfor:function(){
+        //刷新页面上的一些信息，比如数量等未想好
+
     },
     test:function(){
 
@@ -988,6 +1276,17 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
         //this.formTableArea
         this.titleContainer = new Element("div.titleContainer",{styles:this.css.titleContainer}).inject(this.formTableArea);
         this.titleValue = new Element("input.titleValue",{styles:this.css.titleValue,placeholder:this.lp.newTaskPlaceholder}).inject(this.titleContainer);
+        this.titleValue.addEvents({
+            keyup:function(e){
+                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                //console.log(keycode)
+                if (keycode == 13 || keycode == 10) {
+                    this.okAction.click();
+                }else if(keycode == 27){
+                    this.closeAction.click();
+                }
+            }.bind(this),
+        });
 
         this.actionContainer = new Element("div.actionContainer",{styles:this.css.actionContainer}).inject(this.formTableArea);
         this.okAction = new Element("div.okAction",{styles:this.css.okAction,text:this.lp.newTaskOk}).inject(this.actionContainer);
@@ -1009,7 +1308,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
 
                         };
                         MWF.xDesktop.requireApp("TeamWork", "Task", function(){
-                            var task = new MWF.xApplication.TeamWork.Task(this,data,opt);
+                            var task = new MWF.xApplication.TeamWork.Task(this,data,opt,{projectObj:this.explorer});
                             task.open();
                         }.bind(this));
                         this.fireEvent("createTask");
@@ -1024,6 +1323,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
                 this.close();
             }.bind(this)
         });
+
     }
 
 });
@@ -1150,7 +1450,6 @@ MWF.xApplication.TeamWork.Project.TaskGroupMenu = new Class({
             mouseover:function(){this.setStyles({"background-color":"#F7F7F7"})},
             mouseout:function(){this.setStyles({"background-color":""})}
         });
-
 
         if(callback)callback();
     }
