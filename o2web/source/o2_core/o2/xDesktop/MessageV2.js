@@ -133,16 +133,18 @@ MWF.xDesktop.MessageV2 = new Class({
 			clearItems.erase(clearItems[0]);
 		}
 	},
-	addMessage: function(msg){
-		var item = new MWF.xDesktop.MessageV2.Item(this,msg);
-        this.items.push(item);
+	addMessage: function(msg, time){
+		var showTime = (time) ? (new Date()).parse(time) : new Date();
+		var item = new MWF.xDesktop.Message.Item(this,msg, showTime);
+		this.items.push(item);
 		this.addUnread();
 		return item;
 	},
-    addTooltip: function(msg){
-        var tooltop = new MWF.xDesktop.MessageV2.Tooltip(this,msg);
-        return tooltop;
-    },
+	addTooltip: function(msg, time){
+		var showTime = (time) ? (new Date()).parse(time) : new Date();
+		var tooltop = new MWF.xDesktop.Message.Tooltip(this,msg,showTime);
+		return tooltop;
+	},
 	getUnread: function(){
 		//获取未读消息列表和数量
 		return this.unread || 0;
@@ -171,11 +173,12 @@ MWF.xDesktop.MessageV2 = new Class({
 });
 MWF.xDesktop.MessageV2.Item = new Class({
     Implements: [Events],
-	initialize: function(message, msg){
+	initialize: function(message, msg, showTime){
 		this.message = message;
 		this.container = this.message.contentNode;
 		this.css = this.message.css;
 		this.msg = msg;
+		this.showTime = showTime;
 		this.load();
 	},
 	load: function(){
@@ -185,7 +188,7 @@ MWF.xDesktop.MessageV2.Item = new Class({
 
 		this.contentNode.set({"html": this.msg.content});
 		this.contentNode.set({"title": this.contentNode.get("text")});
-		this.dateNode.set("text", (new Date()).format("db"));
+		this.dateNode.set("text", this.showTime.format("db"));
 
 		this.setEvent();
 	},
