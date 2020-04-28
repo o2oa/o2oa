@@ -45,6 +45,11 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.TaskAction;
 
+        this.projectObj = this.explorer;
+        if(para){
+            if(para.projectObj) this.projectObj = para.projectObj;
+        }
+
         this.data = data || {};
         this.cssPath = "/x_component_TeamWork/$TaskMove/"+this.options.style+"/css.wcss";
 
@@ -73,9 +78,7 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
     },
     _createTableContent: function () {
 
-
-
-        this.formTableArea
+        // this.formTableArea
         this.topLayout = new Element("div.topLayout",{styles:this.css.topLayout}).inject(this.formTableArea);
         this.createTopLayout();
         this.contentLayout = new Element("div.contentLayout",{styles:this.css.contentLayout}).inject(this.formTableArea);
@@ -89,88 +92,50 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
     },
     createContentLayout:function(){
         this.contentLayout.empty();
-        this.searchDiv = new Element("div.searchDiv",{styles:this.css.searchDiv}).inject(this.contentLayout);
-        this.searchInput = new Element("input.searchInput",{styles:this.css.searchInput,placeHolder:this.lp.searchPlace}).inject(this.searchDiv);
-        this.searchInput.addEvents({
-            keyup:function(e){
-                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
-                var key = this.searchInput.get("value").trim();
-                if(keycode == 13 && key !=""){
-                    this.total = 0;
-                    this.curCount = 0;
-                    this.searchReset.show();
-                    this.taskListLayout.empty();
-                    this.loadTaskList(null,key);
-                    this.createBottomLayout();
-                    delete this.selectedItem;
-                }
-            }.bind(this)
-        });
-        this.searchReset = new Element("div.searchReset",{styles:this.css.searchReset}).inject(this.searchDiv);
-        this.searchReset.addEvents({
-            mouseover:function(){ this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskSub/default/icon/icon_off_click.png)"}) },
-            mouseout:function(){ this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskSub/default/icon/icon_off.png)"}) },
-            click:function(){
-                this.total = 0;
-                this.curCount = 0;
-                this.searchInput.set("value","");
-                this.searchReset.hide();
-                this.taskListLayout.empty();
-                this.loadTaskList();
-                this.createBottomLayout();
-                delete this.selectedItem;
-            }.bind(this)
-        });
-        this.taskListLayout = new Element("div.taskListLayout",{styles:this.css.taskListLayout}).inject(this.contentLayout);
-        this.taskListLayout.addEvents({
+
+        this.taskGroupLayout = new Element("div.taskGroupLayout",{styles:this.css.taskGroupLayout}).inject(this.contentLayout);
+        this.taskGroupLayout.addEvents({
             scroll:function(){
-                var stop = this.taskListLayout.getScrollTop();
-                var cheight= this.taskListLayout.getSize().y;
-                var sheight = this.taskListLayout.getScrollHeight();
-                var borderWidth = this.taskListLayout.getBorder()["border-top-width"].toInt()+this.taskListLayout.getBorder()["border-bottom-width"].toInt();
+                var stop = this.taskGroupLayout.getScrollTop();
+                var cheight= this.taskGroupLayout.getSize().y;
+                var sheight = this.taskGroupLayout.getScrollHeight();
+                var borderWidth = this.taskGroupLayout.getBorder()["border-top-width"].toInt()+this.taskGroupLayout.getBorder()["border-bottom-width"].toInt();
                 if(sheight == stop + cheight-borderWidth && this.isLoaded && this.curCount < this.total){
-                    this.loadTaskList(this.listId);
+                    this.loadTaskGroup(this.listId);
                 }
             }.bind(this)
         });
-        this.loadTaskList()
+        this.loadTaskGroup()
     },
-    loadTaskList:function(id,key){
-        var tmploading = new Element("div.loading",{styles:{"width":"500px"}}).inject(this.taskListLayout);
+    loadTaskGroup:function(id,key){
+        var tmploading = new Element("div.loading",{styles:{"width":"500px"}}).inject(this.taskGroupLayout);
         this.app.setLoading(tmploading);
-        this.taskListLayout.scrollTo(0,this.taskListLayout.getScrollSize().y);
-        var id = this.listId = id||"(0)";
+        this.taskGroupLayout.scrollTo(0,this.taskGroupLayout.getScrollSize().y);
+        var id = this.groupId = id||"(0)";
         var count=10;
         var filter = {
             project:this.data.data.project
         };
         if(key && key!=""){
-            filter.title = key
+            filter.title = key;
         }
         this.total = this.total || 0;
         this.curCount = this.curCount || 0;
         this.isLoaded = false;
-        //alert("curcount="+this.curCount+"total="+this.total);alert(id)
-        //this.actions.taskListNext(id,count,filter,function(json){
-        this.actions.listNextWithFilter(id,count,filter,function(json){
-            this.total = json.count;
-            this.taskListData = json.data;
+
+        //this.data.data.project
+        this.rootActions.TaskListAction.listWithTaskGroup(this.data.data.taskGroupId,function(json){
             tmploading.destroy();
-            this.taskListData.each(function(d,i){
-                this.loadTaskItem(d);
-                id = d.id;
-                this.listId = d.id;
-                this.curCount = this.curCount + 1;
-                this.isLoaded = true;
-
-            }.bind(this));
-        }.bind(this))
-
+            json.data.each(function(d){
+                this.loadGroupItem(d);
+            }.bind(this))
+        }.bind(this));
     },
-    loadTaskItem:function(data){
+
+    loadGroupItem:function(data){
         var _self = this;
-        var taskItem = new Element("div.taskItem",{styles:this.css.taskItem,id:data.id}).inject(this.taskListLayout);
-        taskItem.addEvents({
+        var groupItem = new Element("div.groupItem",{styles:this.css.groupItem,id:data.id}).inject(this.taskGroupLayout);
+        groupItem.addEvents({
             mouseover:function(){
                 if(_self.selectedItem == this)return;
                 this.setStyles({"background-color":"#f2f5f7"})
@@ -182,10 +147,10 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
             click:function(){
                 if(_self.selectedItem){
                     _self.selectedItem.setStyles({"background-color":""});
-                    _self.selectedItem.getElements(".taskName").setStyles({"color":"#666666"});
+                    _self.selectedItem.getElements(".groupName").setStyles({"color":"#666666"});
                 }
                 this.setStyles({"background-color":"#3da8f5"});
-                this.getElements(".taskName").setStyles({"color":"#ffffff"});
+                this.getElements(".groupName").setStyles({"color":"#ffffff"});
                 _self.okAction.setStyles({
                     "cursor":"pointer",
                     "background-color":"#4A90E2"
@@ -193,24 +158,43 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
                 _self.selectedItem = this;
             }
         });
-        var taskName = new Element("div.taskName",{styles:this.css.taskName,text:data.name}).inject(taskItem);
-        var n = data.executor.split("@")[0];
-        n = n.substr(0,1);
-
-        var taskPerson = new Element("div.taskPerson",{styles:this.css.taskPerson,text:n}).inject(taskItem);
+        var groupName = new Element("div.groupName",{styles:this.css.groupName,text:data.name}).inject(groupItem);
+        // var n = data.executor.split("@")[0];
+        // n = n.substr(0,1);
+        //
+        // var taskPerson = new Element("div.taskPerson",{styles:this.css.taskPerson,text:n}).inject(taskItem);
     },
     createBottomLayout:function(){
+
         this.bottomLayout.empty();
         this.okAction = new Element("div.okAction",{styles:this.css.okAction,text:this.lp.ok}).inject(this.bottomLayout);
         this.okAction.addEvents({
             click:function(){
                 if(this.selectedItem){
+                    if(this.selectedItem.get("id")==this.data.data.taskListId){
+                        this.app.notice(this.lp.moveToSelf,"info");
+                        return;
+                    }
+
                     var data = {
-                        parent : this.selectedItem.get("id"),
-                        id:this.data.data.id
-                    };
-                    this.actions.save(data,function(json){
-                        this.explorer._createTableContent();
+                        taskId:this.data.data.id
+                    }
+
+                    this.rootActions.TaskListAction.addTask2ListWithBehindTask(this.selectedItem.get("id"),data,function(json){
+                        if(json.data.id){
+                            //this.app.notice(json.data.message,"success");
+                            this.projectObj.reloadTaskGroup(json.data.id);  //reload to list
+                            this.projectObj.reloadTaskGroup(this.data.data.taskListId); //reload from list
+
+                            //this.explorer.projectObj.reloadTaskGroup(json.data.id);
+                            //this.explorer.projectObj.reloadTaskGroup(this.data.data.taskListId);
+                            // if(this.explorer.explorer){
+                            //     this.explorer.explorer.reloadTaskGroup(json.data.id);
+                            //     this.explorer.explorer.reloadTaskGroup(this.data.data.taskListId);
+                            // }
+                        }else{
+                            this.app.notice("不允许转移到未分类列表","error")
+                        }
                         this.close();
                     }.bind(this))
                 }

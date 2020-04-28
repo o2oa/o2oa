@@ -238,6 +238,7 @@ public class ProjectFactory extends AbstractFactory {
 		Root<Project> root = cq.from(Project.class);
 		Predicate p_permission = null;
 		
+		
 		if( StringUtils.isNotEmpty( personName )) {
 			//可以管理的栏目，肯定可以发布信息
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.isMember( personName, root.get( Project_.participantPersonList )) );
