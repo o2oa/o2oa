@@ -1421,6 +1421,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
                 //this.fireAppEvent("postSave"); //add by cxy
                 if (this.pcForm) this.pcForm.fireEvent("postSave");
                 if (this.mobileForm) this.mobileForm.fireEvent("postSave");
+                this.fireEvent("postSave");
 
                 this.isSave = false;
 
