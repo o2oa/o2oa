@@ -397,7 +397,6 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
                 "click": function () { this.nextPage(); }.bind(this),
             });
 
-            debugger;
             var size = this.pageNode.getSize();
             var w1 = this.prevPageNode.getEdgeWidth();
             var w2 = this.nextPageNode.getEdgeWidth();
