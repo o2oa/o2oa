@@ -91,6 +91,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
             }).inject(this.actionTitleArea);
 
             this.restoreActionButtonButton.addEvent("click", function(){
+                debugger;
                 this.restoreButtonAction();
             }.bind(this));
         }
@@ -100,6 +101,19 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         if( !this.defaultTools ){
             MWF.getJSON( this.options.systemToolsAddress, function(tools){
                 this.defaultTools = tools;
+                if( this.options.target && this.options.target === "mobileForm" ){
+                    this.defaultTools.push({
+                        "type": "MWFToolBarButton",
+                        "img": "read.png",
+                        "title": "标记为已阅",
+                        "action": "readedWork",
+                        "text": "已阅",
+                        "id": "action_readed",
+                        "control": "allowReadProcessing",
+                        "condition": "",
+                        "read": true
+                    });
+                }
             }.bind(this), false);
         }
         this.defaultTools.each( function( tool ){
