@@ -200,14 +200,39 @@ o2.xDesktop.Default = new Class({
 
     loadDefaultPage: function(){
         //默认载入首页
+        var app;
         if (layout.config.indexPage && layout.config.indexPage.enable && layout.config.indexPage.portal){
             appId = "portal.Portal"+layout.config.indexPage.portal;
             this.options.index = appId;
-            var options = {"portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId};
-            layout.openApplication(null, "portal.Portal", options);
+            //var options = {"portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId};
+
+            app = {
+                "options": {"name": "portal.Portal", "portalId": layout.config.indexPage.portal, "pageId": layout.config.indexPage.page, "appId": appId},
+                "close": function(){
+                    this.taskitem.destroy();
+                },
+                "setCurrent": function(){
+                    this.taskitem.textNode.click();
+                }
+            };
+            //layout.openApplication(null, "portal.Portal", options);
         }else{
-            layout.openApplication(null, "Homepage");
+            app = {
+                "options": {"name": "Homepage", "appId": "Homepage", "title": o2.LP.desktop.homepage},
+                "close": function(){
+                    this.taskitem.destroy();
+                },
+                "setCurrent": function(){
+                    this.taskitem.textNode.click();
+                }
+            };
+            //layout.openApplication(null, "Homepage");
         }
+
+        taskitem = layout.desktop.createTaskItem(app);
+        app.taskitem = taskitem;
+        this.apps[app.options.appId] = app;
+        taskitem.textNode.click();
     },
     loadDefaultLnk: function(){
         if (this.status && this.status.flatLnks && this.status.flatLnks.length){
@@ -1652,7 +1677,7 @@ o2.xDesktop.Default.TaskItem = new Class({
     load: function(){
         this.node = new Element("div.layout_content_taskbar_item").inject(this.container);
         this.iconNode = new Element("div");
-        this.closeNode = new Element("div.layout_content_taskbar_item_icon", {"title": o2.LP.widget.close}).inject(this.node);;
+        this.closeNode = new Element("div.layout_content_taskbar_item_icon", {"title": o2.LP.widget.close}).inject(this.node);
         this.closeNode.addClass("icon_close");
         if (this.app.options.appId==this.desktop.options.index){
             this.closeNode.hide();
@@ -1718,6 +1743,8 @@ o2.xDesktop.Default.TaskItem = new Class({
                 this.app.refresh();
             }.bind(this)
         });
+
+        if (this.desktop && this.desktop.checkTaskBarSize) this.desktop.checkTaskBarSize();
     },
     setText: function(str){
         this.textNode.set("text", str || this.app.options.title);
@@ -1744,6 +1771,7 @@ o2.xDesktop.Default.TaskItem = new Class({
     destroy: function(){
         this.iconNode.destroy();
         this.node.destroy();
+        if (this.desktop && this.desktop.checkTaskBarSize) this.desktop.checkTaskBarSize();
         o2.release(this);
     },
     setTaskitemSize: function(){

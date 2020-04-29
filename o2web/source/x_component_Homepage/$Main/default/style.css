@@ -1,7 +1,7 @@
 .o2_homepage_content {
     margin: 15px;
-    min-width: 1000px;
-    min-height: 600px;
+    min-width: 1280px;
+    min-height: 700px;
     font-size: 14px;
 }
 .o2_homepage_layout_right {
@@ -257,7 +257,7 @@
     text-align: center;
     line-height: 24px;
     float: left;
-    margin-left: 10px;
+    margin-left: 5px;
     cursor: pointer;
     user-select: none;
     -ms-user-select: none;
@@ -280,7 +280,7 @@
     background-color: #ffffff;
     line-height: 20px;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     border: 1px solid #E6E6E6;
@@ -293,7 +293,7 @@
     border-radius: 10px;
     background-color: #ffffff;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     float: left;
@@ -308,7 +308,7 @@
     border-radius: 10px;
     background-color: #ffffff;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     float: left;
@@ -374,7 +374,7 @@
 
 .o2_homepage_infor_hotpicArea {
     height: 100%;
-    width: 42%;
+    width: 36%;
     float: left;
     background: #F7FBFF;
     border-radius: 8px;
@@ -392,7 +392,6 @@
 }
 
 .o2_homepage_infor_itemsArea {
-    margin-left: 42%;
     height: 100%;
 }
 .o2_homepage_infor_itemsArea_content {

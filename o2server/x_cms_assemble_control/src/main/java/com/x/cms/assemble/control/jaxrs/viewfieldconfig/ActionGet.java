@@ -34,7 +34,7 @@ public class ActionGet extends BaseAction {
 				Business business = new Business(emc);
 				ViewFieldConfig viewFieldConfig = business.getViewFieldConfigFactory().get(id);
 				if ( null == viewFieldConfig ) {
-					throw new Exception("viewFieldConfig{id:" + id + "} 信息不存在.");
+					throw new Exception("需要查询的列表展现列信息不存在，请联系管理员。ID:" + id );
 				}
 				//如果信息存在，则需要向客户端返回信息，先将查询出来的JPA对象COPY到一个普通JAVA对象里，再进行返回
 				wrap = Wo.copier.copy( viewFieldConfig );
