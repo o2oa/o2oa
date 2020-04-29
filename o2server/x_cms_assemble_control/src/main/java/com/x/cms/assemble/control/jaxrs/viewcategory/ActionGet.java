@@ -35,7 +35,7 @@ public class ActionGet extends BaseAction {
 				Business business = new Business(emc);
 				ViewCategory view = business.getViewCategoryFactory().get(id);
 				if (null == view) {
-					throw new Exception("view{id:" + id + "} 信息不存在.");
+					throw new Exception("需要查询的列表信息不存在，请联系管理员。ID:" + id );
 				}
 
 				wrap = Wo.copier.copy(view);
