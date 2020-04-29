@@ -87,7 +87,11 @@ public abstract class Plan extends GsonPropertyObject {
 
 	public Integer count;
 
-	private ScriptEngine scriptEngine;
+	/**
+	 * !!这个类最后要输出.不能gson scriptEngine对象
+	 * 
+	 */
+	private transient ScriptEngine scriptEngine;
 
 	private Table order(Table table) {
 		Comparator<Row> comparator = new Comparator<Row>() {
