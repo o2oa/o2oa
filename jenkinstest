@@ -21,6 +21,7 @@ pipeline {
                 					}
                                 }
                                 echo 'env.tag='+env.tag
+               sh  '#!/bin/sh -l'
                 sh 'ant -DVERSION='+env.tag+'   -DpreName='+env.preName
             }
         }
