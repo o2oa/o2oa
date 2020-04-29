@@ -1284,6 +1284,9 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
+        if (name=="groupEntry"){
+            debugger;
+        }
         if (name=="column"){
             this.view.json.data.orderList.each(function(order){
                 if (order.column==oldValue) order.column = this.json.column
