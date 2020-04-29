@@ -3,13 +3,26 @@ pipeline {
     stages {
 		stage('getEnv') {
             steps {
+                echo 'env.sshServer='+env.sshServer
+                				echo 'env.preName='+env.preName
+                				echo 'env.isallTag='+env.isallTag
+                				echo 'env.qqGroupid='+env.qqGroupid
+                				echo 'env.qqUrl='+env.qqUrl
+                				sh  "cat /dev/null > gitTag.txt "
+                                sh  "git describe --tags  >> gitTag.txt"
+                                script {
+                            	    json_file = "gitTag.txt"
+                	                file_contents = readFile json_file
+
+                	                if(file_contents.trim().indexOf("-")!=-1&&env.isallTag.trim().indexOf("true")==-1){
+                						env.tag =file_contents.trim().substring(0,file_contents.trim().indexOf("-"))
+                					}else{
+                						env.tag =file_contents.trim();
+                					}
+                                }
+                                echo 'env.tag='+env.tag
                 sh 'ant -DVERSION='+env.tag+'   -DpreName='+env.preName
             }
         }
-
-
-		
-
-
 	}
 }
