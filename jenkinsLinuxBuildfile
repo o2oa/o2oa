@@ -8,8 +8,8 @@ pipeline {
 				echo 'env.isallTag='+env.isallTag
 				echo 'env.qqGroupid='+env.qqGroupid
 				echo 'env.qqUrl='+env.qqUrl
-				sh  "echo >> \"gitTag.txt\""
-                sh  "git describe --tags  >>\"gitTag.txt\""
+				sh  "cat /dev/null > gitTag.txt "
+                sh  "git describe --tags  >> gitTag.txt"
                 script {
             	    json_file = "gitTag.txt"
 	                file_contents = readFile json_file
@@ -23,7 +23,7 @@ pipeline {
                 echo 'env.tag='+env.tag
             }
         }
-        
+
         stage('initAndBuildAndSendzip') {
             steps {
 				script {
