@@ -292,6 +292,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 					//this.applications.push(application);
 				}.bind(this));
 
+				this.reloadApplicationCategoryList(true);
 				this.notice(this.lp.application.createApplicationSuccess, "success");
 				//    this.app.processConfig();
 			}.bind(this));
@@ -556,7 +557,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 
 				var complete = function(){
 					if (doCount == readyCount){
-						_self.reloadApplicationCategoryList();
+						_self.reloadApplicationCategoryList( true );
 						if (errorText){
 							_self.app.notice(errorText, "error");
 						}
