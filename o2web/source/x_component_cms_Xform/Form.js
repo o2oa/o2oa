@@ -457,6 +457,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         delete documentData.attachmentList;
         //this.documentAction.saveDocument(documentData, function(){
         this.fireEvent("postPublish", [documentData]);
+        if (this.app) if (this.app.fireEvent) this.app.fireEvent("postPublish",[documentData]);
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
@@ -465,6 +466,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         this.documentAction.publishDocumentComplex(documentData, function (json) {
             this.businessData.data.isNew = false;
             this.fireEvent("afterPublish");
+            if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish");
             if (callback) callback();
             if (this.app.mobile) {
                 this.app.content.unmask();
