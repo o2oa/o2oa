@@ -1562,6 +1562,7 @@ debugger;
                     "noDelete": false,
                     "noCode": true,
                     "noReadShow": true,
+                    "target" : node.get("data-target"),
                     "noEditShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
