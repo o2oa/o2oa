@@ -69,7 +69,9 @@ public class ActionListAllManageableAppType extends BaseAction {
 							if( appIdsForType == null ){
 								appIdsForType = new ArrayList<>();
 							}
-							wos.add( new Wo( appType, Long.parseLong( appIdsForType.size() + "") ));
+							if( appIdsForType.size() > 0 ) {
+								wos.add( new Wo( appType, Long.parseLong( appIdsForType.size() + "") ));
+							}
 						}
 					}
 				}
