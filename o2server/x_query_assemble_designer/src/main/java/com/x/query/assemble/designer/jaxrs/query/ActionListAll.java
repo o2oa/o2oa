@@ -27,9 +27,6 @@ class ActionListAll extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = this.list(business, effectivePerson);
 			List<String> ids = ListTools.extractProperty(wos, Query.id_FIELDNAME, String.class, true, true);
