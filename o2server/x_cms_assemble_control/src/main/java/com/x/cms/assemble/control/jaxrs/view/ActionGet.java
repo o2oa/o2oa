@@ -34,7 +34,7 @@ public class ActionGet extends BaseAction {
 				Business business = new Business(emc);
 				View view = business.getViewFactory().flag( flag );
 				if ( null == view ) {
-					throw new Exception("view{flag:" + flag + "} 信息不存在.");
+					throw new Exception("需要查询的列表信息不存在，请联系管理员。ID:" + flag );
 				}
 				wrap = Wo.copier.copy( view );
 				//根据FormId补充FormName
