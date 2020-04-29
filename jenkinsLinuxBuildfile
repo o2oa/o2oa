@@ -8,7 +8,7 @@ pipeline {
 				echo 'env.isallTag='+env.isallTag
 				echo 'env.qqGroupid='+env.qqGroupid
 				echo 'env.qqUrl='+env.qqUrl
-				sh  "cd.> \"gitTag.txt\""
+				sh  "echo >> \"gitTag.txt\""
                 sh  "git describe --tags  >>\"gitTag.txt\""
                 script {
             	    json_file = "gitTag.txt"
