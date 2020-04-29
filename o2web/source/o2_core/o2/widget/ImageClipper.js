@@ -588,7 +588,8 @@ o2.widget.HTML5ImageClipper = new Class({
 		this.innerNode = new Element("div.innerNode",{ styles :  this.css.innerNode } ).inject(this.editorNode);
 
 		this.imageNode = new Element("img",{
-			styles :  this.css.imageNode
+			styles :  this.css.imageNode,
+			crossOrigin :"use-credentials"
 		}).inject(this.innerNode);
 		this.imageNode.ondragstart = function(){
 			return false;
