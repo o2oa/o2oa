@@ -36,7 +36,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.file.core.entity.PersistenceProperties;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Personal.Attachment.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Personal.Attachment.table + JpaObject.IndexNameMiddle

@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.IMMsg.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.IMMsg.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

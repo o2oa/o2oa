@@ -45,7 +45,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.PersonCard.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.PersonCard.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

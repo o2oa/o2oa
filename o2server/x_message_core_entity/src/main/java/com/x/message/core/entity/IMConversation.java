@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.IMConversation.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.IMConversation.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

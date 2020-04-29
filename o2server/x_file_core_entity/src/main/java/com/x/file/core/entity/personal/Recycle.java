@@ -20,7 +20,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Personal.Recycle.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Personal.Recycle.table + JpaObject.IndexNameMiddle

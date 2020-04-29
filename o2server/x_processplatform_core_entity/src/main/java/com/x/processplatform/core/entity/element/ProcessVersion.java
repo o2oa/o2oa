@@ -23,7 +23,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.ProcessVersion.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.ProcessVersion.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -50,6 +50,7 @@ public class ProcessVersion extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		//nothing
 	}
 
 	/* 更新运行方法 */

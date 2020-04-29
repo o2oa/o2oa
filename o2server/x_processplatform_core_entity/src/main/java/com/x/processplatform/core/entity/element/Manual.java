@@ -32,7 +32,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Manual.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.Manual.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -59,6 +59,7 @@ public class Manual extends Activity {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	/* 更新运行方法 */
