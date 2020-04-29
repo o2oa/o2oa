@@ -492,10 +492,13 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "documentId": id,
                 "appId": appId,
                 "onPostPublish" : function(){
+                    this.fireEvent( "postPublish" );
+                }.bind(this),
+                "onAfterPublish" : function () {
                     debugger;
                     if(_self.view && _self.view.reload )_self.view.reload();
-                    this.fireEvent( "postPublish" );
-                }.bind(this)
+                    _self.fireEvent( "afterPublish" );
+                }
             };
             if( typeOf(this.options.autoSave) == "boolean" )options.autoSave = this.options.autoSave;
             if( typeOf(this.options.saveOnClose) == "boolean" )options.saveOnClose = this.options.saveOnClose;
