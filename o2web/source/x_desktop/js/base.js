@@ -60,15 +60,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             app.taskitem = taskitem;
             app.taskitem.app = app;
 
-            // if (layout.viewMode=="Default"){
-            //     if (!notCurrent){
-            //         app.load(!notCurrent);
-            //     }else{
-            //         app.isLoadApplication = false;
-            //     }
-            // }else{
-            //     app.load(!notCurrent);
-            // }
             app.isLoadApplication = true;
             app.load(!notCurrent);
 
@@ -266,24 +257,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                     if (options) options.appId = appId;
                     _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent);
                 }
-                // if (appNamespace.options.multitask){
-                //     if (options && options.appId){
-                //         if (layout.desktop.apps[options.appId]){
-                //             layout.desktop.apps[options.appId].setCurrent();
-                //         }else {
-                //             _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
-                //         }
-                //     }else{
-                //         _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
-                //     }
-                // }else{
-                //     if (layout.desktop.apps[appName]){
-                //         layout.desktop.apps[appName].setCurrent();
-                //     }else{
-                //         _createNewApplication(e, appNamespace, appName, options, obj, inBrowser);
-                //     }
-                // }
-                // _createNewApplication(e, appNamespace, appName, (options || {}), statusObj, inBrowser);
             }.bind(this));
         }
     };
