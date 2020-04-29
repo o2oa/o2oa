@@ -54,6 +54,7 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
                     this.createApplicationItem(json.data, "top");
                 }.bind(this));
 
+                this.reloadApplicationCategoryList(true);
                 this.notice(this.lp.application.createApplicationSuccess, "success");
             }.bind(this));
         }else{
