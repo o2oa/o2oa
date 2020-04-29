@@ -1,0 +1,15 @@
+pipeline {
+    agent {label '132'}
+    stages {
+		stage('getEnv') {
+            steps {
+                sh 'ant -DVERSION='+env.tag+'   -DpreName='+env.preName
+            }
+        }
+
+
+		
+
+
+	}
+}
