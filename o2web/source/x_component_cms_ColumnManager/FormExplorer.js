@@ -99,6 +99,9 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     "onQueryLoad": function(){
                         this.actions = _self.app.restActions;
                         this.application = _self.app.options.application;
+                    },
+                    "onPostSave" : function () {
+                        _self.reload();
                     }
                 };
                 layout.desktop.openApplication(e, "cms.FormDesigner", options);
@@ -112,6 +115,9 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     "onQueryLoad": function(){
                         this.actions = _self.app.restActions;
                         this.application = _self.app.options.application;
+                    },
+                    "onPostSave" : function () {
+                        _self.reload();
                     }
                 };
                 layout.desktop.openApplication(e, "cms.FormDesigner", options);
