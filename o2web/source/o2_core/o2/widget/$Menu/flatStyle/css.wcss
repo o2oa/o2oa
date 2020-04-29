@@ -22,7 +22,7 @@
 		"border-radius": "2px",
 		"background-color": "#FFF",
 		"padding": "0px",
-		"overflow": "hidden",
+		"overflow": "auto",
 		"cursor": "default"
 	},
 	"menuItem": {

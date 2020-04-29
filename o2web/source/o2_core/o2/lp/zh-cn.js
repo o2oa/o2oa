@@ -123,6 +123,7 @@ o2.LP.process = {
     }
 };
 o2.LP.desktop = {
+    "homepage": "首页",
     "loadding": "正在为您加载系统资源，请稍候......",
     "lowBrowser": "您的浏览器版本过低啦！~系统已经不支持IE8及以下版本了!",
     "upgradeBrowser": "请升级您的浏览器：",

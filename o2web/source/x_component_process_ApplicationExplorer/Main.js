@@ -623,7 +623,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 	checkManage: function(){
 		if (this.app.control.canManage) return true;
 		if (this.app.control.canCreate && (this.data.creatorPerson==layout.desktop.session.user.name)) return true;
-		if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
+		//if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
 		return false;
 	},
 
