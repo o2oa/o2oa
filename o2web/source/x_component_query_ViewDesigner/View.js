@@ -1284,9 +1284,6 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (name=="selectType") this.resetTextNode();
         if (name=="attribute") this.resetTextNode();
         if (name=="path") this.resetTextNode();
-        if (name=="groupEntry"){
-            debugger;
-        }
         if (name=="column"){
             this.view.json.data.orderList.each(function(order){
                 if (order.column==oldValue) order.column = this.json.column
@@ -1306,7 +1303,6 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (!e) e = this.node;
         this.view.designer.confirm("warn", e, MWF.APPDVD.LP.notice.deleteColumnTitle, MWF.APPDVD.LP.notice.deleteColumn, 300, 120, function(){
             _self.destroy();
-
             this.close();
         }, function(){
             this.close();
@@ -1326,6 +1322,19 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
                 tr.deleteCell(idx);
             }.bind(this));
         }
+
+        if (this.view.json.data.group.column === this.json.column){
+            this.view.json.data.group.column = null;
+        }
+
+        var sortList = this.view.json.data.orderList || [];
+        var deleteItem = null;
+        sortList.each(function(order){
+            if (order.column==this.json.column){
+                deleteItem = order;
+            }
+        }.bind(this));
+        if (deleteItem) sortList.erase(deleteItem);
 
         if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
         if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
