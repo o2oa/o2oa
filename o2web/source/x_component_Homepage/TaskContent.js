@@ -397,6 +397,16 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
                 "click": function () { this.nextPage(); }.bind(this),
             });
 
+            debugger;
+            var size = this.pageNode.getSize();
+            var w1 = this.prevPageNode.getEdgeWidth();
+            var w2 = this.nextPageNode.getEdgeWidth();
+            var x1 = this.prevPageNode.getSize().x;
+            var x2 = this.nextPageNode.getSize().x;
+            var x = size.x - w1 - w2 - x1 - x2;
+            var count = (x/30).toInt()-2;
+            if (count<3) count = 3;
+            this.options.showPages = count;
             this.loadPageNumber();
         }else{
 
