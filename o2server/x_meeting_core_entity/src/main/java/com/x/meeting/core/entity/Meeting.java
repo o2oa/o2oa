@@ -38,7 +38,7 @@ import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.tools.ListTools;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Meeting.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Meeting.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

@@ -20,7 +20,7 @@ import java.util.List;
  * 
  * @author LIYI
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSSectionInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSSectionInfo.table + JpaObject.IndexNameMiddle

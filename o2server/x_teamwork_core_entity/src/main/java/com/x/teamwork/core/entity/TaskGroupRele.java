@@ -20,7 +20,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 工作任务与任务组关联表
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.TaskGroupRele.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.TaskGroupRele.table + JpaObject.IndexNameMiddle

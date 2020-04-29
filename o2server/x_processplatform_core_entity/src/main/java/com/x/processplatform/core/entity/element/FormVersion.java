@@ -23,7 +23,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.Element.FormVersion.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.FormVersion.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -50,7 +50,7 @@ public class FormVersion extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
-		// this.editor = StringUtils.trimToEmpty(this.editor);
+		// nothing
 	}
 
 	/* 更新运行方法 */
