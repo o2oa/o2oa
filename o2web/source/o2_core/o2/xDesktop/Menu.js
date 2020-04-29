@@ -25,6 +25,7 @@ MWF.xDesktop.Menu = new Class({
 			}).inject(this.options.container || $(document.body));
 			
 			this.node.inject(this.borderNode);
+
 			this.hide = this.hideMenu.bind(this);
 			this.fireEvent("postLoad");
 		}
@@ -55,6 +56,16 @@ MWF.xDesktop.Menu = new Class({
 				}else{
 					this.pauseCount--;
 				}
+
+				var p = this.node.getPosition(document.body);
+				var size = this.node.getSize();
+				var bodySize = document.body.getSize();
+				if (p.y+size.y+10>bodySize.y){
+					var y = bodySize.y-p.y-10;
+					this.node.setStyle("height", ""+y+"px");
+					this.node.addEvent("mousedown", function(e){ e.stopPropagation(); })
+				}
+
 				this.fireEvent("postShow");
 			}
 		}
