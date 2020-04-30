@@ -45,13 +45,13 @@ public class ActionGet extends BaseAction {
 			result.error( exception );
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( flag,effectivePerson );
 		Element element = projectCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
-		} else {
+		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					project = projectQueryService.get(flag);
@@ -107,7 +107,7 @@ public class ActionGet extends BaseAction {
 						control.setFounder( false );
 					}
 					wo.setControl(control);
-					projectCache.put(new Element(cacheKey, wo));
+					//projectCache.put(new Element(cacheKey, wo));
 					result.setData(wo);
 				} catch (Exception e) {
 					Exception exception = new ProjectQueryException(e, "将查询出来的应用项目信息对象转换为可输出的数据信息时发生异常。");
@@ -115,7 +115,7 @@ public class ActionGet extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 

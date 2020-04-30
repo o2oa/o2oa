@@ -133,6 +133,13 @@ public class Project extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + executor_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String executor;
+	
+	public static final String templateId_FIELDNAME = "templateId";
+	@FieldDescribe("模板id")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + templateId_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + templateId_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String templateId;
 
 	public static final String starPersonList_FIELDNAME = "starPersonList";
 	@FieldDescribe("标星人员")
@@ -254,6 +261,14 @@ public class Project extends SliceJpaObject {
 
 	public void setExecutor(String executor) {
 		this.executor = executor;
+	}
+	
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
 	}
 
 	public List<String> getParticipantPersonList() {
