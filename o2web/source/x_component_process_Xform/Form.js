@@ -2865,7 +2865,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var _self = this;
         if (this.json.mode == "Mobile") {
             //window.confirm 在ios移动端不可用 ??
-            if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
+            // if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
+
+            var p = MWF.getCenterPosition(document.body, 300, 150);
+            console.log("position x:" + p.x + " , y:" + p.y);
+            var x = p.x;
+            if (p.x < 20) {
+                x = 20;
+            } else {
+                x = p.x;
+            }
+            var event = {
+                "event": {
+                    "x": x,
+                    "y": p.y - 200,
+                    "clientX": x,
+                    "clientY": p.y - 200
+                }
+            };
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.retractTitle, MWF.xApplication.process.Xform.LP.retractText, 300, 120, function () {
                 _self.app.content.mask({
                     "style": {
                         "background-color": "#999",
@@ -2897,7 +2915,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                     });
                 }.bind(this));
-            }
+            }, function () {
+                this.close();
+            }, null, null, this.json.confirmStyle);
+
+
+
+
+
         } else {
             var p = MWF.getCenterPosition(this.app.content, 300, 150);
             var event = {
