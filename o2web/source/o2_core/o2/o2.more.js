@@ -506,7 +506,7 @@
         },
         "getParentSrcollNode": function(){
             var node = this.getParent();
-            while (node && (node.getScrollSize().y<=node.getSize().y || (node.getStyle("overflow")!=="auto" &&  node.getStyle("overflow-y")!=="auto"))){
+            while (node && (node.getScrollSize().y-2<=node.getSize().y || (node.getStyle("overflow")!=="auto" &&  node.getStyle("overflow-y")!=="auto"))){
                 node = node.getParent();
             }
             return node || null;
