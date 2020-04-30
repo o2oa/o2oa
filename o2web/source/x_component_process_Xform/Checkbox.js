@@ -1,4 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
+MWF.require("MWF.widget.UUID", null, false);
 MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Input,
