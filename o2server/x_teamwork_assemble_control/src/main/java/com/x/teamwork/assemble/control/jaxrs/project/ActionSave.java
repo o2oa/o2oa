@@ -136,6 +136,9 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("执行者|负责人，非必填")
 		private String executor;
 		
+		@FieldDescribe("模板id")
+		private String templateId;
+		
 		@FieldDescribe("管理者，非必填")
 		private List<String> manageablePersonList;
 		
@@ -219,6 +222,14 @@ public class ActionSave extends BaseAction {
 
 		public void setExecutor(String executor) {
 			this.executor = executor;
+		}
+		
+		public String getTemplateId() {
+			return templateId;
+		}
+
+		public void setTemplateId(String templateId) {
+			this.templateId = templateId;
 		}
 
 		public List<String> getManageablePersonList() {

@@ -35,6 +35,24 @@ public class ProjectTemplateAction extends StandardJaxrsAction {
 
 	private Logger logger = LoggerFactory.getLogger(ProjectTemplateAction.class);
 	
+	@JaxrsMethodDescribe(value = "查询项目模板统计信息.", action = ActionStatisticProjectTemplates.class)
+	@GET
+	@Path("statitic/all")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void statiticMyProject(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request ) {
+		ActionResult<ActionStatisticProjectTemplates.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionStatisticProjectTemplates().execute( request, effectivePerson );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "根据ID查询项目模板信息.", action = ActionGet.class)
 	@GET
 	@Path("{id}")

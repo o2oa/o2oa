@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
+import com.x.organization.core.entity.PersonCard;
+import com.x.organization.core.entity.PersonCard_;
 import com.x.teamwork.assemble.control.AbstractFactory;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Dynamic_;
@@ -241,5 +243,36 @@ public class ProjectTemplateFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
 
+	/**
+	 * 列示所有模板的分类信息
+	 * @param distinguishName
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> fetchAllGroupType( String distinguishName ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ProjectTemplate.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<ProjectTemplate> root = cq.from(ProjectTemplate.class);
+		Predicate p = cb.equal(root.get(ProjectTemplate_.deleted), false);
+		cq.select(root.get(ProjectTemplate_.type)).where(p).distinct(true);
+		return em.createQuery(cq).getResultList();
+	}
+	
+	/**
+	 * 根据模板类型列示模板信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ProjectTemplate> ListProjectTemplateWithType( String type ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(ProjectTemplate.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<ProjectTemplate> cq = cb.createQuery(ProjectTemplate.class);
+		Root<ProjectTemplate> root = cq.from(ProjectTemplate.class);
+		Predicate p = cb.equal(root.get(ProjectTemplate_.deleted), false);
+		p = cb.and( p, cb.equal(root.get(ProjectTemplate_.type), type));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 	
 }
