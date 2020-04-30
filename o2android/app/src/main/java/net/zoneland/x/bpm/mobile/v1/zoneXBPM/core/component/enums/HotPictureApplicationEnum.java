@@ -7,7 +7,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums;
 public enum HotPictureApplicationEnum {
 
     BBS("BBS", "论坛"),
-    CMS("CMS", "内容管理");
+    CMS("CMS", "信息中心");
 
     private final String key;
     private final String name;

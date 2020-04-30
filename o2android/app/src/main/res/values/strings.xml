@@ -633,7 +633,7 @@
     </string-array>
 
     <!-- cms -->
-    <string name="cms">内容管理</string>
+    <string name="cms">信息中心</string>
     <string name="cms_create">新建</string>
     <string name="title_cms_view">查看文章</string>
     <string name="title_cms_application">栏目</string>
