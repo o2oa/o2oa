@@ -144,5 +144,5 @@ if exist "%~dp0local\update" (
 	)
 )
 @echo on
-"%~dp0jvm\windows\bin\java" -server -Xms2g -Xmx5g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
+"%~dp0jvm\windows\bin\java" -server -Xms2g -Xmx5g -Duser.timezone=GMT+08 -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
 pause
