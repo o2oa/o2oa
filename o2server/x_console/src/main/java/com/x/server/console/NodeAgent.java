@@ -3,6 +3,7 @@ package com.x.server.console;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +49,8 @@ public class NodeAgent extends Thread {
 
 	public static final int LOG_MAX_READ_SIZE = 6 * 1024;
 
+	private static final int BUFFER_SIZE = 1024*1024*1000;
+
 	@Override
 	public void run() {
 		try (ServerSocket serverSocket = new ServerSocket(Config.currentNode().nodeAgentPort())) {
@@ -56,7 +59,11 @@ public class NodeAgent extends Thread {
 				try (Socket socket = serverSocket.accept()) {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
-						String json = dis.readUTF();
+						//String json = dis.readUTF();
+						final char[] data = new char[BUFFER_SIZE];
+						final BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+						final int len = br.read(data);
+						final String json = String.valueOf(data, 0, len);
 						//logger.info("receive socket json={}",json);
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {

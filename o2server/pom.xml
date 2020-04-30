@@ -380,7 +380,7 @@
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.13.0</version>
 				<configuration>
-					<linkXref>true</linkXref>
+					<linkXRef>true</linkXRef>
 					<sourceEncoding>utf-8</sourceEncoding>
 					<minimumTokens>100</minimumTokens>
 					<targetJdk>1.8</targetJdk>

@@ -87,7 +87,6 @@ public abstract class Plan extends GsonPropertyObject {
 
 	public Integer count;
 
-
 	/**
 	 * !!这个类最后要输出.不能gson scriptEngine对象
 	 * 
