@@ -923,7 +923,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }else{
             if (this.json.styles) this.node.setStyles(this.json.styles);
             if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-            if (this.iconNode && this.iconNode.offsetParent !== null){
+            if (this.iconNode && this.iconNode.offsetParent !== null ){
                 var size = this.node.getSize();
                 this.iconNode.setStyle("height", ""+size.y+"px");
             }
