@@ -1586,7 +1586,8 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                     var options = this.getOptions();
                     if(options){
-                        this.selector = new MWF.O2Selector(this.container, options);
+                        //this.selector = new MWF.O2Selector(this.container, options);
+                        this.selector = new MWF.O2Selector($(document.body), options);
                     }
                 }.bind(this), 100 )
             }else{
