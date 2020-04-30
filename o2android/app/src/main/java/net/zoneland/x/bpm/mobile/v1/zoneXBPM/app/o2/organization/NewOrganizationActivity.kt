@@ -122,11 +122,12 @@ class NewOrganizationActivity : BaseMVPActivity<NewOrganizationContract.View, Ne
             }
 
             override fun clickDepartment(department: NewContactListVO.Department) {
-                XLog.debug("click department ${department.name}")
+                XLog.debug("click department ${department.name} ， ${department.id},  ${department.distinguishedName}")
                 val totalChild = department.identityCount + department.departmentCount
                 if (totalChild > 0) {
                     val newLevel = orgLevel + 1
-                    val bean = ContactBreadcrumbBean(department.id, department.name, newLevel)
+                    val deptId = if(TextUtils.isEmpty(department.id)){department.distinguishedName}else{department.id}
+                    val bean = ContactBreadcrumbBean(deptId, department.name, newLevel)
                     breadcrumbBeans.add(bean)
                     refreshOrganizationMain()
                 }
