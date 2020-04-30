@@ -50,7 +50,7 @@
   "getImportStatusAll" : {"uri":"/jaxrs/fileimport/getStatus/all"},
   "getImportStatusDetail" : {"uri":"/jaxrs/fileimport/getStatus/{file_id}/detail"},
 
-  "exportAbnormalAttachment" : {"uri":"/jaxrs/file/export/abnormaldetails/year/{year}/month/{month}", "method": "GET"},
+  "exportAbnormalAttachment" : {"uri":"/jaxrs/file/export/abnormaldetails/year/{year}/month/{month}/stream/false", "method": "GET"},
 
   "listDetail" : {"uri":"/jaxrs/attendancedetail/list/all"},
   "getDetail" : {"uri":"/jaxrs/attendancedetail/{id}"},
