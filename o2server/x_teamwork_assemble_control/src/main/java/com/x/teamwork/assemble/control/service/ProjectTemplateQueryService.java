@@ -3,12 +3,20 @@ package com.x.teamwork.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.organization.core.entity.PersonCard;
+import com.x.organization.core.entity.PersonCard_;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectTemplate;
@@ -47,7 +55,7 @@ public class ProjectTemplateQueryService {
 	}
 	
 	/**
-	 * 根据项目的标识查询项目信息
+	 * 根据项目模板的标识查询模板对应的泳道信息
 	 * @param id
 	 * @return
 	 * @throws Exception
@@ -91,17 +99,17 @@ public class ProjectTemplateQueryService {
 	}
 
 	/**
-	 * 根据ID列表查询项目信息列表
+	 * 根据ID列表查询项目模板信息列表
 	 * @param ids
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Project> list(List<String> ids) throws Exception {
+	public List<ProjectTemplate> list(List<String> ids) throws Exception {
 		if (ListTools.isEmpty( ids )) {
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return emc.list( Project.class,  ids );
+			return emc.list( ProjectTemplate.class,  ids );
 		} catch (Exception e) {
 			throw e;
 		}

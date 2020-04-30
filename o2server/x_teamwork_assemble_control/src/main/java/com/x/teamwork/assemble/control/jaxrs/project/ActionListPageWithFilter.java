@@ -36,8 +36,8 @@ public class ActionListPageWithFilter extends BaseAction {
 		ResultObject resultObject = null;
 		Wi wrapIn = null;
 		Boolean check = true;
-		String cacheKey = null;
-		Element element = null;
+		//String cacheKey = null;
+		//Element element = null;
 		QueryFilter  queryFilter = null;
 		List<String> queryProjectIds = new ArrayList<>();
 
@@ -71,19 +71,19 @@ public class ActionListPageWithFilter extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		/*if( Boolean.TRUE.equals( check ) ){
 			
 			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPageWithFilter", effectivePerson.getDistinguishedName(), 
 					pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );
-		}
+		}*/
 		
 		if( Boolean.TRUE.equals( check ) ){
-			if ((null != element) && (null != element.getObjectValue())) {
+			/*if ((null != element) && (null != element.getObjectValue())) {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {				
+			} else {	*/			
 				try {					
 					//获取用户能查看的所有的项目信息ID列表，最多查询2000条数据
 					List<String>  projectIds = projectQueryService.listAllViewableProjectIds( effectivePerson, 2000, queryFilter );
@@ -127,7 +127,7 @@ public class ActionListPageWithFilter extends BaseAction {
 						}
 
 						resultObject = new ResultObject( total, wos );
-						projectCache.put(new Element( cacheKey, resultObject ));
+						//projectCache.put(new Element( cacheKey, resultObject ));
 						result.setCount( resultObject.getTotal() );
 						result.setData( resultObject.getWos() );
 					}
@@ -137,7 +137,7 @@ public class ActionListPageWithFilter extends BaseAction {
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}		
+			//}		
 		}
 		return result;
 	}

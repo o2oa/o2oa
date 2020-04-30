@@ -10,6 +10,9 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
+import com.x.teamwork.assemble.control.jaxrs.list.ActionListWithTaskGroup.Wo;
+import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.TaskGroup;
 import com.x.teamwork.core.entity.TaskList;
 import com.x.teamwork.core.entity.TaskListRele;
@@ -226,23 +229,48 @@ class TaskListService {
 		TaskList taskList = null;
 		
 		if( taskGroup != null ) {
+			Project project = emc.find( taskGroup.getProject(), Project.class );
+			
 			emc.beginTransaction( TaskList.class );
+			if(project != null && StringUtils.isNotEmpty( project.getTemplateId() )){
+				//如果有模板id，则按模板创建泳道，否则创建默认的四个泳道
+				ProjectTemplate projectTemplate = emc.find( project.getTemplateId(), ProjectTemplate.class );
+				if(projectTemplate != null){
+					List<String> taskListNames = null;
+					taskListNames = projectTemplate.getTaskList();
+					if(ListTools.isNotEmpty( taskListNames )){
+						int nameCount = 0;
+						for( String taskListName : taskListNames ) {
+							nameCount++;
+							taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, taskListName, nameCount, "SYSTEM", person, "" );
+							emc.persist( taskList, CheckPersistType.all );
+							taskLists.add( taskList );
+						}
+					}else{
+						throw new Exception("TaskListTemplate not exists!ProjectTemplateID:" + project.getTemplateId() );
+					}
+				}else{
+					throw new Exception("ProjectTemplate not exists!ID:" + project.getTemplateId() );
+				}
+				
+			}else{
+				taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已规划的工作", 1, "SYSTEM", person, "" );
+				emc.persist( taskList, CheckPersistType.all );
+				taskLists.add( taskList );
+				
+				taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已分解的任务", 2, "SYSTEM", person, "" );
+				emc.persist( taskList, CheckPersistType.all );
+				taskLists.add( taskList );
+				
+				taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "进行中的任务", 3, "SYSTEM", person, "" );
+				emc.persist( taskList, CheckPersistType.all );
+				taskLists.add( taskList );
+				
+				taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已完成的任务", 4, "SYSTEM", person, "" );
+				emc.persist( taskList, CheckPersistType.all );
+				taskLists.add( taskList );
+			}
 			
-			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已规划的工作", 1, "SYSTEM", person, "" );
-			emc.persist( taskList, CheckPersistType.all );
-			taskLists.add( taskList );
-			
-			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已分解的任务", 21, "SYSTEM", person, "" );
-			emc.persist( taskList, CheckPersistType.all );
-			taskLists.add( taskList );
-			
-			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "进行中的任务", 3, "SYSTEM", person, "" );
-			emc.persist( taskList, CheckPersistType.all );
-			taskLists.add( taskList );
-			
-			taskList = composeTaskListObject( taskGroup.getProject(), taskGroupId, "已完成的任务", 4, "SYSTEM", person, "" );
-			emc.persist( taskList, CheckPersistType.all );
-			taskLists.add( taskList );
 			
 			emc.commit();
 		}
