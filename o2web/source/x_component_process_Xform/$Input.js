@@ -158,7 +158,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _loadStyles: function(){
         if (this.json.styles) this.node.setStyles(this.json.styles);
         if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-        if (this.iconNode){
+        if (this.iconNode && this.iconNode.offsetParent !== null ){ //没有被隐藏
             var size = this.node.getSize();
             //if (!size.y){
             //    var y1 = this.node.getStyle("height");
