@@ -138,6 +138,89 @@
         "line-height": "20px",
         "font-size": "12px",
         "overflow": "hidden"
+    },
+    "historyInforNode": {
+        "width": "300px",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "5px",
+        "box-shadow": "2px 2px 5px #CCCCCC",
+        "position": "absolute",
+        "opacity": 1
+    },
+    "historyInforMobileNode": {
+        "width": "100%",
+        "padding": "10px",
+        "overflow": "hidden",
+        "border": "1px solid #CCCCCC",
+        "border-radius": "0px",
+        "box-shadow": "0px 0px 0px #CCCCCC",
+        "position": "absolute",
+        "bottom": "0px",
+        "opacity": 1
+    },
+    "historyListAreaNode": {
+        "width": "260px",
+        "float": "right",
+        "background-color": "#f3f3f3",
+        "border-left": "1px solid #cccccc",
+        "position": "absolute",
+        "z-index": "20000",
+        "right": "0px"
+    },
+    "historyListTitleAreaNode":{
+        "height": "80px",
+        "padding": "10px 0px"
+    },
+    "historyListTitleNode": {
+        "font-weight": "bold",
+        "font-size": "14px",
+        "height": "40px",
+        "line-height": "40px",
+        "padding": "0px 10px"
+    },
+    "historyListTitleInsertNode": {
+        "font-size": "12px",
+        "height": "20px",
+        "line-height": "20px",
+        "padding": "0px 10px"
+    },
+    "historyListTitleDeleteNode": {
+        "font-size": "12px",
+        "height": "20px",
+        "line-height": "20px",
+        "padding": "0px 10px"
+    },
+    "historyListContentAreaNode": {
+        "margin": "5px",
+        "border": "1px solid #cccccc",
+        "background-color": "#ffffff",
+        "overflow": "auto"
+    },
+    "historyListItemNode": {
+        "margin-bottom": "10px",
+        "overflow": "hidden",
+        "padding": "5px 10px",
+    },
+
+    "historyListItemPatchNode": {
+        "overflow": "hidden",
+        "margin-bottom": "10px"
+    },
+    "historyListItemDiffsNode": {
+        "overflow": "hidden"
+    },
+    "historyListItemDiffNode": {
+        "overflow": "hidden",
+        "padding": "5px 10px",
+        "cursor": "pointer",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "background-color": "#ffffff"
+    },
+    "historyListItemDiffNode_out": {
+        "border": "1px solid #ffffff",
     }
     
 }

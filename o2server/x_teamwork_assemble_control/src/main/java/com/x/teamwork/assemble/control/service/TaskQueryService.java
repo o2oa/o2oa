@@ -231,9 +231,12 @@ public class TaskQueryService {
 				if( taskIds_all_tmp == null ) {
 					taskIds_all_tmp = new ArrayList<>();
 				}
+				System.out.println("w:taskIds_all_tmp="+taskIds_all_tmp.size());
+				
 				for( String str : taskIds_all_tmp ) {
 					taskIds_all.add( str );
 				}
+				System.out.println("w:taskIds_all="+taskIds_all.size());
 				//查询默认的TaskGroup
 				taskGroupList = taskGroupService.listGroupByPersonAndProject( emc, personName, projectId);
 				if( ListTools.isNotEmpty( taskGroupList )) {
@@ -245,6 +248,7 @@ public class TaskQueryService {
 						if( taskIds_forTaskList == null ) {
 							taskIds_forTaskList = new ArrayList<>();
 						}
+						System.out.println("默认泳道:taskIds_forTaskList="+taskIds_forTaskList.size());
 						taskIds_all.removeAll( taskIds_forTaskList );
 					}
 				}

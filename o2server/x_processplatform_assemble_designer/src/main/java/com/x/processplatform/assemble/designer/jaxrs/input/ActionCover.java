@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -93,14 +95,14 @@ class ActionCover extends BaseAction {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), application.getName(),
 						application.getId());
 			}
-			this.cover(business, wi, application);
+			this.cover(business, wi, application, effectivePerson);
 			wo.setId(application.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private void cover(Business business, Wi wi, Application application) throws Exception {
+	private void cover(Business business, Wi wi, Application application, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		List<JpaObject> removeObjects = new ArrayList<>();
 		for (WrapForm _o : wi.getFormList()) {
@@ -208,7 +210,24 @@ class ActionCover extends BaseAction {
 				process.setName(this.idleNameWithApplication(business, application.getId(), process.getName(),
 						Process.class, process.getId()));
 			}
+			process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+			process.setLastUpdateTime(new Date());
 			process.setApplication(application.getId());
+			if (StringUtils.isNotEmpty(process.getEdition())) {
+				if(BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
+							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
+							p.setEditionEnable(false);
+						}
+					}
+				}
+			}else{
+				process.setEdition(process.getId());
+				process.setEditionEnable(true);
+				process.setEditionNumber(1.0);
+				process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
+			}
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapAgent.inCopier,
 					wrapProcess.getAgentList(), Agent.class));
 			persistObjects.addAll(this.coverProcessElement(business, process, WrapBegin.inCopier,

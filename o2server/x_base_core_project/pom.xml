@@ -7,13 +7,10 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>4.0.5</version>
+		<version>5</version>
 	</parent>
 	<artifactId>x_base_core_project</artifactId>
 	<packaging>jar</packaging>
-	<dependencies>
-
-	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

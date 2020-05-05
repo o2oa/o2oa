@@ -11,7 +11,7 @@ pipeline {
         stage('init') {
             steps {
                 sh 'npm install'
-                sh 'npm run clear'
+                sh 'npm run clear_deploy'
             }
         }
         stage('dependency') {
@@ -37,6 +37,8 @@ pipeline {
         stage('deploy') {
             steps {
                 sh 'npm run deploy:linux'
+                sh 'chmod 777 -R target/o2server/jvm'
+                sh 'chmod 777 -R target/o2server/commons'
                 sh 'chmod 777 target/o2server/*.sh'
             }
         }

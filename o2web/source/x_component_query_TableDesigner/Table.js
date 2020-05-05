@@ -4,11 +4,11 @@ MWF.xApplication.query.TableDesigner = MWF.xApplication.query.TableDesigner || {
 MWF.APPDTBD = MWF.xApplication.query.TableDesigner;
 
 MWF.xDesktop.requireApp("query.TableDesigner", "lp."+MWF.language, null, false);
-MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
+MWF.xDesktop.requireApp("query.ViewDesigner", "ViewBase", null, false);
 MWF.xDesktop.requireApp("query.TableDesigner", "Property", null, false);
 
 MWF.xApplication.query.TableDesigner.Table = new Class({
-    Extends: MWF.xApplication.query.ViewDesigner.View,
+    Extends: MWF.xApplication.query.ViewDesigner.ViewBase,
     Implements: [Options, Events],
     options: {
         "style": "default",
@@ -635,7 +635,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
 
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
-    Extends:MWF.xApplication.query.ViewDesigner.View.Column,
+    Extends:MWF.xApplication.query.ViewDesigner.ViewBase.Column,
     initialize: function(json, view, next){
         this.propertyPath = "/x_component_query_TableDesigner/$Table/column.html";
         this.view = view;

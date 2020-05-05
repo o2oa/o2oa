@@ -32,8 +32,8 @@ public class ThisApplication {
 			context.schedule( Timertask_RefreshAllTaskReview.class, "0 0 2 * * ?" );
 			
 			//每30分钟核对一次所有的工作任务，判断工作任务是否已经超时
-			context.schedule( Timertask_CheckAllTaskOverTime.class, "0 0/30 * * * ?" );
-			
+			//context.schedule( Timertask_CheckAllTaskOverTime.class, "0 0/30 * * * ?" ); 
+			context.schedule( Timertask_CheckAllTaskOverTime.class, "0 */9 * * * ?" );
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

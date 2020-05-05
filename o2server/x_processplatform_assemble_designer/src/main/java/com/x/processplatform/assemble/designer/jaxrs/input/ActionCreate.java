@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.designer.jaxrs.input;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.JsonElement;
@@ -59,6 +60,8 @@ import com.x.processplatform.core.entity.element.wrap.WrapRoute;
 import com.x.processplatform.core.entity.element.wrap.WrapScript;
 import com.x.processplatform.core.entity.element.wrap.WrapService;
 import com.x.processplatform.core.entity.element.wrap.WrapSplit;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -74,14 +77,14 @@ class ActionCreate extends BaseAction {
 			if (!business.editable(effectivePerson, null)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), wi.getName(), wi.getId());
 			}
-			Application application = this.create(business, wi);
+			Application application = this.create(business, wi, effectivePerson);
 			wo.setId(application.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private Application create(Business business, Wi wi) throws Exception {
+	private Application create(Business business, Wi wi, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		Application application = business.entityManagerContainer().find(wi.getId(), Application.class);
 		if (null != application) {
@@ -151,8 +154,25 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionEntityExistForCreate(wrapProcess.getId(), Process.class);
 			}
 			process = WrapProcess.inCopier.copy(wrapProcess);
+			process.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+			process.setLastUpdateTime(new Date());
 			process.setApplication(application.getId());
 			persistObjects.add(process);
+			if (StringUtils.isNotEmpty(process.getEdition())) {
+				if(BooleanUtils.isTrue(process.getEditionEnable())) {
+					for (Process p : business.entityManagerContainer().listEqualAndEqual(Process.class, Process.application_FIELDNAME,
+							process.getApplication(), Process.edition_FIELDNAME, process.getEdition())) {
+						if (!process.getId().equals(p.getId()) && BooleanUtils.isTrue(p.getEditionEnable())) {
+							p.setEditionEnable(false);
+						}
+					}
+				}
+			}else{
+				process.setEdition(process.getId());
+				process.setEditionEnable(true);
+				process.setEditionNumber(1.0);
+				process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
+			}
 			for (WrapAgent _o : wrapProcess.getAgentList()) {
 				Agent obj = business.entityManagerContainer().find(_o.getId(), Agent.class);
 				if (null != obj) {

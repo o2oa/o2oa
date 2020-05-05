@@ -246,7 +246,29 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this.showDay(year, month);
 
+		this.showMonthYearButton();
+
 		this.fireEvent("changeViewToDay");
+	},
+	hideMonthYearButton : function(){
+		if(this.clearButton_month){
+			this.clearButton_month.hide();
+		}
+	},
+	showMonthYearButton : function(){
+		if( this.buttonArea && !this.clearButton_month ){
+			this.container.setStyle("height","auto");
+			this.clearButton_month = new Element("div", {"text": "清除"}).inject(this.buttonArea);
+			this.clearButton_month.addEvent("click", function(){
+				this.node.set("value", "");
+				this.fireEvent("clear");
+				this.hide();
+			}.bind(this));
+			this.clearButton_month.setStyles(this.css.calendarMonthActionButton);
+		}
+		if(this.clearButton_month){
+			this.clearButton_month.show();
+		}
 	},
 	getNext: function(){
 		switch (this.currentView) {
@@ -524,6 +546,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this._setYearTitle(null, beginYear, endYear, thisYear);
 		this._setYearDate(null, beginYear, endYear, thisYear);
 
+		this.showMonthYearButton();
+
 		//	if (!this.move){
 		//		this.move = true;
 		//		this.containerDrag = new Drag.Move(this.container);
@@ -559,6 +583,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this._setMonthTitle(null, thisYear, thisMonth);
 		this._setMonthDate(null, thisYear, thisMonth);
+
+		this.showMonthYearButton();
 
 		//	if (!this.move){
 		//		this.move = true;
@@ -697,17 +723,19 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisDate = date || this.options.baseDate;
 
 		this.showTime(thisDate);
+
+		this.hideMonthYearButton();
 	},
 
 	showTime: function(date){
-		//	var thisHour = this.options.baseDate.getHours();
-		//	var thisMinutes = this.options.baseDate.getMinutes();
-		//	var thisSeconds = this.options.baseDate.getSeconds();
-		var times = this.options.defaultTime.split(":");
-
-		var thisHour = (times[0]) ? times[0] : "0";
-		var thisMinutes = (times[1]) ? times[1] : "0";
-		var thisSeconds = (times[2]) ? times[2] : "0";
+		var thisHour = (date || this.options.baseDate).getHours();
+		var thisMinutes = (date || this.options.baseDate).getMinutes();
+		var thisSeconds = (date || this.options.baseDate).getSeconds();
+		// var times = this.options.defaultTime.split(":");
+		//
+		// var thisHour = (times[0]) ? times[0] : "0";
+		// var thisMinutes = (times[1]) ? times[1] : "0";
+		// var thisSeconds = (times[2]) ? times[2] : "0";
 
 		this._setTimeTitle(null, date);
 
@@ -852,6 +880,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_setTimeDate: function(node, h, m, s){
+		debugger;
 		if( !this.options.secondEnable ){
 			var div = this.contentTimeTable.getElement(".MWF_calendar_time_s");
 			if( div )div.hide();
@@ -924,6 +953,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.itmeHNode.getFirst().set("text", tmp);
 				}.bind(this)
 			});
+			this.itmeHNode.getFirst().set("text", h);
 
 			var mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
 				range: [0, 59],
@@ -937,20 +967,22 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					this.itmeMNode.getFirst().set("text", tmp);
 				}.bind(this)
 			});
+			this.itmeMNode.getFirst().set("text", m);
 
 			if( this.options.secondEnable && this.itmeSNode ){
-				var sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
-					range: [0, 59],
-					initialStep: parseInt(s),
-					onChange: function(value){
-						var tmp = (value.toInt().toString());
-						if (tmp.length<2){
-							tmp = "0"+tmp
-						}
-						this.showSNode.set("text", tmp);
-						this.itmeSNode.getFirst().set("text", tmp);
-					}.bind(this)
+					var sSlider = new Slider(this.itmeSNode, this.itmeSNode.getFirst(), {
+						range: [0, 59],
+						initialStep: parseInt(s),
+						onChange: function(value){
+							var tmp = (value.toInt().toString());
+							if (tmp.length<2){
+								tmp = "0"+tmp
+							}
+							this.showSNode.set("text", tmp);
+							this.itmeSNode.getFirst().set("text", tmp);
+						}.bind(this)
 				});
+				this.itmeSNode.getFirst().set("text", s);
 			}
 		}
 		this.showHNode.set("text", this.addZero( h.toInt(), 2) );
@@ -1086,6 +1118,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.contentNode = div.getElement(".MWF_calendar_content");
 		this.contentDateNode = div.getElement(".MWF_calendar_content_date");
 		this.contentTimeNode = div.getElement(".MWF_calendar_content_time");
+		this.buttonArea = div.getElement(".MWF_calendar_button_area");
 		this.bottomNode = div.getElement(".MWF_calendar_bottom");
 
 		div.setStyles(this.css.container);
@@ -1095,6 +1128,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.currentTextNode.setStyles(this.css.dateCurrentText);
 		this.nextNode.setStyles(this.css.dateNext);
 		this.contentNode.setStyles(this.css.calendarContent);
+		if(this.buttonArea)this.buttonArea.setStyles(this.css.buttonArea);
 		this.bottomNode.setStyles(this.css.dateBottom);
 
 		return div;

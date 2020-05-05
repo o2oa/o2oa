@@ -1,10 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>o2oa</groupId>
 	<artifactId>o2server</artifactId>
-	<version>4.0.5</version>
+	<version>5</version>
 	<packaging>pom</packaging>
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8
+		</project.reporting.outputEncoding>
+	</properties>
 	<modules>
 		<module>x_base_core_project</module>
 		<!-- 顺序 -->
@@ -27,7 +34,6 @@
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
 		<module>x_teamwork_core_entity</module>
-		<!--module>x_workschedu_core_entity</module -->
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
@@ -59,17 +65,9 @@
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
 		<module>x_teamwork_assemble_control</module>
-		<!-- module>x_workschedu_assemble_control</module -->
 		<module>x_program_center</module>
 		<module>x_console</module>
 	</modules>
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8
-		</project.reporting.outputEncoding>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
@@ -335,38 +333,6 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.1.0</version>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.mojo
-										</groupId>
-										<artifactId>
-											exec-maven-plugin
-										</artifactId>
-										<versionRange>
-											[1.6.0,)
-										</versionRange>
-										<goals>
-											<goal>java</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -399,15 +365,42 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
 					<excludes>
-						<exclude>META-INF</exclude>
+						<exclude>META-INF/**</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<linkXRef>true</linkXRef>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.8</targetJdk>
+					<failOnViolation>false</failOnViolation>
+					<outputDirectory>${basedir}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>pmd-check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -702,20 +695,6 @@
 				<groupId>org.neuroph</groupId>
 				<artifactId>neuroph-core</artifactId>
 				<version>2.96</version>
-				<exclusions>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-classic</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>javax.visrec</groupId>
-						<artifactId>visrec-api</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -755,142 +734,147 @@
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_okr_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
+			</dependency>
+			<dependency>
+				<groupId>o2oa</groupId>
+				<artifactId>x_jpush_core_entity</artifactId>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_report_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_strategydeploy_assemble_control</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_teamwork_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 			<dependency>
 				<groupId>o2oa</groupId>
 				<artifactId>x_workschedu_core_entity</artifactId>
-				<version>${project.version}</version>
+				<version>5</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

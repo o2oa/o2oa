@@ -7,6 +7,8 @@ MWF.xDesktop.requireApp("process.TaskCenter", "TaskCompletedList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReadList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReadCompletedList", null, false);
 MWF.xDesktop.requireApp("process.TaskCenter", "ReviewList", null, false);
+MWF.xDesktop.requireApp("process.TaskCenter", "DraftList", null, false);
+
 if (MWF.xApplication.process.TaskCenter.options) MWF.xApplication.process.TaskCenter.options.multitask = false;
 MWF.xApplication.process.TaskCenter.Main = new Class({
     Extends: MWF.xApplication.Common.Main,
@@ -57,7 +59,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.loadSearchNode();
     },
     loadTitleBar: function () {
-        this.taskTitleBar = new Element("div", {
+        this.taskTitleBar = new Element("div.mainColor_bg", {
             "styles": this.css.taskTitleBar
         }).inject(this.content);
     },
@@ -150,6 +152,10 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         }.bind(this));
         this.createTabItem(this.lp.readed, "readed.png", "readCompleted", function () {
             this.showReaded();
+        }.bind(this));
+
+        this.createTabItem(this.lp.draftTab, "draft.png", "draft", function () {
+            this.showDraft();
         }.bind(this));
         //this.createTabItem(this.lp.review, "review.png", "review", function(){this.showReview();}.bind(this));
 
@@ -246,6 +252,9 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
                 this["readCompletedCountNode"].set("text", "( " + ((this.counts.readCompleted > 100) ? "99" : this.counts.readCompleted) + " )");
                 //this["reviewCountNode"].set("text", "[ "+((this.counts.review>100) ? "99" : this.counts.review)+" ]");
             }.bind(this), null, this.desktop.session.user.distinguishedName);
+            this.action.listDraftNext("(0)", 1, function (json) {
+                this["draftCountNode"].set("text", "( " + ((json.count > 100) ? "99" : json.count) + " )");
+            }.bind(this));
         }.bind(this));
     },
     loadContent: function(){
@@ -290,6 +299,9 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             case "review":
                 this.showReview();
                 break;
+            case "draft":
+                this.showDraft();
+                break;
             default:
                 this.showTask();
                 break;
@@ -309,7 +321,8 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         } else {
             if (this.taskList) this.taskList.refresh();
         }
-        //this.searchBarAreaNode.setStyle("display", "none");
+        this.searchBarAreaNode.setStyle("display", "block");
+        this.searchBarInputNode.set("value", this.lp.searchKey);
     },
     showTab: function (idx) {
         this.tabs.each(function (node, i) {
@@ -707,6 +720,28 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.searchBarAreaNode.setStyle("display", "block");
     },
 
+    createDraftList: function (filterData) {
+        if (!this.contentNode) this.loadContent();
+        this.draftList = new MWF.xApplication.process.TaskCenter.DraftList(this.contentListAreaNode, this, filterData);
+    },
+    showDraft: function(){
+        if (this.currentTab !== "draft") {
+            this.showTab(4);
+            this.currentTab = "draft";
+            if (!this.draftList) {
+                this.createDraftList((this.status) ? this.status.filter : null);
+                this.draftList.show();
+            } else {
+                this.draftList.show();
+                if (this.draftList) this.draftList.refresh();
+            }
+
+        } else {
+            if (this.draftList) this.draftList.refresh();
+        }
+        this.searchBarAreaNode.setStyle("display", "none");
+    },
+
     recordStatus: function(){
         var tab = this.currentTab || "task";
         var filter = null;
@@ -721,6 +756,9 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         }
         if (tab==="review"){
             filter = this.reviewList.filterData;
+        }
+        if (tab==="draft"){
+            filter = this.draftList.filterData;
         }
         return {"navi": this.currentTab || "task", "filter": filter};
     },
@@ -754,6 +792,11 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
                     if (!this.reviewList.filterData) this.reviewList.filterData  = {};
                     this.reviewList.filterData.key = keyWord;
                     this.reviewList.refilter();
+                    break;
+                case "draft":
+                    if (!this.draftList.filterData) this.draftList.filterData  = {};
+                    this.draftList.filterData.key = keyWord;
+                    this.draftList.refilter();
                     break;
             }
 
@@ -1000,24 +1043,46 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
     },
     afterStartProcess: function(data, title, processName){
         this.recordProcessData();
+
+        //if (data[0].startMode==="draft"){
+        debugger;
+        if (data.work){
+            this.startProcessDraft(data, title, processName);
+        }else{
+            this.startProcessInstance(data, title, processName);
+        }
+        this.starter.fireEvent("startProcess");
+    },
+    startProcessDraft: function(data, title, processName){
+        var work = data.work;
+        var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
+        this.app.desktop.openApplication(null, "process.Work", options);
+
+        // var msg = {
+        //     "subject": this.app.lp.processStarted,
+        //     "content": "<div>"+this.app.lp.processStartedMessage+"“["+processName+"]"+title+"”</div>"
+        // };
+        // var tooltip = layout.desktop.message.addTooltip(msg);
+        // var item = layout.desktop.message.addMessage(msg);
+    },
+    startProcessInstance: function(data, title, processName){
         var workInfors = [];
         var currentTask = [];
-
         data.each(function(work){
             if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
             workInfors.push(this.getStartWorkInforObj(work));
         }.bind(this));
 
         if (currentTask.length===1){
-            var options = {"workId": currentTask[0], "appId": currentTask[0]};
+            var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
             this.app.desktop.openApplication(null, "process.Work", options);
 
             if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
         }else{
             if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, true);
         }
-        this.starter.fireEvent("startProcess");
     },
+
     getStartWorkInforObj: function(work){
         var users = [];
         var currentTask = "";

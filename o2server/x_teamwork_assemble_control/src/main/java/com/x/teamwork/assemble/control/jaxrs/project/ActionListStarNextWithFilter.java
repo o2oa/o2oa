@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -17,6 +19,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
@@ -99,12 +102,27 @@ public class ActionListStarNextWithFilter extends BaseAction {
 								if( wo.getStarPersonList().contains( effectivePerson.getDistinguishedName() )) {
 									wo.setStar( true );
 								}
+								
+								Business business = null;
+								try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
+									business = new Business(bc);
+								}
 								control = new WrapOutControl();
-								if( effectivePerson.isManager() 
+								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 										|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
-									control.setManageAble( true );
-									control.setEditAble( true );
+									control.setDelete( true );
+									control.setEdit( true );
+									control.setSortable( true );
+								}else{
+									control.setDelete( false );
+									control.setEdit( false );
+									control.setSortable( false );
+								}
+								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson())){
+									control.setFounder( true );
+								}else{
+									control.setFounder( false );
 								}
 								wo.setControl(control);
 								wos.add( wo );

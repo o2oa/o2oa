@@ -6,7 +6,7 @@ MWF.O2Selector = new Class({
     options: {
         "count": 0,
         "type": "person",
-        "title": "Select Person",
+        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
         "groups": [],
         "roles": [],
         "units": [],
@@ -18,6 +18,7 @@ MWF.O2Selector = new Class({
     },
     initialize: function(container, options){
         //MWF.xDesktop.requireApp("Selector", "Actions.RestActions", null, false);
+        this.loading = true;
         this.setOptions(options);
         this.container = container;
 
@@ -25,6 +26,7 @@ MWF.O2Selector = new Class({
             MWF.xDesktop.requireApp("Selector", "MultipleSelector", function() {
                 this.selector = new MWF.xApplication.Selector.MultipleSelector(this.container, this.options );
                 this.selector.load();
+                this.loading = false;
             }.bind(this));
         }else{
             var type = typeOf(this.options.type) === "string" ? this.options.type.capitalize() : this.options.type;
@@ -33,21 +35,25 @@ MWF.O2Selector = new Class({
                     MWF.xDesktop.requireApp("Selector", "UnitWithType", function(){
                         this.selector = new MWF.xApplication.Selector.UnitWithType(this.container, options);
                         this.selector.load();
+                        this.loading = false;
                     }.bind(this));
                 }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length) && this.options.categoryType.toLowerCase()==="duty"){
                     MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", function(){
                         this.selector = new MWF.xApplication.Selector.IdentityWidthDuty(this.container, options);
                         this.selector.load();
+                        this.loading = false;
                     }.bind(this));
                 }else if ((type.toLowerCase()==="identity") && ((this.options.dutys) && this.options.dutys.length) && this.options.categoryType.toLowerCase()==="unit"){
                     MWF.xDesktop.requireApp("Selector", "IdentityWidthDutyCategoryByUnit", function(){
                         this.selector = new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit(this.container, options);
                         this.selector.load();
+                        this.loading = false;
                     }.bind(this));
                 }else{
                     MWF.xDesktop.requireApp("Selector", type, function(){
                         this.selector = new MWF.xApplication.Selector[type](this.container, options);
                         this.selector.load();
+                        this.loading = false;
                     }.bind(this));
                 }
             }

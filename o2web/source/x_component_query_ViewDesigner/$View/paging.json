@@ -1,0 +1,74 @@
+{
+  "id": "",
+  "name": "",
+  "type": "Paging",
+  "description": "",
+  "style": "blue_round",
+  "visiblePages" : 9,
+  "prePageText" : "",
+  "nextPageText" : "",
+  "firstPageText" : "第一页",
+  "lastPageText" : "最后一页",
+  "events": {
+    "queryLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "postLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "load" : {
+      "code": "",
+      "html": ""
+    },
+    "afterLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "jump" : {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "keydown": {
+      "code": "",
+      "html": ""
+    },
+    "keypress": {
+      "code": "",
+      "html": ""
+    },
+    "keyup": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    }
+  }
+}

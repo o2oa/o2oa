@@ -73,6 +73,11 @@ MWF.xApplication.cms.Xform.AttachmentController = new Class({
 MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     Extends: MWF.APPAttachment,
 
+    _loadUserInterface: function () {
+        this.node.empty();
+        this.loadAttachmentController();
+        this.fireEvent("load");
+    },
 
     loadAttachmentController: function () {
         //MWF.require("MWF.widget.AttachmentController", function() {
@@ -193,7 +198,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         if (this.json.attachmentExtOtherType) accepts.push(this.json.attachmentExtOtherType);
                         break;
                 }
-            });
+            }.bind(this));
             accept = accepts.join(", ");
         }
         var size = 0;

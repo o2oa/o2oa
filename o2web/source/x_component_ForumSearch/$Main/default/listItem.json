@@ -143,19 +143,23 @@
         "width": "6%"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' width='6%'>" +
-        " <span styles='documentActionNode' item='edit'></span>" +
+        "html": "<td styles='normalTdCenterNode' width='6%'>"+
         " <span styles='documentActionNode' item='remove'></span>" +
+        " <span styles='documentActionNode' item='edit'></span>" +
+        " <span style='width: 20px; height: 20px; line-height: 20px; margin-top: 5px; margin-right: 5px; display: inline-block;' item='placeholder'></span>"+
         "</td>",
         "items": {
           "edit": {
             //"access": "admin",
             "title": "edit",
             "action": "edit",
-            "condition": "function( d ){ return this.isAdmin() || (d.creatorName == this.app.userName) }",
+            "condition": "function( d ){ return d.typeCategory!='投票' && (this.isAdmin() || (d.creatorName == this.app.userName)) }",
             "styles": "actionEditNode",
             "mouseoverStyles": "actionEditNode_over",
             "mousedownStyles": "actionEditNode_over"
+          },
+          "placeholder" : {
+            "show": "function( d ){ return !(d.typeCategory!='投票' && (this.isAdmin() || (d.creatorName == this.app.userName))) }"
           },
           "remove": {
             "title": "remove",

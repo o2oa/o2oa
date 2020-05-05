@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -17,6 +19,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
@@ -56,6 +59,8 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 			if( wrapIn == null ) {
 				wrapIn = new Wi();
 			}
+			//已删除
+			wrapIn.setDeleted("true");
 			queryFilter = wrapIn.getQueryFilter();
 			if( StringUtils.isNotEmpty( wrapIn.getGroup() )) {
 				//如果项目分组不为空，那么需要先根据项目分组来查询这个分组下的所有项目ID集合
@@ -69,8 +74,7 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 				}
 				queryFilter.addInTerm( new InTerm("id", new ArrayList<Object>(queryProjectIds) ));
 			}
-			//已删除
-			queryFilter.addIsTrueTerm( new IsTrueTerm("deleted" ));
+			//queryFilter.addIsTrueTerm( new IsTrueTerm("deleted" ));
 		}
 		
 		if( check ) {
@@ -85,7 +89,7 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 			} else {
 				try {	
 					//获取用户能查看的所有的项目信息ID列表，最多查询2000条数据
-					List<String>  projectIds = projectQueryService.listAllViewableProjectIds( effectivePerson, 2000, queryFilter );
+					List<String>  projectIds = projectQueryService.listAllProjectIds( effectivePerson, 2000, queryFilter );
 					if( ListTools.isNotEmpty( projectIds )) {
 						//直接根据可见项目ID列表进行分页查询
 						Long total = Long.parseLong( projectIds.size() + "" );										
@@ -99,12 +103,27 @@ public class ActionListRecycleNextWithFilter extends BaseAction {
 								if( wo.getStarPersonList().contains( effectivePerson.getDistinguishedName() )) {
 									wo.setStar( true );
 								}
+								
+								Business business = null;
+								try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
+									business = new Business(bc);
+								}
 								control = new WrapOutControl();
-								if( effectivePerson.isManager() 
+								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 										|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
-									control.setManageAble( true );
-									control.setEditAble( true );
+									control.setDelete( true );
+									control.setEdit( true );
+									control.setSortable( true );
+								}else{
+									control.setDelete( false );
+									control.setEdit( false );
+									control.setSortable( false );
+								}
+								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson())){
+									control.setFounder( true );
+								}else{
+									control.setFounder( false );
 								}
 								wo.setControl(control);
 								wos.add( wo );

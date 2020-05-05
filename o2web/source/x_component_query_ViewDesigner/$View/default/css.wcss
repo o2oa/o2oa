@@ -1,4 +1,10 @@
 {
+    "actionbarNode" : {
+        "overflow": "hidden"
+    },
+    "pagingNode" : {
+        "overflow": "hidden"
+    },
     "viewAreaNode": {
         "overflow": "hidden"
     },
@@ -105,7 +111,7 @@
         "border": "1px solid #EEE"
     },
     "viewTitleColumnTextNode":{
-        "padding": "0px 10px",
+        "padding": "0px", //"padding": "0px 10px",
         "height": "38px",
         "white-space": "nowrap"
     },
@@ -159,6 +165,13 @@
     },
     "editTableTitle": {
         "width": "60px",
+        "font-weight": "bold",
+        "font-size": "12px",
+        "height": "24px",
+        "line-height": "24px",
+        "border-bottom": "1px dashed #CCC"
+    },
+    "editTableTitleNoWidth": {
         "font-weight": "bold",
         "font-size": "12px",
         "height": "24px",
@@ -316,5 +329,56 @@
         "position": "relative",
         "margin-right": "8px",
         "top": "-38px"
+    },
+
+    "toolbarWarpNode": {
+        "border": "1px dashed #999",
+        "height": "auto",
+        "overflow": "hidden",
+        "margin": "auto",
+        "display": "block",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "opacity": 1,
+        "width": "auto",
+        "margin": "3px 3px",
+        "background-color": "#999",
+        "cursor": "pointer"
+    },
+    "toolbarWarpNode_selected": {
+        "background-color": "#FFF",
+        "border": "1px solid red",
+        "white-space": "nowrap"
+    },
+    "toolbarWarpNode_over": {
+        "background-color": "#F9F9F9",
+        "border": "1px dotted blue",
+        "white-space": "nowrap"
+    },
+
+    "pagingWarpNode": {
+        "border": "1px dashed #999",
+        "height": "auto",
+        "overflow": "hidden",
+        "display": "block",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "position": "static",
+        "opacity": 1,
+        "width": "auto",
+        "margin": "3px 3px",
+        "background-color": "#FFF",
+        "cursor": "pointer"
+    },
+    "pagingWarpNode_selected": {
+        "background-color": "#FFF",
+        "border": "1px solid red",
+        "white-space": "nowrap"
+    },
+    "pagingWarpNode_over": {
+        "background-color": "#F9F9F9",
+        "border": "1px dotted blue",
+        "white-space": "nowrap"
     }
 }

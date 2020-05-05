@@ -59,6 +59,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             "titleStyles": this.json.titleStyles,
             "itemStyles": this.json.itemStyles,
             "isExpand": this.json.isExpand || "no",
+            "showActionbar" : this.json.actionbar === "show",
             "filter": filter
         };
 
@@ -102,6 +103,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             "titleStyles": this.json.titleStyles,
             "itemStyles": this.json.itemStyles,
             "isExpand": this.json.isExpand || "no",
+            "showActionbar" : this.json.actionbar === "show",
             "filter": filter
         };
         MWF.xDesktop.requireApp("process.Application", "Viewer", function(){
@@ -131,6 +133,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             "titleStyles": this.json.titleStyles,
             "itemStyles": this.json.itemStyles,
             "isExpand": this.json.isExpand || "no",
+            "showActionbar" : this.json.actionbar === "show",
             "filter": filter
         };
 

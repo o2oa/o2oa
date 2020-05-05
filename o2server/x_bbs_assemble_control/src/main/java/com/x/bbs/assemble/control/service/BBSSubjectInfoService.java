@@ -256,7 +256,7 @@ public class BBSSubjectInfoService {
 		//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		subjectContent = emc.find( subjectId, BBSSubjectContent.class );
-		replyInfoList = business.replyInfoFactory().listWithSubjectForPage( subjectId, true, null );
+		replyInfoList = business.replyInfoFactory().listWithSubjectForPage( subjectId, true, null, "ASC" );
 		voteOptionList = business.voteOptionFactory().listVoteOptionBySubject( subjectId );
 		voteOptionGroupList = business.voteOptionFactory().listVoteOptionGroupBySubject( subjectId );
 		voteRecordList = business.voteRecordFactory().listVoteRecordBySubject( subjectId );

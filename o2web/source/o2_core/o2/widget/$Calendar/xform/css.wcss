@@ -225,5 +225,17 @@
 		"width": "50px",
 		"padding": "5px",
 		"border": "1px solid #999"
+	},
+	"buttonArea" : {
+
+	},
+	"calendarMonthActionButton" : {
+		"width" : "100%",
+		"text-align" : "center",
+		"color" : "#000",
+		"font-size" : "14px",
+		"cursor" : "pointer",
+		"line-height" : "24px",
+		"height" : "24px"
 	}
 }

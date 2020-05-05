@@ -1,0 +1,88 @@
+{
+	"from": {
+		"width": "1px",
+		"height": "1px",
+		"position": "absolute",
+		"top": $(document.body).getSize().y/2,
+		"left": $(document.body).getSize().x/2,
+		"border-style": "solid",
+		"border-color": "#3C76B7",
+		"border-width": "1",
+	    "overflow": "hidden",
+		"background-color": "#f3f3f3",
+		"box-shadow": "0px 0px 20px #999999",
+		"z-index": "1000",
+		
+		"padding": "3px",
+
+		"opacity": 0,
+        "border-radius": "5px"
+	},
+	"to": {
+		"background-color": "#f3f3f3",
+		"border-style": "solid",
+		"border-color": "#3C76B7",
+		"border-width": "1",
+		"box-shadow": "0px 0px 20px #999999",
+		"z-index": "1000",
+		"overflow": "hidden",
+		"font-size": "14px",
+		"height": "60",
+		"padding": "0px",
+		"width": "300",
+		"position": "absolute",
+		"top": "0",
+		"left": "0",
+		"opacity": 1,
+		"border-radius": "5px"
+	},
+	"mark": {
+		"height": "0",
+		"width": "0",
+		"opacity": 0.3,
+		"position": "absolute",
+		"top": "0px",
+		"left": "0px",
+		"z-index": "999",
+		"border-style": "none",
+		"border-width": "0",
+		"background-color": "#CCC"
+	},
+	"button": {
+		"border": "1px solid #999",
+		"background-color": "#3C76B7",
+		"color": "#fff",
+		"height": "30px",
+		"border-radius": "5px",
+		"min-width": "80px",
+		"margin": "10px 5px"
+	},
+	"closeAction": {
+	    "height": "40px",
+	    "width": "30px",
+	    "float": "right",
+	    "cursor": "pointer",
+	    "background": "url("+o2.session.path+"/widget/$Dialog/user/img/close.png) center center no-repeat",
+	},
+	"maxAction": {
+	    "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/max.png) center center no-repeat"
+	},
+	"restoreAction": {
+        "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/return.png) center center no-repeat"
+    },
+	"MWF_dialod_bottom_resize": {
+	    "height": "8px",
+        "width": "8px",
+        "float": "right",
+        "cursor": "nw-resize",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/resize.png) center center no-repeat",
+	}
+}

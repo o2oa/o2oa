@@ -131,7 +131,7 @@
 
 /*taskbar*/
 .layout_content_taskbar {
-    height: 74px;
+    height: 71px;
     display: table-cell;
 }
 .layout_content_taskbar_area {
@@ -159,7 +159,9 @@
     background-size: cover;
     border-radius: 20px;
 }
-.layout_content_taskbar_area_user_text {}
+.layout_content_taskbar_area_user_text {
+    display: inline-block;
+}
 
 .layout_content_taskbar_area_action {
     height: 70px;
@@ -179,7 +181,7 @@
     cursor: pointer;
 }
 .layout_content_taskbar_area_action_msg {
- }
+}
 .layout_content_taskbar_area_action_skin {
 }
 .layout_content_taskbar_area_action_skin_focus {

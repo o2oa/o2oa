@@ -114,6 +114,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 "type": "button",
                 "value": i,
                 "styles": this.css.button,
+                "class": "mainColor_bg",
                 "events": {
                     "click": this.options.buttons[i].bind(this)
                 }
@@ -139,7 +140,9 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                 }
                 button.set({
                     "value": bt.text,
+                    "title": bt.title,
                     "styles": styles,
+                    "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
                     "events": {
                         "click": function(e){bt.action.call(this, this, e)}.bind(this)
                     }
@@ -220,19 +223,6 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             }
         }
 
-        //this.options.top = 0;
-        //this.options.left = 0;
-        //this.options.fromTop = 0;
-        //this.options.fromLeft = 0;
-        //this.options.contentHeight = 0;
-        //this.options.contentWidth = 0;
-        //this.options.maxHeightPercent = null;
-        //this.options.maxHeight = null;
-        //this.options.maxWidth = null;
-
-        //this.height = null;
-        //this.width = null;
-
         var container = $(document.body);
         if (layout.desktop.currentApp){
             container = layout.desktop.currentApp.content;
@@ -259,27 +249,6 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         this.fireEvent("max");
     },
     restoreSize : function(){
-        //if( this.oldCoordinate){
-        //    this.options.height = this.oldCoordinate.height;
-        //    this.options.width = this.oldCoordinate.width;
-        //    this.options.top = this.oldCoordinate.top;
-        //    this.options.left = this.oldCoordinate.left;
-        //    this.options.fromTop = this.oldCoordinate.fromTop;
-        //    this.options.fromLeft = this.oldCoordinate.fromLeft;
-        //    this.options.contentHeight = this.oldCoordinate.contentHeight;
-        //    this.options.contentWidth = this.oldCoordinate.contentWidth;
-        //    this.options.maxHeightPercent = this.oldCoordinate.maxHeightPercent;
-        //    this.options.maxHeight = this.oldCoordinate.maxHeight;
-        //    this.options.maxWidth = this.oldCoordinate.maxWidth;
-        //}
-        //
-        //if( this.oldSize ){
-        //    this.width = this.oldSize.width;
-        //    this.height = this.oldSize.height;
-        //}
-
-        //this.setContentSize( this.oldNodeSize.height, this.oldNodeSize.width );
-        //this.node.setStyles( this.getNodeSize() );
 
         this.contentHeight = this.oldContentSize.height;
         this.contentWidth = this.oldContentSize.width;
@@ -816,6 +785,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
     }
 });
 o2.DL.open = function(options){
+    debugger;
     if (!options) options = {};
     if (!options.style) options.style = "user";
     //if (!options.transition) options.transition = Fx.Transitions.Back.easeOut;
@@ -823,14 +793,14 @@ o2.DL.open = function(options){
     if (options.isClose!==false) options.isClose = true;
 
     var size;
-    if (!options.width && !options.contentWidth){
+    if ((!options.width || options.width=="auto") && !options.contentWidth){
         if (options.content){
             options.content.show();
             size = options.content.getComputedSize();
             options.contentWidth = size.totalWidth.toFloat();
         }
     }
-    if (!options.height && !options.contentHeight){
+    if ((!options.height || options.height=="auto") && !options.contentHeight){
         if (options.content){
             if (!size){
                 options.content.show();

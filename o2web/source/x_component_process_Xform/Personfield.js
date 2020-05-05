@@ -48,9 +48,9 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
-                "mousedown": function(){
+                "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
+                    this.clickSelect( ev );
                 }.bind(this)
             });
         }
@@ -380,9 +380,14 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
 
-	clickSelect: function(){
+	clickSelect: function( ev ){
+        debugger;
         var options = this.getOptions();
-        var selector = new MWF.O2Selector(this.form.app.content, options);
+        if( this.selector && this.selector.loading ) {
+        }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+        }else{
+            this.selector = new MWF.O2Selector(this.form.app.content, options);
+        }
 	},
     resetData: function(){
         var v = this.getValue();
@@ -520,7 +525,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect( ev );
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 }
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
@@ -557,13 +565,19 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
             "id": this.json.id,
             "MWFType": this.json.type,
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect( ev );
+                }.bind(this)
+                //this.clickSelect.bind(this)
             }
         });
         if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) this.iconNode = new Element("div", {
             "styles": this.form.css[this.iconStyle],
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect( ev );
+                }.bind(this)
+                //this.clickSelect.bind(this)
             }
         }).inject(this.node, "before");
 
@@ -873,7 +887,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         }else{
             if (this.json.styles) this.node.setStyles(this.json.styles);
             if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-            if (this.iconNode){
+            if (this.iconNode && this.iconNode.offsetParent !== null ){
                 var size = this.node.getSize();
                 this.iconNode.setStyle("height", ""+size.y+"px");
             }

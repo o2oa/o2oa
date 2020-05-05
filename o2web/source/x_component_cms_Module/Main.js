@@ -227,6 +227,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 
 						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
 							restrictToColumn : true
+							// onAfterPublish : function () {
+							// 	try{
+							// 		if(this.view && this.view.reload){
+							// 			this.view.reload();
+							// 		}
+							// 	}catch (e) {
+							// 	}
+							// }.bind(this)
 							//ignoreTitle : this.options.columnData.ignoreTitle,
 							//latest : this.options.columnData.latest
 						});
@@ -742,7 +750,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		delete doc.appId;
 		delete doc.appName;
 		delete doc.appAlias;
-		delete doc.categoryId;
+		// delete doc.categoryId;
 		delete doc.categoryName;
 		delete doc.categoryAlias;
 		delete doc.form;
@@ -762,6 +770,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 				if (failure) failure();
 			}.bind(this));
 		}.bind(this);
+
+		debugger;
 
 		if( newCategory ){
 			doc.categoryId = newCategory.id;
@@ -1172,6 +1182,7 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		}
 	},
 	getRevealData: function(){
+		debugger;
 		var j = this.data.extContent;
 		if( j ){
 			this.extContent = JSON.parse( j );
@@ -1195,10 +1206,10 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 			}.bind(this), null, false );
 		}
 
-		this.extContent.reveal.each( function( r ){
+		this.extContent.reveal.each( function( r, i ){
 			if(this.data.defaultViewName && r.id == this.data.defaultViewName ){
 				this.defaultRevealData = r;
-			}else{
+			}else if( i>0 ){
 				this.isExpended = true;
 				this.hasSub = true;
 			}
@@ -1350,7 +1361,7 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 		var _self = this;
 		this.node = new Element("div.viewNaviNode", {
 			"styles": this.css.viewNaviNode,
-			"text" : this.isDefault ? this.app.lp.defaultView : this.data.showName
+			"text" : (this.isDefault && !this.data.showName) ? this.app.lp.defaultView : this.data.showName
 		}).inject(this.container);
 
 		this.node.addEvents({

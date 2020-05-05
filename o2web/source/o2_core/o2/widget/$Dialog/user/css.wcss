@@ -7,10 +7,10 @@
 		"left": $(document.body).getSize().x/2,
 		"border-style": "solid",
 		"border-color": "#3C76B7",
-		"border-width": "1",
+		"border-width": "0",
 	    "overflow": "hidden",
-		"background-color": "#f3f3f3",
-		"box-shadow": "0px 0px 20px #999999",
+		"background-color": "#ffffff",
+		"box-shadow": "0px 0px 18px 0px rgba(153,153,153,1)",
 		"z-index": "1000",
 		
 		"padding": "3px",
@@ -19,11 +19,11 @@
         "border-radius": "5px"
 	},
 	"to": {
-		"background-color": "#f3f3f3",
+		"background-color": "#ffffff",
 		"border-style": "solid",
 		"border-color": "#3C76B7",
-		"border-width": "1",
-		"box-shadow": "0px 0px 20px #999999",
+		"border-width": "0",
+		"box-shadow": "0px 0px 18px 0px rgba(153,153,153,1)",
 		"z-index": "1000",
 		"overflow": "hidden",
 		"font-size": "14px",
@@ -34,7 +34,7 @@
 		"top": "0",
 		"left": "0",
 		"opacity": 1,
-		"border-radius": "5px"
+		"border-radius": "8px"
 	},
 	"mark": {
 		"height": "0",
@@ -49,21 +49,54 @@
 		"background-color": "#CCC"
 	},
 	"button": {
-		"border": "1px solid #999",
+		"border": "0px solid #999",
 		"background-color": "#3C76B7",
 		"color": "#fff",
 		"height": "30px",
-		"border-radius": "5px",
+		"border-radius": "20px",
 		"min-width": "80px",
 		"margin": "10px 5px"
 	},
+	"okButton": {
+        "border": "0px",
+        "background-color": "#3C76B7",
+        "color": "#fff",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px"
+    },
+	cancelButton: {
+        "border": "0px",
+        "height": "30px",
+        "border-radius": "20px",
+        "min-width": "80px",
+        "margin": "10px 5px",
+        "color": "#fff",
+        "background-color": "#999999"
+
+    },
 	"closeAction": {
 	    "height": "40px",
-	    "width": "40px",
+	    "width": "30px",
 	    "float": "right",
 	    "cursor": "pointer",
 	    "background": "url("+o2.session.path+"/widget/$Dialog/user/img/close.png) center center no-repeat",
 	},
+	"maxAction": {
+	    "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/max.png) center center no-repeat"
+	},
+	"restoreAction": {
+        "height": "40px",
+        "width": "20px",
+        "float": "right",
+        "cursor": "pointer",
+        "background": "url("+o2.session.path+"/widget/$Dialog/user/img/return.png) center center no-repeat"
+    },
 	"MWF_dialod_bottom_resize": {
 	    "height": "8px",
         "width": "8px",

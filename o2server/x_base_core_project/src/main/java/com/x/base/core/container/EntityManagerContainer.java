@@ -549,6 +549,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return new ArrayList<T>(query.getResultList());
 	}
 
+	public <T extends JpaObject, W extends Object> List<T> listEqualOrIn(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Collection<W> otherValues) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.equal(root.get(attribute), value);
+		p = cb.or(p, cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
+		List<T> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		List<T> list = new ArrayList<>(os);
+		return list;
+	}
+
 	public <T extends JpaObject> List<T> listNotEqual(Class<T> cls, String attribute, Object value) throws Exception {
 		EntityManager em = this.get(cls);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -1679,6 +1692,50 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		T t = null;
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
 			t = clz.newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEqualAscPaging(Class<T> clz,
+			WrapCopier<T, W> copier, String equalAttribute, Object equalValue, Integer page, Integer count,
+			String orderAttribute) throws Exception {
+		List<T> os = fetchEqualAscPaging(clz, copier.getCopyFields(), equalAttribute, equalValue, page, count,
+				orderAttribute);
+		return copier.copy(os);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject> List<T> fetchEqualAscPaging(Class<T> clz, String equalAttribute, Object equalValue,
+			Integer page, Integer count, String orderAttribute) throws Exception {
+		return fetchEqualAscPaging(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute, equalValue,
+				page, count, orderAttribute);
+	}
+
+	/* 仅在单一数据库可用 */
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetchEqualAscPaging(Class<T> clz,
+			List<String> fetchAttributes, String equalAttribute, Object equalValue, Integer page, Integer pageSize,
+			String orderAttribute) throws Exception {
+		List<T> list = new ArrayList<>();
+		int max = (pageSize == null || pageSize < 1 || pageSize > MAX_PAGESIZE) ? DEFAULT_PAGESIZE : pageSize;
+		int startPosition = (page == null || page < 1) ? 0 : (page - 1) * max;
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
+		cq.multiselect(selections).where(p).orderBy(cb.asc(root.get(orderAttribute)));
+		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
+			T t = clz.newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}

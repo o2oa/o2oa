@@ -69,10 +69,11 @@ public class ActionListWithReply extends BaseAction {
 		List<BBSReplyInfo> replyInfoList_out = new ArrayList<BBSReplyInfo>();
 		Long total = 0L;
 		Boolean check = true;
+		String config_BBS_REPLY_SORTTYPE = configSettingService.getValueWithConfigCode("BBS_REPLY_SORTTYPE");
 
 		if (check) {
 			try {
-				replyInfoList = replyInfoService.listRelysWithRelyId(replyId);
+				replyInfoList = replyInfoService.listRelysWithRelyId(replyId, config_BBS_REPLY_SORTTYPE );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionReplyInfoProcess(e,"根据回复ID查询针对该回复所有的二级回复数量时发生异常。replyId:" + replyId );
@@ -102,7 +103,7 @@ public class ActionListWithReply extends BaseAction {
 						wo.setAuditorNameShort(wo.getAuditorName().split("@")[0]);
 					}
 				}
-				SortTools.desc(wraps, "createTime" );
+//				SortTools.desc(wraps, "createTime" );
 				result.setCount( Long.parseLong(wraps.size()+"") );
 			}
 		}

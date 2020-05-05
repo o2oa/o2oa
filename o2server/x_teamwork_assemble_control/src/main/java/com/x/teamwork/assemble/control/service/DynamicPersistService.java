@@ -15,6 +15,7 @@ import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
+import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
 import com.x.teamwork.core.entity.TaskList;
@@ -23,7 +24,7 @@ import com.x.teamwork.core.entity.TaskTag;
 public class DynamicPersistService {
 
 	private DynamicService dynamicService = new DynamicService();
-	
+
 	/**
 	 * 删除动态信息（管理员可删除）
 	 * @param flag
@@ -43,7 +44,7 @@ public class DynamicPersistService {
 				throw new Exception("dynamic delete permission denied.");
 			}else {
 				dynamicService.delete( emc, flag );
-			}			
+			}
 		} catch (Exception e) {
 			throw e;
 		}
@@ -65,9 +66,9 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		List<Dynamic> dynamics = dynamicService.getProjectSaveDynamic( old_object, object, effectivePerson );	
+		List<Dynamic> dynamics = dynamicService.getProjectSaveDynamic( old_object, object, effectivePerson );
 		List<Dynamic> result = new ArrayList<>();
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if( ListTools.isNotEmpty( dynamics )) {
 				 for( Dynamic dynamic : dynamics ) {
 					 dynamic = dynamicService.save( emc, dynamic, content );
@@ -79,10 +80,9 @@ public class DynamicPersistService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 保存项目创建或者更新动态信息
-	 * @param old_object
 	 * @param object
 	 * @param effectivePerson
 	 * @param content
@@ -95,16 +95,16 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getProjectIconSaveDynamic( object, effectivePerson );	
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getProjectIconSaveDynamic( object, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			 dynamic = dynamicService.save( emc, dynamic, content );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存项目删除操作动态
 	 * @param object
@@ -118,23 +118,21 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getProjectDeleteDynamic( object, effectivePerson );		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getProjectDeleteDynamic( object, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存项目扩展信息保存操作动态信息
 	 * @param object_old
 	 * @param object
-	 * @param optType
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -144,16 +142,16 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
+		}
 		Dynamic dynamic = dynamicService.getProjectSaveExtFieldReleDynamic( object_old, object, effectivePerson);
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存项目删除操作动态
 	 * @param object
@@ -167,20 +165,51 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getProjectDeleteExtFieldReleDynamic( object, effectivePerson );		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getProjectDeleteExtFieldReleDynamic( object, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
+	/**
+	 * 保存项目模板创建或者更新动态信息
+	 * @param old_object
+	 * @param object
+	 * @param effectivePerson
+	 * @param content
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> projectTemplateSaveDynamic( ProjectTemplate old_object, ProjectTemplate object, EffectivePerson effectivePerson, String content ) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> dynamics = dynamicService.getProjectTemplateSaveDynamic( old_object, object, effectivePerson );
+		List<Dynamic> result = new ArrayList<>();
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if( ListTools.isNotEmpty( dynamics )) {
+				 for( Dynamic dynamic : dynamics ) {
+					 dynamic = dynamicService.save( emc, dynamic, content );
+					 result.add( dynamic );
+				 }
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
 	/**
 	 * 保存动态信息
+	 * @param object_old
 	 * @param object
-	 * @param optType
 	 * @param effectivePerson
 	 * @param content
 	 * @return
@@ -192,16 +221,16 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
+		}
 		Dynamic dynamic = dynamicService.getTaskListSaveDynamic(object_old, object, effectivePerson);
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, content );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存工作任务列表删除操作动态
 	 * @param object
@@ -215,22 +244,21 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
+		}
 		Dynamic dynamic = dynamicService.getTaskListDeleteDynamic(object, effectivePerson);
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存动态信息
 	 * @param object_old
 	 * @param object_new
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -242,10 +270,10 @@ public class DynamicPersistService {
 			throw new Exception("effectivePerson is null.");
 		}
 		List<Dynamic> result = new ArrayList<>();
-		List<Dynamic> dynamics = null;	
+		List<Dynamic> dynamics = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TaskDetail newDetail = emc.find( object_new.getId(), TaskDetail.class );
-			dynamics = dynamicService.getTaskDynamic( object_old, object_new, oldDetail,  newDetail, effectivePerson );	
+			dynamics = dynamicService.getTaskDynamic( object_old, object_new, oldDetail,  newDetail, effectivePerson );
 			if( ListTools.isNotEmpty( dynamics )) {
 				 for( Dynamic dynamic : dynamics ) {
 					 dynamic = dynamicService.save( emc, dynamic, content );
@@ -257,11 +285,86 @@ public class DynamicPersistService {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * 保存动态信息
-	 * @param dynamic
+	 * 工作复制动态信息
+	 * @param sourceTask
+	 * @param newTask
 	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> taskCopyDynamic( Task sourceTask, Task newTask, EffectivePerson effectivePerson ) throws Exception {
+		if ( sourceTask == null) {
+			throw new Exception("sourceTask is null.");
+		}
+		if ( newTask == null) {
+			throw new Exception("newTask is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> result = new ArrayList<>();
+		List<Dynamic> dynamics = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			dynamics = dynamicService.getTaskCopyDynamic( sourceTask, newTask, effectivePerson );
+			if( ListTools.isNotEmpty( dynamics )) {
+				for( Dynamic dynamic : dynamics ) {
+					dynamic = dynamicService.save( emc, dynamic, "" );
+					result.add( dynamic );
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 保存转换子工作的动态信息
+	 * @param subTask
+	 * @param parentTask
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Dynamic> subTaskTransformDynamic( Task subTask, Task parentTask, EffectivePerson effectivePerson ) throws Exception {
+		if ( subTask == null) {
+			throw new Exception("sourceTask is null.");
+		}
+		if ( parentTask == null) {
+			throw new Exception("parentTask is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		List<Dynamic> result = new ArrayList<>();
+
+		//记录一个添加子任务转换的动态信息
+		result.add(dynamicService.getTaskTransformDynamic( parentTask, subTask, effectivePerson));
+
+		//记录一个为上级任务添加子任务的动态信息
+		result.add(dynamicService.getTaskSplitDynamic( parentTask, subTask, effectivePerson));
+
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if( ListTools.isNotEmpty( result )) {
+				for( Dynamic dynamic : result ) {
+					//持久化工作操作动态
+					dynamicService.save( emc, dynamic, "" );
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 保存项目工作组信息动态
+	 * @param object_old
+	 * @param object
+	 * @param effectivePerson
+	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -272,22 +375,21 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		
+
 		Dynamic dynamic = dynamicService.getProjectGroupSaveDynamic(object_old, object, effectivePerson);
-		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, content );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存项目组删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -299,19 +401,18 @@ public class DynamicPersistService {
 			throw new Exception("effectivePerson is null.");
 		}
 		Dynamic dynamic = dynamicService.getProjectGroupDeleteDynamic(object, effectivePerson);
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存工作任务删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -322,9 +423,9 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		
-		Dynamic dynamic = dynamicService.getTaskDeleteDynamic( object, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		Dynamic dynamic = dynamicService.getTaskDeleteDynamic( object, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
@@ -338,7 +439,6 @@ public class DynamicPersistService {
 	 * @param addManagers
 	 * @param removeManagers
 	 * @param effectivePerson
-	 * @param content
 	 * @throws Exception
 	 */
 	public List<Dynamic> taskManagerUpdateDynamic(Task task, List<String> addManagers, List<String> removeManagers, EffectivePerson effectivePerson ) throws Exception {
@@ -349,7 +449,7 @@ public class DynamicPersistService {
 			throw new Exception("effectivePerson is null.");
 		}
 		List<Dynamic> result = new ArrayList<>();
-		List<Dynamic> dynamics = dynamicService.getTaskManagerDynamic( task, addManagers, removeManagers, effectivePerson );		
+		List<Dynamic> dynamics = dynamicService.getTaskManagerDynamic( task, addManagers, removeManagers, effectivePerson );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if ( ListTools.isNotEmpty( dynamics )) {
 				for( Dynamic dynamic : dynamics ) {
@@ -362,7 +462,7 @@ public class DynamicPersistService {
 		}
 		return result;
 	}
-//	
+//
 //	/**
 //	 * 保存工作标签变更动态
 //	 * @param task
@@ -379,7 +479,7 @@ public class DynamicPersistService {
 //		if ( effectivePerson == null ) {
 //			throw new Exception("effectivePerson is null.");
 //		}
-//		List<Dynamic> dynamics = dynamicService.getTaskTagsDynamic( task, addTags, removeTags, effectivePerson );		
+//		List<Dynamic> dynamics = dynamicService.getTaskTagsDynamic( task, addTags, removeTags, effectivePerson );
 //		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 //			if ( ListTools.isNotEmpty( dynamics )) {
 //				for( Dynamic dynamic : dynamics ) {
@@ -390,7 +490,7 @@ public class DynamicPersistService {
 //			throw e;
 //		}
 //	}
-//	
+//
 //	/**
 //	 * 删除工作标签操作动态
 //	 * @param task
@@ -414,14 +514,13 @@ public class DynamicPersistService {
 //			throw e;
 //		}
 //	}
-	
+
 	/**
 	 * 保存工作参与者变更动态
 	 * @param task
 	 * @param addParticipants
 	 * @param removeParticipants
 	 * @param effectivePerson
-	 * @param content
 	 * @throws Exception
 	 */
 	public List<Dynamic> taskParticipantsUpdateDynamic(Task task, List<String> addParticipants, List<String> removeParticipants, EffectivePerson effectivePerson ) throws Exception {
@@ -451,7 +550,7 @@ public class DynamicPersistService {
 	 * @param parentTask
 	 * @param task
 	 * @param effectivePerson
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Dynamic taskSplitDynamic(Task parentTask, Task task, EffectivePerson effectivePerson ) throws Exception {
 		if ( parentTask == null) {
@@ -463,7 +562,7 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		Dynamic dynamic = dynamicService.getTaskSplitDynamic( parentTask, task, effectivePerson );		
+		Dynamic dynamic = dynamicService.getTaskSplitDynamic( parentTask, task, effectivePerson );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if ( dynamic != null ) {
 				dynamic = dynamicService.save( emc, dynamic, null );
@@ -473,7 +572,7 @@ public class DynamicPersistService {
 		}
 		return dynamic;
 	}
-	
+
 	public void subTaskDeleteDynamic(Task parentTask, Task task, EffectivePerson effectivePerson) throws Exception {
 		if ( parentTask == null) {
 			throw new Exception("parentTask object is null.");
@@ -484,7 +583,7 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		Dynamic dynamic = dynamicService.subTaskDeleteDynamic( parentTask, task, effectivePerson );		
+		Dynamic dynamic = dynamicService.subTaskDeleteDynamic( parentTask, task, effectivePerson );
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if ( dynamic != null ) {
 				dynamicService.save( emc, dynamic, null );
@@ -493,55 +592,55 @@ public class DynamicPersistService {
 			throw e;
 		}
 	}
-	
+
 	public Dynamic uploadAttachmentDynamic(Attachment attachment, EffectivePerson effectivePerson) throws Exception {
 		if ( attachment == null) {
 			throw new Exception("attachment is null.");
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getAttachmentUploadDynamic( attachment, effectivePerson );		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getAttachmentUploadDynamic( attachment, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	public Dynamic downloadAttachmentDynamic(Attachment attachment, EffectivePerson effectivePerson) throws Exception {
 		if ( attachment == null) {
 			throw new Exception("attachment is null.");
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getAttachmentDownloadDynamic( attachment, effectivePerson );		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getAttachmentDownloadDynamic( attachment, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	public Dynamic deleteAttachment(Attachment attachment, EffectivePerson effectivePerson) throws Exception {
 		if ( attachment == null) {
 			throw new Exception("attachment is null.");
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getAttachmentDeleteDynamic( attachment, effectivePerson );		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getAttachmentDeleteDynamic( attachment, effectivePerson );
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存任务评论动态信息
 	 * @param object
@@ -556,21 +655,20 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
+		}
 		Dynamic dynamic = dynamicService.getChatPublishDynamic( object, effectivePerson );
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, content );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	/**
 	 * 保存工作任务评论删除动态信息
 	 * @param object
 	 * @param effectivePerson
-	 * @param content
 	 * @return
 	 * @throws Exception
 	 */
@@ -581,9 +679,9 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		
-		Dynamic dynamic = dynamicService.getChatDeleteDynamic( object, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		Dynamic dynamic = dynamicService.getChatDeleteDynamic( object, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
@@ -604,8 +702,8 @@ public class DynamicPersistService {
 		if( dynamicDescription.length() > 70 ) {
 			dynamicDescription = dynamicDescription.substring( 0, 60 )+ "...";
 		}
-		List<Dynamic> dynamics = dynamicService.getTaskPropertyUpdateDynamic( task, dynamicTitle, dynamicOptType, dynamicDescription, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {	
+		List<Dynamic> dynamics = dynamicService.getTaskPropertyUpdateDynamic( task, dynamicTitle, dynamicOptType, dynamicDescription, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if( ListTools.isNotEmpty( dynamics )) {
 				for( Dynamic dynamic : dynamics ) {
 					dynamic = dynamicService.save( emc, dynamic, null );
@@ -623,7 +721,7 @@ public class DynamicPersistService {
 	 * @param taskTag
 	 * @param effectivePerson
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Dynamic addTaskTagReleDynamic(Task task, TaskTag taskTag, EffectivePerson effectivePerson) throws Exception {
 		if ( task == null) {
@@ -635,9 +733,9 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		
-		Dynamic dynamic = dynamicService.getAddTaskTagReleDynamic( task, taskTag, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		Dynamic dynamic = dynamicService.getAddTaskTagReleDynamic( task, taskTag, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
@@ -651,7 +749,7 @@ public class DynamicPersistService {
 	 * @param taskTag
 	 * @param effectivePerson
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Dynamic removeTaskTagReleDynamic(Task task, TaskTag taskTag, EffectivePerson effectivePerson) throws Exception {
 		if ( task == null) {
@@ -663,9 +761,9 @@ public class DynamicPersistService {
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
 		}
-		
-		Dynamic dynamic = dynamicService.geRemoveTaskTagReleDynamic( task, taskTag, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+
+		Dynamic dynamic = dynamicService.geRemoveTaskTagReleDynamic( task, taskTag, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
@@ -679,25 +777,25 @@ public class DynamicPersistService {
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getTagCreateDynamic( taskTag, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getTagCreateDynamic( taskTag, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;
 		}
 		return dynamic;
 	}
-	
+
 	public Dynamic taskTagDeleteDynamic(TaskTag taskTag, EffectivePerson effectivePerson) throws Exception {
 		if ( taskTag == null) {
 			throw new Exception("taskTag object is null.");
 		}
 		if ( effectivePerson == null ) {
 			throw new Exception("effectivePerson is null.");
-		}		
-		Dynamic dynamic = dynamicService.getTagDeleteDynamic( taskTag, effectivePerson);		
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+		}
+		Dynamic dynamic = dynamicService.getTagDeleteDynamic( taskTag, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {
 			throw e;

@@ -94,6 +94,7 @@ MWF.xApplication.TeamWork.LP = {
 		"viewItemFlow":"未完成的任务",
 		"viewItemComplete":"已完成的任务",
 		"viewItemOver":"逾期的任务",
+		"taskSearchEmpty":"无任务",
 
 		"view":"视图",
 		"viewRemove":"删除视图",
@@ -147,6 +148,7 @@ MWF.xApplication.TeamWork.LP = {
 		"editTip":"点击编辑",
 		"taskMenu":"任务菜单",
 		"taskCopy":"复制任务",
+		"taskContent":"确定复制本任务?",
 		"taskMove":"转移任务",
 		"taskRemove":"删除任务",
 		"taskFav":"收藏任务",
@@ -200,7 +202,7 @@ MWF.xApplication.TeamWork.LP = {
 		"fadai":"发呆",
 		"fankun":"犯困",
 		"feiwen":"飞吻",
-		"fendou":"奋斗",
+		//"fendou":"奋斗",
 		"fennu":"愤怒",
 		"ganga":"尴尬",
 		"hanyan":"汗颜",
@@ -212,7 +214,16 @@ MWF.xApplication.TeamWork.LP = {
 		"kuxiao":"哭笑",
 		"xiaolian":"笑脸",
 		"xinsui":"心碎",
-		"zhadan":"炸弹"
+		"zhadan":"炸弹",
+		"tucao":"吐槽",
+		"kouzhao":"口罩",
+		"zuqiu":"足球",
+		"lanqiu":"篮球",
+		"guzhang":"鼓掌",
+		"woshou":"握手",
+		"qidao":"祈祷",
+		"manfen":"满分",
+		"chiyao":"吃药"
 	},
 	"taskSub":{
 		"title":"转换为子任务",
@@ -223,8 +234,13 @@ MWF.xApplication.TeamWork.LP = {
 	},
 	"taskMove":{
 		"title":"转移任务",
+		"moveToSelf":"不能转移给当前分组",
 		"searchPlace":"按回车搜索",
 		"ok":"确定"
+	},
+	"taskCopy":{
+		"title":"复制任务",
+		"content":"确定复制该任务？"
 	},
 	"stat":{
 

@@ -115,34 +115,34 @@ if exist "%~dp0local\update" (
 		if exist "%~dp0console_raspberrypi.sh" (
 			copy "%~dp0local\update\o2server\console_raspberrypi.sh" "%~dp0"
 		)
-		if exist "%~dp0start_neokylin_loongson.sh" (
-			copy "%~dp0local\update\o2server\start_neokylin_loongson.sh" "%~dp0"
+		if exist "%~dp0start_risc.sh" (
+			copy "%~dp0local\update\o2server\start_risc.sh" "%~dp0"
 		)
-		if exist "%~dp0start_neokylin_loongson_debug.sh" (
-			copy "%~dp0local\update\o2server\start_neokylin_loongson_debug.sh" "%~dp0"
+		if exist "%~dp0start_risc_debug.sh" (
+			copy "%~dp0local\update\o2server\start_risc_debug.sh" "%~dp0"
 		)
-		if exist "%~dp0stop_neokylin_loongson.sh" (
-			copy "%~dp0local\update\o2server\stop_neokylin_loongson.sh" "%~dp0"
+		if exist "%~dp0stop_risc.sh" (
+			copy "%~dp0local\update\o2server\stop_risc.sh" "%~dp0"
 		)
-		if exist "%~dp0console_neokylin_loongson.sh" (
-			copy "%~dp0local\update\o2server\console_neokylin_loongson.sh" "%~dp0"
+		if exist "%~dp0console_risc.sh" (
+			copy "%~dp0local\update\o2server\console_risc.sh" "%~dp0"
 		)
-		if exist "%~dp0start_kylinos_phytium.sh" (
-			copy "%~dp0local\update\o2server\start_kylinos_phytium.sh" "%~dp0"
+		if exist "%~dp0start_arm.sh" (
+			copy "%~dp0local\update\o2server\start_arm.sh" "%~dp0"
 		)
-		if exist "%~dp0start_kylinos_phytium_debug.sh" (
-			copy "%~dp0local\update\o2server\start_kylinos_phytium_debug.sh" "%~dp0"
+		if exist "%~dp0start_arm_debug.sh" (
+			copy "%~dp0local\update\o2server\start_arm_debug.sh" "%~dp0"
 		)
-		if exist "%~dp0stop_kylinos_phytium.sh" (
-			copy "%~dp0local\update\o2server\stop_kylinos_phytium.sh" "%~dp0"
+		if exist "%~dp0stop_arm.sh" (
+			copy "%~dp0local\update\o2server\stop_arm.sh" "%~dp0"
 		)
-		if exist "%~dp0console_kylinos_phytium.sh" (
-			copy "%~dp0local\update\o2server\console_kylinos_phytium.sh" "%~dp0"
+		if exist "%~dp0console_arm.sh" (
+			copy "%~dp0local\update\o2server\console_arm.sh" "%~dp0"
 		)
 		copy "%~dp0local\update\o2server\version.o2" "%~dp0"
 		rmdir /S/Q "%~dp0local\update"
 	)
 )
 @echo on
-"%~dp0jvm\windows\bin\java" -server -Xms2g -Xmx5g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
+"%~dp0jvm\windows\bin\java" -server -Xms2g -Xmx5g -Duser.timezone=GMT+08 -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
 pause

@@ -3,6 +3,12 @@ package com.x.cms.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonElement;
+import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.cms.assemble.control.DocumentDataHelper;
+import com.x.cms.core.entity.content.Data;
+import com.x.query.core.entity.Item;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.lib.util.StringUtil;
 
@@ -22,7 +28,7 @@ public class PermissionOperateService {
 	private static Logger logger = LoggerFactory.getLogger(PermissionOperateService.class);
 	/**
 	 * 根据文档ID，为文档设置用户访问和管理权限
-	 * @param document
+	 * @param docId
 	 * @param readerList
 	 * @param authorList
 	 * @throws Exception
@@ -131,7 +137,7 @@ public class PermissionOperateService {
 	
 	/**
 	 * 根据文档ID，为文档设置用户访问和管理权限
-	 * @param docmentId
+	 * @param docId
 	 * @param permissionList
 	 * @throws Exception 
 	 */
@@ -205,5 +211,113 @@ public class PermissionOperateService {
 		} catch ( Exception e ) {
 			throw e;
 		}
+	}
+
+//	/**
+//	 * 根据文档的权限信息组织所有的权限对象列表
+//	 * @param document
+//	 * @throws Exception
+//	 */
+//	public List<PermissionInfo> composeDocmentAllPermissions( Document document ) throws Exception {
+//
+//		List<PermissionInfo> permissionList = new ArrayList<>();
+//		//处理创建者
+//		permissionList.add( new PermissionInfo( PermissionName.READER, "人员", document.getCreatorIdentity(), document.getCreatorIdentity() ) );
+//		permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "人员", document.getCreatorIdentity(), document.getCreatorIdentity() ) );
+//		permissionList.add( new PermissionInfo( PermissionName.MANAGER, "人员", document.getCreatorIdentity(), document.getCreatorIdentity() ) );
+//
+//		if ( ListTools.isEmpty( document.getAuthorPersonList() ) ) {
+//			for( String permissionCode : document.getAuthorPersonList() ){
+//				if( !existsPermission(permissionList, PermissionName.AUTHOR, "permissionCode") ){
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "人员", permissionCode, permissionCode ) );
+//					}
+//				}
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getAuthorUnitList() ) ) {
+//			for( String permissionCode : document.getAuthorUnitList() ){
+//				if( !existsPermission(permissionList, PermissionName.AUTHOR, "permissionCode") ){
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "组织", permissionCode, permissionCode ) );
+//					}
+//				}
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getAuthorGroupList() ) ) {
+//			for( String permissionCode : document.getAuthorUnitList() ){
+//				if( !existsPermission(permissionList, PermissionName.AUTHOR, "permissionCode") ){
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.AUTHOR, "群组", permissionCode, permissionCode ) );
+//					}
+//				}
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getReadPersonList() ) ) {
+//			for( String permissionCode : document.getReadPersonList() ){
+//				if( !existsPermission(permissionList, PermissionName.READER, "permissionCode") ){
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "人员", permissionCode, permissionCode ) );
+//					}
+//				}
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getReadUnitList() ) ) {
+//			for( String permissionCode : document.getReadUnitList() ){
+//				if( !existsPermission(permissionList, PermissionName.READER, "permissionCode") ) {
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "组织", permissionCode, permissionCode ) );
+//					}
+//				}
+//
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getReadGroupList() ) ) {
+//			for( String permissionCode : document.getReadGroupList() ){
+//				if( !existsPermission(permissionList, PermissionName.READER, "permissionCode") ){
+//					if( StringUtils.equalsIgnoreCase("所有人", permissionCode )){
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "所有人", "所有人", "所有人" ) );
+//					}else{
+//						permissionList.add( new PermissionInfo( PermissionName.READER, "群组", permissionCode, permissionCode ) );
+//					}
+//				}
+//			}
+//		}
+//
+//		if ( ListTools.isEmpty( document.getManagerList() ) ) {
+//			for( String permissionCode : document.getManagerList() ){
+//				if( !existsPermission(permissionList, PermissionName.MANAGER, "permissionCode") ){
+//					permissionList.add( new PermissionInfo( PermissionName.MANAGER, "人员", permissionCode, permissionCode ) );
+//				}
+//			}
+//		}
+//		return permissionList;
+//	}
+
+	private boolean existsPermission(List<PermissionInfo> permissionList, String objectType, String permissionCode) {
+		if( ListTools.isNotEmpty( permissionList )){
+			for ( PermissionInfo permission : permissionList ){
+				if( StringUtils.equalsIgnoreCase( permission.getPermissionObjectCode(), permissionCode ) &&
+						StringUtils.equalsIgnoreCase( permission.getPermissionObjectType(), objectType )){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

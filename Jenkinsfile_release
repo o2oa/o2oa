@@ -1,0 +1,42 @@
+pipeline {
+    agent {label 'release'}
+    stages {
+        stage('Stop Server') {
+            steps {
+                catchError(buildResult: 'SUCCESS') {
+                    bat 'target/o2server/stop_windows.sh'
+                }
+            }
+        }
+        stage('init') {
+            steps {
+                bat 'npm install'
+                bat 'npm run clear_deploy'
+            }
+        }
+        stage('dependency') {
+            steps {
+                bat 'npm run preperation:win'
+            }
+        }
+        stage('build') {
+            parallel {
+                stage('build server') {
+                    steps {
+                        bat 'npm run build_server'
+                    }
+                }
+                stage('build web') {
+                    steps {
+                        bat 'npm run build_web'
+                    }
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                bat 'npm run deploy:win'
+            }
+        }
+    }
+}

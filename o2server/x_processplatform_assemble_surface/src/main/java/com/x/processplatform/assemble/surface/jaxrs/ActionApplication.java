@@ -11,6 +11,7 @@ import com.x.processplatform.assemble.surface.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.assemble.surface.jaxrs.control.ControlAction;
 import com.x.processplatform.assemble.surface.jaxrs.data.DataAction;
 import com.x.processplatform.assemble.surface.jaxrs.documentversion.DocumentVersionAction;
+import com.x.processplatform.assemble.surface.jaxrs.draft.DraftAction;
 import com.x.processplatform.assemble.surface.jaxrs.file.FileAction;
 import com.x.processplatform.assemble.surface.jaxrs.form.FormAction;
 import com.x.processplatform.assemble.surface.jaxrs.job.JobAction;
@@ -23,6 +24,7 @@ import com.x.processplatform.assemble.surface.jaxrs.review.ReviewAction;
 import com.x.processplatform.assemble.surface.jaxrs.route.RouteAction;
 import com.x.processplatform.assemble.surface.jaxrs.script.ScriptAction;
 import com.x.processplatform.assemble.surface.jaxrs.serialnumber.SerialNumberAction;
+import com.x.processplatform.assemble.surface.jaxrs.service.ServiceAction;
 import com.x.processplatform.assemble.surface.jaxrs.task.TaskAction;
 import com.x.processplatform.assemble.surface.jaxrs.taskcompleted.TaskCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
@@ -57,6 +59,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(KeyLockAction.class);
 		classes.add(DocumentVersionAction.class);
 		classes.add(RecordAction.class);
+		classes.add(ServiceAction.class);
+		classes.add(DraftAction.class);
 		return classes;
 	}
 }

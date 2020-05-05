@@ -140,5 +140,23 @@
 	},
 	"paperInNode": {
 	    "height": "100%"
+	},
+	"saveNewEditionNode": {
+	    "padding": "10px 10px 10px 30px",
+	    "overflow": "hidden",
+	    "width": "500px"
+	},
+	"editionDescriptionNode": {
+	    "padding": "10px 0px",
+	    "overflow": "hidden"
+	},
+	"descriptionTitleNode": {
+	    "color": "#666666",
+	    "font-weight": "bold"
+	},
+	"descriptionTextAreaNode": {
+	    "width": "95%",
+	    "height": "80px",
+	    "overflow": "auto"
 	}
 }

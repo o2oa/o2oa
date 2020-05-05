@@ -71,7 +71,7 @@ o2.widget.ScrollBar = new Class({
 			e.stopPropagation();
 		}.bind(this);
 
-		layout.desktop.addEvent("resize", this.checkScrollFun);
+		if(layout.desktop && layout.desktop.addEvent)layout.desktop.addEvent("resize", this.checkScrollFun);
 		//layout.desktop.addEvent("onresize", this.checkScrollFun);
 		this.node.addEvent("mouseover", this.checkScrollStopFun);
 		this.node.addEvent("mouseout", this.checkScrollStopFun);
@@ -347,7 +347,7 @@ o2.widget.ScrollBar = new Class({
 		var clientSize = this.node.getSize();
 		var nodePosition = this.node.getPosition(this.node.getOffsetParent());
 
-		this.mousewheel = function(e){
+		if (!this.mousewheel) this.mousewheel = function(e){
 			var delta = 1-e.event.wheelDelta;
 
 			var step = ((this.options.distance.toFloat())/100)*(clientSize.y.toFloat());
@@ -356,7 +356,7 @@ o2.widget.ScrollBar = new Class({
 			this.scroll(delta, null);
 			e.stopPropagation();
 		}.bind(this);
-		this.domMousewheel = function(e){
+		if (!this.domMousewheel) this.domMousewheel = function(e){
 			var delta = e.detail;
 
 			var step = ((this.options.distance.toFloat())/100)*(clientSize.y.toFloat());
@@ -366,7 +366,7 @@ o2.widget.ScrollBar = new Class({
 			e.stopPropagation();
 		}.bind(this);
 
-		this.touchmove = function(e){
+		if (!this.touchmove)  this.touchmove = function(e){
 			var delta = e.event.detail;
 
 			var step = ((this.options.distance.toFloat())/100)*(clientSize.y.toFloat());
@@ -413,12 +413,15 @@ o2.widget.ScrollBar = new Class({
 
 				this.setScrollVNodeMove();
 
-				this.node.addEvent("mousewheel", this.mousewheel);
-				this.node.addEvent("touchmove", this.touchmove);
-
-				if (Browser.name=="firefox"){
-					this.node.addEventListener("DOMMouseScroll", this.domMousewheel, false);
+				if (!this.isAddEvent){
+					this.node.addEvent("mousewheel", this.mousewheel);
+					this.node.addEvent("touchmove", this.touchmove);
+					if (Browser.name=="firefox"){
+						this.node.addEventListener("DOMMouseScroll", this.domMousewheel, false);
+					}
+					this.isAddEvent = true
 				}
+
 				// this.node DOMMouseScroll
 			}
 			if (this.scrollVAreaNode.getStyle("position")=="absolute"){
@@ -469,9 +472,10 @@ o2.widget.ScrollBar = new Class({
 
 				//		this.node.tween("margin-right", margin-scrollVNodeSize.x);
 			}
-			this.node.removeEvents("mousewheel", this.mousewheel);
+			this.node.removeEvent("mousewheel", this.mousewheel);
+			this.node.removeEvent("touchmove", this.touchmove);
 			if (Browser.name=="firefox"){
-				this.node.addEventListener("DOMMouseScroll", this.domMousewheel, false);
+				this.node.removeEventListener("DOMMouseScroll", this.domMousewheel, false);
 			}
 		}
 //		if (scrollSize.x>scrollSize.x){
@@ -496,6 +500,9 @@ o2.widget.ScrollBar = new Class({
 		if (this.checkScrollShowFun) document.body.removeEvent("mousemove", this.checkScrollShowFun);
 		if (this.mousewheel) this.node.removeEvent("mousewheel", this.mousewheel);
 		if (this.touchmove) this.node.removeEvent("touchmove", this.touchmove);
+		if (Browser.name=="firefox"){
+			if (this.domMousewheel) this.node.removeEventListener("DOMMouseScroll", this.domMousewheel, false);
+		}
 		if (this.scrollVAreaNode) this.scrollVAreaNode.destroy();
 		if (this.scrollVNode) this.scrollVNode.destroy();
 		o2.release(this);

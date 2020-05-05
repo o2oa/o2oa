@@ -39,16 +39,16 @@
                 <td class="editTableValue"><textarea  name="description" class="editTableTextarea">text{$.description}</textarea></td>
             </tr>
             <tr>
-                <td class="editTableTitle">图标:</td>
-                <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
+                <td class="editTableTitle">版本:</td>
+                <td class="editTableValue">text{$.editionName}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">新建检查:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
-                    <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
-                    <br/>(选择“是”：未保存过的流程实例不会保留)
-                </td>
+                <td class="editTableTitle">版本描述:</td>
+                <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">图标:</td>
+                <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
             </tr>
             <tr>
                 <td class="editTableTitle">使用路由名称作为缺省意见:</td>
@@ -59,32 +59,57 @@
                 </td>
             </tr>
         </table>
+        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">启 动</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">启动模式:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'block');}"  text{($.defaultStartMode!=='draft')?'checked':''} type="radio" value="instance"/>实例模式
+                    <span style="color: #999999; font-size: 12px"> (新建流程时直接创建流程实例，给拟稿人生成待办)</span>
+                    <br/><input class="editTableRadio" name="defaultStartMode" onclick="if (this.checked){ $('text{$.id}checkDraftArea').setStyle('display', 'none');}" text{($.defaultStartMode==='draft')?'checked':''} type="radio" value="draft"/>草稿模式
+                    <span style="color: #999999; font-size: 12px"> (新建流程时不创建流程实例，不生成待办，产生一个草稿文档，直到流转时才创建流程实例)</span>
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.id}checkDraftArea" style="display: text{($.defaultStartMode=='draft')?'none':'block'};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">新建检查:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="checkDraft" text{($.checkDraft===true)?'checked':''} type="radio" value="true"/>是
+                        <input class="editTableRadio" name="checkDraft" text{($.checkDraft!==true)?'checked':''} type="radio" value="false"/>否
+                        <br/>(选择“是”：未保存过的流程实例不会保留)
+                    </td>
+                </tr>
+            </table>
+        </div>
         <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">权 限</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter"">
-        <tr>
-            <td class="editTableTitle">启动人:</td>
-            <td class="editTableValue">
-                <div class="MWFPersonIdentity" name="startableIdentityList"></div>
-            </td>
-        </tr>
-        <tr>
-            <td class="editTableTitle">启动组织:</td>
-            <td class="editTableValue">
-                <div class="MWFPersonUnit" name="startableUnitList"></div>
-            </td>
-        </tr>
-        <!--<tr>-->
-        <!--<td class="editTableTitle">启动部门:</td>-->
-        <!--<td class="editTableValue">-->
-        <!--<div class="MWFPersonDepartment" name="startableDepartmentList"></div>-->
-        <!--</td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-        <!--<td class="editTableTitle">启动公司:</td>-->
-        <!--<td class="editTableValue">-->
-        <!--<div class="MWFPersonCompany" name="startableCompanyList"></div>-->
-        <!--</td>-->
-        <!--</tr>-->
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">启动人:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonIdentity" name="startableIdentityList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">启动组织:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="startableUnitList"></div>
+                </td>
+            </tr>
+            <!--<tr>-->
+            <!--<td class="editTableTitle">启动部门:</td>-->
+            <!--<td class="editTableValue">-->
+            <!--<div class="MWFPersonDepartment" name="startableDepartmentList"></div>-->
+            <!--</td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="editTableTitle">启动公司:</td>-->
+            <!--<td class="editTableValue">-->
+            <!--<div class="MWFPersonCompany" name="startableCompanyList"></div>-->
+            <!--</td>-->
+            <!--</tr>-->
         </table>
         <hr />
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

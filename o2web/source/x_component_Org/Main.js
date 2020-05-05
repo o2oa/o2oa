@@ -14,7 +14,6 @@ MWF.xApplication.Org.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Org.LP;
 		this.restActions = MWF.Actions.get("x_organization_assemble_control");
-
 	},
 	loadApplication: function(callback){
 		this.createNode();
@@ -87,6 +86,9 @@ MWF.xApplication.Org.Main = new Class({
 		}
 		if (this.importConfiguratorContentNode){
             this.importConfiguratorContentNode.destroy();
+		}
+		if (this.privateNamesQueryPowerContentNode){
+            this.privateNamesQueryPowerContentNode.destroy();
 		}
         if (this.pingyinArea) this.pingyinArea.empty();
 	},
@@ -204,6 +206,27 @@ MWF.xApplication.Org.Main = new Class({
 			}.bind(this));
 		}.bind(this));
 	},
+	privateNamesQueryPower:function(){
+		debugger;
+		this.clearContent();
+        this.privateNamesQueryPowerContentNode = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.privateNamesQueryPowerContentNode.set("load", {"onSuccess": function(){
+			this.queryPrivateConfigAreaNode = this.privateNamesQueryPowerContentNode.getElement(".queryPrivateConfigAreaNode");
+
+            o2.loadCss(this.path+this.options.style+"/queryPrivateConfig.css", this.privateNamesQueryPowerContentNode, function(){
+                this.loadprivateNamesQueryPower();
+            }.bind(this));
+        }.bind(this)}).load(this.path+this.options.style+"/queryPrivateConfigView.html");
+	},
+    loadprivateNamesQueryPower: function(){
+		MWF.xDesktop.requireApp("Org", "PrivateConfig", function(){
+				this.privateConfigurator = new MWF.xApplication.Org.PrivateConfig(this.privateNamesQueryPowerContentNode);
+				this.privateConfigurator.app = this;
+				this.privateConfigurator.load();
+		}.bind(this));
+	},
 
     recordStatus: function(){
         var idx = null;
@@ -229,33 +252,36 @@ MWF.xApplication.Org.Menu = new Class({
 		this.load();
 	},
 	load: function(){
-		var menuUrl = (MWF.AC.isOrganizationManager()) ? this.app.path+"startMenu_admin.json" : this.app.path+"startMenu.json";
+		//var menuUrl = (MWF.AC.isOrganizationManager()) ? this.app.path+"startMenu_admin.json" : this.app.path+"startMenu.json";
+		var menuUrl = this.app.path+"startMenu.json";
 
 		MWF.getJSON(menuUrl, function(json){
 			json.each(function(navi){
-				var naviNode = new Element("div", {
-					"styles": this.app.css.startMenuNaviNode,
-					"title": navi.title
-				});
-				naviNode.store("naviData", navi);
-				
-				var iconNode =  new Element("div", {
-					"styles": this.app.css.startMenuIconNode
-				}).inject(naviNode);
-				iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+"60.png)");
-				
-				var textNode =  new Element("div", {
-					"styles": this.app.css.startMenuTextNode,
-					"text": navi.title
-				});
-				textNode.inject(naviNode);
-				naviNode.inject(this.node);
-				
-				this.startNavis.push(naviNode);
-				
-				this.setStartNaviEvent(naviNode, navi);
-				
-				this.setNodeCenter(this.node);
+				if (navi.display){
+					var naviNode = new Element("div", {
+						"styles": this.app.css.startMenuNaviNode,
+						"title": navi.title
+					});
+					naviNode.store("naviData", navi);
+
+					var iconNode =  new Element("div", {
+						"styles": this.app.css.startMenuIconNode
+					}).inject(naviNode);
+					iconNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/"+navi.icon+"60.png)");
+
+					var textNode =  new Element("div", {
+						"styles": this.app.css.startMenuTextNode,
+						"text": navi.title
+					});
+					textNode.inject(naviNode);
+					naviNode.inject(this.node);
+
+					this.startNavis.push(naviNode);
+
+					this.setStartNaviEvent(naviNode, navi);
+
+					this.setNodeCenter(this.node);
+				}
 			}.bind(this));
 			this.setStartMenuWidth();
 			

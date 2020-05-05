@@ -9,6 +9,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
 
@@ -94,6 +95,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -140,6 +142,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -180,6 +183,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -220,6 +224,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -269,6 +274,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -319,6 +325,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -365,6 +372,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -411,6 +419,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -457,6 +466,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
     "async": false,
 
@@ -525,6 +535,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
 
     "readIdentityList": [],
@@ -564,23 +575,24 @@
 
     "type": "agent"
   },
-//  "service": {
-//    "name":"服务",
-//    "alias":"",
-//    "description":"",
-//    "position":"",
-//    "decisionIdList":[],
-//    "id":"",
-//    "version":1,
-//    "createTime":"",
-//    "type": "service",
-//
-//    "beforeArriveScript": "",
-//    "afterArriveScript": "",
-//    "beforeExecuteScript": "",
-//    "afterExecuteScript": "",
-//    "afterInquireScript": ""
-//  },
+  "service": {
+    "name":"服务",
+    "alias":"",
+    "description":"",
+    "position":"",
+    "decisionIdList":[],
+    "id":"",
+    "version":1,
+    "createTime":"",
+    "edition": "",
+    "type": "service",
+
+    "beforeArriveScript": "",
+    "afterArriveScript": "",
+    "beforeExecuteScript": "",
+    "afterExecuteScript": "",
+    "afterInquireScript": ""
+  },
 //  "message": {
 //    "name":"消息",
 //    "alias":"",
@@ -608,6 +620,7 @@
     "createTime": "",
     "updateTime": "",
     "extension": "",
+    "edition": "",
     "form": "",
     "async": false,
 
@@ -676,6 +689,7 @@
     "process": "",
     "type": "delay",
     "form": "",
+    "edition": "",
     "extension": "",
 
     "readIdentityList": [],

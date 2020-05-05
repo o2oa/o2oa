@@ -61,7 +61,7 @@ public class ActionDelete extends BaseAction {
 		if (check) {
 			try {
 				taskPersistService.delete(flag, effectivePerson );
-				//taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), flag );
+				taskGroupPersistService.refreshTaskCountInTaskGroupWithTaskId( effectivePerson.getDistinguishedName(), flag );
 				
 				// 更新缓存
 				ApplicationCache.notify( Task.class );

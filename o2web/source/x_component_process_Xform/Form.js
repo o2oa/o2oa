@@ -1,4 +1,4 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.Identity", "MWF.widget.O2Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
@@ -230,19 +230,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
         MWF.getJSON(stylesUrl, {
-            "onSuccess": function (responseJSON) {
-                if (responseJSON && responseJSON.form) {
-                    this.json = Object.merge(this.json, responseJSON.form);
-                }
-                if (callback) callback();
-            }.bind(this),
-            "onRequestFailure": function () {
-                if (callback) callback();
-            }.bind(this),
-            "onError": function () {
-                if (callback) callback();
-            }.bind(this)
-        }
+                "onSuccess": function (responseJSON) {
+                    if (responseJSON && responseJSON.form) {
+                        this.json = Object.merge(this.json, responseJSON.form);
+                    }
+                    if (callback) callback();
+                }.bind(this),
+                "onRequestFailure": function () {
+                    if (callback) callback();
+                }.bind(this),
+                "onError": function () {
+                    if (callback) callback();
+                }.bind(this)
+            }
         );
     },
     loadMacro: function (callback) {
@@ -858,7 +858,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return data;
     },
     getData: function (issubmit) {
-        var data = Object.clone(this.businessData.data);
+        //var data = Object.clone(this.businessData.data);
+        var data = this.businessData.data;
         Object.each(this.forms, function (module, id) {
             if (module.json.type === "Opinion") {
                 debugger;
@@ -881,7 +882,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 }
             }
         }.bind(this));
-
 
         this.businessData.data = data;
         this.Macro.environment.setData(this.businessData.data);
@@ -990,9 +990,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return obj;
     },
 
-    saveWork: function (callback, silent ) {
+    saveWork: function (callback, silent) {
+        debugger;
         if (this.businessData.control["allowSave"]) {
             this.fireEvent("beforeSave");
+
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 if (this.app && !silent) this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
@@ -1000,11 +1002,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.fireEvent("afterSave");
                 if (this.app && this.app.fireEvent) this.app.fireEvent("afterSave");
             }.bind(this));
+
         } else {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
             //if (failure) failure(null, "Permission Denied", "");
         }
     },
+
     getSectionList: function () {
         return Object.keys(this.sectionListObj).map(function (p) {
             var o = { "path": p };
@@ -1072,22 +1076,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
 
     saveFormData: function (callback, failure, history, data, issubmit) {
+        if (this.businessData.work.startTime) {
+            this.saveFormDataInstance(callback, failure, history, data, issubmit);
+        } else {
+            this.saveFormDataDraft(callback, failure, history, data, issubmit);
+        }
+    },
+    saveFormDataInstance: function (callback, failure, history, data, issubmit) {
         if (this.officeList) {
             this.officeList.each(function (module) {
                 module.save(history);
             });
         }
         var data = data || this.getData(issubmit);
-
-        //this.setProcessorSectionOrgList(data);
-        //
-        //var sectionList = this.getSectionList();
-        //var formData = {
-        //    "data": data,
-        //    "sectionList": sectionList
-        //};
-
-        debugger;
 
         this.modifedData = {};
         this.setModifedData(data);
@@ -1096,10 +1097,35 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         this.businessData.originalData = null;
         this.businessData.originalData = Object.clone(data);
-
-        //this.workAction.saveSectionData(callback, failure, this.businessData.work.id, formData);
     },
+    saveFormDataDraft: function (callback, failure, history, data, issubmit) {
+        if (this.officeList) {
+            this.officeList.each(function (module) {
+                module.save(history);
+            });
+        }
+        var data = data || this.getData(issubmit);
+        var draft = {
+            "data": data,
+            "work": this.businessData.work,
+            "identity": this.businessData.work.creatorIdentity
+        }
+        this.workAction.saveDraft(draft, function (json) {
+            this.workAction.getDraft(json.data.id, function (json) {
+                this.businessData.work = json.data.work;
+                this.app.options.draftId = json.data.work.id;
+                this.app.options.desktopReload = true;
 
+                this.app.appId = "process.Work" + json.data.work.id,
+                    delete layout.desktop.apps[this.app.options.appId];
+                layout.desktop.apps[this.app.appId] = this.app;
+
+                if (callback) callback();
+            }.bind(this));
+        }.bind(this), failure);
+        this.businessData.originalData = null;
+        this.businessData.originalData = Object.clone(data);
+    },
     setProcessorSectionOrgList: function (data) {
         if (!this.routeDataList) this.getRouteDataList();
         var routeList = this.routeDataList;
@@ -1131,14 +1157,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //    this.fireEvent("afterClose");
         }
         if (!this.options.readonly) {
-            if (this.businessData.work){
-                if (this.app.inBrowser && navigator.sendBeacon){
+            if (this.businessData.work && this.businessData.work.id) {
+                if (this.app.inBrowser && navigator.sendBeacon) {
                     debugger;
                     var obj = this.workAction.action.actions["checkDraft"];
-                    var url = this.workAction.action.address+obj.uri;
+                    var url = this.workAction.action.address + obj.uri;
                     url = url.replace("{id}", this.businessData.work.id);
                     navigator.sendBeacon(url);
-                }else{
+                } else {
                     this.workAction.checkDraft(this.businessData.work.id, function () {
                         if (layout.desktop.apps) {
                             if (layout.desktop.apps["TaskCenter"] && layout.desktop.apps["TaskCenter"].window) {
@@ -1352,6 +1378,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         return list;
     },
+    //saveDocumentEditor
     submitWork: function (routeName, opinion, medias, callback, processor, data, appendTaskIdentityList, processorOrgList, callbackBeforeSave) {
         if (!this.businessData.control["allowProcessing"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
@@ -1383,6 +1410,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         this.fireEvent("beforeProcess");
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcess");
+        // if (this.documenteditorList) {
+        //     this.documenteditorList.each(function (module) {
+        //         module.save(history);
+        //     });
+        // }
 
         //处理忽略授权
         var ignoreEmpowerIdentityList = this.getIgnoreImpowerIdentity(processorOrgList);
@@ -1397,7 +1429,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeSave");
             this.saveFormData(function (json) {
                 this.businessData.task.routeName = routeName;
-                this.businessData.task.opinion = opinion;
+                this.businessData.task.opinion = opinion || "";
 
                 var mediaIds = [];
                 if (medias && medias.length) {
@@ -1444,6 +1476,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     if (this.closeImmediatelyOnProcess) {
                         this.app.close();
+                    } else if (typeOf(this.showCustomSubmitedDialog) === "function") {
+                        this.showCustomSubmitedDialog(json.data);
                     } else if (layout.mobile) {
                         //移动端页面关闭
                         _self.finishOnMobile()
@@ -1574,82 +1608,163 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var dlg = o2.DL.open(options);
 
     },
-    processWork: function () {
-        if (this.json.mode == "Mobile") {
-            this.processWork_mobile();
-        } else {
-            this.fireEvent("beforeProcessWork");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+    startDraftProcess: function () {
+        if (!this.formCustomValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+        if (!this.formValidation("", "")) {
+            this.app.content.unmask();
+            //    if (callback) callback();
+            return false;
+        }
+        this.saveFormData(function () {
+            this.workAction.startDraft(this.businessData.work.id, function (json) {
+                this.app.options.workId = json.data[0].work;
+                var msg = {
+                    "subject": MWF.xApplication.process.Xform.LP.processStarted,
+                    "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
+                };
+                var tooltip = layout.desktop.message.addTooltip(msg);
+                var item = layout.desktop.message.addMessage(msg);
 
-            if (!this.formCustomValidation("", "")) {
-                this.app.content.unmask();
-                //    if (callback) callback();
-                return false;
-            }
-            // MWF.require("MWF.widget.Mask", function() {
-            //     this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
-            //     this.mask.loadNode(this.app.content);
+                this.app.reload();
 
-            if (!this.formValidation("", "")) {
-                this.app.content.unmask();
-                //    if (callback) callback();
-                return false;
-            }
+                //this.app.notice(MWF.xApplication.process.Xform.LP.dataSaved, "success");
+                //草稿模式暂时不能上传附件，不能直接流转文件
+                // o2.Actions.invokeAsync([
+                //     {"action": this.workAction, "name": "loadWork"},
+                //     {"action": this.workAction, "name": "getWorkControl"},
+                //     {"action": this.workAction, "name": "getWorkLog"},
+                //     {"action": this.workAction, "name": "getRecordLog"},
+                //     {"action": this.workAction, "name": "listAttachments"}
+                // ], {"success": function(json_work, json_control, json_log, json_record, json_att){
+                //     if (json_work && json_control && json_log && json_att){
+                //         this.app.parseData(json_work.data, json_control.data, null, json_log.data, json_record.data, json_att.data);
+                //         var workData = json_work.data;
+                //         this.businessData.activity = workData.activity;
+                //         this.businessData.originalData = Object.clone( this.businessData.data );
+                //         this.businessData.taskList = workData.taskList;
+                //         this.businessData.task = this.getCurrentTaskData(workData);
+                //         this.businessData.taskList = workData.taskList;
+                //         this.businessData.readList = workData.readList;
+                //         this.businessData.work = workData.work;
+                //         this.businessData.workCompleted = (workData.work.completedTime) ? workData.work : null;
+                //
+                //         this.businessData.workLogList = json_log.data;
+                //         this.businessData.recordList = json_record.data;
+                //         this.businessData.attachmentList = json_att.data;
+                //         this.businessData.control = json_control.data;
+                //
+                //         if (this.businessData.task){
+                //             this.processWork();
+                //         }else{
+                //             this.app.options.workId = json.data[0].work;
+                //             this.app.reload();
+                //         }
+                //     }
+                // }.bind(this), "failure": function(){}}, json.data[0].work);
 
-            var setSize = function (notRecenter) {
-                var dlg = this;
-                if (!dlg || !dlg.node) return;
-                dlg.node.setStyle("display", "block");
-                var size = processNode.getSize();
-                dlg.content.setStyles({
-                    "height": size.y,
-                    "width": size.x
-                });
-                var s = dlg.setContentSize();
-                if (dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto") {
-                    dlg.node.setStyle("width", dlg.node.getStyle("width").toInt() + 20 + "px");
-                    dlg.content.setStyle("width", dlg.content.getStyle("width").toInt() + 20 + "px");
-                }
-                if (!notRecenter) dlg.reCenter();
-            }
-
-            //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
-            var processNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.app.content);
-            this.setProcessNode(processNode, "process", function () {
-                this.processDlg = o2.DL.open({
-                    "title": this.app.lp.process,
-                    "style": this.json.dialogStyle || "user",
-                    "isResize": false,
-                    "content": processNode,
-                    "positionHeight": 800,
-                    "maxHeight": 800,
-                    "maxHeightPercent": "98%",
-                    "minTop": 5,
-                    "width": "auto", //processNode.retrieve("width") || 1000, //600,
-                    "height": "auto", //processNode.retrieve("height") || 401,
-                    "buttonList": [
-                        {
-                            "type": "ok",
-                            "text": MWF.LP.process.button.ok,
-                            "action": function (d, e) {
-                                if (this.processor) this.processor.okButton.click();
-                            }.bind(this)
-                        },
-                        {
-                            "type": "cancel",
-                            "text": MWF.LP.process.button.cancel,
-                            "action": function () { this.processDlg.close(); }.bind(this)
-                        }
-                    ],
-                    "onPostLoad": function () {
-                        setSize.call(this)
-                    }
-                });
-
-            }.bind(this), function () {
-                setSize.call(this.processDlg, true)
             }.bind(this));
+        }.bind(this), null, false, null, false)
+    },
+    getCurrentTaskData: function (data) {
+        if ((data.currentTaskIndex || data.currentTaskIndex === 0) && data.currentTaskIndex != -1) {
+            this.app.options.taskId = this.businessData.taskList[data.currentTaskIndex].id;
+            return this.businessData.taskList[data.currentTaskIndex];
+        }
+        return null;
+    },
 
+    processWork: function () {
+        if (!this.businessData.work.startTime) {
+            this.startDraftProcess();
+        } else {
+            if (this.json.mode == "Mobile") {
+                setTimeout(function () {
+                    this.processWork_mobile();
+                }.bind(this), 100);
+
+            } else {
+                this.fireEvent("beforeProcessWork");
+                if (this.app && this.app.fireEvent) this.app.fireEvent("beforeProcessWork");
+
+                if (!this.formCustomValidation("", "")) {
+                    this.app.content.unmask();
+                    //    if (callback) callback();
+                    return false;
+                }
+                // MWF.require("MWF.widget.Mask", function() {
+                //     this.mask = new MWF.widget.Mask({"style": "desktop", "zIndex": 50000});
+                //     this.mask.loadNode(this.app.content);
+
+                if (!this.formValidation("", "")) {
+                    this.app.content.unmask();
+                    //    if (callback) callback();
+                    return false;
+                }
+
+                var setSize = function (notRecenter) {
+                    debugger;
+                    var dlg = this;
+                    if (!dlg || !dlg.node) return;
+                    dlg.node.setStyle("display", "block");
+                    var size = processNode.getSize();
+                    dlg.content.setStyles({
+                        "height": size.y,
+                        "width": size.x
+                    });
+                    var s = dlg.setContentSize();
+                    if (dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto") {
+                        dlg.node.setStyle("width", dlg.node.getStyle("width").toInt() + 20 + "px");
+                        dlg.content.setStyle("width", dlg.content.getStyle("width").toInt() + 20 + "px");
+                    }
+                    if (!notRecenter) dlg.reCenter();
+                }
+
+                //var node = new Element("div", {"styles": this.css.rollbackAreaNode});
+                var processNode = new Element("div", { "styles": this.app.css.processNode_Area }).inject(this.node);
+                this.setProcessNode(processNode, "process", function () {
+                    this.processDlg = o2.DL.open({
+                        "title": this.app.lp.process,
+                        "style": this.json.dialogStyle || "user",
+                        "isResize": false,
+                        "content": processNode,
+                        "maskNode": this.app.content,
+                        "positionHeight": 800,
+                        "maxHeight": 800,
+                        "maxHeightPercent": "98%",
+                        "minTop": 5,
+                        "width": "auto", //processNode.retrieve("width") || 1000, //600,
+                        "height": "auto", //processNode.retrieve("height") || 401,
+                        "buttonList": [
+                            {
+                                "type": "ok",
+                                "text": MWF.LP.process.button.ok,
+                                "action": function (d, e) {
+                                    if (this.processor) this.processor.okButton.click();
+                                }.bind(this)
+                            },
+                            {
+                                "type": "cancel",
+                                "text": MWF.LP.process.button.cancel,
+                                "action": function () {
+                                    this.processDlg.close();
+                                    if (this.processor) this.processor.destroy();
+                                }.bind(this)
+                            }
+                        ],
+                        "onPostLoad": function () {
+                            setSize.call(this)
+                        }
+                    });
+
+                }.bind(this), function () {
+                    if (this.processDlg) setSize.call(this.processDlg, true)
+                }.bind(this));
+
+            }
         }
     },
     processWork_mobile: function () {
@@ -2465,16 +2580,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         });
     },
-    downloadAll:function(){
+    downloadAll: function () {
         var htmlFormId = "";
-        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id,"pdf",{
-            "workHtml":this.app.content.get("html")
-        },function( json ){
+        o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
+            "workHtml": this.app.content.get("html")
+        }, function (json) {
             htmlFormId = json.data.id;
-        }.bind(this),null,false);
-        htmlFormId = htmlFormId.replace("#","%23");
-        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/"+this.businessData.work.id+"/site/(0)/stream";
-        window.open( o2.Actions.getHost( "x_processplatform_assemble_surface" )+url + "?fileName=&flag=" + htmlFormId);
+        }.bind(this), null, false);
+        htmlFormId = htmlFormId.replace("#", "%23");
+        var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
+        window.open(o2.Actions.getHost("x_processplatform_assemble_surface") + url + "?fileName=&flag=" + htmlFormId);
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
@@ -2750,7 +2865,25 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var _self = this;
         if (this.json.mode == "Mobile") {
             //window.confirm 在ios移动端不可用 ??
-            if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
+            // if (window.confirm(MWF.xApplication.process.Xform.LP.retractText)) {
+
+            var p = MWF.getCenterPosition(document.body, 300, 150);
+            console.log("position x:" + p.x + " , y:" + p.y);
+            var x = p.x;
+            if (p.x < 20) {
+                x = 20;
+            } else {
+                x = p.x;
+            }
+            var event = {
+                "event": {
+                    "x": x,
+                    "y": p.y - 200,
+                    "clientX": x,
+                    "clientY": p.y - 200
+                }
+            };
+            this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.retractTitle, MWF.xApplication.process.Xform.LP.retractText, 300, 120, function () {
                 _self.app.content.mask({
                     "style": {
                         "background-color": "#999",
@@ -2782,7 +2915,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         if (_self.mask) { _self.mask.hide(); _self.mask = null; }
                     });
                 }.bind(this));
-            }
+            }, function () {
+                this.close();
+            }, null, null, this.json.confirmStyle);
+
+
+
+
+
         } else {
             var p = MWF.getCenterPosition(this.app.content, 300, 150);
             var event = {
@@ -3142,7 +3282,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
 
-    deleteWork: function () {
+    deleteDraftWork: function () {
         var _self = this;
         if (this.json.mode === "Mobile") {
             if (window.confirm(MWF.xApplication.process.Xform.LP.deleteWorkText.text)) {
@@ -3150,20 +3290,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                     _self.mask.loadNode(_self.app.content);
 
-                    _self.fireEvent("beforeDelete");
-                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
-
                     _self.doDeleteWork(function () {
-                        _self.fireEvent("afterDelete");
-                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
                         _self.finishOnMobile()
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
                         _self.app.notice("request json error: " + errorText, "error", dlg.node);
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
                     }.bind(this));
                 }.bind(this));
             }
@@ -3178,58 +3319,147 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 }
             };
             this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.deleteWorkTitle, MWF.xApplication.process.Xform.LP.deleteWorkText, 380, 120, function () {
-                // _self.app.content.mask({
-                //    "style": {
-                //        "background-color": "#999",
-                //        "opacity": 0.6
-                //    }
-                // });
-
-
                 MWF.require("MWF.widget.Mask", function () {
                     _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
                     _self.mask.loadNode(_self.app.content);
 
-                    _self.fireEvent("beforeDelete");
-                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
-
                     _self.doDeleteWork(function () {
-                        _self.fireEvent("afterDelete");
-                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
                         _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
                         _self.app.close();
                         this.close();
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
                         _self.app.notice("request json error: " + errorText, "error", dlg.node);
-                        if (_self.mask) { _self.mask.hide(); _self.mask = null; }
+                        if (_self.mask) {
+                            _self.mask.hide();
+                            _self.mask = null;
+                        }
                     }.bind(this));
                 }.bind(this));
-
-
-
-                //_self.workAction.deleteWork(function(json){
-                //    _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete+": “"+_self.businessData.work.title+"”", "success");
-                //    _self.app.close();
-                //    this.close();
-                //}.bind(this), null, _self.businessData.work.id);
-                //this.close();
             }, function () {
                 this.close();
             }, null, this.app.content, this.json.confirmStyle);
         }
     },
-    doDeleteWork: function (success, failure) {
-        if (this.businessData.control["allowDelete"]) {
-            this.workAction.deleteWork(function (json) {
-                if (success) success(json);
-            }.bind(this), function (xhr, text, error) {
-                if (failure) failure(xhr, text, error);
-            }, this.businessData.work.id);
+    deleteWork: function () {
+        if (!this.businessData.work.startTime) {
+            this.deleteDraftWork();
         } else {
-            if (failure) failure(null, "Permission Denied", "");
+            var _self = this;
+            if (this.json.mode === "Mobile") {
+                if (window.confirm(MWF.xApplication.process.Xform.LP.deleteWorkText.text)) {
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        _self.mask.loadNode(_self.app.content);
+
+                        _self.fireEvent("beforeDelete");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+
+                        _self.doDeleteWork(function () {
+                            _self.fireEvent("afterDelete");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
+                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
+                            if (_self.mask) {
+                                _self.mask.hide();
+                                _self.mask = null;
+                            }
+                            _self.finishOnMobile()
+                        }.bind(this), function (xhr, text, error) {
+                            var errorText = error + ":" + text;
+                            if (xhr) errorText = xhr.responseText;
+                            _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                            if (_self.mask) {
+                                _self.mask.hide();
+                                _self.mask = null;
+                            }
+                        }.bind(this));
+                    }.bind(this));
+                }
+            } else {
+                var p = MWF.getCenterPosition(this.app.content, 380, 150);
+                var event = {
+                    "event": {
+                        "x": p.x,
+                        "y": p.y - 200,
+                        "clientX": p.x,
+                        "clientY": p.y - 200
+                    }
+                };
+                this.app.confirm("infor", event, MWF.xApplication.process.Xform.LP.deleteWorkTitle, MWF.xApplication.process.Xform.LP.deleteWorkText, 380, 120, function () {
+                    // _self.app.content.mask({
+                    //    "style": {
+                    //        "background-color": "#999",
+                    //        "opacity": 0.6
+                    //    }
+                    // });
+
+
+                    MWF.require("MWF.widget.Mask", function () {
+                        _self.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                        _self.mask.loadNode(_self.app.content);
+
+                        _self.fireEvent("beforeDelete");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+
+                        _self.doDeleteWork(function () {
+                            _self.fireEvent("afterDelete");
+                            if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
+                            _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete + ": “" + _self.businessData.work.title + "”", "success");
+                            _self.app.close();
+                            this.close();
+                            if (_self.mask) {
+                                _self.mask.hide();
+                                _self.mask = null;
+                            }
+                        }.bind(this), function (xhr, text, error) {
+                            var errorText = error + ":" + text;
+                            if (xhr) errorText = xhr.responseText;
+                            _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                            if (_self.mask) {
+                                _self.mask.hide();
+                                _self.mask = null;
+                            }
+                        }.bind(this));
+                    }.bind(this));
+
+
+                    //_self.workAction.deleteWork(function(json){
+                    //    _self.app.notice(MWF.xApplication.process.Xform.LP.workDelete+": “"+_self.businessData.work.title+"”", "success");
+                    //    _self.app.close();
+                    //    this.close();
+                    //}.bind(this), null, _self.businessData.work.id);
+                    //this.close();
+                }, function () {
+                    this.close();
+                }, null, this.app.content, this.json.confirmStyle);
+            }
+        }
+    },
+    doDeleteDraftWork: function (success, failure) {
+        this.workAction.deleteDraftWork(function (json) {
+            if (success) success(json);
+        }.bind(this), function (xhr, text, error) {
+            if (failure) failure(xhr, text, error);
+        }, this.businessData.work.id);
+    },
+    doDeleteWork: function (success, failure) {
+        if (!this.businessData.work.startTime) {
+            this.doDeleteDraftWork(success, failure);
+        } else {
+            if (this.businessData.control["allowDelete"]) {
+                this.workAction.deleteWork(function (json) {
+                    if (success) success(json);
+                }.bind(this), function (xhr, text, error) {
+                    if (failure) failure(xhr, text, error);
+                }, this.businessData.work.id);
+            } else {
+                if (failure) failure(null, "Permission Denied", "");
+            }
         }
     },
 
@@ -3337,8 +3567,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
         }.bind(this))
     },
-    //移动端页面 工作处理完成后 
+    //移动端页面 工作处理完成后
     finishOnMobile: function () {
+        var _self = this;
+        //新建检查
+        this.workAction.checkDraft(this.businessData.work.id, function (json) {
+            var str = JSON.stringify(json);
+            // console.log("===========success==============");
+            _self.finishOnMobileReal();
+        }.bind(this), function () {
+            console.log("===========fail..==============");
+            _self.finishOnMobileReal();
+        }, false);
+
+    },
+
+    finishOnMobileReal: function () {
         if (window.o2android && window.o2android.closeWork) {
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {

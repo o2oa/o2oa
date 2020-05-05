@@ -7,7 +7,7 @@ var gulp = require('gulp'),
     gulpif = require('gulp-if'),
     minimist = require('minimist'),
     ftp = require('gulp-ftp'),
-    sftp = require('gulp-sftp'),
+    sftp = require('gulp-sftp-up4'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
@@ -23,22 +23,28 @@ var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
 var options = {};
 
 var uploadOptions = ftpconfig.dev;
-if (o_options.ev && o_options.ev=="dev"){
-    options.ev = "dev";
-    uploadOptions = ftpconfig.dev;
-}else if (o_options.ev && o_options.ev=="release"){
-    options.ev = "release";
-    uploadOptions = ftpconfig.release;
-}else if (o_options.ev && o_options.ev=="wrdp"){
-    options.ev = "wrdp";
-    uploadOptions = ftpconfig.wrdp;
-}else if (o_options.ev && o_options.ev=="develop"){
-    options.ev = "develop";
-    uploadOptions = ftpconfig.develop;
-}else{
+options.ev = o_options.ev;
+uploadOptions = (ftpconfig[o_options.ev]) || null;
+if (!uploadOptions){
     options.ev = "dev";
     uploadOptions = ftpconfig.dev;
 }
+// if (o_options.ev && o_options.ev=="dev"){
+//     options.ev = "dev";
+//     uploadOptions = ftpconfig.dev;
+// }else if (o_options.ev && o_options.ev=="release"){
+//     options.ev = "release";
+//     uploadOptions = ftpconfig.release;
+// }else if (o_options.ev && o_options.ev=="wrdp"){
+//     options.ev = "wrdp";
+//     uploadOptions = ftpconfig.wrdp;
+// }else if (o_options.ev && o_options.ev=="develop"){
+//     options.ev = "develop";
+//     uploadOptions = ftpconfig.develop;
+// }else{
+//     options.ev = "dev";
+//     uploadOptions = ftpconfig.dev;
+// }
 
 options.upload = o_options.upload || "";
 options.location = o_options.location || uploadOptions.location;

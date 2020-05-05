@@ -174,7 +174,18 @@ MWF.LP.desktop = {
 		"attendanceAppealAcceptMessage": "考勤申述通过",
 		"attendanceAppealAccept": "{subject}",
 		"attendanceAppealRejectMessage": "考勤申述未通过",
-		"attendanceAppealReject": "{subject}"
+		"attendanceAppealReject": "{subject}",
+
+		"canlendarAlarmMessage" : "日程提醒",
+		"canlendarAlarm" : "{title}",
+
+		"teamwork":{
+			"executor":"责任人",
+			"creatorPerson":"创建者"
+		},
+
+		"customMessageTitle": "消息提醒：",
+		"customMessage": "您收到一条消息："
 
 	},
 	"styleMenu": {

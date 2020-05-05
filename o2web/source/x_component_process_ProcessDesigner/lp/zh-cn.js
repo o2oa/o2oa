@@ -17,10 +17,14 @@ MWF.xApplication.process.ProcessDesigner.LP = {
     "selectScript": "点击选择脚本: ",
     "condition": "条件",
     "unCategory": "未分类",
+	"ok": "确定",
+	"close": "关闭",
+	"cancel": "取消",
 
 	"notice":{
         "no_name": "请先输入流程名称",
 		"save_success": "流程保存成功!",
+		"save_process": "请先保存流程!",
 		"one_begin": "每个流程只允许有一个“开始”活动",
 		"deleteRoute": "您确定要删除选中的路由吗？",
 		"deleteRouteTitle": "删除路由确认",
@@ -40,6 +44,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"merge": "合并活动",
 			"embed": "子流程活动",
 			"invoke": "调用活动",
+			"service": "服务活动",
+			"agent": "脚本活动",
+			"delay": "定时活动",
+			"message": "消息活动",
+			"choice": "选择活动",
+			"cancel": "取消活动",
 			"begin": "开始活动",
 			"end": "结束活动"
 		},
@@ -114,5 +124,59 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"projectionRunTitle": "立即执行确认",
 	"projectionRunText": "请确认立即执行数据映射",
 	"projectionRunSuccess": "数据映射已开始执行",
-	"projectionRunError": "不需要执行数据映射"
+	"projectionRunError": "不需要执行数据映射",
+
+	"enable": "已启用",
+	"notEnable": "未启用",
+	"currentEdition": "当前版本",
+	"editionUpdate": "最后修改",
+	"editionDiscription":"请输入版本描述",
+
+	"upgradeConfirm": "保存为新版本确认",
+	"upgradeInfor": "<div style='overflow: hidden; line-height: 26px'>您是否确定要将当前流程保存为新版?<br/>选中\"同时启用新版本\"在保存完成之后,会将新版本设置为启用版本.</div><div style='margin-top:10px'><input type='checkbox' checked>同时启用新版本</div>",
+	"inputDiscription": "请先输入版本描述",
+
+	"edition_list":{
+		"editionList": "查看流程版本",
+		"number": "版本号",
+		"update": "更新时间",
+		"updatePerson": "更新人",
+		"description": "版本描述",
+		"enabled": "启用",
+		"action": "操作",
+		"yes": "是",
+		"no": "否",
+		"newProcess": "创建了新的流程。",
+		"an": "个",
+
+		"modifyProcess": "[流程] 修改了流程的属性 <b>\"{field}\"</b>，从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"modifyActivity": "[活动] 修改了<b>“{name}”</b>活动的属性 <b>\"{field}\"</b>，从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"modifyActivity_addRoute": "[路由] 增加了<b>“{name}”</b>活动的路由<b>“{rname}”</b>，指向<span style='color: #0000ff'>“{next}”</span>",
+		"modifyActivity_deleteRoute": "[路由] 删除了<b>“{name}”</b>活动的路由<b>“{rname}”</b>，指向<span style='color: #ff0000'>“{next}”</span>",
+		"modifyActivity_modifyRouteNext": "[路由] 修改了<b>“{name}”</b>活动的路由<b>“{rname}”</b>，从指向<span style='color: #ff0000'>“{oldnext}”</span>，修改为指向<span style='color: #0000ff'>“{newnext}”</span>",
+		"modifyActivity_modifyRouteField": "[路由] 修改了<b>“{name}”</b>活动的路由<b>“{rname}”</b>， 属性<b>\"{field}\"</b> 从：<span style='color: #ff0000'>\"{old}\"</span>，修改为：<span style='color: #0000ff'>\"{new}\"</span>",
+		"deleteActivity": "[活动] 删除了活动<b style='color: #ff0000'>“{name}”</b>",
+		"addActivity": "[活动] 增加了活动<b style='color: #0000ff'>“{name}”</b>",
+		"noDiffs": "与上一版本无差异",
+		"hasDiffs": "与上一版本差异:",
+
+		"open": "切换",
+		"enable": "启用",
+		"rollback": "回滚",
+		"override": "覆盖",
+		"del": "删除",
+
+		"openInfor": "保存当前打开的版本，并打开版本”{v}“。",
+		"enableInfor": "启用流程版本”{v}“",
+		"rollbackInfor": "将流程设计回滚所选版本，所有所选版本之后的版本会被删除。",
+		"overrideInfor": "用所选版本的设计覆盖当前版本。",
+		"delInfor": "删除流程版本”{v}“。",
+
+		"enabledProcessTitle": "启用流程确认",
+		"enabledProcessInfor": "将当前流程设置为”启用“，原来已启用的流程版本将被设置为”未启用“。<br><br>已经在流转的流程实例不会受到影响，下次启动流程时，会以已启用的流程版本为模板创建流程实例。<br><br>您确定要将当前流程设置为”启用“吗？",
+
+		"deleteEditionTitle": "删除版本确认",
+		"deleteEditionInfor": "删除选中的流程版本”{v}“，同时也会删除流程版本”{v}“的流转中实例。您确定要删除流程版本”{v}“吗？",
+	}
+
 };

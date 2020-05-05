@@ -403,7 +403,7 @@ public class ProcessPlatform extends ConfigObject {
 
 		public final static Boolean DEFAULT_ENABLE = false;
 
-		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 10;
+		public final static Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 60;
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;

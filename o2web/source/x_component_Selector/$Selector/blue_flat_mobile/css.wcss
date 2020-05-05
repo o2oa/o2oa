@@ -68,12 +68,12 @@
     },
 	"titleCancelActionNodeMobile": {
 	  "top" : "14px",
-	  "left" : "30px",
+	  "left" : "0px",
 	  "position" : "absolute",
 	  "height": "60px",
-	  "width": "40px",
+	  "width": "80px",
 	  "color": "#FFF",
-	  "background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) center center no-repeat",
+	  "background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 30px center no-repeat",
 	  "background-size" : "16px 33px"
 	},
 	"titleTextNodeMobile": {
@@ -209,7 +209,7 @@
 	  "margin-left" : "10px"
 	},
 	"searchInputDiv": {
-	  	"padding" : "0px 35px",
+	  	"padding" : "0px 30px",
 		"height": "100px",
 		"color": "#999",
         "background": "#fff",

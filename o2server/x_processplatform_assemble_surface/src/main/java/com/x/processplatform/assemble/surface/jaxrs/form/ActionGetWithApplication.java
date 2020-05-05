@@ -23,7 +23,9 @@ class ActionGetWithApplication extends BaseAction {
 				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
 			}
 			Form form = business.form().pick(application, flag);
-			Wo wo = Wo.copier.copy(form);
+			//Wo wo = Wo.copier.copy(form);
+			Wo wo = new Wo();
+			wo.setData(form.getDataOrMobileData());
 			result.setData(wo);
 			return result;
 		}

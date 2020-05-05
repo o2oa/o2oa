@@ -14,6 +14,11 @@ MWF.xApplication.process.Xform.LP = {
     "arrivedUsers": "到达处理人",
     "replace": "代",
 
+    "processStarted": "文件已启动",
+    "processStartedMessage": "您启动了一个新的工作：",
+
+    "draftStart": "流程已启动",
+
     "taskCompleted": "待办已处理",
     "workCompleted": "工作流转已完成",
     "arrivedActivity": "工作已到达活动：",
@@ -156,7 +161,7 @@ MWF.xApplication.process.Xform.LP = {
     "editdoc": "编辑正文",
     "editdocCompleted": "编辑完成",
     "printdoc": "打印正文",
-    "history": "正文痕迹",
+    "history": "正文痕迹审查",
 
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
     "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
@@ -197,6 +202,24 @@ MWF.xApplication.process.Xform.LP = {
         "editionUnit":"[印发机关]",
         "editionDate":"[印发日期]",
         "historyList": "历史版本文档"
+    },
+    "documentHistory": {
+        "diffContent": "<div>{time}</div>{name} 在 ”{activity}“ 时修改的内容",
+        "insertContent": "<div>{time}</div>{name} 在 ”{activity}“ 时插入的内容:",
+        "deleteContent": "<div>{time}</div>{name} 在 ”{activity}“ 时删除的内容:",
+        "insert": "插入了",
+        "delete": "删除了",
+        "insertTimes": "插入了 {times} 处",
+        "deleteTimes": "删除了 {times} 处",
+        "play": "修改记录回放",
+        "pause": "暂停回放",
+        "stop": "停止修改记录回放",
+        "next": "下一个修改记录",
+        "prev": "上一个修改记录",
+        "exit": "退出痕迹审查",
+        "diff_patch_count": "共有{history}个历史版本，{diff}处修订。",
+        "original": "原始版本",
+        "nodiff": "目前还没有历史修改信息"
     }
 
 };

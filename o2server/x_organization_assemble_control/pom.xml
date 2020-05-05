@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>o2oa</groupId>
 		<artifactId>o2server</artifactId>
-		<version>4.0.5</version>
+		<version>5</version>
 	</parent>
 	<artifactId>x_organization_assemble_control</artifactId>
 	<packaging>war</packaging>
@@ -19,6 +19,19 @@
 		<dependency>
 			<groupId>o2oa</groupId>
 			<artifactId>x_organization_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.google.zxing</groupId>
+		    <artifactId>javase</artifactId>
+		    <version>3.3.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -135,4 +148,13 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+		<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>core</artifactId>
+				<version>3.4.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

@@ -903,3 +903,12 @@ bind.expire = {
         try{expire.setDate(date);}catch(e){}
     }
 };
+bind.request = {
+    "getBody": function(){
+        try{
+            return JSON.parse(serviceValue);
+        }catch(e){
+            return null
+        }
+    }
+}

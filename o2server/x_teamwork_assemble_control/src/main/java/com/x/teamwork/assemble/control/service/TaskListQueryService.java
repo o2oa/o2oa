@@ -94,6 +94,7 @@ public class TaskListQueryService {
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			TaskGroup taskGroup = emc.find( taskGroupId, TaskGroup.class );
+			System.out.println("taskGroupId="+taskGroupId);
 			List<TaskList> taskLists =  taskListService.listWithTaskGroup( emc, taskGroupId );
 			if( ListTools.isEmpty( taskLists )) {
 				//没有任何工作任务列表，需要新建一组默认的工作任务列表
@@ -104,20 +105,27 @@ public class TaskListQueryService {
 			if( taskGroup != null ) {
 				//查询用户所有的工作ID列表
 				List<String> taskIds_all_temp = reviewService.listTaskIdsWithPerson( emc, person, taskGroup.getProject() );
+				System.out.println("taskIds_all_temp="+taskIds_all_temp.size());
 				taskIds_all.addAll( taskIds_all_temp );
+				System.out.println("taskIds_all="+taskIds_all.size());
+				
 			}
 			if( ListTools.isNotEmpty( taskIds_all )) {
 				//查询该用户所有的TaskList的ID列表
 				taskListIds = taskListService.listTaskListIdsWithGroup( emc, taskGroupId, person );
+				System.out.println("taskListIds="+taskListIds.size());
 				if( ListTools.isNotEmpty( taskListIds )) {
 					//看看这些TaskList所关联的所有的TaskId列表
 					taskIds_forTaskList = taskListService.listTaskIdsWithTaskListIds( emc, taskListIds );
+					System.out.println("根据taskListIds计算出的task="+taskIds_forTaskList.size());
 					taskIds_all.removeAll( taskIds_forTaskList );
 					if( ListTools.isNotEmpty( taskIds_all )) {
+						System.out.println("存在未分类的任务");
 						//存在未分类的任务
 						hasTaskWithNoList = true;
 					}
 				}else {
+					System.out.println("不存在taskListIds");
 					//存在未分类的任务
 					hasTaskWithNoList = true;
 				}

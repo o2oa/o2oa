@@ -26,6 +26,7 @@ import com.x.cms.assemble.control.jaxrs.log.LogAction;
 import com.x.cms.assemble.control.jaxrs.output.OutputAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionForDocumentAction;
+import com.x.cms.assemble.control.jaxrs.permission.PermissionManagerAction;
 import com.x.cms.assemble.control.jaxrs.queryview.QueryViewAction;
 import com.x.cms.assemble.control.jaxrs.queryviewdesign.QueryViewDesignAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAction;
@@ -52,7 +53,11 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(DataAction.class);
 		this.classes.add(DocumentAction.class);
 		this.classes.add(DocumentCipherAction.class);
+
+		this.classes.add(PermissionAction.class);
 		this.classes.add(PermissionForDocumentAction.class);
+		this.classes.add(PermissionManagerAction.class);
+
 		this.classes.add(DocumentViewRecordAction.class);
 		this.classes.add(FileInfoAction.class);
 		this.classes.add(FileAction.class);
@@ -71,7 +76,6 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(SearchFilterAction.class);
 		this.classes.add(InputAction.class);
 		this.classes.add(OutputAction.class);
-		this.classes.add(PermissionAction.class);
 		
 		this.classes.add(AppInfoAnonymousAction.class);
 		this.classes.add(AppDictAnonymousAction.class);

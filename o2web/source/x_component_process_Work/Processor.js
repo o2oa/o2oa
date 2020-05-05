@@ -62,7 +62,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             if( layout.mobile ){
                 this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
-                this.orgsArea.hide()
+                this.orgsArea.hide();
             }else{
                 this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
@@ -248,9 +248,11 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRouteGroup){
             if (this.selectedRouteGroup.get("text") != node.get("text")){
                 this.selectedRouteGroup.setStyles(this.css.routeGroupNode);
+                //this.selectedRouteGroup.removeClass("mainColor_bg");
 
                 this.selectedRouteGroup = node;
                 this.selectedRouteGroup.setStyles(this.css.routeGroupNode_selected);
+                //this.selectedRouteGroup.addClass("mainColor_bg");
 
                 var routeList = this.selectedRouteGroup.retrieve("routeList");
                 this.setRouteList( routeList );
@@ -265,6 +267,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         }else{
             this.selectedRouteGroup = node;
             node.setStyles(this.css.routeGroupNode_selected);
+            //this.selectedRouteGroup.addClass("mainColor_bg");
 
             var routeList = this.selectedRouteGroup.retrieve("routeList");
             this.setRouteList( routeList );
@@ -341,19 +344,23 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 node.setStyles(this.css.routeNode_over);
+                node.addClass("lightColor_bg");
                 //node.setStyle("background-color", "#f7e1d0");
             }
         }else{
             node.setStyles(this.css.routeNode_over);
+            node.addClass("lightColor_bg");
         }
     },
     outRoute: function(node){
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 node.setStyles(this.css.routeNode);
+                node.removeClass("lightColor_bg");
             }
         }else{
             node.setStyles(this.css.routeNode);
+            node.removeClass("lightColor_bg");
         }
     },
     selectRoute_noform: function(node){
@@ -378,17 +385,22 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.removeClass("mainColor_bg");
                 //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
                 this.selectedRoute = node;
                 node.setStyles(this.css.routeNode_selected);
+                node.addClass("mainColor_bg");
+                node.removeClass("lightColor_bg");
                 //node.setStyle("background-color", "#da7429");
                 //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
                 //node.getLast().setStyle("color", "#FFF");
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.addClass("mainColor_bg");
+                this.selectedRoute.removeClass("lightColor_bg");
                 //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
@@ -397,6 +409,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         }else{
             this.selectedRoute = node;
             node.setStyles(this.css.routeNode_selected);
+            node.addClass("mainColor_bg");
+            node.removeClass("lightColor_bg");
             //node.setStyle("background-color", "#da7429");
             //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
             //node.getLast().setStyle("color", "#FFF");
@@ -1572,7 +1586,8 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                     var options = this.getOptions();
                     if(options){
-                        this.selector = new MWF.O2Selector(this.container, options);
+                        //this.selector = new MWF.O2Selector(this.container, options);
+                        this.selector = new MWF.O2Selector($(document.body), options);
                     }
                 }.bind(this), 100 )
             }else{

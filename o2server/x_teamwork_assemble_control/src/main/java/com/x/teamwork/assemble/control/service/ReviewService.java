@@ -62,7 +62,10 @@ public class ReviewService {
 			if( ListTools.isNotEmpty( reviewList )) {
 				emc.beginTransaction( Review.class );
 				for( Review review : reviewList ) {
-					emc.remove( review );
+					//emc.remove( review );
+					//改为软删除-lj
+					review.setDeleted(true);
+					emc.check( review , CheckPersistType.all );
 				}				
 				emc.commit();
 			}

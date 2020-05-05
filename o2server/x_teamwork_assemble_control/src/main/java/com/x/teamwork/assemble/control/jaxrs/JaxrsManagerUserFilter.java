@@ -12,6 +12,8 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/task_view/*",
 		"/jaxrs/attachment/*",
 		"/jaxrs/project_group/*",
+		"/jaxrs/projectTemplate/*",
+		"/jaxrs/taskListTemplate/*",
 		"/jaxrs/task_group/*",
 		"/jaxrs/task_list/*",
 		"/jaxrs/config/*",

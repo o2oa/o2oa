@@ -366,6 +366,7 @@ MWF.xApplication.cms.Document.Main = new Class({
                     "autoSave" : this.options.autoSave,
                     "saveOnClose" : this.options.saveOnClose,
                     "onPostPublish" : this.options.postPublish,
+                    "onAfterPublish" : this.options.afterPublish,
                     "onPostDelete" : this.options.postDelete
                 });
                 this.appForm.businessData = {

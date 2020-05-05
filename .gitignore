@@ -151,4 +151,12 @@ typings/
 #vscode
 **/.factorypath
 **/.vscode/
+**/pmd.xml
+**/cpd.xml
+**/pmd.html
+**/cpd.html
+
 *.swp
+
+#pom.xml.versionsBackup
+*.versionsBackup

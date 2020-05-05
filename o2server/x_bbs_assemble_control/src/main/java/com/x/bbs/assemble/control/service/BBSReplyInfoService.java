@@ -1,9 +1,9 @@
 package com.x.bbs.assemble.control.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.alibaba.druid.util.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -11,11 +11,13 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 论坛信息管理服务类
@@ -129,7 +131,7 @@ public class BBSReplyInfoService {
 		BBSSectionInfo _mainSectoinInfo = null;
 		BBSForumInfo _forumInfo = null;
 		if( id == null || id.isEmpty() ){
-			throw new Exception( "id is null, system can not delete any object." );
+			return;
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
@@ -150,6 +152,11 @@ public class BBSReplyInfoService {
 				if( _subjectInfo != null ){
 					if( _subjectInfo.getReplyTotal() > 0 ){
 						_subjectInfo.setReplyTotal( _subjectInfo.getReplyTotal() - 1 );
+						//如果当前删除的回复，是主贴采纳的解决方案，那么需要把主贴采纳的解决方案置空
+						if( StringUtils.isNotEmpty( _subjectInfo.getAcceptReplyId() ) &&
+							StringUtils.equals( _subjectInfo.getAcceptReplyId(), id )){
+							_subjectInfo.setAcceptReplyId( null );
+						}
 						emc.check( _subjectInfo, CheckPersistType.all );
 					}
 				}
@@ -180,14 +187,14 @@ public class BBSReplyInfoService {
 		}
 	}
 
-	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, int maxCount) throws Exception {
+	public List<BBSReplyInfo> listWithSubjectForPage(String subjectId, Boolean showSubReply, int maxCount, String orderType ) throws Exception {
 		if( subjectId == null ){
 			throw new Exception( "subjectId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listWithSubjectForPage( subjectId, showSubReply, maxCount );
+			return business.replyInfoFactory().listWithSubjectForPage( subjectId, showSubReply, maxCount, orderType );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -219,14 +226,14 @@ public class BBSReplyInfoService {
 		}
 	}
 
-	public List<BBSReplyInfo> listReplyByUserNameForPage(String creatorName, int maxCount ) throws Exception {
+	public List<BBSReplyInfo> listReplyByUserNameForPage(String creatorName, String orderType, int maxCount ) throws Exception {
 		if( creatorName == null ){
 			throw new Exception( "creatorName can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listReplyForPage( creatorName, null, null, null, null, maxCount );
+			return business.replyInfoFactory().listReplyForPage( creatorName, null, null, null, null, orderType, maxCount );
 		}catch( Exception e ){
 			throw e;
 		}
@@ -250,16 +257,39 @@ public class BBSReplyInfoService {
 	 * @param replyId
 	 * @return
 	 */
-    public List<BBSReplyInfo> listRelysWithRelyId(String replyId) throws Exception {
+    public List<BBSReplyInfo> listRelysWithRelyId(String replyId, String orderType ) throws Exception {
 		if(StringUtils.isEmpty( replyId ) ){
 			throw new Exception( "replyId can not null." );
 		}
 		Business business = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business(emc);
-			return business.replyInfoFactory().listReplyWithReplyId(replyId);
+			return business.replyInfoFactory().listReplyWithReplyId(replyId, orderType);
 		}catch( Exception e ){
 			throw e;
 		}
     }
+
+	public List<String> listAllSubReplyIds(String replyId, List<String> allIds ) throws Exception {
+    	if( allIds == null ){
+			allIds = new ArrayList<>();
+		}
+		if(StringUtils.isEmpty( replyId ) ){
+			return allIds;
+		}
+		Business business = null;
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			business = new Business(emc);
+			List<String> subIds = business.replyInfoFactory().listSubReplyIdsWithReplyId(replyId);
+			if(ListTools.isNotEmpty( subIds )){
+				for( String id : subIds ){
+					if( !allIds.contains( id )){
+						allIds.add( id );
+						listAllSubReplyIds( id, allIds );
+					}
+				}
+			}
+		}
+		return allIds;
+	}
 }

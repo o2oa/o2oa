@@ -3,10 +3,7 @@ package com.x.cms.assemble.control;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.cms.assemble.control.queue.*;
-import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
-import com.x.cms.assemble.control.timertask.Timertask_CheckDocumentReviewStatus;
-import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
-import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
+import com.x.cms.assemble.control.timertask.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +12,7 @@ public class ThisApplication {
 	protected static Context context;
 	
 	public static final String ROLE_CMSManager = "CMSManager@CMSManagerSystemRole@R";
+	public static final String ROLE_Manager = "Manager@ManagerSystemRole@R";
 	public static QueueDataRowImport queueDataRowImport;
 	public static QueueDocumentDelete queueDocumentDelete;
 	public static QueueDocumentUpdate queueDocumentUpdate;
@@ -53,6 +51,10 @@ public class ThisApplication {
 		// 每天凌晨2点执行一次
 		context.schedule( Timertask_LogRecordCheckTask.class, "0 0 2 * * ?" );
 		context.schedule( Timertask_BatchOperationTask.class, "0 */5 * * * ?" );
+
+		//每天凌晨2点，计算所有的文档的权限信息
+		context.schedule( Timertask_RefreshAllDocumentReviews.class, "0 0 2 * * ?" );
+
 		context.scheduleLocal( Timertask_CheckDocumentReviewStatus.class, 1200 );
 		context.scheduleLocal( Timertask_InitOperationRunning.class, 150 );
 	}

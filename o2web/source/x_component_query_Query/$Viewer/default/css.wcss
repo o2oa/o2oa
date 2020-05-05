@@ -16,11 +16,11 @@
         "overflow": "hidden"
     },
     "viewPageNode": {
-        "height": "80px"
+//        "height": "80px"
     },
     "viewPageAreaNode": {
-        "height": "24px",
-        "margin-top": "28px"
+//        "height": "24px",
+//        "margin-top": "28px"
     },
     "viewPageContentNode": {
         "float": "left",

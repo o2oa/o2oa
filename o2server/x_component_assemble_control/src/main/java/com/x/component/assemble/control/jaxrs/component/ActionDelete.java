@@ -12,6 +12,8 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 class ActionDelete extends ActionBase {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -24,6 +26,10 @@ class ActionDelete extends ActionBase {
 			if (null == component) {
 				throw new ExceptionEntityNotExist(flag, Component.class);
 			}
+			if (StringUtils.equals(component.getType(),Component.TYPE_SYSTEM)) {
+				throw new ExceptionDeleteSystemComponent();
+			}
+
 			emc.beginTransaction(Component.class);
 			emc.remove(component, CheckRemoveType.all);
 			emc.commit();

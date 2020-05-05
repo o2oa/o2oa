@@ -1,9 +1,7 @@
 package com.x.base.core.project.jaxrs;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
@@ -14,9 +12,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.ListOrderedMap;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -26,6 +26,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.tools.CollectionTools;
 import com.x.base.core.project.tools.ListTools;
 
 public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
@@ -38,9 +39,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param cls           实体类
 	 * @param wcls          wrap类
 	 * @param id            上一页最后一条的ID
@@ -182,9 +183,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param copier        对象转换类
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
@@ -328,9 +329,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的上一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param cls           实体类
 	 * @param wcls          wrap类
 	 * @param id            上一页最后一条的ID
@@ -473,9 +474,9 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 
 	/**
 	 * 查询数据的上一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
 	 * @param sequenceField 作分页序列的属性名
@@ -623,7 +624,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 			ListOrderedMap<String, Collection<?>> notIns, ListOrderedMap<String, Object> members,
 			ListOrderedMap<String, Object> notMembers, boolean andJoin, String order) throws Exception {
 		EntityManager em = emc.get(cls);
-		String str = "SELECT count(o) FROM " + cls.getCanonicalName() + " o";
+		String str = "SELECT count(distinct o) FROM " + cls.getCanonicalName() + " o";
 		/* 预编译的SQL语句的参数序号，必须由1开始 */
 		Integer index = 1;
 		List<String> ps = new ArrayList<>();
@@ -695,81 +696,139 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		return (Long) query.getSingleResult() + 1;
 	}
 
+	// private <T extends JpaObject> Long count(EntityManagerContainer emc, Class<T>
+	// cls, EqualsTerms equals,
+	// NotEqualsTerms notEquals, LikeTerms likes, InTerms ins, NotInTerms notIns,
+	// MemberTerms members,
+	// NotMemberTerms notMembers, boolean andJoin) throws Exception {
+	// EntityManager em = emc.get(cls);
+	// String str = "SELECT count(distinct o) FROM " + cls.getCanonicalName() + "
+	// o";
+	// /* 预编译的SQL语句的参数序号，必须由1开始 */
+	// Integer index = 1;
+	// List<String> ps = new ArrayList<>();
+	// List<Object> vs = new ArrayList<>();
+	// if (null != equals && (!equals.isEmpty())) {
+	// for (Entry<String, Object> en : equals.entrySet()) {
+	// ps.add("o." + en.getKey() + (" = ?" + index));
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (null != notEquals && (!notEquals.isEmpty())) {
+	// for (Entry<String, Object> en : notEquals.entrySet()) {
+	// ps.add("(o." + en.getKey() + (" <> ?" + index) + " or o." + en.getKey() + "
+	// is null)");
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (null != likes && (!likes.isEmpty())) {
+	// List<String> ors = new ArrayList<>();
+	// for (Entry<String, Object> en : likes.entrySet()) {
+	// ors.add("o." + en.getKey() + (" Like ?" + index));
+	// vs.add("%" + en.getValue() + "%");
+	// index++;
+	// }
+	// ps.add("(" + StringUtils.join(ors, " or ") + ")");
+	// }
+	// if (null != ins && (!ins.isEmpty())) {
+	// for (Entry<String, Collection<?>> en : ins.entrySet()) {
+	// ps.add("o." + en.getKey() + (" in ?" + index));
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (null != notIns && (!notIns.isEmpty())) {
+	// for (Entry<String, Collection<?>> en : notIns.entrySet()) {
+	// ps.add("o." + en.getKey() + (" not in ?" + index));
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (null != members && (!members.isEmpty())) {
+	// for (Entry<String, Object> en : members.entrySet()) {
+	// ps.add(("?" + index) + (" member of o." + en.getKey()));
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (null != notMembers && (!notMembers.isEmpty())) {
+	// for (Entry<String, Object> en : notMembers.entrySet()) {
+	// ps.add(("?" + index) + (" not member of o." + en.getKey()));
+	// vs.add(en.getValue());
+	// index++;
+	// }
+	// }
+	// if (!ps.isEmpty()) {
+	// str += " where " + StringUtils.join(ps, (andJoin ? " and " : " or "));
+	// }
+	// Query query = em.createQuery(str, cls);
+	// for (int i = 0; i < vs.size(); i++) {
+	// query.setParameter(i + 1, vs.get(i));
+	// }
+	// return (Long) query.getSingleResult();
+	// }
+
 	private <T extends JpaObject> Long count(EntityManagerContainer emc, Class<T> cls, EqualsTerms equals,
 			NotEqualsTerms notEquals, LikeTerms likes, InTerms ins, NotInTerms notIns, MemberTerms members,
 			NotMemberTerms notMembers, boolean andJoin) throws Exception {
 		EntityManager em = emc.get(cls);
-		String str = "SELECT count(o) FROM " + cls.getCanonicalName() + " o";
-		/* 预编译的SQL语句的参数序号，必须由1开始 */
-		Integer index = 1;
-		List<String> ps = new ArrayList<>();
-		List<Object> vs = new ArrayList<>();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<T> root = cq.from(cls);
+		List<Predicate> ps = new ArrayList<>();
 		if (null != equals && (!equals.isEmpty())) {
 			for (Entry<String, Object> en : equals.entrySet()) {
-				ps.add("o." + en.getKey() + (" = ?" + index));
-				vs.add(en.getValue());
-				index++;
+				ps.add(cb.equal(root.get(en.getKey()), en.getValue()));
 			}
 		}
 		if (null != notEquals && (!notEquals.isEmpty())) {
 			for (Entry<String, Object> en : notEquals.entrySet()) {
-				ps.add("(o." + en.getKey() + (" <> ?" + index) + " or o." + en.getKey() + " is null)");
-				vs.add(en.getValue());
-				index++;
+				ps.add(cb.or(cb.isNull(root.get(en.getKey())), cb.notEqual(root.get(en.getKey()), en.getValue())));
 			}
 		}
 		if (null != likes && (!likes.isEmpty())) {
-			List<String> ors = new ArrayList<>();
+			List<Predicate> ors = new ArrayList<>();
 			for (Entry<String, Object> en : likes.entrySet()) {
-				ors.add("o." + en.getKey() + (" Like ?" + index));
-				vs.add("%" + en.getValue() + "%");
-				index++;
+				ors.add(cb.like(root.get(en.getKey()), "%" + en.getValue() + "%"));
 			}
-			ps.add("(" + StringUtils.join(ors, " or ") + ")");
+			ps.add(cb.or(CollectionTools.toArray(ors, Predicate.class)));
 		}
 		if (null != ins && (!ins.isEmpty())) {
 			for (Entry<String, Collection<?>> en : ins.entrySet()) {
-				ps.add("o." + en.getKey() + (" in ?" + index));
-				vs.add(en.getValue());
-				index++;
+				ps.add(root.get(en.getKey()).in(en.getValue()));
 			}
 		}
 		if (null != notIns && (!notIns.isEmpty())) {
 			for (Entry<String, Collection<?>> en : notIns.entrySet()) {
-				ps.add("o." + en.getKey() + (" not in ?" + index));
-				vs.add(en.getValue());
-				index++;
+				ps.add(cb.not(root.get(en.getKey()).in(en.getValue())));
 			}
 		}
 		if (null != members && (!members.isEmpty())) {
 			for (Entry<String, Object> en : members.entrySet()) {
-				ps.add(("?" + index) + (" member of o." + en.getKey()));
-				vs.add(en.getValue());
-				index++;
+				ps.add(cb.isMember(en.getValue(), root.get(en.getKey())));
 			}
 		}
 		if (null != notMembers && (!notMembers.isEmpty())) {
 			for (Entry<String, Object> en : notMembers.entrySet()) {
-				ps.add(("?" + index) + (" not member of o." + en.getKey()));
-				vs.add(en.getValue());
-				index++;
+				ps.add(cb.isNotMember(en.getValue(), root.get(en.getKey())));
 			}
 		}
-		if (!ps.isEmpty()) {
-			str += " where " + StringUtils.join(ps, (andJoin ? " and " : " or "));
+		Predicate p = null;
+		if (BooleanUtils.isTrue(andJoin)) {
+			p = cb.and(CollectionTools.toArray(ps, Predicate.class));
+		} else {
+			p = cb.or(CollectionTools.toArray(ps, Predicate.class));
 		}
-		Query query = em.createQuery(str, cls);
-		for (int i = 0; i < vs.size(); i++) {
-			query.setParameter(i + 1, vs.get(i));
-		}
-		return (Long) query.getSingleResult();
+		return em.createQuery(cq.select(cb.countDistinct(root)).where(p)).getSingleResult();
 	}
 
 	/**
 	 * 查询数据的下一页对象信息
-	 * 
+	 *
 	 * [2015年12月24日 李义添加了注释内容，代码没有改变]
-	 * 
+	 *
 	 * @param copier        对象转换类
 	 * @param id            上一页最后一条的ID
 	 * @param count         每页条目数:pagesize
@@ -1062,7 +1121,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				selections.add(root.get(field));
 			}
 
-			List<Tuple> os = em.createQuery(cq.multiselect(selections))
+			List<Tuple> os = em.createQuery(cq.multiselect(selections).distinct(true))
 					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 
 			List<W> ws = new ArrayList<W>();
@@ -1122,7 +1181,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				selections.add(root.get(field));
 			}
 
-			List<Tuple> os = em.createQuery(cq.multiselect(selections))
+			List<Tuple> os = em.createQuery(cq.multiselect(selections).distinct(true))
 					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 
 			List<W> ws = new ArrayList<W>();
@@ -1177,8 +1236,8 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				cq.orderBy(cb.asc(root.get(sequenceField)));
 			}
 
-			List<T> os = em.createQuery(cq.select(root)).setMaxResults(Math.max(Math.min(count, list_max), list_min))
-					.getResultList();
+			List<T> os = em.createQuery(cq.select(root).distinct(true))
+					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 
 			ActionResult<List<T>> result = new ActionResult<>();
 			result.setData(new ArrayList<T>(os));
@@ -1241,7 +1300,30 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
-		return em.createQuery(cq.select(cb.count(root)).where(predicate)).getSingleResult();
+		return em.createQuery(cq.select(cb.countDistinct(root)).where(predicate)).getSingleResult();
+	}
+
+	/**
+	 * 将request参数值转为json
+	 */
+	public String request2Json(HttpServletRequest request) {
+		Map<String, String> map = new HashMap<>();
+		Enumeration paramNames = request.getParameterNames();
+		while (paramNames.hasMoreElements()) {
+			String paramName = (String) paramNames.nextElement();
+			String[] pv = request.getParameterValues(paramName);
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < pv.length; i++) {
+				if (pv[i].length() > 0) {
+					if (i > 0) {
+						sb.append(",");
+					}
+					sb.append(pv[i]);
+				}
+			}
+			map.put(paramName, sb.toString());
+		}
+		return gson.toJson(map);
 	}
 
 }

@@ -21,6 +21,7 @@ import com.x.teamwork.core.entity.DynamicDetail;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
+import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
 import com.x.teamwork.core.entity.TaskList;
@@ -238,6 +239,29 @@ class DynamicService {
 		dynamic.setTaskTitle( null );
 		dynamic.setBundle( object.getId() );
 		dynamic.setTarget( object.getExecutor() );
+		return dynamic;
+	}
+	
+	/**
+	 * 根据参数组织一个新的ProjectTemplate操作动态信息
+	 * @param objectType
+	 * @param title
+	 * @param description
+	 * @param viewUrl
+	 * @param optType
+	 * @param object
+	 * @param effectivePerson
+	 * @param personal
+	 * @return
+	 */
+	private Dynamic composeNewDynamic( String objectType, String title, String description, String viewUrl, String optType, ProjectTemplate object,  EffectivePerson effectivePerson, Boolean personal) {
+		Dynamic dynamic = composeNewSimpleDynamic(objectType, title, description, viewUrl, optType, effectivePerson, personal );
+		dynamic.setProjectId( object.getId() );
+		dynamic.setProjectTitle( object.getTitle() );
+		dynamic.setTaskId( ""  );
+		dynamic.setTaskTitle( null );
+		dynamic.setBundle( object.getId() );
+		dynamic.setTarget( object.getOwner() );
 		return dynamic;
 	}
 	
@@ -563,6 +587,47 @@ class DynamicService {
 		String optType =  "DELETE";
 		String description = effectivePerson.getName() +"删除了项目扩展属性：" + object.getDisplayName() + "("+object.getExtFieldName()+")。";
 		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
+	}
+	
+	/**
+	 * 保存项目模板创建或者更新动态信息
+	 * @param object_old
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 */
+	protected List<Dynamic> getProjectTemplateSaveDynamic( ProjectTemplate object_old, ProjectTemplate object, EffectivePerson effectivePerson ) {
+		List<Dynamic> dynamics = new ArrayList<>();
+		String objectType =  "PROJECTTEMPLATE";
+		String viewUrl = null;
+		String title =  null;
+		String optType = "UPDATE_PROJECTTEMPLATE";
+		String description = null;
+		if( object_old != null ) {
+			if( !object_old.getTitle().equalsIgnoreCase( object.getTitle() )) { //变更了名称
+				title =  "项目模板信息标题变更";
+				optType = "UPDATE_TITLE";
+				description = effectivePerson.getName() + "变更了项目模板信息的标题为：" + object.getTitle();
+				dynamics.add( composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false ) ); 
+			}
+			if( !object_old.getOwner().equalsIgnoreCase( object.getOwner() )) {//变更了所有人
+				title =  "项目模板所有人变更";
+				optType = "UPDATE_EXECUTOR";
+				if( StringUtils.isNotEmpty(  object.getOwner() ) &&  object.getOwner().split( "@" ).length > 1 ) {
+					description = effectivePerson.getName() + "变更了项目模板所有人为：" + object.getOwner().split( "@" )[0] + "。";					
+				}else {
+					description = effectivePerson.getName() + "变更了项目模板所有人为：" + object.getOwner() + "。";
+				}
+				
+				dynamics.add( composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false ) );
+			}
+		}else {//创建项目
+			title =  "项目模板信息创建";
+			optType = "CREATE";
+			description = effectivePerson.getName() + "创建了新的项目模板信息：" + object.getTitle() + "。";
+			dynamics.add( composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false ) );
+		}
+		return dynamics;
 	}
 	
 	/**

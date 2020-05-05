@@ -82,7 +82,7 @@ public class ActionStatisticMyTasks extends BaseAction {
 						if( ListTools.isNotEmpty( taskList )) {
 							for( Task task : taskList ) {
 								taskTotal ++;
-								if( task.getCompleted() ) {
+								if( "completed".equalsIgnoreCase(task.getWorkStatus()) ) {
 									completedTotal++;
 								}
 								if( task.getOvertime() ) {

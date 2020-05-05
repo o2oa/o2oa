@@ -221,7 +221,7 @@ class TaskService {
 	 * @param flag 主要是ID
 	 * @throws Exception 
 	 */
-	protected void remove( EntityManagerContainer emc, String flag ) throws Exception {
+	public void remove( EntityManagerContainer emc, String flag ) throws Exception {
 		emc.beginTransaction( Task.class );
 		emc.beginTransaction( Review.class );
 		emc.beginTransaction( TaskDetail.class );
@@ -277,13 +277,19 @@ class TaskService {
 				reviewList = emc.list( Review.class, batch );
 				if( ListTools.isNotEmpty( reviewList )) {
 					for( Review review : reviewList ) {
-						emc.remove( review, CheckRemoveType.all );
+						//emc.remove( review, CheckRemoveType.all );
+						//改为软删除
+						review.setDeleted(true);
+						emc.check( review, CheckPersistType.all );
 					}
 				}
 			}
 		}
 		if( task != null ) {
-			emc.remove( task , CheckRemoveType.all );
+			//emc.remove( task , CheckRemoveType.all );
+			//改为软删除
+			task.setDeleted(true);
+			emc.check( task, CheckPersistType.all );	
 		}
 		if( taskDetail != null ) {
 			emc.remove( taskDetail , CheckRemoveType.all );

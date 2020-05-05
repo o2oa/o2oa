@@ -109,11 +109,13 @@ public class TaskPersistService {
 			task.setCompleted( true  );
 			task.setArchive(  true );
 		}
+		
+		
 		String executor = null;
 		String executorIdentity = null;
 		String executorUnit = null;
 
-		//前端可能传身份，也可以直接传Person
+		 //前端可能传身份，也可以直接传Person
 		if( StringUtils.isNotEmpty( task.getExecutorIdentity() ) ) {
 			executor = userManagerService.getPersonNameWithIdentity(  task.getExecutorIdentity() );
 			if( StringUtils.isEmpty( executor )) {
@@ -155,7 +157,7 @@ public class TaskPersistService {
 			task.setStartTime( new Date() );
 		}
 		if( task.getEndTime() == null  ) {
-			task.setEndTime( new Date( ( task.getStartTime().getTime() + 30*60*1000) ) ); //30分钟之后
+			task.setEndTime( new Date( ( task.getStartTime().getTime() + 7*1440*60*1000) ) ); //30分钟之后
 		}
 		
 		if( ListTools.isEmpty( task.getParticipantList() )) {
@@ -444,7 +446,7 @@ public class TaskPersistService {
 			if( Task.name_FIELDNAME.equalsIgnoreCase( property )) {
 					task.setName( mainValue );
 			}else if( Task.workStatus_FIELDNAME.equalsIgnoreCase( property )) {
-				task.setWorkStatus( mainValue );
+				task.setWorkStatus( mainValue );				
 			} else if( Task.priority_FIELDNAME.equalsIgnoreCase( property )) {
 				task.setPriority( mainValue );
 			}  else if( Task.executor_FIELDNAME.equalsIgnoreCase( property )) {
@@ -454,13 +456,14 @@ public class TaskPersistService {
 						personName = userManagerService.getPersonNameWithIdentity(mainValue);
 						personUnit = userManagerService.getUnitNameByIdentity(mainValue);
 						task.setExecutor( personName );
-						task.setExecutorIdentity(property);
+						task.setExecutorIdentity(mainValue);
 						task.setExecutorUnit(personUnit);
 					}else if( mainValue.endsWith( "@P" ) ) {
+						personName = mainValue;
 						personIdentity = userManagerService.getIdentityWithPerson(personName, "min");
 						personUnit = userManagerService.getUnitNameByIdentity(personIdentity);
 						task.setExecutor( personName );
-						task.setExecutorIdentity(property);
+						task.setExecutorIdentity(personIdentity);
 						task.setExecutorUnit(personUnit);
 					}
 				}else {
@@ -473,13 +476,14 @@ public class TaskPersistService {
 						personName = userManagerService.getPersonNameWithIdentity(mainValue);
 						personUnit = userManagerService.getUnitNameByIdentity(mainValue);
 						task.setExecutor( personName );
-						task.setExecutorIdentity(property);
+						task.setExecutorIdentity(mainValue);
 						task.setExecutorUnit(personUnit);
 					}else if( mainValue.endsWith( "@P" ) ) {
+						personName = mainValue;
 						personIdentity = userManagerService.getIdentityWithPerson(personName, "min");
 						personUnit = userManagerService.getUnitNameByIdentity(personIdentity);
 						task.setExecutor( personName );
-						task.setExecutorIdentity(property);
+						task.setExecutorIdentity(personIdentity);
 						task.setExecutorUnit(personUnit);
 					}
 				}else {

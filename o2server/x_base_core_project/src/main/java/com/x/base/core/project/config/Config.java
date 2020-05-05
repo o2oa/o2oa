@@ -72,6 +72,7 @@ public class Config {
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
+	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -93,6 +94,7 @@ public class Config {
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
+	public static final String DIR_LOCAL_TEMP_SQL = "local/temp/sql";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC = "local/temp/dynamic";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_SRC = "local/temp/dynamic/src";
 	public static final String DIR_LOCAL_TEMP_DYNAMIC_TARGET = "local/temp/dynamic/target";
@@ -121,8 +123,6 @@ public class Config {
 	public static final String RESOURCE_AUDITLOGPRINTSTREAM = "auditLogPrintStream";
 
 	public static final String SCRIPTING_ENGINE_NAME = "JavaScript";
-
-	// public static final String RESOUCE_CONFIG = "config";
 
 	public static final String RESOURCE_NODE_PREFIX = "node/";
 	public static final String RESOURCE_NODE_EVENTQUEUE = RESOURCE_NODE_PREFIX + "eventQueue";
@@ -320,6 +320,20 @@ public class Config {
 
 	public static File dir_local_temp_dynamic(Boolean force) throws Exception {
 		File dir = new File(base(), DIR_LOCAL_TEMP_DYNAMIC);
+		if (force) {
+			if ((!dir.exists()) || dir.isFile()) {
+				FileUtils.forceMkdir(dir);
+			}
+		}
+		return dir;
+	}
+
+	public static File dir_local_temp_sql() throws Exception {
+		return new File(base(), DIR_LOCAL_TEMP_SQL);
+	}
+
+	public static File dir_local_temp_sql(Boolean force) throws Exception {
+		File dir = new File(base(), DIR_LOCAL_TEMP_SQL);
 		if (force) {
 			if ((!dir.exists()) || dir.isFile()) {
 				FileUtils.forceMkdir(dir);
@@ -782,6 +796,15 @@ public class Config {
 					mimeTypes.addMimeMapping("wcss", "application/json");
 					/* 添加默认格式 */
 					mimeTypes.addMimeMapping("", "application/octet-stream");
+					/* 添加新版office格式 */
+					mimeTypes.addMimeMapping("docx",
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+					mimeTypes.addMimeMapping("xlsx",
+							"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+					mimeTypes.addMimeMapping("pptx",
+							"application/vnd.openxmlformats-officedocument.presentationml.presentation");
+					/* 名片 */
+					mimeTypes.addMimeMapping("vcf", "text/x-vcard");
 					instance().mimeTypes = mimeTypes;
 				}
 			}
@@ -1211,6 +1234,23 @@ public class Config {
 			}
 		}
 		return instance().portal;
+	}
+
+	private Components components = null;
+
+	public static Components components() throws Exception {
+		if (null == instance().components) {
+			synchronized (Config.class) {
+				if (null == instance().components) {
+					Components obj = BaseTools.readConfigObject(PATH_CONFIG_COMPONENTS, Components.class);
+					if (null == obj) {
+						obj = Components.defaultInstance();
+					}
+					instance().components = obj;
+				}
+			}
+		}
+		return instance().components;
 	}
 
 	public static Object resource(String name) throws Exception {

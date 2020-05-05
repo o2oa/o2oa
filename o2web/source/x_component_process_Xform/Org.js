@@ -48,9 +48,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     setDescriptionEvent: function(){
         if (this.descriptionNode){
             this.descriptionNode.addEvents({
-                "mousedown": function(){
+                "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
+                    this.clickSelect( ev );
                 }.bind(this)
             });
         }
@@ -103,16 +103,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 dutys.each(function(duty){
                     if (duty.code) par = this.form.Macro.exec(duty.code, this);
                     var code = "return this.org.getDuty(\""+duty.name+"\", \""+par+"\")";
-
-                    //var code = "return this.org.getDepartmentDuty({\"name\": \""+duty.name+"\", \"departmentName\": \""+par+"\"})";
                     var d = this.form.Macro.exec(code, this);
                     if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
                     d.each(function(dd){if (dd) values.push(dd);});
-
-                    // code = "return this.org.getCompanyDuty({\"name\": \""+duty.name+"\", \"compName\": \""+par+"\"})";
-                    // d = this.form.Macro.exec(code, this);
-                    // if (typeOf(d)!=="array") d = (d) ? [d.toString()] : [];
-                    // d.each(function(dd){values.push(dd);});
                 }.bind(this));
             }
         }
@@ -301,19 +294,27 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (!v || !v.length) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
     },
 
-    clickSelect: function(){
+    clickSelect: function( ev ){
         if (this.readonly)return;
         if( layout.mobile ){
             setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                 var options = this.getOptions();
                 if(options){
-                    var selector = new MWF.O2Selector(this.form.app.content, options);
+                    if( this.selector && this.selector.loading ) {
+                    }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+                    }else{
+                        this.selector = new MWF.O2Selector(this.form.app.content, options);
+                    }
                 }
             }.bind(this), 100 )
         }else{
             var options = this.getOptions();
             if(options){
-                var selector = new MWF.O2Selector(this.form.app.content, options);
+                if( this.selector && this.selector.loading ) {
+                }else if( this.selector && this.selector.selector && this.selector.selector.active ){
+                }else {
+                    this.selector = new MWF.O2Selector(this.form.app.content, options);
+                }
             }
         }
     },
@@ -544,7 +545,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect(ev);
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 }
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
@@ -581,14 +585,20 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             "id": this.json.id,
             "MWFType": this.json.type,
             "events": {
-                "click": this.clickSelect.bind(this)
+                "click": function (ev) {
+                    this.clickSelect(ev);
+                }.bind(this)
+                //this.clickSelect.bind(this)
             }
         });
         if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
             this.iconNode = new Element("div", {
                 "styles": this.form.css[this.iconStyle],
                 "events": {
-                    "click": this.clickSelect.bind(this)
+                    "click": function (ev) {
+                        this.clickSelect(ev);
+                    }.bind(this)
+                    //this.clickSelect.bind(this)
                 }
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
@@ -913,7 +923,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         }else{
             if (this.json.styles) this.node.setStyles(this.json.styles);
             if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-            if (this.iconNode){
+            if (this.iconNode && this.iconNode.offsetParent !== null ){
                 var size = this.node.getSize();
                 this.iconNode.setStyle("height", ""+size.y+"px");
             }

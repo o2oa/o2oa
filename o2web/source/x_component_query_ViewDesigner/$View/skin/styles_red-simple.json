@@ -1,0 +1,102 @@
+{
+  "name": "红色简洁",
+  "view": {
+    "container" : {
+      "height" : "100%",
+      "overflow" : "auto",
+      "font-size": "14px"
+    },
+    "table": {
+      "margin-bottom": "20px",
+      "width": "100%"
+    },
+    "titleTr":{  //viewTitleTrNode   viewTitleLineNode
+      "line-height": "40px",
+      "height": "40px",
+      "color": "#666666",
+      "background-color": "#f1f1f1"
+    },
+    "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
+      "font-weight": "bold",
+      "padding": "0px 10px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "contentTr" : {
+      "background": "#ffffff"
+    },
+    "contentSelectedTr" : {
+      "background": "#ffeded"
+    },
+    "contentTd": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "contentGroupTd": {
+      "padding": "5px 5px",
+      "border-bottom": "1px solid #CCC",
+      "font-weight": "bold",
+      "background-color": "#F9F9F9",
+      "cursor": "pointer"
+    },
+    "groupCollapseNode": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left" : "20px",
+      "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/right.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "left center"
+    },
+    "groupExpandNode": {
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left" : "20px",
+      "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/down.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "left center"
+    },
+    "checkboxNode" : {
+      "background-image": "url(/x_component_query_Query/$Viewer/default/icon_red/checkbox.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "center center"
+    },
+    "checkedCheckboxNode" : {
+      "background-image": "url(/x_component_query_Query/$Viewer/default/icon_red/checkbox_checked.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "center center"
+    },
+    "radioNode" : {
+      "background-image": "url(/x_component_query_Query/$Viewer/default/icon_red/radiobox.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "center center"
+    },
+    "checkedRadioNode" : {
+      "background-image": "url(/x_component_query_Query/$Viewer/default/icon_red/radiobox_checked.png)",
+      "background-repeat" : "no-repeat",
+      "background-position": "center center"
+    },
+    "tableProperties": {
+      "width": "100%",
+      "border": "0",
+      "cellpadding": "0",
+      "cellspacing": "0"
+    }
+  },
+  "actionbar": {
+    "style": "xform_red_simple",
+    "customIconStyle" : "",
+    "forceStyles" : {
+      "container" : {
+        "width" : "100%",
+        "border-top" : "0px",
+        "border-bottom" : "1px solid #cc3d3d"
+      }
+    }
+  },
+  "paging" : {
+    "style" : "red_round",
+    "style_rect" : "red",
+    "style_round" : "red_round"
+  }
+}

@@ -9,7 +9,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -17,7 +16,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.TaskList;
 
-import net.sf.ehcache.Element;
 
 public class ActionListWithTaskGroup extends BaseAction {
 
@@ -29,15 +27,15 @@ public class ActionListWithTaskGroup extends BaseAction {
 		List<Wo> wos = null;
 		List<TaskList> taskLists = null;
 		Boolean check = true;
-
-		String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", taskGroupId, effectivePerson.getDistinguishedName() );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( "list.my.taskgroup", taskGroupId, effectivePerson.getDistinguishedName() );
 		Element element = taskListCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
+			System.out.println("111");
 			wos = (List<Wo>) element.getObjectValue();
 			result.setData( wos );
-		} else {
-			if (check) {
+		} else {*/
+			if( Boolean.TRUE.equals( check ) ){
 				try {
 					taskLists = taskListQueryService.listWithTaskGroup( effectivePerson.getDistinguishedName(), taskGroupId );
 					if( ListTools.isNotEmpty( taskLists )) {
@@ -47,13 +45,13 @@ public class ActionListWithTaskGroup extends BaseAction {
 								//计算当前List里的任务数量
 								wo.setTaskCount(taskListQueryService.countTaskWithTaskListId( effectivePerson.getDistinguishedName(), wo.getId(), wo.getTaskGroup() ));
 								if( "NoneList".equalsIgnoreCase( wo.getMemo() )) {
-									wo.setControl( new Control(false, false, false ));
+									wo.setControl( new Control(false, false, false, false ));
 								}else {
-									wo.setControl( new Control(true, true, true ));
+									wo.setControl( new Control(true, true, true, true ));
 								}
 							}
 						}
-						taskListCache.put(new Element(cacheKey, wos));
+						//taskListCache.put(new Element(cacheKey, wos));
 						result.setData(wos);
 					}
 				} catch (Exception e) {
@@ -63,20 +61,20 @@ public class ActionListWithTaskGroup extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 
 	public static class Wo extends TaskList {
-		
+
 		private Long rank;
-		
+
 		@FieldDescribe("工作任务数量.")
 		private Long taskCount = 0L;
-		
+
 		@FieldDescribe("工作任务列表操作权限.")
 		private Control control;
-		
+
 		public Control getControl() {
 			return control;
 		}
@@ -108,19 +106,22 @@ public class ActionListWithTaskGroup extends BaseAction {
 		static WrapCopier<TaskList, Wo> copier = WrapCopierFactory.wo( TaskList.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
 	}
-	
+
 	public static class Control{
-		 
+
 		private Boolean delete = false;
-		
+
 		private Boolean edit = false;
-		
+
 		private Boolean sortable = true;
 
-		public Control( Boolean edit, Boolean delete, Boolean sortable ) {
+		private Boolean founder = false;
+
+		public Control( Boolean edit, Boolean delete, Boolean sortable, Boolean founder ) {
 			this.delete = delete;
 			this.edit = edit;
 			this.sortable = sortable;
+			this.founder = founder;
 		}
 		public Boolean getDelete() {
 			return delete;
@@ -142,6 +143,12 @@ public class ActionListWithTaskGroup extends BaseAction {
 		}
 		public void setSortable(Boolean sortable) {
 			this.sortable = sortable;
+		}
+		public Boolean getFounder() {
+			return founder;
+		}
+		public void setFounder(Boolean founder) {
+			this.founder = founder;
 		}
 	}
 }

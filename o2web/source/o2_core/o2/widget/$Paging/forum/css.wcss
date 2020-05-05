@@ -1,0 +1,160 @@
+{
+    "pagingBarWraper" : {
+        "height" : "56px",
+        "overflow" : "hidden"
+    },
+    "pagingBar" : {
+        "float" : "right",
+        "margin-right" : "10px",
+        "padding-left" : "10px",
+        "overflow" : "hidden",
+        "height" : "36px",
+        "line-height" : "36px",
+        "margin-bottom" : "10px",
+        "background" : "#fff",
+        "color" : "#333"
+    },
+    "firstPage" : {
+        "float" : "left"
+    },
+    "firstPage_over" : {
+
+    },
+    "lastPage" : {
+        "float" : "left"
+    },
+    "lastPage_over" : {
+
+    },
+    "prePage" : {
+        "float" : "left",
+        "width" : "16px",
+        "height" : "20px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "margin" : "5px",
+        "cursor" : "pointer",
+        "background": "url(/o2_core/o2/widget/$Paging/forum/icon/left.png) no-repeat center center",
+        "background-color" : "#f3f3f3"
+    },
+    "prePage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "nextPage" : {
+        "float" : "left",
+        "width" : "16px",
+        "height" : "20px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "margin" : "5px",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "background": "url(/o2_core/o2/widget/$Paging/forum/icon/right.png) no-repeat center center",
+        "background-color" : "#f3f3f3"
+    },
+    "nextPage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "pageTurnContainer" : {
+        "float" : "left"
+    },
+    "pageItem" : {
+        "float" : "left",
+        "height" : "20px",
+        "min-width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "background-color" : "#f3f3f3",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "margin" : "5px"
+    },
+    "pageItem_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "preBatchPage" : {
+        "float" : "left",
+        "height" : "20px",
+        "min-width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "background-color" : "#f3f3f3",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "margin" : "5px"
+    },
+    "preBatchPage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "nextBatchPage" : {
+        "float" : "left",
+        "height" : "20px",
+        "min-width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #f3f3f3",
+        "background-color" : "#f3f3f3",
+        "cursor" : "pointer",
+        "color" : "#333",
+        "margin" : "5px"
+    },
+    "nextBatchPage_over" : {
+        "border" : "1px solid #43AAFA",
+        "background-color" : "#fff",
+        "color" : "#43AAFA"
+    },
+    "currentPage" : {
+        "float" : "left",
+        "height" : "20px",
+        "width" : "16px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "padding" : "2px 5px",
+        "border" : "1px solid #43AAFA",
+        "color" : "#fff",
+        "margin" : "5px",
+        "font-weight" : "bold",
+        "background-color" : "#43aafa"
+    },
+    "pageJumper" : {
+        "float" : "left",
+        "height" : "20px",
+        "line-height" : "20px",
+        "text-align" : "center",
+        "width" : "20px",
+        "margin-top" : "5px",
+        "margin-bottom" : "5px",
+        "margin-left" : "10px",
+        "border" : "1px solid #ddd"
+    },
+    "pageJumper_over" : {
+        "border" : "1px solid #43AAFA"
+    },
+    "pageJumperText" : {
+        "float" : "left",
+        "height" : "20px",
+        "padding" : "2px 5px",
+        "text-align" : "center",
+        "line-height" : "20px",
+        "margin-top" : "5px",
+        "margin-bottom" : "5px",
+        "margin-right" : "5px"
+    }
+}

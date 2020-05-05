@@ -46,6 +46,13 @@
                         <input type="radio" name="select" value="multi" text{($.select=='multi')?'checked':''}/>多选
                     </td>
                 </tr>
+                <tr>
+                    <td class="editTableTitle">操作条</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="actionbar" text{($.actionbar=='show')?'checked':''} type="radio" value="show"/>显示
+                        <input class="editTableRadio" name="actionbar" text{($.actionbar!='show')?'checked':''} type="radio" value="hidden"/>不显示
+                    </td>
+                </tr>
                 <!--<tr>-->
                     <!--<td class="editTableTitle"></td>-->
                     <!--<td class="editTableValue">-->
@@ -103,19 +110,19 @@
 	</div>
     <div title="过滤"  class="MWFTab">
         <div class="MWFViewFilter">
-            <div>
-                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <div class="inputAreaNode_vf">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable restrictViewFilterTable_vf">
                     <tr style="display:none">
                         <td class="editTableTitle">标题:</td>
-                        <td class="editTableValue"><input type="text" class="editTableInput"/></td>
+                        <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">路径:</td>
-                        <td class="editTableValue"><input type="text" class="editTableInput"/></td>
+                        <td class="editTableValue"><input type="text" class="editTableInput pathInput_vf"/></td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">数据类型:</td>
-                        <td class="editTableValue"><select>
+                        <td class="editTableValue"><select class="datatypeInput_vf">
                             <option value="textValue" selected>文本</option>
                             <option value="numberValue">数字</option>
                             <option value="datetimeValue">日期</option>
@@ -125,20 +132,23 @@
                     <tr style="display:none">
                         <td class="editTableTitle"></td>
                         <td class="editTableValue">
-                            <input type="radio" value="restrict" name="text{$.id}viewFilterType" checked/>作为默认过滤条件<br>
-                            <input type="radio" value="custom" name="text{$.id}viewFilterType"/>作为自定义过滤数据
+                            <input type="radio" class="restrictFilterInput_vf" value="restrict" name="text{$.id}viewFilterType" checked/>作为默认过滤条件<br>
+                            <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType"/>作为自定义过滤数据
                         </td>
                     </tr>
                 </table>
                 <table id="text{$.pid}viewFilterRestrict" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">逻辑:</td>
-                        <td class="editTableValue"><select><option selected value="and">并且(and)</option><option value="or">或者(or)</option></select></td>
+                        <td class="editTableValue"><select class="logicInput_vf">
+                            <option selected value="and">并且(and)</option>
+                            <option value="or">或者(or)</option>
+                        </select></td>
                     </tr>
 
                     <tr>
                         <td class="editTableTitle">比较:</td>
-                        <td class="editTableValue"><select>
+                        <td class="editTableValue"><select class="comparisonInput_vf">
                             <option value="equals" selected>等于(==)</option>
                             <option value="notEquals">不等于(!=)</option>
                             <option value="greaterThan">大于(>)</option>
@@ -153,12 +163,12 @@
                     <tr style="display:none">
                         <td class="editTableTitle">值:</td>
                         <td class="editTableValue">
-                            <input type="text" class="editTableInput" style="display: block"/>
-                            <input type="number" class="editTableInput" style="display: none"/>
-                            <input type="text" class="editTableInput" style="display: none" readonly/>
-							<input type="text" class="editTableInput" style="display: none" readonly/>
-							<input type="text" class="editTableInput" style="display: none" readonly/>
-                            <select style="display: none">
+                            <input type="text" class="editTableInput valueTextInput_vf" style="display: block"/>
+                            <input type="number" class="editTableInput valueNumberInput_vf" style="display: none"/>
+                            <input type="text" class="editTableInput valueDatetimeInput_vf" style="display: none" readonly/>
+							<input type="text" class="editTableInput valueDateInput_vf" style="display: none" readonly/>
+							<input type="text" class="editTableInput valueTimeInput_vf" style="display: none" readonly/>
+                            <select class="valueBooleanInput_vf" style="display: none">
                                 <option value="true" selected>是(True)</option>
                                 <option value="false">否(False)</option>
                             </select>
@@ -167,11 +177,11 @@
                 </table>
                 <div title="值" class="MWFFilterFormulaArea"></div>
             </div>
-            <div></div>
+            <div class="actionAreaNode_vf"></div>
             <div style="height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">默认过滤条件</div>
-            <div style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div class="listAreaNode_vf" style="min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
             <div style="display:none; height: 20px; line-height: 20px; text-align:center; background-color: #eeeeee">自定义过滤数据</div>
-            <div style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
+            <div class="fieldListAreaNode_vf" style="display:none; min-height: 56px; border-bottom:1px solid #CCCCCC; overflow: hidden;"></div>
         </div>
     </div>
 

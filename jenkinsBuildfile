@@ -1,0 +1,57 @@
+pipeline {
+    agent {label 'master' }
+    stages {
+		stage('getEnv') {
+            steps {
+                echo 'env.sshServer='+env.sshServer
+				echo 'env.preName='+env.preName
+				echo 'env.isallTag='+env.isallTag
+				echo 'env.qqGroupid='+env.qqGroupid
+				echo 'env.qqUrl='+env.qqUrl
+				bat  "cd.> \"gitTag.txt\""
+                bat  "git describe --tags  >>\"gitTag.txt\""
+                script {
+            	    json_file = "gitTag.txt"
+	                file_contents = readFile json_file
+
+	                if(file_contents.trim().indexOf("-")!=-1&&env.isallTag.trim().indexOf("true")==-1){
+						env.tag =file_contents.trim().substring(0,file_contents.trim().indexOf("-"))
+					}else{
+						env.tag =file_contents.trim();
+					}
+                }
+                echo 'env.tag='+env.tag
+            }
+        }
+        
+        stage('initAndBuildAndSendzip') {
+            steps {
+				script {
+					env.buildResult='FAILURE'
+				}
+				catchError(buildResult: 'SUCCESS'){
+					bat 'npm install'
+					bat 'npm run build_ci'
+					bat 'ant -DVERSION='+env.tag+'   -DpreName='+env.preName
+					sshPublisher(publishers: [sshPublisherDesc(configName: ''+env.sshServer+'', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: ''+env.preName+'-'+env.tag+'*.zip')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+					sshPublisher(publishers: [sshPublisherDesc(configName: ''+env.sshServer+'', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/o2server/servers/webServer/download', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'download-pro.json,download_preview.jsonp')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+					script {
+						env.buildResult='SUCCESS'
+					}
+				}
+			}
+            
+        }
+		
+		stage('messageNotice') {
+		    steps{
+		        script {
+		            env.messageNotice="%e5%ae%8c%e6%88%90ssh%e6%9c%8d%e5%8a%a1%e5%99%a8%3d"+env.sshServer+",%e5%89%8d%e7%bc%80%3d"+env.preName+",tag%e7%89%88%e6%9c%ac%3d"+env.tag+"%e7%9a%84%e7%89%88%e6%9c%ac%e6%89%93%e5%8c%85%ef%bc%8c%e8%af%b7%e6%a0%b8%e5%ae%9e"+env.buildResult
+		        }
+		         echo 'env.messageNotice='+env.messageNotice
+		         httpRequest responseHandle: 'NONE', url: env.qqUrl+'/send_group_msg?group_id='+env.qqGroupid+'&message='+env.messageNotice, wrapAsMultipart: false
+            }
+		}
+
+	}
+}

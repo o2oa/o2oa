@@ -68,6 +68,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "titleStyles": this.json.titleStyles,
                 "itemStyles": this.json.itemStyles,
                 "isExpand": this.json.isExpand || "no",
+                "showActionbar" : this.json.actionbar === "show",
                 "filter": filter
             };
             var options = {};
@@ -175,6 +176,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "titleStyles": this.json.titleStyles,
                 "itemStyles": this.json.itemStyles,
                 "isExpand": this.json.isExpand || "no",
+                "showActionbar" : this.json.actionbar === "show",
                 "filter": filter
             };
             var options = {};
@@ -279,11 +281,12 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "titleStyles": this.json.titleStyles,
                 "itemStyles": this.json.itemStyles,
                 "isExpand": this.json.isExpand || "no",
+                "showActionbar" : this.json.actionbar === "show",
                 "filter": filter
             };
             var options = {};
-            var width = options.width || "800";
-            var height = options.height || "600";
+            var width = options.width || "850";
+            var height = options.height || "700";
 
             if (layout.mobile){
                 var size = document.body.getSize();

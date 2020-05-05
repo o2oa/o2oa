@@ -26,61 +26,41 @@ public class CommandFactory {
 	public static final Pattern stop_pattern = Pattern
 			.compile("^ {0,}stop {0,}(data|storage|center|application|web|all|) {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern dump_path_pattern = Pattern.compile("^ {0,}dump (data|storage) path (.+) (.+)$",
-			Pattern.CASE_INSENSITIVE);
+	// public static final Pattern dump_path_pattern = Pattern.compile("^ {0,}dump
+	// (data|storage) path (.+) (.+)$",
+	// Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern dump_pattern = Pattern.compile("^ {0,}dump {0,}(data|storage) (.+)$",
-			Pattern.CASE_INSENSITIVE);
+	// public static final Pattern dump_pattern = Pattern.compile("^ {0,}dump
+	// {0,}(data|storage) (.+)$",
+	// Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern restore_path_pattern = Pattern
-			.compile("^ {0,}restore {1,}(data|storage) {1,}path {1,}(.+) {1,}(.+)$", Pattern.CASE_INSENSITIVE);
+	// public static final Pattern restore_path_pattern = Pattern
+	// .compile("^ {0,}restore {1,}(data|storage) {1,}path {1,}(.+) {1,}(.+)$",
+	// Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern restore_pattern = Pattern.compile(
-			"^ {0,}restore {0,}(data|storage) {0,}([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9]) (.+)$",
-			Pattern.CASE_INSENSITIVE);
+	// public static final Pattern restore_pattern = Pattern.compile(
+	// "^ {0,}restore {0,}(data|storage)
+	// {0,}([2][0][1-9][0-9][0-1][0-9][0-3][0-9][0-5][0-9][0-5][0-9][0-5][0-9])
+	// (.+)$",
+	// Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern help_pattern = Pattern.compile("^ {0,}help {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern exit_pattern = Pattern.compile("^ {0,}exit {0,}$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) (.+)$",
-			Pattern.CASE_INSENSITIVE);
+	// public static final Pattern updateFile_pattern = Pattern.compile("^ {0,}update file (.+) (true|false) {0,}$",
+	// 		Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern version_pattern = Pattern.compile("^ {0,}version {0,}$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern setPassword_pattern = Pattern.compile("^ {0,}setPassword (.+) (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern erase_content_pattern = Pattern.compile("^ {0,}erase content (cms|pp|bbs|log) (.+)$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern compact_data_pattern = Pattern.compile("^ {0,}compact data (.+)$",
-			Pattern.CASE_INSENSITIVE);
-
 	public static final Pattern convert_dataItem_pattern = Pattern.compile("^ {0,}convert dataItem (.+)$",
 			Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern show_os_pattern = Pattern.compile("^ {0,}show os ([1-9][0-9]*) ([1-9][0-9]*) {0,}$",
+	public static final Pattern control_pattern = Pattern.compile("^(\\s*)ctl(\\s*)",
 			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern show_memory_pattern = Pattern
-			.compile("^ {0,}show memory ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern show_thread_pattern = Pattern
-			.compile("^ {0,}show thread ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern show_cpu_pattern = Pattern.compile("^ {0,}show cpu ([1-9][0-9]*) ([1-9][0-9]*) {0,}$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern show_http_thread_pattern = Pattern
-			.compile("^ {0,}show http thread ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
-//	public static final Pattern show_dataSource_pattern = Pattern
-//			.compile("^ {0,}show dataSource ([1-9][0-9]*) ([1-9][0-9]*) {0,}$", Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern stack_pattern = Pattern.compile("^ {0,}stack ([1-9][0-9]*) ([1-9][0-9]*) (.+)$",
-			Pattern.CASE_INSENSITIVE);
-
-	public static final Pattern heapDump_pattern = Pattern.compile("^ {0,}heap dump (.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static void printStartHelp() {
 		try {
@@ -104,45 +84,49 @@ public class CommandFactory {
 	public static void printHelpLine() {
 		try {
 			String help = "";
-			help += " help" + "\t\t\t\t\t\t\t" + "show useage message.";
+			help += " help                                   show usage message.";
 			help += StringUtils.LF;
-			help += " start|stop [all]" + "\t\t\t\t\t" + "start stop all enable server.";
+			help += " start|stop [all]                       start stop all enable server.";
 			help += StringUtils.LF;
-			help += " start|stop data" + "\t\t\t\t\t" + "start stop data server.";
+			help += " start|stop data                        start stop data server.";
 			help += StringUtils.LF;
-			help += " start|stop storage" + "\t\t\t\t\t" + "start stop storage server.";
+			help += " start|stop storage                     start stop storage server.";
 			help += StringUtils.LF;
-			help += " start|stop center" + "\t\t\t\t\t" + "start stop center server.";
+			help += " start|stop center                      start stop center server.";
 			help += StringUtils.LF;
-			help += " start|stop application" + "\t\t\t\t\t" + "start stop application server.";
+			help += " start|stop application                 start stop application server.";
 			help += StringUtils.LF;
-			help += " start|stop web" + "\t\t\t\t\t\t" + "start stop web server.";
+			help += " start|stop web                         start stop web server.";
 			help += StringUtils.LF;
-			help += " dump data (passwd)" + "\t\t\t\t\t" + "dump data from database.";
+			// help += " dump data (passwd) dump data from database.";
+			// help += StringUtils.LF;
+			// help += " dump storage (passwd) dump storage from database,file.";
+			// help += StringUtils.LF;
+			// help += " restore data yyyyMMddHHmmss (passwd)" + "\t\t\t" + "restore data to
+			// database.";
+			// help += StringUtils.LF;
+			// help += " restore storage yyyyMMddHHmmss (passwd)" + "\t\t" + "restore
+			// storage to database,file.";
+			// help += StringUtils.LF;
+			help += " setPassword (oldpasswd) (newpasswd)    change initial manager password.";
 			help += StringUtils.LF;
-			help += " dump storage (passwd)" + "\t\t\t\t\t" + "dump storage from database,file.";
+			// help += " update file (path) (backup)            upgrade to new version from local zip file.";
+			// help += StringUtils.LF;
+			// help += " compact data (passwd) compact local h2 repository database.";
+			// help += StringUtils.LF;
+			// help += " erase content (cms|pp|bbs|log) (passwd)" + "\t\t" + "remove all
+			// data except design.";
+			// help += StringUtils.LF;
+			help += " create encrypt key                     create random RSA key.";
+			// help += StringUtils.LF;
+			// help += " show (os|cpu|memory|thread) interval repeat" + "\t\t" + "show
+			// operating system infomation.";
 			help += StringUtils.LF;
-			help += " restore data yyyyMMddHHmmss (passwd)" + "\t\t\t" + "restore data to database.";
+			help += " version                                show available update version.";
 			help += StringUtils.LF;
-			help += " restore storage yyyyMMddHHmmss (passwd)" + "\t\t" + "restore storage to database,file.";
+			help += " exit                                   exit after stop.";
 			help += StringUtils.LF;
-			help += " setPassword (oldpasswd) (newpasswd)" + "\t\t\t" + "change initial manager password.";
-//			help += StringUtils.LF;
-//			help += " update (backup) (latest) (passwd)" + "\t\t\t" + "upgrade to new version.";
-			help += StringUtils.LF;
-			help += " update file (path) (backup) (passwd)" + "\t\t\t" + "upgrade to new version from local zip file.";
-			help += StringUtils.LF;
-			help += " compact data (passwd)" + "\t\t\t\t\t" + "compact local h2 repository database.";
-			help += StringUtils.LF;
-			help += " erase content (cms|pp|bbs|log) (passwd)" + "\t\t" + "remove all data except design.";
-			help += StringUtils.LF;
-			help += " create encrypt key" + "\t\t\t\t\t" + "create random RSA key.";
-			help += StringUtils.LF;
-			help += " show (os|cpu|memory|thread) interval repeat" + "\t\t" + "show operating system infomation.";
-			help += StringUtils.LF;
-			help += " version " + "\t\t\t\t\t\t" + "show available update version.";
-			help += StringUtils.LF;
-			help += " exit" + "\t\t\t\t\t\t\t" + "exit after stop.";
+			help += " ctl -<argument> option                 system control command, no argument display help.";
 			help += StringUtils.LF;
 			System.out.println(help);
 		} catch (Exception e) {

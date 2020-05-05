@@ -78,6 +78,11 @@
         </table>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+<!--            <tr>-->
+<!--                <td colspan="2" class="editTableValue"><b>提交表单:</b>-->
+<!--                    <div class="MWFFormSelect" name="submitForm"></div>-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
                 <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
                     <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
@@ -107,7 +112,7 @@
 
 	</div>
     <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
-        <div class="MWFDefaultActionArea" name="defaultTools"></div>
+        <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
         <div class="MWFActionArea" name="tools"></div>
     </div>
 	<div title="事件"  class="MWFTab">

@@ -56,6 +56,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
                     this.createApplicationItem(json.data, "top");
                 }.bind(this));
 
+                this.reloadApplicationCategoryList(true);
                 this.notice(this.lp.application.createApplicationSuccess, "success");
             }.bind(this));
         }else{
@@ -100,6 +101,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
 
                 var complete = function(){
                     if (doCount == readyCount){
+                        _self.reloadApplicationCategoryList( true );
                         if (errorText){
                             _self.app.notice(errorText, "error");
                         }

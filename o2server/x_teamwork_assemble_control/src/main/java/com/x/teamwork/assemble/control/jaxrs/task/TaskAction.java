@@ -300,4 +300,109 @@ public class TaskAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	@JaxrsMethodDescribe(value = "列示(视图)当前项目所有工作任务信息,下一页.", action = ActionViewAllListNextWithFilter.class)
+	@PUT
+	@Path("listall/{id}/next/{count}/projectId/{projectId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listAllTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("当前项目ID") @PathParam( "projectId" ) String projectId, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionViewAllListNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionViewAllListNextWithFilter().execute(request, effectivePerson, id, count, projectId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "列示(视图)当前项目我负责的工作任务信息,下一页.", action = ActionViewMyExecutListNextWithFilter.class)
+	@PUT
+	@Path("listmyexecut/{id}/next/{count}/projectId/{projectId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMyExecutTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("当前项目ID") @PathParam( "projectId" ) String projectId, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionViewMyExecutListNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionViewMyExecutListNextWithFilter().execute(request, effectivePerson, id, count, projectId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "列示(视图)当前项目未完成的工作任务信息,下一页.", action = ActionViewUncompletedListNextWithFilter.class)
+	@PUT
+	@Path("listuncompleted/{id}/next/{count}/projectId/{projectId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listUncompletedTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("当前项目ID") @PathParam( "projectId" ) String projectId, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionViewUncompletedListNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionViewUncompletedListNextWithFilter().execute(request, effectivePerson, id, count, projectId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "列示(视图)当前项目已完成的工作任务信息,下一页.", action = ActionViewCompletedListNextWithFilter.class)
+	@PUT
+	@Path("listcompleted/{id}/next/{count}/projectId/{projectId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listCompletedTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("当前项目ID") @PathParam( "projectId" ) String projectId, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionViewCompletedListNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionViewCompletedListNextWithFilter().execute(request, effectivePerson, id, count, projectId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "列示(视图)当前项目逾期的工作任务信息,下一页.", action = ActionViewOverTimeListNextWithFilter.class)
+	@PUT
+	@Path("listovertime/{id}/next/{count}/projectId/{projectId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listOverTimeTaskNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("当前项目ID") @PathParam( "projectId" ) String projectId, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionViewOverTimeListNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionViewOverTimeListNextWithFilter().execute(request, effectivePerson, id, count, projectId, jsonElement );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

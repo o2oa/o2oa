@@ -12,21 +12,11 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.FileLock;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.quartz.Scheduler;
 
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
@@ -35,29 +25,22 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.server.console.action.ActionCompactData;
+import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.action.ActionConfig;
+import com.x.server.console.action.ActionControl;
 import com.x.server.console.action.ActionCreateEncryptKey;
-import com.x.server.console.action.ActionDumpData;
-import com.x.server.console.action.ActionDumpStorage;
-import com.x.server.console.action.ActionEraseContentBbs;
-import com.x.server.console.action.ActionEraseContentCms;
-import com.x.server.console.action.ActionEraseContentLog;
-import com.x.server.console.action.ActionEraseContentProcessPlatform;
-import com.x.server.console.action.ActionHeapDump;
-import com.x.server.console.action.ActionRestoreData;
-import com.x.server.console.action.ActionRestoreStorage;
 import com.x.server.console.action.ActionSetPassword;
-import com.x.server.console.action.ActionShowCpu;
-import com.x.server.console.action.ActionShowHttpThread;
-import com.x.server.console.action.ActionShowMemory;
-import com.x.server.console.action.ActionShowOs;
-import com.x.server.console.action.ActionShowThread;
-import com.x.server.console.action.ActionStack;
-import com.x.server.console.action.ActionUpdateFile;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.deploy.App;
+import org.eclipse.jetty.deploy.DeploymentManager;
+import org.quartz.Scheduler;
 
 public class Main {
 
@@ -80,8 +63,8 @@ public class Main {
 			throw new Exception("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
 		}
 		final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
-//		try (PipedInputStream pipedInput = new PipedInputStream();
-//				PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
+		// try (PipedInputStream pipedInput = new PipedInputStream();
+		// PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
 		new Thread() {
 			/* 文件中的命令输出到解析器 */
 			public void run() {
@@ -105,6 +88,7 @@ public class Main {
 							cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
 							System.out.println("read command:" + cmd);
 							commandQueue.put(cmd);
+							continue;
 						}
 						Thread.sleep(1000);
 					}
@@ -123,8 +107,9 @@ public class Main {
 						/** 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值 */
 						if (null != cmd) {
 							commandQueue.put(cmd);
+							continue;
 						}
-						Thread.sleep(4000);
+						Thread.sleep(5000);
 					}
 				} catch (Exception e) {
 					System.out.println("console input closed!");
@@ -157,149 +142,51 @@ public class Main {
 				continue;
 			}
 
-			matcher = CommandFactory.show_os_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showOs(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
-			matcher = CommandFactory.show_cpu_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showCpu(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
-			matcher = CommandFactory.stack_pattern.matcher(cmd);
-			if (matcher.find()) {
-				stack(matcher.group(1), matcher.group(2), matcher.group(3));
-				continue;
-			}
-
-			matcher = CommandFactory.heapDump_pattern.matcher(cmd);
-			if (matcher.find()) {
-				heapDump(matcher.group(1));
-				continue;
-			}
-
-			matcher = CommandFactory.show_memory_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showMemory(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
-			matcher = CommandFactory.show_thread_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showThread(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
-			matcher = CommandFactory.show_http_thread_pattern.matcher(cmd);
-			if (matcher.find()) {
-				showHttpThread(matcher.group(1), matcher.group(2));
-				continue;
-			}
-
 			matcher = CommandFactory.start_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-				case "application":
-					startApplicationServer();
-					break;
-				case "center":
-					startCenterServer();
-					break;
-				case "web":
-					startWebServer();
-					break;
-				case "storage":
-					startStorageServer();
-					break;
-				case "data":
-					startDataServer();
-					break;
-				default:
-					startAll();
-					break;
+					case "application":
+						startApplicationServer();
+						break;
+					case "center":
+						startCenterServer();
+						break;
+					case "web":
+						startWebServer();
+						break;
+					case "storage":
+						startStorageServer();
+						break;
+					case "data":
+						startDataServer();
+						break;
+					default:
+						startAll();
+						break;
 				}
 				continue;
 			}
 			matcher = CommandFactory.stop_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-				case "application":
-					stopApplicationServer();
-					break;
-				case "center":
-					stopCenterServer();
-					break;
-				case "web":
-					stopWebServer();
-					break;
-				case "storage":
-					stopStorageServer();
-					break;
-				case "data":
-					stopDataServer();
-					break;
-				default:
-					stopAll();
-					break;
-				}
-				continue;
-			}
-			matcher = CommandFactory.dump_path_pattern.matcher(cmd);
-			if (matcher.find()) {
-				switch (matcher.group(1)) {
-				case "data":
-					dumpData(matcher.group(2), matcher.group(3));
-					break;
-				case "storage":
-					dumpStorage(matcher.group(2), matcher.group(3));
-					break;
-				default:
-					break;
-				}
-				continue;
-			}
-			matcher = CommandFactory.dump_pattern.matcher(cmd);
-			if (matcher.find()) {
-				switch (matcher.group(1)) {
-				case "data":
-					dumpData("", matcher.group(2));
-					break;
-				case "storage":
-					dumpStorage("", matcher.group(2));
-					break;
-				default:
-					break;
-				}
-				continue;
-			}
-			matcher = CommandFactory.restore_path_pattern.matcher(cmd);
-			if (matcher.find()) {
-				switch (matcher.group(1)) {
-				case "data":
-					resotreDataPath(matcher.group(2), matcher.group(3));
-					break;
-				case "storage":
-					resotreStoragePath(matcher.group(2), matcher.group(3));
-					break;
-				default:
-					break;
-				}
-				continue;
-			}
-			matcher = CommandFactory.restore_pattern.matcher(cmd);
-			if (matcher.find()) {
-				switch (matcher.group(1)) {
-				case "data":
-					resotreData(matcher.group(2), matcher.group(3));
-					break;
-				case "storage":
-					resotreStorage(matcher.group(2), matcher.group(3));
-					break;
-				default:
-					break;
+					case "application":
+						stopApplicationServer();
+						break;
+					case "center":
+						stopCenterServer();
+						break;
+					case "web":
+						stopWebServer();
+						break;
+					case "storage":
+						stopStorageServer();
+						break;
+					case "data":
+						stopDataServer();
+						break;
+					default:
+						stopAll();
+						break;
 				}
 				continue;
 			}
@@ -315,16 +202,6 @@ public class Main {
 				continue;
 			}
 
-			matcher = CommandFactory.updateFile_pattern.matcher(cmd);
-			if (matcher.find()) {
-				if (updateFile(matcher.group(1), matcher.group(2), matcher.group(3))) {
-					stopAll();
-					System.exit(0);
-				} else {
-					continue;
-				}
-			}
-
 			matcher = CommandFactory.setPassword_pattern.matcher(cmd);
 			if (matcher.find()) {
 				setPassword(matcher.group(1), matcher.group(2));
@@ -335,37 +212,15 @@ public class Main {
 				}
 			}
 
-			matcher = CommandFactory.erase_content_pattern.matcher(cmd);
-			if (matcher.find()) {
-				switch (matcher.group(1)) {
-				case "pp":
-					eraseContentProcessPlatform(matcher.group(2));
-					break;
-				case "cms":
-					eraseContentCms(matcher.group(2));
-					break;
-				case "log":
-					eraseContentLog(matcher.group(2));
-					break;
-				case "bbs":
-					eraseContentBbs(matcher.group(2));
-					break;
-
-				default:
-					break;
-				}
-				continue;
-			}
-
-			matcher = CommandFactory.compact_data_pattern.matcher(cmd);
-			if (matcher.find()) {
-				compactData(matcher.group(1));
-				continue;
-			}
-
 			matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
 			if (matcher.find()) {
 				createEncryptKey(matcher.group(1));
+				continue;
+			}
+
+			matcher = CommandFactory.control_pattern.matcher(cmd);
+			if (matcher.find()) {
+				control(cmd);
 				continue;
 			}
 
@@ -397,63 +252,9 @@ public class Main {
 		return true;
 	}
 
-	private static boolean showOs(String interval, String repeat) {
-		try {
-			return new ActionShowOs().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean showCpu(String interval, String repeat) {
-		try {
-			return new ActionShowCpu().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean showMemory(String interval, String repeat) {
-		try {
-			return new ActionShowMemory().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean showThread(String interval, String repeat) {
-		try {
-			return new ActionShowThread().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean showHttpThread(String interval, String repeat) {
-		try {
-			return new ActionShowHttpThread().execute(Integer.parseInt(interval, 10), Integer.parseInt(repeat, 10));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
 	private static boolean createEncryptKey(String password) {
 		try {
 			return new ActionCreateEncryptKey().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean updateFile(String path, String backup, String password) {
-		try {
-			return new ActionUpdateFile().execute(path, BooleanUtils.toBoolean(backup), password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -600,34 +401,26 @@ public class Main {
 	private static void startAll() {
 		try {
 			DataServer dataServer = Config.currentNode().getData();
-			if (null != dataServer) {
-				if (BooleanUtils.isTrue(dataServer.getEnable())) {
-					startDataServer();
-				}
+			if ((null != dataServer) && (BooleanUtils.isTrue(dataServer.getEnable()))) {
+				startDataServer();
 			}
+
 			StorageServer storageServer = Config.currentNode().getStorage();
-			if (null != storageServer) {
-				if (BooleanUtils.isTrue(storageServer.getEnable())) {
-					startStorageServer();
-				}
+			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
+				startStorageServer();
 			}
+
 			CenterServer centerServer = Config.currentNode().getCenter();
-			if (null != centerServer) {
-				if (BooleanUtils.isTrue(centerServer.getEnable())) {
-					startCenterServer();
-				}
+			if ((null != centerServer) && (BooleanUtils.isTrue(centerServer.getEnable()))) {
+				startCenterServer();
 			}
 			ApplicationServer applicationServer = Config.currentNode().getApplication();
-			if (null != applicationServer) {
-				if (BooleanUtils.isTrue(applicationServer.getEnable())) {
-					startApplicationServer();
-				}
+			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
+				startApplicationServer();
 			}
 			WebServer webServer = Config.currentNode().getWeb();
-			if (null != webServer) {
-				if (BooleanUtils.isTrue(webServer.getEnable())) {
-					startWebServer();
-				}
+			if ((null != webServer) && (BooleanUtils.isTrue(webServer.getEnable()))) {
+				startWebServer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -642,97 +435,35 @@ public class Main {
 	private static void stopAll() {
 		try {
 			WebServer webServer = Config.currentNode().getWeb();
-			if (null != webServer) {
-				if (BooleanUtils.isTrue(webServer.getEnable())) {
-					stopWebServer();
-				}
+			if ((null != webServer) && (BooleanUtils.isTrue(webServer.getEnable()))) {
+				stopWebServer();
 			}
 			ApplicationServer applicationServer = Config.currentNode().getApplication();
-			if (null != applicationServer) {
-				if (BooleanUtils.isTrue(applicationServer.getEnable())) {
-					stopApplicationServer();
-				}
+			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
+				stopApplicationServer();
 			}
-			if (Config.currentNode().getIsPrimaryCenter()) {
+			if (BooleanUtils.isTrue(Config.currentNode().getIsPrimaryCenter())) {
 				stopCenterServer();
 			}
 			StorageServer storageServer = Config.currentNode().getStorage();
-			if (null != storageServer) {
-				if (BooleanUtils.isTrue(storageServer.getEnable())) {
-					stopStorageServer();
-				}
+			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
+				stopStorageServer();
 			}
 			DataServer dataServer = Config.currentNode().getData();
-			if (null != dataServer) {
-				if (BooleanUtils.isTrue(dataServer.getEnable())) {
-					stopDataServer();
-				}
+			if ((null != dataServer) && (BooleanUtils.isTrue(dataServer.getEnable()))) {
+				stopDataServer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static boolean dumpData(String path, String password) {
+	private static void control(String cmd) {
 		try {
-			return (new ActionDumpData()).execute(path, password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean dumpStorage(String path, String password) {
-		try {
-			return (new ActionDumpStorage()).execute(path, password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static void resotreData(String dateString, String password) {
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			Date date = format.parse(dateString);
-			File file = new File(Config.base(), "local/dump/dumpData_" + format.format(date));
-			if (file.exists() && file.isDirectory()) {
-				(new ActionRestoreData()).execute(date, password);
-			} else {
-				System.out.println("directory " + file.getAbsolutePath() + " not existed.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void resotreDataPath(String path, String password) {
-		try {
-			(new ActionRestoreData()).execute(path, password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void resotreStorage(String dateString, String password) {
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			Date date = format.parse(dateString);
-			File file = new File(Config.base(), "local/dump/dumpStorage_" + format.format(date));
-			if (file.exists() && file.isDirectory()) {
-				ActionRestoreStorage restoreStorage = new ActionRestoreStorage();
-				restoreStorage.execute(date, password);
-			} else {
-				System.out.println("directory " + file.getAbsolutePath() + " not existed.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void resotreStoragePath(String path, String password) {
-		try {
-			new ActionRestoreStorage().execute(path, password);
+			String[] args = StringTools.translateCommandline(cmd);
+			args = Arrays.copyOfRange(args, 1, args.length);
+			ActionControl action = new ActionControl();
+			action.execute(args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -746,7 +477,7 @@ public class Main {
 
 	/**
 	 * 检查store目录下的war文件是否全部在manifest.cfg中
-	 * 
+	 *
 	 * @param base o2server的根目录
 	 */
 	private static void scanWar(String base) throws Exception {
@@ -891,69 +622,6 @@ public class Main {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	private static boolean compactData(String password) throws Exception {
-		try {
-			return new ActionCompactData().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean eraseContentProcessPlatform(String password) throws Exception {
-		try {
-			return new ActionEraseContentProcessPlatform().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean eraseContentCms(String password) throws Exception {
-		try {
-			return new ActionEraseContentCms().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean eraseContentBbs(String password) throws Exception {
-		try {
-			return new ActionEraseContentBbs().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean eraseContentLog(String password) throws Exception {
-		try {
-			return new ActionEraseContentLog().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static boolean stack(String count, String interval, String password) {
-		try {
-			return new ActionStack().execute(Integer.parseInt(count, 10), Integer.parseInt(interval, 10), password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
-	}
-
-	private static boolean heapDump(String password) {
-		try {
-			return new ActionHeapDump().execute(password);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
 	}
 
 }

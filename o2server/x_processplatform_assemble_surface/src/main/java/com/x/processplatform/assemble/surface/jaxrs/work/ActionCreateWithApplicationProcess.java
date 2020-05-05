@@ -72,6 +72,9 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
+			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
+			}
 			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);

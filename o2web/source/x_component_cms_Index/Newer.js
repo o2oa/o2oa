@@ -469,7 +469,15 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 //this.app.refreshAll();
                 this.app.notice(this.lp.Started, "success");
                 //    this.app.processConfig();
-            }.bind(this), null);
+            }.bind(this), function(xhr, text, error){
+                if( xhr && xhr.response && typeOf(xhr.response)==="string" ){
+                    try{
+                        var eObj = JSON.parse(xhr.response);
+                        this.app.notice( eObj.message, "error");
+                    }catch (e) {}
+                }
+                if( this.mask )this.mask.hide();
+            }.bind(this));
         }
     },
     _openDocument: function(id,el){
@@ -483,10 +491,14 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "readonly" :false,
                 "documentId": id,
                 "appId": appId,
-                "postPublish" : function(){
-                    if(_self.view && _self.view.reload )_self.view.reload();
+                "onPostPublish" : function(){
                     this.fireEvent( "postPublish" );
-                }.bind(this)
+                }.bind(this),
+                "onAfterPublish" : function () {
+                    debugger;
+                    if(_self.view && _self.view.reload )_self.view.reload();
+                    _self.fireEvent( "afterPublish" );
+                }
             };
             if( typeOf(this.options.autoSave) == "boolean" )options.autoSave = this.options.autoSave;
             if( typeOf(this.options.saveOnClose) == "boolean" )options.saveOnClose = this.options.saveOnClose;

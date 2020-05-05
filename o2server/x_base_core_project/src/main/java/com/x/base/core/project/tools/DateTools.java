@@ -609,5 +609,53 @@ public class DateTools {
 		return dayForWeek; 
 	}
 
+
+	/**
+	 * 指定的日期，添加指定的天数
+	 *
+	 * @param date
+	 * @param dayCount
+	 * @return
+	 */
+	public static Date addDay(Date date, int dayCount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_YEAR, dayCount);// 指定的时间上加上n天
+		date = calendar.getTime();
+		return date;
+	}
+
+
+	/**
+	 * 时间戳转Unix时间戳
+	 * @param timestamp
+	 * @return
+	 */
+	public static long toUnixTimeStamp(long timestamp){
+		return timestamp/1000;
+	}
+
+	/**
+	 * Unix时间戳转时间戳
+	 * @param unixTimeStamp
+	 * @return
+	 */
+	public static long toTimestamp(long unixTimeStamp){
+		return unixTimeStamp*1000;
+	}
+
+
+	public static void main(String[] args) {
+		try {
+			Date today = new Date();
+			today = DateTools.floorDate(today, null);
+			Date sevenDayBefore = DateTools.addDay(today, -7);
+			System.out.println(DateTools.format(today));
+			System.out.println(DateTools.format(sevenDayBefore));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 	
 }

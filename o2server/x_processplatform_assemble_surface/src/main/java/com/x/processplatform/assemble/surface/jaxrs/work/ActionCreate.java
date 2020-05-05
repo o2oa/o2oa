@@ -67,6 +67,9 @@ class ActionCreate extends BaseAction {
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
+			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
+			}
 			Application application = business.application().pick(process.getApplication());
 			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
@@ -358,7 +361,7 @@ class ActionCreate extends BaseAction {
 				return list.get(0);
 			}
 		}
-		throw new Exception("decideCreatorIdentity error:" + wi.toString());
+		throw new ExceptionDecideCreatorIdentity();
 	}
 
 	private void referenceTask(Business business, Wo wo) throws Exception {

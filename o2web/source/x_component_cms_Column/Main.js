@@ -37,9 +37,14 @@ MWF.xApplication.cms.Column.Main = new Class({
             "styles": this.css.container
         }).inject(this.content);
     },
-    reload: function(){
-        this.columnContentAreaNode.empty();
-        this.createColumnNodes();
+    reload: function(appType, callback){
+        // if( appType ){
+            this.reloadTop(appType, callback);
+        // }else{
+        //     this.reloadTop();
+            // this.columnContentAreaNode.empty();
+            // this.createColumnNodes(callback);
+        // }
     },
     loadApplicationContent: function () {
         //this.columnAreaNode = new Element("div", {
@@ -63,10 +68,19 @@ MWF.xApplication.cms.Column.Main = new Class({
             this.setContentSize();
         }.bind(this));
     },
-    loadTopNode: function(){
-        this.columnToolbarAreaNode = new Element("div.columnToolbarAreaNode", {
-            "styles": this.css.columnToolbarAreaNode
-        }).inject(this.node);
+    reloadTop : function( appType, callback, noRefreshContent ){
+        this.columnToolbarAreaNode.empty();
+        if( !appType )appType = this.currentAppType;
+        this.currentAppType = null;
+        this.currentAppTypeNode = null;
+        this.loadTopNode( appType, callback, noRefreshContent );
+    },
+    loadTopNode: function( appType, callback, noRefreshContent ){
+        if( !this.columnToolbarAreaNode ){
+            this.columnToolbarAreaNode = new Element("div.columnToolbarAreaNode", {
+                "styles": this.css.columnToolbarAreaNode
+            }).inject(this.node);
+        }
 
         this.columnAllTypeNode =  new Element("div.columnTop_All",{
             "styles" : this.css.columnTop_All,
@@ -83,6 +97,10 @@ MWF.xApplication.cms.Column.Main = new Class({
                 this.setCurrentAppType( "all", this.columnAllTypeNode );
             }.bind(this)
         });
+        if( appType && appType === "all" ){
+            this.setCurrentAppType( "all", this.columnAllTypeNode, callback, noRefreshContent );
+        }
+
 
         if (MWF.AC.isCMSManager()) {
             this.createColumnNode = new Element("div.createColumnNode", {
@@ -106,7 +124,7 @@ MWF.xApplication.cms.Column.Main = new Class({
             "styles": this.css.columnTop_category
         }).inject(this.columnToolbarAreaNode);
 
-        this.loadAppType();
+        this.loadAppType( appType, callback, noRefreshContent );
 
 
         //this.columnToolbarTextNode = new Element("div.columnToolbarTextNode", {
@@ -114,11 +132,12 @@ MWF.xApplication.cms.Column.Main = new Class({
         //    "text": this.lp.column.title
         //}).inject(this.columnToolbarAreaNode);
     },
-    loadAppType : function(){
+    loadAppType : function( appType, callback, noRefreshContent ){
         var _self = this;
+        debugger;
         this.restActions.listAllAppTypeByManager( function( json ){
             (json.data || []).each( function( typeObject ){
-                new Element( "div.columnTop_category", {
+                var cNode = new Element( "div.columnTop_category", {
                     "styles" : this.css.columnTop_categoryItem,
                     "text" : typeObject.appType + "(" + typeObject.count + ")",
                     "events" : {
@@ -133,6 +152,9 @@ MWF.xApplication.cms.Column.Main = new Class({
                         }.bind( typeObject.appType )
                     }
                 }).inject( this.columnTypeListContaienr )
+                if( appType && appType === typeObject.appType ){
+                    _self.setCurrentAppType( this, cNode, callback, noRefreshContent );
+                }
             }.bind(this))
             if (this.columnTypeListContaienr.getScrollSize().y>this.columnTypeListContaienr.getSize().y) this.createTypeExpandButton();
         }.bind(this))
@@ -160,7 +182,7 @@ MWF.xApplication.cms.Column.Main = new Class({
         }
         e.stopPropagation();
     },
-    setCurrentAppType : function( appType, target ){
+    setCurrentAppType : function( appType, target, callback, noRefreshContent ){
         if( this.currentAppType ){
             if( this.currentAppType === "all" ){
                 this.currentAppTypeNode.setStyles( this.css.columnTop_All );
@@ -180,7 +202,9 @@ MWF.xApplication.cms.Column.Main = new Class({
         this.currentAppType = appType;
         this.currentAppTypeNode = target;
 
-        this.createColumnNodes();
+        if(!noRefreshContent){
+            this.createColumnNodes( callback );
+        }
     },
     setContentSize: function(){
         var nodeSize = this.node.getSize();
@@ -291,15 +315,17 @@ MWF.xApplication.cms.Column.Main = new Class({
     //hasPermision: function (appId) {
     //    return this.isAdmin || this.availableApp.contains(appId);
     //},
-    createColumnNodes: function () {
+    createColumnNodes: function ( callback ) {
         this.columnContentAreaNode.empty();
         if( this.currentAppType === "all" ){
             this.restActions.listAppByManager(function (json){
-                this._createColumnNodes( json )
+                this._createColumnNodes( json );
+                if(callback)callback();
             }.bind(this));
         }else{
             this.restActions.listWhatICanManageWithAppType(this.currentAppType, function (json){
-                this._createColumnNodes( json )
+                this._createColumnNodes( json );
+                if(callback)callback();
             }.bind(this))
         }
 
@@ -700,6 +726,7 @@ MWF.xApplication.cms.Column.Column = new Class({
     },
     _deleteElement: function (id, success, failure) {
         this.app.restActions.removeColumn( id || this.data.id, function () {
+            this.app.reloadTop(null, null, true);
             this.destroy();
             if (success) success();
         }.bind(this), function( error ){
@@ -912,6 +939,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
                         var column = new MWF.xApplication.cms.Column.Column(this.app, json.data, {"where": "top"});
                         column.load();
                         this.app.columns.push(column);
+                        this.app.reloadTop(null, null, true);
                     }else{
                         this.app.reload();
                     }

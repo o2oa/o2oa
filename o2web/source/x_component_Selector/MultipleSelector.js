@@ -9,7 +9,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         "style": "default",
         "types" : [],
         "count": 0,
-        "title": "Select",
+        "title": MWF.xApplication.Selector.LP.multiSelectTitle,
         "groups": [], //选person, group, role 时的范围
         "roles": [], //选选person, group, role 时的范围
         "units": [], //选 company, department, duty, identity 时的范围
@@ -22,6 +22,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         "injectToBody" : false //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
     },
     initialize: function(container, options){
+        this.active = true;
         this.setOptions(options);
 
         this.path = "/x_component_Selector/$Selector/";
@@ -222,7 +223,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         });
         this.node = new Element("div", {"styles": this.css.containerNodeMobile});
         this.node.setStyle("z-index", this.options.zIndex.toInt()+1);
-        this.node.setStyle("height", ( document.body.getSize().y ) + "px");
+        this.node.setStyle("height", ( $(document.body).getSize().y ) + "px");
         this.titleNode = new Element("div", {
             "styles": this.css.titleNodeMobile
         }).inject(this.node);
@@ -254,7 +255,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
 
-        var size = document.body.getSize();
+        var size = $(document.body).getSize();
         //var height = size.y-40;
         var height = size.y;
         this.contentNode.setStyle("height", ""+height+"px");
@@ -262,7 +263,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
         this.loadContent();
 
-        this.node.inject(document.body);
+        this.node.inject($(document.body));
         this.node.setStyles({
             "top": "0px",
             "left": "0px"
@@ -376,6 +377,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.fireEvent("close");
         this.node.destroy();
         (this.maskRelativeNode || this.container).unmask();
+        this.active = false;
         MWF.release(this);
         delete this;
     },

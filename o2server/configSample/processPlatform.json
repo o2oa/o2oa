@@ -31,12 +31,12 @@
     "thresholdDays": 730.0,
     "###enable": "是否启用###",
     "###cron": "定时cron表达式###",
-    "###thresholdDays": "期限,已完成工作结束间隔指定时间进行merge,默认两年后进行merge###"
+    "###thresholdDays": "期限,已完成工作结束间隔指定时间进行combine,默认两年后进行combine###"
   },
   "deleteDraft": {
     "enable": false,
     "cron": "0 0 20 * * ?",
-    "thresholdMinutes": 14400.0,
+    "thresholdMinutes": 86400.0,
     "###enable": "是否启用###",
     "###cron": "定时cron表达式###",
     "###thresholdMinutes": "设定阈值,如果超过这个时间认为是可以删除的草稿,默认为10天.###"

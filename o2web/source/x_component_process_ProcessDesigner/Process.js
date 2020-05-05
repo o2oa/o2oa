@@ -126,6 +126,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.setEvent();
 		this.setMenu();
 		this.showProperty();
+		this.showEditionInfor();
 	},
 	checkLoadRoutes: function(){
 		Object.each(this.routes, function(route){
@@ -173,7 +174,6 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			for (var i=0; i<this.activitys.length; i++){
 				this.activitys[i].checkUUID();
 			}
-			//
 		}.bind(this));
 	},
 	
@@ -190,6 +190,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.reload(this.process);
 	},
 	reload: function(process){
+		debugger;
 		//this.process = process;
 		this.panel.destroy();
 		this.paper.clear();
@@ -205,6 +206,16 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//	this.loadActivityDecisions();
 		}.bind(this));
 		this.showProperty();
+		this.showEditionInfor();
+		if (process && this.designer.options.id != process.id){
+			var app = layout.desktop.apps["process.ProcessDesigner"+this.designer.options.id];
+			if (app){
+				delete layout.desktop.apps["process.ProcessDesigner"+this.designer.options.id];
+				this.designer.appId = "process.ProcessDesigner"+process.id;
+				layout.desktop.apps[this.designer.appId] = this.designer;
+			}
+			this.designer.setOptions({"id": process.id});
+		}
 	},
 	setEvent: function(){
 		this.paper.canvas.addEvent("selectstart", function(e){e.preventDefault();e.stopPropagation();});
@@ -366,6 +377,48 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		}
     //    this.isFocus = true;
 	},
+	showEditionInfor: function(){
+		if (this.process.edition){
+			if (this.designer.processEditionNode){
+				this.designer.processEditionNode.removeEvents("click");
+				if (this.process.editionEnable){
+					this.designer.processEditionNode.set("text", this.designer.lp.enable);
+					this.designer.processEditionNode.addClass("mainColor_bg");
+				}else{
+					this.designer.processEditionNode.set("text", this.designer.lp.notEnable);
+					this.designer.processEditionNode.removeClass("mainColor_bg");
+
+					this.designer.processEditionNode.addEvent("click", function(e){
+						this.enableCurrentEdition(e);
+					}.bind(this));
+				}
+			}
+			if (this.designer.processEditionInforNode){
+				var text = this.designer.lp.currentEdition+": <span class='mainColor_color'>"+this.process.editionNumber+"</span> "+this.designer.lp.editionUpdate+": <span class='mainColor_color'>"+o2.name.cn(this.process.lastUpdatePerson)+" ("+this.process.updateTime+")</span>";
+				this.designer.processEditionInforNode.set("html", text);
+
+				this.designer.processEditionInforNode.addEvent("click", function(e){
+					this.listEdition(e);
+				}.bind(this));
+			}
+		}
+	},
+	enableCurrentEdition: function(e){
+		var _self = this;
+		this.designer.confirm("infor", e, this.designer.lp.edition_list.enabledProcessTitle, {"html": this.designer.lp.edition_list.enabledProcessInfor}, 600, 120, function(){
+			_self.save(function(){
+				var actions = o2.Actions.load("x_processplatform_assemble_designer").ProcessAction;
+				actions.enableProcess(this.process.id, function(json){
+					actions.get(this.process.id, function(json){
+						this.reload(json.data);
+					}.bind(this))
+				}.bind(this));
+			}.bind(_self));
+			this.close();
+		},function(){this.close();})
+
+	},
+
 	unSelected: function(e){
 		//var els = this.paper.getElementsByPoint(e.event.layerX, e.event.layerY);
 		var els = this.paper.getElementsByPoint(e.event.offsetX, e.event.offsetY);
@@ -373,7 +426,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.unSelectedAll();
 			this.showProperty();
 	//		if (this.currentSelected){
-	//			this.currentSelected.unSelected();		
+	//			this.currentSelected.unSelected();
 	//		} 
 		}
 	},
@@ -483,6 +536,127 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		//unrealized
 		this.designer.alert("error", e, "", MWF.APPPD.LP.unrealized, 220, 100);
 	},
+	saveNewEdition: function(e){
+		if (this.process.isNewProcess){
+			this.save();
+		}else{
+			var node = new Element("div", {"styles":this.designer.css.saveNewEditionNode});
+			var inforNode = new Element("div", {"html":this.designer.lp.upgradeInfor}).inject(node);
+			var descriptionNode = new Element("div", {"styles": this.designer.css.editionDescriptionNode}).inject(node);
+			var descriptionTitleNode = new Element("div", {"styles": this.designer.css.descriptionTitleNode, "text": this.designer.lp.editionDiscription}).inject(descriptionNode);
+			var descriptionTextAreaNode = new Element("textarea", {"styles": this.designer.css.descriptionTextAreaNode}).inject(descriptionNode);
+
+			var _self = this;
+			o2.DL.open({
+				"content": node,
+				"title": this.designer.lp.upgradeConfirm,
+				"offset": {"y": -100},
+				"height": 340,
+				"width": 580,
+				"buttonList": [{
+					"type": "ok",
+					"text": this.designer.lp.ok,
+					"action": function(){
+						var textarea = this.content.getElement("textarea");
+						var discription = textarea.get("value");
+						if (!discription) {
+							_self.designer.notice(_self.designer.lp.inputDiscription, "error", descriptionNode);
+						}else{
+							var checkbox = this.content.getElement("input");
+							var enable = (!!checkbox && checkbox.get("checked"));
+
+							_self.doSaveNewEdition(enable, discription);
+							this.close();
+						}
+					}
+				},{
+					"type": "cancel",
+					"text": this.designer.lp.cancel,
+					"action": function(){
+						this.close();
+					}
+				}]
+			});
+
+			// var _self = this;
+			// this.designer.confirm("infor", e, this.designer.lp.upgradeConfirm, {"html": this.designer.lp.upgradeInfor}, 520, 210, function(){
+			// 	var checkbox = this.content.getElement("input");
+			// 	var enable = (!!checkbox && checkbox.get("checked"));
+			// 	_self.doSaveNewEdition(enable);
+			// 	this.close();
+			// }, function(){
+			// 	this.close();
+			// });
+		}
+	},
+	doSaveNewEdition: function(enable, description){
+		debugger;
+		var process = Object.clone(this.process);
+		process.editionDes = description;
+		var oldIds = [];
+		oldIds.push(process.id);
+		if (process.begin) oldIds.push(process.begin.id);
+		if (process.endList) process.endList.each(function(a){oldIds.push(a.id);});
+		if (process.agentList) process.agentList.each(function(a){oldIds.push(a.id);});
+		if (process.manualList) process.manualList.each(function(a){oldIds.push(a.id);});
+		if (process.conditionList) process.conditionList.each(function(a){oldIds.push(a.id);});
+		if (process.choiceList) process.choiceList.each(function(a){oldIds.push(a.id);});
+		if (process.parallelList) process.parallelList.each(function(a){oldIds.push(a.id);});
+		if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
+		if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
+		if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
+		if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
+		if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
+		if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
+		if (process.messageList) process.messageList.each(function(a){oldIds.push(a.id);});
+		if (process.serviceList) process.serviceList.each(function(a){oldIds.push(a.id);});
+		if (process.routeList) process.routeList.each(function(a){oldIds.push(a.id);});
+
+		var actions = o2.Actions.load("x_processplatform_assemble_designer");
+		this.designer.actions.getId(oldIds.length, function(ids) {
+			var checkUUIDs = ids.data;
+			var processStr = JSON.encode(process);
+			oldIds.each(function(oid, i){
+				var reg = new RegExp(oid, "ig");
+				processStr = processStr.replace(reg, checkUUIDs[i].id);
+			}.bind(this));
+			process = JSON.decode(processStr);
+			actions.ProcessAction.upgrade(this.process.id, process, function(json){
+				var processId = json.data.id;
+				if (enable){
+					actions.ProcessAction.enableProcess(processId, function(processJson){
+						actions.ProcessAction.get(processId, function(processJson){
+							this.reload(processJson.data);
+						}.bind(this))
+					}.bind(this))
+				}else{
+					actions.ProcessAction.get(processId, function(processJson){
+						this.reload(processJson.data);
+					}.bind(this))
+				}
+			}.bind(this));
+		}.bind(this));
+	},
+
+	listEdition: function(){
+		if (this.process.edition){
+			if (!this.editionListDlg){
+				MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.EditionList", function(){
+					this.editionListDlg = new MWF.xApplication.process.ProcessDesigner.widget.EditionList(this.process.application, this.process.edition, this);
+					this.editionListDlg.load();
+				}.bind(this));
+			}else{
+				this.editionListDlg.show();
+			}
+		}else{
+			this.designer.notice("infor", this.designer.lp.save_process);
+		}
+	},
+	listEditionDlg: function(editionList){
+
+		//var node = new Element("div", )
+	},
+
 	switchGrid: function(item){
 		if (this.isGrid){
 			this.hideGrid();
@@ -744,16 +918,21 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             this.isSave = true;
             //check empty routeList
 			this.checkEmptyRouteList();
+			var reload = !!this.process.isNewProcess;
             this.designer.actions.saveProcess(this.process, function(responseJSON){
                 this.isSave = false;
                 this.process.isNewProcess = false;
                 this.designer.notice(MWF.APPPD.LP.notice["save_success"], "ok", null, {x: "left", y:"bottom"} );
                 this.isNewProcess = false;
-                //this.designer.actions.getProcess(responseJSON.data.id, function(json){
-                //    this.reload(json.data);
-                //    if (callback) callback();
-                //}.bind(this));
                 this.designer.options.id = responseJSON.data.id;
+				if (reload){
+					this.designer.actions.getProcess(responseJSON.data.id, function(json){
+						this.reload(json.data);
+						if (callback) callback();
+					}.bind(this));
+				}else{
+					if (callback) callback();
+				}
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
 
@@ -831,6 +1010,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             activityData.process = this.process.id;
             activityData.createTime = new Date().format('db');
             activityData.updateTime = new Date().format('db');
+
+			activityData.position = position.x+","+position.y;
             activity = new MWF.APPPD.Activity[c](activityData, this);
             activity.create(position);
 

@@ -407,6 +407,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             left = iconNode.getStyle("margin-left").toInt();
             left = left + 28;
         }
+        if( !nodeStyle ){
+            textNode.setStyle("margin-left",left+"px");
+        }
         var html;
         var company = "";
         if (!isTask){
@@ -1452,6 +1455,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             left = iconNode.getStyle("margin-left").toInt();
             left = left + 28;
         }
+        if( !nodeStyle ){
+            textNode.setStyle("margin-left",left+"px");
+        }
         var html;
         var company = "";
         if (!isTask){
@@ -1641,16 +1647,17 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 var imgAreaNode = new Element("div", {"styles": this.form.css.logMediaOpinionContentArea}).inject(imgNode);
 
-                //var height = 260;
-                //var width = 390;
+                // var height = 260;
+                // var width = 390;
                 var width;
+                //var height;
                 if (layout.mobile){
                     width = node.getParent().getParent().getSize().x-2;
                     //height = width*2/3;
                 }else{
                     var pNode = node.getParent().getParent();
                     var offset = imgNode.getPosition( pNode );
-                    width = Math.min( pNode.getSize().x - offset.x - 42, 800 );
+                    width = Math.min( pNode.getSize().x - offset.x - 42, 800 );x
                 }
 
                 var img = new Element("img", {
@@ -1686,23 +1693,23 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 //}
 
-                var p = iconNode.getPosition(this.form.app.content);
-                var s = iconNode.getSize();
-                var size = (layout.mobile) ? {"x": width, "y": height}: imgNode.getSize();
-                var contentSize = this.form.app.content.getSize();
-                var contentScroll = (layout.mobile) ? document.body.getFirst().getScroll() : {"x": 0, "y": 0};
-                var y = p.y-size.y;
-                var x = p.x+s.x/2-size.x/2;
-
-                if (x<10) x = 10;
-                if (x+size.x>contentSize.x-10) x = contentSize.x-size.x-20;
-                if (y+size.y>contentSize.y-10) y = contentSize.y-size.y-20;
-                if (y<10) y = 10;
-                y=y+contentScroll.y;
-
-                if (layout.mobile){
-                    x = 0;
-                }
+                // var p = iconNode.getPosition(this.form.app.content);
+                // var s = iconNode.getSize();
+                // var size = (layout.mobile) ? {"x": width, "y": height}: imgNode.getSize();
+                // var contentSize = this.form.app.content.getSize();
+                // var contentScroll = (layout.mobile) ? document.body.getFirst().getScroll() : {"x": 0, "y": 0};
+                // var y = p.y-size.y;
+                // var x = p.x+s.x/2-size.x/2;
+                //
+                // if (x<10) x = 10;
+                // if (x+size.x>contentSize.x-10) x = contentSize.x-size.x-20;
+                // if (y+size.y>contentSize.y-10) y = contentSize.y-size.y-20;
+                // if (y<10) y = 10;
+                // y=y+contentScroll.y;
+                //
+                // if (layout.mobile){
+                //     x = 0;
+                // }
                 // imgNode.setStyles({
                 //     "top": ""+y+"px",
                 //     "left": ""+x+"px"

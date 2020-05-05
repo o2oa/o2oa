@@ -67,39 +67,38 @@ MWF.xApplication.process.ViewDesigner.widget.ViewFilter = new Class({
     },
 
     getInputNodes: function(){
-        this.inputAreaNode = this.node.getFirst("div");
-        this.actionAreaNode = this.inputAreaNode.getNext().setStyles(this.css.actionAreaNode);
-        this.listAreaNode = this.actionAreaNode.getNext().getNext();
-        this.fieldListAreaNode = this.listAreaNode.getNext().getNext();
-        this.restrictViewFilterTable = this.inputAreaNode.getLast("table");
+        this.inputAreaNode = this.node.getElement(".inputAreaNode_vf");
+        this.actionAreaNode = this.node.getElement(".actionAreaNode_vf");
+        this.actionAreaNode.setStyles( this.css.actionAreaNode );
+        this.listAreaNode = this.node.getElement(".listAreaNode_vf");
+        this.fieldListAreaNode = this.node.getElement(".fieldListAreaNode_vf");
 
-        var selects = this.inputAreaNode.getElements("select");
-        var inputs = this.inputAreaNode.getElements("input");
+        this.restrictViewFilterTable = this.node.getElement(".restrictViewFilterTable_vf");
 
         var scriptValueArea = this.node.getElement(".MWFFilterFormulaArea");
         if (scriptValueArea){
             this.createScriptArea(scriptValueArea);
         }
 
+        this.titleInput = this.inputAreaNode.getElement(".titleInput_vf");
+        this.pathInput = this.inputAreaNode.getElement(".pathInput_vf");
+        this.datatypeInput = this.inputAreaNode.getElement(".datatypeInput_vf");
 
-        this.titleInput = inputs[0];
-        this.pathInput = inputs[1];
-        this.datatypeInput = selects[0];
+        this.restrictFilterInput = this.inputAreaNode.getElement(".restrictFilterInput_vf");
+        this.customFilterInput = this.inputAreaNode.getElement(".customFilterInput_vf");
 
-        this.restrictFilterInput = inputs[2];
-        this.customFilterInput = inputs[3];
-
-        this.logicInput = selects[1];
-        this.comparisonInput = selects[2];
-        this.valueTextInput = inputs[4];
-        this.valueNumberInput = inputs[5];
-        this.valueDatetimeInput = inputs[6];
-        this.valueBooleanInput = selects[3];
+        this.logicInput = this.inputAreaNode.getElement(".logicInput_vf");
+        this.comparisonInput = this.inputAreaNode.getElement(".comparisonInput_vf");
+        this.valueTextInput = this.inputAreaNode.getElement(".valueTextInput_vf");
+        this.valueNumberInput = this.inputAreaNode.getElement(".valueNumberInput_vf");
+        this.valueDatetimeInput = this.inputAreaNode.getElement(".valueDatetimeInput_vf");
+        this.valueBooleanInput = this.inputAreaNode.getElement(".valueBooleanInput_vf");
 
         MWF.require("MWF.widget.Calendar", function(){
             this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
                 "style": "xform",
                 "isTime": true,
+                "secondEnable" : true,
                 "target": this.app.content,
                 "format": "db"
             });
@@ -116,6 +115,58 @@ MWF.xApplication.process.ViewDesigner.widget.ViewFilter = new Class({
             if (e.code==13) this.modifyOrAddFilterItem();
         }.bind(this));
     },
+
+    // getInputNodes: function(){
+    //     this.inputAreaNode = this.node.getFirst("div");
+    //     this.actionAreaNode = this.inputAreaNode.getNext().setStyles(this.css.actionAreaNode);
+    //     this.listAreaNode = this.actionAreaNode.getNext().getNext();
+    //     this.fieldListAreaNode = this.listAreaNode.getNext().getNext();
+    //     this.restrictViewFilterTable = this.inputAreaNode.getLast("table");
+    //
+    //     var selects = this.inputAreaNode.getElements("select");
+    //     var inputs = this.inputAreaNode.getElements("input");
+    //
+    //     var scriptValueArea = this.node.getElement(".MWFFilterFormulaArea");
+    //     if (scriptValueArea){
+    //         this.createScriptArea(scriptValueArea);
+    //     }
+    //
+    //
+    //     this.titleInput = inputs[0];
+    //     this.pathInput = inputs[1];
+    //     this.datatypeInput = selects[0];
+    //
+    //     this.restrictFilterInput = inputs[2];
+    //     this.customFilterInput = inputs[3];
+    //
+    //     this.logicInput = selects[1];
+    //     this.comparisonInput = selects[2];
+    //     this.valueTextInput = inputs[4];
+    //     this.valueNumberInput = inputs[5];
+    //     this.valueDatetimeInput = inputs[6];
+    //     this.valueBooleanInput = selects[3];
+    //
+    //     MWF.require("MWF.widget.Calendar", function(){
+    //         this.calendar = new MWF.widget.Calendar(this.valueDatetimeInput, {
+    //             "style": "xform",
+    //             "isTime": true,
+    //             "secondEnable" : true,
+    //             "target": this.app.content,
+    //             "format": "db"
+    //         });
+    //     }.bind(this));
+    //
+    //     this.datatypeInput.addEvent("change", function(){
+    //         this.changeValueInput();
+    //     }.bind(this));
+    //
+    //     this.valueTextInput.addEvent("keydown", function(e){
+    //         if (e.code==13) this.modifyOrAddFilterItem();
+    //     }.bind(this));
+    //     this.valueNumberInput.addEvent("keydown", function(e){
+    //         if (e.code==13) this.modifyOrAddFilterItem();
+    //     }.bind(this));
+    // },
     changeValueInput: function(){
         var type = this.datatypeInput.options[this.datatypeInput.selectedIndex].value;
         switch (type){

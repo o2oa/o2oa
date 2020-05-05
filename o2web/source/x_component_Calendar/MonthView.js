@@ -1007,6 +1007,7 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getContainer : function(){
         return this.calendar.dataTdList[ this.weekInfor.index ]
@@ -1123,6 +1124,7 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getContainer : function(){
         return this.calendar.dataTdList[ this.index.weekIndex ]
@@ -1212,6 +1214,7 @@ MWFCalendarMonthView.Document = new Class({
                 this.day.collapse();
             }.bind(this)
         });
+        this.tooltip.view = this.view;
     },
     showTooltip: function(  ){
         //if( this.index > 3 && this.day.isCollapse ){
@@ -1231,6 +1234,7 @@ MWFCalendarMonthView.Document = new Class({
                     //    this.day.collapseDisable = false;
                     //}.bind(this)
                 });
+                this.tooltip.view = this.view;
                 this.tooltip.load();
             }
         //}

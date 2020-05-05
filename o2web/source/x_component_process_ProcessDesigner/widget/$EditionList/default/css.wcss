@@ -1,0 +1,127 @@
+{
+    "node": {
+        "min-height": "300px",
+        "margin": "20px",
+        "min-width": "500px",
+        "height": "90%"
+    },
+    "leftNode": {
+        "height": "100%",
+        "float": "left",
+        "width": "60%"
+    },
+    "rightNode": {
+        "height": "100%",
+        "float": "right",
+        "width": "40%"
+    },
+    "listNode": {
+        "height": "100%",
+        "background-color": "#ffffff",
+        "border": "1px solid #cccccc",
+        "font-size": "12px",
+        "overflow": "auto"
+    },
+    "resizeNode": {
+        "float": "left",
+        "width": "10px",
+        "height": "100%",
+        "cursor": "col-resize"
+    },
+    "diffNode": {
+        "padding": "0px 3px 0px 20px",
+        "height": "100%",
+        "background-color": "#ffffff",
+        "border": "1px solid #cccccc",
+        "float-left": "20px",
+        "margin": "0px",
+        "margin-left": "10px",
+        "font-size": "12px",
+        "overflow": "auto"
+    },
+
+    "listTable_th": {
+        "border-bottom": "1px solid #cccccc",
+        "border-right": "1px solid #cccccc",
+        "background-color": "#eeeeee",
+        "color": "#666666"
+    },
+
+    "itemTr": {
+        "background-color": "#ffffff"
+    },
+
+    "listTable_td": {
+        "border-bottom": "1px solid #cccccc",
+        "border-right": "1px solid #cccccc",
+        "color": "#666666",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "listTable_td_current": {
+        "border-bottom": "1px solid #cccccc",
+        "border-right": "1px solid #cccccc",
+        "color": "#0000ff",
+        "cursor": "pointer",
+        "text-align": "center",
+        "font-weight": "bold"
+    },
+    "listTable_td_right": {
+        "border-right-width": "0px"
+    },
+    "listTable_td_icon": {
+        "width": "20px"
+    },
+    "listTable_td_action": {
+        "width": "80px"
+    },
+    "unselectIcon": {
+        "width": "12px",
+        "height": "12px",
+        "margin": "4px auto",
+        "cursor": "pointer",
+        "border": "1px solid #dddddd",
+        "border-radius": "8px",
+        "background": "transparent"
+    },
+    "selectIcon": {
+        "width": "14px",
+        "height": "14px",
+        "margin": "4px auto",
+        "cursor": "pointer",
+        "border": "0px solid #dddddd",
+        "border-radius": "8px",
+        "background": "url("+"/x_component_process_ProcessDesigner/widget/$EditionList/default/icon/check.png) no-repeat center center",
+        "background-color": "#4A90E2"
+    },
+
+    "itemTr_selected": {
+        "background-color": "#F7FBFF"
+    },
+
+    "diffLine": {
+        "padding": "5px 10px 0px 0px",
+        "list-style-position": "outside"
+    },
+
+    "enableAction": {
+        "width": "30px",
+        "padding": "0px 3px",
+        "border-radius": "20px",
+        "color": "#ffffff",
+        "background-color": "#4A90E2",
+        "float": "left",
+        "margin-right": "2px",
+        "text-align": "center",
+        "font-weight": "100"
+    },
+    "delAction": {
+        "width": "30px",
+        "padding": "0px 3px",
+        "border-radius": "20px",
+        "color": "#ffffff",
+        "background-color": "#c04444",
+        "float": "left",
+        "text-align": "center"
+    }
+}

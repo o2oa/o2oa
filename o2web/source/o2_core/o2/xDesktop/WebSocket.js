@@ -14,9 +14,12 @@ MWF.xDesktop.WebSocket = new Class({
 
         this.reConnect = true;
         this.checking = false;
-        this.heartTimeout = 30000;
-        this.checkingTimeout = 10000;
+        this.heartTimeout = 60000;
+        this.checkingTimeout = 4000;
         this.heartMsg = "heartbeat";
+        this.maxErrorCount = 10;
+        this.errorCount = 0;
+
 
         // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
         // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
@@ -35,38 +38,44 @@ MWF.xDesktop.WebSocket = new Class({
         ///*暂时不启用WebSocket了------------
         //this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"))+"&authorization="+encodeURIComponent(Cookie.read("x-token"));
 
+        this.connect();
+    },
+    connect: function(){
         if (layout.config.webSocketEnable){
-            this.ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+            var ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
 
             try{
-                this.webSocket = new WebSocket(this.ws);
+                this.webSocket = new WebSocket(ws);
 
                 //this.webSocket = new WebSocket(this.ws);
                 this.webSocket.onopen = function (e){this.onOpen(e);}.bind(this);
                 this.webSocket.onclose = function (e){this.onClose(e);}.bind(this);
                 this.webSocket.onmessage = function (e){this.onMessage(e);}.bind(this);
                 this.webSocket.onerror = function (e){this.onError(e);}.bind(this);
-                //---------------------------------*/\
+                //---------------------------------*/
             }catch(e){
                 //WebSocket.close();
                 //this.webSocket = new WebSocket(this.ws);
-                console.log("Unable to connect to the websocket server, will retry in "+(this.heartTimeout/1000)+" seconds");
-                if (this.webSocket){
-                    this.close();
-                    //this.webSocket = new WebSocket(this.ws);
-                }
+                this.errorCount++;
+                console.log("Unable to connect to the websocket server, will retry in "+(this.checkingTimeout/1000)+" seconds");
+                this.checkRetry();
+                // if (this.webSocket){
+                //     this.close();
+                //     //this.webSocket = new WebSocket(this.ws);
+                // }
             }
-            this.heartbeat();
         }
-
     },
     onOpen: function(e){
+        this.errorCount = 0;
         console.log("websocket is open, You can receive system messages");
+        this.heartbeat();
+
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is open ...");
     },
     onClose: function(e){
         console.log("websocket is closed. ");
-        if (this.reConnect) this.initialize();
+        //if (this.reConnect) this.checkRetry();
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is closed ...");
     },
     onMessage: function(e){
@@ -140,7 +149,7 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
                             case "calendar_alarm":
-                                this.receiveAttendanceAppealRejectMessage(data);
+                                this.receiveCalendarAlarmMessage(data);
                                 break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
@@ -152,14 +161,25 @@ MWF.xDesktop.WebSocket = new Class({
         }
     },
     onError: function(e){
-        console.log("websocket is error ...");
+        this.errorCount++;
+        //console.log(e);
+        console.log("Unable to connect to the websocket server, will retry in "+(this.checkingTimeout/1000)+" seconds.");
+        this.checkRetry();
         //MWF.xDesktop.notice("success", {"x": "right", "y": "top"}, "websocket is error ...");
+    },
+    checkRetry: function(){
+        if (this.serverCheck) window.clearTimeout(this.serverCheck);
+        if (this.heartbeatCheck) window.clearTimeout(this.heartbeatCheck);
+        if (this.errorCount < this.maxErrorCount) this.serverCheck = window.setTimeout(function(){
+            this.retry();
+        }.bind(this), this.checkingTimeout);
     },
     retry: function(){
         if (this.webSocket){
             this.close();
         }
-        this.initialize();
+        console.log("Retry connect to websocket server. ("+this.errorCount+"/"+this.maxErrorCount+")");
+        this.connect();
     },
     close: function(){
         this.reConnect = false;
@@ -168,14 +188,15 @@ MWF.xDesktop.WebSocket = new Class({
     },
     send: function(msg){
         if (!this.webSocket || this.webSocket.readyState != 1) {
-            this.initialize();
+            if (this.serverCheck) window.clearTimeout(this.serverCheck);
+            this.retry();
         }
-        try{
-            this.webSocket.send(JSON.encode(msg));
-        }catch(e){
-            this.initialize();
-            this.webSocket.send(JSON.encode(msg));
-        }
+        // try{
+        this.webSocket.send(JSON.encode(msg));
+        // }catch(e){
+        //     this.retry();
+        //     this.webSocket.send(JSON.encode(msg));
+        // }
     },
     heartbeat: function(){
         if (this.serverCheck) window.clearTimeout(this.serverCheck);
@@ -186,15 +207,16 @@ MWF.xDesktop.WebSocket = new Class({
     },
     sendHeartbeat: function(msg){
         if (!this.webSocket || this.webSocket.readyState != 1) {
+            if (this.serverCheck) window.clearTimeout(this.serverCheck);
             this.retry();
         }
         try{
             //console.log("send heartbeat ...");
             this.webSocket.send(msg);
-            this.serverCheck = window.setTimeout(function(){
-                this.retry();
-            }.bind(this), this.checkingTimeout);
+            this.checkRetry();
         }catch(e){
+            //console.log("send heartbeat error !!!");
+            if (this.serverCheck) window.clearTimeout(this.serverCheck);
             this.retry();
             //this.initialize();
         }
@@ -227,8 +249,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.taskMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             this.openWork(task.work,e);
@@ -249,8 +271,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.readMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             this.openWork(read.work,e);
@@ -278,13 +300,13 @@ MWF.xDesktop.WebSocket = new Class({
     receiveReviewMessage: function(data){
         var content = MWF.LP.desktop.messsage.receiveReview+"《"+data.title+"》. ";
         content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+data.applicationName+"</font>;  "+
-        "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+data.processName+"</font>";
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+data.processName+"</font>";
         var msg = {
             "subject": MWF.LP.desktop.messsage.reviewMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, data.body.startTime);
+        var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "process.TaskCenter", null, {
@@ -311,8 +333,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.fileEditorMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+        var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "File", null, {
@@ -341,8 +363,8 @@ MWF.xDesktop.WebSocket = new Class({
             "subject": MWF.LP.desktop.messsage.fileShareMessage,
             "content": content
         };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+        var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "File", null, {
@@ -403,8 +425,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingInviteMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -431,8 +453,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingCancelMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -460,8 +482,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingAcceptMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -489,8 +511,8 @@ MWF.xDesktop.WebSocket = new Class({
                 "subject": MWF.LP.desktop.messsage.meetingRejectMessage,
                 "content": content
             };
-            var messageItem = layout.desktop.message.addMessage(msg);
-            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
+            var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
             tooltipItem.contentNode.addEvent("click", function(e){
                 layout.desktop.message.hide();
                 layout.desktop.openApplication(e, "Meeting", null);
@@ -565,5 +587,76 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
         });
+    },
+    receiveCalendarAlarmMessage: function(data){
+        debugger;
+        var content = MWF.LP.desktop.messsage.canlendarAlarm;
+        content = content.replace(/{title}/g, data.title);
+
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.canlendarAlarmMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+    },
+    receiveTeamWorkMessage: function(data){
+        debugger;
+        var task = data.body;
+        //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
+        var content = data.title;
+        //content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.creatorPerson+": </font><font style='color: #ea621f'>"+task.creatorPerson+"</font>;  "+
+        //    "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.executor+": </font><font style='color: #ea621f'>"+task.executor+"</font>";
+        var msg = {
+            "subject": task.name,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            var options = {"taskId": task.id, "projectId": task.project};
+            layout.desktop.openApplication(e, "TeamWork.Task", options);
+        }.bind(this));
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            var options = {"taskId": task.id, "projectId": task.project};
+            layout.desktop.openApplication(e, "TeamWork.Task", options);
+        }.bind(this));
     }
 });

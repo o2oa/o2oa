@@ -292,6 +292,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 					//this.applications.push(application);
 				}.bind(this));
 
+				this.reloadApplicationCategoryList(true);
 				this.notice(this.lp.application.createApplicationSuccess, "success");
 				//    this.app.processConfig();
 			}.bind(this));
@@ -319,7 +320,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		var size = this.content.getSize();
 		var topSize = this.topNode.getComputedSize();
 		var bottomSize = this.bottomNode.getComputedSize();
-		var pt = this.contentArea.getStyle("padding-top").toInt() || 0;;
+		var pt = this.contentArea.getStyle("padding-top").toInt() || 0;
 		var pb = this.contentArea.getStyle("padding-bottom").toInt() || 0;
 
 		var h = size.y-topSize.totalHeight-bottomSize.totalHeight-pt-pb;
@@ -355,7 +356,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		}
 		e.stopPropagation();
 	},
-	loadApplicationCategoryList: function(){
+	loadApplicationCategoryList: function( currentCategoryName, noRefreshContent ){
 		if (this.control.canCreate){
 			this.restActions.listApplicationCategory(function(json){
 
@@ -370,8 +371,28 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 				}.bind(this));
 
 				if (this.categoryAreaNode.getScrollSize().y>this.categoryAreaNode.getSize().y) this.createCategoryExpandButton();
+
+				if( currentCategoryName ){
+					var itemList = this.categoryAreaNode.getElements("div.o2_process_AppExp_categoryItem");
+					if( itemList.length > 0 ){
+						for( var i=0; i<itemList.length; i++ ){
+							if( itemList[i].retrieve("categoryName") === currentCategoryName ){
+								this.clickCategoryNode( itemList[i], noRefreshContent)
+							}
+						}
+					}
+				}
+
 			}.bind(this));
 		}
+	},
+	reloadApplicationCategoryList: function( noRefreshContent ){
+		var categoryName = "";
+		if( this.category ){
+			categoryName = this.category.retrieve("categoryName") || "";
+		}
+		this.categoryAreaNode.empty();
+		this.loadApplicationCategoryList( categoryName, noRefreshContent );
 	},
 	createCategoryItemNode: function(text, count){
 
@@ -391,7 +412,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		});
 	},
 
-	clickCategoryNode: function(item){
+	clickCategoryNode: function(item, noRefreshContent){
 		// var node = this.categoryListAreaNode.getFirst("div");
 		// node.setStyles(this.css.allCategoryItemNode);
 		if (this.category){
@@ -408,7 +429,9 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		if (p.y>=size.y) item.inject(this.categoryAreaNode, "top");
 
 		this.category = item;
-		this.loadApplicationList(item);
+		if( !noRefreshContent ){
+			this.loadApplicationList(item);
+		}
 	},
 
 	getApplicationDimension: function(){
@@ -534,6 +557,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 
 				var complete = function(){
 					if (doCount == readyCount){
+						_self.reloadApplicationCategoryList( true );
 						if (errorText){
 							_self.app.notice(errorText, "error");
 						}
@@ -623,7 +647,7 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 	checkManage: function(){
 		if (this.app.control.canManage) return true;
 		if (this.app.control.canCreate && (this.data.creatorPerson==layout.desktop.session.user.name)) return true;
-		if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
+		//if (this.data.controllerList.indexOf(layout.desktop.session.user.distinguishedName)!==-1) return true;
 		return false;
 	},
 
