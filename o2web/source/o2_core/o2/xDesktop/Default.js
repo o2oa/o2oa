@@ -231,25 +231,21 @@ o2.xDesktop.Default = new Class({
                 }
                 var currentTaskitem = null;
                 Object.each(this.status.apps, function(appStatus, id){
-                    var app = {
-                        "options": appStatus,
-                        "close": function(){
-                            this.taskitem.destroy();
-                        },
-                        "setCurrent": function(){
-                            this.taskitem.textNode.click();
-                        }
-                    };
+                    var app = { "options": appStatus };
                     taskitem = layout.desktop.createTaskItem(app);
                     app.taskitem = taskitem;
-
+                    app.close = function(){
+                        this.taskitem.destroy();
+                    }
                     this.apps[appStatus.appId] = app;
                     if ((this.status.currentApp === appStatus.appId)) currentTaskitem=taskitem;
+
                 }.bind(this));
 
                 if (currentTaskitem) {
                     currentTaskitem.textNode.click();
                 }
+
             }
 
             if (this.status.widgets){/* nothing to do */}
