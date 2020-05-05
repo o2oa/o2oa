@@ -319,23 +319,23 @@ MWF.xApplication.Common.Main = new Class({
 		// 	this.isLoadApplication = true;
 		// 	this.load(true);
 		// } else {
-		this.window.setCurrent();
+			this.window.setCurrent();
 
-		if (this.window.isHide) {
-			if (this.window.isMax) {
-				this.window.maxSize(function () { this.fireAppEvent("current"); }.bind(this));
+			if (this.window.isHide) {
+				if (this.window.isMax) {
+					this.window.maxSize(function () { this.fireAppEvent("current"); }.bind(this));
+				} else {
+					this.window.restore(function () { this.fireAppEvent("current"); }.bind(this));
+				}
 			} else {
-				this.window.restore(function () { this.fireAppEvent("current"); }.bind(this));
+				this.fireAppEvent("current");
 			}
-		} else {
-			this.fireAppEvent("current");
-		}
 
-		if (this.taskitem) this.taskitem.selected();
-		this.desktop.currentApp = this;
+			if (this.taskitem) this.taskitem.selected();
+			this.desktop.currentApp = this;
 
-		this.desktop.appCurrentList.erase(this);
-		this.desktop.appCurrentList.push(this);
+			this.desktop.appCurrentList.erase(this);
+			this.desktop.appCurrentList.push(this);
 		//}
 	},
 	setUncurrent: function () {
