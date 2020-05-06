@@ -100,13 +100,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                     }).inject(this.routeOpinionTile, "before");
 
                     this.routeLeftWarper =  new Element("div", { "styles":
-                        this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
+                            this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
                     }).inject(this.routeContainer);
                     this.routeGroupTitle = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRouteGroup }).inject(this.routeLeftWarper);
                     this.routeGroupArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeLeftWarper);
 
                     this.routeRightWarper =  new Element("div", { "styles":
-                        this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
+                            this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
                     }).inject(this.routeContainer);
                     this.routeSelectorTile = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute }).inject(this.routeRightWarper);
                     this.routeSelectorArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeRightWarper);
@@ -207,6 +207,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             list.push( this.splitByStartNumber( k).name )
         }.bind(this));
 
+        var flag = true;
         list.each( function( routeGroupName ){
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {"styles": this.css.routeGroupNode, "text": routeGroupName}).inject(this.routeGroupArea);
@@ -221,10 +222,12 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if ( keys.length === 1 ){
                 this.selectRouteGroup(routeGroupNode);
+                flag = false;
             }else{
-                this.setSize(0);
+                // this.setSize(0);
             }
         }.bind(this))
+        if( flag )this.setSize(0);
     },
     overRouteGroup: function(node){
         if (this.selectedRouteGroup){
@@ -309,6 +312,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         //}
         this.selectedRoute = null;
 
+        var flag = true;
+
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
@@ -334,11 +339,13 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if (routeList.length==1 || route.sole ){ //sole表示优先路由
                 this.selectRoute(routeNode);
+                flag = false;
             }else{
-                this.setSize(0);
+                // this.setSize(0);
             }
 
         }.bind(this));
+        if(flag)this.setSize(0);
     },
     overRoute: function(node){
         if (this.selectedRoute){
@@ -433,8 +440,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.selectIdeaNode = new Element("div", {"styles": this.css.selectIdeaNode}).inject(this.routeOpinionArea);
         this.selectIdeaScrollNode = new Element("div", {"styles": this.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
         this.selectIdeaAreaNode = new Element("div", {"styles": {
-            "overflow": "hidden"
-        }}).inject(this.selectIdeaScrollNode);
+                "overflow": "hidden"
+            }}).inject(this.selectIdeaScrollNode);
 
         this.inputOpinionNode = new Element("div", {"styles": this.css.inputOpinionNode}).inject(this.routeOpinionArea);
         this.inputTextarea = new Element("textarea", {"styles": this.css.inputTextarea, "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText}).inject(this.inputOpinionNode);
@@ -1364,6 +1371,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             //flag = (lines*this.options.orgHeight + 431) > Math.floor( this.form.app.content.getSize().y * 0.9);
             //this.node.store("height", Math.min( Math.floor( this.form.app.content.getSize().y * 0.9) , lines*this.options.orgHeight + 431 ));
         }else{
+            this.orgsArea.hide();
             this.node.setStyle( "height", height );
             //this.node.store("height", 401 );
         }
