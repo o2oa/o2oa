@@ -22,21 +22,21 @@ public @interface ContainerEntity {
     /**
      * 执行dump时分组数量
      */
-    public int dumpSize();
+    public int dumpSize() default 1000;
 
     /**
      * 类型
      */
-    public Type type();
+    public Type type() default Type.content;
 
     /**
      * 引用,强数据,软数据(软数据不会影响系统运行)
      */
 
-    public Reference reference();
+    public Reference reference() default Reference.strong;
 
     public enum Type {
-        element, content, log;
+        element, content, log, custom;
     }
 
     public enum Reference {
