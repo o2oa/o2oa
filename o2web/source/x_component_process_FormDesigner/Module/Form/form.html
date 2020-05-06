@@ -40,6 +40,83 @@
                 </td>
             </tr>
         </table>
+
+		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
+		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
+
+		<div class="MWFMaplist" name="styles" title="样式"></div>
+		<div class="MWFMaplist" name="properties" title="属性"></div>
+
+        <div class="MWFCssArea" name="css" title="CSS"></div>
+		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
+
+        <div class="MWFScriptArea" name="validationOpinion" title="校验意见 (S)"></div>
+        <div class="MWFScriptArea" name="validationRoute" title="校验路由 (S)"></div>
+        <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
+
+	</div>
+	<div title="提交" class="MWFTab">
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">提交界面</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue" colspan="2">
+                    <input type="radio" onclick="if (this.checked) {
+                        $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
+                        $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
+                    }" name="submitFormType" value="default" text{($.submitFormType!='script' && $.submitFormType!='select' )?'checked':''}/>系统默认
+                    <input type="radio" onclick="if (this.checked) {
+                        $('text{$.pid}selectSubmitForm').setStyle('display', 'block');
+                        $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
+                    }" name="submitFormType" value="select" text{($.submitFormType=='select')?'checked':''}/>选择表单
+                    <input type="radio" onclick="if (this.checked) {
+                        $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
+                        $('text{$.pid}scriptSubmitForm').setStyle('display', 'block');}
+                    " name="submitFormType" value="script" text{($.submitFormType=='script')?'checked':''}/>计算表单<br/>
+                </td>
+            </tr>
+        </table>
+
+        <div id="text{$.pid}selectSubmitForm" class="MWFSubFormSelectContainer" style="display: text{($.submitFormType=='select')?'block':'none'}">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">应用:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSubformAppSelect" name="submitFormAppSelected"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">表单:</td>
+                    <td class="editTableValue">
+                        <div class="MWFSubformSelect" name="submitFormSelected"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="text{$.pid}scriptSubmitForm" style="display: text{($.submitFormType=='script')?'block':'none'}">
+            <div style="padding: 5px;">跨应用：<br/>return { <br/>
+                &nbsp;&nbsp;"application" : "应用名称", //应用名称、别名、id <br/>
+                &nbsp;&nbsp;"form" : "表单名称" //表单、id<br/>
+                }; <br/> 本应用：<br/>return "表单名称"; </div>
+            <div class="MWFScriptArea" name="submitFormScript" title="提交表单脚本 (S)"></div>
+        </div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
+                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
+                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
+                </td>
+            </tr>
+        </table>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">流转后提示框</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td colspan="2" class="editTableValue"><b>流转后提示框:</b>
@@ -76,41 +153,7 @@
                     秒后自动关闭</b></td>
             </tr>
         </table>
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-<!--            <tr>-->
-<!--                <td colspan="2" class="editTableValue"><b>提交表单:</b>-->
-<!--                    <div class="MWFFormSelect" name="submitForm"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-            <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板宽度:</b>
-                    <input type="text" name="tabletWidth" value="text{$.tabletWidth}" class="editTableInputNoWidth" style="width: 50px;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="editTableValue"><b>提交意见手写板高度:</b>
-                    <input type="text" name="tabletHeight" value="text{$.tabletHeight}" class="editTableInputNoWidth" style="width: 50px;;margin-right:3px;" />px
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;(pc端有效)</span>
-                </td>
-            </tr>
-        </table>
-		
-		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
-		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
-		
-		<div class="MWFMaplist" name="styles" title="样式"></div>
-		<div class="MWFMaplist" name="properties" title="属性"></div>
-
-        <div class="MWFCssArea" name="css" title="CSS"></div>
-		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
-
-        <div class="MWFScriptArea" name="validationOpinion" title="校验意见 (S)"></div>
-        <div class="MWFScriptArea" name="validationRoute" title="校验路由 (S)"></div>
-        <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
-
-	</div>
+    </div>
     <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
         <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
         <div class="MWFActionArea" name="tools"></div>
