@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_start_process_step_one.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
@@ -140,7 +141,8 @@ class StartProcessStepOneFragment : BaseMVPFragment<StartProcessStepOneContract.
 
     override fun startProcessSuccess(workId: String) {
         hideLoadingDialog()
-        (activity as StartProcessActivity).go<TaskWebViewActivity>(TaskWebViewActivity.start(workId, "", "拟稿"))
+        val name = if (clickProcess != null && !TextUtils.isEmpty(clickProcess?.name)){ clickProcess?.name?: "拟稿"}else{"拟稿"}
+        (activity as StartProcessActivity).go<TaskWebViewActivity>(TaskWebViewActivity.start(workId, "", name))
         (activity as StartProcessActivity).finish()
     }
 

@@ -127,7 +127,8 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         checkBioAuthLogin()
         if (BuildConfig.InnerServer) {
             login_edit_password_id.setHint(R.string.activity_login_password)
-            login_edit_password_id.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            login_edit_password_id.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+//            InputType.TYPE_TEXT_VARIATION_PASSWORD
             button_login_phone_code.gone()
             tv_rebind_btn.gone()
             tv_bioauth_btn.gone()
@@ -253,7 +254,7 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
     }
 
     override fun loginFail() {
-        XToast.toastShort(this,  "登录失败, 请检查您的验证码是否输入正确！")
+        XToast.toastShort(this,  "登录失败, 请检查您的输入的用户名或密码是否正确！")
         hideLoadingDialog()
     }
 

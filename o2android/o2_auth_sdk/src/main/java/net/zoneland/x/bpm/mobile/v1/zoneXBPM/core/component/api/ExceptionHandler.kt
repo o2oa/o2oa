@@ -25,7 +25,7 @@ class ExceptionHandler(val context: Context?,
             is TimeoutException -> showConnectionErrorMessage()
             is SocketTimeoutException -> showConnectionErrorMessage()
             is ConnectException -> showConnectionErrorMessage()
-            is HttpException -> showO2ErrorMessage(t)
+            //is HttpException -> showO2ErrorMessage(t)
             else -> Log.e("ExceptionHandler", "", t)
         }
 
