@@ -368,12 +368,23 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                     this._initPage();
                     if (this.bundleItems.length){
+                        if( this.noDataTextNode )this.noDataTextNode.destroy();
                         this.loadCurrentPageData( function () {
                             this.fireEvent("postLoad"); //用户配置的事件
                         }.bind(this));
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
+                        if( this.viewJson.noDataText ){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                                noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.viewJson.noDataText
+                            }).inject( this.contentAreaNode );
+                        }
                         if (this.loadingAreaNode){
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
