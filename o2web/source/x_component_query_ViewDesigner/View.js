@@ -275,6 +275,19 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }.bind(this));
                             this.setContentColumnWidth();
                             this.setContentHeight();
+                        }else if(this.json.data.noDataText){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.json.data.viewStyles ){
+                                if( this.json.data.viewStyles["noDataTextNode"] ){
+                                    noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
+                                }else{
+                                     this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
+                                }
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.json.data.noDataText
+                            }).inject( this.viewContentBodyNode );
                         }
 
                     }else{
@@ -310,6 +323,19 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }.bind(this));
                             this.setContentColumnWidth();
                             this.setContentHeight();
+                        }else if(this.json.data.noDataText){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.json.data.viewStyles ){
+                                if( this.json.data.viewStyles["noDataTextNode"] ){
+                                    noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
+                                }else{
+                                    this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
+                                }
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.json.data.noDataText
+                            }).inject( this.viewContentBodyNode );
                         }
                     }
                 }.bind(this));
