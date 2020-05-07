@@ -61,10 +61,12 @@ class V2Reroute extends BaseAction {
 					emc.beginTransaction(Task.class);
 					emc.beginTransaction(WorkLog.class);
 					// work.setForceRoute(true);
-//					work.setSplitting(false);
-//					work.setSplitToken("");
-//					work.getSplitTokenList().clear();
-//					work.setSplitValue("");
+					// work.setSplitting(false);
+					// work.setSplitToken("");
+					// work.getSplitTokenList().clear();
+					// work.setSplitValue("");
+					/** 重新设置表单 */
+					setForm(work, activity);
 					work.setDestinationActivity(activity.getId());
 					work.setDestinationActivityType(activity.getActivityType());
 					work.setDestinationRoute("");
@@ -95,6 +97,12 @@ class V2Reroute extends BaseAction {
 		};
 		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
+	}
+
+	private void setForm(Work work, Activity activity) {
+		if (StringUtils.isNotEmpty(activity.getForm())) {
+			work.setForm(activity.getForm());
+		}
 	}
 
 	public static class Wi extends V2RerouteWi {
