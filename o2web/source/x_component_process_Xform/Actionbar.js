@@ -129,7 +129,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
         //     }
         // }
         if (tool.id == "action_downloadAll" || tool.id == "action_print"){
-            if (!this.form.businessData.activity || !this.form.businessData.activity.id){
+            if (!this.form.businessData.work.startTime){
                 flag = false;
             }
         }
