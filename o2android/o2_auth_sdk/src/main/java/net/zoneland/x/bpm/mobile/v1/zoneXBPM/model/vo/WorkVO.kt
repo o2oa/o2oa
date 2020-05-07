@@ -38,6 +38,8 @@ open class WorkVO(
 
         var processName: String? = null,
 
-        var control: WorkControlData? = null
+        var control: WorkControlData? = null,
+
+        var manualTaskIdentityText: String? = null
 
 )
