@@ -555,7 +555,14 @@ MWF.xApplication.Homepage.TaskContent.TaskCompleted = new Class({
         return row;
     },
 
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.taskCompleted){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -628,7 +635,14 @@ MWF.xApplication.Homepage.TaskContent.Read = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.read){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -702,6 +716,14 @@ MWF.xApplication.Homepage.TaskContent.ReadCompleted = new Class({
         new Element("div.o2_homepage_task_item_time", {"text": time, "title": this.app.lp.readCompletedTime + ": " + time}).inject(cell);
 
         return row;
+    },
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.readCompleted){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
     },
     addLoadPageEvent: function(){
         var loadPage = function(){
@@ -785,7 +807,14 @@ MWF.xApplication.Homepage.TaskContent.Draft = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.draft){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -858,7 +887,14 @@ MWF.xApplication.Homepage.TaskContent.ProcessDraft = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.processDraft){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
