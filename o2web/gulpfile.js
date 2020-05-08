@@ -47,21 +47,6 @@ function setOptions(op1, op2){
 var options = {};
 setOptions(o_options, getEvOptions(o_options.ev));
 
-var readlineSync = require('readline-sync');
-function testQ(cb){
-    if (readlineSync.keyInYN('Do you want this module?')) {
-        // 'Y' key was pressed.
-        console.log('Installing now...');
-        // Do something...
-    } else {
-        // Another key was pressed.
-        console.log('Searching another...');
-        // Do something...
-    }
-    cb();
-}
-exports.testQ = testQ;
-
 var appTasks = [];
 function getAppTask(path, isMin, thisOptions) {
     return function (cb) {
