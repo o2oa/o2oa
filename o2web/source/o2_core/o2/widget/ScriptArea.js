@@ -169,7 +169,7 @@ o2.widget.ScriptArea = new Class({
                 "set": function(v){
                     content.editors.each(function(editor){
                         if (editor.editor){
-                            if (v!==editor.editor.getValue()) editor.editor.setValue(v);
+                            if (v!==editor.editor.getValue()) editor.editor.setValue(v,1);
                         }else{
                             editor.reload();
                         }
