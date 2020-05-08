@@ -501,7 +501,7 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
         var range = this.getCurrentPageRange();
         var beginNumber = range.endNumber+1;
         var endNumber = beginNumber+(this.options.showPages-1);
-        if (beginNumber>this.pages) endNumber = this.pages;
+        if (beginNumber>=this.pages) endNumber = this.pages;
         this.page = endNumber-((this.options.showPages/2).toInt());
         this.reload();
     }
