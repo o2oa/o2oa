@@ -920,7 +920,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
                 "set": function(v){
                     this.data.editors.each(function(editor){
                         if (editor.editor){
-                            if (v!==editor.editor.getValue()) editor.editor.setValue(v);
+                            if (v!==editor.editor.getValue()) editor.editor.setValue(v,1);
                         }else{
                             editor.reload();
                         }
