@@ -384,7 +384,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }
         }.bind(this));
     },
-    loadCurrentPageData: function( callback ){
+    loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
         this.items = [];
 
@@ -421,7 +421,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.fireEvent("postLoadPage");
 
             if(callback)callback();
-        }.bind(this));
+        }.bind(this), null, async === false ? false : true );
     },
 
 
@@ -2183,7 +2183,7 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
             onJumpingPage : function( pageNum, itemNum ){
                 this.view.currentPage = pageNum;
                 this.fireEvent("jump");
-                this.view.loadCurrentPageData();
+                this.view.loadCurrentPageData( null, false );
             }.bind(this),
             onPostLoad : function () {
                 if( firstLoading ){
