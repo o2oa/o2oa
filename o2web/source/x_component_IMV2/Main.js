@@ -48,8 +48,8 @@ MWF.xApplication.IMV2.Main = new Class({
 			if (chat.type && chat.type === "single") {
 				var chatPerson = "";
 				if (chat.personList && chat.personList instanceof Array) {
-					for (var i = 0; i < chat.personList.length; i++) {
-						var person = chat.personList[i];
+					for (var j = 0; j < chat.personList.length; j++) {
+						var person = chat.personList[j];
 						if (person !== distinguishedName) {
 							chatPerson = person;
 						}
@@ -71,23 +71,44 @@ MWF.xApplication.IMV2.Main = new Class({
 					data.time = time;
 				}
 			}
-			this.chatItemListNode.loadHtml(url, { "bind": data, "module": this }, function (html) {
-				//bind event
+			var chatItemNode = new Element("div", {"class": "item"}).inject(this.chatItemListNode);
+			var baseClass = "base";
+			if (i == 0) {
+				baseClass = "base check";
+			}
+			var chatItemBaseNode = new Element("div", {"class": baseClass}).inject(chatItemNode);
+			var avatarNode = new Element("div", {"class": "avatar"}).inject(chatItemBaseNode);
+			var avatarImg = new Element("img", {"src": data.avatarUrl, "class": "img"}).inject(avatarNode);
+			var bodyNode = new Element("div", {"class": "body"}).inject(chatItemBaseNode);
+			var bodyUpNode = new Element("div", {"class": "body_up"}).inject(bodyNode);
+			var bodyTitleNode = new Element("div", {"class": "body_title", "text": data.title}).inject(bodyUpNode);
+			var bodyTimeNode = new Element("div", {"class": "body_time", "text": data.time}).inject(bodyUpNode);
+			var bodyDownNode = new Element("div", {"class": "body_down", "text": data.lastMessage}).inject(bodyNode);
+			var _self = this;
+			chatItemNode.addEvents({
+				"click": function(){
+					_self.tapConv(chat);
+				}
+			});
 
-				console.log(html);
-			}.bind(this));
 		}
 		console.log("结束");
 	},
 	//点击
-	tapConv: function (e) {
+	tapConv: function (conv) {
 		console.log("clickConversationvvvvvv");
-		console.log(e);
 		var url = this.path + this.options.style + "/chat.html";
-		this.chatNode.loadHtml(url, { "bind": {}, "module": this }, function () {
+		var data = {"convName": conv.title};
+		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
+			
 		}.bind(this));
 	},
-
+	//发送消息
+	sendMsg: function() {
+		console.log("click send Msg btn................");
+		var text = this.chatBottomAreaTextareaNode.value;
+		console.log(text);
+	},
 
 
 	_getIcon: function (id) {
