@@ -28,8 +28,6 @@ import com.x.base.core.project.tools.DateTools;
 
 /**
  * 附件文件信息管理表
- * 
- * @author 李义
  *
  */
 @ContainerEntity

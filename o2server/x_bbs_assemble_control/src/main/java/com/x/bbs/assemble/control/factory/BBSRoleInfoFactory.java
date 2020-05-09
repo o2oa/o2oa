@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSRoleInfo;
@@ -66,7 +67,7 @@ public class BBSRoleInfoFactory extends AbstractFactory {
 		Root<BBSRoleInfo> root = cq.from( BBSRoleInfo.class );
 		Predicate p = cb.equal( root.get( BBSRoleInfo_.roleCode ), roleCode );
 		roleInfoList = em.createQuery( cq.where(p) ).getResultList();
-		if( roleInfoList != null && roleInfoList.size() > 0 ){
+		if( ListTools.isNotEmpty(roleInfoList) ){
 			return roleInfoList.get(0);
 		}else{
 			return null;

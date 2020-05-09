@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.jaxrs.fileinfo.URLParameterGetException;
 import com.x.cms.common.image.maincolor.ImageMainColorUtil;
 import com.x.cms.core.entity.AppInfo;
@@ -89,7 +90,7 @@ public class ActionAppIconUpload extends BaseAction {
 				}
 				//先取图片主色调
 				colorList = imageUtil.getColorSolution( image, 30, 1);
-				if( colorList != null && !colorList.isEmpty() ){
+				if( ListTools.isNotEmpty( colorList ) ){
 					iconMainColor = colorList.get(0);
 				}
 				

@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 /**
  * 系统配置信息表基础功能服务类
- * @author liyi
  */
 public class AttendanceSelfHolidayFactory extends AbstractFactory {
 	

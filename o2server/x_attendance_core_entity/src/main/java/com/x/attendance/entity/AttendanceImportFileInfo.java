@@ -30,8 +30,6 @@ import com.x.base.core.project.tools.DateTools;
 
 /**
  * 内容管理应用目录分类信息
- * 
- * @author 李义
  *
  */
 @ContainerEntity

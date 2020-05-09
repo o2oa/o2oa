@@ -24,8 +24,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * 该类旨在提供一个服务创建唯一的UNID
- * 
- * @author liyi
  *
  */
 @Path("uuid")
