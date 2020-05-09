@@ -2,6 +2,7 @@ package com.x.teamwork.assemble.control;
 
 import java.util.List;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -312,7 +313,7 @@ public class Business {
 		}
 		List<String> roleList = null;
 		roleList = organization().role().listWithPerson(personName);
-		if (roleList != null && !roleList.isEmpty()) {
+		if (ListTools.isNotEmpty(roleList) ) {
 			if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
 				return true;
 			}

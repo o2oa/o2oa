@@ -21,6 +21,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class AttendanceStatisticService {
 	
@@ -204,12 +205,11 @@ public class AttendanceStatisticService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据数据统计需求，进行组织每月考勤分析结果统计
 	 * @param emc
 	 * @param attendanceStatisticRequireLog
-	 * @param attendanceStatisticalCycle
 	 * @param workDayConfigList
 	 * @param topUnitAttendanceStatisticalCycleMap
 	 */
@@ -292,7 +292,7 @@ public class AttendanceStatisticService {
 			//查询该组织该年份月份的统计是否存在，如果存在则删除
 			ids = business.getStatisticUnitForMonthFactory().listByUnitYearAndMonth( unitName, cycleYear, cycleMonth );
 			emc.beginTransaction(StatisticUnitForMonth.class);
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					statisticUnitForMonth_tmp = emc.find( id, StatisticUnitForMonth.class );
 					emc.remove( statisticUnitForMonth_tmp );
@@ -414,7 +414,7 @@ public class AttendanceStatisticService {
 			//查询该组织该年份月份的统计是否存在，如果存在则删除
 			ids = business.getStatisticTopUnitForMonthFactory().listByTopUnitYearAndMonth( topUnitName, cycleYear, cycleMonth );
 			emc.beginTransaction( StatisticTopUnitForMonth.class );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					statisticTopUnitForMonth_tmp = emc.find(id, StatisticTopUnitForMonth.class);
 					emc.remove( statisticTopUnitForMonth_tmp );
@@ -533,7 +533,7 @@ public class AttendanceStatisticService {
 			//查询该组织当天的统计是否存在，如果存在则删除
 			ids = business.getStatisticUnitForDayFactory().listByUnitDayDate( unitName, statisticDate );
 			emc.beginTransaction( StatisticUnitForDay.class );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					logger.debug( debugger, ">>>>>>>>>>删除已存在的数据，id=" + id);
 					statisticUnitForDay_tmp = emc.find(id, StatisticUnitForDay.class);
@@ -644,7 +644,7 @@ public class AttendanceStatisticService {
 			//查询该顶层组织当天的统计是否存在，如果存在则删除
 			ids = business.getStatisticTopUnitForDayFactory().listByTopUnitRecordDateString( topUnitName, statisticDate );
 			emc.beginTransaction( StatisticTopUnitForDay.class );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					statisticTopUnitForDay_tmp = emc.find(id, StatisticTopUnitForDay.class);
 					emc.remove( statisticTopUnitForDay_tmp );

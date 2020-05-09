@@ -31,7 +31,7 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
-		if( categoryId != null && !categoryId.isEmpty() ){
+		if( StringUtils.isNotEmpty( categoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
@@ -50,7 +50,7 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
-		if( categoryId != null && !categoryId.isEmpty() ){
+		if( StringUtils.isNotEmpty( categoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
@@ -69,7 +69,7 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
-		if( categoryId != null && !categoryId.isEmpty() ){
+		if( StringUtils.isNotEmpty( categoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
@@ -88,7 +88,7 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
-		if( categoryId != null && !categoryId.isEmpty() ){
+		if( StringUtils.isNotEmpty( categoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), categoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId ).in( appids ));
@@ -108,7 +108,7 @@ public class SearchFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.creatorUnitName), creatorUnitName );
 		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+		if( StringUtils.isNotEmpty( targetCategoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId).in(appids));
@@ -128,7 +128,7 @@ public class SearchFactory extends AbstractFactory {
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.creatorTopUnitName), creatorTopUnitName );
 		p = cb.and(p, cb.equal( root.get( Document_.docStatus), docStatus ));
-		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+		if( StringUtils.isNotEmpty( targetCategoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
 		}else{
 			p = cb.and(p, root.get( Document_.appId).in(appids));
@@ -150,7 +150,7 @@ public class SearchFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
 		Root<Document> root = cq.from( Document.class );
 		Predicate p = cb.equal( root.get( Document_.docStatus), docStatus );
-		if( targetCategoryId != null && !targetCategoryId.isEmpty()){
+		if( StringUtils.isNotEmpty( targetCategoryId ) ){
 			p = cb.and(p, cb.equal( root.get( Document_.categoryId), targetCategoryId ));
 		}else{
 			p = cb.and(p, cb.equal( root.get( Document_.appId), appId));

@@ -66,7 +66,7 @@ public class ActionListSubWork extends BaseAction {
 		}
 		
 		if(check){
-			if( wraps != null && !wraps.isEmpty() ){
+			if( ListTools.isNotEmpty(wraps) ){
 				for( WoOkrWorkBaseInfo wrapOutOkrWorkBaseInfo : wraps ){
 					try {
 						okrWorkDetailInfo = okrWorkDetailInfoService.get( wrapOutOkrWorkBaseInfo.getId() );
