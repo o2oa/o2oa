@@ -34,7 +34,7 @@ public class SenderForSaveData {
 			// 先删除这一个文件ID下的所有记录
 			List<String> ids = business.getAttendanceDetailFactory().listByBatchName( file_id );
 			emc.beginTransaction(AttendanceDetail.class);
-			if (ids != null && ids.size() > 0) {
+			if ( ListTools.isNotEmpty(ids) ) {
 				for (String id : ids) {
 					detail = emc.find(id, AttendanceDetail.class);
 					emc.remove( detail );

@@ -43,7 +43,7 @@ public class OkrCenterWorkExcuteSave {
 			//如果当前的标题和原来的标题不一致，那么需要修改所有具体工作项目的中心工作标题
 			if( !okrCenterWorkInfo_old.getTitle().equals( okrCenterWorkInfo.getTitle()) ){
 				ids = business.okrWorkBaseInfoFactory().listByCenterWorkId( okrCenterWorkInfo.getId(), null );
-				if( ids != null && ids.size() > 0 ){
+				if( ListTools.isNotEmpty( ids ) ){
 					for( String id : ids ){
 						okrWorkBaseInfo = emc.find( id, OkrWorkBaseInfo.class );
 						if( okrWorkBaseInfo != null ){

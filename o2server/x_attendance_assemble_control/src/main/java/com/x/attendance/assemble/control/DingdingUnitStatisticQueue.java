@@ -9,6 +9,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -52,7 +53,7 @@ public class DingdingUnitStatisticQueue extends AbstractQueue<Date> {
                 }
                 List<String> ids = business.dingdingAttendanceFactory().getStatUnitForDayIds(year, month, day, unit);
                 emc.beginTransaction(StatisticDingdingUnitForDay.class);
-                if (ids != null && ids.size() > 0) {
+                if ( ListTools.isNotEmpty( ids ) ) {
                     for (String item : ids) {
                         StatisticDingdingUnitForDay statisticTopUnitForDay_tmp = emc.find(item, StatisticDingdingUnitForDay.class);
                         emc.remove(statisticTopUnitForDay_tmp);

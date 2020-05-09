@@ -100,7 +100,7 @@ public class ActionListNextWithFilter extends BaseAction {
 			}
 		}	
 		if(check){
-			if( wraps != null && !wraps.isEmpty() ){
+			if( ListTools.isNotEmpty(wraps) ){
 				for( Wo wrap : wraps ){
 					processIdentities = new ArrayList<>();
 					processIdentities.add( "VIEW" );

@@ -2,7 +2,6 @@ package com.x.cms.common.image.maincolor;
 
 /**
  * 定义RGB像素点
- * @author liyi
  *
  */
 public class Point {
