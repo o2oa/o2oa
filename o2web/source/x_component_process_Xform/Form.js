@@ -54,6 +54,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this.sectionListObj = {};
         this.modules = [];
         this.all = {};
+        this.allForName = {};
         this.forms = {};
 
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();
@@ -828,6 +829,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var module = new MWF["APP" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
         if (!this.all[json.id]) this.all[json.id] = module;
+
+        if ( json.name ){
+            if( this.allForName[json.name] ){
+                var item = this.allForName[json.name];
+                typeOf(item) === "array" ? item.push( module ) : this.allForName[json.name] = [item, module];
+            }else{
+                this.allForName[json.name] = module;
+            }
+        }
+
         if (module.field) {
             if (!this.forms[json.id]) this.forms[json.id] = module;
         }
