@@ -1681,9 +1681,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else if( this.json.submitFormType === "select" ){
-
+            this.processWork_custom();
         } else if( this.json.submitFormType === "script" ){
-
+            this.processWork_custom();
         } else {
             if (this.json.mode == "Mobile") {
                 setTimeout(function () {
@@ -1710,6 +1710,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
 
+        if (!MWF["APPSubmitform"]) {
+            MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
+        }
+        var submitFormContainer = new Element("div").inject( layout.mobile ? $(document.body) : this.app.content );
+        var module = new MWF["APPSubmitform"]( submitFormContainer , this.json, this);
+        module.load();
 
     },
     processWork_pc: function(){
