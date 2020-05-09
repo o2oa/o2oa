@@ -25,19 +25,29 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
 	},
 
     keyCopyItems: function(e){
-        if (this.pageConfigurator){
-            this.pageConfigurator.keyCopy(e);
-        }
-        if (this.scriptConfigurator){
-            this.scriptConfigurator.keyCopy(e);
+        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
+            if (this.pageConfigurator){
+                this.pageConfigurator.keyCopy(e);
+            }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyCopy(e);
+            }
+            if (this.widgetConfigurator){
+                this.widgetConfigurator.keyCopy(e);
+            }
         }
     },
     keyPasteItems: function(e){
-        if (this.pageConfigurator){
-            this.pageConfigurator.keyPaste(e);
-        }
-        if (this.scriptConfigurator){
-            this.scriptConfigurator.keyPaste(e);
+        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+            if (this.pageConfigurator){
+                this.pageConfigurator.keyPaste(e);
+            }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyPaste(e);
+            }
+            if (this.widgetConfigurator){
+                this.widgetConfigurator.keyPaste(e);
+            }
         }
     },
 
