@@ -37,7 +37,7 @@ public class ActionListAll extends BaseAction {
 		if( check ){
 			try {
 				wraps = Wo.copier.copy( report_S_SettingList );
-				if( wraps != null && !wraps.isEmpty() ) {
+				if( ListTools.isNotEmpty(wraps) ) {
 					for( Wo wo : wraps) {
 						if( wo.getIsLob() ) {
 							//查询LOB值

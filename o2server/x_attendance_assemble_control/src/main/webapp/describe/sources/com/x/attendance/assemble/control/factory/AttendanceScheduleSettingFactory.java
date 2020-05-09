@@ -16,7 +16,6 @@ import com.x.attendance.entity.AttendanceScheduleSetting_;
 import com.x.base.core.project.exception.ExceptionWhen;
 /**
  * 系统配置信息表基础功能服务类
- * @author liyi
  */
 public class AttendanceScheduleSettingFactory extends AbstractFactory {
 	

@@ -96,7 +96,7 @@ public class ActionEraseDocumentWithAppInfo extends BaseAction {
 									
 									//删除文档的附件信息
 									allFileInfoIds = business.getFileInfoFactory().listAllByDocument( docId );
-									if( allFileInfoIds != null && !allFileInfoIds.isEmpty() ){
+									if( ListTools.isNotEmpty( allFileInfoIds ) ){
 										for( String fileInfoId : allFileInfoIds ){
 											fileInfo = emc.find( fileInfoId, FileInfo.class );
 											if( fileInfo != null ){

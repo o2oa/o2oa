@@ -77,6 +77,12 @@ public class AttendanceAdmin extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String adminName = "";
 
+	public static final String admin_FIELDNAME = "admin";
+	@FieldDescribe("管理员标识")
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + adminName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + adminName_FIELDNAME)
+	private String admin = "";
+
 	public static final String adminLevel_FIELDNAME = "adminLevel";
 	@FieldDescribe("管理级别:UNIT|TOPUNIT")
 	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + adminLevel_FIELDNAME)
@@ -114,4 +120,8 @@ public class AttendanceAdmin extends SliceJpaObject {
 	public void setAdminLevel(String adminLevel) {
 		this.adminLevel = adminLevel;
 	}
+
+	public String getAdmin() { return admin; }
+
+	public void setAdmin(String admin) { this.admin = admin; }
 }

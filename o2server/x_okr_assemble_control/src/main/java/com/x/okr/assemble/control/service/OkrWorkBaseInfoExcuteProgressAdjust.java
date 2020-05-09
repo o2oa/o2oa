@@ -12,7 +12,6 @@ import com.x.okr.entity.OkrWorkReportBaseInfo;
 
 /**
  * 工作进展情况调整
- * @author liyi
  *
  */
 public class OkrWorkBaseInfoExcuteProgressAdjust {

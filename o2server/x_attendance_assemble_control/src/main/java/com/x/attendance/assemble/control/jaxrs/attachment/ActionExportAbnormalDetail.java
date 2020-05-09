@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,9 +25,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * 导入的文件没有用到文件存储器，是直接放在数据库中的BLOB列
- * 
- * @author liyi
- *
  */
 public class ActionExportAbnormalDetail extends BaseAction {
 	
@@ -90,7 +88,7 @@ public class ActionExportAbnormalDetail extends BaseAction {
 		
 		Workbook wb = new HSSFWorkbook();
 		Row row = null;
-		if (detailList != null && detailList.size() > 0) {
+		if (ListTools.isNotEmpty(detailList) ) {
 			// 创建新的表格
 			Sheet sheet = wb.createSheet(sheetName);
 			

@@ -23,8 +23,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 工作人力资源管理表
- * 
- * @author 李义
  *
  */
 @ContainerEntity

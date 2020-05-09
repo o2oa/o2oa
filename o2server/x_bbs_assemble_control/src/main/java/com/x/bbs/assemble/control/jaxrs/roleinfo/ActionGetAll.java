@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionRoleInfoProcess;
 import com.x.bbs.entity.BBSPermissionInfo;
 import com.x.bbs.entity.BBSRoleInfo;
@@ -42,7 +43,7 @@ public class ActionGetAll extends BaseAction {
 		}
 
 		if (check) {
-			if (roleInfoList != null && roleInfoList.size() > 0) {
+			if ( ListTools.isNotEmpty(roleInfoList) ) {
 				try {
 					wraps = Wo.copier.copy(roleInfoList);
 					result.setData(wraps);

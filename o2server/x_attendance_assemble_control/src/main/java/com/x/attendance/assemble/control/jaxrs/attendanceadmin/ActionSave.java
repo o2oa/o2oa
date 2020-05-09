@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.organization.Person;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -65,6 +66,43 @@ public class ActionSave extends BaseAction {
 				logger.error(e, currentPerson, request, null);
 			}
 		}
+		if (check) {
+			//如果adminName为空，根据标识核实admin姓名
+			if( StringUtils.isNotEmpty( attendanceAdmin.getAdmin()) ){
+				Person person = null;
+				try {
+					person = userManagerService.getPersonObjByName(attendanceAdmin.getAdminName());
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceAdminProcess(e, "系统根据人员标识获取人员信息对象时发生异常.Flag="+attendanceAdmin.getAdmin());
+					result.error(exception);
+					logger.error(e, currentPerson, request, null);
+				}
+				if( person != null ){
+					attendanceAdmin.setAdminName( person.getName() );
+				}
+			}
+		}
+		if (check) {
+			//如果admin为空，根据姓名获取admin标识
+			if( StringUtils.isNotEmpty( attendanceAdmin.getAdminName()) ){
+				if( StringUtils.isEmpty( attendanceAdmin.getAdmin()) ){
+					Person person = null;
+					try {
+						person = userManagerService.getPersonObjByName(attendanceAdmin.getAdminName());
+					} catch (Exception e) {
+						check = false;
+						Exception exception = new ExceptionAttendanceAdminProcess(e, "系统根据人员姓名获取人员标识时发生异常.Name=" + attendanceAdmin.getAdminName() );
+						result.error(exception);
+						logger.error(e, currentPerson, request, null);
+					}
+					if( person != null ){
+						attendanceAdmin.setAdmin( person.getDistinguishedName() );
+					}
+				}
+			}
+		}
+
 		if (check) {
 			try {
 				attendanceAdmin = attendanceAdminServiceAdv.save(attendanceAdmin);

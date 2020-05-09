@@ -9,6 +9,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.cms.core.entity.AppInfo;
 
@@ -41,7 +42,7 @@ public class ActionListAll extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 			if( check ){
-				if( appInfoList != null && !appInfoList.isEmpty() ){
+				if( ListTools.isNotEmpty( appInfoList ) ){
 					try {
 						wos = Wo.copier.copy( appInfoList );
 						SortTools.desc( wos, "appInfoSeq");

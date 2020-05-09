@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -86,7 +87,7 @@ public class BBSPermissionRoleFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSPermissionRole_.roleCode ), roleCode );
 		p = cb.and( p, cb.equal( root.get( BBSPermissionRole_.permissionCode ), permissionCode ));
 		roleInfoList = em.createQuery( cq.where(p) ).getResultList();
-		if( roleInfoList != null && roleInfoList.size() > 0 ){
+		if( ListTools.isNotEmpty(roleInfoList) ){
 			return true;
 		}else{
 			return false;
@@ -109,7 +110,7 @@ public class BBSPermissionRoleFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSPermissionRole_.roleCode ), roleCode );
 		p = cb.and( p, cb.equal( root.get( BBSPermissionRole_.permissionCode ), permissionCode ));
 		roleInfoList = em.createQuery( cq.where(p) ).getResultList();
-		if( roleInfoList != null && roleInfoList.size() > 0 ){
+		if( ListTools.isNotEmpty(roleInfoList) ){
 			return roleInfoList.get( 0 );
 		}else{
 			return null;

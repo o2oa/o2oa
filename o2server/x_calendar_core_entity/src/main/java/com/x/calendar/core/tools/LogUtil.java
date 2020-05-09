@@ -6,7 +6,6 @@ import com.x.base.core.project.tools.ListTools;
 
 /**
  * 缓存管理帮助类
- * @author liyi
  *
  */
 public class LogUtil {

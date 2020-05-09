@@ -92,7 +92,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkReportPersonLinkFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().list(ids);
 			for( OkrWorkReportPersonLink okrWorkReportPersonLink : okrWorkReportPersonLinkList ){
 				if( okrWorkReportPersonLink != null ){
@@ -106,7 +106,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkReportBaseInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportBaseInfoList = business.okrWorkReportBaseInfoFactory().list(ids);
 			for( OkrWorkReportBaseInfo okrWorkReportBaseInfo : okrWorkReportBaseInfoList ){
 				if( okrWorkReportBaseInfo != null ){
@@ -125,7 +125,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkBaseInfoFactory().listByCenterWorkId( centerId, null );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkBaseInfoList = business.okrWorkBaseInfoFactory().list(ids);
 			for( OkrWorkBaseInfo okrWorkBaseInfo : okrWorkBaseInfoList ){				
 				if( okrWorkBaseInfo != null ){
@@ -145,7 +145,7 @@ public class OkrCenterWorkExcuteArchive {
 			}			
 		}
 		//归档统计数据
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			for( String id : ids ){
 				statisticIds = business.okrStatisticReportContentFactory().list( id, null, null, null, null );
 				if (statisticIds != null && statisticIds.size() > 0) {
@@ -170,7 +170,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkReportProcessLogFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportProcessLogList = business.okrWorkReportProcessLogFactory().list(ids);
 			for( OkrWorkReportProcessLog okrWorkReportProcessLog : okrWorkReportProcessLogList ){
 				if( okrWorkReportProcessLog != null ){
@@ -180,7 +180,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkReportDetailInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportDetailInfoList = business.okrWorkReportDetailInfoFactory().list(ids);
 			for( OkrWorkReportDetailInfo okrWorkReportDetailInfo : okrWorkReportDetailInfoList ){
 				if( okrWorkReportDetailInfo != null ){
@@ -190,7 +190,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkPersonFactory().listByCenterWorkId( centerId, null );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkPersonList = business.okrWorkPersonFactory().list(ids);
 			for( OkrWorkPerson okrWorkPerson : okrWorkPersonList ){
 				if( okrWorkPerson != null ){
@@ -200,7 +200,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkDetailInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkDetailInfoList = business.okrWorkDetailInfoFactory().list(ids);
 			for( OkrWorkDetailInfo okrWorkDetailInfo : okrWorkDetailInfoList ){
 				if( okrWorkDetailInfo != null ){
@@ -210,7 +210,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkAuthorizeRecordFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkAuthorizeRecordList = business.okrWorkAuthorizeRecordFactory().list(ids);
 			for( OkrWorkAuthorizeRecord okrWorkAuthorizeRecord : okrWorkAuthorizeRecordList ){
 				if( okrWorkAuthorizeRecord != null ){
@@ -220,7 +220,7 @@ public class OkrCenterWorkExcuteArchive {
 			}
 		}
 		ids = business.okrWorkDynamicsFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkDynamicsList = business.okrWorkDynamicsFactory().list(ids);
 			for( OkrWorkDynamics okrWorkDynamics : okrWorkDynamicsList ){
 				if( okrWorkDynamics != null ){
@@ -231,7 +231,7 @@ public class OkrCenterWorkExcuteArchive {
 		}
 		ids = business.okrTaskFactory().listByCenterWorkId( centerId );
 		List<TaskIdentityInfo> taskIdentityInfoList = new ArrayList<>();
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrTaskList = business.okrTaskFactory().list(ids);
 			for( OkrTask okrTask : okrTaskList ){
 				if( okrTask != null ){
