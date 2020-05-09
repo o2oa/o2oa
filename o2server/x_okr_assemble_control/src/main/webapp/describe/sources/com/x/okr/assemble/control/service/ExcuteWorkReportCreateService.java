@@ -43,7 +43,7 @@ public class ExcuteWorkReportCreateService {
 					logger.warn("system list work ids what needs report new got an exception." );
 					logger.error(e);
 				}
-				if (ids != null && ids.size() > 0) {
+				if ( ListTools.isNotEmpty( ids ) ) {
 					for (String id : ids) {
 						check = true;
 						if (check) {

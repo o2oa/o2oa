@@ -38,7 +38,7 @@ public class OperatorDataValidator implements Runnable {
 		if( colmlist == null ) {
 			return;
 		}
-		if( colmlist != null && !colmlist.get(0).isEmpty() && !colmlist.get(2).isEmpty()){
+		if( ListTools.isNotEmpty( colmlist ) && !colmlist.get(0).isEmpty() && !colmlist.get(2).isEmpty()){
 			try {
 				check( cacheImportRowDetail.getFile_id(), curRow, colmlist );
 			}catch( Exception e ) {
@@ -57,7 +57,7 @@ public class OperatorDataValidator implements Runnable {
 		
 		cacheImportFileStatus.setProcessing( true );
 		
-		if( colmlist!= null && colmlist.size() > 0 ){
+		if( ListTools.isNotEmpty( colmlist ) ){
 			
 			Boolean checkSuccess = true;
 			Boolean personExists = true;
