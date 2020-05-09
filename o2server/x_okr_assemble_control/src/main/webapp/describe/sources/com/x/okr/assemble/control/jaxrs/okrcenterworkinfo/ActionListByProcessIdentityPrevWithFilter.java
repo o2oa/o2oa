@@ -64,7 +64,7 @@ public class ActionListByProcessIdentityPrevWithFilter extends BaseAction {
 				}
 			}
 			if(check){
-				if( wraps != null && !wraps.isEmpty() ){
+				if( ListTools.isNotEmpty(wraps) ){
 					for( Wo wrap : wraps ){
 						processIdentities = new ArrayList<>();
 						processIdentities.add( "VIEW" );

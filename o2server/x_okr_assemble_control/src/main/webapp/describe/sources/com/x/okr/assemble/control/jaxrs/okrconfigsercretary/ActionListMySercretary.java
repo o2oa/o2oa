@@ -36,7 +36,7 @@ public class ActionListMySercretary extends BaseAction {
 		}else{
 			try {
 				ids = okrConfigSecretaryService.listIdsByPerson( effectivePerson.getDistinguishedName() );
-				if( ids != null && ids.size() > 0 ){
+				if( ListTools.isNotEmpty( ids ) ){
 					okrConfigSecretaryList = okrConfigSecretaryService.listByIds( ids );
 				}
 				if( okrConfigSecretaryList != null ){

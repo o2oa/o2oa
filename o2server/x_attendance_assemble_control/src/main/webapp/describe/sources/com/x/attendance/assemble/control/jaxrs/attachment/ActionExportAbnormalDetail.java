@@ -24,8 +24,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * 导入的文件没有用到文件存储器，是直接放在数据库中的BLOB列
- * 
- * @author liyi
  *
  */
 public class ActionExportAbnormalDetail extends BaseAction {

@@ -39,8 +39,6 @@ import com.x.okr.entity.OkrWorkReportPersonLink;
 	2、无效身份检查功能
 	   1)无效身份涉及的数据展现出来
 	   2)无效身份的替换
-	   
- * @author 李义
  *
  */
 public class OkrSystemIdentityOperatorService {

@@ -5,7 +5,6 @@ import com.x.base.core.project.cache.ApplicationCache;
 
 /**
  * 缓存管理帮助类
- * @author liyi
  *
  */
 public class CacheUtil {

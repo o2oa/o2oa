@@ -18,8 +18,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 内容管理日志信息表
- * 
- * @author 李义
  *
  */
 @ContainerEntity

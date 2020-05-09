@@ -110,7 +110,7 @@ public class ActionSave extends BaseAction {
 		}
 		try {
 			ids = okrWorkBaseInfoQueryService.listAllProcessingWorkIds();
-			if ( ids != null && ids.size() > 0 ) {
+			if ( ListTools.isNotEmpty( ids ) ) {
 				total = ids.size();
 				for ( String id : ids ) {
 					count++;
