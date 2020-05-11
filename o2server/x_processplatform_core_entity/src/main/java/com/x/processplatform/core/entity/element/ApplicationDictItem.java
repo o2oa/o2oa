@@ -42,7 +42,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
  * 4.surface中的ApplicationDict的增,删,改<br/>
  */
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.ApplicationDictItem.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.ApplicationDictItem.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

@@ -1,6 +1,5 @@
 package com.x.processplatform.core.entity.element;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -15,13 +14,6 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -30,8 +22,14 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
+
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.End.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.End.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -58,11 +56,10 @@ public class End extends Activity {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		//nothing
 	}
 
 	/* 更新运行方法 */
-
-	// public static String[] FLA GS = new String[] { "id", "alias" };
 
 	/* flag标志位 */
 	/* Entity 默认字段结束 */

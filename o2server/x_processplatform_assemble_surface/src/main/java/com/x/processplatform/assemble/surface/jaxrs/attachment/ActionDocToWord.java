@@ -37,7 +37,7 @@ class ActionDocToWord extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Work work = null;
 		Wo wo = new Wo();
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			work = emc.find(workId, Work.class);
@@ -62,7 +62,8 @@ class ActionDocToWord extends BaseAction {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob());
 			Attachment attachment = null;
 			for (Attachment o : attachments) {
-				if (StringUtils.equalsIgnoreCase(wi.getSite(), o.getSite())) {
+				if (StringUtils.equalsIgnoreCase(wi.getSite(), o.getSite())
+						&& StringUtils.equalsIgnoreCase(o.getName(), wi.getFileName())) {
 					attachment = o;
 					break;
 				}

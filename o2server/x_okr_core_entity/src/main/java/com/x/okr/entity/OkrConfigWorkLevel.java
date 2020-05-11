@@ -19,7 +19,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author LIYI
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.OkrConfigWorkLevel.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.OkrConfigWorkLevel.table + JpaObject.IndexNameMiddle

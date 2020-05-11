@@ -39,7 +39,7 @@ import com.x.base.core.project.tools.DateTools;
  * 内容管理应用目录分类信息
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.FileInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.FileInfo.table + JpaObject.IndexNameMiddle

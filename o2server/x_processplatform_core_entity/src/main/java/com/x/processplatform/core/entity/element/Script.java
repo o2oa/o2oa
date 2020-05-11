@@ -35,7 +35,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Script.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.Script.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -62,11 +62,10 @@ public class Script extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	/* 更新运行方法 */
-
-	// public static String[] FLA GS = new String[] { "id", "alias" };
 
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
@@ -124,7 +123,7 @@ public class Script extends SliceJpaObject {
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ dependScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + dependScriptList_FIELDNAME
 					+ JoinIndexNameSuffix))
-	@OrderColumn(name =  ORDERCOLUMNCOLUMN)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
 			+ dependScriptList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + dependScriptList_FIELDNAME + ElementIndexNameSuffix)

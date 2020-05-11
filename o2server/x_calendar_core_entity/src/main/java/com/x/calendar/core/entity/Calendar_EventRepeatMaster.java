@@ -50,7 +50,7 @@ import net.fortuna.ical4j.model.property.ExDate;
  *
  */
 @SuppressWarnings("rawtypes")
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Calendar_EventRepeatMaster.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Calendar_EventRepeatMaster.table + JpaObject.IndexNameMiddle

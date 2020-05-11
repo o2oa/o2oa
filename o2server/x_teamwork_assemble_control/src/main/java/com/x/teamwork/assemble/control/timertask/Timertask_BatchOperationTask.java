@@ -49,7 +49,7 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 					}
 				}
 			}else {
-				logger.info("Timertask_BatchOperationTask -> not fount any task batch operation, try to check unreview task in database......");
+				logger.info("Timertask_BatchOperationTask -> not found any task batch operation, try to check unreview task in database......");
 				//如果队列里已经没有任务了，那么检查一下是否还有未revieiw的工作任务，添加到队列刷新工作作息的Review
 				BatchOperationPersistService batchOperationPersistService = new BatchOperationPersistService();
 				TaskQueryService taskQueryService = new TaskQueryService();

@@ -541,9 +541,6 @@ public abstract class Plan extends GsonPropertyObject {
 
 	/* 有两个地方用到了 */
 	private ScriptEngine getScriptEngine() throws ScriptException, Exception {
-		// ScriptEngineManager manager = new ScriptEngineManager();
-		// ScriptEngine scriptEngine = manager.getEngineByName("JavaScript");
-		// return scriptEngine;
 		if (null == this.scriptEngine) {
 			scriptEngine = ScriptFactory.newScriptEngine();
 			scriptEngine.eval(Config.mooToolsScriptText());
