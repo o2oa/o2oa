@@ -208,10 +208,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     }
                     this.json.data = this.editor.editor.getValue();
 
-                    this.editor.editor.on("change", function(){
-                        this.data.data = this.editor.editor.getValue();
+                    this.editor.addEditorEvent("change", function(){
+                        this.data.data = this.editor.getValue();
                         this.checkJpqlType();
                     }.bind(this));
+
+                    // this.editor.editor.on("change", function(){
+                    //     this.data.data = this.editor.getValue();
+                    //     this.checkJpqlType();
+                    // }.bind(this));
                 }.bind(this));
             }.bind(this), false);
         }

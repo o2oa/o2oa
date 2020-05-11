@@ -104,12 +104,20 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             if (this.data.text) {
                 this.editor.editor.setValue(this.data.text);
             }
-            this.editor.editor.on("change", function (e) {
-                if (!this.isChanged) {
+            this.editor.addEditorEvent("change", function(){
+                if (!this.isChanged){
                     this.isChanged = true;
-                    this.page.textNode.set("text", " * " + this.page.textNode.get("text"));
+                    this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
                 }
             }.bind(this));
+
+            // this.editor.editor.on("change", function (e) {
+            //     if (!this.isChanged) {
+            //         this.isChanged = true;
+            //         this.page.textNode.set("text", " * " + this.page.textNode.get("text"));
+            //     }
+            // }.bind(this));
+
             this.editor.addEvent("save", function () {
                 this.save();
             }.bind(this));

@@ -124,12 +124,19 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }
-            this.editor.editor.on("change", function(e){
+            this.editor.addEditorEvent("change", function(){
                 if (!this.isChanged){
                     this.isChanged = true;
                     this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
                 }
             }.bind(this));
+
+            // this.editor.editor.on("change", function(e){
+            //     if (!this.isChanged){
+            //         this.isChanged = true;
+            //         this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
+            //     }
+            // }.bind(this));
             this.editor.addEvent("save", function(){
                 this.save();
             }.bind(this));
