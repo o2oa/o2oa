@@ -89,28 +89,38 @@ o2.widget.JavascriptEditor = new Class({
         this.editorClass.load(function(){
             this.editor = monaco.editor.create(this.node, {
                 value: this.options.option.value,
-                language: "javascript",
+                language: this.options.option.mode,
                 theme: this.theme,
                 fontSize: this.fontSize,
                 lineNumbersMinChars: 3,
+                lineNumbers: (this.options.option.lineNumbers) ? "on" : "off",
                 mouseWheelZoom: true,
                 automaticLayout: true
             });
             this.focus();
 
-            o2.require("o2.xScript.Macro", function(){
+            o2.require("o2.xScript.Macro", function() {
                 var json = null;
-                o2.getJSON("/o2_core/o2/widget/$JavascriptEditor/environment.json", function(data){ json = data; }, false);
+                o2.getJSON("/o2_core/o2/widget/$JavascriptEditor/environment.json", function (data) {
+                    json = data;
+                }, false);
                 this.Macro = new o2.Macro.FormContext(json);
 
                 //registerReferenceProvider
                 //monaco.languages.registerReferenceProvider('javascript', {
                 monaco.languages.registerCompletionItemProvider('javascript', {
-                    provideCompletionItems: function(model, position, context, token) {
+                    "triggerCharacters": ["."],
+                    provideCompletionItems: function (model, position, context, token) {
                         debugger;
-                        var textUntilPosition = model.getValueInRange({startLineNumber: position.lineNumber, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+                        var textUntilPosition = model.getValueInRange({
+                            startLineNumber: position.lineNumber,
+                            startColumn: 1,
+                            endLineNumber: position.lineNumber,
+                            endColumn: position.column
+                        });
                         var textPrefix = textUntilPosition.substr(0, textUntilPosition.lastIndexOf("."));
                         code = "try {return "+textPrefix+";}catch(e){return null;}";
+                        //code = "try {return this;}catch(e){return null;}";
                         var o = this.Macro.exec(code);
 
                         var word = model.getWordUntilPosition(position);
@@ -121,43 +131,40 @@ o2.widget.JavascriptEditor = new Class({
                             endColumn: word.endColumn
                         };
 
-                        if (o){
+                        if (o) {
                             var arr = [];
-                            Object.keys(o).each(function(key){
+                            Object.keys(o).each(function (key) {
                                 var type = typeOf(o[key]);
-                                if (type==="function") {
+                                if (type === "function") {
                                     var count = o[key].length;
-                                    var v = key+"(";
-                                    for (var i=1; i<=count; i++) v+= (i==count) ? "par"+i :  "par"+i+", ";
-                                    v+=");";
+                                    var v = key + "(";
+                                    for (var i = 1; i <= count; i++) v += (i == count) ? "par" + i : "par" + i + ", ";
+                                    v += ")";
                                     arr.push({
                                         label: key,
                                         kind: monaco.languages.CompletionItemKind.Function,
                                         //documentation: "Fast, unopinionated, minimalist web framework",
                                         insertText: v,
-                                        range: range
+                                        range: range,
+                                        detail: type
                                     });
-                                }else{
+                                } else {
                                     arr.push({
                                         label: key,
                                         kind: monaco.languages.CompletionItemKind.Interface,
                                         //documentation: "Fast, unopinionated, minimalist web framework",
                                         insertText: key,
-                                        range: range
+                                        range: range,
+                                        detail: type
                                     });
                                 }
                             });
                         }
-
                         return {suggestions: arr}
-
-                    }.bind(this),
-                    resolveCompletionItem: this.provideCompletionItems
+                    }.bind(this)
                 });
 
-
-            }.bind(this));
-
+            });
 
             this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function(e){
                 this.fireEvent("save");
@@ -238,14 +245,14 @@ o2.widget.JavascriptEditor = new Class({
                                         caption: key,
                                         value: v,
                                         score: 3,
-                                        meta: "function O2"
+                                        meta: type
                                     });
                                 }else{
                                     arr2.push({
                                         caption: key,
                                         value: x+"."+key,
                                         score: 3,
-                                        meta: (type!="null") ? typeOf(o[key])+" O2" : "O2"
+                                        meta: type
                                     });
                                 }
                             });
@@ -319,6 +326,8 @@ o2.widget.JavascriptEditor = new Class({
                     var ev = name;
                     switch (ev) {
                         case "change": ev = "onDidChangeModelContent"; break;
+                        case "blue": ev = "onDidBlurEditorText"; break;
+
                     }
                     if (this.editor[ev]) this.editor[ev](fun);
                     break;
