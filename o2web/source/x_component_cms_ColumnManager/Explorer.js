@@ -220,6 +220,7 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
             this.deleteItemsAction.position({
                 relativeTo: this.elementContentListNode
             });
+            this.deleteItemsAction.setStyle("top","50%");
             this.deleteItemsAction.addEvent("click", function(){
                 var _self = this;
                 this.app.confirm("warn", this.deleteItemsAction, MWF.CMSCM.LP.deleteElementTitle, MWF.CMSCM.LP.deleteElement, 300, 120, function(){
