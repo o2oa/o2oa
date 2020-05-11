@@ -56,16 +56,22 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
             this.editor = new MWF.widget.JavascriptEditor(this.editorNode, {
                 "option": {"value": this.code},
                 "onSave": function(){
-                    var value = this.editor.editor.getValue();
+                    var value = this.editor.getValue();
                     this.fireEvent("change", [value]);
                     this.app.saveProcess();
                 }.bind(this)
             });
             this.editor.load(function(){
-                this.editor.editor.on("blur", function(){
-                    var value = this.editor.editor.getValue();
+
+                this.editor.addEditorEvent("blur", function(){
+                    var value = this.editor.getValue();
                     this.fireEvent("change", [value]);
                 }.bind(this));
+
+                // this.editor.editor.on("blur", function(){
+                //     var value = this.editor.editor.getValue();
+                //     this.fireEvent("change", [value]);
+                // }.bind(this));
 
                 this.createScriptReferenceMenu();
 

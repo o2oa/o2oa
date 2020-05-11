@@ -4,7 +4,7 @@ o2.widget.MWFRaphael = MWFRaphael = {
         if (window.Raphael){
             if (callback) callback();
         }else{
-            COMMON.AjaxModule.loadDom("raphael", function(){
+            COMMON.AjaxModule.load("raphael", function(){
                 this.expandRaphael();
                 if (callback) callback();
             }.bind(this), true, true);

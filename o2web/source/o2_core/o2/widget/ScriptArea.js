@@ -120,7 +120,7 @@ o2.widget.ScriptArea = new Class({
         var th = this.titleNode.getStyle("height").toInt();
         var height = (size.y || h)-(titleSize.y || th)-2-6;
         this.contentNode.setStyle("height", ""+height+"px");
-        if (this.editor) this.editor.resize();
+        if (this.jsEditor) this.jsEditor.resize();
     },
     toJson: function(){
         return (this.editor) ? {"code": this.editor.getValue(), "html": this.editor.getValue()} : this.contentCode;
@@ -190,10 +190,18 @@ o2.widget.ScriptArea = new Class({
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
-                this.editor.id = "2";
-                this.editor.on("change", function() {
+                //this.editor.id = "2";
+
+                this.jsEditor.addEditorEvent("change", function() {
                     this.fireEvent("change");
                 }.bind(this));
+                this.jsEditor.addEditorEvent("blur", function() {
+                    this.fireEvent("blur");
+                }.bind(this));
+
+                // this.editor.on("change", function() {
+                //     this.fireEvent("change");
+                // }.bind(this));
                 // this.editor.on("paste", function() {
                 //     o2.load("JSBeautifier", function(){
                 //         this.editor.setValue(js_beautify(this.editor.getValue()));
@@ -201,7 +209,7 @@ o2.widget.ScriptArea = new Class({
                 //     this.fireEvent("paste");
                 // }.bind(this));
 
-                this.editor.resize();
+                this.jsEditor.resize();
                 this.fireEvent("postLoad");
             }.bind(this),
             "onSave": function(){
