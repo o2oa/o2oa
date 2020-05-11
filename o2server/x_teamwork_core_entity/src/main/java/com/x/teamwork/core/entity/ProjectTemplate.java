@@ -31,7 +31,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * @author O2LJ
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.ProjectTemplate.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.ProjectTemplate.table + JpaObject.IndexNameMiddle

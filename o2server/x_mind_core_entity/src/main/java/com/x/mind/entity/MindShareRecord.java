@@ -21,7 +21,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author O2LEE
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.MindShareRecord.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.MindShareRecord.table + JpaObject.IndexNameMiddle

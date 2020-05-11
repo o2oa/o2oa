@@ -25,7 +25,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 工作人力资源管理表
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.OkrWorkPerson.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.OkrWorkPerson.table + JpaObject.IndexNameMiddle
