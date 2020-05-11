@@ -26,12 +26,16 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Rerout
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 class V2Reroute extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(V2Reroute.class);
 
+	/**
+	 * @param effectivePerson current person
+	 */
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		final String job;
@@ -60,11 +64,6 @@ class V2Reroute extends BaseAction {
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(Task.class);
 					emc.beginTransaction(WorkLog.class);
-					// work.setForceRoute(true);
-					// work.setSplitting(false);
-					// work.setSplitToken("");
-					// work.getSplitTokenList().clear();
-					// work.setSplitValue("");
 					/** 重新设置表单 */
 					setForm(work, activity);
 					work.setDestinationActivity(activity.getId());
@@ -76,7 +75,7 @@ class V2Reroute extends BaseAction {
 						work.getProperties().setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
 					}
 					removeTask(business, work);
-					if (wi.getMergeWork()) {
+					if (BooleanUtils.isTrue(wi.getMergeWork())) {
 						/* 合并工作 */
 						work.setSplitting(false);
 						work.setSplitToken("");
