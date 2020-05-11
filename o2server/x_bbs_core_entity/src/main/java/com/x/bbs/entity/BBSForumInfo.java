@@ -21,7 +21,7 @@ import java.util.List;
  * 
  * @author LIYI
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSForumInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSForumInfo.table + JpaObject.IndexNameMiddle
@@ -47,6 +47,7 @@ public class BBSForumInfo extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 	/*
 	 * =============================================================================
@@ -460,13 +461,21 @@ public class BBSForumInfo extends SliceJpaObject {
 		this.typeCategory = typeCategory;
 	}
 
-	public Boolean getReplyMessageNotify() { return this.replyMessageNotify== null ? false : this.replyMessageNotify; }
+	public Boolean getReplyMessageNotify() {
+		return this.replyMessageNotify == null ? false : this.replyMessageNotify;
+	}
 
-	public void setReplyMessageNotify(final Boolean replyMessageNotify) { this.replyMessageNotify = replyMessageNotify; }
+	public void setReplyMessageNotify(final Boolean replyMessageNotify) {
+		this.replyMessageNotify = replyMessageNotify;
+	}
 
-	public String getReplyMessageNotifyType() { return this.replyMessageNotifyType == null ? "0,0,0" : this.replyMessageNotifyType; }
+	public String getReplyMessageNotifyType() {
+		return this.replyMessageNotifyType == null ? "0,0,0" : this.replyMessageNotifyType;
+	}
 
-	public void setReplyMessageNotifyType(final String replyMessageNotifyType) { this.replyMessageNotifyType = replyMessageNotifyType; }
+	public void setReplyMessageNotifyType(final String replyMessageNotifyType) {
+		this.replyMessageNotifyType = replyMessageNotifyType;
+	}
 
 	public Boolean getSubjectMessageNotify() {
 		return this.subjectMessageNotify == null ? false : this.subjectMessageNotify;

@@ -24,7 +24,7 @@ import com.x.query.core.entity.PersistenceProperties;
 import com.x.query.core.entity.Stat;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Segment.Entry.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Segment.Entry.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

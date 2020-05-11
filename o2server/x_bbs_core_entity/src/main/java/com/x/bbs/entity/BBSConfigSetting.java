@@ -21,7 +21,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 
  * @author LIYI
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSConfigSetting.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSConfigSetting.table + JpaObject.IndexNameMiddle
@@ -47,6 +47,7 @@ public class BBSConfigSetting extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
+		//nothing
 	}
 	/*
 	 * =========================================================================

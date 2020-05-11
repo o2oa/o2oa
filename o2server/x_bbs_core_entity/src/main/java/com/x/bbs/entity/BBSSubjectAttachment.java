@@ -29,7 +29,7 @@ import com.x.base.core.project.tools.DateTools;
 /**
  * 附件信息管理表
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSSubjectAttachment.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSSubjectAttachment.table + JpaObject.IndexNameMiddle

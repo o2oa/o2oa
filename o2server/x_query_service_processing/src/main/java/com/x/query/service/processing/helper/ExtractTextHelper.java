@@ -2,13 +2,17 @@ package com.x.query.service.processing.helper;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.ListTools;
+
 import org.apache.commons.collections4.list.UnmodifiableList;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccessBuffer;
@@ -16,12 +20,6 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.Tika;
-
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
 
 import net.sourceforge.tess4j.Tesseract;
 
@@ -149,13 +147,5 @@ public class ExtractTextHelper {
 		}
 		return tika;
 	}
-
-//	@Test
-//	public void test1() throws Exception {
-//		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
-//				true, true, false));
-//		System.out.println(ExtractTextHelper.extract(FileUtils.readFileToByteArray(new File("d:/2.doc")), "文件内容&文件内容.doc", true,
-//				true, true, false));
-//	}
 
 }
