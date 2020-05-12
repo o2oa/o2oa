@@ -1630,6 +1630,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         iconNode.set("title", MWF.xApplication.process.Xform.LP.mediaOpinion_image);
         iconNode.addEvents({
             "click": function(e){
+                debugger;
                 if (e.target.mediaOpinionContentNode) return "";
                 var url = this.getMediaOpinionUrl(att);
                 // if (this.mediaOpinionContentNode){
@@ -1657,7 +1658,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                 }else{
                     var pNode = node.getParent().getParent();
                     var offset = imgNode.getPosition( pNode );
-                    width = Math.min( pNode.getSize().x - offset.x - 42, 800 );x
+                    width = Math.min( pNode.getSize().x - offset.x - 42, 800 );
                 }
 
                 var img = new Element("img", {
