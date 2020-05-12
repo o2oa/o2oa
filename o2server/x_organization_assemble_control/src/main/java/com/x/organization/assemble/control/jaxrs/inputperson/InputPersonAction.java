@@ -32,17 +32,17 @@ public class InputPersonAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(InputPersonAction.class);
 
-	@JaxrsMethodDescribe(value = "上传Excel导入人员.", action = ActionInput.class)
+	@JaxrsMethodDescribe(value = "上传Excel导入人员.", action = ActionInputAll.class)
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void input(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@FormDataParam(FILE_FIELD) final byte[] bytes,
 			@JaxrsParameterDescribe("Excel文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionInput.Wo> result = new ActionResult<>();
+		ActionResult<ActionInputAll.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionInput().execute(effectivePerson, bytes, disposition);
+			result = new ActionInputAll().execute(effectivePerson, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
