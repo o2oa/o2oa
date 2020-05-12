@@ -163,7 +163,7 @@
 /* 聊天界面 */
 
 .chat-title {
-    height: 50px;
+    height: 30px;
     text-align: center;
     padding-top: 15px;
     padding-bottom: 15px;
@@ -172,7 +172,7 @@
   }
 
   .chat-title span {
-    line-height: 50px;
+    line-height: 30px;
   }
 
   .chat-content {
@@ -186,7 +186,6 @@
     overflow: hidden;
     border-top: 1px solid #F1F1F1;
     background: #ffffff;
-    z-index: 100;
   }
 
   .chat-bottom-area-tool {
@@ -250,7 +249,7 @@
 
   .chat-sender {
     clear: both;
-    font-size: 80%;
+    /* font-size: 80%; */
   }
 
   .chat-sender div:nth-of-type(1) {
@@ -261,7 +260,7 @@
     margin: 0 50px 2px 50px;
     padding: 0px;
     color: #848484;
-    font-size: 70%;
+    /* font-size: 70%; */
     text-align: left;
   }
 
@@ -276,7 +275,7 @@
 
   .chat-receiver {
     clear: both;
-    font-size: 80%;
+    /* font-size: 80%; */
   }
 
   .chat-receiver div:nth-of-type(1) {
@@ -287,7 +286,7 @@
     margin: 0px 50px 2px 50px;
     padding: 0px;
     color: #848484;
-    font-size: 70%;
+    /* font-size: 70%; */
     text-align: right;
   }
 
