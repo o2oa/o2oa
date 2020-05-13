@@ -399,8 +399,8 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
-                this.selectedRoute.addClass("mainColor_bg");
-                this.selectedRoute.removeClass("lightColor_bg");
+                this.selectedRoute.addClass("lightColor_bg");
+                this.selectedRoute.removeClass("mainColor_bg");
                 //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
