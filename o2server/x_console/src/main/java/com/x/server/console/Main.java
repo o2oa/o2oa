@@ -46,6 +46,7 @@ public class Main {
 
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
 	private static final String GITIGNORE_FILENAME = ".gitignore";
+	public static boolean slf4jOtherImplOn = false;
 
 	public static void main(String[] args) throws Exception {
 		String base = getBasePath();
@@ -54,7 +55,16 @@ public class Main {
 		/* getVersion需要FileUtils在后面运行 */
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		LogTools.setSlf4jSimple();
+		try {
+			Main.class.getClassLoader().loadClass("org.slf4j.impl.SimpleLogger");
+			LogTools.setSlf4jSimple();
+		}catch(ClassNotFoundException ex) {
+			System.out.println("ignore:"+ex.getMessage());
+			slf4jOtherImplOn = true;
+		}
+		org.slf4j.impl.StaticLoggerBinder.getSingleton();
+		System.out.println("logger:" + org.slf4j.LoggerFactory.getLogger(Main.class)); 
+	
 		SystemOutErrorSideCopyBuilder.start();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
