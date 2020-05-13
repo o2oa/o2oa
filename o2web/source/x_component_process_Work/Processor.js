@@ -216,6 +216,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             list.push( this.splitByStartNumber( k).name )
         }.bind(this));
 
+        var flag = false;
         list.each( function( routeGroupName ){
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {"styles": this.css.routeGroupNode, "text": routeGroupName}).inject(this.routeGroupArea);
@@ -231,9 +232,12 @@ MWF.xApplication.process.Work.Processor = new Class({
             if ( keys.length === 1 ){
                 this.selectRouteGroup(routeGroupNode);
             }else{
-                this.setSize(0);
+                flag = true;
             }
         }.bind(this))
+        if( flag ){
+            this.setSize(0);
+        }
     },
     overRouteGroup: function(node){
         if (this.selectedRouteGroup){
@@ -321,6 +325,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
+        var flag = false;
         routeList.each(function(route, i){
             if( route.hiddenScriptText && this.form && this.form.Macro ){
                 if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
@@ -344,10 +349,13 @@ MWF.xApplication.process.Work.Processor = new Class({
             if (routeList.length==1 || route.sole ){ //sole表示优先路由
                 this.selectRoute(routeNode);
             }else{
-                this.setSize(0);
+                flag = true;
             }
 
         }.bind(this));
+        if( flag ){
+            this.setSize(0);
+        }
     },
     overRoute: function(node){
         if (this.selectedRoute){
@@ -1389,6 +1397,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //if( this.buttonsArea )height = height + this.getOffsetY(this.buttonsArea) +  this.buttonsArea.getStyle("height").toInt();
 
         if( lines > 0 ){
+            if(this.orgsArea)this.orgsArea.show();
             if( this.orgsTile )height = height + this.getOffsetY(this.orgsTile) +  this.orgsTile.getStyle("height").toInt();
             height = height + lines*this.options.orgHeight + this.getOffsetY(this.orgsArea);
             this.node.setStyle( "height", height );
@@ -1396,6 +1405,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             //flag = (lines*this.options.orgHeight + 431) > Math.floor( this.form.app.content.getSize().y * 0.9);
             //this.node.store("height", Math.min( Math.floor( this.form.app.content.getSize().y * 0.9) , lines*this.options.orgHeight + 431 ));
         }else{
+            if(this.orgsArea)this.orgsArea.hide();
             this.node.setStyle( "height", height );
             //this.node.store("height", 401 );
         }
