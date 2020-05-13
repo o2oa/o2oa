@@ -1721,13 +1721,17 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             return false;
         }
 
-        if (!MWF["APPSubmitform"]) {
-            MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
+        debugger;
+        if( !this.submitFormModule ){
+            if (!MWF["APPSubmitform"]) {
+                MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
+            }
+            var submitFormContainer = new Element("div").inject( layout.mobile ? $(document.body) : this.app.content );
+            this.submitFormModule = new MWF["APPSubmitform"]( submitFormContainer , this.json, this);
+            this.submitFormModule.load();
+        }else{
+            this.submitFormModule.show();
         }
-        var submitFormContainer = new Element("div").inject( layout.mobile ? $(document.body) : this.app.content );
-        var module = new MWF["APPSubmitform"]( submitFormContainer , this.json, this);
-        module.load();
-
     },
     processWork_pc: function(){
         var _self = this;
