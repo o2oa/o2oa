@@ -1763,14 +1763,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 "height": size.y,
                 "width": size.x
             });
+            debugger;
             var s = dlg.setContentSize();
-            if (dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto") {
-                var paddingRight = (dlg.content.getStyle("padding-right").toInt() || 0 );
-                if( paddingRight < 20 ){
-                    dlg.node.setStyle("width", dlg.node.getStyle("width").toInt() + 20 + "px");
-                    dlg.content.setStyle("width", dlg.content.getStyle("width").toInt() + 20 + "px");
-                }
-            }
+            // if ( dlg.content.getStyle("overflow-y") === "auto" && dlg.content.getStyle("overflow-x") !== "auto" ) {
+            //     var paddingRight = (dlg.content.getStyle("padding-right").toInt() || 0 );
+            //     if( paddingRight < 20 ){
+            //         dlg.node.setStyle("width", dlg.node.getStyle("width").toInt() + 20 + "px");
+            //         dlg.content.setStyle("width", dlg.content.getStyle("width").toInt() + 20 + "px");
+            //     }
+            // }
             if (!notRecenter) dlg.reCenter();
         }
 
