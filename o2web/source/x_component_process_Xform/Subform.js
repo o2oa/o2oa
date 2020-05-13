@@ -196,6 +196,9 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
             this.loadSubform();
         }.bind(this));
     },
+    show : function(){
+        this.fireSubFormEvent("load");
+    },
     fireSubFormEvent : function( name ){
         var events = this.subformData.json.events;
         if( events && events[name] && events[name]["code"] ){
