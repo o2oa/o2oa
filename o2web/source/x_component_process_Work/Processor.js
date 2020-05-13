@@ -36,16 +36,21 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.load();
     },
     load: function(){
+        if( layout.mobile ){
+            this.content = new Element("div").inject(this.node);
+        }else{
+            this.content = this.node;
+        }
         if( !this.form && this.options.isManagerProcess ){
-            this.managerProcessNoticeNode = new Element("div", {"styles": this.css.managerProcessNoticeNode, "html": MWF.xApplication.process.Work.LP.managerProcessNotice}).inject(this.node);
-            this.managerLoginNode = new Element("div", {"styles": this.css.managerLoginNode, "text": MWF.xApplication.process.Work.LP.managerLogin }).inject(this.node);
+            this.managerProcessNoticeNode = new Element("div", {"styles": this.css.managerProcessNoticeNode, "html": MWF.xApplication.process.Work.LP.managerProcessNotice}).inject(this.content);
+            this.managerLoginNode = new Element("div", {"styles": this.css.managerLoginNode, "text": MWF.xApplication.process.Work.LP.managerLogin }).inject(this.content);
 
             this.managerLoginNode.addEvent("click", function(ev){
                 this.managerLogin(ev);
             }.bind(this));
 
             //var text = MWF.xApplication.process.Work.LP.managerLoginReturn.replace( "{user}", layout.session.user.name );
-            //this.managerLoginReturnNode = new Element("div", {"styles": this.css.managerLoginNode, "text": text }).inject(this.node);
+            //this.managerLoginReturnNode = new Element("div", {"styles": this.css.managerLoginNode, "text": text }).inject(this.content);
             //this.managerLoginReturnNode.hide();
             //this.managerPerson = layout.session.user.distinguishedName;
             //this.managerLoginReturnNode.addEvent("click", function(ev){
@@ -53,23 +58,27 @@ MWF.xApplication.process.Work.Processor = new Class({
             //}.bind(this))
         }
 
-        this.routeOpinionTile = new Element("div", {"styles": this.css.routeOpinionTile, "text": MWF.xApplication.process.Work.LP.inputOpinion}).inject(this.node);
-        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.node);
+        this.routeOpinionTile = new Element("div", {"styles": this.css.routeOpinionTile, "text": MWF.xApplication.process.Work.LP.inputOpinion}).inject(this.content);
+        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.content);
 
         this.setOpinion();
 
         if( this.form ){
             if( layout.mobile ){
-                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
                 this.orgsArea.hide();
             }else{
-                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
             }
         }
 
-        this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.node);
+        if( layout.mobile ){
+            this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.node);
+        }else{
+            this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.content);
+        }
         this.setButtons();
 
         if( this.form ){
@@ -1344,8 +1353,31 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.fireEvent("resize");
     },
     setSize : function( currentOrgLength ){
-        if( layout.mobile )return;
-
+        if( layout.mobile ){
+            this.setSize_mobile();
+        }else{
+            this.setSize_pc( currentOrgLength );
+        }
+        //this.node.store("width", this.node.getStyle("width").toInt() + ( flag ? 20 : 0 ));
+        this.fireEvent("resize");
+    },
+    setSize_mobile : function(){
+        if( this.buttonsArea ){
+            debugger;
+            var bodySize = $(document.body).getSize();
+            var nodeHeight = bodySize.y - this.getOffsetY(this.node);
+            this.node.setStyles({
+                "overflow-y": "hidden",
+                "height" : nodeHeight
+            });
+            var buttonsAreaSize = this.buttonsArea.getSize();
+            this.content.setStyles({
+                "height" : nodeHeight - buttonsAreaSize.y - this.getOffsetY(this.buttonsArea) - this.getOffsetY(this.content),
+                "overflow-y" : "auto"
+            })
+        }
+    },
+    setSize_pc : function( currentOrgLength ){
         var lines = ((currentOrgLength+1)/2).toInt();
         var flag = false;
 
@@ -1367,6 +1399,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.node.setStyle( "height", height );
             //this.node.store("height", 401 );
         }
+        debugger;
         if( this.getMaxOrgLength() > 1 ){
             this.node.setStyles( this.css.node_wide );
             this.inputOpinionNode.setStyles( this.css.inputOpinionNode_wide );
@@ -1381,8 +1414,6 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.inputTextareaStyle = this.css.inputTextarea;
             this.selectIdeaNode.setStyles( this.css.selectIdeaNode );
         }
-        //this.node.store("width", this.node.getStyle("width").toInt() + ( flag ? 20 : 0 ));
-        this.fireEvent("resize");
     },
     validationOrgs : function(){
         if( !this.orgItems || !this.orgItems.length )return true;
