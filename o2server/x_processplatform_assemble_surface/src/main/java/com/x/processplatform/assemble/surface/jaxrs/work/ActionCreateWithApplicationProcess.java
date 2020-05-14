@@ -6,27 +6,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.x.base.core.project.logger.Audit;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
@@ -42,6 +38,10 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /*
  * 根据应用名称和流程名称进行创建,和直接用process创建基本相同
@@ -72,7 +72,7 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
-			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
 				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
@@ -115,9 +115,9 @@ class ActionCreateWithApplicationProcess extends BaseAction {
 				}
 				emc.commit();
 			}
-			/* 驱动工作 */
+			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(workId, DefaultCharset.name) + "/processing", null);
+					Applications.joinQueryUri("work", workId, "prcocssing", "nonblocking"), null,processFlag);
 		} else {
 			/* 如果是草稿,准备后面的直接打开 */
 			workId = lastestWorkId;
