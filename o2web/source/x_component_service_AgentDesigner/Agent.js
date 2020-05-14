@@ -96,7 +96,7 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
 
 
 
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode);
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"runtime": "service"});
         this.editor.load(function(){
             if (this.data.text){
                 this.editor.editor.setValue(this.data.text);
@@ -164,6 +164,23 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
                     option.set("selected", true);
                     break;
                 }
+            }
+
+            options = this.designer.editorSelectNode.options;
+            for (var i=0; i<options.length; i++){
+                var option = options[i];
+                if (option.value==this.editor.options.type){
+                    option.set("selected", true);
+                    break;
+                }
+            }
+
+            if (this.editor.options.type=="ace"){
+                this.designer.monacoStyleSelectNode.hide();
+                this.designer.styleSelectNode.show();
+            }else{
+                this.designer.monacoStyleSelectNode.show();
+                this.designer.styleSelectNode.hide();
             }
         }.bind(this));
 
