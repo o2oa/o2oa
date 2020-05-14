@@ -13,7 +13,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		this.module = module;
 		this.form = module.form;
 		this.data = module.json;
-		this.data.pid = this.form.json.id+this.data.id;
+		this.data.pid = this.form.options.mode+this.form.json.id+this.data.id;
 		this.htmlPath = this.options.path;
 		this.designer = designer;
 		this.maplists = {};
@@ -1722,7 +1722,8 @@ debugger;
             if (this.module){
                 var id = this.data.pid;
                 //var id = this.form.json.id;
-                input.set("name", this.form.options.mode+id+jsondata);
+                // input.set("name", this.form.options.mode+id+jsondata);
+                input.set("name", id+jsondata);
             }
 
 			if (jsondata){
@@ -1848,7 +1849,8 @@ debugger;
         //var id = this.form.json.id;
         var id = this.data.pid;
 
-		var checkboxList = $$("input[name='"+this.form.options.mode+id+name+"']");
+		// var checkboxList = $$("input[name='"+this.form.options.mode+id+name+"']");
+        var checkboxList = $$("input[name='"+id+name+"']");
 		var values = [];
 		checkboxList.each(function(checkbox){
 			if (checkbox.get("checked")){
