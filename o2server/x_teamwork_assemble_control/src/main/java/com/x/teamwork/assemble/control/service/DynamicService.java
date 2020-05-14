@@ -499,6 +499,57 @@ class DynamicService {
 	}
 	
 	/**
+	 * 组织一个项目恢复操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 */
+	protected Dynamic getProjectRecoveryDynamic( Project object, EffectivePerson effectivePerson ) {
+		String objectType =  "PROJECT";
+		String title =  "项目恢复";
+		String viewUrl = null;
+		String optType =  "RECOVERY";
+		String description = effectivePerson.getName() +"恢复了项目：" + object.getTitle();
+		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
+	}
+	
+	/**
+	 * 组织一个项目更改状态操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 */
+	protected Dynamic getCompleteDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) {
+		String objectType =  "PROJECT";
+		String title =  "项目状态更改";
+		String viewUrl = null;
+		String optType =  "COMPLETE";
+		String description = effectivePerson.getName() +"项目：" + object.getTitle()+",状态更改为：未完成";
+		if(status){
+			description = effectivePerson.getName() +"项目：" + object.getTitle()+",状态更改为：已完成";
+		}
+		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
+	}
+	
+	/**
+	 * 组织一个项目更改是否可创建任务操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 */
+	protected Dynamic getCreateableDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) {
+		String objectType =  "PROJECT";
+		String title =  "项目权限设置";
+		String viewUrl = null;
+		String optType =  "CREATEABLE";
+		String description = effectivePerson.getName() +"项目：" + object.getTitle()+",权限设置为：不可创建任务";
+		if(status){
+			description = effectivePerson.getName() +"项目：" + object.getTitle()+",权限设置为：可创建任务";
+		}
+		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
+	}
+	
+	/**
 	 * 保存和根据项目组信息操作动态
 	 * @param object_old
 	 * @param object
