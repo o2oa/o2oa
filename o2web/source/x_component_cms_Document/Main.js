@@ -70,8 +70,12 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
     refreshTaskCenter: function(){
         if (this.desktop.apps["cms.Explorer"]){
-            this.desktop.apps["cms.Explorer"].content.unmask();
-            this.desktop.apps["cms.Explorer"].refreshAll();
+            if( this.desktop.apps["cms.Explorer"].content ){
+                this.desktop.apps["cms.Explorer"].content.unmask();
+            }
+            if( this.desktop.apps["cms.Explorer"].refreshAll ){
+                this.desktop.apps["cms.Explorer"].refreshAll();
+            }
         }
     },
     addKeyboardEvents: function(){

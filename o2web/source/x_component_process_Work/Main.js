@@ -80,8 +80,12 @@ MWF.xApplication.process.Work.Main = new Class({
     refreshTaskCenter: function(){
 	    if (this.desktop.apps){
             if (this.desktop.apps["TaskCenter"]){
-                this.desktop.apps["TaskCenter"].content.unmask();
-                this.desktop.apps["TaskCenter"].refreshAll();
+                if( this.desktop.apps["TaskCenter"].content ){
+                    this.desktop.apps["TaskCenter"].content.unmask();
+                }
+                if( this.desktop.apps["TaskCenter"].refreshAll ) {
+                    this.desktop.apps["TaskCenter"].refreshAll();
+                }
             }
         }
     },
