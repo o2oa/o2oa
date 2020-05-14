@@ -38,6 +38,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_CLH2 = "clh2";
 	private static final String CMD_UF = "uf";
 	private static final String CMD_DDL = "ddl";
+	private static final String CMD_RST = "rst";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -72,6 +73,8 @@ public class ActionControl extends ActionBase {
 				uf(cmd);
 			} else if (cmd.hasOption(CMD_DDL)) {
 				ddl(cmd);
+			} else if (cmd.hasOption(CMD_RST)) {
+				rst(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", options);
@@ -95,6 +98,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
 		options.addOption(ddlOption());
+		options.addOption(rstOption());
 		return options;
 	}
 
@@ -159,6 +163,11 @@ public class ActionControl extends ActionBase {
 	private static Option ddlOption() {
 		return Option.builder("ddl").longOpt("DataDefinitionLanguage").argName("type").hasArg()
 				.desc("导出数据定义语句:建表语句:build,数据库创建:createDB,数据库删除dropDB.").build();
+	}
+
+	private static Option rstOption() {
+		return Option.builder("rst").longOpt("restartApp").argName("name").hasArg()
+				.desc("重启指定应用: 应用名称:name, 不带.war").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -251,6 +260,12 @@ public class ActionControl extends ActionBase {
 		String type = Objects.toString(cmd.getOptionValue(CMD_DDL), "");
 		Ddl ddl= new Ddl();
 		ddl.execute(type);
+	}
+
+	private void rst(CommandLine cmd) throws Exception {
+		String name = Objects.toString( cmd.getOptionValue(CMD_RST), "");
+		RestatWar rst = new RestatWar();
+		rst.execute(name);
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {
