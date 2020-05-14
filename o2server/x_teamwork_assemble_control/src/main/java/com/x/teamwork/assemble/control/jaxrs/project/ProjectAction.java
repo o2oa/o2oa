@@ -367,6 +367,45 @@ public class ProjectAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
+	@JaxrsMethodDescribe(value = "根据标识恢复项目.", action = ActionRecovery.class)
+	@GET
+	@Path("{id}/recovery")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void recoveryProject(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionRecovery.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try { 
+			result = new ActionRecovery().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据标识更改项目状态为已完成或未完成.", action = ActionComplete.class)
+	@PUT
+	@Path("{id}/complete")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void completeProject(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("需要保存的项目状态信息") JsonElement jsonElement ) {
+		ActionResult<ActionComplete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionComplete().execute(request, effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "根据标识删除项目信息.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")

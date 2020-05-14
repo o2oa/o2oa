@@ -77,6 +77,19 @@ class ProjectService {
 	}
 	
 	/**
+	 * 根据过滤条件查询符合要求的项目信息列表
+	 * @param emc
+	 * @param projectId
+	 * @param deleted
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<Task> listAllTasks( EntityManagerContainer emc,  String projectId, Boolean deleted) throws Exception {
+		Business business = new Business( emc );
+		return business.projectFactory().listAllTasks(projectId, deleted);
+	}
+	
+	/**
 	 * 根据条件查询符合条件的项目信息ID，根据上一条的sequnce查询指定数量的信息
 	 * @param emc
 	 * @param maxCount
@@ -156,36 +169,24 @@ class ProjectService {
 	protected void delete(EntityManagerContainer emc, String id ) throws Exception {
 		Business business = new Business( emc );
 		Project project = emc.find( id, Project.class );
-		ProjectDetail projectDetail = emc.find( id, ProjectDetail.class );
 		if( project != null ) {
 			//这里要先递归删除所有的任务信息
 			emc.beginTransaction( Task.class );
 			emc.beginTransaction( Project.class );
-			emc.beginTransaction( ProjectDetail.class );
-			emc.beginTransaction( ProjectExtFieldRele.class );
 			if( project != null ) {
 				//emc.remove( project , CheckRemoveType.all );
 				//改为软删除
 				project.setDeleted(true);
 				emc.check( project , CheckPersistType.all );
-			}
-			if( projectDetail != null ) {
-				emc.remove( projectDetail , CheckRemoveType.all );
-			}
+			}			
 			//还需要删除所有的Task
 			List<String> ids = business.taskFactory().listByProject( id );
 			List<Task> tasks = business.taskFactory().list(ids);
 			if( ListTools.isNotEmpty(tasks)) {
 				for( Task task : tasks ) {
-					//emc.remove( task , CheckRemoveType.all );
-					this.remove( emc, task.getId() ); 
-				}
-			}
-			//还需要删除所有的ProjectExtFieldRele
-			List<ProjectExtFieldRele> releList = business.projectExtFieldReleFactory().listFieldReleObjByProject( id );
-			if( ListTools.isNotEmpty(releList)) {
-				for( ProjectExtFieldRele rele : releList ) {
-					emc.remove( rele , CheckRemoveType.all );
+					//this.remove( emc, task.getId() ); 
+					task.setRelation(true);
+					emc.check( task, CheckPersistType.all );	
 				}
 			}
 			emc.commit();
@@ -199,10 +200,10 @@ class ProjectService {
 	 */
 	public void remove( EntityManagerContainer emc, String flag ) throws Exception {
 		emc.beginTransaction( Task.class );
-		emc.beginTransaction( Review.class );
+/*		emc.beginTransaction( Review.class );
 		emc.beginTransaction( TaskDetail.class );
 		emc.beginTransaction( TaskListRele.class );
-		emc.beginTransaction( TaskGroupRele.class );
+		emc.beginTransaction( TaskGroupRele.class );*/
 		removeTaskWithChildren( emc, flag);		
 		emc.commit();
 	}
@@ -223,7 +224,7 @@ class ProjectService {
 			}
 		}
 		
-		//任务列表中的关联信息
+		/*//任务列表中的关联信息
 		List<TaskListRele> listReles = business.taskListFactory().listReleWithTask(  id );
 		if( ListTools.isNotEmpty( listReles )) {
 			for( TaskListRele taskListRele : listReles ) {
@@ -238,8 +239,6 @@ class ProjectService {
 				emc.remove( taskGroupRele , CheckRemoveType.all );
 			}
 		}
-		
-		Task task = emc.find( id, Task.class );
 		TaskDetail taskDetail = emc.find( id, TaskDetail.class );
 		List<Review> reviewList = null;
 		List<List<String>> reviewIdBatchs = null;
@@ -260,15 +259,18 @@ class ProjectService {
 				}
 			}
 		}
+		if( taskDetail != null ) {
+		emc.remove( taskDetail , CheckRemoveType.all );
+		}*/
+		Task task = emc.find( id, Task.class );
 		if( task != null ) {
 			//emc.remove( task , CheckRemoveType.all );
 			//改为软删除
-			task.setDeleted(true);
+			//task.setDeleted(true); 
+			task.setRelation(true);
 			emc.check( task, CheckPersistType.all );	
 		}
-		if( taskDetail != null ) {
-			emc.remove( taskDetail , CheckRemoveType.all );
-		}
+		
 	}
 
 	/**

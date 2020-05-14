@@ -3,6 +3,7 @@ package com.x.teamwork.assemble.control.jaxrs.list;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.teamwork.assemble.control.service.DynamicPersistService;
+import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
 import com.x.teamwork.assemble.control.service.TaskGroupQueryService;
 import com.x.teamwork.assemble.control.service.TaskListPersistService;
@@ -30,5 +31,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected TaskTagQueryService taskTagQueryService = new TaskTagQueryService();
 	
 	protected 	SystemConfigQueryService systemConfigQueryService = new SystemConfigQueryService();
+	
+	protected 	ProjectQueryService projectQueryService = new ProjectQueryService();
 	
 }

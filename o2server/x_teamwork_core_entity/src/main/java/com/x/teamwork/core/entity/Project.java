@@ -120,6 +120,12 @@ public class Project extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + archive_FIELDNAME )
 	private Boolean archive = false;
 	
+	public static final String createable_FIELDNAME = "createable";
+	@FieldDescribe("是否可新建任务")
+	@Column( name = ColumnNamePrefix + createable_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + createable_FIELDNAME )
+	private Boolean createable = false;
+	
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者，可能为System，如果由系统创建。")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
@@ -334,6 +340,14 @@ public class Project extends SliceJpaObject {
 		this.archive = archive;
 	}
 
+	public Boolean getCreateable() {
+		return createable;
+	}
+
+	public void setCreateable(Boolean createable) {
+		this.createable = createable;
+	}
+	
 	public String getIcon() {
 		return icon;
 	}

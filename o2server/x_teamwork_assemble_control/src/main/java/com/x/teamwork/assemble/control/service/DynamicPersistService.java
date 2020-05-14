@@ -129,6 +129,75 @@ public class DynamicPersistService {
 	}
 	
 	/**
+	 * 恢复项目操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectRecoveryDynamic( Project object, EffectivePerson effectivePerson ) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getProjectRecoveryDynamic( object, effectivePerson );		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
+	 * 更改项目状态操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectCompleteDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		} 
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getCompleteDynamic( object, effectivePerson ,status);		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
+	 * 是否可创建任务操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectCreateableDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		} 
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getCreateableDynamic( object, effectivePerson ,status);		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
 	 * 保存项目扩展信息保存操作动态信息
 	 * @param object_old
 	 * @param object

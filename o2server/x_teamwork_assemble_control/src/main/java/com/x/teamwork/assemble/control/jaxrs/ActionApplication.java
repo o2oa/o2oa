@@ -10,6 +10,7 @@ import com.x.teamwork.assemble.control.jaxrs.chat.ChatAction;
 import com.x.teamwork.assemble.control.jaxrs.config.SystemConfigAction;
 import com.x.teamwork.assemble.control.jaxrs.dynamic.DynamicAction;
 import com.x.teamwork.assemble.control.jaxrs.extfield.ProjectExtFieldReleAction;
+import com.x.teamwork.assemble.control.jaxrs.global.GlobalAction;
 import com.x.teamwork.assemble.control.jaxrs.list.TaskListAction;
 import com.x.teamwork.assemble.control.jaxrs.project.ProjectAction;
 import com.x.teamwork.assemble.control.jaxrs.projectTemplate.ProjectTemplateAction;
@@ -39,6 +40,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add( ProjectExtFieldReleAction.class );
 		this.classes.add( ProjectTemplateAction.class );
 		this.classes.add( TaskListTemplateAction.class );
+		this.classes.add( GlobalAction.class );
 		return this.classes;
 	}
 

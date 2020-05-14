@@ -16,6 +16,9 @@ public class WrapOutControl {
 	@FieldDescribe("是否创始人")
 	private Boolean founder = false;
 	
+	@FieldDescribe("是否可新建任务")
+	private Boolean createable = false;
+	
 	public Boolean getDelete() {
 		return delete;
 	}
@@ -46,6 +49,14 @@ public class WrapOutControl {
 
 	public void setFounder(Boolean founder) {
 		this.founder = founder;
+	}
+	
+	public Boolean getCreateable() {
+		return createable;
+	}
+
+	public void setCreateable(Boolean createable) {
+		this.createable = createable;
 	}
 	
 }
