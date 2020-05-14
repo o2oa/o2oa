@@ -12,10 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.OpenJPAPersistence;
-
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
@@ -42,6 +38,9 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.query.core.entity.Item;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.openjpa.persistence.OpenJPAPersistence;
 
 public class EraseContentProcessPlatform {
 
@@ -129,7 +128,7 @@ public class EraseContentProcessPlatform {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<T> root = cq.from(cls);
-		Predicate p = cb.equal(root.get(Item.itemCategory_FIELDNAME), this.itemCategory);
+		Predicate p = cb.equal(root.get(DataItem.itemCategory_FIELDNAME), this.itemCategory);
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
@@ -182,7 +181,7 @@ public class EraseContentProcessPlatform {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(cls);
 			Root<T> root = cq.from(cls);
-			Predicate p = cb.equal(root.get(Item.itemCategory_FIELDNAME), itemCategory);
+			Predicate p = cb.equal(root.get(DataItem.itemCategory_FIELDNAME), itemCategory);
 			cq.select(root).where(p);
 			list = em.createQuery(cq).setMaxResults(1000).getResultList();
 		} while (ListTools.isNotEmpty(list));
