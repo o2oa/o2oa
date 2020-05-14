@@ -13,7 +13,7 @@ o2.widget.JavascriptEditor = new Class({
 			mode: "javascript",
 			"lineNumbers": true
 		},
-		"runtime": "web"
+		"runtime": "all"
 	},
 	initialize: function(node, options){
 		this.setOptions(options);
@@ -536,6 +536,7 @@ o2.widget.JavascriptEditor = new Class({
 
 o2.widget.JavascriptEditor.runtimeEnvironment = {};
 o2.widget.JavascriptEditor.getCompletionEnvironment = function(runtime, callback) {
+    debugger;
     if (!o2.widget.JavascriptEditor.runtimeEnvironment[runtime]) {
         o2.require("o2.xScript.Macro", function() {
             switch (runtime) {
@@ -544,6 +545,9 @@ o2.widget.JavascriptEditor.getCompletionEnvironment = function(runtime, callback
                     break;
                 case "server":
                     o2.widget.JavascriptEditor.getServerCompletionEnvironment(runtime,callback);
+                    break;
+                case "all":
+                    o2.widget.JavascriptEditor.getAllCompletionEnvironment(runtime,callback);
                     break;
                 default:
                     o2.widget.JavascriptEditor.getDefaultCompletionEnvironment(runtime,callback);
@@ -589,19 +593,37 @@ o2.widget.JavascriptEditor.getServiceCompletionEnvironment = function(runtime, c
 };
 
 o2.widget.JavascriptEditor.getServerCompletionEnvironment = function(runtime, callback) {
-    o2.xhr_get("../x_desktop/js/initialScriptText.js", function (xhr) {
-        var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + xhr.responseText + "\nreturn bind;" + "\n};";
-        Browser.exec(code);
-        var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction();
-        o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
-            "environment": ev,
-            exec: function(code){
-                return o2.Macro.exec(code, this.environment);
+    var serverScriptText = null;
+    var serverScriptSubstitute = null;
+    var check = function () {
+        if (o2.typeOf(serverScriptText) !== "null" && o2.typeOf(serverScriptSubstitute) !== "null") {
+            var code = "o2.Macro.swapSpace.tmpMacroCompletionFunction = function (){\n" + serverScriptSubstitute + "\n" + serverScriptText + "\nreturn bind;" + "\n};";
+            Browser.exec(code);
+            var ev = o2.Macro.swapSpace.tmpMacroCompletionFunction();
+            o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
+                "environment": ev,
+                exec: function(code){
+                    return o2.Macro.exec(code, this.environment);
+                }
             }
+            if (callback) callback();
         }
-        if (callback) callback();
-    }.bind(this), false);
+    }
 
+    o2.xhr_get("../x_desktop/js/initialScriptText.js", function (xhr) {
+        serverScriptText = xhr.responseText;
+        check();
+    }, function () {
+        serverScriptText = "";
+        check();
+    });
+    o2.xhr_get("../x_desktop/js/initalScriptSubstitute.js", function (xhr) {
+        serverScriptSubstitute = xhr.responseText;
+        check();
+    }, function () {
+        serverScriptSubstitute = "";
+        check();
+    });
 };
 
 o2.widget.JavascriptEditor.getDefaultCompletionEnvironment = function(runtime, callback){
@@ -611,4 +633,25 @@ o2.widget.JavascriptEditor.getDefaultCompletionEnvironment = function(runtime, c
         o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = new o2.Macro.FormContext(json);
         if (callback) callback();
     });
+}
+
+o2.widget.JavascriptEditor.getAllCompletionEnvironment = function(runtime, callback){
+    var check = function(){
+        if (o2.widget.JavascriptEditor.runtimeEnvironment["service"] && o2.widget.JavascriptEditor.runtimeEnvironment["server"] && o2.widget.JavascriptEditor.runtimeEnvironment["web"] ){
+            var ev = Object.merge(o2.widget.JavascriptEditor.runtimeEnvironment["service"].environment,
+                o2.widget.JavascriptEditor.runtimeEnvironment["server"].environment,
+                o2.widget.JavascriptEditor.runtimeEnvironment["web"].environment)
+            o2.widget.JavascriptEditor.runtimeEnvironment[runtime] = {
+                "environment": ev,
+                exec: function(code){
+                    return o2.Macro.exec(code, this.environment);
+                }
+            }
+            if (callback) callback();
+        }
+    }
+    o2.widget.JavascriptEditor.getServiceCompletionEnvironment("service", check);
+    o2.widget.JavascriptEditor.getServerCompletionEnvironment("server", check);
+    o2.widget.JavascriptEditor.getDefaultCompletionEnvironment("web", check);
+
 }
