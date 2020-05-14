@@ -4,10 +4,18 @@ o2.widget.MWFRaphael = MWFRaphael = {
         if (window.Raphael){
             if (callback) callback();
         }else{
-            COMMON.AjaxModule.load("raphael", function(){
-                this.expandRaphael();
-                if (callback) callback();
-            }.bind(this), true, true);
+			if(!window.Raphael && typeof require === 'function' && define.amd){
+				require(["../o2_lib/raphael/raphael.js"], function(r){
+					window.Raphael = r;
+					this.expandRaphael();
+					if (callback) callback();
+				}.bind(this));
+			}else{
+				COMMON.AjaxModule.load("raphael", function(){
+					this.expandRaphael();
+					if (callback) callback();
+				}.bind(this), true, true);
+			}
         }
 	},
 	expandRaphael: function(){
