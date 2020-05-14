@@ -21,6 +21,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class AttendanceStatisticService {
 	
@@ -204,12 +205,11 @@ public class AttendanceStatisticService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据数据统计需求，进行组织每月考勤分析结果统计
 	 * @param emc
 	 * @param attendanceStatisticRequireLog
-	 * @param attendanceStatisticalCycle
 	 * @param workDayConfigList
 	 * @param topUnitAttendanceStatisticalCycleMap
 	 */
