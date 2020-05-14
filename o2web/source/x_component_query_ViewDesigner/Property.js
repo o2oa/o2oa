@@ -370,7 +370,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     "onSave": function(){
                         this.designer.saveView();
                     }.bind(this),
-                    "style": style || "default"
+                    "style": style || "default",
+                    "runtime": "server"
                 });
                 scriptArea.load({"code": scriptContent});
             }.bind(this));

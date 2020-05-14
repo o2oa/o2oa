@@ -147,6 +147,7 @@
         var MSXML = function(){ return new ActiveXObject('Microsoft.XMLHTTP'); };
         return _attempt(XMLHTTP, MSXML2, MSXML);
     })();
+    this.o2.request = _request;
 
     var _returnBase = function(number, base) {
         return (number).toString(base).toUpperCase();
@@ -290,13 +291,13 @@
             _removeListener(xhr, 'load', _checkCssLoaded);
             _removeListener(xhr, 'error', _checkCssErrorLoaded);
 
-            if (err) {failure(xhr); return}
+            if (err) {if (failure) failure(xhr); return}
             var status = xhr.status;
             status = (status == 1223) ? 204 : status;
             if ((status >= 200 && status < 300))
-                success(xhr);
+                if (success) success(xhr);
             else if ((status >= 300 && status < 400))
-                failure(xhr);
+                if (failure) failure(xhr);
             else
                 failure(xhr);
             if (completed) completed(xhr);
@@ -308,7 +309,7 @@
         _addListener(xhr, "readystatechange", _checkCssLoaded);
         xhr.send();
     };
-
+    this.o2.xhr_get = _xhr_get;
     var _loadSequence = function(ms, cb, op, n, thisLoaded, loadSingle, uuid, fun){
         loadSingle(ms[n], function(module){
             if (module) thisLoaded.push(module);
@@ -343,9 +344,10 @@
         "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
         "ckeditor": ["/o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
         "ckeditor5": ["/o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
-        "raphael": ["/o2_lib/raphael/raphael.js"],
+        "raphael": ["/o2_lib/raphael/raphael_230.js"],
         "d3": ["/o2_lib/d3/d3.min.js"],
         "ace": ["/o2_lib/ace/src-min-noconflict/ace.js","/o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
+        "monaco": ["/o2_lib/vs/loader.js"],
         "JSBeautifier": ["/o2_lib/JSBeautifier/beautify.js"],
         "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
         "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
