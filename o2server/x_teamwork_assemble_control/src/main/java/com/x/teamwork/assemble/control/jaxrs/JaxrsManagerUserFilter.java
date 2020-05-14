@@ -18,6 +18,7 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/task_list/*",
 		"/jaxrs/config/*",
 		"/jaxrs/extfield/*",
+		"/jaxrs/global/*",
 		"/jaxrs/dynamic/*"
 		}, asyncSupported = true)
 public class JaxrsManagerUserFilter extends ManagerUserJaxrsFilter {

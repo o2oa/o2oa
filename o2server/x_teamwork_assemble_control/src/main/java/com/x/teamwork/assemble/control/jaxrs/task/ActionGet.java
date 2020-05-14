@@ -144,17 +144,16 @@ public class ActionGet extends BaseAction {
 					control = new WrapOutControl();
 					if( business.isManager(effectivePerson) 
 							|| effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getCreatorPerson() )
-							|| task.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
-						control.setDelete( true );
-						control.setEdit( true );
+							|| (ListTools.isNotEmpty(task.getManageablePersonList()) && task.getManageablePersonList().contains( effectivePerson.getDistinguishedName() ))){
+						control.setDelete( true );					
 						control.setSortable( true );
 						control.setChangeExecutor( true );
 					}else{
 						control.setDelete( false );
-						control.setEdit( false );
 						control.setSortable( false );
 						control.setChangeExecutor( false );
 					}
+					control.setEdit( true );
 					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( task.getExecutor())){
 						control.setChangeExecutor( true );
 					}
@@ -163,6 +162,16 @@ public class ActionGet extends BaseAction {
 					}else{
 						control.setFounder( false );
 					}
+					
+					Project project = null;
+					project = projectQueryService.get(wo.getProject());
+					if(project != null && (project.getDeleted() || project.getCompleted())){
+						control.setEdit( false );
+						control.setDelete( false );					
+						control.setSortable( false );
+						control.setChangeExecutor( false );
+					}
+					
 					wo.setControl(control);
 				} catch (Exception e) {
 					check = false;

@@ -177,6 +177,12 @@ public class Task extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + archive_FIELDNAME )
 	private Boolean archive = false;
 	
+	public static final String relation_FIELDNAME = "relation";
+	@FieldDescribe("是否项目关联操作")
+	@Column( name = ColumnNamePrefix + relation_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + relation_FIELDNAME )
+	private Boolean relation = false;
+	
 	public static final String reviewed_FIELDNAME = "reviewed";
 	@FieldDescribe("是否检查过review信息")
 	@Column( name = ColumnNamePrefix + reviewed_FIELDNAME)
@@ -345,6 +351,14 @@ public class Task extends SliceJpaObject {
 
 	public void setOvertime(Boolean overtime) {
 		this.overtime = overtime;
+	}
+	
+	public Boolean getRelation() {
+		return relation;
+	}
+
+	public void setRelation(Boolean relation) {
+		this.relation = relation;
 	}
 
 	public Boolean getRemindRelevance() {
