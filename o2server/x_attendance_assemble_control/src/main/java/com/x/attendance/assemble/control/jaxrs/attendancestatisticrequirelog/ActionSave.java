@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticrequirelog.exception.ExceptionStatisticRequireProcess;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
