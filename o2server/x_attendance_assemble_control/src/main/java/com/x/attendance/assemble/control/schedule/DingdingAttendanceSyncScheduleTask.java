@@ -25,7 +25,6 @@ public class DingdingAttendanceSyncScheduleTask extends AbstractJob {
     @Override
     public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            logger.info("开始同步钉钉考勤打卡结果。。。。。。。。。。。。。。。。。。。。。");
             //前一天 0点到23点
             Date from = new Date();
             from = DateTools.addDay(from, -1);

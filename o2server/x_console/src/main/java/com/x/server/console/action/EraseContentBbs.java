@@ -16,7 +16,7 @@ import com.x.bbs.entity.BBSVoteRecord;
 public class EraseContentBbs extends EraseContentProcessPlatform {
 
 	private static Logger logger = LoggerFactory.getLogger(EraseContentBbs.class);
-
+	@Override
 	public boolean execute() throws Exception {
 		this.init("bbs", ItemCategory.bbs);
 		addClass(BBSOperationRecord.class);
