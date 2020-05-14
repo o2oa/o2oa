@@ -12,6 +12,7 @@ o2.widget.ScriptArea = new Class({
         "isload": false,
         "isbind": true,
         "mode": "javascript",
+        "runtime": "all",
         "key": "code"
     },
     initialize: function(node, options){
@@ -185,6 +186,7 @@ o2.widget.ScriptArea = new Class({
         var value=(content) ? content.code : "";
         value = (value) ? value : "";
         this.jsEditor = new o2.widget.JavascriptEditor(this.contentNode,{
+            "runtime": this.options.runtime || "all",
             "option": {
                 "value": value,
                 "lineNumbers": false,

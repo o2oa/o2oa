@@ -661,7 +661,8 @@ MWF.xApplication.query.TableDesigner.Property = MWF.FTProperty = new Class({
                     "onSave": function(){
                         this.designer.saveView();
                     }.bind(this),
-                    "style": style || "default"
+                    "style": style || "default",
+                    "runtime": "server"
                 });
                 scriptArea.load({"code": scriptContent});
             }.bind(this));

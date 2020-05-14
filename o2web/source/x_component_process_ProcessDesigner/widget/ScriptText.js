@@ -54,6 +54,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         }
         MWF.require("MWF.widget.JavascriptEditor", function(){
             this.editor = new MWF.widget.JavascriptEditor(this.editorNode, {
+                "runtime": "server",
                 "option": {"value": this.code},
                 "onSave": function(){
                     var value = this.editor.getValue();
@@ -148,7 +149,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         var size = this.areaNode.getSize();
         var y = size.y-20;
         this.editorNode.setStyle("height", ""+y+"px");
-        if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize();
     },
 
     returnSize: function(){
