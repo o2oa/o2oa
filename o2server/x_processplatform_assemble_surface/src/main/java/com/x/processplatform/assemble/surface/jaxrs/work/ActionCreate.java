@@ -66,7 +66,7 @@ class ActionCreate extends BaseAction {
 			if (null == process) {
 				throw new ExceptionProcessNotExist(processFlag);
 			}
-			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
 				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 			Application application = business.application().pick(process.getApplication());
@@ -109,9 +109,9 @@ class ActionCreate extends BaseAction {
 				}
 				emc.commit();
 			}
-			/* 驱动工作 */
+			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(workId, DefaultCharset.name) + "/processing", null, processFlag);
+					Applications.joinQueryUri("work", workId, "prcocssing", "nonblocking"), null, processFlag);
 		} else {
 			/* 如果是草稿,准备后面的直接打开 */
 			workId = lastestWorkId;

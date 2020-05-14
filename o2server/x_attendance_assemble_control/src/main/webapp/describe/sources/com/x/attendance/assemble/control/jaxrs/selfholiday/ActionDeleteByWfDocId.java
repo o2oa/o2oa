@@ -17,6 +17,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionDeleteByWfDocId extends BaseAction {
 	
@@ -37,7 +38,7 @@ public class ActionDeleteByWfDocId extends BaseAction {
 			business = new Business(emc);
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			ids = business.getAttendanceSelfHolidayFactory().getByWorkFlowDocId(wfDocId);
-			if (ids != null && ids.size() > 0) {
+			if ( ListTools.isNotEmpty( ids ) ) {
 				attendanceSelfHolidays = business.getAttendanceSelfHolidayFactory().list(ids);
 				if (attendanceSelfHolidays != null && attendanceSelfHolidays.size() > 0) {
 					for (AttendanceSelfHoliday attendanceSelfHoliday : attendanceSelfHolidays) {
@@ -51,7 +52,7 @@ public class ActionDeleteByWfDocId extends BaseAction {
 						ids = attendanceDetailAnalyseServiceAdv.getAnalyseAttendanceDetailIds(
 								attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(),
 								attendanceSelfHoliday.getEndTime());
-						if (ids != null && ids.size() > 0) {
+						if ( ListTools.isNotEmpty( ids ) ) {
 							try {// 查询所有的周期配置，组织成Map
 								topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
 							} catch (Exception e) {
