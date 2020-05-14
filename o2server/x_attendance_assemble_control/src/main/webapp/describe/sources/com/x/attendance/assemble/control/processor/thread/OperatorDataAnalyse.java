@@ -56,10 +56,10 @@ public class OperatorDataAnalyse implements Runnable{
 		statusSystemImportOpt.setProcessing( true );
 		statusSystemImportOpt.setProcessing_analysis( true );
 		
-		if ( ListTools.isNotEmpty( detail_ids )) {
+		if ( detail_ids != null && !detail_ids.isEmpty() ) {
 			try{
 				ids_temp = attendanceSelfHolidayServiceAdv.getByPersonName( entityAnalyseData.getPersonName() );
-				if( ListTools.isNotEmpty( ids_temp ) ) {
+				if( ids_temp != null && !ids_temp.isEmpty() ) {
 					selfHolidays = attendanceSelfHolidayServiceAdv.list( ids_temp );
 				}
 			}catch( Exception e ){

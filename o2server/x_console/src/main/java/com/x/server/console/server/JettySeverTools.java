@@ -36,9 +36,13 @@ public abstract class JettySeverTools {
 		config.setResponseHeaderSize(8192 * 2);
 		config.setSendServerVersion(true);
 		config.setSendDateHeader(false);
+
 		ServerConnector sslConnector = new ServerConnector(server,
 				new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
 				new HttpConnectionFactory(config));
+		/* 添加到32,压力测试 */
+		sslConnector.setAcceptQueueSize(32);
+		sslConnector.setIdleTimeout(30000);
 		sslConnector.setPort(port);
 		server.addConnector(sslConnector);
 	}
@@ -51,6 +55,8 @@ public abstract class JettySeverTools {
 		config.setSendServerVersion(true);
 		config.setSendDateHeader(false);
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
+		/* 添加到32,压力测试 */
+		http.setAcceptQueueSize(32);
 		http.setIdleTimeout(30000);
 		http.setPort(port);
 		server.addConnector(http);
