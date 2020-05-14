@@ -92,21 +92,17 @@ public abstract class JettySeverTools {
 		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
-		if (com.x.server.console.Main.slf4jOtherImplOn) {
-			filter = FileFilterUtils.or(new WildcardFileFilter("openjpa-*.jar"));
-		} else {
-			filter = new WildcardFileFilter("slf4j-api-*.jar");
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("openjpa-*.jar"));
-		}
+		filter = new WildcardFileFilter("openjpa-*.jar");
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
-		/* jersey从AppClassLoader加载 */
-		// filter = FileFilterUtils.or(filter, new WildcardFileFilter("jersey-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
+		if (!com.x.server.console.Main.slf4jOtherImplOn) {
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
+		}
+		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
