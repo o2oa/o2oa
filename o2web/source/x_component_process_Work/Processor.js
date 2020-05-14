@@ -1129,6 +1129,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         var data = this.getOrgData( route );
         var routeConfig = this.getRouteData( route );
         var ignoreFirstOrgOldData = false; //(routeConfig.type === "appendTask" && routeConfig.appendTaskIdentityType === "select");
+        this.setSize( data.length );
         if( data.length  ){
             this.orgsArea.show();
 
