@@ -8,13 +8,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.config.Config;
@@ -29,6 +26,11 @@ import com.x.query.core.entity.segment.Entry_;
 import com.x.query.core.express.program.Arguments;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 public class CrawlCms extends AbstractJob {
 
@@ -82,7 +84,7 @@ public class CrawlCms extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Document> root = cq.from(Document.class);
-		cq.select(root.get(Document_.id)).orderBy(cb.desc(root.get(Document_.sequence)));
+		cq.select(root.get(Document_.id)).orderBy(cb.desc(root.get(JpaObject_.sequence)));
 		List<String> os = em.createQuery(cq).setMaxResults(Config.query().getCrawlCms().getCount()).getResultList();
 		return os;
 	}
@@ -98,9 +100,9 @@ public class CrawlCms extends AbstractJob {
 		Predicate p = cb.conjunction();
 		String sequence = Arguments.getCrawlUpdateCms();
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(cb.lessThan(root.get(Document.sequence_FIELDNAME), sequence));
+			p = cb.and(cb.lessThan(root.get(JpaObject.sequence_FIELDNAME), sequence));
 		}
-		cq.select(root.get(Document_.id)).where(p).orderBy(cb.desc(root.get(Document_.sequence)));
+		cq.select(root.get(Document_.id)).where(p).orderBy(cb.desc(root.get(JpaObject_.sequence)));
 		Integer count = Config.query().getCrawlCms().getCount() / 2;
 		List<String> os = em.createQuery(cq).setMaxResults(count).getResultList();
 		if (os.size() == count) {
@@ -120,10 +122,9 @@ public class CrawlCms extends AbstractJob {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Entry> root = cq.from(Entry.class);
 		Predicate p = cb.equal(root.get(Entry_.type), Entry.TYPE_CMS);
-		cq.select(root.get(Entry_.reference)).where(p).orderBy(cb.asc(root.get(Entry_.sequence)));
+		cq.select(root.get(Entry_.reference)).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence)));
 		Integer count = Config.query().getCrawlCms().getCount() / 2;
-		List<String> os = em.createQuery(cq).setMaxResults(count).getResultList();
-		return os;
+		return em.createQuery(cq).setMaxResults(count).getResultList();
 	}
 
 }

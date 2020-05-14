@@ -32,7 +32,7 @@ public class SenderForAnalyseData {
 		for ( String personName : personNames ) {
 			try {
 				ids = attendanceDetailServiceAdv.getAllAnalysenessDetails( startDate, endDate, personName );
-				if( ListTools.isNotEmpty(ids) ) {
+				if( ids != null && !ids.isEmpty() ) {
 					statusSystemImportOpt.setProcessing( true );
 					statusSystemImportOpt.setProcessing_analysis( true );
 					statusSystemImportOpt.increaseProcess_analysis_total( ids.size() );
