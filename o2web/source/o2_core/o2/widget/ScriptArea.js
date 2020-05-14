@@ -68,6 +68,7 @@ o2.widget.ScriptArea = new Class({
         }
     },
     maxSize: function(){
+        debugger;
         var obj = this.options.maxObj;
         var coordinates = obj.getCoordinates(obj.getOffsetParent());
 
@@ -80,8 +81,8 @@ o2.widget.ScriptArea = new Class({
             "position": "absolute",
             // "top": coordinates.top,
             // "left": coordinates.left,
-            "top": "0px",
-            "left": "0px",
+            "top": coordinates.top+"px",
+            "left": coordinates.left+"px",
             "width": coordinates.width,
             "height": coordinates.height-2,
             "z-index": 20001
@@ -97,7 +98,8 @@ o2.widget.ScriptArea = new Class({
     returnSize: function(){
         var size = this.container.retrieve("size");
 
-        this.editor.setOption("lineNumbers", false);
+        //this.editor.setOption("lineNumbers", false);
+        this.jsEditor.hideLineNumbers();
         this.container.inject(this.node);
         this.container.setStyles({
             "position": "static",

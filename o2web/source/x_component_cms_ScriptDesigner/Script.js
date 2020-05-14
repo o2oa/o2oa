@@ -159,6 +159,28 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
                     }
                 }
             }
+
+            if(this.designer.editorSelectNode) {
+                var options = this.designer.editorSelectNode.options;
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    if (option.value == this.editor.options.type) {
+                        option.set("selected", true);
+                        break;
+                    }
+                }
+            }
+
+            if (this.designer.styleSelectNode && this.designer.monacoStyleSelectNode){
+                if (this.editor.options.type=="ace"){
+                    this.designer.monacoStyleSelectNode.hide();
+                    this.designer.styleSelectNode.show();
+                }else{
+                    this.designer.monacoStyleSelectNode.show();
+                    this.designer.styleSelectNode.hide();
+                }
+            }
+
         }.bind(this));
 
         if (this.options.showTab) this.page.showTabIm();
