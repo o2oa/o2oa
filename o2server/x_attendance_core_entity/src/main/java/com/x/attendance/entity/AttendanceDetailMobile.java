@@ -63,69 +63,82 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String empNo_FIELDNAME = "empNo";
 	@FieldDescribe("员工号")
-	@Column(name = "xempNo", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empNo_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String empNo;
 
+	public static final String empName_FIELDNAME = "empName";
 	@FieldDescribe("员工姓名")
-	@Column(name = "xempName", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String empName;
 
+	public static final String recordDateString_FIELDNAME = "recordDateString";
 	@FieldDescribe("打卡记录日期字符串")
-	@Column(name = "xrecordDateString", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + recordDateString_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String recordDateString;
 
+	public static final String recordDate_FIELDNAME = "recordDate";
 	@FieldDescribe("打卡记录日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xrecordDate")
+	@Column( name = ColumnNamePrefix + recordDate_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Date recordDate;
 
+	public static final String signTime_FIELDNAME = "signTime";
 	@FieldDescribe("打卡时间")
-	@Column(name = "xsignTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + signTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String signTime;
 
+	public static final String signDescription_FIELDNAME = "signDescription";
 	@FieldDescribe("打卡说明")
-	@Column(name = "xsignDescription", length = JpaObject.length_128B)
+	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + signDescription_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String signDescription;
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("其他说明备注")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
+	public static final String recordAddress_FIELDNAME = "recordAddress";
 	@FieldDescribe("打卡地点描述")
-	@Column(name = "xrecordAddress", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + recordAddress_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String recordAddress;
 
+	public static final String longitude_FIELDNAME = "longitude";
 	@FieldDescribe("经度")
-	@Column(name = "xlongitude", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + longitude_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String longitude;
 
+	public static final String latitude_FIELDNAME = "latitude";
 	@FieldDescribe("纬度")
-	@Column(name = "xlatitude", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + latitude_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String latitude;
 
+	public static final String optMachineType_FIELDNAME = "optMachineType";
 	@FieldDescribe("操作设备类别：手机品牌|PAD|PC|其他")
-	@Column(name = "xoptMachineType", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + optMachineType_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String optMachineType;
 
+	public static final String optSystemName_FIELDNAME = "optSystemName";
 	@FieldDescribe("操作设备类别：Mac|Windows|IOS|Android|其他")
-	@Column(name = "xoptSystemName", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + optSystemName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String optSystemName;
 
+	public static final String recordStatus_FIELDNAME = "recordStatus";
 	@FieldDescribe("记录状态：0-未分析 1-已分析")
-	@Column(name = "xrecordStatus")
+	@Column( name = ColumnNamePrefix + recordStatus_FIELDNAME )
 	private Integer recordStatus = 0;
 
 	public String getEmpNo() {
