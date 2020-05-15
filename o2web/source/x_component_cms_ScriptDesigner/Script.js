@@ -171,6 +171,17 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
                 }
             }
 
+            if (this.designer.monacoStyleSelectNode){
+                options = this.designer.monacoStyleSelectNode.options;
+                for (var i=0; i<options.length; i++){
+                    var option = options[i];
+                    if (option.value==this.editor.theme){
+                        option.set("selected", true);
+                        break;
+                    }
+                }
+            }
+
             if (this.designer.styleSelectNode && this.designer.monacoStyleSelectNode){
                 if (this.editor.options.type=="ace"){
                     this.designer.monacoStyleSelectNode.hide();
