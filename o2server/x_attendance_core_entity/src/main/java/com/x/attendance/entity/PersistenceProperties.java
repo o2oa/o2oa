@@ -30,6 +30,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class AttendanceAppealInfo{
 		public static final String table = "ATDC_ATTENDANCE_APPEALINFO";
 	}
+
+	public static class AttendanceAppealAuditInfo{
+		public static final String table = "ATDC_ATTENDANCE_APPEALAUDITINFO";
+	}
 	
 	public static class AttendanceSetting {
 		public static final String table = "ATDC_ATTENDANCE_SETTING";
