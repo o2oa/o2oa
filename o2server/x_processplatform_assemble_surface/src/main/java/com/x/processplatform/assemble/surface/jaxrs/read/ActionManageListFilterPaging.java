@@ -61,6 +61,39 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
+		if (StringUtils.isNotBlank(wi.getPerson())){
+			p = cb.and(p,cb.equal(root.get(Read_.person), wi.person));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue01));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue02())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.stringValue02));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue03())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.stringValue03));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue04())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.stringValue04));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.stringValue05));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue06())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue06));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue07())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue07));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue08())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue08));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue09())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue09));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue10())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue10));
+		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
 		}
@@ -114,6 +147,39 @@ class ActionManageListFilterPaging extends BaseAction {
 		Predicate p = cb.conjunction();
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
+		}
+		if (StringUtils.isNotBlank(wi.getPerson())){
+			p = cb.and(p,cb.equal(root.get(Read_.person), wi.person));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue01));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue02())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.stringValue02));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue03())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.stringValue03));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue04())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.stringValue04));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.stringValue05));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue06())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue06));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue07())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue07));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue08())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue08));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue09())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue09));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue10())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue10));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
@@ -192,9 +258,44 @@ class ActionManageListFilterPaging extends BaseAction {
 		@FieldDescribe("匹配关键字")
 		private String key;
 
+		@FieldDescribe("当前待办人")
+		private String person;
+		@FieldDescribe("业务数据String值01")
+		private String stringValue01;
+		@FieldDescribe("业务数据String值02")
+		private String stringValue02;
+		@FieldDescribe("业务数据String值03")
+		private String stringValue03;
+		@FieldDescribe("业务数据String值04")
+		private String stringValue04;
+		@FieldDescribe("业务数据String值05")
+		private String stringValue05;
+		@FieldDescribe("业务数据String值06")
+		private String stringValue06;
+		@FieldDescribe("业务数据String值07")
+		private String stringValue07;
+		@FieldDescribe("业务数据String值08")
+		private String stringValue08;
+		@FieldDescribe("业务数据String值09")
+		private String stringValue09;
+		@FieldDescribe("业务数据String值10")
+		private String stringValue10;
+
 		public List<String> getApplicationList() {
 			return applicationList;
 		}
+
+		public String getPerson() { return person; }
+		public String getStringValue01() { return stringValue01; }
+		public String getStringValue02() { return stringValue02; }
+		public String getStringValue03() { return stringValue03; }
+		public String getStringValue04() { return stringValue04; }
+		public String getStringValue05() { return stringValue05; }
+		public String getStringValue06() { return stringValue06; }
+		public String getStringValue07() { return stringValue07; }
+		public String getStringValue08() { return stringValue08; }
+		public String getStringValue09() { return stringValue09; }
+		public String getStringValue10() { return stringValue10; }
 
 		public void setApplicationList(List<String> applicationList) {
 			this.applicationList = applicationList;
