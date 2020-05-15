@@ -168,6 +168,14 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
                     break;
                 }
             }
+            options = this.designer.monacoStyleSelectNode.options;
+            for (var i=0; i<options.length; i++){
+                var option = options[i];
+                if (option.value==this.editor.theme){
+                    option.set("selected", true);
+                    break;
+                }
+            }
 
             if (this.editor.options.type=="ace"){
                 this.designer.monacoStyleSelectNode.hide();
