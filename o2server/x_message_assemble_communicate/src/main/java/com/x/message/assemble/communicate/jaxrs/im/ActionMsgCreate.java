@@ -63,7 +63,7 @@ public class ActionMsgCreate extends BaseAction {
                     logger.error(e);
                 }
                 logger.info("发送im消息， person: " + persons.get(i));
-                MessageConnector.send(MessageConnector.TYPE_IM_CREATE,  "来自 "+ name + "的IM消息", persons.get(i), msg);
+                MessageConnector.send(MessageConnector.TYPE_IM_CREATE,  "来自 "+ name + " 的消息", persons.get(i), msg);
             }
 
             ActionResult<Wo> result = new ActionResult<>();

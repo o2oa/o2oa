@@ -18,11 +18,13 @@
     border-bottom: 1px solid rgb(204, 204, 204);
 }
 .o2_im_chat_list_top .add {
-    background: url(/x_component_IMV2/$Main/default/icons/add.png) center center no-repeat; 
-    width: 40px; 
-    height: 40px; 
-    cursor: pointer; 
-    float: right;
+    background: url(/x_component_IMV2/$Main/default/icons/add.png) left center no-repeat;
+    height: 40px;
+    cursor: pointer;
+    margin-left: 14px;
+    text-align: center;
+    line-height: 40px;
+    color: #848484;
 }
 .o2_im_chat_list_top .search_out {
     margin-right: 40px; 
