@@ -268,7 +268,14 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         this.fireEvent("restore");
     },
     reCenter: function(){
-        var size = this.node.getSize();
+	    var size;
+	    if( this.node.offsetParent === null ){ //如果是隐藏的
+            size = this.node.measure(function(){
+                return this.getSize();
+            });
+        }else{
+            size = this.node.getSize();
+        }
 
         if( this.options.positionWidth ){
             size.x = parseInt(this.options.positionWidth);

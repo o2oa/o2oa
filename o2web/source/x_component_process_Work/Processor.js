@@ -1539,7 +1539,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
         //var width = this.node.retrieve("width");
         //empowerNode.setStyle( "width", width );
-        var width = "880";
+        var width = 840;
         //if( len > 1 ){
         //    width = "840"
         //}else{
@@ -1556,9 +1556,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             "isResize": false,
             "content": empowerNode,
             //"container" : this.node,
-            "width": width, //600,
+            "width": width + 40, //600,
             "height": "auto", //dlgHeight,
             "mark" : false,
+            "onPostLoad" : function () {
+                if( this.nodeWidth ){
+                    this.node.setStyle("width", this.nodeWidth+"px" );
+                }
+                if( this.nodeHeight ){
+                    this.node.setStyle("height", this.nodeHeight+"px" );
+                }
+            },
             "buttonList": [
                 {
                     "type" : "ok",
