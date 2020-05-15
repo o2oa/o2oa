@@ -1,6 +1,8 @@
-package com.x.attendance.assemble.control.jaxrs;
+package com.x.attendance.entity;
 
 public class AppealConfig {
+	public static final String APPEAL_AUDIFLOWTYPE_WORKFLOW = "WORKFLOW"; //自定义工作流
+	public static final String APPEAL_AUDIFLOWTYPE_BUILTIN = "BUILTIN";  //固定审核步骤
 	public static final String APPEAL_AUDITTYPE_PERSON = "指定人";
 	public static final String APPEAL_AUDITTYPE_PERSONATTRIBUTE = "个人属性";
 	public static final String APPEAL_AUDITTYPE_REPORTLEADER = "汇报对象";

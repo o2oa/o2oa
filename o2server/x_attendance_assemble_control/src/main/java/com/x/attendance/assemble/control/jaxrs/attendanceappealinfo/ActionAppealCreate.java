@@ -2,7 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.attendanceappealinfo;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.AppealConfig;
+import com.x.attendance.entity.AppealConfig;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.entity.JpaObject;
