@@ -157,6 +157,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<ApplicationDictItem> cq = cb.createQuery(ApplicationDictItem.class);
 		Root<ApplicationDictItem> root = cq.from(ApplicationDictItem.class);
 		Predicate p = cb.equal(root.get(ApplicationDictItem_.bundle), applicationDict);
+		/*
 		p = cb.and(p, cb.equal(root.get("path0"), path0));
 		p = cb.and(p, cb.equal(root.get("path1"), path1));
 		p = cb.and(p, cb.equal(root.get("path2"), path2));
@@ -165,6 +166,55 @@ abstract class BaseAction extends StandardJaxrsAction {
 		p = cb.and(p, cb.equal(root.get("path5"), path5));
 		p = cb.and(p, cb.equal(root.get("path6"), path6));
 		p = cb.and(p, cb.equal(root.get("path7"), path7));
+		*/
+		if(path0.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path0)), cb.equal(root.get(ApplicationDictItem_.path0), path0)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path0), path0));
+		}
+	 
+		if(path1.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path1)), cb.equal(root.get(ApplicationDictItem_.path1), path1)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path1), path1));
+		}
+		
+		if(path2.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path2)), cb.equal(root.get(ApplicationDictItem_.path2), path2)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path2), path2));
+		}
+		
+		if(path3.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path3)), cb.equal(root.get(ApplicationDictItem_.path3), path3)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path3), path3));
+		}
+		
+		
+		if(path4.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path4)), cb.equal(root.get(ApplicationDictItem_.path4), path4)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path4), path4));
+		}
+		
+		if(path5.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path5)), cb.equal(root.get(ApplicationDictItem_.path5), path5)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path5), path5));
+		}
+		
+		if(path6.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path6)), cb.equal(root.get(ApplicationDictItem_.path6), path6)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path6), path6));
+		}
+		if(path7.equals("")) {
+			p =cb.and(p, cb.or(cb.isNull(root.get(ApplicationDictItem_.path7)), cb.equal(root.get(ApplicationDictItem_.path7), path7)));
+		}else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path7), path7));
+		}
+		
 		cq.select(root).where(p);
 		List<ApplicationDictItem> list = em.createQuery(cq).getResultList();
 		if (list.size() == 0) {
