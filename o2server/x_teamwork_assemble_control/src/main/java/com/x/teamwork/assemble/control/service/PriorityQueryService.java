@@ -57,6 +57,20 @@ public class PriorityQueryService {
 	 * @return
 	 * @throws Exception
 	 */
+	public List<Priority> listPriority() throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return priorityService.listPriority(emc);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据用户列示优先级信息列表
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
 	public List<Priority> listPriorityByPerson( String person ) throws Exception {
 		if (StringUtils.isEmpty(person)) {
 			return new ArrayList<>();

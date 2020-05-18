@@ -31,11 +31,11 @@ public class ActionPriorityList extends BaseAction {
 		List<Priority> prioritys = null;
 
 		try {
-			prioritys = priorityQueryService.listPriorityByPerson( effectivePerson.getDistinguishedName() );
+			prioritys = priorityQueryService.listPriority();
 			if( ListTools.isNotEmpty( prioritys )) {
 				wos = Wo.copier.copy( prioritys );
 				
-				SortTools.asc( wos, "createTime");
+				//SortTools.asc( wos, "createTime");
 				result.setData(wos);
 			}
 			result.setData(wos);

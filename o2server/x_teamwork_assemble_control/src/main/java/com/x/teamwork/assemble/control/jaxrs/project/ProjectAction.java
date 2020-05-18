@@ -406,6 +406,26 @@ public class ProjectAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
+	@JaxrsMethodDescribe(value = "根据标识设置项目是否可新建任务.", action = ActionCreateable.class)
+	@PUT
+	@Path("{id}/createable")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createableProject(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("需要保存的项目状态信息") JsonElement jsonElement ) {
+		ActionResult<ActionCreateable.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreateable().execute(request, effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "根据标识删除项目信息.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")

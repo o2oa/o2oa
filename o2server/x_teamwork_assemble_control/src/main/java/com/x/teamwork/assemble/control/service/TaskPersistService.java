@@ -13,6 +13,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.common.date.DateOperation;
 import com.x.teamwork.assemble.control.Business;
+import com.x.teamwork.core.entity.Priority;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
@@ -90,9 +91,15 @@ public class TaskPersistService {
 		if( StringUtils.isEmpty( task.getExecutor() ) ) {
 			task.setExecutor( effectivePerson.getDistinguishedName() );
 		}
-		
 		if( StringUtils.isEmpty( task.getPriority() ) ) {
-			task.setPriority( "普通" );
+			PriorityQueryService priorityQueryService = new PriorityQueryService();
+			List<Priority> prioritys = priorityQueryService.listPriorityByPerson( effectivePerson.getDistinguishedName() );
+			if( ListTools.isNotEmpty( prioritys )) {
+				Priority priority =  prioritys.get(0);
+				if(priority != null){
+					task.setPriority(priority.getPriority()+"||"+priority.getPriorityColor() );
+				}
+			}
 		}
 		
 		if( StringUtils.isEmpty( task.getWorkStatus() ) ) {
@@ -476,7 +483,14 @@ public class TaskPersistService {
 			}else if( Task.workStatus_FIELDNAME.equalsIgnoreCase( property )) {
 				task.setWorkStatus( mainValue );				
 			} else if( Task.priority_FIELDNAME.equalsIgnoreCase( property )) {
-				task.setPriority( mainValue );
+				PriorityQueryService priorityQueryService = new PriorityQueryService();
+				if( StringUtils.isNotEmpty( mainValue )) {
+					Priority priority =  priorityQueryService.get(mainValue);
+					if(priority != null){
+						task.setPriority(priority.getPriority()+"||"+priority.getPriorityColor() );
+					}
+				}
+				//task.setPriority( mainValue );
 			}  else if( Task.executor_FIELDNAME.equalsIgnoreCase( property )) {
 				if( StringUtils.isNotEmpty( mainValue )) {
 					String personName = null, personIdentity = null, personUnit = null;
