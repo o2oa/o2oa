@@ -197,6 +197,9 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
         }.bind(this));
     },
     show : function(){
+        if (this.json.submitScript.code) {
+            this.form.Macro.exec(this.json.submitScript.code, this);
+        }
         // this.fireSubFormEvent("load");
     },
     // fireSubFormEvent : function( name ){
@@ -209,7 +212,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
         if (this.subformData){
             if( !this.checkSubformUnique( this.subformData.json.id ) ){ //如果提交表单已经嵌入到表单中，那么把这个表单弹出来
                 // this.form.notice(MWF.xApplication.process.Xform.LP.subformUniqueError, "error");
-
+                this.isEmbedded = true;
             }else if( !this.checkSubformNested( this.subformData.json.id ) ){
                 this.form.notice(MWF.xApplication.process.Xform.LP.subformNestedError, "error");
             }else{

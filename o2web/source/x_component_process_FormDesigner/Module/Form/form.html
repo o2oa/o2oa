@@ -64,14 +64,17 @@
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
+                        $('text{$.pid}submitScript').setStyle('display', 'none');
                     }" name="submitFormType" value="default" text{($.submitFormType!='script' && $.submitFormType!='select' )?'checked':''}/>系统默认
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'block');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'none');
+                        $('text{$.pid}submitScript').setStyle('display', 'block');
                     }" name="submitFormType" value="select" text{($.submitFormType=='select')?'checked':''}/>选择表单
                     <input type="radio" onclick="if (this.checked) {
                         $('text{$.pid}selectSubmitForm').setStyle('display', 'none');
                         $('text{$.pid}scriptSubmitForm').setStyle('display', 'block');}
+                        $('text{$.pid}submitScript').setStyle('display', 'block');
                     " name="submitFormType" value="script" text{($.submitFormType=='script')?'checked':''}/>计算表单<br/>
                 </td>
             </tr>
@@ -99,6 +102,9 @@
                 &nbsp;&nbsp;"form" : "表单名称" //表单、id<br/>
                 }; <br/> 本应用：<br/>return "表单名称"; </div>
             <div class="MWFScriptArea" name="submitFormScript" title="提交表单脚本 (S)"></div>
+        </div>
+        <div id="text{$.pid}submitScript" style="display: text{($.submitFormType=='script' || $.submitFormType=='select')?'block':'none'}">
+            <div class="MWFScriptArea" name="submitScript" title="提交（继续流转）操作脚本"></div>
         </div>
 
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
