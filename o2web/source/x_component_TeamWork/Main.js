@@ -19,7 +19,7 @@ MWF.xApplication.TeamWork.Main = new Class({
 		// "isMax": true,
 		"title": MWF.xApplication.TeamWork.LP.title
 	},
-	onQueryLoad: function(){ //111
+	onQueryLoad: function(){ //
 		this.lp = MWF.xApplication.TeamWork.LP;
 	},
 
@@ -35,7 +35,6 @@ MWF.xApplication.TeamWork.Main = new Class({
 
 		this.rootActions = MWF.Actions.load("x_teamwork_assemble_control");
 		this.orgActions = MWF.Actions.load("x_organization_assemble_express");
-
 
 		this.path = "/x_component_TeamWork/$Main/";
 		if(!this.css){
@@ -71,7 +70,6 @@ MWF.xApplication.TeamWork.Main = new Class({
 		//if(myTips) delete myTips;
 		var myTips = new Tips(target, {
 			onShow:function(tip, el){
-
 				console.log("ttt="+title);
 				tip.setStyles({
 					visibility: 'hidden',
@@ -85,36 +83,35 @@ MWF.xApplication.TeamWork.Main = new Class({
 						y:200
 					}
 				}).fade('in');
-
 			},
-			onHide:function(tip,el){
-				myTips.setTitle("");
-			},
+			// onHide:function(tip,el){
+			// 	//myTips.setTitle("");
+			// 	tip.destroy();
+			// },
 			title:function(){
 				return title
 			}
 		});
 
-		myTips.setTitle(title);
 		//if you want to add this after init
-		// myTips.removeEvents('show').addEvent('show', function(tip, el){
-		// 	console.log("ttt="+title)
-		// 	tip.setStyles({
-		// 		visibility: 'hidden',
-		// 		display: 'block',
-		// 		"background-color":"#000000",
-		// 		"border-radius":"5px",
-		// 		"padding":"5px",
-		// 		"color":"#ffffff",
-		// 		"offset":{
-		// 			x:200,
-		// 			y:200
-		// 		},
-		// 		title:function(){
-		// 			return title
-		// 		}
-		// 	}).fade('in');
-		// });
+		myTips.removeEvents('show').addEvent('show', function(tip, el){
+			console.log("ttt="+title)
+			tip.setStyles({
+				visibility: 'hidden',
+				display: 'block',
+				"background-color":"#000000",
+				"border-radius":"5px",
+				"padding":"5px",
+				"color":"#ffffff",
+				"offset":{
+					x:200,
+					y:200
+				},
+				title:function(){
+					return title
+				}
+			}).fade('in');
+		});
 	},
 
 
