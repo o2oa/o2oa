@@ -1107,7 +1107,7 @@ MWF.APPOrg.EmpowerChecker = new Class({
                 "category": false,
                 "values": valueList,
                 "zIndex" : 3001,
-                "closeOnclickOk" : false,
+                "closeOnclickOk" : true,
                 "onComplete": function (items) {
                     debugger;
                     var arr = [];
