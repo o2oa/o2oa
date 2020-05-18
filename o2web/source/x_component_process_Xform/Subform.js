@@ -197,14 +197,14 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
         }.bind(this));
     },
     show : function(){
-        this.fireSubFormEvent("load");
+        // this.fireSubFormEvent("load");
     },
-    fireSubFormEvent : function( name ){
-        var events = this.subformData.json.events;
-        if( events && events[name] && events[name]["code"] ){
-            this.form.Macro.exec(events[name]["code"], this);
-        }
-    },
+    // fireSubFormEvent : function( name ){
+    //     var events = this.subformData.json.events;
+    //     if( events && events[name] && events[name]["code"] ){
+    //         this.form.Macro.exec(events[name]["code"], this);
+    //     }
+    // },
     loadSubform: function(){
         if (this.subformData){
             if( !this.checkSubformUnique( this.subformData.json.id ) ){ //如果提交表单已经嵌入到表单中，那么把这个表单弹出来
@@ -215,7 +215,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
             }else{
                 //this.form.addEvent("postLoad", function(){
 
-                this.fireSubFormEvent("queryLoad");
+                // this.fireSubFormEvent("queryLoad");
                 this.loadCss();
 
                 this.node.set("html", this.subformData.html);
@@ -244,9 +244,9 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                 }.bind(this));
 
                 this.form.subformLoaded.push( this.subformData.json.id );
-                this.fireSubFormEvent("postLoad");
-                this.fireSubFormEvent("load");
-                this.fireSubFormEvent("afterLoad");
+                // this.fireSubFormEvent("postLoad");
+                // this.fireSubFormEvent("load");
+                // this.fireSubFormEvent("afterLoad");
             }
         }
         // if( this.form.subformLoadedCount ){
