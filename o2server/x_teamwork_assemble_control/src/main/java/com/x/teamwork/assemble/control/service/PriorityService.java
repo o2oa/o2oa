@@ -137,6 +137,18 @@ class PriorityService {
 	 * @return
 	 * @throws Exception
 	 */
+	protected List<Priority> listPriority( EntityManagerContainer emc) throws Exception {
+		Business business = new Business( emc );
+		return business.priorityFactory().listPriority();
+	}
+	
+	/**
+	 * 根据用户列示所有的优先级信息列表
+	 * @param emc
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
 	protected List<Priority> listPriorityByPerson( EntityManagerContainer emc, String person) throws Exception {
 		Business business = new Business( emc );
 		return business.priorityFactory().listPriorityByPerson(person);

@@ -404,7 +404,7 @@ public class ActionSave extends BaseAction {
 		private String workStatus = "processing";
 
 		@FieldDescribe("工作优先级：普通 | 紧急 | 特急 ，非必填")
-		private String priority = "普通";
+		private String priority;
 
 		@FieldDescribe("提醒关联任务，非必填")
 		private Boolean remindRelevance;

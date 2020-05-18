@@ -17,7 +17,7 @@ public class WrapOutControl {
 	private Boolean founder = false;
 	
 	@FieldDescribe("是否可新建任务")
-	private Boolean createable = false;
+	private Boolean createable = true;
 	
 	public Boolean getDelete() {
 		return delete;
