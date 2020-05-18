@@ -42,17 +42,14 @@ public class PriorityFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Priority> list( List<String> ids ) throws Exception {
-		if( ids == null || ids.size() == 0 ){
-			return new ArrayList<Priority>();
-		}
+	public List<Priority> listPriority() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Priority.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Priority> cq = cb.createQuery(Priority.class);
 		Root<Priority> root = cq.from(Priority.class);
-		Predicate p = root.get(Priority_.id).in(ids);
-		cq.orderBy( cb.desc( root.get( Priority_.updateTime ) ) );
-		return em.createQuery(cq.where(p)).getResultList();
+		//Predicate p = cb.equal( root.get(Priority_.owner), person );
+		cq.orderBy( cb.asc( root.get( Priority_.order ) ) );
+		return em.createQuery(cq).getResultList();
 	}
 
 	/**
@@ -86,6 +83,7 @@ public class PriorityFactory extends AbstractFactory {
 		CriteriaQuery<Priority> cq = cb.createQuery(Priority.class);
 		Root<Priority> root = cq.from(Priority.class);
 		//Predicate p = cb.equal( root.get(Priority_.owner), person );
+		cq.orderBy( cb.desc( root.get( Priority_.order ) ) );
 		return em.createQuery(cq).getResultList();
 	}	
 }
