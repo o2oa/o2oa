@@ -23,9 +23,17 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.conversationNodeItemList = [];
 		this.conversationId = this.options.conversationId || "";
 		this.messageList = [];
+		this.emojiList = [];
+		//添加87个表情
+		for (var i=1; i < 88; i++) {
+			var emoji = {
+				"key" : i > 9 ? "["+i+"]" : "[0"+i+"]",
+				"path" : i > 9 ? "/x_component_IMV2/$Main/emotions/im_emotion_"+i+".png" : "/x_component_IMV2/$Main/emotions/im_emotion_0"+i+".png",
+			};
+			this.emojiList.push(emoji);
+		}
 	},
 	onQueryClose: function(){
-		console.log("关闭聊天窗口。。。。");
 		this.closeListening()
 	},
 	loadApplication: function (callback) {
@@ -78,19 +86,16 @@ MWF.xApplication.IMV2.Main = new Class({
 				this.tapConv(chat);
 			}
 		}
-		console.log("结束");
 	},
 	//分页获取会话的消息列表数据
 	loadMsgListByConvId: function (page, size, convId) {
 		var data = { "conversationId": convId };
 		o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(page, size, data, function (json) {
 			var list = json.data;
-			
 			for (var i = 0; i < list.length; i++) {
 				this.messageList.push(list[i]);
 				this._buildMsgNode(list[i], true);
 			}
-			console.log("聊天信息添加结束！");
 		}.bind(this), function (error) {
 			console.log(error);
 		}.bind(this), false);
@@ -106,7 +111,6 @@ MWF.xApplication.IMV2.Main = new Class({
 			//获取聊天信息
 			this.messageList = [];
 			this.loadMsgListByConvId(1, 20, conv.id);
-			console.log("开始滚动！！！");
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}.bind(this));
@@ -114,17 +118,46 @@ MWF.xApplication.IMV2.Main = new Class({
 	//点击发送消息
 	sendMsg: function () {
 		var text = this.chatBottomAreaTextareaNode.value;
-		console.log(text);
 		if (text) {
+			console.log("发送文本消息");
 			this.chatBottomAreaTextareaNode.value = "";
-			this._newAndSendTextMsg(text);
+			this._newAndSendTextMsg(text, "text");
 		} else {
 			console.log("没有消息内容！");
 		}
 	},
+	//点击表情按钮
+	showEmojiBox: function() {
+		if(!this.emojiBoxNode) {
+			this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.chatNode);
+			var _self = this;
+			for(var i=0; i<this.emojiList.length; i++) {
+				var emoji = this.emojiList[i];
+				var emojiNode = new Element("img", {"src": emoji.path, "class": "chat-emoji-img"}).inject(this.emojiBoxNode);
+				emojiNode.addEvents({
+					"mousedown": function (ev) {
+						_self.sendEmojiMsg(this.emoji);
+						_self.hideEmojiBox();
+					}.bind({emoji: emoji}) 
+				});
+			}
+		}
+		this.emojiBoxNode.setStyle("display", "block");
+		this.hideFun = this.hideEmojiBox.bind(this);
+		document.body.addEvent("mousedown", this.hideFun);
+	},
+	hideEmojiBox: function() {
+		//关闭emojiBoxNode
+		this.emojiBoxNode.setStyle("display", "none");
+		document.body.removeEvent("mousedown", this.hideFun);
+	},
+	//发送表情消息
+	sendEmojiMsg: function(emoji) {
+		console.log("发送表情消息");
+		this._newAndSendTextMsg(emoji.key, "emoji");
+	},
 	//点击创建单聊按钮
 	tapCreateSingleConv: function () {
-		console.log("click tapCreateSingleConv................");
 		var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
 		form.create()
 	},
@@ -154,7 +187,6 @@ MWF.xApplication.IMV2.Main = new Class({
 				_self.conversationNodeItemList.push(itemNode);
 				_self.tapConv(newConv);
 			}
-			console.log("创建会话 结束。。。。。");
 		}.bind(this), function (error) {
 			console.log(error);
 		}.bind(this))
@@ -175,10 +207,10 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 	},
 	//创建文本消息 并发送
-	_newAndSendTextMsg: function (text) {
+	_newAndSendTextMsg: function (text, type) {
 		var distinguishedName = layout.session.user.distinguishedName;
 		var time = this._currentTime();
-		var body = { "body": text };
+		var body = { "body": text, "type": type };
 		var bodyJson = JSON.stringify(body);
 		var uuid = (new MWF.widget.UUID).toString();
 		var textMessage = {
@@ -215,7 +247,6 @@ MWF.xApplication.IMV2.Main = new Class({
 		o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
 			if (json.data && json.data instanceof Array) {
 				var newConList = json.data;
-				console.log(newConList);
 				for (var j = 0; j < newConList.length; j++) {
 					var nCv = newConList[j];
 					var isNew = true;
@@ -300,7 +331,18 @@ MWF.xApplication.IMV2.Main = new Class({
 		var lastNode = new Element("div").inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-left_triangle" }).inject(lastNode);
 		//text
-		var lastSecNode = new Element("span", { "text": msgBody.body }).inject(lastNode);
+		if (msgBody.type == "emoji") { // 表情
+			var img = "";
+			for (var i=0; i< this.emojiList.length; i++) {
+				 if (msgBody.body == this.emojiList[i].key) {
+					img = this.emojiList[i].path;
+				 } 
+			}
+			new Element("img", {"src": img, "class": "chat-content-emoji"}).inject(lastNode);
+		}else {//text
+			new Element("span", { "text": msgBody.body }).inject(lastNode);
+		}
+
 		if(!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
@@ -324,8 +366,19 @@ MWF.xApplication.IMV2.Main = new Class({
 		var nameNode = new Element("div", { "text": name }).inject(receiverBodyNode);
 		var lastNode = new Element("div").inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-right_triangle" }).inject(lastNode);
-		//text
-		var lastSecNode = new Element("span", { "text": msgBody.body }).inject(lastNode);
+		
+		if (msgBody.type == "emoji") { // 表情
+			var img = "";
+			for (var i=0; i< this.emojiList.length; i++) {
+				 if (msgBody.body == this.emojiList[i].key) {
+					img = this.emojiList[i].path;
+				 } 
+			}
+			new Element("img", {"src": img, "class": "chat-content-emoji"}).inject(lastNode);
+		}else {//text
+			new Element("span", { "text": msgBody.body }).inject(lastNode);
+		}
+	
 		if(!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
@@ -433,7 +486,8 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			"avatarUrl": avatarDefault,
 			"title": this.data.title,
 			"time": "",
-			"lastMessage": ""
+			"lastMessage": "",
+			"lastMessageType": "text"
 		};
 		var distinguishedName = layout.session.user.distinguishedName;
 		if (this.data.type && this.data.type === "single") {
@@ -461,6 +515,9 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 				var time = this.main._friendlyTime(o2.common.toDate(this.data.lastMessage.createTime));
 				convData.time = time;
 			}
+			if (mBody.type) {
+				convData.lastMessageType = mBody.type;
+			}
 		}
 		this.node = new Element("div", { "class": "item" }).inject(this.container);
 		this.nodeBaseItem = new Element("div", { "class": "base" }).inject(this.node);
@@ -470,7 +527,20 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 		var bodyUpNode = new Element("div", { "class": "body_up" }).inject(bodyNode);
 		new Element("div", { "class": "body_title", "text": convData.title }).inject(bodyUpNode);
 		this.messageTimeNode = new Element("div", { "class": "body_time", "text": convData.time }).inject(bodyUpNode);
-		this.lastMessageNode = new Element("div", { "class": "body_down", "text": convData.lastMessage }).inject(bodyNode);
+		if (convData.lastMessageType == "emoji") {
+			this.lastMessageNode = new Element("div", { "class": "body_down"}).inject(bodyNode);
+			var imgPath = "";
+			for(var i = 0; i < this.main.emojiList.length ; i++) {
+				var emoji = this.main.emojiList[i];
+				if (emoji.key == convData.lastMessage) {
+					imgPath = emoji.path;
+				}
+			}
+			new Element("img", {"src": imgPath, "style":"width: 16px;height: 16px;"}).inject(this.lastMessageNode);
+		}else {
+			this.lastMessageNode = new Element("div", { "class": "body_down", "text": convData.lastMessage }).inject(bodyNode);
+		}
+	
 		var _self = this;
 		this.node.addEvents({
 			"click": function () {
@@ -493,9 +563,23 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 	refreshLastMsg: function(lastMessage) {
 		//目前是text 类型的消息
 		var jsonbody = lastMessage.body;
-		var body = JSON.parse(jsonbody);//todo 目前只有一种text类型
+		var body = JSON.parse(jsonbody);
+
 		if(this.lastMessageNode) {
-			this.lastMessageNode.set('text', body.body);
+			if (body.type == "emoji") { //表情 消息
+				var imgPath = "";
+				for(var i = 0; i < this.main.emojiList.length ; i++) {
+					var emoji = this.main.emojiList[i];
+					if (emoji.key == body.body) {
+						imgPath = emoji.path;
+					}
+				}
+				this.lastMessageNode.empty();
+				new Element("img", {"src": imgPath, "style":"width: 16px;height: 16px;"}).inject(this.lastMessageNode);
+			}else { //文本消息
+				this.lastMessageNode.empty();
+				this.lastMessageNode.set('text', body.body);
+			}
 		}
 		var time = this.main._friendlyTime(o2.common.toDate(lastMessage.createTime));
 		if(this.messageTimeNode) {
@@ -577,7 +661,6 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 	save: function () {
 		var data = this.form.getResult(true, null, true, false, true);
 		if (data) {
-			console.log(data);
 			this.app.newConversation(data.person, "single");
 			this.close();
 		}
