@@ -1461,12 +1461,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             return true;
         }
         if( !this.validationOrgs() )return false;
-        if( !this.isOrgsHasEmpower() ){
+        if( layout.mobile ){
             if( callback )callback();
             return true;
+        }else{
+            if( !this.isOrgsHasEmpower() ){
+                if( callback )callback();
+                return true;
+            }
+            //this.checkEmpowerMode = true;
+            this.showEmpowerDlg( callback );
         }
-        //this.checkEmpowerMode = true;
-        this.showEmpowerDlg( callback );
     },
     showEmpowerDlg : function( callback ){
         //this.empowerMask = new Element("div", {"styles": this.css.handwritingMask}).inject(this.node);
@@ -2436,6 +2441,47 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             this.css = this.processor.css;
             this.checkedAllItems = true;
         },
+        load : function( data, callback, container ){
+            if( typeOf(data)==="array" && this.json.isCheckEmpower && this.json.identityResultType === "identity" ){
+                var array = [];
+                data.each( function( d ){
+                    if( d.distinguishedName ){
+                        var flag = d.distinguishedName.substr(d.distinguishedName.length-1, 1).toLowerCase();
+                        if( flag === "i" ){
+                            array.push( d.distinguishedName )
+                        }
+                    }
+                }.bind(this));
+                if( array.length > 0 ){
+                    o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
+                        "application" : (this.form.businessData.work || this.form.businessData.workCompleted).application,
+                        "process" : (this.form.businessData.work || this.form.businessData.workCompleted).process,
+                        "work" : (this.form.businessData.work || this.form.businessData.workCompleted).id,
+                        "identityList" : array
+                    }, function( json ){
+                        var arr = [];
+                        json.data.each( function(d){
+                            if(d.fromIdentity !== d.toIdentity )arr.push(d);
+                        });
+                        if( arr.length > 0 ){
+                            if( layout.mobile ){
+                                this.openSelectEmpowerDlg( arr, data, callback, container );
+                            }else{
+                                this.openSelectEmpowerDlg_embedded( arr, data, callback, container );
+                            }
+                        }else{
+                            if( callback )callback( data );
+                        }
+                    }.bind(this), function(){
+                        if( callback )callback( data );
+                    }.bind(this))
+                }else{
+                    if( callback )callback( data );
+                }
+            }else{
+                if( callback )callback( data );
+            }
+        },
         hasEmpowerIdentity: function( data ){
             var flag = false;
             if( typeOf(data)==="array" && this.json.isCheckEmpower && this.json.identityResultType === "identity" ) {
@@ -2466,14 +2512,14 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             }
             return flag;
         },
-        openSelectEmpowerDlg : function( data, orgData, callback, container ){
+        openSelectEmpowerDlg_embedded : function( data, orgData, callback, container ){
             var node = new Element("div", {"styles": this.css.empowerAreaNode});
             //var html = "<div style=\"line-height: 30px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
             var html = "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
             node.set("html", html);
             var itemNode = node.getLast();
             this.getEmpowerItems(itemNode, data);
-            node.inject( container || this.container );
+            node.inject( container || this.form.app.content );
 
             if( this.selectAllNode ){
                 var selectNode = this.createSelectAllEmpowerNode();
