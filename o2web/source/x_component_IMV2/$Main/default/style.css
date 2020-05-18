@@ -18,11 +18,13 @@
     border-bottom: 1px solid rgb(204, 204, 204);
 }
 .o2_im_chat_list_top .add {
-    background: url(/x_component_IMV2/$Main/default/icons/add.png) center center no-repeat; 
-    width: 40px; 
-    height: 40px; 
-    cursor: pointer; 
-    float: right;
+    background: url(/x_component_IMV2/$Main/default/icons/add.png) left center no-repeat;
+    height: 40px;
+    cursor: pointer;
+    margin-left: 14px;
+    text-align: center;
+    line-height: 40px;
+    color: #848484;
 }
 .o2_im_chat_list_top .search_out {
     margin-right: 40px; 
@@ -161,7 +163,25 @@
 
 
 /* 聊天界面 */
-
+.chat-emoji-box {
+  position: absolute;
+  width:630px;
+  height: 260px;
+  left: 5px;
+  bottom: 155px;
+  background-color: #ffffff;
+  border: 1px solid #F1F1F1; 
+  padding-top: 8px;
+  border-radius: 8px; 
+  box-shadow: 5px 5px #1d1d1d10;
+  z-index: 100;
+}
+.chat-emoji-img {
+  width: 32px;
+  height: 32px; 
+  float: left; 
+  margin: 5px;
+}
 .chat-title {
     height: 30px;
     text-align: center;
@@ -326,7 +346,11 @@
     right: -22px;
     top: 3px;
   }
-
+  .chat-content-emoji {
+    width: 32px;
+    height: 32px; 
+    margin: 5px;
+  }
   .chat-notice {
     clear: both;
     font-size: 70%;
