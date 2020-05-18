@@ -124,7 +124,7 @@ public class Project extends SliceJpaObject {
 	@FieldDescribe("是否可新建任务")
 	@Column( name = ColumnNamePrefix + createable_FIELDNAME)
 	@Index( name = TABLE + IndexNameMiddle + createable_FIELDNAME )
-	private Boolean createable = false;
+	private Boolean createable = true;
 	
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者，可能为System，如果由系统创建。")
