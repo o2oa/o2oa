@@ -60,11 +60,21 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 }).inject(this.naviTable);
 
                 var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
-                naviTitle.addEvents({
-                    click:function(){
+                this.rootActions.GlobalAction.isManager(function(json){
+                    if(json.data == "yes"){ //有权限后台管理
+                        var bam = new Element("div.bam",{ styles: this.css.bam, text: this.lp.navi.bam }).inject(naviTitle);
+                        bam.addEvents({
+                            click:function(){
+                                MWF.xDesktop.requireApp("TeamWork", "Bam", function(){
+                                    var b = new MWF.xApplication.TeamWork.Bam(this.container,this.app);
+                                    b.load();
+                                }.bind(this));
+                            }.bind(this)
+                        });
+                    }
+                }.bind(this))
 
-                    }.bind(this)
-                });
+
 
                 //全部项目
                 if(resData.hasOwnProperty("allCount")){
@@ -383,7 +393,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     addNewProject:function(){
         MWF.xDesktop.requireApp("TeamWork", "NewProject", function(){
             this.np = new MWF.xApplication.TeamWork.NewProject(this,{},
-                {"width": 350,"height": 350,
+                {"width": 350,"height": 430,
                     onPostOpen:function(){
                         this.np.formAreaNode.setStyles({"top":"10px"});
                         var fx = new Fx.Tween(this.np.formAreaNode,{duration:200});
@@ -876,57 +886,61 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
+        if(d.control.founder){
+            var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting}).inject(projectBlockItemIconContainer);
+            projectBlockItemIconSetting.addEvents({
+                click:function(e){
+                    MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
+                        var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
+                            {"width": "800","height": "80%",
+                                onPostOpen:function(){
+                                    ps.formAreaNode.setStyles({"top":"10px"});
+                                    var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
+                                    fx.start(["top"] ,"10px", "100px");
+                                },
+                                onPostClose:function(json){
+                                    // _self.actions.projectGet(d.id,function(json){
+                                    //     _self.loadSingleBlockItem(container,json.data)
+                                    // });
+                                    //_self.reload();
 
-        var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting}).inject(projectBlockItemIconContainer);
-        projectBlockItemIconSetting.addEvents({
-            click:function(e){
-                MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
-                    var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": "800","height": "80%",
-                            onPostOpen:function(){
-                                ps.formAreaNode.setStyles({"top":"10px"});
-                                var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
-                                fx.start(["top"] ,"10px", "100px");
-                            },
-                            onPostClose:function(json){
-                                // _self.actions.projectGet(d.id,function(json){
-                                //     _self.loadSingleBlockItem(container,json.data)
-                                // });
-                                //_self.reload();
+                                }
+                            },{
+                                container : _self.container,
+                                lp : _self.lp.projectSetting,
+                                css:_self.css
 
                             }
-                        },{
-                            container : _self.container,
-                            lp : _self.lp.projectSetting,
-                            css:_self.css
+                        );
+                        ps.open();
+                    });
 
-                        }
-                    );
-                    ps.open();
-                });
+                    e.stopPropagation();
+                }
+            });
+        }
 
-                e.stopPropagation();
-            }
-        });
-        var projectBlockItemIconRemove = new Element("div.projectBlockItemIconRemove",{styles:this.css.projectBlockItemIconRemove}).inject(projectBlockItemIconContainer);
-        projectBlockItemIconRemove.set("title","删除");
-        projectBlockItemIconRemove.addEvents({
-            click:function(e){
-                _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                    var id = d.id;
-                    _self.actions.delete(id,function(){
-                        //刷新代码
-                        this.close();
-                        _self.reload();
-                    }.bind(this));
-                },function(){
-                    this.close();
-                });
-
-                e.stopPropagation();
-
-            }.bind(this)
-        });
+        // if(d.control.delete){
+        //     var projectBlockItemIconRemove = new Element("div.projectBlockItemIconRemove",{styles:this.css.projectBlockItemIconRemove}).inject(projectBlockItemIconContainer);
+        //     projectBlockItemIconRemove.set("title","删除");
+        //     projectBlockItemIconRemove.addEvents({
+        //         click:function(e){
+        //             _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
+        //                 var id = d.id;
+        //                 _self.actions.delete(id,function(){
+        //                     //刷新代码
+        //                     this.close();
+        //                     _self.reload();
+        //                 }.bind(this));
+        //             },function(){
+        //                 this.close();
+        //             });
+        //
+        //             e.stopPropagation();
+        //
+        //         }.bind(this)
+        //     });
+        // }
 
         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
@@ -976,53 +990,58 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
-        var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
-        projectListItemSettingIcon.addEvents({
-            click:function(e){
+        if(d.control.founder){
+            var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
+            projectListItemSettingIcon.addEvents({
+                click:function(e){
 
-                MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
-                    var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": "800","height": "80%",
-                            onPostOpen:function(){
-                                ps.formAreaNode.setStyles({"top":"10px"});
-                                var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
-                                fx.start(["top"] ,"10px", "100px");
-                            },
-                            onPostClose:function(json){
-                                _self.actions.get(d.id,function(json){
-                                    _self.loadSingleListItem(container,json.data)
-                                });
+                    MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
+                        var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
+                            {"width": "800","height": "80%",
+                                onPostOpen:function(){
+                                    ps.formAreaNode.setStyles({"top":"10px"});
+                                    var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
+                                    fx.start(["top"] ,"10px", "100px");
+                                },
+                                onPostClose:function(json){
+                                    _self.actions.get(d.id,function(json){
+                                        _self.loadSingleListItem(container,json.data)
+                                    });
+                                }
+                            },{
+                                container : _self.container,
+                                lp : _self.lp.projectSetting,
+                                css:_self.css
+
                             }
-                        },{
-                            container : _self.container,
-                            lp : _self.lp.projectSetting,
-                            css:_self.css
+                        );
+                        ps.open();
+                    });
 
-                        }
-                    );
-                    ps.open();
-                });
+                    e.stopPropagation();
+                }
+            });
+        }
 
-                e.stopPropagation();
-            }
-        });
-        var projectListItemRemoveIcon = new Element("div.projectListItemRemoveIcon",{styles:this.css.projectListItemRemoveIcon}).inject(projectListItemIconContainer);
-        projectListItemRemoveIcon.addEvents({
-            click:function(e){
-                _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                    var id = d.id;
-                    _self.actions.delete(id,function(){
-                        //刷新代码
-                        this.close();
-                        _self.reload();
-                    }.bind(this));
-                },function(){
-                    this.close();
-                });
-
-                e.stopPropagation();
-            }
-        });
+        // if(d.control.delete){
+        //     var projectListItemRemoveIcon = new Element("div.projectListItemRemoveIcon",{styles:this.css.projectListItemRemoveIcon}).inject(projectListItemIconContainer);
+        //     projectListItemRemoveIcon.addEvents({
+        //         click:function(e){
+        //             _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
+        //                 var id = d.id;
+        //                 _self.actions.delete(id,function(){
+        //                     //刷新代码
+        //                     this.close();
+        //                     _self.reload();
+        //                 }.bind(this));
+        //             },function(){
+        //                 this.close();
+        //             });
+        //
+        //             e.stopPropagation();
+        //         }
+        //     });
+        // }
     },
     setFav:function(d,callback){
         if(d.star){

@@ -17,7 +17,6 @@
         "height":"100%",
         "display":"flex"
     },
-
     naviTitle:{
         "height":"50px",
         "line-height":"50px",
@@ -25,6 +24,15 @@
         "padding-left":"20px",
         "border-bottom":"1px solid #E6E6E6",
         "color":"#333333"
+    },
+    bam:{
+        "float":"right",
+         "height":"50px",
+         "line-height":"50px",
+         "font-size":"12px",
+         "margin-right":"10px",
+         "color":"rgb(102,102,102)",
+         "cursor":"pointer"
     },
     "naviMenu":{
         "background-color":"",
@@ -269,20 +277,14 @@
         "line-height":"40px"
     },
 
-
-
-
-
-
-
     "naviContent":{
         "background-color":"#ffffff",
-        "color":"#666666",
         "font-size":"14px",
         "width":"300px",
         "height":"100%",
         "overflow-y":"auto",
-        "box-shadow":" 0 2px 4px 0 "
+        "border-right":"1px solid #cccccc"
+        //"box-shadow":" 0 2px 4px 0 "
     },
 
     "projectContent":{

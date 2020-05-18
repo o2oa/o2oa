@@ -30,6 +30,9 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.data = data;
     },
     load: function () {
+        this.actions.get(this.data.id,function(json){ debugger ;})
+
+
         this.container.setStyles({display:"flex"});
         this.container.empty();
         this.createTopBarLayout();
@@ -51,7 +54,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var opt={
                     axis: "y"      //箭头在x轴还是y轴上展现
                 };
-                //this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
+                this.app.showTips(this.topBarBackHomeIcon,{_html:"<div style='margin:2px 5px;'>"+this.lp.backProject+"</div>"},opt);
                 //this.app.tips(this.topBarBackHomeIcon,this.lp.backProject);
             }.bind(this)
         });
@@ -114,53 +117,52 @@ MWF.xApplication.TeamWork.Project = new Class({
 
         //************************************
 
+        if(this.data.control && this.data.control.founder){
+            this.topBarSettingContainer = new Element("div.topBarSettingContainer",{styles:this.css.topBarSettingContainer}).inject(this.topBarLayout);
+            this.topBarSettingMenuContainer = new Element("div.topBarSettingMenuContainer",{styles:this.css.topBarSettingMenuContainer}).inject(this.topBarSettingContainer);
+            this.topBarSettingMenuContainer.addEvents({
+                click:function(){
+                    MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
+                        var ps = new MWF.xApplication.TeamWork.ProjectSetting(this,this.data,
+                            {"width": "800","height": "80%",
+                                onPostOpen:function(){
+                                    ps.formAreaNode.setStyles({"top":"10px"});
+                                    var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
+                                    fx.start(["top"] ,"10px", "100px");
+                                },
+                                onPostClose:function(json){
 
-
-
-        this.topBarSettingContainer = new Element("div.topBarSettingContainer",{styles:this.css.topBarSettingContainer}).inject(this.topBarLayout);
-        this.topBarSettingMenuContainer = new Element("div.topBarSettingMenuContainer",{styles:this.css.topBarSettingMenuContainer}).inject(this.topBarSettingContainer);
-        this.topBarSettingMenuContainer.addEvents({
-            click:function(){
-                MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
-                    var ps = new MWF.xApplication.TeamWork.ProjectSetting(this,this.data,
-                        {"width": "800","height": "80%",
-                            onPostOpen:function(){
-                                ps.formAreaNode.setStyles({"top":"10px"});
-                                var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
-                                fx.start(["top"] ,"10px", "100px");
-                            },
-                            onPostClose:function(json){
+                                }
+                            },{
+                                container : this.container,
+                                lp : this.app.lp.projectSetting,
+                                css:_self.css
 
                             }
-                        },{
-                            container : this.container,
-                            lp : this.app.lp.projectSetting,
-                            css:_self.css
-
-                        }
-                    );
-                    ps.open();
-                }.bind(this));
-            }.bind(this),
-            mouseover:function(){
-                this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan_click.png)"
-                });
-                this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
-                    "color":"#4A90E2"
-                });
-            }.bind(this),
-            mouseout:function(){
-                this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan.png)"
-                });
-                this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
-                    "color":"#666666"
-                });
-            }.bind(this)
-        });
-        this.topBarSettingMenuIcon = new Element("div.topBarSettingMenuIcon",{styles:this.css.topBarSettingMenuIcon}).inject(this.topBarSettingMenuContainer);
-        this.topBarSettingMenuText = new Element("div.topBarSettingMenuText",{styles:this.css.topBarSettingMenuText,text:this.lp.setting}).inject(this.topBarSettingMenuContainer);
+                        );
+                        ps.open();
+                    }.bind(this));
+                }.bind(this),
+                mouseover:function(){
+                    this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
+                        "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan_click.png)"
+                    });
+                    this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
+                        "color":"#4A90E2"
+                    });
+                }.bind(this),
+                mouseout:function(){
+                    this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
+                        "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan.png)"
+                    });
+                    this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
+                        "color":"#666666"
+                    });
+                }.bind(this)
+            });
+            this.topBarSettingMenuIcon = new Element("div.topBarSettingMenuIcon",{styles:this.css.topBarSettingMenuIcon}).inject(this.topBarSettingMenuContainer);
+            this.topBarSettingMenuText = new Element("div.topBarSettingMenuText",{styles:this.css.topBarSettingMenuText,text:this.lp.setting}).inject(this.topBarSettingMenuContainer);
+        }
 
     },
     createContentLayout:function(){
@@ -177,36 +179,34 @@ MWF.xApplication.TeamWork.Project = new Class({
         if(this.foldContainer) this.foldContainer.destroy();
         this.foldContainer = new Element("div.foldContainer",{styles:this.css.foldContainer}).inject(this.contentLayout);
         this.foldIcon = new Element("div.foldIcon",{styles:this.css.foldIcon,text:"<"}).inject(this.foldContainer);
-        this.app.tips(this.foldIcon,"折叠");
+
         this.foldIcon.addEvents({
             mouseover:function(){
-                this.naviLayout.setStyles({"box-shadow": "1px 2px 6px 0px #1b9aee"});
+                this.naviLayout.setStyles({"border-right": "1px solid #1b9aee"});
+                //this.foldContainer.setStyles({"border-left":"1px solid #1b9aee"});
                 this.foldIcon.setStyles({"background-color":"#1b9aee","color":"#ffffff"});
             }.bind(this),
             mouseout:function(){
-                this.naviLayout.setStyles({"box-shadow": "0px 2px 4px 0 #888888"});
+                this.naviLayout.setStyles({"border-right": "1px solid #cccccc"});
                 this.foldIcon.setStyles({"background-color":"#ffffff","color":""});
             }.bind(this),
             click:function(){
                 if(this.naviFold){
                     var fx = new Fx.Tween(this.naviLayout,{duration:100});
-                    this.naviLayout.show();
+                    //this.naviLayout.show();
                     fx.start(["width"] ,"0", "300")
                         .chain(function(){
                             this.foldIcon.set("text","<");
                             this.naviFold = false;
-                            this.app.tips(this.foldIcon,"折叠11");
                         }.bind(this));
 
                 }else{ //aaaaa
-                    var fx = new Fx.Tween(this.naviLayout,{duration:100});
-                    fx.start(["width"] ,"300", "0")
+                    var fx1 = new Fx.Tween(this.naviLayout,{duration:100});
+                    fx1.start(["width"] ,"300", "0")
                         .chain(function(){
-                            this.naviLayout.hide();
+                            //this.naviLayout.hide();
                             this.foldIcon.set("text",">");
                             this.naviFold = true;
-                            //console.log("zzzzzzzzzzzzzzzzzzzzzk");
-                            this.app.tips(this.foldIcon,"展开22");
                         }.bind(this));
 
                 }
@@ -326,7 +326,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.overLine.addEvents({
             mouseover:function(){
                 //this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
-                //alert(this.currentProjectGroupData.overtimeTotal)
+                ////alert(this.currentProjectGroupData.overtimeTotal)
                 this.app.tips(this.overLine,this.lp.taskovertimeText + ": " + this.currentProjectGroupData.overtimeTotal)
             }.bind(this)
         });
@@ -390,8 +390,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                         this.curNaviItem = json.name;
                         this.openView(this.naviItemAllContainer);
                     }.bind(this),
-                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter")},
-                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave")}
+                    mouseenter:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"enter") },
+                    mouseleave:function(){ if(_self.curNaviItem != json.name) _self.naviItemChange(this,"leave") }
                 });
             }else if(json.name==this.lp.viewItemMy){
                 //我的任务

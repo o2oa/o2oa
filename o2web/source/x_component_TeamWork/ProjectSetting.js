@@ -1,3 +1,4 @@
+//projectData 项目业务数据
 MWF.xApplication.TeamWork = MWF.xApplication.TeamWork || {};
 MWF.xApplication.TeamWork.ProjectSetting = new Class({
     Extends: MWF.xApplication.TeamWork.Common.Popup,
@@ -53,7 +54,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviGeneralHover.setStyles({"height":"58px","margin-top":"2px"});
         this.naviGeneralIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviGeneral);
         this.naviGeneralIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
-        this.naviGeneralText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.general}).inject(this.naviGeneral);
+        this.naviGeneralText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.projectGeneral}).inject(this.naviGeneral);
         this.naviGeneral.addEvents({
             mouseover:function(){
                 if(_self.curNavi == "general") return;
@@ -71,6 +72,84 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.loadGeneral();
             }
         });
+
+        //项目详情
+        this.naviDetail = new Element("div.naviGeneral",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
+        this.naviDetailHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviDetail);
+        this.naviDetailHover.setStyles({"height":"58px","margin-top":"2px"});
+        this.naviDetailIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviDetail);
+        this.naviDetailIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_detail.png)"});
+        this.naviDetailText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.projectDetail}).inject(this.naviDetail);
+        this.naviDetail.addEvents({
+            mouseover:function(){
+                if(_self.curNavi == "detail") return;
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_detail_click.png)"});
+                this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
+            },
+            mouseout:function(){
+                if(_self.curNavi == "detail") return;
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_detail.png)"});
+                this.getElement(".naviItemText").setStyles({"color":""});
+            },
+            click:function(){
+                _self.curNavi = "detail";
+                _self.changeNavi(this);
+                _self.loadGeneral();
+            }
+        });
+
+        //权限设置
+        this.naviAccess = new Element("div.naviAccess",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
+        this.naviAccessHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviAccess);
+        this.naviAccessHover.setStyles({"height":"58px","margin-top":"2px"});
+        this.naviAccessIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviAccess);
+        this.naviAccessIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_access.png)"});
+        this.naviAccessText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.projectAccess}).inject(this.naviAccess);
+        this.naviAccess.addEvents({
+            mouseover:function(){
+                if(_self.curNavi == "access") return;
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_access_click.png)"});
+                this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
+            },
+            mouseout:function(){
+                if(_self.curNavi == "access") return;
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_access.png)"});
+                this.getElement(".naviItemText").setStyles({"color":""});
+            },
+            click:function(){
+                _self.curNavi = "access";
+                _self.changeNavi(this);
+                _self.loadAccess();
+            }
+        });
+
+        //更多设置
+        this.naviMore = new Element("div.naviMore",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
+        this.naviMoreHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviMore);
+        this.naviMoreHover.setStyles({"height":"58px","margin-top":"2px"});
+        this.naviMoreIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviMore);
+        this.naviMoreIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_more.png)"});
+        this.naviMoreText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.projectMore}).inject(this.naviMore);
+        this.naviMore.addEvents({
+            mouseover:function(){
+                if(_self.curNavi == "more") return;
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_more_click.png)"});
+                this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
+            },
+            mouseout:function(){
+                if(_self.curNavi == "more") return;
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_more.png)"});
+                this.getElement(".naviItemText").setStyles({"color":""});
+            },
+            click:function(){
+                _self.curNavi = "more";
+                _self.changeNavi(this);
+                _self.loadMore();
+            }
+        });
+
+        this.naviGeneral.click()
+        /*
 
         //自定义字段
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
@@ -141,8 +220,8 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 _self.loadCustom()
             }
         });
+        */
 
-        this.naviGeneral.click()
     },
     changeNavi:function(obj){
         this.projectSettingNaviLayout.getElements(".naviItemHover").setStyles({"background-color":"#ffffff"});
@@ -433,6 +512,106 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         //     }.bind(this)
         // });
         //this.projectSettingAction = new Element("div.projectSettingAction",{styles:this.css.projectSettingAction,text:this.lp.confirm}).inject(this.formTableArea);
+
+    },
+    loadAccess:function(){
+        var _self = this;
+        this.projectSettingLayout.empty();
+        var authTaskTitle = new Element("div.authTaskTitle",{styles:this.css.authTitle,text:this.lp.auth.task}).inject(this.projectSettingLayout);
+        authTaskTitle.setStyle("margin-top","20px");
+        var authTaskContainer = new Element("div.authTaskContainer",{styles:this.css.authContainer}).inject(this.projectSettingLayout);
+
+    },
+    loadMore:function(){
+        var _self = this;
+        this.projectSettingLayout.empty();
+        this.moreActionTitle = new Element("div.moreActionTitle",{styles:this.css.moreActionTitle,text:this.lp.moreActionTitle}).inject(this.projectSettingLayout);
+        this.moreActionDescription = new Element("div.moreActionDescription",{styles:this.css.moreActionDescription,text:this.lp.moreActionDescription}).inject(this.projectSettingLayout);
+        this.moreActionContainer = new Element("div.moreActionContainer",{ styles:this.css.moreActionContainer }).inject(this.projectSettingLayout);
+        if(this.projectData.completed){
+            this.moreActionUnComplete = new Element("div.moreActionUnComplete",{styles:this.css.moreActionUnComplate, text:this.lp.moreActionUnComplete}).inject(this.moreActionContainer);
+            this.moreActionUnComplete.addEvents({
+                mouseover:function(){
+                    this.setStyles({"background-color":"#ffeded"})
+                },
+                mouseout:function(){
+                    this.setStyles({"background-color":"#ffffff"})
+                },
+                click:function(e){
+                    _self.app.confirm("warn",e,_self.lp.moreActionUnComplete,_self.lp.moreActionUnCompleteTips,450,100,function(){
+                        _self.rootActions.ProjectAction.completeProject(_self.projectData.id,{completed:false},function(){
+
+                            this.close();
+                        }.bind(this))
+                    },function(){
+                        this.close();
+                    });
+                }
+            });
+        }else{
+            this.moreActionComplete = new Element("div.moreActionComplete",{styles:this.css.moreActionComplate, text:this.lp.moreActionComplete}).inject(this.moreActionContainer);
+            this.moreActionComplete.addEvents({
+                mouseover:function(){
+                    this.setStyles({"background-color":"#ffeded"})
+                },
+                mouseout:function(){
+                    this.setStyles({"background-color":"#ffffff"})
+                },
+                click:function(e){
+                    _self.app.confirm("warn",e,_self.lp.moreActionComplete,_self.lp.moreActionCompleteTips,450,100,function(){
+                        _self.rootActions.ProjectAction.completeProject(_self.projectData.id,{completed:true},function(){
+
+                            this.close();
+                        }.bind(this))
+                    },function(){
+                        this.close();
+                    });
+                }
+            });
+        }
+
+        if(this.projectData.deleted){
+            this.moreActionRecover = new Element("div.moreActionRemove",{styles:this.css.moreActionRecover, text:this.lp.moreActionRecover}).inject(this.moreActionContainer);
+            this.moreActionRecover.addEvents({
+                mouseover:function(){
+                    this.setStyles({"background-color":"#c21c07"})
+                },
+                mouseout:function(){
+                    this.setStyles({"background-color":"#e62412"})
+                },
+                click:function(e){
+                    _self.app.confirm("warn",e,_self.lp.moreActionRecover,_self.lp.moreActionRecoverTips,450,100,function(){
+                        _self.rootActions.ProjectAction.recoveryProject(_self.projectData.id,function(){
+                            this.close();
+                            //_self.close();
+                        }.bind(this))
+                    },function(){
+                        this.close();
+                    });
+                }
+            });
+        }else{
+            this.moreActionRemove = new Element("div.moreActionRemove",{styles:this.css.moreActionRemove, text:this.lp.moreActionRemove}).inject(this.moreActionContainer);
+            this.moreActionRemove.addEvents({
+                mouseover:function(){
+                    this.setStyles({"background-color":"#c21c07"})
+                },
+                mouseout:function(){
+                    this.setStyles({"background-color":"#e62412"})
+                },
+                click:function(e){
+                    _self.app.confirm("warn",e,_self.lp.moreActionRemove,_self.lp.moreActionRemoveTips,450,100,function(){
+                        _self.rootActions.ProjectAction.delete(_self.projectData.id,function(){
+                            this.close();
+                            _self.close();
+                        }.bind(this))
+                    },function(){
+                        this.close();
+                    });
+                }
+            });
+        }
+
 
     },
     projectInfor:function(callback){
