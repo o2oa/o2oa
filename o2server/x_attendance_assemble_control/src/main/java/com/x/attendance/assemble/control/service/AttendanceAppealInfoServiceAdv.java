@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.service;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.entity.AppealConfig;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceSetting;
