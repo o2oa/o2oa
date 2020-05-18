@@ -1728,6 +1728,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
             var submitFormContainer = new Element("div").inject( layout.mobile ? $(document.body) : this.app.content );
             this.submitFormModule = new MWF["APPSubmitform"]( submitFormContainer , this.json, this);
+            this.submitFormModule.addEvent("load", function () {
+                this.submitFormModule.show();
+            }.bind(this))
             this.submitFormModule.load();
         }else{
             this.submitFormModule.show();
