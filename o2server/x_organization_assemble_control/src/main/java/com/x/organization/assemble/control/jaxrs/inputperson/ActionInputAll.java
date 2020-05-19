@@ -114,7 +114,6 @@ class ActionInputAll extends BaseAction {
 	
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
-			System.out.println("x111");
 			if (null != row) {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getTypeCodeColumn()));
 				String value = configurator.getCellStringValue(row.getCell(configurator.getTypeNameColumn()));
@@ -139,6 +138,7 @@ class ActionInputAll extends BaseAction {
 			List<UnitItem> unit = this.scanUnitList(configurator, sheet);
 			wholeFlag = this.checkUnit(business, workbook, configurator, unit); 
 			if(wholeFlag){
+				//this.persistUnit(workbook, configurator, unit);
 				this.scanPerson(business, workbook);
 			}
 	}
@@ -148,7 +148,10 @@ class ActionInputAll extends BaseAction {
 		Sheet sheet = workbook.getSheetAt(3);
 		PersonSheetConfigurator configurator = new PersonSheetConfigurator(workbook, sheet);
 		List<PersonItem> person = this.scanPersonList(configurator, sheet);
-		//wholeFlag = this.checkUnit(business, workbook, configurator, unit); 
+		wholeFlag = this.checkPerson(business, workbook, configurator, person); 
+		if(wholeFlag){
+			
+		}
 	}
 
 	private List<UnitItem> scanUnitList(UnitSheetConfigurator configurator, Sheet sheet) throws Exception {
@@ -166,8 +169,8 @@ class ActionInputAll extends BaseAction {
 			Row row = sheet.getRow(i);
 			if (null != row) {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
-				if (StringUtils.isNotEmpty(name)) {
-					UnitItem unitItem = new UnitItem();
+				UnitItem unitItem = new UnitItem();
+				//if (StringUtils.isNotEmpty(name)) {
 					unitItem.setRow(i);
 					name = StringUtils.trimToEmpty(name);
 					unitItem.setName(name);
@@ -218,9 +221,10 @@ class ActionInputAll extends BaseAction {
 							unitItem.getAttributes().put(en.getKey(), value);
 						}
 					}
-					unit.add(unitItem);
+					//unit.add(unitItem);
 					logger.debug("scan unit:{}.", unitItem);
-				}
+				//}
+				unit.add(unitItem);
 			}
 		}
 		return unit;
@@ -230,8 +234,17 @@ class ActionInputAll extends BaseAction {
 		if (null == configurator.getNameColumn()) {
 			throw new ExceptionNameColumnEmpty();
 		}
+		if (null == configurator.getUniqueColumn()) {
+			throw new ExceptionUniqueColumnEmpty();
+		}
+		if (null == configurator.getEmployeeColumn()) {
+			throw new ExceptionEmployeeColumnEmpty();
+		}
 		if (null == configurator.getMobileColumn()) {
 			throw new ExceptionMobileColumnEmpty();
+		}
+		if (configurator.getAttributes().isEmpty()) {
+			throw new ExceptionIdNumberColumnEmpty();
 		}
 		List<PersonItem> people = new ArrayList<>();
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
@@ -307,7 +320,7 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
-			if (ListTools.isNotEmpty(o.getTypeList())) {
+			if (ListTools.isEmpty(o.getTypeList())) {
 				this.setUnitMemo(workbook, configurator, o, "组织级别编号不能为空.");
 				validate = false;
 				continue;
@@ -338,6 +351,64 @@ class ActionInputAll extends BaseAction {
 		return validate;
 	}
 	
+	private boolean checkPerson(Business business, XSSFWorkbook workbook, PersonSheetConfigurator configurator,
+			List<PersonItem> person) throws Exception {
+		//校验导入的组织
+		EntityManagerContainer emc = business.entityManagerContainer();
+		boolean validate = true;
+		for (PersonItem o : person) {
+			System.out.println("正在校验用户:{}."+ o.getName());
+			if (StringUtils.isEmpty(o.getName())) {
+				this.setPersonMemo(workbook, configurator, o, "人员姓名不能为空.");
+				validate = false;
+				continue;
+			}
+			if (StringUtils.isEmpty(o.getUnique())) {
+				this.setPersonMemo(workbook, configurator, o, "人员编号不能为空.");
+				validate = false;
+				continue;
+			}
+			if (StringUtils.isEmpty(o.getEmployee())) {
+				this.setPersonMemo(workbook, configurator, o, "登录账号不能为空.");
+				validate = false;
+				continue;
+			}
+			if (StringUtils.isEmpty(o.getMobile())) {
+				this.setPersonMemo(workbook, configurator, o, "手机号码不能为空.");
+				validate = false;
+				continue;
+			}
+			if(o.getAttributes().isEmpty()){
+				this.setPersonMemo(workbook, configurator, o, "身份证号不能为空.");
+				validate = false;
+				continue;
+			}
+		}
+		if (validate) {
+			for (PersonItem o : person) {
+				for (PersonItem item : person) {
+					if (o != item) {
+						if (StringUtils.isNotEmpty(o.getUnique()) && StringUtils.equals(o.getUnique(), item.getUnique())) {
+							this.setPersonMemo(workbook, configurator, o, "唯一编码冲突,本次导入中不唯一.");
+							validate = false;
+							continue;
+						}
+					}
+				}
+				
+				Person p = null;
+				p = emc.flag(o.getUnique(), Person.class);
+				if (null != p) {
+					this.setPersonMemo(workbook, configurator, o, "人员编号: " + o.getUnique() + " 与已经存在人员: " + p.getName() + " 冲突.");
+					validate = false;
+					continue;
+				}
+				this.setPersonMemo(workbook, configurator, o, "校验通过.");
+			}
+		}
+		return validate;
+	}
+	
 	private void persistUnit(XSSFWorkbook workbook, UnitSheetConfigurator configurator, List<UnitItem> unit) throws Exception {
 		for (List<UnitItem> list : ListTools.batch(unit, 200)) {
 			for (UnitItem o : list) {
@@ -361,6 +432,13 @@ class ActionInputAll extends BaseAction {
 			String memo) {
 		Sheet sheet = workbook.getSheetAt(configurator.getSheetIndex());
 		Row row = sheet.getRow(unitItem.getRow());
+		Cell cell = CellUtil.getCell(row, configurator.getMemoColumn());
+		cell.setCellValue(memo);
+	}
+	private void setPersonMemo(XSSFWorkbook workbook, PersonSheetConfigurator configurator, PersonItem personItem,
+			String memo) {
+		Sheet sheet = workbook.getSheetAt(configurator.getSheetIndex());
+		Row row = sheet.getRow(personItem.getRow());
 		Cell cell = CellUtil.getCell(row, configurator.getMemoColumn());
 		cell.setCellValue(memo);
 	}
