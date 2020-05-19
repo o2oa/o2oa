@@ -22,7 +22,7 @@ class V2ListPrev extends V2Base {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, null);
 			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME,
 					DESC, p);
 			this.relate(business, result.getData(), wi);
