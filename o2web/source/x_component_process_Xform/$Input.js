@@ -69,6 +69,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.node.empty();
     },
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){
