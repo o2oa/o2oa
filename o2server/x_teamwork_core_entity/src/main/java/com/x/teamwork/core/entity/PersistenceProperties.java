@@ -44,6 +44,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_PIORITY";
 	}
 	
+	public static class ProjectConfig {
+		public static final String table = "TEW_PROJECTCONFIG";
+	}
+	
 	public static class Config {
 		public static final String table = "TEW_CONFIG";
 	}

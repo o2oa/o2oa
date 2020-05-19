@@ -125,10 +125,10 @@ public class Task extends SliceJpaObject {
 	
 	public static final String priority_FIELDNAME = "priority";
 	@FieldDescribe("工作等级：普通 | 紧急 | 特急")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + priority_FIELDNAME)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + priority_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + priority_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
-	private String priority = "普通";
+	private String priority;
 	
 	public static final String workStatus_FIELDNAME = "workStatus";
 	@FieldDescribe("工作状态：执行中- processing | 已完成- completed | 已归档- archived")

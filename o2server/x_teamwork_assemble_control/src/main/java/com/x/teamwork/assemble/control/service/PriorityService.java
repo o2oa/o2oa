@@ -37,6 +37,18 @@ class PriorityService {
 		Business business = new Business( emc );
 		return business.priorityFactory().get( id ); 
 	}
+	
+	/**
+	 * 根据优先级名称查询优先级的信息
+	 * @param emc
+	 * @param name
+	 * @return
+	 * @throws Exception 
+	 */
+	protected List<Priority> getByName( EntityManagerContainer emc, String name ) throws Exception {
+		Business business = new Business( emc );
+		return business.priorityFactory().getByName( name ); 
+	}
 
 	/**
 	 * 根据优先级ID删除优先级信息
