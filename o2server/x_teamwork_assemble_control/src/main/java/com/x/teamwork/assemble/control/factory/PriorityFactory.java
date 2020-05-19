@@ -12,6 +12,7 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.AbstractFactory;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Priority;
@@ -34,6 +35,21 @@ public class PriorityFactory extends AbstractFactory {
 	 */
 	public Priority get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, Priority.class, ExceptionWhen.none );
+	}
+	
+	/**
+	 * 获取指定name的优先级实体信息对象
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Priority> getByName( String name ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Priority.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Priority> cq = cb.createQuery(Priority.class);
+		Root<Priority> root = cq.from(Priority.class);
+		Predicate p = cb.equal( root.get(Priority_.priority), name );
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
 	/**

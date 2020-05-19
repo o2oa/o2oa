@@ -483,14 +483,16 @@ public class TaskPersistService {
 			}else if( Task.workStatus_FIELDNAME.equalsIgnoreCase( property )) {
 				task.setWorkStatus( mainValue );				
 			} else if( Task.priority_FIELDNAME.equalsIgnoreCase( property )) {
-				PriorityQueryService priorityQueryService = new PriorityQueryService();
+				/*PriorityQueryService priorityQueryService = new PriorityQueryService();
 				if( StringUtils.isNotEmpty( mainValue )) {
-					Priority priority =  priorityQueryService.get(mainValue);
-					if(priority != null){
+					String priorityName  = mainValue.split("||")[0];
+					List<Priority> prioritys =  priorityQueryService.getByName(priorityName);
+					if(ListTools.isNotEmpty(prioritys)){
+						Priority priority = prioritys.get(0);
 						task.setPriority(priority.getPriority()+"||"+priority.getPriorityColor() );
 					}
-				}
-				//task.setPriority( mainValue );
+				}*/
+				task.setPriority( mainValue );
 			}  else if( Task.executor_FIELDNAME.equalsIgnoreCase( property )) {
 				if( StringUtils.isNotEmpty( mainValue )) {
 					String personName = null, personIdentity = null, personUnit = null;

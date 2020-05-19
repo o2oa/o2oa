@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -27,6 +28,7 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.teamwork.assemble.control.jaxrs.project.ActionListNextWithFilter;
 
 @Path("global")
 @JaxrsDescribe("全局信息管理")
@@ -119,6 +121,102 @@ public class GlobalAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionPriorityDelete().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据ID查询项目配置信息.", action = ActionProjectConfigGet.class)
+	@GET
+	@Path("projectConfig/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void projectConfigGet(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("项目配置ID") @PathParam("id") String id ) {
+		ActionResult<ActionProjectConfigGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProjectConfigGet().execute( request, effectivePerson, id );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "创建或者更新一个项目配置信息.", action = ActionProjectConfigSave.class)
+	@POST
+	@Path("projectConfig")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void projectConfigSave(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("需要保存的优先级信息") JsonElement jsonElement ) {
+		ActionResult<ActionProjectConfigSave.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProjectConfigSave().execute(request, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据标识删除项目配置信息.", action = ActionProjectConfigDelete.class)
+	@DELETE
+	@Path("projectConfig/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void projectConfigDelete(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id ) {
+		ActionResult<ActionProjectConfigDelete.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProjectConfigDelete().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "列示项目配置信息,下一页.", action = ActionListProjectConfigNextWithFilter.class)
+	@PUT
+	@Path("listProjectConfig/{id}/next/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listProjectConfigNextWithFilter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("最后一条信息数据的ID") @PathParam( "id" ) String id, 
+			@JaxrsParameterDescribe("每页显示的条目数量") @PathParam( "count" ) Integer count, 
+			@JaxrsParameterDescribe("查询过滤条件") JsonElement jsonElement ) {
+		ActionResult<List<ActionListProjectConfigNextWithFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListProjectConfigNextWithFilter().execute(request, effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据ID查询项目配置信息.", action = ActionProjectConfigGetByProject.class)
+	@GET
+	@Path("projectConfig/project/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void projectConfigGetByProject(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("项目ID") @PathParam("id") String id ) {
+		ActionResult<ActionProjectConfigGetByProject.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionProjectConfigGetByProject().execute( request, effectivePerson, id );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -12,6 +12,7 @@ import com.x.teamwork.assemble.control.factory.BatchOperationFactory;
 import com.x.teamwork.assemble.control.factory.ChatFactory;
 import com.x.teamwork.assemble.control.factory.DynamicFactory;
 import com.x.teamwork.assemble.control.factory.PriorityFactory;
+import com.x.teamwork.assemble.control.factory.ProjectConfigFactory;
 import com.x.teamwork.assemble.control.factory.ProjectExtFieldReleFactory;
 import com.x.teamwork.assemble.control.factory.ProjectFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupFactory;
@@ -58,6 +59,7 @@ public class Business {
 	private TaskTagFactory taskTagFactory;	
 	private AttachmentFactory attachmentFactory;	
 	private PriorityFactory priorityFactory;
+	private ProjectConfigFactory projectConfigFactory;
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
@@ -196,6 +198,18 @@ public class Business {
 			this.projectGroupFactory = new ProjectGroupFactory( this );
 		}
 		return projectGroupFactory;
+	}
+	
+	/**
+	 * 获取优先级数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public ProjectConfigFactory projectConfigFactory() throws Exception {
+		if (null == this.projectConfigFactory) {
+			this.projectConfigFactory = new ProjectConfigFactory( this );
+		}
+		return projectConfigFactory;
 	}
 	
 	/**
