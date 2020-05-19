@@ -35,7 +35,7 @@ public class PriorityQueryService {
 	}	
 	
 	/**
-	 * 根据项目组的标识查询项目组信息
+	 * 根据优先级的标识查询优先级信息
 	 * @param id
 	 * @return
 	 * @throws Exception
@@ -46,6 +46,23 @@ public class PriorityQueryService {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return priorityService.get(emc, id );
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据优先级的名称查询优先级信息
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Priority> getByName( String name ) throws Exception {
+		if ( StringUtils.isEmpty( name )) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return priorityService.getByName(emc, name );
 		} catch (Exception e) {
 			throw e;
 		}

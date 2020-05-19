@@ -237,6 +237,11 @@ public class ActionUpdateSingleProperty extends BaseAction {
 	}	
 
 	private Dynamic changeTaskProperty( String personName,  String projectId, String taskId, String dynamicTitle, String dynamicOptType, String property, String oldValue, String mainValue, String secondaryValue, String dataType, Boolean nullable ) throws Exception {
+		
+		taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
+		if(Task.priority_FIELDNAME.equalsIgnoreCase( property )){
+			mainValue = mainValue.split("\\|\\|")[0];
+		}
 		String dynamicDescription =  personName + "将工作任务的[" + dynamicTitle + "]变更为：[" + mainValue + "]。";
 		if(  StringUtils.isEmpty( mainValue ) && nullable ) {
 			Exception exception = new TaskPersistException( "工作任务属性["+ dynamicTitle +"]不允许为空，请检查您的输入。");
@@ -261,7 +266,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 				}	
 			}
 		}
-		taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
+		//taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
 		
 		Dynamic dynamic_info = new Dynamic();
 		dynamic_info.setTitle( dynamicTitle  );

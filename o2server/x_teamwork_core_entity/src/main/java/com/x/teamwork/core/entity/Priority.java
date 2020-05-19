@@ -70,14 +70,14 @@ public class Priority extends SliceJpaObject {
 	 */
 	public static final String priority_FIELDNAME = "priority";
 	@FieldDescribe("优先级名称.")
-	@Column(length = length_id, name = ColumnNamePrefix + priority_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + priority_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + priority_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String priority;
 	
 	public static final String color_FIELDNAME = "priorityColor";
 	@FieldDescribe("优先级颜色")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + color_FIELDNAME)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + color_FIELDNAME)
 	@CheckPersist( allowEmpty = false )
 	private String priorityColor;
 	
