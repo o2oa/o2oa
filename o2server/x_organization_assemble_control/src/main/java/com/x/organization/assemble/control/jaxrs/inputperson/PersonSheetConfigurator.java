@@ -29,8 +29,9 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 	private Integer uniqueColumn;
 	private Integer employeeColumn;
 	private Integer mobileColumn;
-	private Integer mailColumn;
+	private Integer idNumberColumn;
 	private Integer genderTypeColumn;
+	private Integer mailColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
@@ -69,10 +70,10 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 		}
 	}
 
-	private static List<String> nameItems = Arrays.asList(new String[] { "姓名", "name" });
-	private static List<String> uniqueItems = Arrays.asList(new String[] { "唯一编码", "编码", "unique" });
-	private static List<String> employeeItems = Arrays.asList(new String[] { "员工号", "员工编号", "employee" });
-	private static List<String> mobileItems = Arrays.asList(new String[] { "手机号", "手机", "联系电话", "phone", "mobile" });
+	private static List<String> nameItems = Arrays.asList(new String[] { "人员姓名 *", "人员姓名", "name" });
+	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员编号 *", "编码", "unique" });
+	private static List<String> employeeItems = Arrays.asList(new String[] { "登录账号 *", "员工编号", "employee" });
+	private static List<String> mobileItems = Arrays.asList(new String[] { "手机号码 *", "手机", "联系电话", "phone", "mobile" });
 	private static List<String> mailItems = Arrays.asList(new String[] { "电子邮件", "邮件", "邮箱", "邮件地址", "mail", "email" });
 	private static List<String> genderTypeItems = Arrays.asList(new String[] { "性别", "gender", "genderType" });
 
@@ -140,6 +141,10 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 
 	public Integer getMailColumn() {
 		return mailColumn;
+	}
+	
+	public Integer getIdNumberColumn() {
+		return idNumberColumn;
 	}
 
 	public Integer getSheetIndex() {
