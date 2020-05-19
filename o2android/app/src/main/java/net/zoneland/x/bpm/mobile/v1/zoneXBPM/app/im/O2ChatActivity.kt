@@ -24,7 +24,16 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.hideSoftInput
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import java.util.*
 import android.content.IntentFilter
+import android.support.v7.widget.GridLayoutManager
+import android.view.MotionEvent
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
+import android.view.View
+
+import android.view.animation.AlphaAnimation
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 
 
 class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Presenter>(), O2ChatContract.View {
@@ -46,6 +55,16 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
 
 
     private val adapter: O2ChatMessageAdapter by lazy { O2ChatMessageAdapter() }
+    private val emojiList = O2IM.im_emoji_hashMap.keys.toList().sortedBy { it }
+    private val emojiAdapter : CommonRecycleViewAdapter<String> by lazy {
+        object : CommonRecycleViewAdapter<String>(this, emojiList, R.layout.item_o2_im_chat_emoji) {
+            override fun convert(holder: CommonRecyclerViewHolder?, t: String?) {
+                if (t != null) {
+                    holder?.setImageViewResource(R.id.image_item_o2_im_chat_emoji, O2IM.emojiResId(t))
+                }
+            }
+        }
+    }
 
     //
     private val defaultTitle = "聊天界面"
@@ -56,9 +75,14 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
     private var conversationInfo: IMConversationInfo? = null
 
 
+    private var mKeyboardHeight = 150 // 输入法默认高度为400
+
 
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
+        // 起初的布局可自动调整大小
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
 
         setupToolBar(defaultTitle, setupBackButton = true)
 
@@ -82,12 +106,23 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
             }
         }
 
+        //表情初始化
+        rv_o2_chat_emoji_box.layoutManager = GridLayoutManager(this, 10)
+        rv_o2_chat_emoji_box.adapter = emojiAdapter
+        emojiAdapter.setOnItemClickListener { _, position ->
+            val key = emojiList[position]
+            XLog.debug(key)
+        }
+
+
+
         initListener()
 
         getPageData()
 
         registerBroadcast()
     }
+
 
 
     override fun onDestroy() {
@@ -162,12 +197,64 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                 }
             }
         })
+        et_o2_chat_input.setOnClickListener {
+            rv_o2_chat_emoji_box_out.postDelayed({
+                rv_o2_chat_emoji_box.gone()
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            }, 250)
+        }
+        rv_o2_chat_emoji_box_out.setKeyboardListener { isActive, keyboardHeight ->
+            if (isActive) { // 输入法打开
+                if (mKeyboardHeight != keyboardHeight) { // 键盘发生改变时才设置emojiView的高度，因为会触发onGlobalLayoutChanged，导致onKeyboardStateChanged再次被调用
+                    mKeyboardHeight = keyboardHeight
+                    initEmojiView() // 每次输入法弹起时，设置emojiView的高度为键盘的高度，以便下次emojiView弹出时刚好等于键盘高度
+                }
+                if (rv_o2_chat_emoji_box.visibility == View.VISIBLE) { // 表情打开状态下
+                    rv_o2_chat_emoji_box.gone()
+                }
+            }
+        }
         btn_o2_chat_emotion.setOnClickListener {
-            hideSoftInput()
+            if (rv_o2_chat_emoji_box_out.isKeyboardActive) { //输入法激活时
+                if(rv_o2_chat_emoji_box.visibility == View.GONE) {
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) //  不改变布局，隐藏键盘，emojiView弹出
+                    val imm =  it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(et_o2_chat_input.applicationWindowToken, 0)
+                    rv_o2_chat_emoji_box.visibility = View.VISIBLE
+                }else {
+                    rv_o2_chat_emoji_box.visibility = View.GONE
+                    val imm =  it.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(et_o2_chat_input.applicationWindowToken, 0)
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                }
+            }else {
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+                if(rv_o2_chat_emoji_box.visibility == View.GONE) {
+                    rv_o2_chat_emoji_box.visibility = View.VISIBLE
+                }else {
+                    rv_o2_chat_emoji_box.visibility = View.GONE
+                }
+            }
+
         }
         btn_o2_chat_send.setOnClickListener {
             sendTextMessage()
         }
+    }
+    // 设置表情栏的高度
+    private fun initEmojiView() {
+        val layoutParams = rv_o2_chat_emoji_box.layoutParams
+        layoutParams.height = mKeyboardHeight
+        rv_o2_chat_emoji_box.layoutParams = layoutParams
+    }
+
+    //打开表情框
+    private fun showEmojiBox() {
+//        rv_o2_chat_emoji_box.visible()
+        val alphaAnimation = AlphaAnimation(1f, 0f)
+        alphaAnimation.duration = 300
+        rv_o2_chat_emoji_box.startAnimation(alphaAnimation)
+        rv_o2_chat_emoji_box.visibility = View.VISIBLE
     }
 
     private fun getPageData() {

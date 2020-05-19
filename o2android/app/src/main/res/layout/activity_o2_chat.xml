@@ -19,6 +19,16 @@
         app:layout_constraintBottom_toTopOf="@+id/ll_o2_chat_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet" />
 
+    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.KeyboardLayout
+        android:id="@+id/rv_o2_chat_emoji_box_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone">
+
+    </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.KeyboardLayout>
 
     <LinearLayout
         android:id="@+id/ll_o2_chat_input_layout"
@@ -132,6 +142,17 @@
                     android:src="@mipmap/chat_location" />
             </LinearLayout>
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_o2_chat_emoji_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:visibility="gone"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            />
+
 
     </LinearLayout>
 

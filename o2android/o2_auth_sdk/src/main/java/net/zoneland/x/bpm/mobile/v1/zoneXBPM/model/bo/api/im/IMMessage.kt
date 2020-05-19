@@ -20,14 +20,31 @@ data class IMMessage(
         }
         val json = JSONTokener(body).nextValue()
         if (json is JSONObject) {
-            val type = json.getString("type")
-            if ("text" == type) {
-                val textBody = json.getString("body")
-                return IMMessageBody.Text(textBody)
+            try {
+                if (json.has("type")) {
+                    val type = json.getString("type")
+                    if (MessageType.text.key == type) {
+                        val textBody = json.getString("body")
+                        return IMMessageBody.Text(textBody)
+                    }else if(MessageType.emoji.key == type) {
+                        val textBody = json.getString("body")
+                        return IMMessageBody.Emoji(textBody)
+                    }
+                }else {
+                    val textBody = json.getString("body")
+                    return IMMessageBody.Text(textBody)
+                }
+            } catch (e: Exception) {
             }
+
         }
         return null
     }
 
 
+}
+
+enum class MessageType(val key:String) {
+    text("text"),
+    emoji("emoji")
 }

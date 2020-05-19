@@ -3,6 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.fm
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
+import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_o2_im_conversation.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
@@ -57,15 +58,31 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                     if (lastMessage != null) {
                         val lastTime = DateHelper.convertStringToDate(lastMessage.createTime)
                         val lastMessageBody = lastMessage.messageBody()
-                        var lastMessageText = ""
-                        if (lastMessageBody != null) {
-                            lastMessageText = when(lastMessageBody) {
-                                is IMMessageBody.Text -> {lastMessageBody.body}
-                                else -> "" //其它消息类型 转化成文本
+                        when(lastMessageBody) {
+                            is IMMessageBody.Emoji -> {
+                                val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
+                                image.setImageResource(O2IM.emojiResId(lastMessageBody.body))
+                                image.visible()
+                                val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
+                                text.gone()
+                            }
+                            is IMMessageBody.Text -> {
+                                val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
+                                image.gone()
+                                val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
+                                text.text = lastMessageBody.body
+                                text.visible()
+                            }
+                            else -> {
+                                val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
+                                image.gone()
+                                val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
+                                text.text = ""
+                                text.visible()
                             }
                         }
                         holder.setText(R.id.tv_o2_im_con_last_message_time, DateHelper.friendlyTime(lastTime))
-                                .setText(R.id.tv_o2_im_con_last_message, lastMessageText)
+
                     }
                 }
             }

@@ -41,7 +41,19 @@
             app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_tiny"
+            android:visibility="gone"
             tools:text="消息" />
+
+        <ImageView
+            android:id="@+id/tv_o2_im_con_last_message_emoji"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_o2_im_con_title"
+            app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:visibility="gone"
+            tools:src="@mipmap/im_emotion_01" />
 
         <TextView
             android:id="@+id/tv_o2_im_con_last_message_time"

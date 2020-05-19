@@ -7,6 +7,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
@@ -68,18 +69,24 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         val message = messages[position]
-        val body = message.messageBody()
-        if(body != null) {
-            if (body is IMMessageBody.Text) {
-                return if (message.createPerson == O2SDKManager.instance().distinguishedName) {
-                    TEXT_right
-                }else {
-                    TEXT_left
-                }
-            }
-            //其它
+        return if (message.createPerson == O2SDKManager.instance().distinguishedName) {
+            TEXT_right
+        }else {
+            TEXT_left
         }
-        return 0
+//
+//        val body = message.messageBody()
+//        if(body != null) {
+//            if (body is IMMessageBody.Text) {
+//                return if (message.createPerson == O2SDKManager.instance().distinguishedName) {
+//                    TEXT_right
+//                }else {
+//                    TEXT_left
+//                }
+//            }
+//            //其它
+//        }
+//        return 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
@@ -113,11 +120,26 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     time = DateHelper.imChatMessageTime(message.createTime)
                 }
             }
-            if (messageBody!= null && messageBody is IMMessageBody.Text) {
-                holder.setText(R.id.tv_o2_chat_message_body, messageBody.body)
-                        .setText(R.id.tv_o2_chat_message_person_name, name)
-                        .setText(R.id.tv_o2_chat_message_time, time)
+            if (messageBody != null) {
+                if (messageBody is IMMessageBody.Text) {
+                    val textBody = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+                    textBody.text = messageBody.body
+                    textBody.visible()
+                    val imgBody = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+                    imgBody.gone()
+                    holder.setText(R.id.tv_o2_chat_message_person_name, name)
+                            .setText(R.id.tv_o2_chat_message_time, time)
+                }else if (messageBody is IMMessageBody.Emoji) {
+                    val textBody = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+                    textBody.gone()
+                    val imgBody = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+                    imgBody.setImageResource(O2IM.emojiResId(messageBody.body))
+                    imgBody.visible()
+                    holder.setText(R.id.tv_o2_chat_message_person_name, name)
+                            .setText(R.id.tv_o2_chat_message_time, time)
+                }
             }
+
             //头像
             val avatar = holder.getView<CircleImageView>(R.id.image_o2_chat_message_avatar)
             val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(message.createPerson)
