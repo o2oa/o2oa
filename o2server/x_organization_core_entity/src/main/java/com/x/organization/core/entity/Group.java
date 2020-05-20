@@ -173,7 +173,7 @@ public class Group extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + identityList_FIELDNAME)
-	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Unit.class))
+	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Identity.class))
 	private List<String> identityList;
 
 	public String getName() {
