@@ -144,5 +144,7 @@ if exist "%~dp0local\update" (
 	)
 )
 @echo on
-"%~dp0jvm\windows\bin\java" -server Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar "%~dp0console.jar"
+
+"%~dp0jvm\windows\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=20000,server=y,suspend=n -Xms2g -XX:+UseConcMarkSweepGC -jar "%~dp0console.jar"
+
 pause
