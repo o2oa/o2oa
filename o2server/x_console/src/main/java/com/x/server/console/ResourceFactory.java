@@ -100,6 +100,9 @@ public class ResourceFactory {
 
 	private static void external_druid_c3p0() throws Exception {
 		for (ExternalDataSource ds : Config.externalDataSources()) {
+			if (!ds.getEnable()) {
+				continue;
+			}
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
 			dataSource.setJdbcUrl(ds.getUrl());
 			dataSource.setDriverClass(ds.getDriverClassName());

@@ -472,7 +472,7 @@ o2.widget.ScrollBar = new Class({
 
 				//		this.node.tween("margin-right", margin-scrollVNodeSize.x);
 			}
-			this.node.removeEvent("mousewheel", this.mousewheel);
+			//this.node.removeEvent("mousewheel", this.mousewheel);
 			this.node.removeEvent("touchmove", this.touchmove);
 			if (Browser.name=="firefox"){
 				this.node.removeEventListener("DOMMouseScroll", this.domMousewheel, false);

@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSPermissionInfo;
@@ -66,7 +67,7 @@ public class BBSPermissionInfoFactory extends AbstractFactory {
 		Root<BBSPermissionInfo> root = cq.from(BBSPermissionInfo.class);
 		Predicate p = cb.equal( root.get(BBSPermissionInfo_.permissionCode), permissionCode );
 		permissionInfoList = em.createQuery(cq.where(p)).getResultList();
-		if( permissionInfoList != null && permissionInfoList.size() > 0 ){
+		if( ListTools.isNotEmpty(permissionInfoList) ){
 			return permissionInfoList.get(0);
 		}else{
 			return null;

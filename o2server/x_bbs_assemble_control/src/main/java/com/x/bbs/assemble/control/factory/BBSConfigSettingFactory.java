@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSConfigSetting;
@@ -69,7 +70,7 @@ public class BBSConfigSettingFactory extends AbstractFactory {
 		Predicate p = cb.equal( root.get( BBSConfigSetting_.configCode ), configCode );
 		cq.select(root.get(BBSConfigSetting_.configValue));
 		List<String> valueList = em.createQuery(cq.where(p)).getResultList();
-		if( valueList != null && valueList.size() > 0 ){
+		if( ListTools.isNotEmpty(valueList) ){
 			return valueList.get(0);
 		}
 		return null;
@@ -85,7 +86,7 @@ public class BBSConfigSettingFactory extends AbstractFactory {
 		Root<BBSConfigSetting> root = cq.from(BBSConfigSetting.class);
 		Predicate p = cb.equal( root.get( BBSConfigSetting_.configCode ), configCode );
 		List<BBSConfigSetting> valueList = em.createQuery(cq.where(p)).getResultList();
-		if( valueList != null && valueList.size() > 0 ){
+		if( ListTools.isNotEmpty(valueList) ){
 			return valueList.get(0);
 		}
 		return null;

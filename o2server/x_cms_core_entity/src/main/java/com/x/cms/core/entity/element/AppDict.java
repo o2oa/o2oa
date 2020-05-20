@@ -22,7 +22,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Element.AppDict.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.AppDict.table + JpaObject.IndexNameMiddle

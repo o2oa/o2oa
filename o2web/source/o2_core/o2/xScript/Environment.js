@@ -945,7 +945,7 @@ MWF.xScript.Environment = function(ev){
 
     //仅前台对象-----------------------------------------
     //form
-    this.form = {
+    this.page = this.form = {
         "getInfor": function(){return ev.formInfor;},
         "infor": ev.formInfor,
         "getApp": function(){return _form.app;},

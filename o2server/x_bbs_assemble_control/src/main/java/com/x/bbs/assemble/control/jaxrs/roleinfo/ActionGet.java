@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionRoleInfoIdEmpty;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionRoleInfoNotExists;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.exception.ExceptionRoleInfoProcess;
@@ -69,7 +70,7 @@ public class ActionGet extends BaseAction {
 		}
 
 		if (check) {
-			if (permissionList != null && permissionList.size() > 0) {
+			if (ListTools.isNotEmpty(permissionList) ) {
 				try {
 					permissionWraps = WoPermissionInfo.copier.copy(permissionList);
 				} catch (Exception e) {

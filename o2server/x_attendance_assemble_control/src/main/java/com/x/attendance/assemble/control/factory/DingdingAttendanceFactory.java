@@ -2,8 +2,6 @@ package com.x.attendance.assemble.control.factory;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.exception.DingdingFindNoArgumentError;
-import com.x.attendance.assemble.control.exception.QywxFindNoArgumentError;
 import com.x.attendance.entity.*;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.time.DateUtils;
@@ -73,7 +71,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
      */
     public List<AttendanceDingtalkDetail> findAllDingdingAttendanceDetail(Date startTime, Date endTime, String userId) throws Exception {
         if (startTime == null && endTime == null && userId == null) {
-            throw new DingdingFindNoArgumentError();
+            throw new ExceptionDingdingFindNoArgumentError();
         }
         EntityManager em = this.entityManagerContainer().get(AttendanceDingtalkDetail.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -107,7 +105,7 @@ public class DingdingAttendanceFactory extends AbstractFactory {
      */
     public List<AttendanceQywxDetail> findQywxAttendanceDetail(Date startTime, Date endTime, String userId) throws Exception {
         if (startTime == null && endTime == null && userId == null) {
-            throw new QywxFindNoArgumentError();
+            throw new ExceptionQywxFindNoArgumentError();
         }
         EntityManager em = this.entityManagerContainer().get(AttendanceQywxDetail.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();

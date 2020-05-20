@@ -10,11 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAddressEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionLatitudeEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionLongitudeEmpty;
-import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -129,10 +124,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		if( check ){
 			//对该员工的所有移动考勤数据进行一个整合
 			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString() );
-			
-			
-			
-			  
+
 		}
 		return result;
 	}

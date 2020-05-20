@@ -15,6 +15,7 @@ import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSectionInfo_;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * 类   名：BBSSectionInfoFactory<br/>
@@ -254,7 +255,7 @@ public class BBSSectionInfoFactory extends AbstractFactory {
 		Root<BBSSectionInfo> root = cq.from(BBSSectionInfo.class);
 		Predicate p = root.get( BBSSectionInfo_.forumId ).in( viewforumIds );
 		p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionStatus ), "启用" ));
-		if( publicStatus != null && publicStatus ){
+		if( BooleanUtils.isTrue(publicStatus) ){
 			p = cb.and(p, cb.equal( root.get( BBSSectionInfo_.sectionVisible ), "所有人" ));
 		}
 		cq.select( root.get( BBSSectionInfo_.id ) );

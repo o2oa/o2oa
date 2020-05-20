@@ -732,14 +732,20 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             //var pNode = this.toolNode.getOffsetParent();
 
+            var paddingTop = this.form.node.getStyle("padding-top");
+            try {
+                paddingTop = paddingTop.toInt();
+            }catch (e) {
+                paddingTop = 0;
+            }
 
-            if (p.y<0){
+            if (p.y<paddingTop){
                 this.toolbarNode.inject(this.scrollNode);
                 this.toolbarNode.setStyles({
                     "position": "absolute",
                     "width": ""+x+"px",
                     "z-index": 20000,
-                    "top": "0px",
+                    "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });
             }else{

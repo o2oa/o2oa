@@ -28,11 +28,9 @@ import com.x.base.core.project.tools.DateTools;
 
 /**
  * 附件文件信息管理表
- * 
- * @author 李义
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.OkrAttachmentFileInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.OkrAttachmentFileInfo.table + JpaObject.IndexNameMiddle

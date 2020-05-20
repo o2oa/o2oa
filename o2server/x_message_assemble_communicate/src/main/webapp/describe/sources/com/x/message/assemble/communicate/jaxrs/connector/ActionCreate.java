@@ -37,7 +37,6 @@ class ActionCreate extends BaseAction {
 	private static ConcurrentMap<String,CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		logger.info("接收到消息。。。。。。。。。。。。。。。。。");
 		List<Message> messages = new ArrayList<>();
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

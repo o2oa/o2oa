@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * 缓存管理帮助类
- * @author liyi
  *
  */
 public class LogUtil {

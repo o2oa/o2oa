@@ -545,10 +545,18 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
-                this.editor.on("change", function() {
+
+                this.jsEditor.addEditorEvent("change", function() {
                     this.fireEvent("change");
                 }.bind(this));
-                this.editor.resize();
+                this.jsEditor.addEditorEvent("blur", function() {
+                    this.fireEvent("blur");
+                }.bind(this));
+
+                // this.editor.on("change", function() {
+                //     this.fireEvent("change");
+                // }.bind(this));
+                this.jsEditor.resize();
                 if (callback) callback();
                 this.fireEvent("postLoad");
             }.bind(this),
@@ -842,12 +850,22 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
                 this.editor.id = "1";
-                this.editor.on("change", function() {
+
+                this.jsEditor.addEditorEvent("change", function() {
                     var text = this.scriptPage.textNode.get("text");
                     if (text.substr(0,1)!=="*") this.scriptPage.textNode.set("text","*"+ text);
                     this.change();
                 }.bind(this));
-                this.editor.resize();
+                this.jsEditor.addEditorEvent("blur", function() {
+                    this.fireEvent("blur");
+                }.bind(this));
+
+                // this.editor.on("change", function() {
+                //     var text = this.scriptPage.textNode.get("text");
+                //     if (text.substr(0,1)!=="*") this.scriptPage.textNode.set("text","*"+ text);
+                //     this.change();
+                // }.bind(this));
+                this.jsEditor.resize();
             }.bind(this),
             "onSave": function(){
                 this.save();
@@ -920,7 +938,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
                 "set": function(v){
                     this.data.editors.each(function(editor){
                         if (editor.editor){
-                            if (v!==editor.editor.getValue()) editor.editor.setValue(v);
+                            if (v!==editor.editor.getValue()) editor.editor.setValue(v,1);
                         }else{
                             editor.reload();
                         }

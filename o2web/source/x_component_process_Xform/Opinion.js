@@ -424,6 +424,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         }
 	},
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){

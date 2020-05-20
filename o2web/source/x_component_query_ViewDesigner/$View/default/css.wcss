@@ -68,6 +68,12 @@
         "line-height": "20px",
         "margin-left": "20px"
     },
+    "noDataTextNode" : {
+        "height" : "50px",
+        "font-size" : "16px",
+        "margin" : "20px auto",
+        "text-align" : "center"
+    },
 
     "refreshNode": {
         "width": "29px",

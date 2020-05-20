@@ -57,7 +57,7 @@ public class QywxPersonStatisticQueue extends AbstractQueue<Date> {
                     List<String> ids = business.dingdingAttendanceFactory()
                             .getQywxStatPersonForMonthIds(year, month, person.getDistinguishedName());
                     emc.beginTransaction(StatisticQywxPersonForMonth.class);
-                    if (ids != null && ids.size() > 0) {
+                    if ( ListTools.isNotEmpty( ids ) ) {
                         for (String item : ids) {
                             StatisticQywxPersonForMonth personForMonth_temp = emc.find(item, StatisticQywxPersonForMonth.class);
                             emc.remove(personForMonth_temp);

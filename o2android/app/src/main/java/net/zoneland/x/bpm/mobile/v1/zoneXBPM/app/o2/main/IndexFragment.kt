@@ -405,19 +405,25 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                     ApplicationEnum.isNativeApplication(t?.appId) -> holder?.setImageViewResource(R.id.app_id, ApplicationEnum.getApplicationByKey(t?.appId).iconResId)
                     t?.appId == ALL_APP_ID -> holder?.setImageViewResource(R.id.app_id, R.mipmap.ic_todo_more)
                     else -> {
-                        val bitmap = BitmapFactory.decodeFile(O2CustomStyle.processDefaultImagePath(activity))
-                        if (bitmap != null) {
-                            holder?.setImageViewBitmap(R.id.app_id, bitmap)
-                        } else {
-                            //holder?.setImageViewResource(R.id.app_id, R.mipmap.process_default)
-                            if (t?.appId != null){
-                                val portalIconUrl = APIAddressHelper.instance().getPortalIconUrl(t.appId!!)
-                                val icon = holder?.getView<ImageView>(R.id.app_id)
-                                if (icon !=null) {
-                                    O2ImageLoaderManager.instance().showImage(icon, portalIconUrl, O2ImageLoaderOptions(placeHolder = R.mipmap.process_default))
-                                }
-                            }
+
+                        val portalIconUrl = APIAddressHelper.instance().getPortalIconUrl(t?.appId!!)
+                        val icon = holder?.getView<ImageView>(R.id.app_id)
+                        if (icon !=null) {
+                            O2ImageLoaderManager.instance().showImage(icon, portalIconUrl, O2ImageLoaderOptions(placeHolder = R.mipmap.process_default))
                         }
+//                        val bitmap = BitmapFactory.decodeFile(O2CustomStyle.processDefaultImagePath(activity))
+//                        if (bitmap != null) {
+//                            holder?.setImageViewBitmap(R.id.app_id, bitmap)
+//                        } else {
+//                            //holder?.setImageViewResource(R.id.app_id, R.mipmap.process_default)
+//                            if (t?.appId != null){
+//                                val portalIconUrl = APIAddressHelper.instance().getPortalIconUrl(t.appId!!)
+//                                val icon = holder?.getView<ImageView>(R.id.app_id)
+//                                if (icon !=null) {
+//                                    O2ImageLoaderManager.instance().showImage(icon, portalIconUrl, O2ImageLoaderOptions(placeHolder = R.mipmap.process_default))
+//                                }
+//                            }
+//                        }
                     }
                 }
                 holder?.setText(R.id.app_name_id, t?.appTitle)
