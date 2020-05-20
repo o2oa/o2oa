@@ -77,12 +77,6 @@ public class NodeAgent extends Thread {
 						String json = dis.readUTF();
 						
 						//logger.info("receive socket json={}",json);
-						/*
-						final char[] data = new char[BUFFER_SIZE];
-						final BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-						final int len = br.read(data);
-					    String json = String.valueOf(data, 0, len);
-					    */
 						
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
@@ -94,17 +88,6 @@ public class NodeAgent extends Thread {
 							}
 						}
 						
-                       /*
-						matcher = redeploy_pattern.matcher(commandObject.getCommand());
-						if (matcher.find()) {
-							byte[] bytes = Base64.decodeBase64(commandObject.getBody());
-							String result = this.redeploy(matcher.group(1), bytes);
-							dos.writeUTF(result);
-							dos.flush();
-							continue;
-						}*/
-						
-						
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							String strCommand = commandObject.getCommand();
@@ -112,9 +95,6 @@ public class NodeAgent extends Thread {
 							strCommand = strCommand.substring(strCommand.indexOf(":")+1, strCommand.length());
 							logger.info("收接到命令:"+strCommand);
 							String filename = dis.readUTF();
-							
-							//logger.info("文件名:"+filename);
-							//File tempFile = new File(Config.base(), "local/temp/upload");
 							File tempFile  = null;
 							switch (strCommand) {
 							case "storeWar":
@@ -130,11 +110,8 @@ public class NodeAgent extends Thread {
 								 tempFile = Config.dir_custom_jars();
 								break;
 							}
-							
 							FileTools.forceMkdir(tempFile);
-							
 							logger.info("文件名path:"+tempFile.getAbsolutePath()+ File.separator +  filename);
-							
 							File file = new File(tempFile.getAbsolutePath()+ File.separator +  filename);
 						    fos = new FileOutputStream(file);
 							byte[] bytes = new byte[1024];
@@ -144,7 +121,6 @@ public class NodeAgent extends Thread {
 								fos.flush();
 							}
 							fos.close();
-							
 							bytes = toByteArray(file);
 							filename = filename.substring(0,filename.lastIndexOf("."));
 			                //部署
@@ -347,8 +323,6 @@ public class NodeAgent extends Thread {
 						FileTools.forceMkdir(dist);
 					}
 					List<String> subs = new ArrayList<>();
-					subs.add("x_");
-					subs.add("o2_");
 					JarTools.unjar(zipFile, subs, dist, asNew);
 
 					FileUtils.cleanDirectory(tempFile);
