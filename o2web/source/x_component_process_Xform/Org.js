@@ -1050,6 +1050,134 @@ MWF.APPOrg.EmpowerChecker = new Class({
         }
     },
     openSelectEmpowerDlg : function( data, orginData, callback, container ){
+        if( layout.mobile ){
+            this.openSelectEmpowerDlg_mobile(data, orginData, callback, container);
+        }else{
+            this.openSelectEmpowerDlg_pc(data, orginData, callback, container);
+        }
+    },
+    openSelectEmpowerDlg_mobile : function( data, orginData, callback, container ){
+
+        debugger;
+
+        var that = this;
+
+        //处理json
+        var subItemList = [];
+        // var empowerMap = {};
+
+        // var selectableItems = [];
+        var valueList = [];
+
+        data.each( function( d ){
+            subItemList.push({
+                "name" : d.fromIdentity.split("@")[0] + " 授权给 " + d.toIdentity.split("@")[0],
+                "id" : d.fromIdentity + "#" + d.toIdentity
+            })
+            valueList.push({
+                "name" : d.fromIdentity.split("@")[0] + " 授权给 " + d.toIdentity.split("@")[0],
+                "id" : d.fromIdentity + "#" + d.toIdentity
+            })
+            // empowerMap[ d.fromIdentity ] = d.toIdentity;
+        }.bind(this));
+
+        if( subItemList.length === 0 ){
+            callback();
+            return;
+        }
+        var empowerList = Array.clone(subItemList);
+
+        // selectableItems.push({
+        //     "empowerMap" : empowerMap,
+        //     "subItemList" : subItemList
+        // });
+
+        // if( selectableItems.length === 0 ){
+        //     callback();
+        //     return;
+        // }
+        // var empowerList = Array.clone(selectableItems);
+        o2.xDesktop.requireApp("Template", "Selector.Custom", function () {
+            var options = {
+                "count": 0,
+                "title": MWF.xApplication.process.Xform.LP.selectEmpower,
+                "selectAllEnable" : true,
+                "selectableItems": subItemList,
+                "expand": false,
+                "category": false,
+                "values": valueList,
+                "zIndex" : 3001,
+                "closeOnclickOk" : true,
+                "onComplete": function (items) {
+                    debugger;
+                    var arr = [];
+                    items.each(function (item) {
+                        arr.push( item.data.id )
+                    }.bind(this));
+
+                    var ignoreList = [];
+                    empowerList.each( function (obj) {
+                        if( arr.indexOf( obj.id ) === -1 )ignoreList.push( obj.id.split("#")[0] )
+                    });
+
+                    for( var i=0; i<orginData.length; i++ ){
+                        var d = orginData[i];
+                        if( ignoreList.indexOf( d.distinguishedName ) > -1 ){
+                            d.ignoreEmpower = true;
+                        }else if( d.ignoreEmpower ){
+                            delete  d.ignoreEmpower;
+                        }
+                    }
+                    if( callback )callback( orginData );
+
+                    // empowerList.each( function(obj){
+                    // var list = obj.subItemList.filter(function(item, index){
+                    //     return !arr.contains( item.id );
+                    // }.bind(this));
+                    // ignoreList = ignoreList.map(function(item,index){
+                    //     return item.id.split("#")[1];
+                    // })
+                    // });
+
+                    // empowerList.each( function(obj){
+                    //     var org = that.orgItemsObject[obj.orgId];
+                    //     // if( obj.ignoreList.length > 0 ){
+                    //     var data = org.getData();
+                    //     for( var i=0; i<data.length; i++ ){
+                    //         var d = data[i];
+                    //         if( obj.ignoreList.indexOf( d.distinguishedName ) > -1 ){
+                    //             d.ignoreEmpower = true;
+                    //         }else if( d.ignoreEmpower ){
+                    //             delete d.ignoreEmpower;
+                    //         }
+                    //     }
+                    //     org.setData( data );
+                        // }
+
+                        // if( obj.empowerMap ){
+                        //     var data = org.getValue();
+                        //     for( var i=0; i<data.length; i++ ){
+                        //         var d = data[i];
+                        //         if( obj.empowerMap[ d.distinguishedName ] ){
+                        //             d.empowerToIdentity = obj.empowerMap[ d.distinguishedName ];
+                        //         }
+                        //     }
+                        //     org.empowerData = Array.clone(data);
+                        // }
+
+                        // if(callback)callback();
+                    // })
+                }.bind(this)
+            };
+            if( this.form.json.selectorStyle ){
+                Object.merge(options, this.form.json.selectorStyle );
+            }
+            options.flatCategory = false;
+            var selector = new o2.xApplication.Template.Selector.Custom($(document.body), options);
+            selector.load();
+        }.bind(this))
+    },
+    openSelectEmpowerDlg_pc : function( data, orginData, callback, container ){
         var node = new Element("div", {"styles": this.css.empowerAreaNode});
         var html = "<div style=\"line-height: 20px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
         html += "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
