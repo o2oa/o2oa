@@ -13,6 +13,173 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
         }
     },
 
+    keyCopy: function(e){
+        if (this.selectMarkItems.length){
+            var items = [];
+            var i = 0;
+
+            var checkItems = function(e){
+                if (i>=this.selectMarkItems.length){
+                    if (items.length){
+                        var str = JSON.encode(items);
+                        if (e){
+                            e.clipboardData.setData('text/plain', str);
+                        }else {
+                            window.clipboardData.setData("Text", str);
+                        }
+                        this.app.notice(this.app.lp.copyed, "success");
+                    }
+                }
+            }.bind(this);
+
+            this.selectMarkItems.each(function(item){
+                this.app.restActions.getWidget(item.data.id, function(json){
+                    json.data.elementType = "widget";
+                    items.push(json.data);
+                    i++;
+                    checkItems(e);
+                }.bind(this), null, false)
+            }.bind(this));
+
+            if (e) e.preventDefault();
+        }
+    },
+    keyPaste: function(e){
+        var dataStr = "";
+        if (e){
+            dataStr = e.clipboardData.getData('text/plain');
+        }else{
+            dataStr = window.clipboardData.getData("Text");
+        }
+        var data = JSON.decode(dataStr);
+        this.pasteItem(data, 0);
+    },
+    pasteItem: function(data, i){
+        if (i<data.length){
+            var item = data[i];
+            if (item.elementType==="widget"){
+                this.saveItemAs(item, function(){
+                    i++;
+                    this.pasteItem(data, i);
+                }.bind(this), function(){
+                    i++;
+                    this.pasteItem(data, i);
+                }.bind(this), function(){
+                    this.reload();
+                }.bind(this));
+            }else{
+                i++;
+                this.pasteItem(data, i);
+            }
+        }else{
+            this.reload();
+        }
+    },
+
+    saveItemAs: function(data, success, failure, cancel){
+        this.app.restActions.listWidget(this.app.options.application.id, function(dJson){
+            var i=1;
+            var someItems = dJson.data.filter(function(d){ return d.id===data.id });
+            if (someItems.length){
+                var someItem = someItems[0];
+                var lp = this.app.lp;
+                var _self = this;
+
+                var d1 = new Date().parse(data.lastUpdateTime || data.updateTime);
+                var d2 = new Date().parse(someItem.lastUpdateTime || someItem.updateTime);
+                var html = "<div>"+lp.copyConfirmInfor+"</div>";
+                html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='font-weight: bold; font-size:14px;'>"+lp.copySource+" "+someItem.name+"</div>";
+                html += "<div style='font-size:12px; color: #666666; float: left'>"+(someItem.lastUpdateTime || someItem.updateTime)+"</div>" +
+                    "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(someItem.lastUpdatePerson || "")+"</div>" +
+                    "<div style='color: red; float: right;'>"+((d1>=d2) ? "": lp.copynew)+"</div></div>";
+                html += "<div style='overflow: hidden; margin: 10px 0px; padding: 5px 10px; background-color: #ffffff; border-radius: 6px;'><div style='clear: both;font-weight: bold; font-size:14px;'>"+lp.copyTarget+" "+data.name+"</div>";
+                html += "<div style='font-size:12px; color: #666666; float: left;'>"+(data.lastUpdateTime || data.updateTime)+"</div>" +
+                    "<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.lastUpdatePerson || "")+"</div>" +
+                    "<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
+//                html += "<>"
+                this.app.dlg("inofr", null, this.app.lp.copyConfirmTitle, {"html": html}, 500, 290, [
+                    {
+                        "text": lp.copyConfirm_overwrite,
+                        "action": function(){_self.saveItemAsUpdate(someItem, data, success, failure);this.close();}
+                    },
+                    {
+                        "text": lp.copyConfirm_new,
+                        "action": function(){_self.saveItemAsNew(dJson, data, success, failure);this.close();}
+                    },
+                    {
+                        "text": lp.copyConfirm_skip,
+                        "action": function(){/*nothing*/ this.close(); if (success) success();}
+                    },
+                    {
+                        "text": lp.copyConfirm_cancel,
+                        "action": function(){this.close(); if (cancel) cancel();}
+                    }
+                ]);
+            }else{
+                this.saveItemAsNew(dJson, data, success, failure)
+            }
+        }.bind(this), function(){if (failure) failure();}.bind(this));
+    },
+    saveItemAsUpdate: function(someItem, form, success, failure){
+        var item = this.app.options.application;
+
+        var pcdata = JSON.decode(MWF.decodeJsonString(form.data));
+        var mobiledata = JSON.decode(MWF.decodeJsonString(form.mobileData));
+
+        pcdata.id = someItem.id;
+        pcdata.isNewPage = false;
+        pcdata.json.id = someItem.id;
+        pcdata.json.application = item.id;
+        pcdata.json.applicationName = item.name;
+        pcdata.json.name = someItem.name;
+        pcdata.json.alias = someItem.alias;
+        mobiledata.json.id = someItem.id;
+        mobiledata.json.application = item.id;
+        mobiledata.applicationName = item.name;
+        mobiledata.json.name = someItem.name;
+        mobiledata.json.alias = someItem.alias;
+
+        this.app.restActions.saveWidget(pcdata, mobiledata, null, function(){
+            if (success) success();
+        }.bind(this), function(){
+            if (failure) failure();
+        }.bind(this));
+    },
+    saveItemAsNew: function(formsJson, form, success, failure){
+        var item = this.app.options.application;
+        var id = item.id;
+        var name = item.name;
+
+        var pcdata = JSON.decode(MWF.decodeJsonString(form.data));
+        var mobiledata = JSON.decode(MWF.decodeJsonString(form.mobileData));
+
+        var oldName = pcdata.json.name;
+
+        var i=1;
+        while (formsJson.data.some(function(d){ return d.name==pcdata.json.name })){
+            pcdata.json.name = oldName+"_copy"+i;
+            mobiledata.json.name = oldName+"_copy"+i;
+            i++;
+        }
+        pcdata.id = "";
+        pcdata.isNewPage = true;
+        pcdata.json.id = "";
+        pcdata.json.application = id;
+        pcdata.json.applicationName = name;
+        pcdata.json.alias = "";
+
+        mobiledata.json.id = "";
+        mobiledata.json.application = id;
+        mobiledata.applicationName = name;
+        mobiledata.json.alias = "";
+
+        this.app.restActions.saveWidget(pcdata, mobiledata, null, function(){
+            if (success) success();
+        }.bind(this), function(){
+            if (failure) failure();
+        }.bind(this));
+    },
+
     _createElement: function(e){
         var _self = this;
         var options = {

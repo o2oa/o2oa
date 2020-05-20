@@ -1099,9 +1099,13 @@ MWF.xApplication.query.TableDesigner.Table.JPQLRunner = new Class({
         o2.require("o2.widget.JavascriptEditor", function(){
             this.editor = new o2.widget.JavascriptEditor(this.contentWhereArea, {"title": "JPQL", "option": {"mode": "sql"}});
             this.editor.load(function(){
-                this.editor.editor.on("change", function(){
+                this.editor.addEditorEvent("change", function(){
                     this.checkJpqlType();
                 }.bind(this));
+
+                // this.editor.editor.on("change", function(){
+                //     this.checkJpqlType();
+                // }.bind(this));
                 if (callback) callback();
             }.bind(this));
         }.bind(this), false);

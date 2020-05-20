@@ -6,9 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionAttendanceSettingProcess;
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionSettingCodeEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionSettingNameEmpty;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

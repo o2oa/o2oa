@@ -173,7 +173,7 @@ public class BBSSubjectInfoService {
 		//检查和绑定附件信息
 		//1、先查询所有的附件绑定信息
 		attachList = business.subjectAttachmentFactory().listBySubjectId( _bBSSubjectInfo.getId() );
-		if( attachList != null && attachList.size() > 0 ){
+		if( ListTools.isNotEmpty(attachList) ){
 			for( BBSSubjectAttachment attachment : attachList ){
 				exists = false;
 				if( _bBSSubjectInfo.getAttachmentList() != null && _bBSSubjectInfo.getAttachmentList().size() > 0 ){
@@ -358,17 +358,17 @@ public class BBSSubjectInfoService {
 			}
 			emc.remove( subjectInfo, CheckRemoveType.all );
 		}
-		if( voteOptionGroupList != null && voteOptionGroupList.size() > 0 ){
+		if( ListTools.isNotEmpty(voteOptionGroupList) ){
 			for( BBSVoteOptionGroup voteOptionGroup : voteOptionGroupList ){
 				emc.remove( voteOptionGroup, CheckRemoveType.all );
 			}
 		}
-		if( voteOptionList != null && voteOptionList.size() > 0 ){
+		if( ListTools.isNotEmpty(voteOptionList) ){
 			for( BBSVoteOption voteOption : voteOptionList ){
 				emc.remove( voteOption, CheckRemoveType.all );
 			}
 		}
-		if( voteRecordList != null && voteRecordList.size() > 0 ){
+		if( ListTools.isNotEmpty(voteRecordList) ){
 			for( BBSVoteRecord voteRecord : voteRecordList ){
 				emc.remove( voteRecord, CheckRemoveType.all );
 			}
@@ -993,7 +993,7 @@ public class BBSSubjectInfoService {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			encodeList = business.subjectInfoFactory().getSubjectContent( id );
-			if( encodeList != null && encodeList.size() > 0 ){
+			if( ListTools.isNotEmpty(encodeList) ){
 				subjectContent = encodeList.get( 0 );
 			}
 			if( subjectContent != null ){

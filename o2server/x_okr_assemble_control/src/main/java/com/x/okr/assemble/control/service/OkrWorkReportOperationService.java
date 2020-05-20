@@ -11,6 +11,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.common.date.DateOperation;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.entity.OkrAttachmentFileInfo;
@@ -325,7 +326,7 @@ public class OkrWorkReportOperationService{
 			emc.beginTransaction( OkrWorkReportProcessLog.class );
 			
 			ids = business.okrWorkReportBaseInfoFactory().listByWorkId( workId );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					okrWorkReportBaseInfo = business.okrWorkReportBaseInfoFactory().get(id);
 					okrWorkReportBaseInfo.setStatus( "已删除" );
@@ -334,7 +335,7 @@ public class OkrWorkReportOperationService{
 			}
 			
 			ids = business.okrWorkReportDetailInfoFactory().listByWorkId( workId );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					okrWorkReportDetailInfo = business.okrWorkReportDetailInfoFactory().get(id);
 					okrWorkReportDetailInfo.setStatus( "已删除" );
@@ -343,7 +344,7 @@ public class OkrWorkReportOperationService{
 			}
 			
 			ids = business.okrWorkReportPersonLinkFactory().listByWorkId( workId );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					okrWorkReportPersonLink = business.okrWorkReportPersonLinkFactory().get(id);
 					okrWorkReportPersonLink.setStatus( "已删除" );
@@ -352,7 +353,7 @@ public class OkrWorkReportOperationService{
 			}
 			
 			ids = business.okrWorkReportProcessLogFactory().listByWorkId( workId );
-			if( ids != null && ids.size() > 0 ){
+			if( ListTools.isNotEmpty( ids ) ){
 				for( String id : ids ){
 					okrWorkReportProcessLog = business.okrWorkReportProcessLogFactory().get(id);
 					okrWorkReportProcessLog.setStatus( "已删除" );

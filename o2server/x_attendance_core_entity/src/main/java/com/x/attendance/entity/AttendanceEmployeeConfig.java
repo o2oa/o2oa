@@ -1,7 +1,5 @@
 package com.x.attendance.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,7 +15,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceEmployeeConfig.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceEmployeeConfig.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -56,43 +54,54 @@ public class AttendanceEmployeeConfig extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
-	@Column(name = "xtopUnitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName = "";
 
+	public static final String topUnitOu_FIELDNAME = "topUnitOu";
 	@FieldDescribe("顶层组织编号")
-	@Column(name = "xtopUnitOu", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitOu_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String topUnitOu = "";
 
+	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column(name = "xunitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String unitName = "";
 
+	public static final String unitOu_FIELDNAME = "unitOu";
 	@FieldDescribe("组织编号")
-	@Column(name = "xunitOu", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitOu_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String unitOu = "";
 
+	public static final String employeeName_FIELDNAME = "employeeName";
 	@FieldDescribe("员工姓名")
-	@Column(name = "xemployeeName", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + employeeName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String employeeName = "";
 
+	public static final String employeeNumber_FIELDNAME = "employeeNumber";
 	@FieldDescribe("员工号")
-	@Column(name = "xemployeeNumber", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + employeeNumber_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String employeeNumber = "";
 
+	public static final String empInTopUnitTime_FIELDNAME = "empInTopUnitTime";
 	@FieldDescribe("员工入职时间")
-	@Column(name = "xempInTopUnitTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + empInTopUnitTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String empInTopUnitTime = "1900-01-01";
 
+	public static final String CONFIGTYPE_REQUIRED = "REQUIRED";
+	public static final String CONFIGTYPE_NOTREQUIRED = "NOTREQUIRED";
+
+	public static final String configType_FIELDNAME = "configType";
 	@FieldDescribe("配置类型:REQUIRED（需要考勤）|NOTREQUIRED（不需要考勤）")
-	@Column(name = "xconfigType", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + configType_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configType = "";
 

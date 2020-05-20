@@ -109,13 +109,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                     }).inject(this.routeOpinionTile, "before");
 
                     this.routeLeftWarper =  new Element("div", { "styles":
-                        this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
+                            this.getMaxOrgLength() > 1 ? this.css.routeLeftWarper : this.css.routeLeftWarper_single
                     }).inject(this.routeContainer);
                     this.routeGroupTitle = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRouteGroup }).inject(this.routeLeftWarper);
                     this.routeGroupArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeLeftWarper);
 
                     this.routeRightWarper =  new Element("div", { "styles":
-                        this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
+                            this.getMaxOrgLength() > 1 ? this.css.routeRightWarper : this.css.routeRightWarper_single
                     }).inject(this.routeContainer);
                     this.routeSelectorTile = new Element("div", { "styles": this.css.routeSelectorTile, "text": MWF.xApplication.process.Work.LP.selectRoute }).inject(this.routeRightWarper);
                     this.routeSelectorArea = new Element("div", { "styles": this.css.routeSelectorArea_hasGroup }).inject(this.routeRightWarper);
@@ -231,6 +231,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if ( keys.length === 1 ){
                 this.selectRouteGroup(routeGroupNode);
+                flag = false;
             }else{
                 flag = true;
             }
@@ -322,6 +323,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         //}
         this.selectedRoute = null;
 
+        var flag = true;
+
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
@@ -348,6 +351,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             if (routeList.length==1 || route.sole ){ //sole表示优先路由
                 this.selectRoute(routeNode);
+                flag = false;
             }else{
                 flag = true;
             }
@@ -450,8 +454,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.selectIdeaNode = new Element("div", {"styles": this.css.selectIdeaNode}).inject(this.routeOpinionArea);
         this.selectIdeaScrollNode = new Element("div", {"styles": this.css.selectIdeaScrollNode}).inject(this.selectIdeaNode);
         this.selectIdeaAreaNode = new Element("div", {"styles": {
-            "overflow": "hidden"
-        }}).inject(this.selectIdeaScrollNode);
+                "overflow": "hidden"
+            }}).inject(this.selectIdeaScrollNode);
 
         this.inputOpinionNode = new Element("div", {"styles": this.css.inputOpinionNode}).inject(this.routeOpinionArea);
         this.inputTextarea = new Element("textarea", {"styles": this.css.inputTextarea, "value": this.options.opinion || MWF.xApplication.process.Work.LP.inputText}).inject(this.inputOpinionNode);

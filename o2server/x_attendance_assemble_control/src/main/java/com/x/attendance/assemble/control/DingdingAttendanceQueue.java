@@ -1,6 +1,5 @@
 package com.x.attendance.assemble.control;
 
-import com.x.attendance.assemble.control.exception.DingDingRequestException;
 import com.x.attendance.entity.AttendanceDingtalkDetail;
 import com.x.attendance.entity.AttendanceDingtalkDetail_;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
@@ -113,7 +112,7 @@ public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecor
                             }
                         } else {
                             //请求结果异常 结束
-                            throw new DingDingRequestException(result.errmsg);
+                            throw new ExceptionDingDingRequest(result.errmsg);
                         }
                     }
                 }

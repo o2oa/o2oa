@@ -1440,7 +1440,8 @@ debugger;
                     "onSave": function(){
                         this.designer.saveForm();
                     }.bind(this),
-                    "style": style || "default"
+                    "style": style || "default",
+                    "runtime": "web"
                 });
                 scriptArea.load(scriptContent);
             }.bind(this));

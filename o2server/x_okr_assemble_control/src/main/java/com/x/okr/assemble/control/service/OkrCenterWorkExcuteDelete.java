@@ -6,6 +6,7 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.control.Business;
 import com.x.okr.assemble.control.ThisApplication;
 import com.x.okr.entity.OkrAttachmentFileInfo;
@@ -89,7 +90,7 @@ public class OkrCenterWorkExcuteDelete {
 		
 		//删除所有与中心工作有关的待办信息，已办信息
 		ids = business.okrTaskFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrTaskList = business.okrTaskFactory().list(ids);
 			for( OkrTask okrTask : okrTaskList ){
 				if( okrTask != null ){
@@ -98,7 +99,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrTaskHandledFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrTaskHandledList = business.okrTaskHandledFactory().list(ids);
 			for( OkrTaskHandled okrTaskHandled : okrTaskHandledList ){
 				if( okrTaskHandled != null ){
@@ -108,7 +109,7 @@ public class OkrCenterWorkExcuteDelete {
 		}
 		//删除所有与中心工作有关的工作汇报信息
 		ids = business.okrWorkReportProcessLogFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportProcessLogList = business.okrWorkReportProcessLogFactory().list(ids);
 			for( OkrWorkReportProcessLog okrWorkReportProcessLog : okrWorkReportProcessLogList ){
 				if( okrWorkReportProcessLog != null ){
@@ -117,7 +118,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrWorkReportPersonLinkFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportPersonLinkList = business.okrWorkReportPersonLinkFactory().list(ids);
 			for( OkrWorkReportPersonLink okrWorkReportPersonLink : okrWorkReportPersonLinkList ){
 				if( okrWorkReportPersonLink != null ){
@@ -126,7 +127,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrWorkReportDetailInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportDetailInfoList = business.okrWorkReportDetailInfoFactory().list(ids);
 			for( OkrWorkReportDetailInfo okrWorkReportDetailInfo : okrWorkReportDetailInfoList ){
 				if( okrWorkReportDetailInfo != null ){
@@ -135,7 +136,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrWorkReportBaseInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkReportBaseInfoList = business.okrWorkReportBaseInfoFactory().list(ids);
 			for( OkrWorkReportBaseInfo okrWorkReportBaseInfo : okrWorkReportBaseInfoList ){
 				if( okrWorkReportBaseInfo != null ){
@@ -150,7 +151,7 @@ public class OkrCenterWorkExcuteDelete {
 		}
 		//删除所有与中心工作有关的工作信息
 		ids = business.okrWorkPersonFactory().listByCenterWorkId( centerId, null );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkPersonList = business.okrWorkPersonFactory().list(ids);
 			for( OkrWorkPerson okrWorkPerson : okrWorkPersonList ){
 				if( okrWorkPerson != null ){
@@ -159,7 +160,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrWorkDetailInfoFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkDetailInfoList = business.okrWorkDetailInfoFactory().list(ids);
 			for( OkrWorkDetailInfo okrWorkDetailInfo : okrWorkDetailInfoList ){
 				if( okrWorkDetailInfo != null ){
@@ -168,7 +169,7 @@ public class OkrCenterWorkExcuteDelete {
 			}
 		}
 		ids = business.okrWorkBaseInfoFactory().listByCenterWorkId( centerId, null );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkBaseInfoList = business.okrWorkBaseInfoFactory().list(ids);
 			for( OkrWorkBaseInfo okrWorkBaseInfo : okrWorkBaseInfoList ){
 				if( okrWorkBaseInfo != null ){
@@ -181,7 +182,7 @@ public class OkrCenterWorkExcuteDelete {
 				}
 			}
 		}		
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			for( String id : ids ){
 				
 				statisticIds = business.okrStatisticReportContentFactory().list( id, null, null, null, null );
@@ -205,7 +206,7 @@ public class OkrCenterWorkExcuteDelete {
 		
 		//删除所有与中心工作有关的工作授权记录
 		ids = business.okrWorkAuthorizeRecordFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkAuthorizeRecordList = business.okrWorkAuthorizeRecordFactory().list(ids);
 			for( OkrWorkAuthorizeRecord okrWorkAuthorizeRecord : okrWorkAuthorizeRecordList ){
 				if( okrWorkAuthorizeRecord != null ){
@@ -215,7 +216,7 @@ public class OkrCenterWorkExcuteDelete {
 		}
 		//删除所有与中心工作有关的工作动态信息
 		ids = business.okrWorkDynamicsFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkDynamicsList = business.okrWorkDynamicsFactory().list(ids);
 			for( OkrWorkDynamics okrWorkDynamics : okrWorkDynamicsList ){
 				if( okrWorkDynamics != null ){
@@ -225,7 +226,7 @@ public class OkrCenterWorkExcuteDelete {
 		}
 		//删除所有与中心工作有关的工作交流信息
 		ids = business.okrWorkChatFactory().listByCenterWorkId( centerId );
-		if( ids != null && ids.size() > 0 ){
+		if( ListTools.isNotEmpty( ids ) ){
 			okrWorkChatList = business.okrWorkChatFactory().list(ids);
 			for( OkrWorkChat okrWorkChat : okrWorkChatList ){
 				if( okrWorkChat != null ){

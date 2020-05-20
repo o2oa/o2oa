@@ -146,4 +146,4 @@ if [ -d ${current_dir}/local/update ]; then
 		rm -Rf ${current_dir}/local/update
 	fi
 fi
-setsid ${current_dir}/jvm/linux/bin/java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+setsid ${current_dir}/jvm/linux/bin/java -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms2g -Xmx8g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar

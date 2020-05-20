@@ -53,7 +53,7 @@ import com.x.base.core.project.tools.MapTools;
 import com.x.query.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Neural.Model.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Neural.Model.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

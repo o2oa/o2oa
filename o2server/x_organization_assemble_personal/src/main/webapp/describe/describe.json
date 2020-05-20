@@ -3248,7 +3248,29 @@
           "pathParameters": [],
           "formParameters": [],
           "queryParameters": [],
-          "ins": [],
+          "ins": [
+            {
+              "name": "oldPassword",
+              "type": "String",
+              "isCollection": false,
+              "description": "原密码",
+              "isBaseType": true
+            },
+            {
+              "name": "newPassword",
+              "type": "String",
+              "isCollection": false,
+              "description": "新密码",
+              "isBaseType": true
+            },
+            {
+              "name": "confirmPassword",
+              "type": "String",
+              "isCollection": false,
+              "description": "确认新密码",
+              "isBaseType": true
+            }
+          ],
           "outs": [
             {
               "name": "value",

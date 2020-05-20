@@ -437,6 +437,14 @@ o2.addReady(function () {
                 _loadContent();
             })(layout);
         };
+
+        //修改支持x-token
+        var uri = new URI(window.location.href);
+        var options = uri.get("data");
+        if(options["x-token"]){
+            Cookie.write("x-token", options["x-token"]);
+        }
+
         //先判断用户是否登录
         o2.Actions.get("x_organization_assemble_authentication").getAuthentication(function (json) {
             //已经登录

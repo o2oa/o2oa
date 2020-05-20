@@ -32,7 +32,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Delay.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.Delay.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -59,11 +59,10 @@ public class Delay extends Activity {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	/* 更新运行方法 */
-
-	// public static String[] FLA GS = new String[] { "id", "alias" };
 
 	/* flag标志位 */
 	/* Entity 默认字段结束 */
@@ -340,13 +339,6 @@ public class Delay extends Activity {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + route_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String route;
-
-//	public static final String delayType_FIELDNAME = "delayType";
-//	@Enumerated(EnumType.ORDINAL)
-//	@FieldDescribe("延时类型,minute或者until,这个字段由于疏忽导致是使用ORDNAL字段进行存储的.")
-//	@Column(name = ColumnNamePrefix + delayType_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private DelayType delayType;
 
 	public static final String delayMode_FIELDNAME = "delayMode";
 	@Enumerated(EnumType.STRING)

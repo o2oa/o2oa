@@ -8,15 +8,7 @@ import java.util.Date;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-/**
- * 
- * @项目名 ：SuperviseEfficientSystem
- * @包  名 ：com.land.util.date
- * @文件名 ：DateUtil.java
- * @作  者 ：李  义
- * @单  位 ：浙江兰德纵横网络技术有限公司
- * @日  期 ：2013-06-07
- */
+
 public class DateOperation {
 	
 	private Logger logger = LoggerFactory.getLogger( DateOperation.class );

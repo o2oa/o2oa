@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.selfholiday.exception.ExceptionSelfHolidayNotExists;
-import com.x.attendance.assemble.control.jaxrs.selfholiday.exception.ExceptionSelfHolidayProcess;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
@@ -17,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionDelete extends BaseAction {
 	
@@ -40,7 +38,7 @@ public class ActionDelete extends BaseAction {
 				result.setData( new Wo(id) );
 				//根据员工休假数据来记录与这条数据相关的统计需求记录
 				List<String> ids = attendanceDetailAnalyseServiceAdv.getAnalyseAttendanceDetailIds( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime() );
-				if( ids != null && ids.size() > 0 ){
+				if( ListTools.isNotEmpty( ids ) ){
 					try {//查询所有的周期配置，组织成Map
 						topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
 					} catch (Exception e) {

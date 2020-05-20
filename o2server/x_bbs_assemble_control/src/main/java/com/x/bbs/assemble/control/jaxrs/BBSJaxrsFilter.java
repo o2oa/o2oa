@@ -6,7 +6,6 @@ import com.x.base.core.project.jaxrs.AnonymousCipherManagerUserJaxrsFilter;
 
 /**
  * web服务过滤器，匿名用户可以访问的服务
- * @author liyi *
  */
 @WebFilter( urlPatterns = {
 		"/jaxrs/permission/*",

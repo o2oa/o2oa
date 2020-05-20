@@ -9,7 +9,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import javax.persistence.*;
 import java.util.Date;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceQywxDetail.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceQywxDetail.table
         + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -45,20 +45,24 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
      */
 
 
+    public static final String o2User_FIELDNAME = "o2User";
     @FieldDescribe("O2用户")
-    @Column(name = ColumnNamePrefix + "o2User", length = length_128B)
+    @Column(name = ColumnNamePrefix + o2User_FIELDNAME, length = length_128B)
     private String o2User;
 
+    public static final String o2Unit_FIELDNAME = "o2Unit";
     @FieldDescribe("O2用户所在的组织")
-    @Column(name = ColumnNamePrefix + "o2Unit", length = length_128B)
+    @Column(name = ColumnNamePrefix + o2Unit_FIELDNAME, length = length_128B)
     private String o2Unit;
 
+    public static final String userid_FIELDNAME = "userid";
     @FieldDescribe("用户id")
-    @Column(name = ColumnNamePrefix + "userid", length = length_96B)
+    @Column(name = ColumnNamePrefix + userid_FIELDNAME, length = length_96B)
     private String userid;
 
+    public static final String groupname_FIELDNAME = "groupname";
     @FieldDescribe("打卡规则名称")
-    @Column(name = ColumnNamePrefix + "groupname", length = length_128B)
+    @Column(name = ColumnNamePrefix + groupname_FIELDNAME, length = length_128B)
     private String groupname;
 
     //打卡类型
@@ -66,16 +70,19 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
     public static final String CHECKIN_TYPE_OFF = "下班打卡";
     public static final String CHECKIN_TYPE_OUTSIDE = "外出打卡";
 
+    public static final String checkin_type_FIELDNAME = "checkin_type";
     @FieldDescribe("打卡类型。字符串，目前有：上班打卡，下班打卡，外出打卡")
-    @Column(name = ColumnNamePrefix + "checkin_type", length = length_128B)
+    @Column(name = ColumnNamePrefix + checkin_type_FIELDNAME, length = length_128B)
     private String checkin_type;
 
+    public static final String checkin_time_FIELDNAME = "checkin_time";
     @FieldDescribe("打卡时间。Unix时间戳")
-    @Column(name = ColumnNamePrefix + "checkin_time")
+    @Column(name = ColumnNamePrefix + checkin_time_FIELDNAME )
     private long checkin_time;
 
+    public static final String checkin_time_date_FIELDNAME = "checkin_time_date";
     @FieldDescribe("实际打卡时间,  用Date格式存储")
-    @Column(name = ColumnNamePrefix + "checkin_time_date")
+    @Column(name = ColumnNamePrefix + checkin_time_date_FIELDNAME )
     private Date checkin_time_date;
 
     //异常类型
@@ -85,26 +92,31 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
     public static final String EXCEPTION_TYPE_UNKOWN_DEVICE = "非常用设备";
     public static final String EXCEPTION_TYPE_NOSIGN = "未打卡";
     public static final String EXCEPTION_TYPE_NORMAL = "正常";
+
+    public static final String exception_type_FIELDNAME = "exception_type";
     @FieldDescribe("异常类型，字符串，包括：时间异常，地点异常，未打卡，wifi异常，非常用设备。如果有多个异常，以分号间隔")
-    @Column(name = ColumnNamePrefix + "exception_type", length = length_255B)
+    @Column(name = ColumnNamePrefix + exception_type_FIELDNAME, length = length_255B)
     private String exception_type;
 
+    public static final String location_title_FIELDNAME = "location_title";
     @FieldDescribe("打卡地点title")
-    @Column(name = ColumnNamePrefix + "location_title", length = length_255B)
+    @Column(name = ColumnNamePrefix + location_title_FIELDNAME, length = length_255B)
     private String location_title;
 
+    public static final String location_detail_FIELDNAME = "location_detail";
     @FieldDescribe("打卡地点详情")
-    @Column(name = ColumnNamePrefix + "location_detail", length = length_255B)
+    @Column(name = ColumnNamePrefix + location_detail_FIELDNAME, length = length_255B)
     private String location_detail;
 
+    public static final String wifiname_FIELDNAME = "wifiname";
     @FieldDescribe("打卡wifi名称")
-    @Column(name = ColumnNamePrefix + "wifiname", length = length_255B)
+    @Column(name = ColumnNamePrefix + wifiname_FIELDNAME, length = length_255B)
     private String wifiname;
 
+    public static final String notes_FIELDNAME = "notes";
     @FieldDescribe("打卡备注")
-    @Column(name = ColumnNamePrefix + "notes", length = length_255B)
+    @Column(name = ColumnNamePrefix + notes_FIELDNAME, length = length_255B)
     private String notes;
-
 
     public String getO2User() {
         return o2User;

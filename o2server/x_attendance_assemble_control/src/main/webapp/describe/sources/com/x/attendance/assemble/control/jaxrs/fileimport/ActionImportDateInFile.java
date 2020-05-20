@@ -20,6 +20,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionImportDateInFile extends BaseAction {
 	
@@ -50,7 +51,7 @@ public class ActionImportDateInFile extends BaseAction {
 				logger.info("查询结果" + ids.size() + "条！");
 				logger.info("开始事务，删除batchName = " + file_id + "的" + ids.size() + "条数据记录......");
 				emc.beginTransaction(AttendanceDetail.class);
-				if (ids != null && ids.size() > 0) {
+				if (ListTools.isNotEmpty( ids )) {
 					for (String id : ids) {
 						_attendanceDetail = emc.find(id, AttendanceDetail.class);
 						emc.remove(_attendanceDetail);
@@ -67,7 +68,7 @@ public class ActionImportDateInFile extends BaseAction {
 				for ( EntityImportDataDetail cacheImportRowDetail : cacheImportFileStatus.getDetailList() ) {
 					logger.info("查询数据库里是否有重复记录：姓名：" + cacheImportRowDetail.getEmployeeName() + "， 日期：" + cacheImportRowDetail.getRecordDateStringFormated());
 					ids = business.getAttendanceDetailFactory().getByUserAndRecordDate( cacheImportRowDetail.getEmployeeName(), cacheImportRowDetail.getRecordDateStringFormated() );
-					if (ids != null && ids.size() > 0) {
+					if (ListTools.isNotEmpty( ids )) {
 						for (String id : ids) {
 							logger.info("查询数据库里是否有重复记录：id=" + id);
 							attendanceDetail = emc.find(id, AttendanceDetail.class);

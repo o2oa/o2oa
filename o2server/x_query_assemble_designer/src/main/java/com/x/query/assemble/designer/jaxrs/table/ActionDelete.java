@@ -6,13 +6,11 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.query.assemble.designer.Business;
-import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 

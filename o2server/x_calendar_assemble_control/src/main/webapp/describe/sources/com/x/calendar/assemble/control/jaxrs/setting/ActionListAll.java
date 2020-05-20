@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.core.entity.Calendar_Setting;
 
 public class ActionListAll extends BaseAction {
@@ -37,7 +38,7 @@ public class ActionListAll extends BaseAction {
 		if( check ){
 			try {
 				wraps = Wo.copier.copy( report_S_SettingList );
-				if( wraps != null && !wraps.isEmpty() ) {
+				if( ListTools.isNotEmpty(wraps) ) {
 					for( Wo wo : wraps) {
 						if( wo.getIsLob() ) {
 							//查询LOB值

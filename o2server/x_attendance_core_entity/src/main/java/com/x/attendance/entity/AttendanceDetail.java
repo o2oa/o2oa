@@ -24,7 +24,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceDetail.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceDetail.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -67,203 +67,245 @@ public class AttendanceDetail extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String empNo_FIELDNAME = "empNo";
 	@FieldDescribe("员工号")
-	@Column(name = "xempNo", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empNo_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empNo;
 
+	public static final String empName_FIELDNAME = "empName";
 	@FieldDescribe("员工姓名")
-	@Column(name = "xempName", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empName;
 
+	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
-	@Column(name = "xtopUnitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName;
 
+	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column(name = "xunitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName;
 
-	@FieldDescribe("打卡记录年份")
-	@Column(name = "xyearString", length = JpaObject.length_16B)
-	@CheckPersist(allowEmpty = true)
-	private String yearString;
-
-	@FieldDescribe("打卡记录月份")
-	@Column(name = "xmonthString", length = JpaObject.length_16B)
-	@CheckPersist(allowEmpty = true)
-	private String monthString;
-
-	@FieldDescribe("打卡记录日期字符串")
-	@Column(name = "xrecordDateString", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
-	private String recordDateString;
-
+	public static final String recordDate_FIELDNAME = "recordDate";
 	@FieldDescribe("打卡记录日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xrecordDate")
+	@Column( name = ColumnNamePrefix + recordDate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date recordDate;
 
+	public static final String yearString_FIELDNAME = "yearString";
+	@FieldDescribe("打卡记录年份")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + yearString_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String yearString;
+
+	public static final String monthString_FIELDNAME = "monthString";
+	@FieldDescribe("打卡记录月份")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + monthString_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String monthString;
+
+	public static final String recordDateString_FIELDNAME = "recordDateString";
+	@FieldDescribe("打卡记录日期字符串")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + recordDateString_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String recordDateString;
+
+	public static final String cycleYear_FIELDNAME = "cycleYear";
 	@FieldDescribe("统计周期年份")
-	@Column(name = "xcycleYear", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + cycleYear_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleYear;
 
+	public static final String cycleMonth_FIELDNAME = "cycleMonth";
 	@FieldDescribe("统计周期月份")
-	@Column(name = "xcycleMonth", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + cycleMonth_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleMonth;
 
+	public static final String selfHolidayDayTime_FIELDNAME = "selfHolidayDayTime";
 	@FieldDescribe("请假时段:上午|下午|全天")
-	@Column(name = "xselfHolidayDayTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + selfHolidayDayTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String selfHolidayDayTime = "无";
 
+	public static final String absentDayTime_FIELDNAME = "absentDayTime";
 	@FieldDescribe("缺勤时段:上午|下午|全天")
-	@Column(name = "xabsentDayTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + absentDayTime_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String absentDayTime = "无";
 
+	public static final String abnormalDutyDayTime_FIELDNAME = "abnormalDutyDayTime";
 	@FieldDescribe("异常打卡时段:上午|下午|全天")
-	@Column(name = "xabnormalDutyDayTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + abnormalDutyDayTime_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String abnormalDutyDayTime = "无";
 
+	public static final String getSelfHolidayDays_FIELDNAME = "getSelfHolidayDays";
 	@FieldDescribe("休假天数: 0|0.5|1")
-	@Column(name = "xgetSelfHolidayDays")
+	@Column( name = ColumnNamePrefix + getSelfHolidayDays_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Double getSelfHolidayDays = 0.0;
 
+	public static final String onWorkTime_FIELDNAME = "onWorkTime";
 	@FieldDescribe("上班时间")
-	@Column(name = "xonWorkTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onWorkTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String onWorkTime;
 
+	public static final String offWorkTime_FIELDNAME = "offWorkTime";
 	@FieldDescribe("下班时间")
-	@Column(name = "xoffWorkTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offWorkTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String offWorkTime;
 
+	public static final String onDutyTime_FIELDNAME = "onDutyTime";
 	@FieldDescribe("上班打卡时间")
-	@Column(name = "xonDutyTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String onDutyTime;
 
+	public static final String offDutyTime_FIELDNAME = "offDutyTime";
 	@FieldDescribe("下班打卡时间")
-	@Column(name = "xoffDutyTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String offDutyTime;
 
+	public static final String lateTimeDuration_FIELDNAME = "lateTimeDuration";
 	@FieldDescribe("迟到时长")
-	@Column(name = "xlateTimeDuration")
+	@Column( name = ColumnNamePrefix + lateTimeDuration_FIELDNAME)
 	private Long lateTimeDuration = 0L;
 
+	public static final String leaveEarlierTimeDuration_FIELDNAME = "leaveEarlierTimeDuration";
 	@FieldDescribe("早退时长")
-	@Column(name = "xleaveEarlierTimeDuration")
+	@Column( name = ColumnNamePrefix + leaveEarlierTimeDuration_FIELDNAME )
 	private Long leaveEarlierTimeDuration = 0L;
 
+	public static final String workOvertimeTimeDuration_FIELDNAME = "workOvertimeTimeDuration";
 	@FieldDescribe("加班时长")
-	@Column(name = "xworkOvertimeTimeDuration")
+	@Column( name = ColumnNamePrefix + workOvertimeTimeDuration_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Long workOvertimeTimeDuration = 0L;
 
+	public static final String workTimeDuration_FIELDNAME = "workTimeDuration";
 	@FieldDescribe("出勤时长")
-	@Column(name = "xworkTimeDuration")
+	@Column( name = ColumnNamePrefix + workTimeDuration_FIELDNAME )
 	private Long workTimeDuration = 0L;
 
+	public static final String attendance_FIELDNAME = "attendance";
 	@FieldDescribe("出勤天数（0|0.5|1）")
-	@Column(name = "xattendance")
+	@Column( name = ColumnNamePrefix + attendance_FIELDNAME )
 	private Double attendance = 1.0;
 
+	public static final String absence_FIELDNAME = "absence";
 	@FieldDescribe("缺勤天数（0|0.5|1）")
-	@Column(name = "xabsence")
+	@Column( name = ColumnNamePrefix + absence_FIELDNAME )
 	private Double absence = 0.0;
 
+	public static final String recordStatus_FIELDNAME = "recordStatus";
 	@FieldDescribe("记录状态：0-未分析 1-已分析")
-	@Column(name = "xrecordStatus")
+	@Column( name = ColumnNamePrefix + recordStatus_FIELDNAME )
 	private Integer recordStatus = 0;
 
+	public static final String batchName_FIELDNAME = "batchName";
 	@FieldDescribe("导入批次号:导入文件的ID")
-	@Column(name = "xbatchName", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + batchName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String batchName;
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
+	public static final String appealStatus_FIELDNAME = "appealStatus";
 	@FieldDescribe("申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过")
-	@Column(name = "xappealStatus")
+	@Column( name = ColumnNamePrefix + appealStatus_FIELDNAME)
 	private Integer appealStatus = 0;
 
+	public static final String appealReason_FIELDNAME = "appealReason";
 	@FieldDescribe("申诉原因")
-	@Column(name = "xappealReason", length = JpaObject.length_64B)
+	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + appealReason_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String appealReason;
 
+	public static final String appealProcessor_FIELDNAME = "appealProcessor";
 	@FieldDescribe("申诉处理人")
-	@Column(name = "xappealProcessor", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appealProcessor_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String appealProcessor;
 
+	public static final String appealDescription_FIELDNAME = "appealDescription";
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("申诉具体说明")
-	@Column(name = "xappealDescription", length = JpaObject.length_2K)
+	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + appealDescription_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String appealDescription;
 
+	public static final String archiveTime_FIELDNAME = "archiveTime";
 	@FieldDescribe("归档时间")
-	@Column(name = "xarchiveTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + archiveTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String archiveTime;
 
+	public static final String isHoliday_FIELDNAME = "isHoliday";
 	@FieldDescribe("是否法定节假日")
-	@Column(name = "xisHoliday")
+	@Column( name = ColumnNamePrefix + isHoliday_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Boolean isHoliday = false;
 
+	public static final String isWorkday_FIELDNAME = "isWorkday";
 	@FieldDescribe("是否调休工作日")
-	@Column(name = "xisWorkday")
+	@Column( name = ColumnNamePrefix + isWorkday_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Boolean isWorkday = false;
 
+	public static final String isGetSelfHolidays_FIELDNAME = "isGetSelfHolidays";
 	@FieldDescribe("是否休假")
-	@Column(name = "xisGetSelfHolidays")
+	@Column( name = ColumnNamePrefix + isGetSelfHolidays_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Boolean isGetSelfHolidays = false;
 
+	public static final String isAbsent_FIELDNAME = "isAbsent";
 	@FieldDescribe("是否缺勤")
-	@Column(name = "xisAbsent")
+	@Column( name = ColumnNamePrefix + isAbsent_FIELDNAME )
 	private Boolean isAbsent = false;
 
+	public static final String isAbnormalDuty_FIELDNAME = "isAbnormalDuty";
 	@FieldDescribe("是否异常打卡")
-	@Column(name = "xisAbnormalDuty")
+	@Column( name = ColumnNamePrefix + isAbnormalDuty_FIELDNAME )
 	private Boolean isAbnormalDuty = false;
 
+	public static final String isLackOfTime_FIELDNAME = "isLackOfTime";
 	@FieldDescribe("是否工时不足")
-	@Column(name = "xisLackOfTime")
+	@Column( name = ColumnNamePrefix + isLackOfTime_FIELDNAME )
 	private Boolean isLackOfTime = false;
 
+	public static final String isWorkOvertime_FIELDNAME = "isWorkOvertime";
 	@FieldDescribe("是否加班")
-	@Column(name = "xisWorkOvertime")
+	@Column( name = ColumnNamePrefix + isWorkOvertime_FIELDNAME )
 	private Boolean isWorkOvertime = false;
 
+	public static final String isLeaveEarlier_FIELDNAME = "isLeaveEarlier";
 	@FieldDescribe("是否早退")
-	@Column(name = "xisLeaveEarlier")
+	@Column( name = ColumnNamePrefix + isLeaveEarlier_FIELDNAME )
 	private Boolean isLeaveEarlier = false;
 
+	public static final String isLate_FIELDNAME = "isLate";
 	@FieldDescribe("是否迟到")
-	@Column(name = "xisLate")
+	@Column( name = ColumnNamePrefix + isLate_FIELDNAME )
 	private Boolean isLate = false;
 
+	public static final String isWeekend_FIELDNAME = "isWeekend";
 	@FieldDescribe("是否周末")
-	@Column(name = "xisWeekend")
+	@Column( name = ColumnNamePrefix + isWeekend_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private Boolean isWeekend = false;
 
@@ -375,7 +417,7 @@ public class AttendanceDetail extends SliceJpaObject {
 	/**
 	 * 设置员工员工打卡记录日期（String）
 	 * 
-	 * @param isLeaveEarlier
+	 * @param recordDateString
 	 */
 	public void setRecordDateString(String recordDateString) {
 		this.recordDateString = recordDateString;

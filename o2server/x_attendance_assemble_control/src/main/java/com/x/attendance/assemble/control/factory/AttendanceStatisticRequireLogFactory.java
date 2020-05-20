@@ -18,7 +18,6 @@ import com.x.attendance.entity.AttendanceStatisticRequireLog_;
 import com.x.base.core.project.exception.ExceptionWhen;
 /**
  * 员工考勤需求配置服务器
- * @author liyi
  */
 public class AttendanceStatisticRequireLogFactory extends AbstractFactory {
 	
