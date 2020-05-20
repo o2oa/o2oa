@@ -1,9 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancesetting;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionAttendanceSettingProcess;
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionSettingIdEmpty;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

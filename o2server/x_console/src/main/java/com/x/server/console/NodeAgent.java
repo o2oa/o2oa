@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,10 +47,24 @@ public class NodeAgent extends Thread {
 	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern read_log_pattern = Pattern.compile("^readLog:(.+)$", Pattern.CASE_INSENSITIVE);
-
+	
+	public static final Pattern execute_command_pattern = Pattern.compile("^command:(.+)$", Pattern.CASE_INSENSITIVE);
+	
 	public static final int LOG_MAX_READ_SIZE = 6 * 1024;
 
 	private static final int BUFFER_SIZE = 1024*1024*1000;
+
+	private LinkedBlockingQueue<String>  commandQueue;
+
+	private FileOutputStream fos;
+
+	public LinkedBlockingQueue<String> getCommandQueue() {
+		return commandQueue;
+	}
+
+	public void setCommandQueue(LinkedBlockingQueue<String> commandQueue) {
+		this.commandQueue = commandQueue;
+	}
 
 	@Override
 	public void run() {
@@ -59,12 +74,16 @@ public class NodeAgent extends Thread {
 				try (Socket socket = serverSocket.accept()) {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
-						//String json = dis.readUTF();
+						String json = dis.readUTF();
+						
+						//logger.info("receive socket json={}",json);
+						/*
 						final char[] data = new char[BUFFER_SIZE];
 						final BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 						final int len = br.read(data);
-						final String json = String.valueOf(data, 0, len);
-						//logger.info("receive socket json={}",json);
+					    String json = String.valueOf(data, 0, len);
+					    */
+						
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
@@ -74,7 +93,8 @@ public class NodeAgent extends Thread {
 								continue;
 							}
 						}
-
+						
+                       /*
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							byte[] bytes = Base64.decodeBase64(commandObject.getBody());
@@ -82,7 +102,58 @@ public class NodeAgent extends Thread {
 							dos.writeUTF(result);
 							dos.flush();
 							continue;
+						}*/
+						
+						
+						matcher = redeploy_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							String strCommand = commandObject.getCommand();
+							strCommand = strCommand.trim();
+							strCommand = strCommand.substring(strCommand.indexOf(":")+1, strCommand.length());
+							logger.info("收接到命令:"+strCommand);
+							String filename = dis.readUTF();
+							
+							//logger.info("文件名:"+filename);
+							//File tempFile = new File(Config.base(), "local/temp/upload");
+							File tempFile  = null;
+							switch (strCommand) {
+							case "storeWar":
+								 tempFile = Config.dir_store();
+								break;
+							case "storeJar":
+								 tempFile = Config.dir_store_jars();
+								break;
+							case "customWar":
+								 tempFile = Config.dir_custom();
+								  break;
+							case "customJar":
+								 tempFile = Config.dir_custom_jars();
+								break;
+							}
+							
+							FileTools.forceMkdir(tempFile);
+							
+							logger.info("文件名path:"+tempFile.getAbsolutePath()+ File.separator +  filename);
+							
+							File file = new File(tempFile.getAbsolutePath()+ File.separator +  filename);
+						    fos = new FileOutputStream(file);
+							byte[] bytes = new byte[1024];
+							int length =0;
+							while((length = dis.read(bytes, 0, bytes.length)) != -1) {
+								fos.write(bytes, 0, length);
+								fos.flush();
+							}
+							fos.close();
+							
+							bytes = toByteArray(file);
+							filename = filename.substring(0,filename.lastIndexOf("."));
+			                //部署
+							String result = this.redeploy(filename, bytes);
+							logger.info("部署:"+result);
+							continue;
+							
 						}
+
 
 						matcher = upload_resource_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
@@ -114,6 +185,17 @@ public class NodeAgent extends Thread {
 							continue;
 						}
 
+						
+						matcher = execute_command_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							String strCommand = commandObject.getCommand();
+							strCommand = strCommand.trim();
+							strCommand = strCommand.substring(strCommand.indexOf(":")+1, strCommand.length());
+							logger.info("收接到命令:"+strCommand);
+							commandQueue.add(strCommand);
+							continue;
+						}
+						
 						dos.writeUTF("failure:no pattern method!");
 						dos.flush();
 
@@ -130,6 +212,43 @@ public class NodeAgent extends Thread {
 			e.printStackTrace();
 		}
 	}
+
+	 /** 
+     * 读取文件到byte []
+     *  
+     * @param filename 
+     * @return 
+     * @throws IOException 
+     */  
+    public static byte[] toByteArray(File f ) throws IOException {  
+       // File f = new File(filename);  
+        if (!f.exists()) {  
+            throw new FileNotFoundException(f.getName());  
+        }  
+  
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());  
+        BufferedInputStream in = null;  
+        try {  
+            in = new BufferedInputStream(new FileInputStream(f));  
+            int buf_size = 1024;  
+            byte[] buffer = new byte[buf_size];  
+            int len = 0;  
+            while (-1 != (len = in.read(buffer, 0, buf_size))) {  
+                bos.write(buffer, 0, len);  
+            }  
+            return bos.toByteArray();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+            throw e;  
+        } finally {  
+            try {  
+                in.close();  
+            } catch (IOException e) {  
+                e.printStackTrace();  
+            }  
+            bos.close();  
+        }  
+    }  
 
 	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception{
 		try {

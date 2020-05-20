@@ -1,9 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionStatisticCycleNotExists;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionStatisticCycleProcess;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
