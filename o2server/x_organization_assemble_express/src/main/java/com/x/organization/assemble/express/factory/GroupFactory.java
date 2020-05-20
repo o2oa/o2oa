@@ -172,6 +172,28 @@ public class GroupFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	// @MethodDescribe("获取指定身份直接所在的群组.")
+	public List<String> listSupDirectWithIdentity(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Group.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Group> root = cq.from(Group.class);
+		Predicate p = cb.isMember(id, root.get(Group_.identityList));
+		cq.select(root.get(Group_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	// @MethodDescribe("获取指定组织直接所在的群组.")
+	public List<String> listSupDirectWithUnit(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Group.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Group> root = cq.from(Group.class);
+		Predicate p = cb.isMember(id, root.get(Group_.unitList));
+		cq.select(root.get(Group_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
 	public List<Group> listSupNestedWithPersonObject(Person person) throws Exception {
 		List<String> ids = this.listSupNestedWithPerson(person.getId());
 		return this.entityManagerContainer().list(Group.class, ids);
