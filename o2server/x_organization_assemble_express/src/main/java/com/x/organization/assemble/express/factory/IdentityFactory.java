@@ -105,6 +105,16 @@ public class IdentityFactory extends AbstractFactory {
 		return list;
 	}
 
+	public List<Identity> listByPerson(String personId) throws Exception{
+		EntityManager em = this.entityManagerContainer().get(Identity.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+		Root<Identity> root = cq.from(Identity.class);
+		Predicate p = cb.equal(root.get(Identity_.person), personId);
+		List<Identity> is = em.createQuery(cq.select(root).where(p)).getResultList();
+		return is;
+	}
+
 	public <T extends Identity> List<T> sort(List<T> list) {
 		list = list.stream().sorted(
 				Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
