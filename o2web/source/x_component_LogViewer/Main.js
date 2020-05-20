@@ -27,7 +27,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         if (callback) callback();
     },
     doLog: function(){
-        this.status = "prompt";
+        this.status = "systemLog";
         this.actions = MWF.Actions.get("x_program_center");
 
         this.node = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
@@ -39,6 +39,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.loadToolbar();
         this.loadScreen();
 
+        this.loadBottom();
 
         this.initLog();
         this.loadLog();
@@ -52,13 +53,53 @@ MWF.xApplication.LogViewer.Main = new Class({
 
         //定时器
     },
+    loadBottom: function(){
 
+        this.nodeSelect = new Element("select", {"styles": this.css.toolbarNodeSelect}).inject(this.bottomNode);
+        o2.Actions.load("x_program_center").CommandAction.getNodeInfoList(
+            function( json ){
+                var nodeList = json.data.nodeList;
+                nodeList.each(function (node) {
+                    new Element("option", {
+                        "value": node.node.nodeAgentPort,
+                        "text": node.nodeAddress
+                    }).inject(this.nodeSelect);
+                }.bind(this));
+            }.bind(this),null, false
+        );
+
+        this.commandNode = new Element("input",{"styles":this.css.commandNode}).inject(this.bottomNode);
+        this.commandBtnNode = new Element("button",{"text":"submit","styles":this.css.commandBtnNode}).inject(this.bottomNode);
+
+
+        this.commandNode.addEvent('keyup', function(e) {
+            if(e.key==="enter"){
+                this.executeCommand();
+            }
+        }.bind(this));
+
+        this.commandBtnNode.addEvent("click",function () {
+            this.executeCommand();
+        }.bind(this));
+    },
+    executeCommand : function(){
+        if(this.commandNode.get("value")!==""){
+            var data = {};
+            data["ctl"] = this.commandNode.get("value");
+            data["nodeName"] = this.nodeSelect.getElement("option:selected").get("text");
+            data["nodePort"] = this.nodeSelect.getElement("option:selected").get("value");
+            o2.Actions.load("x_program_center").CommandAction.executeCommand(data, function( json ){
+                this.commandNode.set("value","");
+            }.bind(this),null, false);
+        }
+    },
     loadToolbar: function(){
+
+        this.systemLogButton = this.createTopButton("SystemLog", "systemLog.png", "systemLog");
+
         this.promptErrorButton = this.createTopButton("PromptError", "prompt.png", "prompt");
         this.unexpectedErrorButton = this.createTopButton("UnexpectedError", "unexpected.png", "unexpected");
         this.warnErrorButton = this.createTopButton("Warn", "warn.png", "warn");
-
-        this.systemLogButton = this.createTopButton("SystemLog", "systemLog.png", "systemLog");
 
         this.dateSelect = new Element("select", {"styles": this.css.toolbarDateSelect}).inject(this.toolbarNode);
         new Element("option", {
@@ -184,9 +225,8 @@ MWF.xApplication.LogViewer.Main = new Class({
 
     loadLog: function(){
 
-
-
         this.date = this.dateSelect.options[this.dateSelect.selectedIndex].value;
+
         switch (this.status){
             case "prompt":
                 this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
@@ -201,7 +241,8 @@ MWF.xApplication.LogViewer.Main = new Class({
                 this.method = "listSystemLog";
                 break;
             default:
-                this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
+                //this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
+                this.method = "listSystemLog";
         }
         if(this.method==="listSystemLog"){
             this.actions[this.method](this.tagId, function(json){
@@ -209,7 +250,7 @@ MWF.xApplication.LogViewer.Main = new Class({
             }.bind(this));
 
             //添加定时器
-            this.timeDo = this.tiemShowSystemLog.periodical(2000,this);
+            this.timeDo = this.tiemShowSystemLog.periodical(1000,this);
 
         }else{
             if (this.date==="all"){
