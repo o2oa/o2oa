@@ -605,6 +605,12 @@ MWF.org = {
             // "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
+
+        if( data.personName )rData.personName = data.personName;
+        if( data.personEmployee )rData.personEmployee = data.personEmployee;
+        if( data.personUnique )rData.personUnique = data.personUnique;
+        if( data.personDn )rData.personDn = data.personDn;
+
         if( data.ignoreEmpower )rData.ignoreEmpower = true;
         if( data.ignoredEmpower )rData.ignoredEmpower = true;
 

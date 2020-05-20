@@ -8,7 +8,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import javax.persistence.*;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.StatisticDingdingUnitForDay.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.StatisticDingdingUnitForDay.table + JpaObject.IndexNameMiddle

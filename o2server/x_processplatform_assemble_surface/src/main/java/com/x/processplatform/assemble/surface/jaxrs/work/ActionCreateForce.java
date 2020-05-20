@@ -101,9 +101,9 @@ class ActionCreateForce extends BaseAction {
 				}
 				emc.commit();
 			}
-			/* 驱动工作 */
+			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					"work/" + URLEncoder.encode(workId, DefaultCharset.name) + "/processing", null, processFlag);
+					Applications.joinQueryUri("work", workId, "prcocssing", "nonblocking"), null, processFlag);
 		} else {
 			/* 如果是草稿,准备后面的直接打开 */
 			workId = lastestWorkId;

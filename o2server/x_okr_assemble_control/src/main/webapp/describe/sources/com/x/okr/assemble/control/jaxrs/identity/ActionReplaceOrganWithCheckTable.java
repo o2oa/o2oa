@@ -11,7 +11,6 @@ import com.x.okr.assemble.control.service.update.UpdateOldUnitToNewUnit;
 
 /**
  * 根据对照表，替换相关的记录中的人员、身份、组织信息
- * @author liyi
  *
  */
 public class ActionReplaceOrganWithCheckTable extends BaseAction {

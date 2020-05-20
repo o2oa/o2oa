@@ -21,8 +21,8 @@ import com.x.cms.core.entity.CmsBatchOperation;
 public class EraseContentCms extends EraseContentProcessPlatform {
 
 	private static Logger logger = LoggerFactory.getLogger(EraseContentCms.class);
-
-	public boolean execute(String password) throws Exception {
+	@Override
+	public boolean execute() throws Exception {
 		this.init("cms", ItemCategory.cms);
 		addClass(Document.class);
 		addClass(Review.class);

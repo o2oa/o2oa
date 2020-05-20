@@ -20,7 +20,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 /**
  * 信息评论内容表
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.DocumentCommentContent.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.DocumentCommentContent.table + JpaObject.IndexNameMiddle

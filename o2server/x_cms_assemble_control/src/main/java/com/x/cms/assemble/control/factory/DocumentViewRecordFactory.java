@@ -130,7 +130,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
 		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
 		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), docId );
-		if( docId != null && docId.isEmpty() ){
+		if( StringUtils.isNotEmpty(docId) ){
 			p = cb.and( p, cb.equal( root.get( DocumentViewRecord_.documentId ), docId ));
 		}
 		cq.select( cb.count( root ));

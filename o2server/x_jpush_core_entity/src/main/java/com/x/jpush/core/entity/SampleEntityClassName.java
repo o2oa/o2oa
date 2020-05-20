@@ -20,7 +20,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.SampleEntityClassName.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.SampleEntityClassName.table + JpaObject.IndexNameMiddle

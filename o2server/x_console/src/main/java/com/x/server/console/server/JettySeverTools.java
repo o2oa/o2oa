@@ -36,9 +36,13 @@ public abstract class JettySeverTools {
 		config.setResponseHeaderSize(8192 * 2);
 		config.setSendServerVersion(true);
 		config.setSendDateHeader(false);
+
 		ServerConnector sslConnector = new ServerConnector(server,
 				new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
 				new HttpConnectionFactory(config));
+		/* 添加到32,压力测试 */
+		sslConnector.setAcceptQueueSize(32);
+		sslConnector.setIdleTimeout(30000);
 		sslConnector.setPort(port);
 		server.addConnector(sslConnector);
 	}
@@ -51,6 +55,8 @@ public abstract class JettySeverTools {
 		config.setSendServerVersion(true);
 		config.setSendDateHeader(false);
 		ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
+		/* 添加到32,压力测试 */
+		http.setAcceptQueueSize(32);
 		http.setIdleTimeout(30000);
 		http.setPort(port);
 		server.addConnector(http);
@@ -92,16 +98,17 @@ public abstract class JettySeverTools {
 		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
-		filter = new WildcardFileFilter("slf4j-api-*.jar");
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("openjpa-*.jar"));
+		filter = new WildcardFileFilter("openjpa-*.jar");
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
-		/* jersey从AppClassLoader加载 */
-		// filter = FileFilterUtils.or(filter, new WildcardFileFilter("jersey-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
+		if (!com.x.server.console.Main.slf4jOtherImplOn) {
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
+			filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
+		}
+		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}

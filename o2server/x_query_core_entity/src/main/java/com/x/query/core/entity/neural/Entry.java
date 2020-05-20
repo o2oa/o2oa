@@ -26,8 +26,8 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
 
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@ContainerEntity
 @Table(name = PersistenceProperties.Neural.Entry.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Neural.Entry.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

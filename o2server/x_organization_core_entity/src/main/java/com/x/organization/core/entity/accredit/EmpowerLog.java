@@ -23,7 +23,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Accredit.EmpowerLog.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Accredit.EmpowerLog.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

@@ -38,6 +38,7 @@
     "gulp-tm-asset-rev": "0.0.16",
     "gulp-tm-uglify": "3.0.1",
     "merge-stream": "^1.0.1",
+    "readline-sync": "^1.4.10",
     "minimist": "^1.2.0"
   }
 }

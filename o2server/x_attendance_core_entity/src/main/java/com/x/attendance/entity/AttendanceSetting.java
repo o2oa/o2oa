@@ -16,7 +16,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceSetting.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.AttendanceSetting.table + JpaObject.IndexNameMiddle
@@ -56,44 +56,47 @@ public class AttendanceSetting extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String configCode_FIELDNAME = "configCode";
 	@FieldDescribe("配置编码")
-	@Column(name = "xconfigCode", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + configCode_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configCode;
 
+	public static final String configName_FIELDNAME = "configName";
 	@FieldDescribe("配置名称")
-	@Column(name = "xconfigName", length = JpaObject.length_96B)
+	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + configName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configName;
 
+	public static final String configValue_FIELDNAME = "configValue";
 	@FieldDescribe("配置内容")
-	@Column(name = "xconfigValue", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + configValue_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configValue;
 
+	public static final String valueType_FIELDNAME = "valueType";
 	@FieldDescribe("值类型: select | identity | number | date | text")
-	@Column(name = "xvalueType", length = JpaObject.length_16B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + valueType_FIELDNAME )
 	private String valueType = null;
 
+	public static final String selectContent_FIELDNAME = "selectContent";
 	@FieldDescribe("可选值，和select配合使用，以‘|’号分隔")
-	@Column(name = "xselectContent", length = JpaObject.length_255B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + selectContent_FIELDNAME )
 	private String selectContent = "--无--";
 
+	public static final String isMultiple_FIELDNAME = "isMultiple";
 	@FieldDescribe("是否可以多值")
-	@Column(name = "xisMultiple")
-	@CheckPersist(allowEmpty = true)
+	@Column( name = ColumnNamePrefix + isMultiple_FIELDNAME )
 	private Boolean isMultiple = false;
 
+	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号")
-	@Column(name = "xorderNumber")
-	@CheckPersist(allowEmpty = true)
+	@Column( name = ColumnNamePrefix + orderNumber_FIELDNAME )
 	private Integer orderNumber = 1;
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("备注说明")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
 	private String description = null;
 
 	public String getConfigCode() {

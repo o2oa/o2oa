@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -22,7 +21,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceAppealInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceAppealInfo.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -64,156 +63,169 @@ public class AttendanceAppealInfo extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String detailId_FIELDNAME = "detailId";
 	@FieldDescribe("申诉的打卡记录ID.")
-	@Column(name = "xdetailId", length = JpaObject.length_id)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + detailId_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
 	private String detailId;
 
-	@FieldDescribe("申诉员工姓名")
-	@Column(name = "xempName", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	public static final String empName_FIELDNAME = "empName";
+	@FieldDescribe("申诉员工标识")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + empName_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
 	private String empName;
 
-	@FieldDescribe("顶层组织名称")
-	@Column(name = "xtopUnitName", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	public static final String topUnitName_FIELDNAME = "topUnitName";
+	@FieldDescribe("员工所属顶层组织")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME)
 	private String topUnitName;
 
-	@FieldDescribe("组织名称")
-	@Column(name = "xunitName", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	public static final String unitName_FIELDNAME = "unitName";
+	@FieldDescribe("员工所属组织名称")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
 	private String unitName;
 
-	@FieldDescribe("申诉年份")
-	@Column(name = "xyearString", length = JpaObject.length_16B)
-	@CheckPersist(allowEmpty = true)
-	private String yearString;
-
-	@FieldDescribe("申诉月份")
-	@Column(name = "xmonthString", length = JpaObject.length_16B)
-	@CheckPersist(allowEmpty = true)
-	private String monthString;
-
-	@FieldDescribe("申诉日期字符串")
-	@Column(name = "xappealDateString", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
-	private String appealDateString;
-
-	@FieldDescribe("记录日期字符串")
-	@Column(name = "xrecordDateString", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
-	private String recordDateString;
-
+	public static final String recordDate_FIELDNAME = "recordDate";
 	@FieldDescribe("记录日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xrecordDate")
-	@CheckPersist(allowEmpty = true)
+	@Column( name = ColumnNamePrefix + recordDate_FIELDNAME)
 	private Date recordDate;
 
-	@FieldDescribe("审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批")
-	@Column(name = "xstatus")
-	@CheckPersist(allowEmpty = true)
-	private Integer status = 0;
+	public static final String yearString_FIELDNAME = "yearString";
+	@FieldDescribe("申诉年份")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + yearString_FIELDNAME)
+	private String yearString;
 
-	@FieldDescribe("开始时间")
-	@Column(name = "xstartTime", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
+	public static final String monthString_FIELDNAME = "monthString";
+	@FieldDescribe("申诉月份")
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + monthString_FIELDNAME)
+	private String monthString;
+
+	public static final String appealDateString_FIELDNAME = "appealDateString";
+	@FieldDescribe("申诉日期字符串")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + appealDateString_FIELDNAME)
+	private String appealDateString;
+
+	public static final String recordDateString_FIELDNAME = "recordDateString";
+	@FieldDescribe("记录日期字符串")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + recordDateString_FIELDNAME)
+	private String recordDateString;
+
+	public static final String startTime_FIELDNAME = "startTime";
+	@FieldDescribe("申诉开始时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + startTime_FIELDNAME)
 	private String startTime;
 
-	@FieldDescribe("结束时间")
-	@Column(name = "xendTime", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
+	public static final String endTime_FIELDNAME = "endTime";
+	@FieldDescribe("申诉结束时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + endTime_FIELDNAME)
 	private String endTime;
 
-	@FieldDescribe("申诉原因")
-	@Column(name = "xappealReason", length = JpaObject.length_64B)
-	@CheckPersist(allowEmpty = true)
+	public static final String appealReason_FIELDNAME = "appealReason";
+	@FieldDescribe("申诉原因简述（60个汉字）")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + appealReason_FIELDNAME)
 	private String appealReason;
 
+	public static final String selfHolidayType_FIELDNAME = "selfHolidayType";
 	@FieldDescribe("请假类型")
-	@Column(name = "xselfHolidayType", length = JpaObject.length_64B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + selfHolidayType_FIELDNAME)
 	private String selfHolidayType;
 
+	public static final String address_FIELDNAME = "address";
 	@FieldDescribe("地址")
-	@Column(name = "xaddress", length = JpaObject.length_255B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + address_FIELDNAME )
 	private String address;
 
+	public static final String reason_FIELDNAME = "reason";
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@FieldDescribe("申诉事由")
-	@Column(name = "xreason", length = JpaObject.length_2K)
-	@CheckPersist(allowEmpty = true)
+	@FieldDescribe("申诉详细事由")
+	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + reason_FIELDNAME)
 	private String reason;
 
+	public static final String appealDescription_FIELDNAME = "appealDescription";
 	@Lob
 	@FieldDescribe("申诉详细说明")
-	@Column(name = "xappealDescription", length = JpaObject.length_2K)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_2K, name = ColumnNamePrefix + appealDescription_FIELDNAME)
 	private String appealDescription;
 
+	public static final String status_FIELDNAME = "status";
+	@FieldDescribe("审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批")
+	@Column( name = ColumnNamePrefix + status_FIELDNAME)
+	private Integer status = 0;
+
+	public static final String currentProcessor_FIELDNAME = "currentProcessor";
 	@FieldDescribe("当前审核人")
-	@Column(name = "xcurrentProcessor", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + currentProcessor_FIELDNAME)
 	private String currentProcessor;
 
+	public static final String archiveTime_FIELDNAME = "archiveTime";
+	@FieldDescribe("归档时间字符串")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + archiveTime_FIELDNAME )
+	private String archiveTime;
+
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPerson1_FIELDNAME = "processPerson1";
 	@FieldDescribe("审批人一")
-	@Column(name = "xprocessPerson1", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPerson1_FIELDNAME)
 	private String processPerson1;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPersonUnit1_FIELDNAME = "processPersonUnit1";
 	@FieldDescribe("审批人组织一")
-	@Column(name = "xprocessPersonUnit1", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonUnit1_FIELDNAME)
 	private String processPersonUnit1;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPersonTopUnit1_FIELDNAME = "processPersonTopUnit1";
 	@FieldDescribe("审批人顶层组织一")
-	@Column(name = "xprocessPersonTopUnit1", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonTopUnit1_FIELDNAME)
 	private String processPersonTopUnit1;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String opinion1_FIELDNAME = "opinion1";
 	@FieldDescribe("审批意见一")
-	@Column(name = "xopinion1", length = JpaObject.length_255B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + opinion1_FIELDNAME )
 	private String opinion1;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processTime1_FIELDNAME = "processTime1";
 	@FieldDescribe("审批日期一")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xprocessTime1")
-	@CheckPersist(allowEmpty = true)
+	@Column( name = ColumnNamePrefix + processTime1_FIELDNAME)
 	private Date processTime1;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPerson2_FIELDNAME = "processPerson2";
 	@FieldDescribe("审批人二")
-	@Column(name = "xprocessPerson2", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPerson2_FIELDNAME)
 	private String processPerson2;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPersonUnit2_FIELDNAME = "processPersonUnit2";
 	@FieldDescribe("审批人组织二")
-	@Column(name = "xprocessPersonUnit2", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonUnit2_FIELDNAME )
 	private String processPersonUnit2;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processPersonTopUnit2_FIELDNAME = "processPersonTopUnit2";
 	@FieldDescribe("审批人顶层组织二")
-	@Column(name = "xprocessPersonTopUnit2", length = AbstractPersistenceProperties.organization_name_length)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonTopUnit2_FIELDNAME )
 	private String processPersonTopUnit2;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String opinion2_FIELDNAME = "opinion2";
 	@FieldDescribe("审批意见二")
-	@Column(name = "xopinion2", length = JpaObject.length_255B)
-	@CheckPersist(allowEmpty = true)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + opinion2_FIELDNAME )
 	private String opinion2;
 
+	//2020-05-15 新版本取消此属性，审批信息在AttendanceAppealAuditInfo里记录
+	public static final String processTime2_FIELDNAME = "processTime2";
 	@FieldDescribe("审批日期二")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xprocessTime2")
-	@CheckPersist(allowEmpty = true)
+	@Column( name = ColumnNamePrefix + processTime2_FIELDNAME )
 	private Date processTime2;
-
-	@FieldDescribe("归档时间")
-	@Column(name = "xarchiveTime", length = JpaObject.length_32B)
-	@CheckPersist(allowEmpty = true)
-	private String archiveTime;
 
 	public String getDetailId() {
 		return detailId;

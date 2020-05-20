@@ -2,11 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.qywx;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.jaxrs.dingding.ActionListDDAttendanceDetail;
 import com.x.attendance.assemble.control.jaxrs.dingding.BaseAction;
-import com.x.attendance.assemble.control.jaxrs.dingding.exception.SearchArgEmptyException;
-import com.x.attendance.assemble.control.jaxrs.dingding.exception.TimeEmptyException;
-import com.x.attendance.entity.AttendanceDingtalkDetail;
 import com.x.attendance.entity.AttendanceQywxDetail;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -21,8 +17,6 @@ import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.Person;
-import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ActionListQywxAttendanceDetail extends BaseAction {
 
@@ -42,10 +35,10 @@ public class ActionListQywxAttendanceDetail extends BaseAction {
             Business business = new Business(emc);
             Wi wi = this.convertToWrapIn(jsonElement , Wi.class);
             if (StringUtils.isEmpty(wi.getYear())) {
-                throw new TimeEmptyException();
+                throw new ExceptionTimeEmpty();
             }
             if (StringUtils.isEmpty(wi.getPerson()) && StringUtils.isEmpty(wi.getUnit()) && StringUtils.isEmpty(wi.getTopUnit())) {
-                throw new SearchArgEmptyException();
+                throw new ExceptionSearchArgEmpty();
             }
             Date startDay  ;
             Date endDay;

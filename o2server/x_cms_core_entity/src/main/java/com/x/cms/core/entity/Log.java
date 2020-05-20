@@ -18,11 +18,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 内容管理日志信息表
- * 
- * @author 李义
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Log.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Log.table + JpaObject.IndexNameMiddle

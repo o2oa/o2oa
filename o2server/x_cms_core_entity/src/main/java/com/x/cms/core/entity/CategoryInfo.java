@@ -36,7 +36,7 @@ import com.x.base.core.project.tools.ListTools;
  * @author O2LEE
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.CategoryInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.CategoryInfo.table + JpaObject.IndexNameMiddle

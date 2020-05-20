@@ -17,7 +17,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * 打卡信息统计服务类，以打卡信息表为基础进行统计
- * @author liyi
  */
 public class AttendanceDetailStatisticFactory extends AbstractFactory {
 

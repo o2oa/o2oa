@@ -7,15 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * 
- * @项目名 ：SuperviseEfficientSystem
- * @包  名 ：com.land.util.date
- * @文件名 ：DateUtil.java
- * @作  者 ：李  义
- * @单  位 ：浙江兰德纵横网络技术有限公司
- * @日  期 ：2013-06-07
- */
+
 public class DateOperation {
 	/**
 	 * 根据样式得到格式化对象SimpleDateFormat

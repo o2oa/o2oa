@@ -260,6 +260,25 @@ public class UserManagerService {
 	}
 
 	/**
+	 * 根据人员姓名获取人员姓名
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
+	public Person getPersonObjByName( String name ) throws Exception {
+		if( StringUtils.isEmpty( name ) ){
+			throw new Exception( "identityName is null!" );
+		}
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().getObject(name);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
 	 * 根据人员身份信息获取人员姓名
 	 * @param identityName
 	 * @return

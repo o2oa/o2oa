@@ -2,7 +2,6 @@ package com.x.cms.common.image.maincolor;
 
 /**
  * 点群定义
- * @author liyi
  *
  */
 public class PointGroup {

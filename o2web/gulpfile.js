@@ -20,65 +20,45 @@ var ftpconfig = require('./gulpconfig.js');
 var o_options = minimist(process.argv.slice(2), {//upload: local ftp or sftp
     string: ["ev", "upload", "location", "host", "user", "pass", "port", "remotePath", "dest", "src"]
 });
-var options = {};
-
-var uploadOptions = ftpconfig.dev;
-options.ev = o_options.ev;
-uploadOptions = (ftpconfig[o_options.ev]) || null;
-if (!uploadOptions){
-    options.ev = "dev";
-    uploadOptions = ftpconfig.dev;
+function getEvOptions(ev){
+    options.ev = ev;
+    return (ftpconfig[ev]) || {
+        'location': '',
+        'host': '',
+        'user': '',
+        'pass': '',
+        "port": null,
+        "remotePath": "",
+        "dest": "dest",
+        "upload": ""
+    }
 }
-// if (o_options.ev && o_options.ev=="dev"){
-//     options.ev = "dev";
-//     uploadOptions = ftpconfig.dev;
-// }else if (o_options.ev && o_options.ev=="release"){
-//     options.ev = "release";
-//     uploadOptions = ftpconfig.release;
-// }else if (o_options.ev && o_options.ev=="wrdp"){
-//     options.ev = "wrdp";
-//     uploadOptions = ftpconfig.wrdp;
-// }else if (o_options.ev && o_options.ev=="develop"){
-//     options.ev = "develop";
-//     uploadOptions = ftpconfig.develop;
-// }else{
-//     options.ev = "dev";
-//     uploadOptions = ftpconfig.dev;
-// }
-
-options.upload = o_options.upload || "";
-options.location = o_options.location || uploadOptions.location;
-options.host = o_options.host || uploadOptions.host;
-options.user = o_options.user || uploadOptions.user;
-options.pass = o_options.pass || uploadOptions.pass;
-options.port = o_options.port || uploadOptions.port;
-options.remotePath = o_options.remotePath || uploadOptions.remotePath;
-options.dest = o_options.dest || uploadOptions.dest || "dest";
-
-var release_options = {};
-release_options.ev = "release";
-release_options.upload = o_options.upload || "";
-release_options.location = o_options.location || ftpconfig.release.location;
-release_options.host = o_options.host || ftpconfig.release.host;
-release_options.user = o_options.user || ftpconfig.release.user;
-release_options.pass = o_options.pass || ftpconfig.release.pass;
-release_options.port = o_options.port || ftpconfig.release.port;
-release_options.remotePath = o_options.remotePath || ftpconfig.release.remotePath;
-release_options.dest = o_options.dest || ftpconfig.release.dest || "dest";
-
-console.log(options.host);
-console.log(options.user);
-console.log(options.pass);
-console.log(options.port);
-
+function setOptions(op1, op2){
+    if (!op2) op2 = {};
+    options.upload = op1.upload || op2.upload || "";
+    options.location = op1.location || op2.location || "";
+    options.host = op1.host || op2.host || "";
+    options.user = op1.user || op2.user || "";
+    options.pass = op1.pass || op2.pass || "";
+    options.port = op1.port || op2.port || "";
+    options.remotePath = op1.remotePath || op2.remotePath || "";
+    options.dest = op1.dest || op2.dest || "dest";
+}
+var options = {};
+setOptions(o_options, getEvOptions(o_options.ev));
 
 var appTasks = [];
 function getAppTask(path, isMin, thisOptions) {
     return function (cb) {
         //var srcFile = 'source/' + path + '/**/*';
         var option = thisOptions || options;
+
         var src;
         var dest = option.dest+'/' + path + '/';
+
+        let ev = option.ev
+        var evList = Object.keys(ftpconfig).map((i)=>{ return (i==ev) ? "*"+i : i; });
+
         if (isMin){
             var src_min = ['source/' + path + '/**/*.js', '!**/*.spec.js', '!**/test/**'];
             var src_move = ['source/' + path + '/**/*', '!**/*.spec.js', '!**/test/**'];
@@ -161,10 +141,10 @@ apps.map(function (app) {
     appTasks.push(taskName);
     gulp.task(taskName, getAppTask(app.folder, isMin));
 
-    //var isMin = (app.tasks.indexOf("min")!==-1);
-    taskName = app.folder+"_release";
-    //appTasks.push(taskName);
-    gulp.task(taskName, getAppTask(app.folder, isMin, release_options));
+    // //var isMin = (app.tasks.indexOf("min")!==-1);
+    // taskName = app.folder+"_release";
+    // //appTasks.push(taskName);
+    // gulp.task(taskName, getAppTask(app.folder, isMin, release_options));
 });
 
 // Object.keys(taskObj).map(function(k){
