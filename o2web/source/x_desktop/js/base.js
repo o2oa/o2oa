@@ -46,13 +46,13 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         });
     };
     var _createNewApplication = function (e, appNamespace, appName, options, statusObj, inBrowser, taskitem, notCurrent) {
-        if (options){ options.event = e; }else{ options = {"event": e}; }
+        if (options) { options.event = e; } else { options = { "event": e }; }
         var app = new appNamespace["Main"](layout.desktop, options);
         app.desktop = layout.desktop;
         app.status = statusObj;
         app.inBrowser = !!(inBrowser || layout.inBrowser);
 
-        if (layout.desktop.type === "layout"){
+        if (layout.desktop.type === "layout") {
             app.appId = (options.appId) ? options.appId : ((appNamespace.options.multitask) ? appName + "-" + (new o2.widget.UUID()) : appName);
             app.options.appId = app.appId;
 
@@ -64,10 +64,10 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             app.load(!notCurrent);
 
             if (!layout.desktop.apps) layout.desktop.apps = {};
-            if (layout.desktop.apps[app.appId]){
+            if (layout.desktop.apps[app.appId]) {
                 var tmpApp = layout.desktop.apps[app.appId];
 
-            }else{
+            } else {
                 layout.desktop.apps[app.appId] = app;
             }
 
@@ -78,7 +78,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             if (!notCurrent) layout.desktop.currentApp = app;
 
             //app.taskitem = new MWF.xDesktop.Layout.Taskitem(app, this);
-        }else{
+        } else {
             app.load(true);
             layout.app = app;
         }
@@ -223,9 +223,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
 
     layout.openApplication = function (e, appNames, options, statusObj, inBrowser, taskitem, notCurrent) {
-        if (appNames.substring(0, 4)==="@url"){
+        if (appNames.substring(0, 4) === "@url") {
             var url = appNames.replace(/\@url\:/i, "");
-            var a = new Element("a", {"href": url, "target": "_blank"});
+            var a = new Element("a", { "href": url, "target": "_blank" });
             a.click();
             a.destroy();
             a = null;
@@ -251,11 +251,11 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 var appId = (options && options.appId) ? options.appId : ((appNamespace.options.multitask) ? "" : appName);
 
                 //if (appId && layout.desktop.apps && layout.desktop.apps[appId] && layout.desktop.apps[appId].window){
-                if (appId && layout.desktop.apps && layout.desktop.apps[appId]){
+                if (appId && layout.desktop.apps && layout.desktop.apps[appId]) {
                     layout.desktop.apps[appId].setCurrent();
-                }else{
+                } else {
                     if (options) options.appId = appId;
-                    _createNewApplication(e, appNamespace, appName, (options || {"appId": appId}), statusObj, inBrowser, taskitem, notCurrent);
+                    _createNewApplication(e, appNamespace, appName, (options || { "appId": appId }), statusObj, inBrowser, taskitem, notCurrent);
                 }
             }.bind(this));
         }
@@ -305,10 +305,10 @@ o2.addReady(function () {
     Element.implement({
         "makeLnk": function (options) { }
     });
-    layout.desktop.addEvent = function(type, e, d){
+    layout.desktop.addEvent = function (type, e, d) {
         window.addEvent(type, e, d);
     };
-    layout.desktop.addEvents = function(e){
+    layout.desktop.addEvents = function (e) {
         window.addEvents(e);
     };
 
@@ -441,7 +441,7 @@ o2.addReady(function () {
         //修改支持x-token
         var uri = new URI(window.location.href);
         var options = uri.get("data");
-        if(options["x-token"]){
+        if (options["x-token"]) {
             Cookie.write("x-token", options["x-token"]);
         }
 
@@ -502,7 +502,11 @@ o2.addReady(function () {
                 };
                 _loadResource(function () {
                     _loadProgressBar(true);
-                    layout.openLogin();
+                    if (layout.yqwx) {
+                        layout.openLoginQywx();
+                    } else {
+                        layout.openLogin();
+                    }
                 });
             }
         });
@@ -519,5 +523,35 @@ o2.addReady(function () {
                 if (loadingNode) loadingNode.fade("out");
             });
         };
+
+        layout.openLoginQywx = function () {
+            console.log("开始login。。。。。。。。。。。。。");
+            var uri = locate.href.toURI();
+
+            MWF.require("MWF.xDesktop.Actions.RestActions", function () {
+                console.log("执行单点。。。。。。。。。。");
+                var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
+                action.getActions = function (actionCallback) {
+                    this.actions = { "sso": { "uri": "/jaxrs/qiyeweixin/code/{code}", "method": "GET" } };
+                    if (actionCallback) actionCallback();
+                };
+                action.invoke({
+                    "name": "sso", "async": true, "parameter": { "code": uri.getData("code") }, "success": function (json) {
+                        console.log("单点成功。");
+                        console.log(json);
+                        //基础数据。。。。
+                        layout.session.user = json.data;
+                        //
+                        _load();
+
+                    }.bind(this), "failure": function (xhr, text, error) {
+                        var n = document.getElementById("loaddingArea");
+                        if (n) { n.destroy(); }
+                        document.id("layout").set("html", "<div>企业微信单点异常！</div>")
+                    }.bind(this)
+                });
+            });
+        };
+
     };
 });
