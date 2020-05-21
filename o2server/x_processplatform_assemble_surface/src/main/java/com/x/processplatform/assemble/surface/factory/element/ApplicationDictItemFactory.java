@@ -14,6 +14,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.ApplicationDictItem;
 import com.x.processplatform.core.entity.element.ApplicationDictItem_;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ApplicationDictItemFactory extends AbstractFactory {
 
 	public ApplicationDictItemFactory(Business abstractBusiness) throws Exception {
@@ -52,7 +54,11 @@ public class ApplicationDictItemFactory extends AbstractFactory {
 		CriteriaQuery<ApplicationDictItem> cq = cb.createQuery(ApplicationDictItem.class);
 		Root<ApplicationDictItem> root = cq.from(ApplicationDictItem.class);
 		Predicate p = cb.equal(root.get(ApplicationDictItem_.bundle), applicationDict);
-		p = cb.and(p, cb.equal(root.get("path0"), path0));
+		if (StringUtils.isEmpty(path0)) {
+			p = cb.and(p, cb.or(cb.equal(root.get(ApplicationDictItem_.path0), path0), cb.isNull(root.get(ApplicationDictItem_.path0))));
+		} else {
+			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path0), path0));
+		}
 		p = cb.and(p, cb.equal(root.get("path1"), path1));
 		p = cb.and(p, cb.equal(root.get("path2"), path2));
 		p = cb.and(p, cb.equal(root.get("path3"), path3));
