@@ -1046,7 +1046,8 @@ MWF.xApplication.TeamWork.Task = new Class({
             // if(this.taskData.priority == this.lp.priority.urgency) curColor = "#ffaf38";
             // else if(this.taskData.priority == this.lp.priority.emergency) curColor = "#ff4f3e";
 
-            node.setStyles({"color":color,"border":"1px solid "+color+""})
+            node.setStyles({"color":color,"border":"1px solid "+color+""});
+
         }else{
             node.set("text",this.lp.priority.normal)
         }
@@ -1961,7 +1962,6 @@ MWF.xApplication.TeamWork.Task.PriorityCheck = new Class({
 
         this.rootActions.GlobalAction.priorityList(function(json){
             json.data.each(function(data){
-                debugger;
                 var vContainer = new Element("div",{styles:container}).inject(this.contentNode);
                 var value = new Element("div",{styles:text,text:data.priority}).inject(vContainer);
                 value.setStyles({"color":data.priorityColor,"border":"1px solid "+ data.priorityColor});
@@ -1970,14 +1970,12 @@ MWF.xApplication.TeamWork.Task.PriorityCheck = new Class({
                 }
                 vContainer.addEvents({
                     click:function(){
-                        var data = {"value":this.lp.priority.normal};
-                        this.close(data)
+                        var d = {"value":data.priority+"||"+data.priorityColor};
+                        this.close(d)
                     }.bind(this),
                     mouseover:function(){this.setStyles({"background-color":"#f2f5f7"})},
                     mouseout:function(){this.setStyles({"background-color":""})}
                 });
-
-
 
             }.bind(this))
         }.bind(this));

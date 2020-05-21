@@ -93,6 +93,16 @@ MWF.xApplication.TeamWork.LP = {
 		"updateTime":"最后更新时间",
 		"option":"选项",
 		"projectDetail":"项目详情",
+		"projectDetails":{
+			"title":"项目详情",
+			"total":"总数",
+			"process":"进行中",
+			"complete":"已完成",
+			"over":"已逾期",
+			"taskStat":"任务统计",
+			"create":"创建",
+			"at":"于"
+		},
 		"projectAccess":"权限管理",
 		"projectMore":"更多设置",
 		"auth":{

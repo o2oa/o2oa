@@ -388,7 +388,7 @@
         "width":"24px",
         "height":"24px",
         "float":"right",
-        "margin-right":"10px",
+        "margin-right":"5px",
         "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_2.png) no-repeat center "
     },
     projectBlockItemIconFavTrue:{
@@ -396,15 +396,23 @@
         "width":"24px",
         "height":"24px",
         "float":"right",
-        "margin-right":"10px",
+        "margin-right":"5px",
         "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png) no-repeat center "
+    },
+    projectBlockItemIconGroup:{
+        "cursor":"pointer",
+        "width":"24px",
+        "height":"24px",
+        "float":"right",
+        "margin-right":"5px",
+        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_group.png) no-repeat center "
     },
     projectBlockItemIconSetting:{
         "cursor":"pointer",
         "width":"24px",
         "height":"24px",
         "float":"right",
-        "margin-right":"10px",
+        "margin-right":"5px",
         "display":"",
         "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_shezhi.png) no-repeat center "
     },
@@ -413,7 +421,7 @@
         "width":"24px",
         "height":"24px",
         "float":"right",
-        "margin-right":"10px",
+        "margin-right":"5px",
         "display":"",
         "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_white.png) no-repeat center "
     },
@@ -530,6 +538,13 @@
         "margin":"30px 5px",
         "display":"",
         background: "url(/x_component_TeamWork/$ProjectList/default/icon/icon_shezhi_grey.png) no-repeat center "
+    },
+    projectListItemGroupIcon:{
+        "float":"right",
+        "width":"16px",
+        "height":"16px",
+        "margin":"30px 5px",
+        background: "url(/x_component_TeamWork/$ProjectList/default/icon/icon_group_grey.png) no-repeat center "
     },
     projectListItemFavIcon:{
         "float":"right",
