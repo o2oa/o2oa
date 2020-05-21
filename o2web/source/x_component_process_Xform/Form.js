@@ -278,8 +278,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
         if (this.json.mode === "Mobile") {
             var node = document.body.getElement(".o2_form_mobile_actions");
-            //if (node)
-            this._loadMobileActions(node, callback);
+            if (node) {
+                node.empty();
+                this._loadMobileActions(node, callback);
+            }else {
+                console.log("没有找到移动端底部操作栏！")
+            }
         } else {
             if (callback) callback();
         }
@@ -605,7 +609,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             flag = flag && (!hideFlag);
         }
         if (tool.id == "action_processWork") {
-            if (!this.businessData.task) {
+            if (!this.businessData.task && this.businessData.work.startTime) {
                 flag = false;
             }
         }
@@ -1116,8 +1120,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.app.options.draftId = json.data.work.id;
                 this.app.options.desktopReload = true;
 
-                this.app.appId = "process.Work" + json.data.work.id,
+                this.app.appId = "process.Work" + json.data.work.id;
+                if(layout.desktop.apps) {
                     delete layout.desktop.apps[this.app.options.appId];
+                }else {
+                    layout.desktop.apps = {};
+                } 
                 layout.desktop.apps[this.app.appId] = this.app;
 
                 if (callback) callback();
@@ -1622,12 +1630,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this.saveFormData(function () {
             this.workAction.startDraft(this.businessData.work.id, function (json) {
                 this.app.options.workId = json.data[0].work;
-                var msg = {
-                    "subject": MWF.xApplication.process.Xform.LP.processStarted,
-                    "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
-                };
-                var tooltip = layout.desktop.message.addTooltip(msg);
-                var item = layout.desktop.message.addMessage(msg);
+                if (layout.mobile) {
+                    if(layout.notice) {
+                        layout.notice(MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject));
+                    }
+                }else {
+                    var msg = {
+                        "subject": MWF.xApplication.process.Xform.LP.processStarted,
+                        "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
+                    };
+                    var tooltip = layout.desktop.message.addTooltip(msg);
+                    var item = layout.desktop.message.addMessage(msg);
+                }
+                
 
                 this.app.reload();
 
@@ -1679,6 +1694,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
     processWork: function () {
         var _self = this;
+        debugger;
         if (!this.businessData.work.startTime) {
             this.startDraftProcess();
         } else {
