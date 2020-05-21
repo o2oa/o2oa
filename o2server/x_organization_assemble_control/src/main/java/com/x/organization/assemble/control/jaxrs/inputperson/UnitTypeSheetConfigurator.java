@@ -40,7 +40,7 @@ public class UnitTypeSheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
-				System.out.println("str="+str+"----i="+i);
+				//System.out.println("str="+str+"----i="+i);
 				if (StringUtils.isNotEmpty(str)) {
 					if (typeCodeItems.contains(str)) {
 						this.typeCodeColumn = i;
