@@ -181,17 +181,21 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		//return (value.length==1) ? value[0] : value;
     //},
     getInputData: function(){
-        var inputs = this.node.getElements("input");
-        var value = [];
-        if (inputs.length){
-            inputs.each(function(input){
-                if (input.checked){
-                    var v = input.get("value");
-                    if (v) value.push(v || "");
-                }
-            });
+        if (this.readonly || this.json.isReadonly ){
+            return this._getBusinessData();
+        }else{
+            var inputs = this.node.getElements("input");
+            var value = [];
+            if (inputs.length){
+                inputs.each(function(input){
+                    if (input.checked){
+                        var v = input.get("value");
+                        if (v) value.push(v || "");
+                    }
+                });
+            }
+            return (value.length) ? value : [];
         }
-        return (value.length) ? value : [];
     },
     resetData: function(){
         this.setData(this.getValue());
