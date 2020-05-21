@@ -308,6 +308,10 @@ o2.addReady(function () {
             window.location = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
         } else if (options.workCompletedId) {
             window.location = "workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        }else if (options.draft){
+            window.location = "workmobilewithaction.html?draft=" + JSON.stringify(options.draft) + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        }else {
+            console.log("open work 错误，缺少参数！");
         }
     };
     var _openWork = function (options) {
