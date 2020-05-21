@@ -213,7 +213,7 @@ public class GlobalAction extends StandardJaxrsAction {
 	public void projectConfigGetByProject(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request, 
 			@JaxrsParameterDescribe("项目ID") @PathParam("id") String id ) {
-		ActionResult<ActionProjectConfigGetByProject.Wo> result = new ActionResult<>();
+		ActionResult<List<ActionProjectConfigGetByProject.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionProjectConfigGetByProject().execute( request, effectivePerson, id );

@@ -10,46 +10,43 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.teamwork.core.entity.Priority;
 import com.x.teamwork.core.entity.ProjectConfig;
-import com.x.teamwork.core.entity.ProjectGroup;
 
-import net.sf.ehcache.Element;
+
+
 
 public class ActionProjectConfigGetByProject extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionProjectConfigGetByProject.class);
 
-	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = null;
-		ProjectConfig projectConfig = null;
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
+		ActionResult<List<Wo>> result = new ActionResult<List<Wo>>();
+		List<Wo>  wo = null;
 		List<ProjectConfig>  projectConfigs = null;
 		Boolean check = true;
 
 		if ( StringUtils.isEmpty( id ) ) {
 			check = false;
-			Exception exception = new PriorityFlagForQueryEmptyException();
+			Exception exception = new ProjectConfigFlagForQueryEmptyException();
 			result.error( exception );
 		}
 
 		if( Boolean.TRUE.equals( check ) ){
 			try {
 				projectConfigs = projectConfigQueryService.getProjectConfigByProject( id );
-				if(ListTools.isNotEmpty(projectConfigs)){
+				/*if(ListTools.isNotEmpty(projectConfigs)){
 					projectConfig = projectConfigs.get(0);
 				}
 				if ( projectConfig == null) {
 					check = false;
 					Exception exception = new ProjectConfigNotExistsException( id );
 					result.error( exception );
-				}
+				}*/
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ProjectConfigQueryException(e, "根据指定flag查询项目配置信息对象时发生异常。id:" + id );
@@ -60,8 +57,14 @@ public class ActionProjectConfigGetByProject extends BaseAction {
 		
 		if( Boolean.TRUE.equals( check ) ){
 			try {
-				wo = Wo.copier.copy( projectConfig );					
-				result.setData(wo);
+				if(ListTools.isEmpty(projectConfigs)){
+					wo = new ArrayList<Wo>();
+					result.setData(wo);
+				}else{
+					wo = Wo.copier.copy( projectConfigs );					
+					result.setData(wo);
+				}
+				
 			} catch (Exception e) {
 				Exception exception = new ProjectConfigQueryException(e, "将查询出来的项目配置信息对象转换为可输出的数据信息时发生异常。");
 				result.error(exception);
