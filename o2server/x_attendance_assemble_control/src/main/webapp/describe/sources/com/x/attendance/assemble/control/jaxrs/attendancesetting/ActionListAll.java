@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancesetting.exception.ExceptionAttendanceSettingProcess;
 import com.x.attendance.entity.AttendanceSetting;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

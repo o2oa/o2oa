@@ -84,7 +84,8 @@
         "height": "129px",
         "border-left": "0px solid #6681a5",
         "border-right": "0px solid #6681a5",
-        "background-color": "#EEE"
+        "background-color": "#EEE",
+        "overflow" : "hidden"
     },
     "selectIdeaNode": {
         "background-color": "#eee",

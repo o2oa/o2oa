@@ -111,17 +111,31 @@ public class GroupFactory {
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(Collection<String> values) throws Exception {
-		return ActionListWithPerson.execute(context, values);
+		return listWithPersonReference(values,true,false, false);
 	}
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(String... values) throws Exception {
-		return ActionListWithPerson.execute(context, Arrays.asList(values));
+		return listWithPersonReference(Arrays.asList(values),true,false, false);
 	}
 
 	/** 查询人员所在的群组 */
 	public List<String> listWithPerson(EffectivePerson effectivePerson) throws Exception {
-		return ActionListWithPerson.execute(context, ListTools.toList(effectivePerson.getDistinguishedName()));
+		return listWithPersonReference(ListTools.toList(effectivePerson.getDistinguishedName()),true,false, false);
+	}
+
+	/**
+	 * 查询人员及关联身份、组织所在的群组
+	 * @param values 用户
+	 * @param recursiveGroupFlag 是否递归查询上级群组
+	 * @param referenceFlag 是否包含查找人员身份成员、人员归属组织成员的所属群组
+	 * @param recursiveOrgFlag 是否递归人员归属组织的上级组织所属群组，前提referenceFlag为true
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listWithPersonReference(Collection<String> values,
+						boolean recursiveGroupFlag, boolean referenceFlag, boolean recursiveOrgFlag) throws Exception {
+		return ActionListWithPerson.execute(context, values, recursiveGroupFlag, referenceFlag, recursiveOrgFlag);
 	}
 
 }

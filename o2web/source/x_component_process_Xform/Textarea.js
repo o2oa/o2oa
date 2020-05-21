@@ -70,6 +70,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         }
 	},
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){

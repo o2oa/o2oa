@@ -388,13 +388,19 @@ abstract class V2Base extends StandardJaxrsAction {
 
 	}
 
-	protected Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, FilterWi wi)
+	protected Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, FilterWi wi, List<String> personList)
 			throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Review.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Review> root = cq.from(Review.class);
-		Predicate p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
+		Predicate p = cb.conjunction();
+		if(effectivePerson.isManager() && ListTools.isNotEmpty(personList)){
+			List<String> person_ids = business.organization().person().list(personList);
+			p = cb.and(p, root.get(Review_.person).in(person_ids));
+		}else{
+			p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
+		}
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Review_.application).in(wi.getApplicationList()));
 		}
