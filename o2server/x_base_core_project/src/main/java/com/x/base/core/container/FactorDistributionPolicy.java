@@ -3,10 +3,10 @@ package com.x.base.core.container;
 import java.util.List;
 import java.util.Random;
 
+import com.x.base.core.entity.JpaObject;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.openjpa.slice.DistributionPolicy;
-
-import com.x.base.core.entity.SliceJpaObject;
 
 public class FactorDistributionPolicy implements DistributionPolicy {
 
@@ -14,11 +14,11 @@ public class FactorDistributionPolicy implements DistributionPolicy {
 
 	public String distribute(Object pc, List<String> slices, Object context) {
 		try {
-			Object o = PropertyUtils.getProperty(pc, SliceJpaObject.distributeFactor_FIELDNAME);
+			Object o = PropertyUtils.getProperty(pc,JpaObject.distributeFactor_FIELDNAME);
 			Integer factor = null;
 			if (null == o) {
 				factor = random.nextInt(1000);
-				PropertyUtils.setProperty(pc, SliceJpaObject.distributeFactor_FIELDNAME, factor);
+				PropertyUtils.setProperty(pc, JpaObject.distributeFactor_FIELDNAME, factor);
 			} else {
 				factor = (Integer) o;
 			}
