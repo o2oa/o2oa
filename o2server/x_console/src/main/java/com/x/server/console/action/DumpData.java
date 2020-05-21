@@ -77,9 +77,9 @@ public class DumpData {
 					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManager em = emf.createEntityManager();
 			try {
-				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
-						this.estimateCount(em, cls));
-				this.dump(cls, em);
+				long estimateCount = this.estimateCount(em, cls);
+				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(), estimateCount);
+				this.dump(cls, em, estimateCount);
 			} finally {
 				em.close();
 				emf.close();
@@ -104,7 +104,7 @@ public class DumpData {
 		return this.catalog.values().stream().mapToInt(Integer::intValue).sum();
 	}
 
-	private <T> void dump(Class<T> cls, EntityManager em)
+	private <T> void dump(Class<T> cls, EntityManager em, long total)
 			throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		/** 创建最终存储文件的目录 */
 		File directory = new File(dir, cls.getName());
@@ -114,6 +114,8 @@ public class DumpData {
 		String id = "";
 		List<T> list = null;
 		int count = 0;
+		int loop = 1;
+		int btach = (int) ((total + 0.0) / containerEntity.dumpSize());
 		do {
 			list = this.list(em, cls, id, containerEntity.dumpSize());
 			if (ListTools.isNotEmpty(list)) {
@@ -121,6 +123,7 @@ public class DumpData {
 				id = BeanUtils.getProperty(list.get(list.size() - 1), JpaObject.id_FIELDNAME);
 				File file = new File(directory, count + ".json");
 				FileUtils.write(file, pureGsonDateFormated.toJson(list), DefaultCharset.charset);
+				logger.print("dumping {}/{} part of data:{}.", loop, btach, cls.getName());
 			}
 			em.clear();
 		} while (ListTools.isNotEmpty(list));

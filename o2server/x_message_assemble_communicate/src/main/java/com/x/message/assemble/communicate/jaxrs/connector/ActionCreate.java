@@ -50,7 +50,6 @@ class ActionCreate extends BaseAction {
 				}
 			}
 			Instant instant = this.instant(effectivePerson, business, wi, new ArrayList<>(consumersV2.keySet()));
-			logger.info("生成消息。，，，consumersV2 "+ consumersV2.size());
 			if (!consumersV2.isEmpty()) {
 				for (String consumer : consumersV2.keySet()) {
 					Wi cpwi = wi;
@@ -88,7 +87,6 @@ class ActionCreate extends BaseAction {
 						logger.warn("执行消息发送脚本[{}]方法异常:{}", func, e.getMessage());
 					}
 					Message message = null;
-					logger.info("这里是生成消息对象，consumer:"+consumer);
 					switch (Objects.toString(consumer, "")) {
 					case MessageConnector.CONSUME_WS:
 						message = this.wsMessage(effectivePerson, business, cpwi, instant);
