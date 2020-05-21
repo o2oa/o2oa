@@ -23,7 +23,7 @@ class V2ListPaging extends V2Base {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, null);
 			List<Wo> wos = emc.fetchDescPaging(Review.class, Wo.copier, p, page, size, Review.sequence_FIELDNAME);
 			result.setData(wos);
 			result.setCount(emc.count(Review.class, p));
