@@ -14,7 +14,7 @@ MWF.xApplication.TeamWork.GroupSelect = new Class({
 
         if(callback)callback();
     },
-    createFirstPage:function(data){ //alert(JSON.stringify(this.data))
+    createFirstPage:function(data){
         var _self = this;
         if(this.contentNode)this.contentNode.empty();
         this.topBar = new Element("div.topBar",{styles:this.css.topBar}).inject(this.contentNode);
