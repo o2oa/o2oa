@@ -111,7 +111,7 @@ class ActionCreate extends BaseAction {
 			}
 			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("work", workId, "prcocssing", "nonblocking"), null, processFlag);
+					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null);
 		} else {
 			/* 如果是草稿,准备后面的直接打开 */
 			workId = lastestWorkId;
@@ -195,15 +195,6 @@ class ActionCreate extends BaseAction {
 	public static class Wo extends WorkLog {
 
 		private static final long serialVersionUID = 1307569946729101786L;
-
-		// private static List<String> Includes = ListTools.toList("createTime",
-		// "updateTime", "completed", "fromActivity",
-		// "fromActivityType", "fromActivityName", "fromActivityToken",
-		// "fromTime", "arrivedActivity",
-		// "arrivedActivityType", "arrivedActivityName", "arrivedActivityToken",
-		// "arrivedTime", "route",
-		// "routeName", "work", "workCompleted", "connected", "splitting",
-		// "splitTokenList", "processingType");
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class, null,
 				JpaObject.FieldsInvisible);

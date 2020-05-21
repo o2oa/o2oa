@@ -64,7 +64,6 @@ public class Main {
 			slf4jOtherImplOn = true;
 		}
 		org.slf4j.impl.StaticLoggerBinder.getSingleton();
-		System.out.println("logger:" + org.slf4j.LoggerFactory.getLogger(Main.class));
 		SystemOutErrorSideCopyBuilder.start();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
