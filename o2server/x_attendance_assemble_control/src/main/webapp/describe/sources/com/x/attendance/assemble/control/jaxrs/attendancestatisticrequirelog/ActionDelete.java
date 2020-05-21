@@ -1,9 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancestatisticrequirelog;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticrequirelog.exception.ExceptionStatisticRequireNotExists;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticrequirelog.exception.ExceptionStatisticRequireProcess;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

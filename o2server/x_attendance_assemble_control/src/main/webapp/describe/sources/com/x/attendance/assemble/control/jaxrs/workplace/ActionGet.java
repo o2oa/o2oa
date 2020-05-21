@@ -1,8 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.workplace;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionWorkPlaceProcess;
 import com.x.attendance.entity.AttendanceWorkPlace;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
