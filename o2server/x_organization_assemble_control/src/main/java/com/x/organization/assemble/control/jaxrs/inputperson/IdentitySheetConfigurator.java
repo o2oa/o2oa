@@ -16,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class PersonSheetConfigurator extends GsonPropertyObject {
+public class IdentitySheetConfigurator extends GsonPropertyObject {
 
 	private static final Pattern attributePattern = Pattern.compile("^\\((.+?)\\)$");
 
@@ -25,17 +25,14 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 	private Integer firstRow;
 	private Integer lastRow;
 
-	private Integer nameColumn;
 	private Integer uniqueColumn;
-	private Integer employeeColumn;
-	private Integer mobileColumn;
-	private Integer idNumberColumn;
-	private Integer genderTypeColumn;
-	private Integer mailColumn;
+	private Integer unitCodeColumn;
+	private Integer dutyCodeColumn;
+	private Integer majorColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
-	public PersonSheetConfigurator(XSSFWorkbook workbook, Sheet sheet) {
+	public IdentitySheetConfigurator(XSSFWorkbook workbook, Sheet sheet) {
 		this.sheetIndex = workbook.getSheetIndex(sheet);
 		Row row = sheet.getRow(sheet.getFirstRowNum());
 		this.firstRow = sheet.getFirstRowNum() + 1;
@@ -47,25 +44,18 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 				String str = this.getCellStringValue(cell);
 				System.out.println("personStr = "+str);
 				if (StringUtils.isNotEmpty(str)) {
-					if (nameItems.contains(str)) {
-						this.nameColumn = i;
-					} else if (uniqueItems.contains(str)) {
+					if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
-					} else if (employeeItems.contains(str)) {
-						this.employeeColumn = i;
-					} else if (mobileItems.contains(str)) {
-						this.mobileColumn = i;
-					} else if (mailItems.contains(str)) {
-						this.mailColumn = i;
-					} else if (genderTypeItems.contains(str)) {
-						this.genderTypeColumn = i;
-					} else if ("身份证号 *".equals(str)) {
-						this.attributes.put("idNumber", new Integer(i));
+					} else if (unitCodeItems.contains(str)) {
+						this.unitCodeColumn = i;
+					} else if (dutyCodeItems.contains(str)) {
+						this.dutyCodeColumn = i;
+					} else if (majorItems.contains(str)) {
+						this.majorColumn = i;
 					} else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
 							String attribute = matcher.group(1);
-							System.out.println("attribute="+attribute+"_value="+i);
 							this.attributes.put(attribute, new Integer(i));
 						}
 					}
@@ -74,12 +64,10 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 		}
 	}
 
-	private static List<String> nameItems = Arrays.asList(new String[] { "人员姓名 *", "人员姓名", "name" });
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员编号 *", "编码", "unique" });
-	private static List<String> employeeItems = Arrays.asList(new String[] { "登录账号 *", "员工编号", "employee" });
-	private static List<String> mobileItems = Arrays.asList(new String[] { "手机号码 *", "手机", "联系电话", "phone", "mobile" });
-	private static List<String> mailItems = Arrays.asList(new String[] { "电子邮件", "邮件", "邮箱", "邮件地址", "mail", "email" });
-	private static List<String> genderTypeItems = Arrays.asList(new String[] { "性别", "gender", "genderType" });
+	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号 *", "组织编号", "unitCode" });
+	private static List<String> dutyCodeItems = Arrays.asList(new String[] { "职务编号", "dutyCode"});
+	private static List<String> majorItems = Arrays.asList(new String[] { "主兼职","major" });
 
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
@@ -111,20 +99,20 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 		return memoColumn;
 	}
 
-	public Integer getNameColumn() {
-		return nameColumn;
-	}
-
 	public Integer getUniqueColumn() {
 		return uniqueColumn;
 	}
 
-	public Integer getEmployeeColumn() {
-		return employeeColumn;
+	public Integer getUnitCodeColumn() { 
+		return unitCodeColumn;
 	}
 
-	public Integer getMobileColumn() {
-		return mobileColumn;
+	public Integer getDutyCodeColumn() {
+		return dutyCodeColumn;
+	}
+	
+	public Integer getMajorColumn() {
+		return majorColumn;
 	}
 
 	public Map<String, Integer> getAttributes() {
@@ -137,18 +125,6 @@ public class PersonSheetConfigurator extends GsonPropertyObject {
 
 	public Integer getLastRow() {
 		return lastRow;
-	}
-
-	public Integer getGenderTypeColumn() {
-		return genderTypeColumn;
-	}
-
-	public Integer getMailColumn() {
-		return mailColumn;
-	}
-	
-	public Integer getIdNumberColumn() {
-		return idNumberColumn;
 	}
 
 	public Integer getSheetIndex() {
