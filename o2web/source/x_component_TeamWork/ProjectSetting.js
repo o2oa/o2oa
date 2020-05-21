@@ -94,7 +94,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
             click:function(){
                 _self.curNavi = "detail";
                 _self.changeNavi(this);
-                _self.loadGeneral();
+                _self.loadDetail();
             }
         });
 
@@ -514,12 +514,136 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         //this.projectSettingAction = new Element("div.projectSettingAction",{styles:this.css.projectSettingAction,text:this.lp.confirm}).inject(this.formTableArea);
 
     },
+    loadDetail:function(){
+        var _self = this;
+        this.projectSettingLayout.empty();
+        //var authTaskTitle = new Element("div.authTaskTitle",{styles:this.css.authTitle,text:this.lp.auth.task}).inject(this.projectSettingLayout);
+        var tips = this.projectData.creatorPerson.split("@")[0] + " " + this.lp.projectDetails.at+this.projectData.createTime +this.lp.projectDetails.create;
+        var detailTopContainer = new Element("div.detailTopContainer",{ styles: this.css.detailTopContainer, text:tips }).inject(this.projectSettingLayout);
+        var detailStatTitle = new Element("div.detailStatTitle",{styles:this.css.detailStatTitle, text:this.lp.projectDetails.taskStat}).inject(this.projectSettingLayout);
+        var detailStatContainer = new Element("div.detailStatContainer",{styles:this.css.detailStatContainer}).inject(this.projectSettingLayout);
+
+        var detailStatTotal = new Element("div.detailStatTotal",{styles:this.css.detailStatTotal}).inject(detailStatContainer);
+        new Element("div.detailStatTotalTitle",{styles:this.css.detailStatTotalTitle,text:this.lp.projectDetails.total}).inject(detailStatTotal);
+        new Element("div.detailStatTotalCount",{styles:this.css.detailStatTotalCount,text:this.projectData.taskTotal}).inject(detailStatTotal);
+        var tbar = new Element("div.detailStatTotalBar",{styles:this.css.detailStatTotalBar}).inject(detailStatTotal);
+        tbar.setStyles({"background-color":"#95b9e4"});
+
+        var detailStatProcess = new Element("div.detailStatTotal",{styles:this.css.detailStatTotal}).inject(detailStatContainer);
+        new Element("div.detailStatTotalTitle",{styles:this.css.detailStatTotalTitle,text:this.lp.projectDetails.process}).inject(detailStatProcess);
+        new Element("div.detailStatTotalCount",{styles:this.css.detailStatTotalCount,text:this.projectData.progressTotal}).inject(detailStatProcess);
+        var pbar = new Element("div.detailStatTotalBar",{styles:this.css.detailStatTotalBar}).inject(detailStatProcess);
+        pbar.setStyles({"background-color":"#ecedf4"});
+
+        var detailStatCompleted = new Element("div.detailStatTotal",{styles:this.css.detailStatTotal}).inject(detailStatContainer);
+        new Element("div.detailStatTotalTitle",{styles:this.css.detailStatTotalTitle,text:this.lp.projectDetails.complete}).inject(detailStatCompleted);
+        new Element("div.detailStatTotalCount",{styles:this.css.detailStatTotalCount,text:this.projectData.completedTotal}).inject(detailStatCompleted);
+        var cbar = new Element("div.detailStatTotalBar",{styles:this.css.detailStatTotalBar}).inject(detailStatCompleted);
+        cbar.setStyles({"background-color":"#f1f9eb"});
+
+        var detailStatOver = new Element("div.detailStatTotal",{styles:this.css.detailStatTotal}).inject(detailStatContainer);
+        var detailStatTotalTitle = new Element("div.detailStatTotalTitle",{styles:this.css.detailStatTotalTitle,text:this.lp.projectDetails.over}).inject(detailStatOver);
+        var detailStatTotalCount = new Element("div.detailStatTotalCount",{styles:this.css.detailStatTotalCount,text:this.projectData.overtimeTotal}).inject(detailStatOver);
+        var detailStatTotalBar = new Element("div.detailStatTotalBar",{styles:this.css.detailStatTotalBar}).inject(detailStatOver);
+
+    },
     loadAccess:function(){
         var _self = this;
         this.projectSettingLayout.empty();
+
         var authTaskTitle = new Element("div.authTaskTitle",{styles:this.css.authTitle,text:this.lp.auth.task}).inject(this.projectSettingLayout);
         authTaskTitle.setStyle("margin-top","20px");
         var authTaskContainer = new Element("div.authTaskContainer",{styles:this.css.authContainer}).inject(this.projectSettingLayout);
+
+
+        this.getProjectAuth(this.projectData.id,function(){
+            //alert(JSON.stringify(this.projectAuthData))
+
+            //创建任务
+            //var taskCreateFlag = true;
+            taskCreateFlag=this.projectAuthData.hasOwnProperty("taskCreate") ? this.projectAuthData.taskCreate:true;
+
+            var newTaskContainer = new Element("div.authItemContainer",{styles:this.css.authItemContainer}).inject(authTaskContainer);
+            var newTaskIcon = new Element("div.authItemIcon",{styles:this.css.authItemIcon}).inject(newTaskContainer);
+            var newTaskTitle = new Element("div.authItemTitle",{styles:this.css.authItemTitle,text:this.lp.auth.taskCreate}).inject(newTaskContainer);
+
+            if(!taskCreateFlag) newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+            else newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+
+            var isChanged = false;
+            newTaskContainer.addEvents({
+                mouseenter:function(){
+                    if(isChanged) return;
+                    if(taskCreateFlag){
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected_click.png)"});
+                    }else{
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected_click.png)"});
+                    }
+                },
+                mouseleave:function(){
+                    if(isChanged) { isChanged = false ; return;}
+                    if(taskCreateFlag){
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+                    }else{
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+                    }
+                },
+                click:function(){
+                    if(taskCreateFlag){
+                        this.projectAuthData.taskCreate = false;
+                        taskCreateFlag = false;
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+                    }else{
+                        this.projectAuthData.taskCreate = true;
+                        taskCreateFlag = true;
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+                    }
+
+                    this.saveProjectAuth();
+                    isChanged = true;
+                }.bind(this)
+            });
+
+        }.bind(this));
+
+    },
+    getProjectAuth:function(id,callback){
+        this.rootActions.GlobalAction.projectConfigGetByProject(id,function(json){
+            if(json.type == "error"){
+                this.projectAuthData = {};
+            }else{
+                this.projectAuthData = json.data||{};
+            }
+            if(callback)callback(json)
+        }.bind(this),function(json){
+            this.projectAuthData = {};
+            if(callback)callback(json)
+        }.bind(this));
+    },
+    loadAccessItem:function(container,data){
+
+    },
+    saveProjectAuth:function(callback){
+        var data = {
+            id:this.projectAuthData.id||"",
+            project:this.projectData.id,
+            taskCreate:this.projectAuthData.taskCreate || false,
+            taskCopy:this.projectAuthData.taskCopy || false,
+            taskRemove:this.projectAuthData.taskRemove || false,
+            laneCreate:this.projectAuthData.laneCreate || false,
+            laneEdit:this.projectAuthData.laneEdit || false,
+            laneRemove:this.projectAuthData.laneRemove || false,
+            attachmentUpload:this.projectAuthData.attachmentUpload || false,
+            comment:this.projectAuthData.comment || false
+
+        };
+        this.rootActions.GlobalAction.projectConfigSave(data,function(json){
+            this.rootActions.GlobalAction.projectConfigGet(json.data.id,function(d){
+                this.projectAuthData = d.data;
+                if(callback)callback(json);
+            }.bind(this))
+
+        }.bind(this))
 
     },
     loadMore:function(){
@@ -529,7 +653,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.moreActionDescription = new Element("div.moreActionDescription",{styles:this.css.moreActionDescription,text:this.lp.moreActionDescription}).inject(this.projectSettingLayout);
         this.moreActionContainer = new Element("div.moreActionContainer",{ styles:this.css.moreActionContainer }).inject(this.projectSettingLayout);
         if(this.projectData.completed){
-            this.moreActionUnComplete = new Element("div.moreActionUnComplete",{styles:this.css.moreActionUnComplate, text:this.lp.moreActionUnComplete}).inject(this.moreActionContainer);
+            this.moreActionUnComplete = new Element("div.moreActionUnComplete",{styles:this.css.moreActionUnComplete, text:this.lp.moreActionUnComplete}).inject(this.moreActionContainer);
             this.moreActionUnComplete.addEvents({
                 mouseover:function(){
                     this.setStyles({"background-color":"#ffeded"})
@@ -540,8 +664,8 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 click:function(e){
                     _self.app.confirm("warn",e,_self.lp.moreActionUnComplete,_self.lp.moreActionUnCompleteTips,450,100,function(){
                         _self.rootActions.ProjectAction.completeProject(_self.projectData.id,{completed:false},function(){
-
                             this.close();
+                            _self.close({"action":"reload"});
                         }.bind(this))
                     },function(){
                         this.close();
@@ -549,7 +673,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 }
             });
         }else{
-            this.moreActionComplete = new Element("div.moreActionComplete",{styles:this.css.moreActionComplate, text:this.lp.moreActionComplete}).inject(this.moreActionContainer);
+            this.moreActionComplete = new Element("div.moreActionComplete",{styles:this.css.moreActionComplete, text:this.lp.moreActionComplete}).inject(this.moreActionContainer);
             this.moreActionComplete.addEvents({
                 mouseover:function(){
                     this.setStyles({"background-color":"#ffeded"})
@@ -560,8 +684,8 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 click:function(e){
                     _self.app.confirm("warn",e,_self.lp.moreActionComplete,_self.lp.moreActionCompleteTips,450,100,function(){
                         _self.rootActions.ProjectAction.completeProject(_self.projectData.id,{completed:true},function(){
-
                             this.close();
+                            _self.close({"action":"reload"});
                         }.bind(this))
                     },function(){
                         this.close();
@@ -569,7 +693,6 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 }
             });
         }
-
         if(this.projectData.deleted){
             this.moreActionRecover = new Element("div.moreActionRemove",{styles:this.css.moreActionRecover, text:this.lp.moreActionRecover}).inject(this.moreActionContainer);
             this.moreActionRecover.addEvents({
@@ -583,7 +706,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     _self.app.confirm("warn",e,_self.lp.moreActionRecover,_self.lp.moreActionRecoverTips,450,100,function(){
                         _self.rootActions.ProjectAction.recoveryProject(_self.projectData.id,function(){
                             this.close();
-                            //_self.close();
+                            _self.close({"action":"reload"});
                         }.bind(this))
                     },function(){
                         this.close();
@@ -603,7 +726,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                     _self.app.confirm("warn",e,_self.lp.moreActionRemove,_self.lp.moreActionRemoveTips,450,100,function(){
                         _self.rootActions.ProjectAction.delete(_self.projectData.id,function(){
                             this.close();
-                            _self.close();
+                            _self.close({"action":"reload"});
                         }.bind(this))
                     },function(){
                         this.close();
@@ -611,8 +734,6 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 }
             });
         }
-
-
     },
     projectInfor:function(callback){
         if(this.data.id){
@@ -632,6 +753,5 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
             }.bind(this))
         }.bind(this))
     }
-
 
 });

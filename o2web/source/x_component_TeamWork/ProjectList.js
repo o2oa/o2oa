@@ -245,37 +245,37 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         }.bind(this)
                     });
                 }
-
-                //已归档
-                if(resData.hasOwnProperty("archiveCount")){
-                    this.historyItem = new Element("div.historyItem",{styles:this.css.naviItem}).inject(this.naviContent);
-                    this.historyItemImg = new Element("div.historyItemImg",{styles:this.css.historyItemImg}).inject(this.historyItem);
-                    this.historyItemText = new Element("div.historyItemText",{styles:this.css.historyItemText,text:this.lp.navi.historyItem}).inject(this.historyItem);
-                    this.historyItemCount = new Element("div.historyItemCount",{styles:this.css.historyItemCount,text:resData.archiveCount}).inject(this.historyItem);
-                    // this.historyItemIcon = new Element("div.historyItemIcon",{styles:this.css.historyItemIcon}).inject(this.historyItem);
-                    this.historyItem.addEvents({
-                        mouseover:function(){
-                            this.historyItem.setStyles({
-                                "background-color":"#F2F5F7"
-                            });
-                            this.historyItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_lsck_xm_click.png)"
-                            });
-                            this.historyItemText.setStyles({
-                                "color":"#4A90E2"
-                            });
-                        }.bind(this),
-                        mouseout:function(){
-                            this.historyItem.setStyles(this.css.naviItem);
-                            this.historyItemImg.setStyles(this.css.historyItemImg);
-                            this.historyItemText.setStyles(this.css.historyItemText);
-                        }.bind(this),
-                        click:function(){
-                            this.openItem({type:"archive"});
-                            this.currentNavi = "archive"
-                        }.bind(this)
-                    });
-                }
+                //
+                // //已归档
+                // if(resData.hasOwnProperty("archiveCount")){
+                //     this.historyItem = new Element("div.historyItem",{styles:this.css.naviItem}).inject(this.naviContent);
+                //     this.historyItemImg = new Element("div.historyItemImg",{styles:this.css.historyItemImg}).inject(this.historyItem);
+                //     this.historyItemText = new Element("div.historyItemText",{styles:this.css.historyItemText,text:this.lp.navi.historyItem}).inject(this.historyItem);
+                //     this.historyItemCount = new Element("div.historyItemCount",{styles:this.css.historyItemCount,text:resData.archiveCount}).inject(this.historyItem);
+                //     // this.historyItemIcon = new Element("div.historyItemIcon",{styles:this.css.historyItemIcon}).inject(this.historyItem);
+                //     this.historyItem.addEvents({
+                //         mouseover:function(){
+                //             this.historyItem.setStyles({
+                //                 "background-color":"#F2F5F7"
+                //             });
+                //             this.historyItemImg.setStyles({
+                //                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_lsck_xm_click.png)"
+                //             });
+                //             this.historyItemText.setStyles({
+                //                 "color":"#4A90E2"
+                //             });
+                //         }.bind(this),
+                //         mouseout:function(){
+                //             this.historyItem.setStyles(this.css.naviItem);
+                //             this.historyItemImg.setStyles(this.css.historyItemImg);
+                //             this.historyItemText.setStyles(this.css.historyItemText);
+                //         }.bind(this),
+                //         click:function(){
+                //             this.openItem({type:"archive"});
+                //             this.currentNavi = "archive"
+                //         }.bind(this)
+                //     });
+                // }
 
                 //回收站
                 if(resData.hasOwnProperty("deleteCount")){
@@ -725,25 +725,32 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             var projectItemData = json.data;
 
             if(options && options.type && options.type=="all"){
-                this.menuTitle.set("text","全部项目");
+                this.menuTitle.set("text",this.lp.navi.allItem);
             }else if(options && options.type && options.type=="star"){
-                this.menuTitle.set("text","我的星标")
+                this.menuTitle.set("text",this.lp.navi.starItem);
             }else if(options && options.type && options.type=="my"){
-                typeAction = "projectMyListNext"
+                this.menuTitle.set("text",this.lp.navi.myItem);
+                //typeAction = "projectMyListNext"
             }else if(options && options.type && options.type=="complete"){
-                typeAction = "projectCompleteListNext"
+                this.menuTitle.set("text",this.lp.navi.completeItem);
+                //typeAction = "projectCompleteListNext"
             }else if(options && options.type && options.type=="archive"){
-                typeAction = "projectArchiveListNext"
+                //typeAction = "projectArchiveListNext";
             }else if(options && options.type && options.type=="remove"){
-                typeAction = "projectRemoveListNext"
+                this.menuTitle.set("text",this.lp.navi.removeItem);
+                //typeAction = "projectRemoveListNext"
             }else if(options && options.type && options.type=="unGroup"){
-                typeAction = "projectUnGroupListNext"
+                this.menuTitle.set("text",this.lp.navi.unGroupItem);
+                //typeAction = "projectUnGroupListNext"
             }
 
             if(options && options.group){
                 groupId = options.group;
                 //typeAction = "projectListNext";
                 filter = {group:groupId};
+                this.rootActions.ProjectGroupAction.get(groupId,function(json){
+                    this.menuTitle.set("text",json.data.name||"");
+                }.bind(this))
             }
 
             this.menuCount.set("text","("+json.count+")");
@@ -886,6 +893,41 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
+
+        var projectBlockItemIconGroup = new Element("div.projectBlockItemIconGroup",{styles:this.css.projectBlockItemIconGroup}).inject(projectBlockItemIconContainer);
+        projectBlockItemIconGroup.addEvents({
+            click:function(e){
+                this.getProject(d.id,function(json){
+                    var data = {groups:json.groups};
+                    MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
+                        var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectBlockItemIconGroup, this.app, data, {
+                            axis : "y",
+                            nodeStyles : {
+                                "min-width":"190px",
+                                "z-index" : "102"
+                            },
+                            onClose:function(rs){
+                                if(rs){
+                                    var ddata ={
+                                        id:d.id,
+                                        groups:rs
+                                    };
+
+                                    this.rootActions.ProjectAction.save(ddata,function(json){
+                                        debugger;
+                                    }.bind(this))
+                                }
+                            }.bind(this)
+                        });
+                        gs.load();
+                    }.bind(this));
+                }.bind(this));
+
+                e.stopPropagation();
+            }.bind(this)
+        });
+
+
         if(d.control.founder){
             var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting}).inject(projectBlockItemIconContainer);
             projectBlockItemIconSetting.addEvents({
@@ -903,6 +945,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                     //     _self.loadSingleBlockItem(container,json.data)
                                     // });
                                     //_self.reload();
+                                    if(json)_self.openItem({type:_self.currentNavi});
 
                                 }
                             },{
@@ -980,7 +1023,6 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
                     })
                 }
-
                 e.stopPropagation();
             }
         });
@@ -990,6 +1032,41 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
+
+        var projectListItemGroupIcon = new Element("div.projectListItemGroupIcon",{styles:this.css.projectListItemGroupIcon}).inject(projectListItemIconContainer);
+        projectListItemGroupIcon.addEvents({
+            click:function(e){
+                this.getProject(d.id,function(json){
+                    var data = {groups:json.groups};
+                    MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
+                        var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectListItemGroupIcon, this.app, data, {
+                            axis : "y",
+                            nodeStyles : {
+                                "min-width":"190px",
+                                "z-index" : "102"
+                            },
+                            onClose:function(rs){
+                                if(rs){
+                                    var ddata ={
+                                        id:d.id,
+                                        groups:rs
+                                    };
+
+                                    this.rootActions.ProjectAction.save(ddata,function(json){
+                                        //debugger;
+                                    }.bind(this))
+                                }
+                            }.bind(this)
+                        });
+                        gs.load();
+                    }.bind(this));
+                }.bind(this));
+
+                e.stopPropagation();
+            }.bind(this)
+        });
+
+
         if(d.control.founder){
             var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
             projectListItemSettingIcon.addEvents({
@@ -1065,6 +1142,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             );
             p.load();
         }.bind(this));
+    },
+    getProject:function(id,callback){
+        this.rootActions.ProjectAction.get(id,function(json){
+            var data = json.data;
+            if(callback) callback(data);
+        }.bind(this))
     },
     test:function(){
 
