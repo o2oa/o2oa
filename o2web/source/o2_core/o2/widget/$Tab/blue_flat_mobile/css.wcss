@@ -1,10 +1,10 @@
 {
 	"tabNodeContainer": {
-	  "height": "100px",
+	  "height": "50px",
 	  "background": "#E8ECEE",
 	  "border-top": "0px solid #CCC",
 	  "border-bottom": "0px solid #CCC",
-	  "margin-right" : "-2px"
+	  "margin-right" : "-1px"
 	},
 	"contentNodeContainer": {
 	  "line-height": "normal",
@@ -20,28 +20,28 @@
 	  "position": "relative",
 	  "margin-right": "0px",
 	  "float": "left",
-	  "height": "96px",
+	  "height": "48px",
 	  "cursor": "pointer",
-	  "min-width": "70px",
+	  "min-width": "35px",
 	  "background": "#E8ECEE",
-	  "border-bottom": "4px solid #E8ECEE",
-	  "border-right": "2px solid #CFD9DF",
+	  "border-bottom": "1px solid #E8ECEE",
+	  "border-right": "1px solid #CFD9DF",
 	  "border-radius" : "0px"
 //	  "width" : "calc(33.3% - 2px)"
 	},
 	"tabTextNode": {
 	  "color": "#000000",
-	  "line-height": "100px",
+	  "line-height": "55px",
 	  "font-weight" : "normal",
 	  "text-align": "center",
-	  "margin-right": "4px",
+	  "margin-right": "2px",
 	  "margin-top": "0px",
-	  "margin-left": "4px",
-	  "font-size": "36px"
+	  "margin-left": "2px",
+	  "font-size": "18px"
 	},
 	"tabCloseNode": {
-		"height": "24px",
-		"width": "20px",
+		"height": "12px",
+		"width": "10px",
 		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
 	},
 	"tabNodeCurrent": {
@@ -49,27 +49,27 @@
 	  "margin-top": "0px",
 	  "margin-right": "0px",
 	  "float": "left",
-	  "height": "96px",
-	  "min-width": "70px",
+	  "height": "48px",
+	  "min-width": "35px",
 	  "background": "#ffffff",
-	  "border-bottom": "4px solid #1D1E1F",
-	  "border-right": "2px solid #CFD9DF",
+	  "border-bottom": "1px solid #1D1E1F",
+	  "border-right": "1px solid #CFD9DF",
 	  "border-radius" : "0px"
 //	  "width" : "calc(33.3% - 2px)"
 	},
 	"tabTextNodeCurrent": {
 	  "color": "#000000",
-	  "line-height": "100px",
+	  "line-height": "50px",
 	  "font-weight" : "normal",
 	  "text-align": "center",
-	  "margin-right": "4px",
-	  "margin-left": "4px",
-	  "font-size": "36px"
+	  "margin-right": "2px",
+	  "margin-left": "2px",
+	  "font-size": "18px"
 	},
 
 	"tabCloseNodeCurrent": {
-		"height": "24px",
-		"width": "20px",
+		"height": "12px",
+		"width": "10px",
 		"background": "url("+o2.session.path+"/widget/$Tab/default/close.gif) center center"
 	}
 }
