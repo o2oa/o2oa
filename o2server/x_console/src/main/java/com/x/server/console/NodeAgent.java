@@ -121,7 +121,7 @@ public class NodeAgent extends Thread {
 								fos.flush();
 							}
 							fos.close();
-							bytes = toByteArray(file);
+							bytes = IOUtils.xxxx(file);
 							filename = filename.substring(0,filename.lastIndexOf("."));
 			                //部署
 							String result = this.redeploy(filename, bytes);
@@ -188,43 +188,6 @@ public class NodeAgent extends Thread {
 			e.printStackTrace();
 		}
 	}
-
-	 /** 
-     * 读取文件到byte []
-     *  
-     * @param filename 
-     * @return 
-     * @throws IOException 
-     */  
-    public static byte[] toByteArray(File f ) throws IOException {  
-       // File f = new File(filename);  
-        if (!f.exists()) {  
-            throw new FileNotFoundException(f.getName());  
-        }  
-  
-        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());  
-        BufferedInputStream in = null;  
-        try {  
-            in = new BufferedInputStream(new FileInputStream(f));  
-            int buf_size = 1024;  
-            byte[] buffer = new byte[buf_size];  
-            int len = 0;  
-            while (-1 != (len = in.read(buffer, 0, buf_size))) {  
-                bos.write(buffer, 0, len);  
-            }  
-            return bos.toByteArray();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-            throw e;  
-        } finally {  
-            try {  
-                in.close();  
-            } catch (IOException e) {  
-                e.printStackTrace();  
-            }  
-            bos.close();  
-        }  
-    }  
 
 	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception{
 		try {
