@@ -21,6 +21,8 @@ import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.util.resource.JarResource;
+import org.eclipse.jetty.util.resource.Resource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,13 +38,33 @@ public class RestatWar {
 			try {
 				GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 				HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+				File dir = null;
+				String warFilePath = null;
 				Boolean appExists = false;
 				for (Handler handler : hanlderList.getHandlers()) {
 					if ( QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 						QuickStartWebApp app = (QuickStartWebApp) handler;
 						if (StringUtils.equals("/" + simpleName, app.getContextPath())) {
 							appExists = true;
+							if( StringUtils.equals( type(simpleName), "storeWar")){
+								warFilePath = Config.dir_store(true) + "/" + simpleName + ".war";
+								dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
+								logger.print("stoping offical application {} ...", simpleName );
+							}else if( StringUtils.equals( type(simpleName), "customWar")){
+								warFilePath = Config.dir_custom(true) + "/" + simpleName + ".war";
+								dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
+								logger.print("stoping custom application {} ...", simpleName );
+							}
 							app.stop();
+							Thread.sleep(2000);
+							if( dir != null && dir.exists() ){
+								FileUtils.forceDelete(dir);
+							}
+							Resource base = Resource.newResource( warFilePath );
+							dir.mkdirs();
+							logger.print("redeploy application {} to work dir...", simpleName );
+							JarResource.newJarResource(base).copyTo(dir);
+							logger.print("starting application {} ...", simpleName );
 							app.start();
 						}
 					}
@@ -57,7 +79,23 @@ public class RestatWar {
 		}else{
 			logger.print("application server not start." );
 		}
-		logger.print("restart application command excute completed." );
+		logger.print("restart application {} command excute completed.", simpleName );
 		return true;
+	}
+
+	private String type(String simpleName) throws Exception {
+		if ((new File(Config.dir_store(), simpleName + ".war")).exists()) {
+			return "storeWar";
+		}
+		if ((new File(Config.dir_store_jars(), simpleName + ".jar")).exists()) {
+			return "storeJar";
+		}
+		if ((new File(Config.dir_custom(), simpleName + ".war")).exists()) {
+			return "customWar";
+		}
+		if ((new File(Config.dir_custom_jars(), simpleName + ".jar")).exists()) {
+			return "customJar";
+		}
+		return null;
 	}
 }
