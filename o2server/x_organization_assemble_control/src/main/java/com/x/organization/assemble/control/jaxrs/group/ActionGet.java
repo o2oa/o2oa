@@ -17,6 +17,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
@@ -51,6 +52,7 @@ class ActionGet extends BaseAction {
 		this.referenceGroup(business, wo);
 		this.referencePerson(business, wo);
 		this.referenceUnit(business, wo);
+		this.referenceIdentity(business, wo);
 		return wo;
 	}
 
@@ -73,11 +75,6 @@ class ActionGet extends BaseAction {
 			List<Person> os = business.person().pick(wo.getPersonList());
 			wos = WoPerson.copier.copy(os);
 		}
-		/*wos = wos.stream()
-				.sorted(Comparator.comparing(WoPerson::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-						.thenComparing(
-								Comparator.comparing(WoPerson::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());*/
 		wo.setWoPersonList(wos);
 	}
 
@@ -87,11 +84,16 @@ class ActionGet extends BaseAction {
 			List<Unit> os = business.unit().pick(wo.getUnitList());
 			wos = WoUnit.copier.copy(os);
 		}
-		/*wos = wos.stream()
-				.sorted(Comparator.comparing(WoUnit::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
-						.thenComparing(Comparator.comparing(WoUnit::getName, Comparator.nullsLast(String::compareTo))))
-				.collect(Collectors.toList());*/
 		wo.setWoUnitList(wos);
+	}
+
+	private void referenceIdentity(Business business, Wo wo) throws Exception {
+		List<WoIdentity> wos = new ArrayList<>();
+		if (ListTools.isNotEmpty(wo.getIdentityList())) {
+			List<Identity> os = business.identity().pick(wo.getIdentityList());
+			wos = WoIdentity.copier.copy(os);
+		}
+		wo.setWoIdentityList(wos);
 	}
 
 	public static class Wo extends WoGroupAbstract {
@@ -106,6 +108,9 @@ class ActionGet extends BaseAction {
 
 		@FieldDescribe("成员组织对象")
 		private List<WoUnit> woUnitList = new ArrayList<>();
+
+		@FieldDescribe("成员身份对象")
+		private List<WoIdentity> woIdentityList = new ArrayList<>();
 
 		static WrapCopier<Group, Wo> copier = WrapCopierFactory.wo(Group.class, Wo.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible));
@@ -134,6 +139,13 @@ class ActionGet extends BaseAction {
 			this.woUnitList = woUnitList;
 		}
 
+		public List<WoIdentity> getWoIdentityList() {
+			return woIdentityList;
+		}
+
+		public void setWoIdentityList(List<WoIdentity> woIdentityList) {
+			this.woIdentityList = woIdentityList;
+		}
 	}
 
 	public static class WoPerson extends Person {
@@ -147,9 +159,18 @@ class ActionGet extends BaseAction {
 
 	public static class WoUnit extends Unit {
 
-		private static final long serialVersionUID = -125007357898871894L;
+		private static final long serialVersionUID = -8142218653161885824L;
 
 		static WrapCopier<Unit, WoUnit> copier = WrapCopierFactory.wo(Unit.class, WoUnit.class, null,
+				JpaObject.FieldsInvisible);
+
+	}
+
+	public static class WoIdentity extends Identity {
+
+		private static final long serialVersionUID = 1217674471934438171L;
+
+		static WrapCopier<Identity, WoIdentity> copier = WrapCopierFactory.wo(Identity.class, WoIdentity.class, null,
 				JpaObject.FieldsInvisible);
 
 	}
