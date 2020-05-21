@@ -140,6 +140,11 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         this.tabAreaNode = new Element("div", {
             "styles": this.css.tabAreaNode
         }).inject(this.content);
+        debugger;
+        var size = this.content.getSize();
+        if (size && size.x < 400) { //移动端屏幕宽度小的时候 5个tab会重叠
+            this.tabAreaNode.setStyle("height", "80px");
+        }
 
         this.createTabItem(this.lp.task, "task.png", "task", function () {
             this.showTask();
