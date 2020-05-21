@@ -126,9 +126,12 @@ public class Main {
 				}
 			}
 		}.start();
+		
 		/* 启动NodeAgent */
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
 			NodeAgent nodeAgent = new NodeAgent();
+			nodeAgent.setCommandQueue(commandQueue);
+			nodeAgent.setDaemon(true);
 			nodeAgent.start();
 		}
 

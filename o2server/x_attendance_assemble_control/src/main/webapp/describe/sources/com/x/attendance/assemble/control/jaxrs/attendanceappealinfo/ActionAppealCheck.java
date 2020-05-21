@@ -8,9 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionAttendanceAppealNotExists;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionAttendanceAppealProcess;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionPersonHasNoUnit;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.http.ActionResult;
