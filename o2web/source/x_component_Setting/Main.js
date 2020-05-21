@@ -4,6 +4,9 @@ MWF.xDesktop.requireApp("Setting", "SettingMobile", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingLoginUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingIndexUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingModuleUI", null, false);
+MWF.xDesktop.requireApp("Setting", "SettingModuleService", null, false);
+MWF.xDesktop.requireApp("Setting", "SettingModuleResource", null, false);
+
 
 MWF.xApplication.Setting.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
@@ -27,6 +30,8 @@ MWF.xApplication.Setting.Main = new Class({
         this.uiAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         this.mobileAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
 
+        this.disposeAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
+
         // this.serverAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         // this.applicationAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         // this.resourceAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
@@ -41,6 +46,8 @@ MWF.xApplication.Setting.Main = new Class({
             this.uiPage = this.tab.addTab(this.uiAreaNode, this.lp.tab_ui, false);
             this.mobilePage = this.tab.addTab(this.mobileAreaNode, this.lp.tab_mobile, false);
 
+            this.disposePage = this.tab.addTab(this.disposeAreaNode, this.lp.tab_dispose, false);
+
             this.basePage.addEvent("postShow", function(){
                 if (!this.baseExplorer) this.baseExplorer = new MWF.xApplication.Setting.BaseExplorer(this, this.baseAreaNode);
             }.bind(this));
@@ -52,6 +59,11 @@ MWF.xApplication.Setting.Main = new Class({
             this.mobilePage.addEvent("postShow", function(){
                 if (!this.mobileExplorer) this.mobileExplorer = new MWF.xApplication.Setting.MobileExplorer(this, this.mobileAreaNode);
             }.bind(this));
+
+            this.disposePage.addEvent("postShow", function(){
+                if (!this.disposeExplorer) this.disposeExplorer = new MWF.xApplication.Setting.DisposeExplorer(this, this.disposeAreaNode);
+            }.bind(this));
+
 
             // this.serverPage = this.tab.addTab(this.serverAreaNode, this.lp.tab_Server, false);
             // this.applicationPage = this.tab.addTab(this.applicationAreaNode, this.lp.tab_Application, false);
@@ -201,6 +213,7 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
         this.naviItems.each(function(node){
             var itemNavi = node.retrieve("navi");
             var content = node.retrieve("content", null);
+
             if (content) content.destroy();
             node.eliminate("content");
             node.setStyles(this.css.naviItemNode);
@@ -272,8 +285,6 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
     }
 
 });
-
-
 MWF.xApplication.Setting.MobileExplorer = new Class({
     Extends: MWF.xApplication.Setting.BaseExplorer,
     initialize: function(app, content){
@@ -363,8 +374,6 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
         }
     }
 });
-
-
 MWF.xApplication.Setting.UIExplorer = new Class({
     Extends: MWF.xApplication.Setting.BaseExplorer,
     initialize: function(app, content){
@@ -379,11 +388,6 @@ MWF.xApplication.Setting.UIExplorer = new Class({
 
     getNaviJson: function(){
         return [
-            {
-                "text": this.app.lp.tab_ui_module,
-                "icon": "module",
-                "action": "loadUIModuleSetting"
-            },
             {
                 "text": this.app.lp.tab_ui_index,
                 "icon": "index",
@@ -412,17 +416,61 @@ MWF.xApplication.Setting.UIExplorer = new Class({
             this.uiIndexSetting = new MWF.xApplication.Setting.UIIndexDocument(this, this.contentAreaNode);
             item.store("content", this.uiIndexSetting);
         }
+    }
+});
+MWF.xApplication.Setting.DisposeExplorer = new Class({
+    Extends: MWF.xApplication.Setting.BaseExplorer,
+    initialize: function(app, content){
+        this.app = app;
+        this.lp = this.app.lp;
+        this.container = content;
+        this.actions = this.app.actions;
+        this.css = this.app.css;
+        this.naviItems = [];
+        this.load();
+    },
+
+    getNaviJson: function(){
+        return [
+            {
+                "text": this.app.lp.tab_ui_module,
+                "icon": "module",
+                "action": "loadUIModuleSetting"
+            },
+            {
+                "text": this.app.lp.tab_ui_resource,
+                "icon": "resource",
+                "action": "loadResourceModuleSetting"
+            },
+            {
+                "text": this.app.lp.tab_ui_service,
+                "icon": "service",
+                "action": "loadServiceModuleSetting"
+            }
+        ];
+    },
+    getData: function(){
+
     },
     loadUIModuleSetting: function(item){
         if (MWF.AC.isAdministrator()) {
             this.uiModuleSetting = new MWF.xApplication.Setting.UIModuleDocument(this, this.contentAreaNode);
             item.store("content", this.uiModuleSetting);
         }
+    },
+    loadServiceModuleSetting: function(item){
+        if (MWF.AC.isAdministrator()) {
+            this.serviceModuleSetting = new MWF.xApplication.Setting.ServiceModuleDocument(this, this.contentAreaNode);
+            item.store("content", this.serviceModuleSetting);
+        }
+    },
+    loadResourceModuleSetting: function(item){
+        if (MWF.AC.isAdministrator()) {
+            this.resourceModuleSetting = new MWF.xApplication.Setting.ResourceModuleDocument(this, this.contentAreaNode);
+            item.store("content", this.resourceModuleSetting);
+        }
     }
-
 });
-
-
 
 
 
