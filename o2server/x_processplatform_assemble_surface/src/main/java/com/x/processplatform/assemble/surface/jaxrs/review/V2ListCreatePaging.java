@@ -34,7 +34,7 @@ class V2ListCreatePaging extends V2Base {
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Review> root = cq.from(Review.class);
 			Predicate p = cb.equal(root.get(Review_.creatorPerson), effectivePerson.getDistinguishedName());
-			p = cb.and(p, this.toFilterPredicate(effectivePerson, business, wi));
+			p = cb.and(p, this.toFilterPredicate(effectivePerson, business, wi, null));
 			List<Wo> wos = emc.fetchDescPaging(Review.class, Wo.copier, p, page, size, Review.sequence_FIELDNAME);
 			result.setData(wos);
 			result.setCount(emc.count(Review.class, p));

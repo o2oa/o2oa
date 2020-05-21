@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceDetailMobile;
 import com.x.attendance.entity.AttendanceEmployeeConfig;

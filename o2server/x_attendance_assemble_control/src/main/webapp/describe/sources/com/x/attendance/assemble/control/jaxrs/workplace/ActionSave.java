@@ -6,10 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionLatitudeEmpty;
-import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionLongitudeEmpty;
-import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionWorkPlaceNameEmpty;
-import com.x.attendance.assemble.control.jaxrs.workplace.exception.ExceptionWorkPlaceProcess;
 import com.x.attendance.entity.AttendanceWorkPlace;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

@@ -116,6 +116,9 @@ android {
                                     BAIDU_SPEECH_APPKEY: project.baiduSpeechAppKey,
                                     BAIDU_MAP_APPKEY   : project.baiduMapAppKey,
                                     BUGLY_APPID        : project.buglyAppId]
+            zipAlignEnabled true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
             signingConfig signingConfigs.release

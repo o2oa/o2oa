@@ -51,6 +51,14 @@ class ActionDeleteMember extends BaseAction {
 					group.setGroupList(ListUtils.union(group.getGroupList(), group_remove_ids));
 				}
 			}
+			if (ListTools.isNotEmpty(wi.getIdentityList())) {
+				List<String> identity_add_ids = ListTools.extractProperty(
+						business.identity().pick(ListTools.trim(wi.getIdentityList(), true, true)), JpaObject.id_FIELDNAME,
+						String.class, true, true);
+				if (ListTools.isNotEmpty(identity_add_ids)) {
+					group.setIdentityList(ListUtils.subtract(group.getIdentityList(), identity_add_ids));
+				}
+			}
 			emc.check(group, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Group.class);

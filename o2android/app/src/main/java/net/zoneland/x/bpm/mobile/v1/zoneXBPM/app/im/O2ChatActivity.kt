@@ -30,7 +30,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Presenter>(), O2ChatContract.View {
 
     companion object {
-        val con_id_key = "con_id_key"
+        const val con_id_key = "con_id_key"
         fun startChat(activity: Activity, conversationId: String) {
             val bundle = Bundle()
             bundle.putString(con_id_key, conversationId)
