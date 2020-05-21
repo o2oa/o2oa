@@ -3,6 +3,8 @@ package com.x.organization.assemble.express.jaxrs.group;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.organization.core.entity.Identity;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,7 +30,8 @@ class ActionListWithPersonObject extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					StringUtils.join(wi.getPersonList(), ","));
+					StringUtils.join(wi.getPersonList(), ","),
+					wi.getRecursiveGroupFlag(), wi.getReferenceFlag(), wi.getRecursiveOrgFlag());
 			Element element = cache.get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
@@ -46,6 +49,15 @@ class ActionListWithPersonObject extends BaseAction {
 		@FieldDescribe("个人")
 		private List<String> personList = new ArrayList<>();
 
+		@FieldDescribe("是否递归查询上级群组，默认true")
+		private Boolean recursiveGroupFlag = true;
+
+		@FieldDescribe("是否包含查找人员身份成员、人员归属组织成员的所属群组，默认false")
+		private Boolean referenceFlag = false;
+
+		@FieldDescribe("是否递归人员归属组织的上级组织所属群组，前提referenceFlag为true，默认false")
+		private Boolean recursiveOrgFlag = false;
+
 		public List<String> getPersonList() {
 			return personList;
 		}
@@ -54,6 +66,29 @@ class ActionListWithPersonObject extends BaseAction {
 			this.personList = personList;
 		}
 
+		public Boolean getReferenceFlag() {
+			return referenceFlag;
+		}
+
+		public void setReferenceFlag(Boolean referenceFlag) {
+			this.referenceFlag = referenceFlag;
+		}
+
+		public Boolean getRecursiveGroupFlag() {
+			return recursiveGroupFlag;
+		}
+
+		public void setRecursiveGroupFlag(Boolean recursiveGroupFlag) {
+			this.recursiveGroupFlag = recursiveGroupFlag;
+		}
+
+		public Boolean getRecursiveOrgFlag() {
+			return recursiveOrgFlag;
+		}
+
+		public void setRecursiveOrgFlag(Boolean recursiveOrgFlag) {
+			this.recursiveOrgFlag = recursiveOrgFlag;
+		}
 	}
 
 	public static class Wo extends com.x.base.core.project.organization.Group {
@@ -65,10 +100,32 @@ class ActionListWithPersonObject extends BaseAction {
 		List<Person> os = business.person().pick(wi.getPersonList());
 		List<String> groupIds = new ArrayList<>();
 		for (Person person : os) {
-			groupIds.addAll(business.group().listSupNestedWithPerson(person.getId()));
+			groupIds.addAll(business.group().listSupDirectWithPerson(person.getId()));
+			if(BooleanUtils.isTrue(wi.getReferenceFlag())){
+				List<Identity> identityList = business.identity().listByPerson(person.getId());
+				for(Identity identity : identityList){
+					groupIds.addAll(business.group().listSupDirectWithIdentity(identity.getId()));
+					groupIds.addAll(business.group().listSupDirectWithUnit(identity.getUnit()));
+					if(BooleanUtils.isTrue(wi.getRecursiveOrgFlag())){
+						List<String> orgIds = business.unit().listSupNested(identity.getUnit());
+						for (String orgId : orgIds){
+							groupIds.addAll(business.group().listSupDirectWithUnit(orgId));
+						}
+					}
+				}
+			}
 		}
 		groupIds = ListTools.trim(groupIds, true, true);
-		List<Group> list = business.group().pick(groupIds);
+		List<String> groupIds2 = new ArrayList<>();
+		groupIds2.addAll(groupIds);
+		if(!BooleanUtils.isFalse(wi.getRecursiveGroupFlag())){
+			for(String groupId : groupIds){
+				groupIds2.addAll(business.group().listSupNested(groupId));
+			}
+			groupIds2 = ListTools.trim(groupIds2, true, true);
+		}
+
+		List<Group> list = business.group().pick(groupIds2);
 		list = business.group().sort(list);
 		for (Group o : list) {
 			wos.add(this.convert(business, o, Wo.class));
