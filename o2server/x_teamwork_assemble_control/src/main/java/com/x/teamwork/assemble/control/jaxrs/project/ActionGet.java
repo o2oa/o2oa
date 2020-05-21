@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.ProjectConfig;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectGroup;
 import com.x.teamwork.core.entity.Task;
@@ -37,6 +38,7 @@ public class ActionGet extends BaseAction {
 		List<String> groupIds = null;
 		List<ProjectGroup> groups = null;
 		List<Task>  taskList = null;
+		List<ProjectConfig>  projectConfigs = null;
 		WrapOutControl control = null;
 		Boolean check = true;
 		
@@ -110,32 +112,44 @@ public class ActionGet extends BaseAction {
 					groups = projectGroupQueryService.list( groupIds );
 					wo.setGroups( groups );	
 					
+					//查询项目配置信息
+					projectConfigs = projectConfigQueryService.getProjectConfigByProject( project.getId() );
+					
 					Business business = null;
 					try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 						business = new Business(bc);
 					}
 					
 					control = new WrapOutControl();
+					if(ListTools.isNotEmpty(projectConfigs)){
+						ProjectConfig projectConfig = projectConfigs.get(0);
+						control.setTaskCreate(projectConfig.getTaskCreate());
+						control.setTaskCopy(projectConfig.getTaskCopy());
+						control.setTaskRemove(projectConfig.getTaskRemove());
+						control.setLaneCreate(projectConfig.getLaneCreate());
+						control.setLaneEdit(projectConfig.getLaneEdit());
+						control.setLaneRemove(projectConfig.getLaneRemove());
+						control.setAttachmentUpload(projectConfig.getAttachmentUpload());
+						control.setComment(projectConfig.getComment());
+					}else{
+						control.setTaskCreate(true);
+					}
+					
 					if( business.isManager(effectivePerson)
 							|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 							|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
 						control.setDelete( true );
 						control.setEdit( true );
 						control.setSortable( true );
-						control.setCreateable(true);
+						control.setTaskCreate(true);
 						
 					}else{
 						control.setDelete( false );
 						control.setEdit( false );
 						control.setSortable( false );
-						if(project.getCreateable()){
-							control.setCreateable(true);
-						}else{
-							control.setCreateable(false);
-						}
 					}
 					if(project.getDeleted() || project.getCompleted()){
-						control.setCreateable(false);
+						control.setTaskCreate(false);
 					}
 					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson())){
 						control.setFounder( true );
