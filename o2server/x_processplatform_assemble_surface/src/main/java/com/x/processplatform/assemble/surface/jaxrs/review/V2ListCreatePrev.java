@@ -33,7 +33,7 @@ class V2ListCreatePrev extends V2Base {
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Review> root = cq.from(Review.class);
 			Predicate p = cb.equal(root.get(Review_.creatorPerson), effectivePerson.getDistinguishedName());
-			p = cb.and(p, this.toFilterPredicate(effectivePerson, business, wi));
+			p = cb.and(p, this.toFilterPredicate(effectivePerson, business, wi, null));
 			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME,
 					DESC, p);
 			this.relate(business, result.getData(), wi);

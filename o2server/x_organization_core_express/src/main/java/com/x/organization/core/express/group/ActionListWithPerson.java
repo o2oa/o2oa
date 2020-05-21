@@ -10,10 +10,14 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 class ActionListWithPerson extends BaseAction {
 
-	public static List<String> execute(AbstractContext context, Collection<String> collection) throws Exception {
+	public static List<String> execute(AbstractContext context, Collection<String> collection,
+									   boolean recursiveGroupFlag, boolean referenceFlag, boolean recursiveOrgFlag) throws Exception {
 		Wi wi = new Wi();
 		if (null != collection) {
 			wi.getPersonList().addAll(collection);
+			wi.setRecursiveGroupFlag(recursiveGroupFlag);
+			wi.setReferenceFlag(referenceFlag);
+			wi.setRecursiveOrgFlag(recursiveOrgFlag);
 		}
 		Wo wo = context.applications().postQuery(applicationClass, "group/list/person", wi).getData(Wo.class);
 		return wo.getGroupList();
@@ -24,12 +28,45 @@ class ActionListWithPerson extends BaseAction {
 		@FieldDescribe("个人")
 		private List<String> personList = new ArrayList<>();
 
+		@FieldDescribe("是否递归查询上级群组，默认true")
+		private Boolean recursiveGroupFlag = true;
+
+		@FieldDescribe("是否包含查找人员身份成员、人员归属组织成员的所属群组，默认false")
+		private Boolean referenceFlag = false;
+
+		@FieldDescribe("是否递归人员归属组织的上级组织所属群组，前提referenceFlag为true，默认false")
+		private Boolean recursiveOrgFlag = false;
+
 		public List<String> getPersonList() {
 			return personList;
 		}
 
 		public void setPersonList(List<String> personList) {
 			this.personList = personList;
+		}
+
+		public Boolean getReferenceFlag() {
+			return referenceFlag;
+		}
+
+		public void setReferenceFlag(Boolean referenceFlag) {
+			this.referenceFlag = referenceFlag;
+		}
+
+		public Boolean getRecursiveGroupFlag() {
+			return recursiveGroupFlag;
+		}
+
+		public void setRecursiveGroupFlag(Boolean recursiveGroupFlag) {
+			this.recursiveGroupFlag = recursiveGroupFlag;
+		}
+
+		public Boolean getRecursiveOrgFlag() {
+			return recursiveOrgFlag;
+		}
+
+		public void setRecursiveOrgFlag(Boolean recursiveOrgFlag) {
+			this.recursiveOrgFlag = recursiveOrgFlag;
 		}
 	}
 

@@ -16,7 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonElement;
-import com.x.attendance.assemble.control.jaxrs.attendanceadmin.exception.ExceptionAttendanceAdminProcess;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;

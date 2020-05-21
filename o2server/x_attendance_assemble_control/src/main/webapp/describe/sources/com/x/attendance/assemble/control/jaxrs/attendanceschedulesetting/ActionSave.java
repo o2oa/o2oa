@@ -6,9 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendanceschedulesetting.exception.ExceptionAttendanceScheduleProcess;
-import com.x.attendance.assemble.control.jaxrs.attendanceschedulesetting.exception.ExceptionCanNotFindUnitWithUnitName;
-import com.x.attendance.assemble.control.jaxrs.attendanceschedulesetting.exception.ExceptionScheduleUnitEmpty;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

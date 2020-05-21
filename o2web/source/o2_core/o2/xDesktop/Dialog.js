@@ -268,7 +268,14 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         this.fireEvent("restore");
     },
     reCenter: function(){
-        var size = this.node.getSize();
+	    var size;
+	    if( this.node.offsetParent === null ){ //如果是隐藏的
+            size = this.node.measure(function(){
+                return this.getSize();
+            });
+        }else{
+            size = this.node.getSize();
+        }
 
         if( this.options.positionWidth ){
             size.x = parseInt(this.options.positionWidth);
@@ -317,6 +324,14 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             (node.getStyle("border-left-width").toInt() || 0 ) +
             (node.getStyle("border-right-width").toInt() || 0 );
     },
+    getMarginY : function(node){
+        return (node.getStyle("margin-top").toInt() || 0 ) +
+            (node.getStyle("margin-bottom").toInt() || 0 );
+    },
+    getMarginX : function(node){
+        return (node.getStyle("margin-left").toInt() || 0 ) +
+            (node.getStyle("margin-right").toInt() || 0 );
+    },
     setContentHeightAuto : function(){
         var maxHeight = this.getMaxHeight();
 
@@ -327,7 +342,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         if( this.bottom )offsetY = offsetY + this.getOffsetY( this.bottom ) + this.bottom.getSize().y;
         if( this.button && !this.buttonDisable )offsetY = offsetY + this.getOffsetY( this.button ) + this.button.getSize().y;
         if( this.content ){
-            offsetY = offsetY + this.getOffsetY( this.content );
+            offsetY = offsetY + this.getMarginY( this.content );
             y = offsetY + this.content.getSize().y;
         }else{
             y = offsetY;
@@ -379,6 +394,10 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             if( typeOf(maxHeightPercent) === "string" && maxHeightPercent.substr(maxHeightPercent.length - 1, 1) === "%" ) {
                 var containerHeight = ( this.options.positionNode || this.options.container || $(document.body)).getSize().y;
                 maxHeightPercent = parseInt(containerHeight * parseInt(maxHeightPercent) / 100);
+
+                if( maxHeightPercent + (this.options.minTop || 0) > containerHeight ){
+                    maxHeightPercent = containerHeight - (this.options.minTop)
+                }
             }
         }
 
@@ -644,7 +663,7 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
         var offsetX = 0;
         var x = 0;
         if( this.content ){
-            offsetX = offsetX + this.getOffsetX( this.content );
+            offsetX = offsetX + this.getMarginX( this.content );
             x = offsetX + this.content.getSize().x;
         }else{
             x = offsetX;
@@ -663,10 +682,11 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             this.node.setStyles({
                 "width": maxWidth
             });
-            this.contentWidth = maxWidth - offsetX;
+
+            this.contentWidth = maxWidth - this.getOffsetX(this.content);
             if (this.content) {
                 this.content.setStyles({
-                    "width" : maxWidth - offsetX,
+                    "width" : this.contentWidth,
                     "overflow-x": "auto"
                 })
             }
@@ -682,10 +702,10 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
             this.node.setStyles({
                 "width": x
             });
-            this.contentWidth = x - offsetX;
+            this.contentWidth = x - this.getOffsetX(this.content);
             if (this.content) {
                 this.content.setStyles({
-                    "width" : x - offsetX,
+                    "width" : this.contentWidth,
                     "overflow-x": "hidden"
                 })
             }

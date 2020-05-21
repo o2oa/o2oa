@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendanceadmin.exception.ExceptionAttendanceAdminProcess;
 import com.x.attendance.entity.AttendanceAdmin;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.http.ActionResult;

@@ -37,7 +37,7 @@ class V2List extends V2Base {
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 				Root<Review> root = cq.from(Review.class);
-				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+				Predicate p = this.toFilterPredicate(effectivePerson, business, wi, null);
 				if (ListTools.isNotEmpty(wi.getJobList())) {
 					p = cb.and(p, root.get(Review_.job).in(wi.getJobList()));
 				}
