@@ -126,6 +126,29 @@ layout.addReady(function(){
             layout.openApplication(null, appName, options, m_status);
         }, true);
     };
+    layout.notice = function (content, type, target, where, offset) {
+        if (!where) where = { "x": "right", "y": "top" };
+        if (!target) target = this.content;
+        if (!type) type = "ok";
+        var noticeTarget = target || $(document.body);
+        var off = offset;
+        if (!off) {
+            off = {
+                x: 10,
+                y: where.y.toString().toLowerCase() == "bottom" ? 10 : 10
+            };
+        }
+
+        new mBox.Notice({
+            type: type,
+            position: where,
+            move: false,
+            target: noticeTarget,
+            delayClose: (type == "error") ? 10000 : 5000,
+            offset: off,
+            content: content
+        });
+    };
 
     (function(layout){
         console.log("开始执行。。。。。。。。");
