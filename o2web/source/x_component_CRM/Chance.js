@@ -12,9 +12,9 @@ MWF.xApplication.CRM.Chance = new Class({
     initialize: function (container, app, actions, options){
         this.setOptions(options);
 
-        this.path = "/x_component_CRM/$Chance/";
-        this.cssPath = "/x_component_CRM/$Chance/"+this.options.style+"/css.wcss";
-        this.lpPath = "/x_component_CRM/$Chance/"+this.options.style+"/zh-cn.js?v="+o2.version.v;
+        this.path = "../x_component_CRM/$Chance/";
+        this.cssPath = "../x_component_CRM/$Chance/"+this.options.style+"/css.wcss";
+        this.lpPath = "../x_component_CRM/$Chance/"+this.options.style+"/zh-cn.js?v="+o2.version.v;
         this._loadCss();
         /*COMMON.AjaxModule.loadCss( this.path+this.options.style+"/main.css",function(){
             console.log("main.css,load complete");
@@ -318,7 +318,7 @@ MWF.xApplication.CRM.Chance.View = new Class({
 
             cdata = json.data;
             layui.config({
-                base: '/x_component_CRM/$Template/plugins/table2/'
+                base: '../x_component_CRM/$Template/plugins/table2/'
             }).use(['table2', "table2"], function () {
                 var table = layui.table2;
                 console.log(cols);

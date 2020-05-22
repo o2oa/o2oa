@@ -12,6 +12,8 @@ MWF.xDesktop.WebSocket = new Class({
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
         this.ws = wsScheme+"://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
 
+
+
         this.reConnect = true;
         this.checking = false;
         this.heartTimeout = 60000;

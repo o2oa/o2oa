@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Datagrid$Title/datagrid$Title.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Datagrid$Title/datagrid$Title.html",
 		"actions": [
 		    {
 		    	"name": "insertCol",
@@ -27,8 +27,8 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Datagrid$Title/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Datagrid$Title/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Datagrid$Title/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Datagrid$Title/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

@@ -19,7 +19,7 @@
                 "margin-top":"8px",
                 "width":"16px",
                 "height":"16px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
             },
             groupInContainer:{
                 "margin-top":"10px",
@@ -61,7 +61,7 @@
                 "margin-top":"6px",
                 "width":"16px",
                 "height":"16px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_down2.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_down2.png) no-repeat center "
             },
             topBarText:{
 
@@ -77,7 +77,7 @@
                 "margin-top":"6px",
                 "width":"16px",
                 "height":"16px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_off.png) no-repeat center "
             },
             groupInContainer:{
                 "margin-top":"10px",
@@ -110,7 +110,7 @@
                 "margin-right":"10px",
                 "width":"16px",
                 "height":"16px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
             },
             dynamicGroupText:{
                 "float":"left",
@@ -140,7 +140,7 @@
                 "margin-right":"10px",
                 "width":"16px",
                 "height":"16px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_circle.png) no-repeat center "
 
             },
             "groupItemText":{
@@ -159,7 +159,7 @@
                 "margin-top":"8px",
                 "margin-left":"10px",
                 "margin-right":"10px",
-                "background": "url(/x_component_TeamWork/$Common/default/icon/icon_zengjia_blue2_click.png) no-repeat center "
+                "background": "url(../x_component_TeamWork/$Common/default/icon/icon_zengjia_blue2_click.png) no-repeat center "
             },
             "newGroupText":{
                 "color":"#4A90E2",
@@ -217,7 +217,7 @@
             "width": "32px",
             "height": "32px",
             "float": "left",
-            "background": "url(/x_component_Execution/$WorkDeploy/default/icon/document.png) no-repeat center 4px"
+            "background": "url(../x_component_Execution/$WorkDeploy/default/icon/document.png) no-repeat center 4px"
           },
           "formTopTextNode" : {
             "font-size": "16px",
@@ -233,7 +233,7 @@
             "float": "right",
             "padding-left" : "30px",
             "padding-right" : "10px",
-            "background": "url(/x_component_Execution/$WorkDeploy/default/icon/close.png) no-repeat center 4px",
+            "background": "url(../x_component_Execution/$WorkDeploy/default/icon/close.png) no-repeat center 4px",
             "cursor": "pointer"
           },
           "formTopContentNode" : {
@@ -250,7 +250,7 @@
           "formNewNode": {
             "width": "47px",
             "height": "47px",
-            "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+            "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
           },
           "formIconNode": {
             "width": "47px",

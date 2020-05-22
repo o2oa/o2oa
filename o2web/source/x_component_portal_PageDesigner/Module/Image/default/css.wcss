@@ -46,7 +46,7 @@
 //		"height": "73px"
 	},
 	"textfieldIcon": {
-		"background": "url("+"/x_component_process_FormDesigner/Module/Textfield/default/icon/inputtext.png) center center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Textfield/default/icon/inputtext.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "right"

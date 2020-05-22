@@ -14,8 +14,8 @@ MWF.xApplication.Selector.ListSelector = new Class({
     initialize: function(container, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Selector/$Selector/";
-        this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Selector/$Selector/";
+        this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss(true);
 
         this.container = $(container);
@@ -102,7 +102,7 @@ MWF.xApplication.Selector.ListSelector.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        //this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        //this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -136,7 +136,7 @@ MWF.xApplication.Selector.ListSelector.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        //this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        //this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -165,7 +165,7 @@ MWF.xApplication.Selector.ListSelector.ItemCategory = new Class({
         }).inject(this.container);
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
         return (this.data.viewList && this.data.viewList.length);

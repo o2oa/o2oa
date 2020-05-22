@@ -6,7 +6,7 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Actionbar/actionbar.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Actionbar/actionbar.html"
 	},
     addAction: function(){
 
@@ -15,8 +15,8 @@ MWF.xApplication.process.FormDesigner.Module.Actionbar = MWF.FCActionbar = new C
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Actionbar/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Actionbar/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";

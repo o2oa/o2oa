@@ -16,7 +16,7 @@ MWF.xApplication.TeamWork.Stat = new Class({
         //this.actions = this.app.restActions;
         this.actions = o2.Actions.load("x_teamwork_assemble_control");
 
-        this.path = "/x_component_TeamWork/$Stat/";
+        this.path = "../x_component_TeamWork/$Stat/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 

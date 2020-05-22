@@ -69,7 +69,7 @@ MWF.xApplication.BAM.Monthly = new Class({
         var node = new Element("div", {"styles": this.css.monthTabItemNode}).inject(content);
         node.store("icon", icon);
         var iconNode = new Element("div", {"styles": this.css.monthTabItemIconNode}).inject(node);
-        iconNode.setStyle("background-image", "url(/x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+icon+".png)");
+        iconNode.setStyle("background-image", "url(../x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+icon+".png)");
         var textNode = new Element("div", {"styles": this.css.monthTabItemTextNode}).inject(node);
         textNode.set("text", text);
         return node;
@@ -136,12 +136,12 @@ MWF.xApplication.BAM.Monthly = new Class({
                 var currentDiv = cell.getFirst("div");
                 var currentIcon = currentDiv.retrieve("icon");
                 currentDiv.setStyles(this.css.monthTabItemNode_current);
-                currentDiv.getFirst("div").setStyle("background-image", "url(/x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+currentIcon+"_current.png)");
+                currentDiv.getFirst("div").setStyle("background-image", "url(../x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+currentIcon+"_current.png)");
             }else{
                 var div = cell.getFirst("div");
                 var icon = div.retrieve("icon");
                 div.setStyles(this.css.monthTabItemNode);
-                div.getFirst("div").setStyle("background-image", "url(/x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+icon+".png)");
+                div.getFirst("div").setStyle("background-image", "url(../x_component_BAM/$Main/"+this.app.options.style+"/monthly/"+icon+".png)");
             }
         }.bind(this));
     },

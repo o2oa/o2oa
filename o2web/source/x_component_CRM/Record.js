@@ -23,7 +23,7 @@ MWF.xApplication.CRM.Record = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.contact.contactEdit;
-        this.path = "/x_component_CRM/$ClueEdit/";
+        this.path = "../x_component_CRM/$ClueEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -68,7 +68,7 @@ MWF.xApplication.CRM.Record = new Class({
         jQuery(".notify-content").html(tabConent);
         var indexContentHtml = '<div class="log-cont"><div class="log-inner1"><div class="log-inner2"><div class="log-items">'+
             '<div class="load"><button  type="button" class="el-button el-button--text"></button></div></div>'+
-            '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="/x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
+            '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="../x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
             '<div class="el-loading-mask" style="display: none;"><div class="el-loading-spinner"><svg viewBox="25 25 50 50" class="circular"><circle cx="50" cy="50" r="20" fill="none" class="path"></circle></svg></div></div>'+
             '</div></div>';
         jQuery("#tab-follow").html(indexContentHtml);
@@ -80,7 +80,7 @@ MWF.xApplication.CRM.Record = new Class({
                 for ( i in recordDatas){
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
-                        var personImg = '/x_component_CRM/$Template/portrait.png';
+                        var personImg = '../x_component_CRM/$Template/portrait.png';
                         if(recordData.ICONBase64 && recordData.ICONBase64!=""){
                             personImg = recordData.ICONBase64;
                         }
@@ -96,8 +96,8 @@ MWF.xApplication.CRM.Record = new Class({
                                 if(j<attList.length){
                                     var attData = attList[j];
                                     attHtml = attHtml+'<div class="vux-flexbox cell vux-flex-row">'+
-                                        '<img  src="/x_component_CRM/$Record/default/icons/att.png" class="cell-head"> <div class="cell-body">'+attData.name+'<span  style="color: rgb(204, 204, 204);">（'+that.toDecimal(attData.length)+'KB）</span></div>'+
-                                        '<button  type="button" class="el-button el-button--primary aname" aid="'+attData.id+'" wcrm="'+attData.wcrm+'"><img  src="/x_component_CRM/$Record/default/icons/down.png" style="margin-bottom:-3px;"><span>下载</span></button></div>'
+                                        '<img  src="../x_component_CRM/$Record/default/icons/att.png" class="cell-head"> <div class="cell-body">'+attData.name+'<span  style="color: rgb(204, 204, 204);">（'+that.toDecimal(attData.length)+'KB）</span></div>'+
+                                        '<button  type="button" class="el-button el-button--primary aname" aid="'+attData.id+'" wcrm="'+attData.wcrm+'"><img  src="../x_component_CRM/$Record/default/icons/down.png" style="margin-bottom:-3px;"><span>下载</span></button></div>'
                                 }
                             }
                             attHtml = attHtml+'</div>';
@@ -130,7 +130,7 @@ MWF.xApplication.CRM.Record = new Class({
                             }
                         }
                         if(aid!=""){
-                            relationHtml = '<div class="vux-flexbox relate-cell vux-flex-row" aid="'+aid+'" atype="'+types+'"><img  src="/x_component_CRM/$Record/default/icons/'+types+'.png" class="cell-head">'+
+                            relationHtml = '<div class="vux-flexbox relate-cell vux-flex-row" aid="'+aid+'" atype="'+types+'"><img  src="../x_component_CRM/$Record/default/icons/'+types+'.png" class="cell-head">'+
                                 '<div  class="relate-cell-body" style="color: rgb(99, 148, 229); cursor: pointer;">'+atype+'</div></div>';
                         }
 
@@ -346,7 +346,7 @@ MWF.xApplication.CRM.Record = new Class({
                 for ( i in recordDatas){
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
-                        var personImg = 'http://172.16.92.55/x_component_CRM/$Template/portrait.png';
+                        var personImg = 'http://172.16.92.55../x_component_CRM/$Template/portrait.png';
                         logItemHtml = logItemHtml+'<div class="fl-c"><div class="vux-flexbox fl-h vux-flex-row">'+
                             '<div class="div-photo fl-h-img"  style="background-image: url(&quot;'+personImg+'&quot;);" lazy="loaded"></div> '+
                             '<div class="fl-h-b"><div class="fl-h-name">'+recordData.person.name+'</div><div class="fl-h-time">'+recordData.updateTime+'</div></div>'+

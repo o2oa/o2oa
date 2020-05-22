@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Office = MWF.FCOffice = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Office/office.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Office/office.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Office/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Office/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Office/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Office/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

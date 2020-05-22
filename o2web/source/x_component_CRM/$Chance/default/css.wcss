@@ -151,7 +151,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -163,7 +163,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -175,7 +175,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
   "documentSubject" : {

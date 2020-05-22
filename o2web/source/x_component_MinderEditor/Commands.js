@@ -34,7 +34,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         this.history = this.editor.history;
         //this.key = this.editor.key;
 
-        this.path = "/x_component_MinderEditor/$Commands/";
+        this.path = "../x_component_MinderEditor/$Commands/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
 
         this.commands = {
@@ -767,21 +767,21 @@ MWF.xApplication.MinderEditor.Commands = new Class({
         var css = node.retrieve("css");
         node.setStyles(css[node.get("styles") + "_disable"]);
         if (command.icon) {
-            node.setStyle("background-image", "url(/x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_disable.png)");
+            node.setStyle("background-image", "url(../x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_disable.png)");
         }
     },
     setActiveStye: function (node, command) {
         var css = node.retrieve("css");
         node.setStyles(css[node.get("styles") + "_over"]);
         if (command.icon) {
-            node.setStyle("background-image", "url(/x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_active.png)")
+            node.setStyle("background-image", "url(../x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_active.png)")
         }
     },
     setNormalStye: function (node, command) {
         var css = node.retrieve("css");
         node.setStyles(css[node.get("styles")]);
         if (command.icon) {
-            node.setStyle("background-image", "url(/x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_normal.png)")
+            node.setStyle("background-image", "url(../x_component_MinderEditor/$Main/" + this.options.style + "/icon/" + command.icon + "_normal.png)")
         }
     },
     checkStatus: function () {
@@ -1247,7 +1247,7 @@ MWF.xApplication.MinderEditor.Commands = new Class({
 
             new Element("a", {
                 text: "支持GFM语法",
-                href: "/x_component_MinderEditor/$Commands/GFMDescription.html",
+                href: "../x_component_MinderEditor/$Commands/GFMDescription.html",
                 "target": "_blank",
                 "styles": this.css.noteLinkNode
             }).inject(titleNode);

@@ -18,7 +18,7 @@
     border-bottom: 1px solid rgb(204, 204, 204);
 }
 .o2_im_chat_list_top .add {
-    background: url(/x_component_IMV2/$Main/default/icons/add.png) left center no-repeat;
+    background: url(../x_component_IMV2/$Main/default/icons/add.png) left center no-repeat;
     height: 40px;
     cursor: pointer;
     margin-left: 14px;
@@ -34,7 +34,7 @@
     float: left; 
     width: 40px; 
     height: 40px; 
-    background: url(/x_component_IMV2/$Main/default/icons/search.png) center center no-repeat; 
+    background: url(../x_component_IMV2/$Main/default/icons/search.png) center center no-repeat;
     cursor: pointer;
 }
 .o2_im_chat_list_top .search_input_out {
@@ -70,7 +70,7 @@
     height: 50px; 
     width: 30px; 
     float: left; 
-    background: url(/x_component_IMV2/$Main/default/icons/icon_newapply.png) center center no-repeat;
+    background: url(../x_component_IMV2/$Main/default/icons/icon_newapply.png) center center no-repeat;
 }
 .o2_im_chat_list_top .add_button .text {
     line-height: 50px; 

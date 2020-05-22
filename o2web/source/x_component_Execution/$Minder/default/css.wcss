@@ -27,7 +27,7 @@
   },
   "navCreateMainWorkIcon" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/create.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/create.png)",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -36,7 +36,7 @@
   },
   "navButtonIcon" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/icons.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/icons.png)",
     "width": "20px",
     "height": "20px",
     "margin": "2px auto",
@@ -44,7 +44,7 @@
   },
   "navZoominIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/plus.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/plus.png)",
     "width": "20px",
     "height": "20px",
     "margin": "2px auto",
@@ -53,7 +53,7 @@
   },
   "navZoomoutIcon": {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/minus.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/minus.png)",
     "width": "20px",
     "height": "20px",
     "margin": "2px auto",
@@ -100,7 +100,7 @@
   },
   "navHandIcon": {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/icons.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/icons.png)",
     "display": "block",
     "background-position": "0 -770px",
     "width": "25px",
@@ -109,7 +109,7 @@
   },
   "navCameraIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/center.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/center.png)",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -118,7 +118,7 @@
   },
   "navMoveIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/move.png) 2px 2px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/move.png) 2px 2px no-repeat",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -127,7 +127,7 @@
   },
   "navTemplateIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/tree.png) no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/tree.png) no-repeat",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -136,7 +136,7 @@
   },
   "navSearchIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/search.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/search.png)",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -145,7 +145,7 @@
   },
   "navExpandIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/floding.png) 4px 2px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/floding.png) 4px 2px no-repeat",
     "display": "block",
     //"background-position": "0 -870px",
     "width": "25px",
@@ -154,7 +154,7 @@
   },
   "navTriggerIcon" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/icons.png)",
+    "background": "url(../x_component_Execution/$Minder/default/icon/icons.png)",
     "display": "block",
     "background-position": "0 -845px",
     "width": "25px",
@@ -231,7 +231,7 @@
   },
   "nextButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/next.png) 2px 2px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/next.png) 2px 2px no-repeat",
     "background-color" : "#eee",
     "display": "block",
     "width": "22px",
@@ -242,7 +242,7 @@
   },
   "prevButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/prev.png) 2px 2px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/prev.png) 2px 2px no-repeat",
     "background-color" : "#eee",
     "display": "block",
     "width": "22px",
@@ -253,7 +253,7 @@
   },
   "closeButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/close14.png) 4px 4px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/close14.png) 4px 4px no-repeat",
     "display": "block",
     "width": "22px",
     "height": "22px",
@@ -282,7 +282,7 @@
   },
   "minderTemplate" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/template.png) no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/template.png) no-repeat",
     "background-color" : "#fff",
     "display": "block",
     "width": "50px",
@@ -296,7 +296,7 @@
   },
   "fishboneTemplate" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_Execution/$Minder/default/icon/template.png) -200px 0px no-repeat",
+    "background": "url(../x_component_Execution/$Minder/default/icon/template.png) -200px 0px no-repeat",
     "background-color" : "#fff",
     "display": "block",
     "width": "50px",

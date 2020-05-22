@@ -933,7 +933,7 @@ MWF.xApplication.Execution.Main = new Class({
 		}).inject(this.shadeDiv);
 		this.loadImg = new Element("img.loadImg",{
 			styles:{"width":"16px","height":"16px","float":"left"},
-			src:"/x_component_Execution/$Main/default/icon/loading.gif"
+			src:"../x_component_Execution/$Main/default/icon/loading.gif"
 		}).inject(this.inforDiv);
 
 		this.shadeTxtSpan = new Element("span.shadeTxtSpan").inject(this.inforDiv);

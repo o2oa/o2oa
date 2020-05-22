@@ -733,7 +733,7 @@ MWF.xApplication.cms.QueryViewDesigner.Main = new Class({
 		}
 	},
 	loadNewViewData: function(callback){
-        var url = "/x_component_cms_QueryViewDesigner/$View/view.json";
+        var url = "../x_component_cms_QueryViewDesigner/$View/view.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 this.actions.getUUID(function(id){

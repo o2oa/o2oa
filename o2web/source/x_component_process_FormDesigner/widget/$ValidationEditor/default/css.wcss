@@ -112,7 +112,7 @@
     "errorTextNode": {
         "height": "24px",
         "line-height": "24px",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/error.png) no-repeat 5px center",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/error.png) no-repeat 5px center",
         "padding-left": "30px"
     },
     "itemNode": {
@@ -133,7 +133,7 @@
         "width": "20px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/delete1.png) no-repeat center center",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ValidationEditor/default/icon/delete1.png) no-repeat center center",
         "cursor": "pointer"
     },
     "itemContentNode": {

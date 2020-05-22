@@ -29,7 +29,7 @@
         "width": "24px",
         "height": "24px",
         "float": "left",
-        "background": "url("+"/x_component_cms_Document/$Processor/default/nocheck.png) no-repeat center center"
+        "background": "url("+"../x_component_cms_Document/$Processor/default/nocheck.png) no-repeat center center"
     },
     "routeTextNode": {
         "margin-left": "24px",
@@ -104,7 +104,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"/x_component_cms_Document/$Processor/default/ok-18.png) no-repeat center center"
+        "background": "url("+"../x_component_cms_Document/$Processor/default/ok-18.png) no-repeat center center"
     },
     "okTextNode": {
         "font-size": "14px",
@@ -128,7 +128,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"/x_component_cms_Document/$Processor/default/cancel-18.png) no-repeat center center"
+        "background": "url("+"../x_component_cms_Document/$Processor/default/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "14px",

@@ -895,7 +895,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             node.iconMenu = iconSelectMenu;
             var _self = this;
             for (var i=0; i<=48; i++){
-                var icon = "/x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
+                var icon = "../x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");

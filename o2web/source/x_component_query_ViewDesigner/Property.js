@@ -5,7 +5,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"path": "/x_component_query_FormDesigner/property/property.html"
+		"path": "../x_component_query_FormDesigner/property/property.html"
 	},
 	
 	initialize: function(module, propertyNode, designer, options){
@@ -886,7 +886,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
-                    "systemToolsAddress" : "/x_component_query_ViewDesigner/$View/toolbars.json",
+                    "systemToolsAddress" : "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "noCreate": true,
                     "noDelete": false,
                     "noCode": true,

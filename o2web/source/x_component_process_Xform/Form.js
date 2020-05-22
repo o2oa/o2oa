@@ -47,8 +47,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         this.json = data.json;
         this.html = data.html;
 
-        this.path = "/x_component_process_Xform/$Form/";
-        this.cssPath = this.options.cssPath || "/x_component_process_Xform/$Form/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_process_Xform/$Form/";
+        this.cssPath = this.options.cssPath || "../x_component_process_Xform/$Form/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         this.sectionListObj = {};
@@ -229,7 +229,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (callback) callback();
             return;
         }
-        var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
+        var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/" + this.json.styleConfig.extendFile;
         MWF.getJSON(stylesUrl, {
                 "onSuccess": function (responseJSON) {
                     if (responseJSON && responseJSON.form) {
@@ -316,7 +316,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         if (this.json.defaultTools) {
             if (callback) callback();
         } else {
-            this.json.defaultTools = o2.JSON.get("/x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
+            this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
                 this.json.defaultTools = json;
                 if (callback) callback();
             }.bind(this));
@@ -1745,7 +1745,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             }
             var submitFormContainer = new Element("div").inject( layout.mobile ? $(document.body) : this.app.content );
             this.submitFormModule = new MWF["APPSubmitform"]( submitFormContainer , this.json, this);
-            this.submitFormModule.addEvent("load", function () {
+            this.submitFormModule.addEvent("afterModulesLoad", function () {
                 this.submitFormModule.show();
             }.bind(this))
             this.submitFormModule.load();
@@ -3589,7 +3589,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     //    if (this.json.printForm){
     //        form = this.json.printForm;
     //    }
-    //    window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+    //    window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     //},
     printWork: function (app, form) {
         var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
@@ -3600,10 +3600,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open("/x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            window.open("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
         } else {
             var application = app || this.businessData.work.application;
-            window.open("/x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
         }
     },
     readedWork: function (e) {
@@ -3651,12 +3651,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open("/x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            window.open("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
         } else {
             var application = app || this.businessData.work.application;
-            window.open("/x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
         }
-        //window.open("/x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
+        //window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     },
 
     uploadedAttachment: function (site, id) {
@@ -3720,7 +3720,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     redirectlink.toURI().go();
                 } else {
                     window.location = "appMobile.html?app=process.TaskCenter";
-                    history.replaceState(null, "work", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                    history.replaceState(null, "work", "../x_desktop/appMobile.html?app=process.TaskCenter");
                     "appMobile.html?app=process.TaskCenter".toURI().go();
                 }
             }

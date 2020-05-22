@@ -29,7 +29,7 @@ MWF.xApplication.CRM.Index = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.index;
-        this.path = "/x_component_CRM/$Index/";
+        this.path = "../x_component_CRM/$Index/";
         this.loadCss();
 
         this.actions = actions;
@@ -46,7 +46,7 @@ MWF.xApplication.CRM.Index = new Class({
         this.now = now;
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Index/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Index/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -79,22 +79,22 @@ MWF.xApplication.CRM.Index = new Class({
     },
     loadResource: function ( callback ) {
         var baseUrls = [
-            "/x_component_CRM/$Template/plugins/jquery.min.js",
+            "../x_component_CRM/$Template/plugins/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/plugins/layui/layui.js";
-        var langUrl =  "/x_component_CRM/$Template/plugins/table2/table2.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/plugins/table2/css/table2.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/plugins/layui/layui.js";
+        var langUrl =  "../x_component_CRM/$Template/plugins/table2/table2.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/plugins/table2/css/table2.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
                     COMMON.AjaxModule.load(langUrl, function(){
-                        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css", function(){
-                            COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/date/css/jquery-ui.css", function(){
-                                COMMON.AjaxModule.load("/x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
-                                    COMMON.AjaxModule.load("/x_component_CRM/$Template/assets/js/notifyme.js", function(){
-                                        COMMON.AjaxModule.load("/x_component_CRM/$Template/assets/js/showBo.js", function(){
-                                            COMMON.AjaxModule.load("/x_component_CRM/$Template/assets/js/echarts.min.js", function(){
-                                                COMMON.AjaxModule.load("/x_component_CRM/$Template/assets/js/china.js", function(){
+                        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css", function(){
+                            COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/date/css/jquery-ui.css", function(){
+                                COMMON.AjaxModule.load("../x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
+                                    COMMON.AjaxModule.load("../x_component_CRM/$Template/assets/js/notifyme.js", function(){
+                                        COMMON.AjaxModule.load("../x_component_CRM/$Template/assets/js/showBo.js", function(){
+                                            COMMON.AjaxModule.load("../x_component_CRM/$Template/assets/js/echarts.min.js", function(){
+                                                COMMON.AjaxModule.load("../x_component_CRM/$Template/assets/js/china.js", function(){
                                                     if(callback)callback();
                                                 }.bind(this));
                                             }.bind(this));
@@ -204,10 +204,10 @@ MWF.xApplication.CRM.Index = new Class({
 
          if(jQuery(".quickNew").length < 1){
              var quickNewHtml='<div class="quickNew"><div class="quickNew_conent">'+
-                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="/x_component_CRM/$Main/default/icons/clue-fill.png"></span><span class="sName" stype="clue">线索</span></div>'+
-                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="/x_component_CRM/$Main/default/icons/customer-fill.png"></span><span class="sName" stype="customer">客户</span></div>'+
-                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="/x_component_CRM/$Main/default/icons/contact-fill.png"></span><span class="sName" stype="contact">联系人</span></div>'+
-                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="/x_component_CRM/$Main/default/icons/chance-fill.png"></span><span class="sName" stype="chance">商机</span></div></div></div>';
+                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="../x_component_CRM/$Main/default/icons/clue-fill.png"></span><span class="sName" stype="clue">线索</span></div>'+
+                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="../x_component_CRM/$Main/default/icons/customer-fill.png"></span><span class="sName" stype="customer">客户</span></div>'+
+                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="../x_component_CRM/$Main/default/icons/contact-fill.png"></span><span class="sName" stype="contact">联系人</span></div>'+
+                 '<div class="quickNew_item"><span class="sImg"><img class="naviItemImg" src="../x_component_CRM/$Main/default/icons/chance-fill.png"></span><span class="sName" stype="chance">商机</span></div></div></div>';
              jQuery(".middleContentDiv").append(quickNewHtml);
              jQuery(".quickStartDiv").click(function(){
                  jQuery(".quickNew").toggle(100);
@@ -422,7 +422,7 @@ MWF.xApplication.CRM.Index = new Class({
                             break;
                     }
                     customerHtml = customerHtml+ '<div class="vux-flexbox-item" id="'+moduleId+'"><div class="vux-flexbox jianbao-icon-content" style="cursor: pointer;">'+
-                        '<img  src="/x_component_CRM/$Index/default/icons/'+moduleId+'.png" class="jianbao-icon"><div class="jianbao-title">'+moduleName+'</div><div class="jianbao-value">'+count+'</div></div></div>'
+                        '<img  src="../x_component_CRM/$Index/default/icons/'+moduleId+'.png" class="jianbao-icon"><div class="jianbao-title">'+moduleName+'</div><div class="jianbao-value">'+count+'</div></div></div>'
                 }.bind(this));
 
                 jQuery("#jianbao").find(".vux_flex_row").append(customerHtml);
@@ -448,7 +448,7 @@ MWF.xApplication.CRM.Index = new Class({
                                     _self.app,
                                     _self.app,
                                     _self,
-                                    { templateUrl : "/x_component_CRM/$Customer/customerView.json",filterData:{}},
+                                    { templateUrl : "../x_component_CRM/$Customer/customerView.json",filterData:{}},
                                     {
                                         lp:_self.app.lp.customerView,
                                         isAdmin:_self.options.isAdmin
@@ -464,7 +464,7 @@ MWF.xApplication.CRM.Index = new Class({
                                     _self.app,
                                     _self.app,
                                     _self,
-                                    { templateUrl : "/x_component_CRM/$Contacts/contactsView.json",filterData:{}},
+                                    { templateUrl : "../x_component_CRM/$Contacts/contactsView.json",filterData:{}},
                                     {
                                         lp:_self.app.lp.contactsView,
                                         isAdmin:_self.options.isAdmin
@@ -480,7 +480,7 @@ MWF.xApplication.CRM.Index = new Class({
                                     {},
                                     _self.app,
                                     _self,
-                                    { templateUrl : "/x_component_CRM/$Chance/chanceView.json",filterData:{}},
+                                    { templateUrl : "../x_component_CRM/$Chance/chanceView.json",filterData:{}},
                                     {
                                         lp:_self.app.lp.chance,
                                         isAdmin:_self.options.isAdmin
@@ -1130,7 +1130,7 @@ MWF.xApplication.CRM.Index = new Class({
     getRecordCount:function(filter){
         _self = this;
         jQuery(".openDiv").show();
-        jQuery(".openDiv").append('<div class="headNode"><span class="title">销售简报-新增跟进记录</span><img class="close" src="/x_component_CRM/$Template/close.png"></div>');
+        jQuery(".openDiv").append('<div class="headNode"><span class="title">销售简报-新增跟进记录</span><img class="close" src="../x_component_CRM/$Template/close.png"></div>');
 
         var listCountHtml = '<div class="lsitBody"><table class="el-table__bd" style="width:100%;border-collapse: collapse;"><tbody><tr class="el-table__row current-row">'+
             '<td class="firstCol"><div class="cell">模块</div></td><td><div class="cell">新增跟进记录</div></td></tr></tbody></table></div>'
@@ -1445,7 +1445,7 @@ MWF.xApplication.CRM.Index.ChanceView = new Class({
             }.bind(this));*/
             cdata = json.data;
             layui.config({
-                base: '/x_component_CRM/$Template/plugins/table2/'
+                base: '../x_component_CRM/$Template/plugins/table2/'
             }).use(['table2', "table2"], function () {
                 var table = layui.table2;
                 console.log(cols);

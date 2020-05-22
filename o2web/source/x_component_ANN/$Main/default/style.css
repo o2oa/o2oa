@@ -13,7 +13,7 @@
     float: left;
     cursor: pointer;
     border-right: 0px solid #ffffff;
-    background: url(/x_component_ANN/$Main/default/icon/create.png) center center no-repeat;
+    background: url(../x_component_ANN/$Main/default/icon/create.png) center center no-repeat;
 }
 .o2_ann_topText {
     height: 50px;
@@ -34,7 +34,7 @@
     float: left;
     background-color: #484848;
     overflow: auto;
-    /*background-image: url(/x_component_ANN/$Main/default/icon/bg.jpg);*/
+    /*background-image: url(../x_component_ANN/$Main/default/icon/bg.jpg);*/
     /*background-size: cover;*/
     /*background-repeat: no-repeat;*/
 }
@@ -60,13 +60,13 @@
     /*width: 60px;*/
     /*height: 60px;*/
     /*float: left;*/
-    /*background: url(/x_component_ANN/$Main/default/icon/logo.png) center center no-repeat;*/
+    /*background: url(../x_component_ANN/$Main/default/icon/logo.png) center center no-repeat;*/
 /*}*/
 /*.o2_ann_leftTitleAction {*/
     /*width: 60px;*/
     /*height: 60px;*/
     /*float: right;*/
-    /*background: url(/x_component_ANN/$Main/default/icon/add.png) center center no-repeat;*/
+    /*background: url(../x_component_ANN/$Main/default/icon/add.png) center center no-repeat;*/
     /*cursor: pointer;*/
 /*}*/
 /*.o2_ann_leftTitleText {*/
@@ -90,7 +90,7 @@
     background-color: #333333;
 }
 .o2_ann_model_node .icon {
-    background: url(/x_component_ANN/$Main/default/icon/itemlogo.png) center right no-repeat;
+    background: url(../x_component_ANN/$Main/default/icon/itemlogo.png) center right no-repeat;
     width: 50px;
     height: 60px;
     float: left;
@@ -115,7 +115,7 @@
     background-color: #eeeeee;
 }
 .o2_ann_model_node_selected .icon {
-    background: url(/x_component_ANN/$Main/default/icon/itemlogo_selected.png) center right no-repeat;
+    background: url(../x_component_ANN/$Main/default/icon/itemlogo_selected.png) center right no-repeat;
     width: 50px;
     height: 60px;
     float: left;

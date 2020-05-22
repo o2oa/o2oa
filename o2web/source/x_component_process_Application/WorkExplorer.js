@@ -12,8 +12,8 @@ MWF.xApplication.process.Application.WorkExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_process_Application/$WorkExplorer/";
-        this.cssPath = "/x_component_process_Application/$WorkExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Application/$WorkExplorer/";
+        this.cssPath = "../x_component_process_Application/$WorkExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -704,21 +704,21 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         //    this.checkAreaNode.setStyles({
         //        "min-height": "40px",
         //        "height": "100%",
-        //        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupTop.png) no-repeat center bottom",
+        //        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupTop.png) no-repeat center bottom",
         //    });
         //}
         //if (this.data.rank==2 || this.data.rank==3){
         //    this.checkAreaNode.setStyles({
         //        "min-height": "40px",
         //        "height": "100%",
-        //        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupCenter.png) repeat center top",
+        //        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupCenter.png) repeat center top",
         //    });
         //}
         //if (this.data.rank==4){
         //    this.checkAreaNode.setStyles({
         //        "min-height": "40px",
         //        "height": "100%",
-        //        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupBottom.png) no-repeat center top",
+        //        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupBottom.png) no-repeat center top",
         //    });
         //}
         //这是一段测试----------------------
@@ -1250,7 +1250,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
     createStatusIcon: function(name){
         var node = new Element("div", {"styles": this.css.statusIconNode}).inject(this.statusAreaNode);
         var iconName = (this.data.workStatus==name) ? "status_"+name+"_red.png" : "status_"+name+".png";
-        var icon = "url("+"/x_component_process_Application/$WorkExplorer/"+this.explorer.options.style+"/icon/"+iconName+")"
+        var icon = "url("+"../x_component_process_Application/$WorkExplorer/"+this.explorer.options.style+"/icon/"+iconName+")"
         node.setStyle("background-image", icon);
     },
 

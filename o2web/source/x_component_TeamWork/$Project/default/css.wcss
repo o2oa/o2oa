@@ -24,13 +24,13 @@
 	    "margin-left":"10px",
 	    "width":"50px",
 	    "height":"50px",
-	    "background": "url(/x_component_TeamWork/$Project/default/icon/icon_xiangmu.png) no-repeat center "
+	    "background": "url(../x_component_TeamWork/$Project/default/icon/icon_xiangmu.png) no-repeat center "
 	},
 	"topBarBackHomeNext":{
 	    "float":"left",
         "width":"16px",
         "height":"50px",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_right.png) no-repeat center "
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_right.png) no-repeat center "
 	},
 	topBarBackHomeTextContainer:{
 	    "float":"left",
@@ -53,7 +53,7 @@
 	    "width":"16px",
 	    "cursor":"pointer",
 	    "margin":"0px 10px 0px 6px",
-	    "background": "url(/x_component_TeamWork/$Project/default/icon/icon_triangle_down.png) no-repeat center "
+	    "background": "url(../x_component_TeamWork/$Project/default/icon/icon_triangle_down.png) no-repeat center "
 	},
 	itemLayout:{
 	    "max-height":"650px",
@@ -77,7 +77,7 @@
         "height":"40px",
         "margin-left":"10px",
         "margin-top":"15px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/pic_morentu_220.png) no-repeat center ",
+        "background":"url(../x_component_TeamWork/$Project/default/icon/pic_morentu_220.png) no-repeat center ",
         "background-size":"cover"
     },
     projectListText:{
@@ -97,7 +97,7 @@
         "width":"24px",
         "height":"70px",
         "margin-left":"10px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_dagou.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_dagou.png) no-repeat center "
     },
 	topBarTabsContainer:{
 	    "margin-left":"10px",
@@ -140,7 +140,7 @@
 	    "height":"100%",
 	    "width":"16px",
 	    "margin":"0px 10px",
-	    "background": "url(/x_component_TeamWork/$Project/default/icon/icon_caidan.png) no-repeat center "
+	    "background": "url(../x_component_TeamWork/$Project/default/icon/icon_caidan.png) no-repeat center "
 	},
 	topBarSettingMenuText:{
 	    "float":"left",
@@ -154,7 +154,8 @@
         "width":"300px",
         "height":"100%",
         "overflow-y":"auto",
-        "box-shadow": "0 2px 4px 0 #888888",
+        //"box-shadow": "0 2px 4px 0 #888888",
+        "border-right":"1px solid #cccccc",
         "background-color":"#ffffff"
 	},
 	naviTop:{
@@ -197,7 +198,7 @@
         "height":"24px",
         "cursor":"pointer",
         "margin-top":"12px",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
     },
     naviTopMyTaskLayout:{
         "cursor":"pointer",
@@ -270,7 +271,7 @@
         "height":"24px",
         "cursor":"pointer",
         "margin-top":"12px",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
     },
     naviViewContainer:{
 
@@ -285,7 +286,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_all.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_all.png) no-repeat center "
     },
     naviItemText:{
         "float":"left",
@@ -301,7 +302,7 @@
         "height":"24px",
         "margin-top":"8px",
         "margin-right":"12px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_more.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_more.png) no-repeat center "
     },
     naviItemMyIcon:{
         "float":"left",
@@ -309,7 +310,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_renwu_wzx.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_renwu_wzx.png) no-repeat center "
     },
     naviItemFlowIcon:{
         "float":"left",
@@ -317,7 +318,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_rw_wwc.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_rw_wwc.png) no-repeat center "
     },
     naviItemCompleteIcon:{
         "float":"left",
@@ -325,7 +326,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_renwu_ywc.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_renwu_ywc.png) no-repeat center "
     },
     naviItemOverIcon:{
         "float":"left",
@@ -333,7 +334,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_renwu_yyq.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_renwu_yyq.png) no-repeat center "
     },
 
     menuTipLayout:{
@@ -359,7 +360,7 @@
         "height":"16px",
         "margin-left":"20px",
         "margin-top":"12px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_bianjishitu.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_bianjishitu.png) no-repeat center "
     },
     menuTipRemoveIcon:{
         "float":"left",
@@ -367,7 +368,7 @@
         "height":"16px",
         "margin-left":"20px",
         "margin-top":"12px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_delete_grey.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_delete_grey.png) no-repeat center "
     },
     menuTipText:{
         "float":"left",
@@ -378,7 +379,10 @@
         "margin-left":"10px"
     },
     foldContainer:{
-        float:"left", width:"12px", height:"100%","border-left":"0px solid #ffffff","margin-left":"1px"
+        float:"left",
+        width:"12px",
+        height:"100%",
+        "border-left":"0px solid #ffffff"
     },
     foldIcon:{
          "width":"12px",
@@ -445,7 +449,7 @@
         "height":"60px",
         "width":"24px",
         "margin-right":"4px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_reload.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_reload.png) no-repeat center "
     },
     taskGroupItemTitleAdd:{
         "cursor":"pointer",
@@ -453,7 +457,7 @@
         "height":"60px",
         "width":"24px",
         "margin-right":"4px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
     },
     taskGroupItemTitleMore:{
         "cursor":"pointer",
@@ -461,7 +465,7 @@
         "height":"60px",
         "width":"24px",
         "margin-right":"16px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_more.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_more.png) no-repeat center "
     },
     taskGroupItemContainer:{
         "height":"90%",
@@ -517,7 +521,7 @@
         "height":"16px",
         "margin-right":"2px",
         "margin-top":"4px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_complete.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_complete.png) no-repeat center "
     },
     taskItemName:{
         "float":"left",
@@ -582,7 +586,7 @@
         "float":"left",
         "height":"100%",
         "width":"24px",
-        "background":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png) no-repeat center "
     },
     newTaskGroupText:{
         "float":"left",
@@ -691,14 +695,14 @@
         "width":"30px",
         "height":"100%",
         "cursor":"pointer",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_off_click24.png) no-repeat center"
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_off_click24.png) no-repeat center"
     },
     viewSearchSearch:{
         "float":"right",
         "width":"30px",
         "height":"100%",
         "cursor":"pointer",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_search24.png) no-repeat center"
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_search24.png) no-repeat center"
     },
     viewListContainer:{
         "width":"1000px",
@@ -798,7 +802,7 @@
         "width": "32px",
         "height": "32px",
         "float": "left",
-        "background": "url(/x_component_TeamWork/$Task/default/icon/document.png) no-repeat center 4px"
+        "background": "url(../x_component_TeamWork/$Task/default/icon/document.png) no-repeat center 4px"
     },
     "formTopTextNode": {
         "font-size": "16px",
@@ -813,7 +817,7 @@
         "height": "40px",
         "float": "right",
         "padding-right": "4px",
-        "background": "url(/x_component_TeamWork/$Project/default/icon/icon_off.png) no-repeat center",
+        "background": "url(../x_component_TeamWork/$Project/default/icon/icon_off.png) no-repeat center",
         "cursor": "pointer"
     },
     "formTopContentNode": {
@@ -829,7 +833,7 @@
     "formNewNode": {
         "width": "47px",
         "height": "47px",
-        "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+        "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
     },
     "formIconNode": {
         "width": "47px",

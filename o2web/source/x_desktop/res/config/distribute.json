@@ -132,7 +132,7 @@
       "name": "组件",
       "host": "60.190.253.249",
       "port": 20020,
-      "context": "/x_component_assemble_control"
+      "context": "../x_component_assemble_control"
     },
     "x_message_assemble_communicate": {
       "name": "消息通讯",

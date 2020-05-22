@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Documenteditor/documenteditor.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Documenteditor/documenteditor.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Documenteditor/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Documenteditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Documenteditor/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Documenteditor/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";
@@ -59,10 +59,10 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		this.node.empty();
 		var pageNode = new Element("div.doc_layout_page", {"styles": this.css.doc_page}).inject(this.node);
 		var pageContentNode = new Element("div.doc_layout_page_content", {"styles": this.css.doc_layout_page_content}).inject(pageNode);
-		o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+		o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
 			var o = json[this.json.documentTempleteName];
 			if (o){
-				pageContentNode.loadHtml("/x_component_process_FormDesigner/Module/Documenteditor/templete/"+o.file, function(){
+				pageContentNode.loadHtml("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+o.file, function(){
 					// if (this.attachmentTemplete){
 					// 	var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
 					// 	if (attNode) attNode.empty();
@@ -79,7 +79,7 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		debugger;
 		var templateJson = this.form.dataTemplate["Documenteditor"];
 		if (!templateJson){
-			var templateUrl = "/x_component_process_FormDesigner/Module/Documenteditor/template.json";
+			var templateUrl = "../x_component_process_FormDesigner/Module/Documenteditor/template.json";
 			templateJson = MWF.getJSON(templateUrl, null, false);
 		}
 		if (templateJson) this.json.defaultValue = Object.merge(templateJson.defaultValue, this.json.defaultValue);

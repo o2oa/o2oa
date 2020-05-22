@@ -16,8 +16,8 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_cms_ScriptDesigner/$Script/";
-        this.cssPath = "/x_component_cms_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_ScriptDesigner/$Script/";
+        this.cssPath = "../x_component_cms_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

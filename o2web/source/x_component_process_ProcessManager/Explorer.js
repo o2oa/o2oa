@@ -19,8 +19,8 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_process_ProcessManager/$Explorer/";
-        this.cssPath = "/x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessManager/$Explorer/";
+        this.cssPath = "../x_component_process_ProcessManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -77,7 +77,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
             if (this.app.options.application.icon){
                 this.iconElementNode.setStyle("background-image", "url(data:image/png;base64,"+this.app.options.application.icon+")");
             }else{
-                this.iconElementNode.setStyle("background-image", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
+                this.iconElementNode.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
             }
         }
     },
@@ -428,7 +428,7 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
         if (!this.deleteMode){
             this.deleteMode = true;
             this.node.setStyle("background-color", "#ffb7b7");
-            this.deleteActionNode.setStyle("background-image", "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess_red1.png)");
+            this.deleteActionNode.setStyle("background-image", "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess_red1.png)");
             this.node.removeEvents("mouseover");
             this.node.removeEvents("mouseout");
             if (this.saveasActionNode) this.saveasActionNode.fade("out");
@@ -437,7 +437,7 @@ MWF.xApplication.process.ProcessManager.Explorer.Item = new Class({
         }else{
             this.deleteMode = false;
             this.node.setStyle("background", "#FFF");
-            this.deleteActionNode.setStyle("background-image", "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png)");
+            this.deleteActionNode.setStyle("background-image", "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png)");
             if (this.saveasActionNode) this.saveasActionNode.fade("in");
             this.node.addEvents({
                 "mouseover": function(){

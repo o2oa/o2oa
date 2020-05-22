@@ -25,7 +25,7 @@
     //"border-radius": "3px",
     //"box-shadow": "0px 0px 6px #CCC",
     //"height": "26px",
-    //"background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
+    //"background" : "url(../x_component_Template/$MForm/default/icon/calendar.png) 98% center no-repeat"
     "border": "1px solid #999",
     "box-shadow": "0 0 0 #999",
     "width": "99%",
@@ -46,7 +46,7 @@
     //"box-shadow": "0px 0px 6px #CCC",
     //"min-height": "26px",
     //"overflow" : "hidden",
-    //"background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
+    //"background" : "url(../x_component_Template/$MForm/default/icon/selectperson.png) 98% center no-repeat"
     "border": "1px solid #999",
     "box-shadow": "0 0 0 #999",
     "width": "99%",

@@ -20,7 +20,7 @@ MWF.xApplication.CRM.ClueEdit = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.clue.clueEdit;
-        this.path = "/x_component_CRM/$ClueEdit/";
+        this.path = "../x_component_CRM/$ClueEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -58,7 +58,7 @@ MWF.xApplication.CRM.ClueEdit = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
             if(stype=="select"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px;height:34px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px;height:34px; display: inline-block;"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
             section_conent = section_conent+'<div class="conent-inline"><div class="conent-title" lable="'+i+'">'+itemTemplateObject[i].text+'</div>' +
                 '<div class="conent-value">'+innerHtml+'</div></div>';

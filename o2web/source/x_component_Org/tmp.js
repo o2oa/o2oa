@@ -337,9 +337,9 @@ MWF.xApplication.Org.BaseInfor = new Class({
         var src = "data:image/png;base64,"+this.data.icon;
         if (!this.data.icon){
             if (this.data.genderType==="f"){
-                src = "/x_component_Org/$Explorer/default/icon/female.png"
+                src = "../x_component_Org/$Explorer/default/icon/female.png"
             }else{
-                src = "/x_component_Org/$Explorer/default/icon/man.png"
+                src = "../x_component_Org/$Explorer/default/icon/man.png"
             }
         }
         return src;

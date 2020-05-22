@@ -189,11 +189,11 @@
     "cursor": "pointer",
     "float": "left",
     "margin-right": "5px",
-    "background": "url("+"/x_component_Attendance/$HolidayExplorer/default/icon/delete.png) no-repeat center center"
+    "background": "url("+"../x_component_Attendance/$HolidayExplorer/default/icon/delete.png) no-repeat center center"
   },
   "actionDeleteNode_over":{
     "box-shadow": "1px 1px 2px #999",
-    "background": "url("+"/x_component_Attendance/$HolidayExplorer/default/icon/delete_over.png) no-repeat center center",
+    "background": "url("+"../x_component_Attendance/$HolidayExplorer/default/icon/delete_over.png) no-repeat center center",
     "background-color": "#666"
   },
   "actionDeleteNode_down":{
@@ -227,7 +227,7 @@
 //  "createNewNode": {
 //    "width": "47px",
 //    "height": "47px",
-//    "background": "url(/x_component_Attendance/$HolidayExplorer/default/icon/new.png) no-repeat"
+//    "background": "url(../x_component_Attendance/$HolidayExplorer/default/icon/new.png) no-repeat"
 //  },
 //  "createIconNode": {
 //    "width": "47px",
@@ -261,7 +261,7 @@
 //    "margin-right": "20px",
 //    "margin-top": "20px",
 //    "box-shadow": "0px 0px 0px #666",
-//    "background": "url(/x_component_Attendance/$HolidayExplorer/default/icon/editOk_bg.png) no-repeat"
+//    "background": "url(../x_component_Attendance/$HolidayExplorer/default/icon/editOk_bg.png) no-repeat"
 //  },
 //  "createCancelActionNode": {
 //    "height": "30px",
@@ -277,7 +277,7 @@
 //    "margin-top": "20px",
 //    "box-shadow": "0px 0px 0px #666",
 //    "border": "1px solid #999",
-//    "background": "url(/x_component_Attendance/$HolidayExplorer/default/icon/editCancel_bg.png) no-repeat"
+//    "background": "url(../x_component_Attendance/$HolidayExplorer/default/icon/editCancel_bg.png) no-repeat"
 //  },
 
 
@@ -308,7 +308,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -342,7 +342,7 @@
     "margin-right": "20px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
   },
   "formCancelActionNode": {
     "height": "30px",
@@ -358,7 +358,7 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
   },
   "checkBox" : {
     "margin-right" : "5px",

@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Attachment = MWF.CMSFCAttachment = new 
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Attachment/attachment.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Attachment/attachment.html"
 	}
 });
