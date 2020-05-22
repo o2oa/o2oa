@@ -22,12 +22,12 @@
         "height":"16px",
         "background":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
     },
-    projectSettingContent:{
+    "projectSettingContent":{
         "position":"absolute",
         "top":"40px",
         "bottom":"0px"
     },
-    projectSettingNaviLayout:{
+    "projectSettingNaviLayout":{
         "float":"left",
         "width":"200px",
         "height":"100%",
@@ -231,6 +231,149 @@
          "line-height":"40px",
          "text-align":"center",
          "border-radius":"100px"
+     },
+     "authTitle":{
+        "padding-left":"20px",
+        "height":"30px",
+        "line-height":"30px"
+     },
+     "authContainer":{
+        "margin-left":"20px",
+        "margin-top":"20px",
+        "height":"60px",
+        "border-bottom":"1px dotted #cccccc"
+     },
+     "authItemContainer":{
+        "cursor":"pointer",
+        "float":"left",
+        "margin-right":"10px",
+        "height":"20px",
+        "display":"flex",
+        "justify-content":"center",
+        "align-items":"center"
+     },
+     "authItemIcon":{
+        "float":"left",
+        "width":"16px",
+        "height":"16px",
+        "background":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png) no-repeat center "
+     },
+     "authItemTitle":{
+        "float":"left",
+        "margin-left":"6px",
+        "height":"20px",
+        "line-height":"20px"
+     },
+     "detailTopContainer":{
+        "height":"50px",
+        "line-height":"50px",
+        "margin-left":"50px",
+        "color":"#666666",
+        "font-size":"15px",
+        "margin-top":"20px"
+     },
+     "detailStatTitle":{
+        "margin-left":"50px",
+        "height":"30px",
+        "line-height":"30px"
+     },
+     "detailStatContainer":{
+         "padding-left":"50px"
+      },
+     "detailStatTotal":{
+        "margin-top":"5px",
+        "height":"120px",
+        "width":"100px",
+        "float":"left",
+        "margin-right":"20px"
+     },
+     "detailStatTotalTitle":{
+        "height":"30px",
+        "line-height":"30px",
+        "color":"#8c8c8c",
+        "font-size":"12px"
+     },
+     "detailStatTotalCount":{
+        "margin-top":"10px",
+        "margin-bottom":"5px",
+        "font-size":"28px",
+        "color":"#000000"
+     },
+     "detailStatTotalBar":{
+        "transition":"width 0.6s ease",
+        "background-color":"#ff8478",
+        "width":"40px",
+        "height":"3px",
+        "border-radius":"3px"
+     },
+     "moreActionTitle":{
+        "margin-top":"20px",
+        "font-size":"16px",
+        "color":"",
+        "height":"30px",
+        "line-height":"30px",
+        "padding-left":"50px"
+     },
+     "moreActionDescription":{
+        "font-size":"12px",
+        "color":"",
+        "height":"20px",
+        "line-height":"20px",
+        "padding-left":"50px"
+     },
+     "moreActionContainer":{
+        "padding-left":"50px",
+        "margin-top":"20px"
+     },
+     "moreActionComplete":{
+        "float":"left",
+        "color":"#e62412",
+        "height":"30px",
+        "width":"100px",
+        "line-height":"30px",
+        "text-align":"center",
+        "border-radius":"2px",
+        "border":"1px solid #ffcccc",
+        "margin-right":"20px",
+        "cursor":"pointer"
+     },
+     "moreActionUnComplete":{
+         "float":"left",
+         "color":"#e62412",
+         "height":"30px",
+         "width":"100px",
+         "line-height":"30px",
+         "text-align":"center",
+         "border-radius":"2px",
+         "border":"1px solid #ffcccc",
+         "margin-right":"10px",
+         "cursor":"pointer"
+     },
+     "moreActionRemove":{
+         "float":"left",
+         "color":"#ffffff",
+         "height":"30px",
+         "width":"100px",
+         "line-height":"30px",
+         "text-align":"center",
+         "border-radius":"2px",
+         "border":"1px solid #e62412",
+         "background-color":"#e62412",
+         "margin-right":"10px",
+         "cursor":"pointer"
+     },
+     "moreActionRecover":{
+        "float":"left",
+        "color":"#ffffff",
+        "height":"30px",
+        "width":"100px",
+        "line-height":"30px",
+        "text-align":"center",
+        "border-radius":"2px",
+        "border":"1px solid #e62412",
+        "background-color":"#e62412",
+        "margin-right":"10px",
+        "cursor":"pointer"
      },
 
      customTopLayout:{
