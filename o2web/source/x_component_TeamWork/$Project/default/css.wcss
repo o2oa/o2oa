@@ -154,7 +154,8 @@
         "width":"300px",
         "height":"100%",
         "overflow-y":"auto",
-        "box-shadow": "0 2px 4px 0 #888888",
+        //"box-shadow": "0 2px 4px 0 #888888",
+        "border-right":"1px solid #cccccc",
         "background-color":"#ffffff"
 	},
 	naviTop:{
@@ -378,7 +379,10 @@
         "margin-left":"10px"
     },
     foldContainer:{
-        float:"left", width:"12px", height:"100%","border-left":"0px solid #ffffff","margin-left":"1px"
+        float:"left",
+        width:"12px",
+        height:"100%",
+        "border-left":"0px solid #ffffff"
     },
     foldIcon:{
          "width":"12px",

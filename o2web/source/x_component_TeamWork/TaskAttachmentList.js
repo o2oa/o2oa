@@ -39,15 +39,20 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
             }.bind(this));
         }.bind(this));
 
+        this.rootActions.TaskAction.get(this.data.id,function(json){
+            this.taskData = json.data;
+            if(this.taskData.control && this.taskData.control.edit){  //权限
+                this.addContainer = new Element("div.addContainer",{styles:this.css.addContainer}).inject(this.valueContent);
+                this.addIcon = new Element("div.addIcon",{styles:this.css.addIcon}).inject(this.addContainer);
+                this.addText = new Element("div.addText",{styles:this.css.addText,text:this.lp.attachmentAdd}).inject(this.addContainer);
+                this.addContainer.addEvents({
+                    click:function(){
+                        this.uploadAttachment()
+                    }.bind(this)
+                });
+            }
+        }.bind(this))
 
-        this.addContainer = new Element("div.addContainer",{styles:this.css.addContainer}).inject(this.valueContent);
-        this.addIcon = new Element("div.addIcon",{styles:this.css.addIcon}).inject(this.addContainer);
-        this.addText = new Element("div.addText",{styles:this.css.addText,text:this.lp.attachmentAdd}).inject(this.addContainer);
-        this.addContainer.addEvents({
-            click:function(){
-                this.uploadAttachment()
-            }.bind(this)
-        });
 
     },
     loadAttachmentItem:function(att){

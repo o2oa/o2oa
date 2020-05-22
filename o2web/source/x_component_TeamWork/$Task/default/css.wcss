@@ -357,7 +357,9 @@
         "line-height":"50px"
     },
     taskPriorityValueText:{
-        "width":"50px",
+        //"min-width":"50px",
+        "padding-left":"10px",
+        "padding-right":"10px",
         "height":"25px",
         "line-height":"25px",
         "text-align":"center",
