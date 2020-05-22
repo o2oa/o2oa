@@ -3,14 +3,14 @@ MWF.xApplication.portal.PageDesigner.Module.Textfield = MWF.PCTextfield = new Cl
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Textfield/textfield.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Textfield/textfield.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Textfield/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Textfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Textfield/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Textfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

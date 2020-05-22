@@ -36,7 +36,7 @@
         "cursor":"pointer",
         "width":"20px",
         "height":"20px",
-        "background": "url(/x_component_TeamWork/$TaskSub/default/icon/icon_off.png) no-repeat center"
+        "background": "url(../x_component_TeamWork/$TaskSub/default/icon/icon_off.png) no-repeat center"
     },
     taskGroupLayout:{
         "width":"90%",

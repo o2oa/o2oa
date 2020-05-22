@@ -31,7 +31,7 @@
     "viewLoadingIconNode": {
         "height": "26px",
         "width": "28px",
-        "background": "url("+"/x_component_query_Query/$Statistician/default/icon/loading.gif) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Statistician/default/icon/loading.gif) center center no-repeat",
         "float": "left"
     },
     "viewLoadingTextNode": {
@@ -92,7 +92,7 @@
         "width": "30px",
         "overflow": "hidden",
         "cursor": "pointer",
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAll.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/checkAll.png) center center no-repeat",
         "padding": "3px"
     },
     "statAllColSelectTd": {
@@ -100,13 +100,13 @@
         "border-bottom": "1px solid #DFDFDF",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAllCol.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/checkAllCol.png) center center no-repeat",
         "padding": "3px"
     },
     "statColSelectTd": {
         "border-right": "1px solid #DFDFDF",
         "border-bottom": "1px solid #DFDFDF",
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "height": "20px",
         "padding": "3px"
@@ -116,22 +116,22 @@
         "border-bottom": "1px solid #DFDFDF",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/checkAllRow.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/checkAllRow.png) center center no-repeat",
         "padding": "3px"
     },
     "statRowSelectTd": {
         "border-right": "1px solid #DFDFDF",
         "border-bottom": "1px solid #DFDFDF",
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "width": "30px",
         "padding": "3px"
     },
     "statTableSelectedTd": {
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/checked.png) center center no-repeat"
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/checked.png) center center no-repeat"
     },
     "statTableSelectTd": {
-        "background": "url(/x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat"
+        "background": "url(../x_component_query_Query/$Statistician/default/icon/check.png) center center no-repeat"
     },
     "ststChartFlagNode": {
         "height": "30x",

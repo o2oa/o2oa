@@ -142,7 +142,7 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
     },
     getIconJson: function(callback){
         if (!this.icons){
-            MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+            MWF.getJSON("../x_component_File/$Main/icon.json", function(json){
                 this.icons = json;
                 if (callback) callback();
             }.bind(this), false, false);
@@ -155,7 +155,7 @@ MWF.xApplication.process.ProcessManager.FileExplorer = new Class({
         var ext = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length);
         if (!ext) ext="unkonw";
         var iconName = this.icons[ext.toLowerCase()] || this.icons.unknow;
-        return "/x_component_File/$Main/default/file/"+iconName;
+        return "../x_component_File/$Main/default/file/"+iconName;
     }
 });
 
@@ -411,7 +411,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
     },
     // getIconJson: function(callback){
     //     if (!this.icons){
-    //         MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+    //         MWF.getJSON("../x_component_File/$Main/icon.json", function(json){
     //             this.icons = json;
     //             if (callback) callback();
     //         }.bind(this), false, false);
@@ -422,7 +422,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
     // getIcon: function(ext){
     //     if (!ext) ext="unkonw";
     //     var iconName = this.icons[ext.toLowerCase()] || this.icons.unknow;
-    //     return "/x_component_File/$Main/default/file/"+iconName;
+    //     return "../x_component_File/$Main/default/file/"+iconName;
     // },
     loadFileIcon: function(){
         debugger;

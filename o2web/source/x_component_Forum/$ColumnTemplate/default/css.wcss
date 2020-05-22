@@ -54,7 +54,7 @@
   },
   "itemListItemNode_over" : {
     "color" : "#0258ad",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
   },
   "node_list" : {
     "overflow" : "hidden",
@@ -137,11 +137,11 @@
     "white-space": "nowrap",
     "text-overflow": "ellipsis",
     "letter-spacing" : "1px",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
   },
   "itemListItemNode_over" : {
     "color" : "#0258ad",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
   },
   "itemReplyListNode" : {
     "float" : "left",

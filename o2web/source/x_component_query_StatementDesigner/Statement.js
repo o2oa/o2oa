@@ -15,14 +15,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_query_StatementDesigner/$Statement/statement.html"
+        "propertyPath": "../x_component_query_StatementDesigner/$Statement/statement.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_StatementDesigner/$Statement/";
-        this.cssPath = "/x_component_query_StatementDesigner/$Statement/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_StatementDesigner/$Statement/";
+        this.cssPath = "../x_component_query_StatementDesigner/$Statement/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

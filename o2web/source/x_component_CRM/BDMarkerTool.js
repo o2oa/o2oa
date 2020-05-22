@@ -460,8 +460,8 @@ if(typeof BMapLib._toolInUse == "undefined"){
         me._map.addEventListener("click", me._clickHandler);
     };
 
-    MarkerTool.CUR_IMG = "/x_component_Attendance/$AddressExplorer/default/icon/transparent.cur"; //鼠标透明样式，发布时候修改为绝对路径
-    MarkerTool.ICON_IMG = "/x_component_Attendance/$AddressExplorer/default/icon/us_mk_icon.png"; //图标样式，发布时候修改为绝对路径
+    MarkerTool.CUR_IMG = "../x_component_Attendance/$AddressExplorer/default/icon/transparent.cur"; //鼠标透明样式，发布时候修改为绝对路径
+    MarkerTool.ICON_IMG = "../x_component_Attendance/$AddressExplorer/default/icon/us_mk_icon.png"; //图标样式，发布时候修改为绝对路径
     MarkerTool.SYS_ICONS = [//MarkerTool 提供的系统样式，便于用户选择使用
         new BMap.Icon(MarkerTool.ICON_IMG, new BMap.Size(21, 21), {anchor: new BMap.Size(6, 21), imageOffset: new BMap.Size(0, 0)}),
         new BMap.Icon(MarkerTool.ICON_IMG, new BMap.Size(21, 21), {anchor: new BMap.Size(6, 21), imageOffset: new BMap.Size(-23, 0)}),

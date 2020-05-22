@@ -21,7 +21,7 @@ MWF.xApplication.Setting.UIIndexDocument = new Class({
                 json.map(function(item, index){
                     item.id = item.style;
                     item.name = "default";
-                    //item.url = "/x_desktop/res/mwf4/package/xDesktop/$Layout/"+item.style;
+                    //item.url = "../x_desktop/res/mwf4/package/xDesktop/$Layout/"+item.style;
                     item.url = item.style;
                     item.enabled = (!this.enabledThemes.length || this.enabledThemes.indexOf(item.style)!=-1);
                     if (init) this.enabledThemes.push(item.style);
@@ -146,7 +146,7 @@ MWF.xApplication.Setting.UIIndexDocument.Item = new Class({
             this.previewMaskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px", "z-index": zidx});
             this.previewMaskNode.addEvents({
                 "click": function(e){
-                    window.open("/x_desktop/index.html?style="+this.data.id+"&styletype="+((this.data.name=="default") ? "default" : "custom"));
+                    window.open("../x_desktop/index.html?style="+this.data.id+"&styletype="+((this.data.name=="default") ? "default" : "custom"));
                     e.stopPropagation();
                 }.bind(this),
                 "mousedown": function(e){e.stopPropagation();},
@@ -296,7 +296,7 @@ MWF.xApplication.Setting.UIIndexDocument.Editor = new Class({
             this.previewMaskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px", "z-index": zidx});
             this.previewMaskNode.addEvents({
                 "click": function(e){
-                    window.open("/x_desktop/index.html?style="+this.item.data.id+"&styletype="+((this.item.data.name=="default") ? "default" : "custom"));
+                    window.open("../x_desktop/index.html?style="+this.item.data.id+"&styletype="+((this.item.data.name=="default") ? "default" : "custom"));
                     e.stopPropagation();
                 }.bind(this),
                 "mousedown": function(e){e.stopPropagation();},

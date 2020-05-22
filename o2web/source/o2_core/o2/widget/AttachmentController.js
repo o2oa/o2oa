@@ -29,7 +29,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 		this.cssPath = o2.session.path+"/widget/$AttachmentController/"+this.options.style+"/css.wcss";
 		this._loadCss();
 
-        var iconUrl = this.options.iconConfigUrl ? this.options.iconConfigUrl : "/x_component_File/$Main/icon.json";
+        var iconUrl = this.options.iconConfigUrl ? this.options.iconConfigUrl : "../x_component_File/$Main/icon.json";
         o2.getJSON(iconUrl, function(json){
             this.icons = json;
         }.bind(this), false, false);
@@ -941,7 +941,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                 });
                                 formData.append('file', file);
                                 if(parameter.fileMd5){
-                                    o2.load("/o2_lib/CryptoJS/components/spark-md5-min.js", function(){
+                                    o2.load("../o2_lib/CryptoJS/components/spark-md5-min.js", function(){
 
                                         var fileReader = new FileReader(), box = document.getElementById('box');
                                         var blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice;
@@ -1247,7 +1247,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         if (!this.data.extension) this.data.extension="unkonw";
 
         var iconName = this.controller.icons[this.data.extension.toLowerCase()] || this.controller.icons.unknow;
-        var iconFolderUrl = this.controller.options.iconFolderUrl ? this.controller.options.iconFolderUrl : "/x_component_File/$Main/default/file/";
+        var iconFolderUrl = this.controller.options.iconFolderUrl ? this.controller.options.iconFolderUrl : "../x_component_File/$Main/default/file/";
         return iconFolderUrl+iconName;
     },
 

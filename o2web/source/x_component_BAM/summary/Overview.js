@@ -9,8 +9,8 @@ MWF.xApplication.BAM.summary.Overview = new Class({
     initialize: function(summary, node, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_BAM/summary/$Overview/";
-        this.cssPath = "/x_component_BAM/summary/$Overview/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_BAM/summary/$Overview/";
+        this.cssPath = "../x_component_BAM/summary/$Overview/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.summary = summary;
@@ -63,7 +63,7 @@ MWF.xApplication.BAM.summary.Overview = new Class({
         var itemNumberNode = new Element("div", {"styles": this.css.itemNumberNode}).inject(itemTextNode);
         var itemTitleNode = new Element("div", {"styles": this.css.itemTitleNode}).inject(itemTextNode);
 
-        itemIconNode.setStyle("background-image", "url(/x_component_BAM/summary/$Overview/"+this.options.style+"/icon/"+icon+")");
+        itemIconNode.setStyle("background-image", "url(../x_component_BAM/summary/$Overview/"+this.options.style+"/icon/"+icon+")");
         itemNumberNode.set("text", number || 0);
         itemTitleNode.set("text", title);
     },

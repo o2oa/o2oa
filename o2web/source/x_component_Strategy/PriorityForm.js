@@ -57,7 +57,7 @@ MWF.xApplication.Strategy.PriorityForm = new Class({
     load: function () {
         this.lp = this.app.lp.priority.popupForm;
 
-        this.path = "/x_component_Strategy/$PriorityForm/";
+        this.path = "../x_component_Strategy/$PriorityForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

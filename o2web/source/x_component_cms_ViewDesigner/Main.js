@@ -49,7 +49,7 @@ MWF.xApplication.cms.ViewDesigner.Main = new Class({
 		}
 		this.actions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
 
-        this.path = "/x_component_cms_ViewDesigner/$Main/";
+        this.path = "../x_component_cms_ViewDesigner/$Main/";
 
 		this.lp = MWF.xApplication.cms.ViewDesigner.LP;
 //		this.cmsData = this.options.processData;

@@ -10,8 +10,8 @@ MWF.xApplication.process.Application.StatExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_process_Application/$WorkExplorer/";
-        this.cssPath = "/x_component_process_Application/$WorkExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Application/$WorkExplorer/";
+        this.cssPath = "../x_component_process_Application/$WorkExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

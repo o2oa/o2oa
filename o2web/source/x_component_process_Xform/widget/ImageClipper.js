@@ -16,8 +16,8 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
 	initialize: function(designer, options){
 		this.setOptions(options);
         this.app = designer;
-		this.path = "/x_component_process_Xform/widget/$ImageClipper/";
-		this.cssPath = "/x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_Xform/widget/$ImageClipper/";
+		this.cssPath = "../x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
 		this._loadCss();
 	},
 

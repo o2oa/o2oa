@@ -15,7 +15,7 @@ MWF.xApplication.Execution.Chat = new Class({
         this.lp = lp;
         this.userName = layout.desktop.session.user.name;
         this.userName = layout.desktop.session.user.distinguishedName;
-        this.path = "/x_component_Execution/$Chat/"+this.options.style+"/";
+        this.path = "../x_component_Execution/$Chat/"+this.options.style+"/";
 
         this.actionSettingPath = MWF.defaultPath+"/widget/$SimpleEditor/"+this.options.style+"/ActionSetting.js";
 
@@ -240,7 +240,7 @@ MWF.xApplication.Execution.Chat = new Class({
         //    //this.userCache[ name ] = json;
         //    //if( callback )callback( json );
         //}.bind(this), function(){ alert("err");
-        //    //var json =  { data : { icon : "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
+        //    //var json =  { data : { icon : "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
         //    //this.userCache[ name ] = json;
         //    //if( callback )callback( json );
         //}.bind(this));

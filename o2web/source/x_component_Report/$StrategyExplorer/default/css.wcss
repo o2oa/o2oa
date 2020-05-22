@@ -186,7 +186,7 @@
     "margin-top" : "5px",
     "line-height" : "30px",
     "padding" : "0px 10px 0px 35px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
     "color" : "#4a90e2",
     "border" : "1px dotted #4a90e2",
     "border-radius" : "2px",
@@ -196,7 +196,7 @@
     "cursor" : "pointer"
   },
   "keyWorkTopAction_ext_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
     "background-color" : "#4898F3",
     "color" : "#fff"
   },
@@ -205,7 +205,7 @@
     "width" : "16px",
     "height" : "16px",
     "float" : "left",
-    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
   },
   "keyWorkTopTextNode" : {
     "padding-left" : "10px",
@@ -245,7 +245,7 @@
     "width" : "16px",
     "height" : "24px",
     "float" : "left",
-    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
   },
   "itemMeasureTextNode" : {
     "padding-left" : "10px",
@@ -264,7 +264,7 @@
     "margin-top" : "5px",
     "line-height" : "30px",
     "padding" : "0px 10px 0px 35px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center", //icon_zengjia_click2
     "color" : "#4a90e2",
     "border" : "1px dotted #4a90e2",
     "border-radius" : "2px",
@@ -274,7 +274,7 @@
     "cursor" : "pointer"
   },
   "listTopAction_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
     "background-color" : "#4898F3",
     "color" : "#fff"
   },
@@ -295,11 +295,11 @@
     "margin" : "0px auto",
     "width" : "100px",
     "padding-left" : "30px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center",
     "color" : "#4a90e2"
   },
   "listAddAction_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
     "color" : "#fff"
   },
   "listNode" : {
@@ -412,10 +412,10 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_chakan.png) no-repeat center center"
   },
   "action_view_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan_click.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_chakan_click.png) no-repeat center center"
   },
   "action_edit" : {
     "cursor" : "pointer",
@@ -423,10 +423,10 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_bianji.png) no-repeat center center"
   },
   "action_edit_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji_click.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_bianji_click.png) no-repeat center center"
   },
   "action_remove" : {
     "cursor" : "pointer",
@@ -434,10 +434,10 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_grey.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_delete_grey.png) no-repeat center center"
   },
   "action_remove_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_blue_click2.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_delete_blue_click2.png) no-repeat center center"
   },
   "keyWorkContainer" : {
     "padding-bottom" : "10px"
@@ -462,7 +462,7 @@
     "width" : "16px",
     "height" : "16px",
     "float" : "left",
-    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
   },
   "keyWorkTextNode" : {
     "padding-left" : "10px",
@@ -476,21 +476,21 @@
     "font-size": "14px",
     "color":"#ff5c42",
     "padding-left": "20px",
-    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   },
   "warningMessageNode" : {
     //"margin-top" : "10px",
     "font-size": "12px",
     "color":"#ff5c42",
     "padding-left": "20px",
-    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   },
   "measureIconNode" : { 
     "margin-top" : "1px",
     "width" : "16px",
     "height" : "16px",
     "float" : "left",
-    "background" : "url(/x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$StrategyExplorer/default/icon/icon_biao.png) no-repeat center center"
   },
   "measuresDescribeNode" : {
     "margin-left" : "36px",

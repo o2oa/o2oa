@@ -6,7 +6,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/inputtext.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/inputtext.png) 99% center no-repeat"
   },
   "inputRadio" : {
     "float" : "left",
@@ -19,7 +19,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/calendar.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/calendar.png) 99% center no-repeat"
   },
   "inputPerson" : {
     "width": "100%",
@@ -28,7 +28,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/selectperson.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/selectperson.png) 99% center no-repeat"
   },
   "inputTextarea" : {
     "width": "100%",

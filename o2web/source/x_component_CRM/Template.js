@@ -50,14 +50,14 @@ MWF.xApplication.CRM.Template.Select = new Class({
         this.explorer = explorer;
         this.lp = this.app.lp.template;
         this.actions = this.app.restActions;
-        this.path = "/x_component_CRM/Template/";
+        this.path = "../x_component_CRM/Template/";
         this.loadCss();
 
         this.node = $(node);
         this.actions = actions;
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Template/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Template/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
 
@@ -113,7 +113,7 @@ MWF.xApplication.CRM.Template.Select = new Class({
                 if(!data)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_CRM/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_CRM/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -147,7 +147,7 @@ MWF.xApplication.CRM.Template.Select = new Class({
 
                             _self.node.set("value",this.get("text"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"});
                             if(_self.selectValueDiv.get("text")!=this.get("text")){
                                 _self.selectValueDiv.set({"text":this.get("text")});
                                 if(callback)callback(d);
@@ -190,7 +190,7 @@ MWF.xApplication.CRM.Template.Select = new Class({
                 if(!data.childNodes)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_CRM/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_CRM/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -222,7 +222,7 @@ MWF.xApplication.CRM.Template.Select = new Class({
                             _self.selectValueDiv.set({"text":this.get("text")});
                             _self.node.set("value",this.get("text"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"});
                             if(callback)callback(d);
                             ev.stopPropagation();
                         },
@@ -310,7 +310,7 @@ MWF.xApplication.CRM.Template.PopupForm = new Class({
         }
         this.data = data || {};
 
-        this.cssPath = "/x_component_CRM/$Template/"+this.options.style+"/popup.wcss";
+        this.cssPath = "../x_component_CRM/$Template/"+this.options.style+"/popup.wcss";
 
         this.load();
     },
@@ -763,14 +763,14 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
     },
     loadResource: function ( callback ) {
         if(callback)callback();
-        /*COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css", function(){
+        /*COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css", function(){
         }.bind(this))
         var baseUrls = [
-            "/x_component_CRM/$Template/plugins/jquery.min.js",
+            "../x_component_CRM/$Template/plugins/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/plugins/layui/layui.js";
-        var langUrl =  "/x_component_CRM/$Template/plugins/table2/table2.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/plugins/table2/css/table2.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/plugins/layui/layui.js";
+        var langUrl =  "../x_component_CRM/$Template/plugins/table2/table2.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/plugins/table2/css/table2.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -821,7 +821,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
                 cdata.push(data);
             }.bind(this));
             layui.config({
-                base: '/x_component_CRM/$Template/plugins/table2/'
+                base: '../x_component_CRM/$Template/plugins/table2/'
             }).use(['table2', "table2"], function () {
                 var table = layui.table2;
                 debugger
@@ -948,7 +948,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
         if(this.template.selectSearch){
             var shtml = '<div class="vux-flexbox se-section vux-flex-row"><div class="se-name" style="font-size:15px;margin-left:10px;">筛选：</div><div class="el-dropdown" style="margin-right: 20px;">'+
                 '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:15px;color:#333;">'+this.template.selectSearch.default+'</div>'+
-                '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
             var ulhtml = '<ul class="el-dropdown-type" style="display: none;top:170px;" tid="selectSearch">';
             this.template.selectSearch.items.each(function (item) {
                 if(item.name){
@@ -981,7 +981,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
                 var aHtml = "";
                 var shtml = '<div class="vux-flexbox se-section vux-flex-row headTableNode-left"><div class="el-dropdown" style="margin-right: 20px;">'+
                     '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:13px;color:#333;">'+this.template.selectContion1.record.default+'</div>'+
-                    '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                    '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
 
                 var ulhtml = '<ul class="el-dropdown-type selectSearch"  style="display: none;top:170px;width: 160px;left:395px;" tid="selectSearch">';
                 this.template.selectContion1.record.items.each(function (item) {
@@ -993,7 +993,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
                 aHtml = shtml+ulhtml;
                 aHtml = aHtml+'<div class="vux-flexbox se-section vux-flex-row headTableNode-right"><div class="el-dropdown" style="margin-right: 20px;">'+
                     '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:13px;color:#333;">'+this.template.selectContion1.competence.default+'</div>'+
-                    '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                    '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
                 aHtml = aHtml+'<ul class="el-dropdown-type selectSearch_right" style="display: none;top:170px;width: 120px;left:578px;" tid="selectSearch_right">';
                 this.template.selectContion1.competence.items.each(function (item) {
                     if(item.name){
@@ -1007,7 +1007,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
             if(selectDiv=="分配给我的线索"){
                 var shtml = '<div class="vux-flexbox se-section vux-flex-row headTableNode-left"><div class="el-dropdown" style="margin-right: 20px;">'+
                     '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:13px;color:#333;">'+this.template.selectContion2.record.default+'</div>'+
-                    '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                    '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
 
                 var ulhtml = '<ul class="el-dropdown-type selectSearch" style="display: none;top:170px;width: 160px;left:395px;" tid="selectSearch">';
                 this.template.selectContion2.record.items.each(function (item) {
@@ -1021,7 +1021,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
             if(selectDiv=="分配给我的客户"){
                 var shtml = '<div class="vux-flexbox se-section vux-flex-row headTableNode-left"><div class="el-dropdown" style="margin-right: 20px;">'+
                     '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:13px;color:#333;">'+this.template.selectContion3.record.default+'</div>'+
-                    '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                    '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
 
                 var ulhtml = '<ul class="el-dropdown-type selectSearch" style="display: none;top:170px;width: 160px;left:395px;" tid="selectSearch">';
                 this.template.selectContion3.record.items.each(function (item) {
@@ -1035,7 +1035,7 @@ MWF.xApplication.CRM.Template.ComplexView = new Class({
             if(selectDiv=="待进入公海的客户"){
                 var shtml = '<div class="vux-flexbox se-section vux-flex-row headTableNode-right" style="margin-left:20px;"><div class="el-dropdown" style="margin-right: 20px;">'+
                     '<div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine" style="border:0px;"><div class="se-select-name" style="font-size:13px;color:#333;">'+this.template.selectContion4.competence.default+'</div>'+
-                    '<div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
+                    '<div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div></div></div>';
 
                 var ulhtml = '<ul class="el-dropdown-type selectSearch" style="display: none;top:170px;width: 120px;left:395px;" tid="selectSearch_right">';
                 this.template.selectContion4.competence.items.each(function (item) {
@@ -1761,7 +1761,7 @@ MWF.xApplication.CRM.Template.ComplexViewOpen = new Class({
                 cdata.push(data);
             }.bind(this));
             layui.config({
-                base: '/x_component_CRM/$Template/plugins/table2/'
+                base: '../x_component_CRM/$Template/plugins/table2/'
             }).use(['table2', "table2"], function () {
                 var table = layui.table2;
                 debugger
@@ -1888,8 +1888,8 @@ MWF.xApplication.CRM.Template.ComplexViewOpen = new Class({
         //if(this.template.selectSearch){
             var shtml = '<span class="title">'+this.lp.title+'</span><div class="search-input">'+
                 '<input type="text" autocomplete="off" placeholder="'+this.lp.searchText+'" class="el-input__inner">'+
-                '<div class="el-input-group__append"><img  src="/x_component_CRM/$Template/search.png" class="searchimg"></div>'+
-                '</div><img  src="/x_component_CRM/$Template/close.png" class="close"></div>';
+                '<div class="el-input-group__append"><img  src="../x_component_CRM/$Template/search.png" class="searchimg"></div>'+
+                '</div><img  src="../x_component_CRM/$Template/close.png" class="close"></div>';
 
 
             jQuery(".headNode").append(shtml);
@@ -2509,11 +2509,11 @@ MWF.xApplication.CRM.Template.ComplexDocument = new Class({
     },
     loadResource: function ( callback ) {
         var baseUrls = [
-            "/x_component_CRM/$Template/plugins/jquery.min.js",
+            "../x_component_CRM/$Template/plugins/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/form/js/bootstrap.min.js";
-        var langUrl =  "/x_component_CRM/$Template/form/js/mejs.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/form/css/bootstrap.min.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/form/js/bootstrap.min.js";
+        var langUrl =  "../x_component_CRM/$Template/form/js/mejs.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/form/css/bootstrap.min.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -3070,7 +3070,7 @@ MWF.xApplication.CRM.Template.SelectForm = new Class({
                 cdata.push(data);
             }.bind(this));
             layui.config({
-                base: '/x_component_CRM/$Template/plugins/table2/'
+                base: '../x_component_CRM/$Template/plugins/table2/'
             }).use(['table2', "table2"], function () {
                 var table = layui.table2;
                 console.log(cols);

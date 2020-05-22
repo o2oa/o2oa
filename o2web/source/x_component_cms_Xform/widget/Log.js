@@ -12,8 +12,8 @@ MWF.xApplication.cms.Xform.widget.Log = new Class({
         this.setOptions(options);
         this.app = app;
         this.node = node;
-        this.path = "/x_component_cms_Xform/widget/$Log/";
-        this.cssPath = "/x_component_cms_Xform/widget/$Log/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_cms_Xform/widget/$Log/";
+        this.cssPath = "../x_component_cms_Xform/widget/$Log/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         MWF.xDesktop.requireApp("cms.Xform", "lp."+MWF.language, null, false);

@@ -17,8 +17,8 @@ MWF.xApplication.process.StatDesigner.widget.PersonSelector = new Class({
         this.node = $(node);
         this.app = app;
 
-        this.path = "/x_component_process_ViewDesigner/widget/$PersonSelector/";
-        this.cssPath = "/x_component_process_ViewDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ViewDesigner/widget/$PersonSelector/";
+        this.cssPath = "../x_component_process_ViewDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.identitys = [];

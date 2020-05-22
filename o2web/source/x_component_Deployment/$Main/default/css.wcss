@@ -64,10 +64,10 @@
         "border": "3px solid #C3C3C3",
         "background-repeat": "no-repeat",
         "background-position": "center center",
-        "background-image": "url(/x_component_Deployment/$Main/default/icon/add.png)"
+        "background-image": "url(../x_component_Deployment/$Main/default/icon/add.png)"
 	},
 	"addIconNode_over": {
-	    "background-image": "url(/x_component_Deployment/$Main/default/icon/add_over.png)",
+	    "background-image": "url(../x_component_Deployment/$Main/default/icon/add_over.png)",
 	    "border": "3px solid #3498db",
 	    "box-shadow": "0px 0px 5px #666"
 	},
@@ -115,7 +115,7 @@
         "left": "-10px",
         "width": "32px",
         "height": "32px",
-        "background": "url(/x_component_Deployment/$Main/default/icon/flag.png) no-repeat center center",
+        "background": "url(../x_component_Deployment/$Main/default/icon/flag.png) no-repeat center center",
     },
     "newDeployNode": {
         "overflow": "hidden"

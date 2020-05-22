@@ -27,7 +27,7 @@ MWF.xApplication.Execution.StatForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.statForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$StatForm/";
+        this.path = "../x_component_Execution/$StatForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

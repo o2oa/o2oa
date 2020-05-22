@@ -416,7 +416,7 @@ MWF.xApplication.cms.Index.Column = new Class({
 		this.container = this.app.contentNode;
 		this.data = data;
 		this.isNew = false;
-		this.defaultColumnIcon = "/x_component_cms_Index/$Main/"+this.app.options.style+"/icon/column.png";
+		this.defaultColumnIcon = "../x_component_cms_Index/$Main/"+this.app.options.style+"/icon/column.png";
 	},
 	load : function(){
 		this.loadNode();

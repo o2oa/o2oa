@@ -55,11 +55,11 @@
         "margin" : "15px 20px 0px 20px",
         "font-size" : "14px",
         "padding-left" : "50px",
-        "background" : "url(/x_component_Calendar/$Main/default/icon/createCalendar.png) no-repeat 25px 12px",
+        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar.png) no-repeat 25px 12px",
         "cursor" : "pointer"
     },
     "newCalendarNode_over" : {
-        "background" : "url(/x_component_Calendar/$Main/default/icon/createCalendar_over.png) no-repeat 25px 12px",
+        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar_over.png) no-repeat 25px 12px",
         "background-color" : "#fff",
         "color" : "#3c76b7"
     },
@@ -85,7 +85,7 @@
         "float" : "left",
         //"margin-top" : "12px",
         "margin-left" : "15px",
-        "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_down.png) no-repeat 0px 12px"
+        "background": "url(../x_component_cms_Module/$Main/default/icon/arrow_down.png) no-repeat 0px 12px"
     },
     "categoryCollapseNode" : {
         "height" : "40px",
@@ -93,7 +93,7 @@
         "float" : "left",
         //"margin-top" : "12px",
         "margin-left" : "15px",
-        "background": "url(/x_component_cms_Module/$Main/default/icon/arrow_right.png) no-repeat 0px 12px"
+        "background": "url(../x_component_cms_Module/$Main/default/icon/arrow_right.png) no-repeat 0px 12px"
     },
     "naviItemNode" : {
         "cursor" : "pointer",
@@ -113,7 +113,7 @@
         "margin-right" : "6px",
         "float" : "right",
         "opacity" : "0",
-        "background": "url(/x_component_Calendar/$Main/default/icon/more_over.png) no-repeat 0px 0px"
+        "background": "url(../x_component_Calendar/$Main/default/icon/more_over.png) no-repeat 0px 0px"
     },
     "naviItemTextNode" : {
         "word-break":"break-all",
@@ -140,7 +140,7 @@
         //    "position" : "absolute",
         //    "bottom" : "88px",
         //    "left" : "0px",
-        //    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
+        //    "background-image" : "url(../x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
         //    "background-position" : "-538px -508px"
     },
     "naviColorNode" : {
@@ -171,7 +171,7 @@
 //        "font-family": "Microsoft YaHei",
 //        "font-size": "15px",
 //        "padding-left" : "65px",
-//        "background": "url(/x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 40px 12px",
+//        "background": "url(../x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 40px 12px",
 //        "background-color": "#f7f7f7"
 //    },
 //    "seeMoreNode_over" : {
@@ -189,12 +189,12 @@
         "width" : "120px",
         "font-size" : "14px",
         "padding-left" : "70px",
-        "background" : "url(/x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
+        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
         "background-color" : "#f7f7f7",
         "cursor" : "pointer"
     },
     "seeMoreNode_over" : {
-        "background" : "url(/x_component_Calendar/$Main/default/icon/plazz_over.png) no-repeat 45px 12px",
+        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz_over.png) no-repeat 45px 12px",
         "background-color" : "#f7f7f7",
         "color" : "#3c76b7"
     },
@@ -290,7 +290,7 @@
         "width": "30px",
         "height": "10px",
         "margin": "auto",
-        "background": "url(/x_component_Calendar/$Main/default/icon/point.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$Main/default/icon/point.png) no-repeat center center"
     },
 
     "bottomMenuPoint": {
@@ -322,7 +322,7 @@
 //        "width": "28px",
 //        "height": "32px",
 //        "float": "left",
-//        "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//        "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
 //    },
 //    "popupformTopTextNode" : {
 //        "font-size": "16px",
@@ -341,7 +341,7 @@
 //        "width": "30px",
 //        "height": "30px",
 //        "float": "right",
-//        "background": "url(/x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
+//        "background": "url(../x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
 //        "cursor": "pointer"
 //    },
 
@@ -461,7 +461,7 @@
         "margin-right": "20px",
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
     },
     "createRoomCancelActionNode": {
         "height": "30px",
@@ -477,7 +477,7 @@
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
     },
 
     "createRoomSelectBuildingNode": {
@@ -572,7 +572,7 @@
         "color": "#333",
         "line-height": "30px",
         "width": "99%",
-        "background" : "url(/x_component_Calendar/$Main/default/apply/down.png) 98% center no-repeat"
+        "background" : "url(../x_component_Calendar/$Main/default/apply/down.png) 98% center no-repeat"
     },
     "createCalendarInfoSelectRoomNode": {
         "background-color": "#FFF",
@@ -658,7 +658,7 @@
     "roomTitleDisabledIconNode": {
         "width": "40px",
         "height": "40px",
-        "background": "url(/x_component_Calendar/$Main/default/apply/disabled.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$Main/default/apply/disabled.png) no-repeat center center",
         "position": "relative",
         "top": "-40px",
         "margin-right": "50px",
@@ -676,14 +676,14 @@
         "height": "80px",
         "width": "60px",
         "float": "right",
-        "background": "url(/x_component_Calendar/$Main/default/apply/save.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$Main/default/apply/save.png) no-repeat center center",
         "cursor": "pointer"
     },
     "createCalendarSaveNode_over": {
-        "background": "url(/x_component_Calendar/$Main/default/apply/save_over.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$Main/default/apply/save_over.png) no-repeat center center"
     },
     "createCalendarSaveNode_down": {
-        "background": "url(/x_component_Calendar/$Main/default/apply/save_down.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$Main/default/apply/save_down.png) no-repeat center center"
     },
     "createCalendarSubjectNode": {
         "height": "80px",
@@ -760,7 +760,7 @@
     "configProcessNode": {
         "height": "30px",
         "border-bottom": "1px dashed #ccc",
-        "background": "url(/x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
+        "background": "url(../x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
         "margin-top" : "10px",
         "cursor": "pointer",
         "margin-bottom" : "20px"
@@ -769,7 +769,7 @@
         "min-height": "30px",
         "overflow" : "hidden",
         "border-bottom": "1px dashed #ccc",
-        "background": "url(/x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
+        "background": "url(../x_component_Calendar/$Main/default/icon/addPerson.png) no-repeat right center",
         "margin-top" : "10px",
         "cursor": "pointer",
         "margin-bottom" : "20px"
@@ -931,7 +931,7 @@
         "border-radius" : "100px",
         "padding-left" : "35px",
         "cursor" : "pointer",
-        "background" : "url(/x_component_Calendar/$Main/default/icon/plus.png) no-repeat 13px center"
+        "background" : "url(../x_component_Calendar/$Main/default/icon/plus.png) no-repeat 13px center"
     },
     "marketItemFollowedAction" : {
         "border" : "1px solid #DEDEDE",
@@ -945,7 +945,7 @@
         "border-radius" : "100px",
         "padding-left" : "28px",
         "cursor" : "pointer",
-        "background" : "url(/x_component_Calendar/$Main/default/icon/checked.png) no-repeat 8px center"
+        "background" : "url(../x_component_Calendar/$Main/default/icon/checked.png) no-repeat 8px center"
     },
     "noCalendarNode" : {
         "border": "1px solid #ccc",

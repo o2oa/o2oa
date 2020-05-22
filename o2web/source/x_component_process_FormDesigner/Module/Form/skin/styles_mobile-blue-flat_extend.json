@@ -23,18 +23,18 @@
       "style": "mobile_blue_flat",
       "actionShowText": true,
       "isReplaceHidden": true,
-      "iconConfigUrl": "/x_component_File/$Main/mobile_blue_flat/icon.json",
-      "iconFolderUrl": "/x_component_File/$Main/mobile_blue_flat/file/"
+      "iconConfigUrl": "../x_component_File/$Main/mobile_blue_flat/icon.json",
+      "iconFolderUrl": "../x_component_File/$Main/mobile_blue_flat/file/"
     },
     "hideModuleIcon": true,
     "nodeStyleWithhideModuleIcon": {
       "margin-right": "0px"
     },
     "confirmIcon": {
-      "success": "/x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
-      "error": "/x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
-      "info": "/x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
-      "warn": "/x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+      "success": "../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+      "error": "../x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+      "info": "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+      "warn": "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
     },
     "submitedDlgUseNotice": true,
     "submitedDlgStyle": {
@@ -65,7 +65,7 @@
       "hasShuttle" : false, //穿梭按钮
       "searchbarInTopNode" : false,
       "hasSelectedSearchbar" : true,
-      "contentUrl" : "/x_component_Selector/$Selector/blue_flat_mobile/selector.html",
+      "contentUrl" : "../x_component_Selector/$Selector/blue_flat_mobile/selector.html",
       "injectToBody" : true,
       "itemHeight" : 44,
       "flatCategory" : true

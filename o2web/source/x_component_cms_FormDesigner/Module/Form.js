@@ -5,7 +5,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	Extends: MWF.FCForm,
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Form/form.html",
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Form/form.html",
 		"mode": "PC",
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office",
 			"Orgfield", "Personfield", "Readerfield", "Authorfield", "Org", "Reader", "Author", "Radio", "Select", "Textarea", "Textfield"],
@@ -29,8 +29,8 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	initialize: function(designer, container, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_process_FormDesigner/Module/Form/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Form/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 
@@ -66,7 +66,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	//		if (callback) callback(this.templateStylesList[file]);
 	//		return;
 	//	}
-	//	var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+file;
+	//	var stylesUrl = "../x_component_cms_FormDesigner/Module/Form/skin/"+file;
 	//	MWF.getJSON(stylesUrl,{
 	//			"onSuccess": function(responseJSON){
 	//				this.templateStylesList[file] = responseJSON;
@@ -86,7 +86,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			if (callback) callback({});
 			return;
 		}
-		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+file;
+		var stylesUrl = "../x_component_cms_FormDesigner/Module/Form/skin/"+file;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
 					//this.templateStylesList[file] = responseJSON;
@@ -106,7 +106,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			if (callback) callback({});
 			return;
 		}
-		var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/skin/"+extendFile;
+		var stylesUrl = "../x_component_cms_FormDesigner/Module/Form/skin/"+extendFile;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
 					//this.templateStylesList[file] = responseJSON;
@@ -122,9 +122,9 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		);
 	},
 	loadStylesList: function(callback){
-		//var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
-		//var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
-		var configUrl = "/x_component_cms_FormDesigner/Module/Form/skin/config.json";
+		//var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
+		//var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		var configUrl = "../x_component_cms_FormDesigner/Module/Form/skin/config.json";
 		MWF.getJSON(configUrl,{
 				"onSuccess": function(responseJSON){
 					this.stylesList = responseJSON;
@@ -143,7 +143,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 	},
 
     //loadStylesList: function(callback){
-		//var stylesUrl = "/x_component_cms_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		//var stylesUrl = "../x_component_cms_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
 		//MWF.getJSON(stylesUrl,{
 		//		"onSuccess": function(responseJSON){
 		//			this.stylesList= responseJSON;

@@ -3,14 +3,14 @@ MWF.xApplication.portal.PageDesigner.Module.Personfield = MWF.PCPersonfield = ne
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Personfield/personfield.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Personfield/personfield.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Personfield/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Personfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Personfield/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Personfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

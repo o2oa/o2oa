@@ -91,7 +91,7 @@
         "cursor": "pointer",
         "border": "0px solid #dddddd",
         "border-radius": "8px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$EditionList/default/icon/check.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$EditionList/default/icon/check.png) no-repeat center center",
         "background-color": "#4A90E2"
     },
 

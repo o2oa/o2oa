@@ -5,13 +5,13 @@ MWF.xApplication.cms.FormDesigner.Module.Reader = MWF.CMSFCReader = new Class({
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Org/org.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Org/org.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_cms_FormDesigner/Module/Reader/";
-		this.cssPath = "/x_component_cms_FormDesigner/Module/Reader/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_FormDesigner/Module/Reader/";
+		this.cssPath = "../x_component_cms_FormDesigner/Module/Reader/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

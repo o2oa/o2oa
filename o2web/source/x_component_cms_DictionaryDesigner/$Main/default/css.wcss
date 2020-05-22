@@ -75,7 +75,7 @@
     "listDictionaryItemIcon": {
         "height": "24px",
         "width": "26px",
-        "background": "url("+"/x_component_cms_DictionaryDesigner/$Main/default/dictionary.png) no-repeat center center",
+        "background": "url("+"../x_component_cms_DictionaryDesigner/$Main/default/dictionary.png) no-repeat center center",
         "float": "left"
     },
     "listDictionaryItemText": {

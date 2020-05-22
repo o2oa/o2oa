@@ -20,7 +20,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
     listRemovedSystemTool : function(){
         var list = [];
         if( !this.defaultTools ){
-            MWF.getJSON( "/x_component_cms_FormDesigner/Module/Actionbar/toolbars.json", function(tools){
+            MWF.getJSON( "../x_component_cms_FormDesigner/Module/Actionbar/toolbars.json", function(tools){
                 this.defaultTools = tools;
             }.bind(this), false);
         }
@@ -223,7 +223,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         var _self = this;
         for (var i=-6; i<0; i++){
             //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-            var icon = "/x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
+            var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
             var item = this.iconMenu.addMenuItem("", "click", function(){
                 var src = this.item.getElement("img").get("src");
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
@@ -234,7 +234,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         }
         for (var i=1; i<=134; i++){
             //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-            var icon = "/x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
+            var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
             var item = this.iconMenu.addMenuItem("", "click", function(){
                 var src = this.item.getElement("img").get("src");
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);

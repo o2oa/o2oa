@@ -536,7 +536,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
             textNode.set("html", html);
-            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
     },
 
@@ -1144,13 +1144,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var timeNode = new Element("div", {"styles": this.form.css.logActivityTimeNode}).inject(titleNode);
 
             if (log.connected){
-                iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/ok14.png)");
+                iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/ok14.png)");
             }else{
-                iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+                iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
             }
             fromAvtivityNode.set("html", "<b>"+log.fromActivityName+"</b>");
             if (log.arrivedActivityName){
-                arrowNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/right.png)");
+                arrowNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/right.png)");
                 arrivedAvtivityNode.set("html", "<b>"+log.arrivedActivityName+"</b>");
                 timeNode.set("html", "<b>"+MWF.xApplication.process.Xform.LP.begin+": </b>"+log.fromTime+"<br/><b>"+MWF.xApplication.process.Xform.LP.end+": </b>"+log.arrivedTime)
 
@@ -1358,13 +1358,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var timeNode = new Element("div", {"styles": this.form.css.logActivityTimeNode}).inject(titleNode);
 
             if (log.connected) {
-                iconNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/ok14.png)");
+                iconNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/ok14.png)");
             } else {
-                iconNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/rightRed.png)");
+                iconNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/rightRed.png)");
             }
             fromAvtivityNode.set("html", "<b>" + log.fromActivityName + "</b>");
             if (log.arrivedActivityName) {
-                arrowNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/right.png)");
+                arrowNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/right.png)");
                 arrivedAvtivityNode.set("html", "<b>" + log.arrivedActivityName + "</b>");
                 timeNode.set("html", "<b>" + MWF.xApplication.process.Xform.LP.begin + ": </b>" + log.fromTime + "<br/><b>" + MWF.xApplication.process.Xform.LP.end + ": </b>" + log.arrivedTime)
 
@@ -1549,7 +1549,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = task.person.substring(0, task.person.indexOf("@"))+"("+task.unit.substring(0, task.unit.indexOf("@"))+")" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.startTime;
             textNode.set("html", html);
-            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
     },
     loadMediaOpinion: function(atts, node, type){

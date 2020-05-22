@@ -10,8 +10,8 @@ MWF.xApplication.Calendar.ListView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Calendar/$ListView/";
-        this.cssPath = "/x_component_Calendar/$ListView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Calendar/$ListView/";
+        this.cssPath = "../x_component_Calendar/$ListView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);

@@ -78,7 +78,7 @@ layout.addReady(function(){
                 history.replaceState(null, "startProcess", redirect);
 
             } else {
-                history.replaceState(null, "startProcess", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                history.replaceState(null, "startProcess", "../x_desktop/appMobile.html?app=process.TaskCenter");
                 
             }
             debugger;
@@ -103,7 +103,7 @@ layout.addReady(function(){
                 history.replaceState(null, "startProcess", redirect);
 
             } else {
-                history.replaceState(null, "startProcess", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                history.replaceState(null, "startProcess", "../x_desktop/appMobile.html?app=process.TaskCenter");
             }
 
             // layout.openApplication(null, "process.Work", options);

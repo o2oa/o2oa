@@ -27,7 +27,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
         this.app = explorer.app||explorer;
         this.lp = this.app.lp.WorkReport;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$WorkReport/";
+        this.path = "../x_component_Execution/$WorkReport/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
         //this.container = this.options.container||this.app.content;
@@ -805,7 +805,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
                     "   <td styles='formTableValue' item='readReader'></td>" +
                     "</tr>"+
                     "</table>"+
-                    "<div id='expandIcon' style='text-align: center; cursor:pointer;'><img style='width:20px;height:10px;' src='/x_component_Execution/$WorkReport/default/icon/expand.gif'></div>"+
+                    "<div id='expandIcon' style='text-align: center; cursor:pointer;'><img style='width:20px;height:10px;' src='../x_component_Execution/$WorkReport/default/icon/expand.gif'></div>"+
                     "<table id='workDetails' style='width:95%; margin:0px 40px; display:none' border='0'>"+
                     "<tr>"+
                     "   <td styles='formTableTitle' lable='workSplitAndDescription' width='10%' valign='top'></td>" +
@@ -826,7 +826,7 @@ MWF.xApplication.Execution.WorkReport = new Class({
                     "   </td>"+
                     "<tr>"+
                     "</table>"+
-                    "<div id='foldIcon' style='text-align: center; cursor:pointer;display:none;'><img style='width:20px;height:10px;' src='/x_component_Execution/$WorkReport/default/icon/fold.gif'></div>"
+                    "<div id='foldIcon' style='text-align: center; cursor:pointer;display:none;'><img style='width:20px;height:10px;' src='../x_component_Execution/$WorkReport/default/icon/fold.gif'></div>"
         this.tableContentDiv.set("html", html);
 
         this.expandDiv = this.tableContentDiv.getElementById("expandIcon");

@@ -29,7 +29,7 @@ MWF.xApplication.HotArticle.Main = new Class({
 
         this.restActions = MWF.Actions.get("x_hotpic_assemble_control"); //new MWF.xApplication.HotArticle.Actions.RestActions();
 
-        this.path = "/x_component_HotArticle/$Main/" + this.options.style + "/";
+        this.path = "../x_component_HotArticle/$Main/" + this.options.style + "/";
         this.createNode();
         this.loadApplicationContent();
     },
