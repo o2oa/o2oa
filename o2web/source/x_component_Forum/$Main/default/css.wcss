@@ -109,7 +109,7 @@
     "cursor" : "pointer",
     "width" : "275px",
     "position" : "absolute"
-    //"background": "url(/x_component_Forum/$Main/default/icon/title_background.png) no-repeat 10px 0px"
+    //"background": "url(../x_component_Forum/$Main/default/icon/title_background.png) no-repeat 10px 0px"
   },
   "categoryTopRightNode" : {
     "color" : "#999",
@@ -151,7 +151,7 @@
     "cursor" : "pointer",
     "width" : "275px",
     "position" : "absolute"//,
-    //"background": "url(/x_component_Forum/$Main/default/icon/title_background.png) no-repeat 10px 0px"
+    //"background": "url(../x_component_Forum/$Main/default/icon/title_background.png) no-repeat 10px 0px"
   },
   "recommandTopRightNode" : {
     "padding-right" : "15px",
@@ -362,11 +362,11 @@
     "text-overflow": "ellipsis",
     "letter-spacing" : "1px",
     "padding-left" : "15px",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
   },
   "documentItemListItemNode_over" : {
     "color" : "#0258ad",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
   },
   //tile 样式结束
 
@@ -452,11 +452,11 @@
     "white-space": "nowrap",
     "text-overflow": "ellipsis",
     "letter-spacing" : "1px",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot.png) no-repeat left center"
   },
   "documentItemListItemNode_list_over" : {
     "color" : "#0258ad",
-    "background": "url(/x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
+    "background": "url(../x_component_Forum/$Main/default/icon/dot_over.png) no-repeat left center"
   },
   "documentItemReplyListNode_list" : {
     "float" : "left",
@@ -536,11 +536,11 @@
 //    "left" : "92px",
 //    "width" : "68px",
 //    "height" : "68px",
-//    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
+//    "background": "url(../x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
 //    "position" : "absolute"
 //  },
 //  "documentItemIconNode_over" : {
-//    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
+//    "background": "url(../x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
 //  },
 
 	

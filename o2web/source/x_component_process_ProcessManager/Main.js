@@ -675,7 +675,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         if (this.data.icon){
             this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.icon+") center center no-repeat");
         }else{
-            //this.iconPreviewNode.setStyle("background", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
+            //this.iconPreviewNode.setStyle("background", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
             this.iconPreviewNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/application.png) center center no-repeat")
         }
         var changeIconAction = new Element("div", {
@@ -711,7 +711,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                             if (this.data.icon){
                                 this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.icon+") center center no-repeat");
                             }else{
-                                this.iconPreviewNode.setStyle("background", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
+                                this.iconPreviewNode.setStyle("background", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
                             }
                         }
                     }.bind(this), false)
@@ -747,7 +747,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
                                     if (this.data.icon){
                                         this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.icon+") center center no-repeat");
                                     }else{
-                                        this.iconPreviewNode.setStyle("background", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
+                                        this.iconPreviewNode.setStyle("background", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png) center center no-repeat")
                                     }
                                 }
                             }.bind(this), false)

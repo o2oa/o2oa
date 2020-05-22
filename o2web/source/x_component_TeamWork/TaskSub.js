@@ -46,7 +46,7 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
         this.actions = this.rootActions.TaskAction;
 
         this.data = data || {};
-        this.cssPath = "/x_component_TeamWork/$TaskSub/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$TaskSub/"+this.options.style+"/css.wcss";
 
         this.load();
     },
@@ -90,8 +90,8 @@ MWF.xApplication.TeamWork.TaskSub = new Class({
         });
         this.searchReset = new Element("div.searchReset",{styles:this.css.searchReset}).inject(this.searchDiv);
         this.searchReset.addEvents({
-            mouseover:function(){ this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskSub/default/icon/icon_off_click.png)"}) },
-            mouseout:function(){ this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskSub/default/icon/icon_off.png)"}) },
+            mouseover:function(){ this.setStyles({"background-image":"url(../x_component_TeamWork/$TaskSub/default/icon/icon_off_click.png)"}) },
+            mouseout:function(){ this.setStyles({"background-image":"url(../x_component_TeamWork/$TaskSub/default/icon/icon_off.png)"}) },
             click:function(){
                 this.total = 0;
                 this.curCount = 0;

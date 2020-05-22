@@ -65,7 +65,7 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
     },
     getIconJson: function(callback){
         if (!this.iconJson){
-            o2.JSON.get("/x_component_File/$Main/icon.json", function(iconJson){
+            o2.JSON.get("../x_component_File/$Main/icon.json", function(iconJson){
                 this.iconJson = iconJson;
                 if (callback) callback();
             }.bind(this));
@@ -116,7 +116,7 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
 
         var imgName = this.iconJson[d.extension.toLowerCase()];
         if (!imgName) imgName = this.iconJson["unknow"];
-        iconArea.setStyle("background-image", "url(/x_component_File/$Main/default/file/"+imgName+")");
+        iconArea.setStyle("background-image", "url(../x_component_File/$Main/default/file/"+imgName+")");
 
         return row;
     },

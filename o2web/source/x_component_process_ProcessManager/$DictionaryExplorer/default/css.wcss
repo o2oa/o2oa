@@ -37,7 +37,7 @@
 		"float": "left",
 		"width": "80px",
 		"height": "80px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
 		"cursor": "pointer",
 		"border-right": "1px solid #EEE",
 		"border-left": "0px solid #EEE"
@@ -62,7 +62,7 @@
 		"width": "80px",
 		"height": "80px",
 		"margin-right": "40px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"searchElementInputAreaNode": {
@@ -167,7 +167,7 @@
         "height": "16px",
         "opacity": 0,
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
     },
     "saveasActionNode": {
         "padding": "0px",
@@ -178,7 +178,7 @@
         "margin-left": "5px",
         "opacity": 0,
         "cursor": "pointer",
-        "background": "url(/x_component_process_ProcessManager/$Explorer/default/processIcon/copy.png) no-repeat center center"
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/processIcon/copy.png) no-repeat center center"
     },
 
 	"itemInforNode": {
@@ -231,7 +231,7 @@
 	    "width": "16px",
 	    "height": "16px",
 	    "float": "right",
-	    "background": "url("+"/x_component_process_ProcessManager/$DictionaryExplorer/default/icon/error.png) no-repeat center center",
+	    "background": "url("+"../x_component_process_ProcessManager/$DictionaryExplorer/default/icon/error.png) no-repeat center center",
 	    "position": "relative",
 	    "top": "-16px",
 	    "left": "0px"
@@ -242,7 +242,7 @@
         "position": "relative",
         "top": "-45px",
         "left": "-5px",
-        "background": "url("+"/x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
+        "background": "url("+"../x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
     },
     "itemFileNewNode": {
         "width": "30px",
@@ -250,7 +250,7 @@
         "position": "relative",
         "top": "-65px",
         "left": "-5px",
-        "background": "url("+"/x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
+        "background": "url("+"../x_component_process_ProcessManager/$DictionaryExplorer/default/icon/new.png) no-repeat right"
     },
     "createTemplateMaskNode": {
         "width": "100%",
@@ -528,7 +528,7 @@
         "background-repeat": "no-repeat",
         "background-position": "160px",
         "color": "#666666",
-        "background-image": "url(/x_component_process_ProcessManager/$DictionaryExplorer/default/projectionIcon/check.png)",
+        "background-image": "url(../x_component_process_ProcessManager/$DictionaryExplorer/default/projectionIcon/check.png)",
         "background-color": "#ffffff"
     },
     "projectionTypeSelectNode_over": {
@@ -537,7 +537,7 @@
     "projectionTypeSelectNode_current": {
         "background-color": "#3c76b7",
         "color": "#ffffff",
-        "background-image": "url(/x_component_process_ProcessManager/$DictionaryExplorer/default/projectionIcon/checked.png)",
+        "background-image": "url(../x_component_process_ProcessManager/$DictionaryExplorer/default/projectionIcon/checked.png)",
     },
     "projectionTypeSelectIconNode": {
         "height": "30px",

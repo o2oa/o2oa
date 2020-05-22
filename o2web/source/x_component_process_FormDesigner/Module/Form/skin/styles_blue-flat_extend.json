@@ -8,18 +8,18 @@
       "style" : "blue_flat",
       "actionShowText" : true,
       "isReplaceHidden" : true,
-      "iconConfigUrl" : "/x_component_File/$Main/blue_flat/icon.json",
-      "iconFolderUrl" : "/x_component_File/$Main/blue_flat/file/"
+      "iconConfigUrl" : "../x_component_File/$Main/blue_flat/icon.json",
+      "iconFolderUrl" : "../x_component_File/$Main/blue_flat/file/"
     },
     "hideModuleIcon" : true,
     "nodeStyleWithhideModuleIcon" : {
         "margin-right" : "0px"
     },
     "confirmIcon" : {
-      "success" : "/x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
-      "error" : "/x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
-      "info" : "/x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
-      "warn" : "/x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+      "success" : "../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+      "error" : "../x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+      "info" : "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+      "warn" : "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
     },
     "submitedDlgUseNotice" : true,
     "submitedDlgStyle" : {
@@ -55,7 +55,7 @@
     "errorStyle" : {
       "node" : {
         "border" : "1px solid #ffe1d3 ",
-        "background" : "url(/x_component_process_FormDesigner/Module/Form/notice/icon/error16.png) no-repeat 5px center",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error16.png) no-repeat 5px center",
         "color" : "#3C4658",
         "min-height" : "30px",
         "padding-left" : "30px",
@@ -69,7 +69,7 @@
       },
       "close" : {
         "position" : "absolute",
-        "background" : "url(/x_component_process_FormDesigner/Module/Form/notice/icon/close12.png) no-repeat center center",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close12.png) no-repeat center center",
         "width" : "16px",
         "height" : "16px",
         "right" : "10px",
@@ -103,7 +103,7 @@
           "font-weight" : "normal"
         },
         "title": {
-          "background" : "url(/x_component_process_FormDesigner/Module/Form/notice/icon/info.png) no-repeat left center",
+          "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/info.png) no-repeat left center",
           "height" : "40px",
           "padding-top" : "10px",
           "padding-left" : "40px",
@@ -112,7 +112,7 @@
           "font-weight" : "normal"
         },
         "footer": {
-          "background" : "url(/x_component_process_FormDesigner/Module/Form/notice/icon/close2.png) no-repeat center center",
+          "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close2.png) no-repeat center center",
           "position" : "absolute",
           "top" : "5px",
           "right" : "5px",
@@ -129,7 +129,7 @@
           "background" : "#FFEEE6"
         },
         "title": {
-          "background": "url(/x_component_process_FormDesigner/Module/Form/notice/icon/error.png) no-repeat left center"
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error.png) no-repeat left center"
         }
       }
     },
@@ -141,7 +141,7 @@
           "background" : "#F7FFF0"
         },
         "title": {
-          "background": "url(/x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
         }
       }
     },
@@ -153,7 +153,7 @@
           "background" : "#F7FFF0"
         },
         "title": {
-          "background": "url(/x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
         }
       }
     },
@@ -165,7 +165,7 @@
           "background" : "#FFFAF0"
         },
         "title": {
-          "background": "url(/x_component_process_FormDesigner/Module/Form/notice/icon/notice.png) no-repeat left center"
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png) no-repeat left center"
         }
       }
     }

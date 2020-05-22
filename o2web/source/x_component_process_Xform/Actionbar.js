@@ -65,7 +65,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	},
 
     setCustomToolbars: function(tools, node){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         var iconPath = "";
         if( this.json.customIconStyle ){
             iconPath = this.json.customIconStyle+"/";
@@ -114,7 +114,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     },
 
     setToolbarItem: function(tool, node, readonly, noCondition){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         var flag = true;
         if (tool.control){
             flag = this.form.businessData.control[tool.control]

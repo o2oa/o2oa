@@ -57,7 +57,7 @@ MWF.CMSFormImport.Html = new Class({
 MWF.CMSFormImport.Office = new Class({
     Extends: MWF.CMSFormImport.Html,
     options: {
-        "stylePath": "/x_component_portal_PageDesigner/$Import/{style}/style_office.css"
+        "stylePath": "../x_component_portal_PageDesigner/$Import/{style}/style_office.css"
     },
     init: function(){
         this.inforText = this.form.designer.lp.importOffice_infor;

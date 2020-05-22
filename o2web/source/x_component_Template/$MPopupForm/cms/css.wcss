@@ -53,7 +53,7 @@
     "float": "right",
     "margin-top" : "13px",
     "margin-right" : "20px",
-    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_close_square_pre.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/blue/icon/icon_close_square_pre.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopMaxActionNode": {
@@ -61,7 +61,7 @@
     "height": "32px",
     "float": "right",
     "margin-top" : "13px",
-    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_max_square_pre.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/blue/icon/icon_max_square_pre.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -70,7 +70,7 @@
     "height": "32px",
     "float": "right",
     "margin-top" : "13px",
-    "background": "url(/x_component_Template/$MPopupForm/blue/icon/icon_restore_square_pre.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/blue/icon/icon_restore_square_pre.png) no-repeat center center",
     "cursor": "pointer"
   },
   "resizeNode" : {
@@ -116,7 +116,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -196,7 +196,7 @@
     "margin-right": "30px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
+    "background": "url("+"../x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
   },
   "formCancelActionNode": {
     "height": "30px",
@@ -212,6 +212,6 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
+    "background": "url("+"../x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
   }
 }

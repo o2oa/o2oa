@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Log = MWF.FCLog = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Log/log.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Log/log.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Log/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Log/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Log/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Log/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

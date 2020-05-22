@@ -46,7 +46,7 @@
     "moduleIconNode": {
         "width": "160px",
         "height": "160px",
-        "background-image": "url(/x_component_AppMarket/$Main/default/icon/logo1.png)",
+        "background-image": "url(../x_component_AppMarket/$Main/default/icon/logo1.png)",
         "background-repeat": "no-repeat",
         "background-position": "center"
     },
@@ -128,7 +128,7 @@
     "moduleSetupIconNode": {
         "width": "130px",
         "height": "130px",
-        "background": "url(/x_component_AppMarket/$Main/default/icon/logo1.png) center center no-repeat"
+        "background": "url(../x_component_AppMarket/$Main/default/icon/logo1.png) center center no-repeat"
     },
 
     "moduleSetupTitleContentNode": {

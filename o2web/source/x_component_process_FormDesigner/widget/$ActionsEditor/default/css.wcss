@@ -27,7 +27,7 @@
         "margin-left": "6px",
         "float": "left",
         "cursor": "pointer",
-        "background": "url(/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/restore.png) no-repeat center center"
+        "background": "url(../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/restore.png) no-repeat center center"
     },
     "actionNode": {
         "overflow": "hidden",
@@ -57,31 +57,31 @@
     "actionPropertiesButtonNode" : {
         "height": "24px",
         "width": "20px",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/property.png) no-repeat center center",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/property.png) no-repeat center center",
         "float": "right"
     },
     "actionUpButtonNode" : {
         "height": "24px",
         "width": "20px",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/up.png) no-repeat center center",
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/up.png) no-repeat center center",
         "float": "right"
     },
     "actionEditButtonNode": {
        "height": "24px",
        "width": "20px",
-       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/edit.png) no-repeat center center",
+       "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/edit.png) no-repeat center center",
        "float": "right"
     },
     "actionReadButtonNode": {
        "height": "24px",
        "width": "20px",
-       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/read.png) no-repeat center center",
+       "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/read.png) no-repeat center center",
        "float": "right"
     },
     "actionConditionButtonNode": {
        "height": "24px",
        "width": "20px",
-       "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/code_empty.png) no-repeat center center",
+       "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/code_empty.png) no-repeat center center",
        "float": "right"
     },
     "actionTextNode": {
@@ -125,14 +125,14 @@
         "width": "240px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/delete1.png) no-repeat center center"
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/delete1.png) no-repeat center center"
     },
     "addAction": {
         "height": "24px",
         "width": "240px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/add2.png) no-repeat center center"
+        "background": "url("+"../x_component_process_FormDesigner/widget/$ActionsEditor/default/icon/add2.png) no-repeat center center"
     }
 
 }

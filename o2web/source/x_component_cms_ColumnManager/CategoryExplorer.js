@@ -19,8 +19,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_cms_ColumnManager/$CategoryExplorer/";
-        this.cssPath = "/x_component_cms_ColumnManager/$CategoryExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_ColumnManager/$CategoryExplorer/";
+        this.cssPath = "../x_component_cms_ColumnManager/$CategoryExplorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -585,7 +585,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.Category = new Class({
         "isNew" : false,
         "relativeNode" : null,
         "relativePosition" : "bottom",
-        //"propertyPath": "/x_component_process_FormDesigner/Module/Table$Td/table$td.html",
+        //"propertyPath": "../x_component_process_FormDesigner/Module/Table$Td/table$td.html",
         "actions_edit" : [
             {
                 "name": "saveCategory",
@@ -1557,8 +1557,8 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewExplorer =  new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_cms_ColumnManager/$Explorer/";
-        this.cssPath = "/x_component_cms_ColumnManager/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_ColumnManager/$Explorer/";
+        this.cssPath = "../x_component_cms_ColumnManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -1995,7 +1995,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
         }).inject(this.node);
         if( this.options.isCategoryDefaultView ){
             this.showNameNode.setStyles({
-                "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 10px 12px",
+                "background": "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 10px 12px",
                 "font-size" : "15px",
                 "padding-left":"35px"
             });
@@ -2236,7 +2236,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.View = new Class({
 
         this.node.inject( this.container, "top" );
         this.showNameNode.setStyles({
-            "background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 10px 12px",
+            "background": "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 10px 12px",
             "font-size" : "15px",
             "padding-left":"35px"
         });

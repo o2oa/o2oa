@@ -154,7 +154,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Attendance/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -166,7 +166,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Attendance/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -178,7 +178,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Attendance/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dbldesc.gif)"
   },
 
   "documentItemNode": {
@@ -225,11 +225,11 @@
     "cursor": "pointer",
     "float": "left",
     "margin-right": "5px",
-    "background": "url("+"/x_component_Attendance/$Explorer/default/icon/delete.png) no-repeat center center"
+    "background": "url("+"../x_component_Attendance/$Explorer/default/icon/delete.png) no-repeat center center"
   },
   "actionDeleteNode_over":{
     "box-shadow": "1px 1px 2px #999",
-    "background": "url("+"/x_component_Attendance/$Explorer/default/icon/delete_over.png) no-repeat center center",
+    "background": "url("+"../x_component_Attendance/$Explorer/default/icon/delete_over.png) no-repeat center center",
     "background-color": "#666"
   },
   "actionDeleteNode_down":{

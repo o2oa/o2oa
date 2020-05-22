@@ -59,7 +59,7 @@ MWF.xApplication.Selector.Duty.Item = new Class({
     },
     _setIcon: function() {
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url(" + "/x_component_Selector/$Selector/"+style+"/icon/duty.png)");
+        this.iconNode.setStyle("background-image", "url(" + "../x_component_Selector/$Selector/"+style+"/icon/duty.png)");
     },
     checkSelectedSingle: function(){
         var selectedItem = this.selector.options.values.filter(function(item, index){
@@ -91,7 +91,7 @@ MWF.xApplication.Selector.Duty.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/duty.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/duty.png)");
     },
     check: function(){
         if (this.selector.items.length){

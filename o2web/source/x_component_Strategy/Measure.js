@@ -26,7 +26,7 @@ MWF.xApplication.Strategy.KeyWorkForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.keyWork.popupForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Strategy/$KeyWorkForm/";
+        this.path = "../x_component_Strategy/$KeyWorkForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

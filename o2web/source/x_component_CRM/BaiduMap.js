@@ -17,14 +17,14 @@ MWF.xApplication.CRM.BaiduMap = new Class({
         this.app = app;
         this.explorer = explorer;
         this.lp = app.lp.BaiduMap;
-        this.path = "/x_component_CRM/$BaiduMap/";
+        this.path = "../x_component_CRM/$BaiduMap/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$BaiduMap/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$BaiduMap/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function (markerData) {
@@ -148,7 +148,7 @@ MWF.xApplication.CRM.BaiduMap = new Class({
             COMMON.AjaxModule.loadDom(apiPath, function () {
                 window.BDMapApiLoaded = true;
                 if( !window.BDMarkerToolLoaded ){
-                    COMMON.AjaxModule.load( "/x_component_CRM/BDMarkerTool.js", function(){
+                    COMMON.AjaxModule.load( "../x_component_CRM/BDMarkerTool.js", function(){
                         window.BDMarkerToolLoaded = true;
                         this._loadMap();
                         if (callback)callback();
@@ -309,13 +309,13 @@ MWF.xApplication.CRM.BaiduMap.MaxMap = new Class({
         this.app = app;
         this.explorer = explorer;
         this.lp = app.lp.BaiduMap;
-        this.path = "/x_component_CRM/$BaiduMap/";
+        this.path = "../x_component_CRM/$BaiduMap/";
         this.loadCss();
 
         this.actions = actions;
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$BaiduMap/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$BaiduMap/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
 
@@ -342,7 +342,7 @@ MWF.xApplication.CRM.BaiduMap.MaxMap = new Class({
             COMMON.AjaxModule.loadDom(apiPath, function () {
                 window.BDMapApiLoaded = true;
                 if( !window.BDMarkerToolLoaded ){
-                    COMMON.AjaxModule.load( "/x_component_CRM/BDMarkerTool.js", function(){
+                    COMMON.AjaxModule.load( "../x_component_CRM/BDMarkerTool.js", function(){
                         window.BDMarkerToolLoaded = true;
                         this._loadMap();
                         if (callback)callback();

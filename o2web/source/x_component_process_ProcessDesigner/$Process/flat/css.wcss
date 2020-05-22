@@ -26,7 +26,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/begin.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/begin.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -35,7 +35,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/begin.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/begin.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -66,7 +66,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/end.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/end.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -75,7 +75,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/end.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/end.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -106,7 +106,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/cancel.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/cancel.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -115,7 +115,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/cancel.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/cancel.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -145,7 +145,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/manual.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/manual.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -154,7 +154,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/manual.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/manual.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -185,7 +185,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/condition.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/condition.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -194,7 +194,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/condition.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/condition.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -225,7 +225,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/choice.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/choice.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -234,7 +234,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/choice.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/choice.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -266,7 +266,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/split.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/split.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -275,7 +275,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/split.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/split.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -307,7 +307,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/parallel.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/parallel.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -316,7 +316,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/parallel.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/parallel.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -348,7 +348,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/merge.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/merge.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -357,7 +357,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/merge.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/merge.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -389,7 +389,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/delay.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/delay.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -398,7 +398,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/delay.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/delay.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -428,7 +428,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/invoke.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/invoke.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -437,7 +437,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -467,7 +467,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/service.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/service.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -476,7 +476,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/service.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/service.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -507,7 +507,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/embed.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/embed.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -516,7 +516,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/embed.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/embed.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -546,7 +546,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/agent.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/agent.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -555,7 +555,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/agent.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/agent.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -585,7 +585,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/flat/icon/message.png",
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/message.png",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -594,7 +594,7 @@
 			"listIcon": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/message.png"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/message.png"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -716,7 +716,7 @@
 			"background-repeat": "no-repeat",
 			"border-bottom": "1px dashed #CCC",
 			"cursor": "pointer",
-			"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/route.gif"+")"
+			"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/route.gif"+")"
 		}
 	},
 	"list": {
@@ -890,7 +890,7 @@
         "width": "24px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessDesigner/$Process/flat/icon/refresh.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/$Process/flat/icon/refresh.png) no-repeat center center",
         "cursor": "pointer"
     },
     "applicationSelectTitle": {

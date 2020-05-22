@@ -9,8 +9,8 @@ MWF.xApplication.BAM.monthly.MonthlyContent = new Class({
     initialize: function(monthly, node, options){
         this.setOptions(options);
 
-        this.path = "/x_component_BAM/monthly/$MonthlyContent/";
-        this.cssPath = "/x_component_BAM/monthly/$MonthlyContent/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_BAM/monthly/$MonthlyContent/";
+        this.cssPath = "../x_component_BAM/monthly/$MonthlyContent/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.monthly = monthly;
@@ -111,7 +111,7 @@ MWF.xApplication.BAM.monthly.MonthlyContent = new Class({
                     if (idx!=-1){
                         //this.sortSelectMenu.items[idx].setDisable(true);
                         //this.sortSelectMenu.items[idx].
-                        src = "/x_component_BAM/monthly/$MonthlyContent/"+this.options.style+"/icon/selected.png";
+                        src = "../x_component_BAM/monthly/$MonthlyContent/"+this.options.style+"/icon/selected.png";
                         var img = new Element("img", {"styles": this.sortSelectMenu.css.menuItemImg, "src": src}).inject(this.sortSelectMenu.items[idx].item.getFirst());
                     }
                 }.bind(this),

@@ -32,29 +32,29 @@
         "height": "30px",
         "width": "40px",
         "margin": "10px 0px 10px 40px",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/left24_gray.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/left24_gray.png) no-repeat center center",
         "cursor": "pointer",
         "float": "left"
     },
     "calendarPrevMonthNode_over": {
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/left24_blue.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/left24_blue.png) no-repeat center center"
     },
     "calendarPrevMonthNode_down": {
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/left24_blue.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/left24_blue.png) no-repeat center center"
     },
     "calendarNextMonthNode": {
         "height": "30px",
         "width": "40px",
         "margin": "10px 0px",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/right24_gray.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/right24_gray.png) no-repeat center center",
         "cursor": "pointer",
         "float": "left"
     },
     "calendarNextMonthNode_over": {
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/right24_blue.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/right24_blue.png) no-repeat center center"
     },
     "calendarNextMonthNode_down": {
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/right24_blue.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/right24_blue.png) no-repeat center center"
     },
     "calendarTitleTextNode": {
         "line-height": "48px",
@@ -88,14 +88,14 @@
         "height": "50px",
         "width": "40px",
         "float": "left",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/icon_left.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/icon_left.png) no-repeat center center",
         "cursor": "pointer"
     },
     "calendarMonthSelectTitleNextYearNode": {
         "height": "50px",
         "width": "40px",
         "float": "right",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/icon_right.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/icon_right.png) no-repeat center center",
         "cursor": "pointer"
     },
     "calendarMonthSelectTitleTextNode": {
@@ -260,13 +260,13 @@
         "position": "relative",
         "top": "-36px",
         "margin-left": "140px",
-        "background": "url(/x_component_Calendar/$DayView/default/icon/down.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$DayView/default/icon/down.png) no-repeat center center"
     },
     "dayTitleDownNode_over": {
-        "background": "url(/x_component_Calendar/$DayView/default/icon/down_over.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$DayView/default/icon/down_over.png) no-repeat center center"
     },
     "dayTitleDownNode_down": {
-        "background": "url(/x_component_Calendar/$DayView/default/icon/down_down.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/$DayView/default/icon/down_down.png) no-repeat center center"
     },
 
     "dayTitleDateNode": {

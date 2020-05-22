@@ -16,8 +16,8 @@ MWF.xApplication.Template.Selector.Custom = new Class({
     },
     initialize: function(container, options  ){
         this.setOptions(options);
-        this.path = "/x_component_Selector/$Selector/";
-        this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Selector/$Selector/";
+        this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss(true);
         this.container = $(container);
         this.selectedItems = [];
@@ -116,7 +116,7 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;
@@ -153,7 +153,7 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;
@@ -186,7 +186,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     _getTtiteText: function(){
         return this.data.name;

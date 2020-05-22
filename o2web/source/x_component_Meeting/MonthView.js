@@ -9,8 +9,8 @@ MWF.xApplication.Meeting.MonthView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Meeting/$MonthView/";
-        this.cssPath = "/x_component_Meeting/$MonthView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Meeting/$MonthView/";
+        this.cssPath = "../x_component_Meeting/$MonthView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);
@@ -593,7 +593,7 @@ MWF.xApplication.Meeting.MonthView.Calendar.Day.Meeting = new Class({
         //this.node.set("title", this.data.subject);
         //
         //if (this.data.myWaitAccept){
-        //    this.iconNode.setStyle("background", "url(/x_component_Meeting/$MonthView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
+        //    this.iconNode.setStyle("background", "url(../x_component_Meeting/$MonthView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
         //}
 
         switch (this.data.status){

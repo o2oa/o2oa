@@ -12,8 +12,8 @@ MWF.xApplication.cms.Column.Exporter = new Class({
         this.container = this.app.content;
         this.data = data;
 
-        this.path = "/x_component_cms_Column/$Exporter/";
-        this.cssPath = "/x_component_cms_Column/$Exporter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Column/$Exporter/";
+        this.cssPath = "../x_component_cms_Column/$Exporter/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){

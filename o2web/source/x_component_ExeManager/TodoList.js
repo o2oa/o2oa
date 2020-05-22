@@ -17,14 +17,14 @@ MWF.xApplication.ExeManager.TodoList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_ExeManager/$TodoList/";
+        this.path = "../x_component_ExeManager/$TodoList/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_ExeManager/$TodoList/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_ExeManager/$TodoList/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -306,7 +306,7 @@ MWF.xApplication.ExeManager.TodoList.WorkForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.baseWorkForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_ExeManager/$TodoList/";
+        this.path = "../x_component_ExeManager/$TodoList/";
         this.cssPath = this.path + this.options.style + "/baseWorkForm.wcss";
 
         this._loadCss();

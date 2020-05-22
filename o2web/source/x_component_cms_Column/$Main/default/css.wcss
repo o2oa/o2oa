@@ -34,7 +34,7 @@
     "columnDefaultIcon" : {
         "height" : "72px",
         "width" : "72px",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/column.png) middle center no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/column.png) middle center no-repeat"
     },
     "toolbarAreaNode": {
         "height": "40px",
@@ -89,7 +89,7 @@
         "border-bottom": "2px solid #FAFAFA",
         "font-size": "16px",
         "color": "#333333",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/icon_quanbu.png) 0 center no-repeat",
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icon_quanbu.png) 0 center no-repeat",
         "cursor": "pointer"
     },
     "columnTop_All_over": {
@@ -98,7 +98,7 @@
     "columnTop_All_current": {
         "color": "#4A90E2",
         "border-bottom": "2px solid #4A90E2",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/icon_quanbu_click.png) 0 center no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icon_quanbu_click.png) 0 center no-repeat"
     },
 
 
@@ -106,7 +106,7 @@
         "float": "right",
         "margin-right": "30px",
         "width": "56px",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/icon__leading_in_grey.png) 0 center no-repeat",
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icon__leading_in_grey.png) 0 center no-repeat",
         "padding-left": "22px",
         "height": "50px",
         "line-height": "50px",
@@ -140,7 +140,7 @@
         "border-bottom": "2px solid #FAFAFA",
         "font-size": "14px",
         "color": "#333333",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/icon_files.png) 0 center no-repeat",
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icon_files.png) 0 center no-repeat",
         "cursor": "pointer"
     },
     "columnTop_categoryItem_over": {
@@ -149,7 +149,7 @@
     "columnTop_categoryItem_current": {
         "color": "#4A90E2",
         "border-bottom": "2px solid #4A90E2",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/icon_files_click.png) 0 center no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/icon_files_click.png) 0 center no-repeat"
     },
 
 
@@ -169,7 +169,7 @@
         "font-weight": "bold",
         /*border": "1px solid #eeeeee",*/
         "border-radius": "5px",
-        "background-image": "url(/x_component_cms_Column/$Main/default/icon/more.png)",
+        "background-image": "url(../x_component_cms_Column/$Main/default/icon/more.png)",
         "background-position": "center center",
         "background-repeat": "no-repeat",
         /*background-color": "#dddddd",*/
@@ -183,7 +183,7 @@
 //        "line-height": "50px",
 //        "color" : "#666",
 //        "font-size" : "15px",
-//        "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument.png) center center no-repeat",
+//        "background": "url(../x_component_cms_Index/$Main/default/icon/createDocument.png) center center no-repeat",
 //        "float": "right",
 //        "padding-left" : "90px",
 //        "margin-right" : "16px",
@@ -192,7 +192,7 @@
         "border-radius": "100px",
         "font-size": "14px",
         "color": "#FFFFFF",
-        "background-image": "url(/x_component_cms_Column/$Main/default/icon/icon_zengjia_click2.png)",
+        "background-image": "url(../x_component_cms_Column/$Main/default/icon/icon_zengjia_click2.png)",
         "background-position": "21px center",
         "background-repeat": "no-repeat",
         "width": "77px",
@@ -205,7 +205,7 @@
     },
     "createColumnNode_over": {
 //        "color" : "#3c76b7",
-//        "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument_over.png) center center no-repeat"
+//        "background": "url(../x_component_cms_Index/$Main/default/icon/createDocument_over.png) center center no-repeat"
     },
     "columnItemNode": {
         "width": "260px",
@@ -228,7 +228,7 @@
 
     "columnItemTopNode": {
         "height": "106px",
-        "background" : "url(/x_component_cms_Column/$Main/default/icon/itemBackground.png) 0px 90px no-repeat",
+        "background" : "url(../x_component_cms_Column/$Main/default/icon/itemBackground.png) 0px 90px no-repeat",
         "background-color" : "#999",
         "cursor": "pointer",
         "opacity": "0.5"
@@ -257,7 +257,7 @@
 //        "height": "47px",
 //        "position": "relative",
 //        "top": "-80px",
-//        "background": "url(/x_component_cms_Column/$Main/default/icon/new.png) no-repeat right"
+//        "background": "url(../x_component_cms_Column/$Main/default/icon/new.png) no-repeat right"
 //    },
 
     "columnItemIconAreaNode" : {
@@ -348,7 +348,7 @@
         "height": "26px",
         "top": "5px",
         "display": "none",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/trash.png) no-repeat center center"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/trash.png) no-repeat center center"
     },
     "columnItemEditActionNode": {
         "position" : "absolute",
@@ -357,7 +357,7 @@
         "height": "26px",
         "top": "5px",
         "display": "none",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/edit.png) no-repeat center center"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/edit.png) no-repeat center center"
     },
     "columnItemExportActionNode": {
         "position" : "absolute",
@@ -366,7 +366,7 @@
         "height": "26px",
         "top": "5px",
         "display": "none",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/export.png) no-repeat center center"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/export.png) no-repeat center center"
     },
     "columnCreateMarkNode": {
         "opacity": 0.6,
@@ -393,7 +393,7 @@
     "columnCreateNewNode": {
         "width": "47px",
         "height": "47px",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/new.png) no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/new.png) no-repeat"
     },
     "columnCreateEditNode": {
         "width": "47px",
@@ -423,7 +423,7 @@
         "margin-right": "20px",
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/editOk_bg.png) no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/editOk_bg.png) no-repeat"
     },
     "columnCreateCancelActionNode": {
         "height": "30px",
@@ -439,6 +439,6 @@
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url(/x_component_cms_Column/$Main/default/icon/editCancel_bg.png) no-repeat"
+        "background": "url(../x_component_cms_Column/$Main/default/icon/editCancel_bg.png) no-repeat"
     }
 }

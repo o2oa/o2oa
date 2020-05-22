@@ -83,10 +83,10 @@
     height: 22px;
     width:20px;
     float: left;
-    background: url("/x_component_portal_PageDesigner/$Script/default/collapse.gif") no-repeat center center;
+    background: url("../x_component_portal_PageDesigner/$Script/default/collapse.gif") no-repeat center center;
 }
 .itemCategoryTitleIcon_expand {
-    background: url("/x_component_portal_PageDesigner/$Script/default/expand.gif") no-repeat center center;
+    background: url("../x_component_portal_PageDesigner/$Script/default/expand.gif") no-repeat center center;
 }
 .itemCategoryTitleName {
     height: 22px;
@@ -110,7 +110,7 @@
     height: 24px;
     width: 26px;
     float: left;
-    background: url("/x_component_portal_PageDesigner/$Script/default/script.png") no-repeat center center;
+    background: url("../x_component_portal_PageDesigner/$Script/default/script.png") no-repeat center center;
 }
 .itemText {
     margin-left: 28px;

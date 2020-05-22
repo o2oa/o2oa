@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"path": "/x_component_process_FormDesigner/property/property.html"
+		"path": "../x_component_process_FormDesigner/property/property.html"
 	},
 	
 	initialize: function(module, propertyNode, designer, options){
@@ -181,7 +181,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 
                             MWF.widget.ace.load(function(){
-                                COMMON.AjaxModule.loadDom("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                                COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                                     var highlight = ace.require("ace/ext/static_highlight");
                                     highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
                                 }.bind(this));
@@ -495,7 +495,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadDocumentTempleteSelect: function(){
         var nodes = this.propertyContent.getElements(".MWFDocumentTempleteSelect");
         if (nodes.length){
-            o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+            o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
                 nodes.each(function(node){
                     var name = node.get("name");
                     Object.each(json, function(o, k){
@@ -626,7 +626,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.iconMenu = iconSelectMenu;
             var _self = this;
             for (var i=0; i<=48; i++){
-                var icon = "/x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
+                var icon = "../x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");
@@ -671,7 +671,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.iconMenu = iconSelectMenu;
             var _self = this;
             for (var i=1; i<=21; i++){
-                var icon = "/x_component_process_FormDesigner/Module/Label/default/icon/flag/"+i+".png";
+                var icon = "../x_component_process_FormDesigner/Module/Label/default/icon/flag/"+i+".png";
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");

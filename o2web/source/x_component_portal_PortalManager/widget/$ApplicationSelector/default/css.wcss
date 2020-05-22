@@ -39,7 +39,7 @@
         "width": "30px",
         "height": "30px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
         "cursor": "pointer"
     },
     "windowContentScrollNode": {
@@ -63,7 +63,7 @@
     "okActionNode": {
         "width": "150px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -76,7 +76,7 @@
     "cancelActionNode": {
         "width": "100px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -132,25 +132,25 @@
         "width": "26px",
         "height": "26px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/select.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/select.png) no-repeat center center"
     },
     "applicationItemSelectIcon_selected": {
         "width": "26px",
         "height": "26px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/selected.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessManager/widget/$ApplicationSelector/default/icon/selected.png) no-repeat center center"
     },
     "applicationItemExportActionNode": {
         "width": "22px",
         "height": "26px",
         "float": "right",
         "opacity": 0,
-        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/export.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/export.png) no-repeat center center"
     },
 
     "applicationItemDelActionNode_select": {
         "opacity": 1,
-        "background": "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/delete_red.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/delete_red.png) no-repeat center center"
     },
     "deleteElementsNode":{
         "position": "absolute",

@@ -34,7 +34,7 @@
         "font-size": "16px",
         "cursor": "pointer",
         "padding-left" : "46px",
-        "background" : "url(/x_component_Meeting/$ListView/default/icon/icon_triangle_down.png) no-repeat 20px center"
+        "background" : "url(../x_component_Meeting/$ListView/default/icon/icon_triangle_down.png) no-repeat 20px center"
     },
     "menuItemNode": {
         "height": "30px",
@@ -125,13 +125,13 @@
         "position": "relative",
         "top": "-36px",
         "margin-left": "140px",
-        "background": "url(/x_component_Meeting/$DayView/default/icon/down.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$DayView/default/icon/down.png) no-repeat center center"
     },
     "dayTitleDownNode_over": {
-        "background": "url(/x_component_Meeting/$DayView/default/icon/down_over.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$DayView/default/icon/down_over.png) no-repeat center center"
     },
     "dayTitleDownNode_down": {
-        "background": "url(/x_component_Meeting/$DayView/default/icon/down_down.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$DayView/default/icon/down_down.png) no-repeat center center"
     },
 
     "dayTitleDateNode": {

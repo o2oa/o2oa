@@ -27,7 +27,7 @@
         "width": "22px",
         "height": "22px",
         "margin-top": "-26px",
-        "background": "url("+"/x_component_process_ProcessDesigner/$Main/default/left.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/$Main/default/left.png) no-repeat center center",
         "float": "right",
         "cursor": "pointer"
     },
@@ -35,7 +35,7 @@
         "width": "22px",
         "height": "22px",
         "margin-top": "-26px",
-        "background": "url("+"/x_component_process_ProcessDesigner/$Main/default/right.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/$Main/default/right.png) no-repeat center center",
         "float": "right",
         "cursor": "pointer"
     },
@@ -133,7 +133,7 @@
 	},
 	"paperNode": {
 		"background-color": "#FFF",
-		"background-image": "url("+"/x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
+		"background-image": "url("+"../x_component_process_ProcessDesigner/$Main/default/griddingbg.gif)",
 		"overflow": "auto",
 		"margin": "15px",
 		"box-shadow": "0px 0px 20px #606060"

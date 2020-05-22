@@ -59,7 +59,7 @@
         "width": "80px",
         "height": "80px",
         "margin-right": "40px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/search.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/search.png) no-repeat center center",
         "cursor": "pointer"
     },
     "searchElementInputAreaNode": {
@@ -172,7 +172,7 @@
     "viewFilterSearchIconNode": {
         "height": "24px",
         "width": "40px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/searchView.png) center center no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/searchView.png) center center no-repeat",
         "float": "right",
         "cursor": "pointer"
     },
@@ -193,7 +193,7 @@
         "width": "20px",
         "height": "80px",
         "float": "right",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/back.png) center 5px no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/back.png) center 5px no-repeat",
         "cursor": "pointer"
     },
     "viewFilterSearchCustomContentNode": {
@@ -227,7 +227,7 @@
         "cursor": "pointer"
     },
     "viewFilterSearchCustomAddIconNode": {
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/right.png) center center no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/right.png) center center no-repeat",
         "height": "80px"
     },
     "viewFilterSearchCustomFilterContentNode": {
@@ -289,11 +289,11 @@
     "viewSearchFilterDeleteNode": {
         "width": "20px",
         "height": "19px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delFilter.png) center center no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delFilter.png) center center no-repeat",
         "float": "left"
     },
     "viewSearchFilterDeleteNode_over": {
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delFilter_over.png) center center no-repeat"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delFilter_over.png) center center no-repeat"
     },
     "viewSearchFilterSelectAreaNode": {
         "height": "17px",
@@ -406,7 +406,7 @@
     "filterAreaTipNode":{
         "width": "24px",
         "height": "6px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/sj.png) center top no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/sj.png) center top no-repeat",
     },
     "filterAreaTitleNode": {
         "height": "50px",
@@ -452,7 +452,7 @@
     "filterAreaTitleSearchIconNode": {
         "height": "22px",
         "width": "22px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/filterSearch.png) center center no-repeat",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/filterSearch.png) center center no-repeat",
         "float": "left"
     },
     "filterAreaTitleSearchInputAreaNode": {
@@ -530,7 +530,7 @@
         "height": "24px",
         "width": "24px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/closeFilter.png) center center no-repeat"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/closeFilter.png) center center no-repeat"
     },
     "filterListItemTextNode": {
         "height": "24px",
@@ -542,7 +542,7 @@
         "border": "1px solid #ff7010"
     },
     "filterListItemActionNode_over": {
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/closeFilterOver.png) center center no-repeat"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/closeFilterOver.png) center center no-repeat"
     },
     "filterListItemTextNode_over": {
         "color": "#ff7010"
@@ -672,7 +672,7 @@
     },
     "iconWorkNode": {
         "height": "39px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/work.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/work.png) no-repeat center center",
     },
     "titleWorkNode": {
         "font-weight": "bold"
@@ -683,11 +683,11 @@
     },
     "actionStopWorkNode": {
         "height": "39px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/stop.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/stop.png) no-repeat center center",
     },
     "actionStopWorkActionNode": {
         "height": "39px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/stop.png) no-repeat 5px center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/stop.png) no-repeat 5px center",
     },
     "actionOpenNode": {
         "height": "20px",
@@ -701,11 +701,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/open.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/open.png) no-repeat center center"
     },
     "actionOpenNode_over":{
         "box-shadow": "1px 1x 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/open_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/open_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionOpenNode_down":{
@@ -723,11 +723,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/send.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/send.png) no-repeat center center"
     },
     "actionProcessNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/send_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/send_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionProcessNode_down":{
@@ -746,11 +746,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/route.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/route.png) no-repeat center center"
     },
     "actionRerouteNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/route_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/route_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionRerouteNode_down":{
@@ -769,11 +769,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
     },
     "actionDeleteNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionDeleteNode_down":{
@@ -806,7 +806,7 @@
         "line-height": "30px",
         "font-weight": "bold",
         "color": "#2fade7",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/task.png) no-repeat 4px center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/task.png) no-repeat 4px center",
         "padding-left": "24px"
     },
     "workItemDoneTitleNode": {
@@ -814,7 +814,7 @@
         "line-height": "30px",
         "font-weight": "bold",
         "color": "#2fade7",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/done.png) no-repeat 4px center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/done.png) no-repeat 4px center",
         "padding-left": "24px"
     },
     "workItemReadTitleNode": {
@@ -822,7 +822,7 @@
         "line-height": "30px",
         "font-weight": "bold",
         "color": "#2fade7",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/read.png) no-repeat 4px center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/read.png) no-repeat 4px center",
         "padding-left": "24px"
     },
     "workItemReadedTitleNode": {
@@ -830,7 +830,7 @@
         "line-height": "30px",
         "font-weight": "bold",
         "color": "#2fade7",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/readed.png) no-repeat 4px center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/readed.png) no-repeat 4px center",
         "padding-left": "24px"
     },
 
@@ -889,7 +889,7 @@
         "margin-left": "30px",
         "height": "30px",
         "float": "left",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/list.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/list.png) no-repeat center center",
         "width": "12px"
     },
     "taskItemPersonAreaNode": {
@@ -926,11 +926,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/reset.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/reset.png) no-repeat center center"
     },
     "taskActionResetNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/reset_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/reset_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "taskActionResetNode_down":{
@@ -949,11 +949,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/send.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/send.png) no-repeat center center"
     },
     "taskActionFlowNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/send_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/send_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "taskActionFlowNode_down":{
@@ -971,11 +971,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
     },
     "taskActionDeleteNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "taskActionDeleteNode_down":{
@@ -993,11 +993,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/flag.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/flag.png) no-repeat center center"
     },
     "readActionFlagNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/flag_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/flag_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "readActionFlagNode_down":{
@@ -1007,17 +1007,17 @@
     "relativeTop": {
         "min-height": "40px",
         "height": "100%",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupTop.png) no-repeat center bottom"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupTop.png) no-repeat center bottom"
     },
     "relativeCenter": {
         "min-height": "40px",
         "height": "100%",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupCenter.png) center top"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupCenter.png) center top"
     },
     "relativeBottom": {
         "min-height": "40px",
         "height": "100%",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/groupBottom.png) center top"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/groupBottom.png) center top"
     },
 
     "noListText": {
@@ -1083,7 +1083,7 @@
         "float": "left",
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
     },
     "viewContentTdGroupTextNode": {
         "height": "20px",
@@ -1163,7 +1163,7 @@
         "width": "30px",
         "overflow": "hidden",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/checkAll.png) center center no-repeat",
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/checkAll.png) center center no-repeat",
         "padding": "3px"
     },
     "statAllColSelectTd": {
@@ -1171,13 +1171,13 @@
         "border-bottom": "1px solid #DFDFDF",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/checkAllCol.png) center center no-repeat",
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/checkAllCol.png) center center no-repeat",
         "padding": "3px"
     },
     "statColSelectTd": {
         "border-right": "1px solid #DFDFDF",
         "border-bottom": "1px solid #DFDFDF",
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "height": "20px",
         "padding": "3px"
@@ -1187,22 +1187,22 @@
         "border-bottom": "1px solid #DFDFDF",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/checkAllRow.png) center center no-repeat",
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/checkAllRow.png) center center no-repeat",
         "padding": "3px"
     },
     "statRowSelectTd": {
         "border-right": "1px solid #DFDFDF",
         "border-bottom": "1px solid #DFDFDF",
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "width": "30px",
         "padding": "3px"
     },
     "statTableSelectedTd": {
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/checked.png) center center no-repeat"
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/checked.png) center center no-repeat"
     },
     "statTableSelectTd": {
-        "background": "url(/x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat"
+        "background": "url(../x_component_process_Application/$WorkExplorer/default/icon/check.png) center center no-repeat"
     },
     "ststChartFlagNode": {
         "height": "30x",

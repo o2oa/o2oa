@@ -30,7 +30,7 @@ var x = {
         "width": "24px",
         "height": "24px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
     },
     "routeTextNode": {
         "margin-left": "24px",
@@ -103,7 +103,7 @@ var x = {
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
         "font-size": "14px",
@@ -127,7 +127,7 @@ var x = {
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -160,7 +160,7 @@ var x = {
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "background": "url("+"/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -189,7 +189,7 @@ var x = {
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     }
 
 }

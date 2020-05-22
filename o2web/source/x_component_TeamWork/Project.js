@@ -23,7 +23,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.actions = this.rootActions.ProjectAction;
         //this.taskActions = this.rootActions.TaskAction;
 
-        this.path = "/x_component_TeamWork/$Project/";
+        this.path = "../x_component_TeamWork/$Project/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -144,7 +144,7 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this),
             mouseover:function(){
                 this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan_click.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_caidan_click.png)"
                 });
                 this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
                     "color":"#4A90E2"
@@ -152,7 +152,7 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this),
             mouseout:function(){
                 this.topBarSettingMenuContainer.getElements(".topBarSettingMenuIcon").setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_caidan.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_caidan.png)"
                 });
                 this.topBarSettingMenuContainer.getElements(".topBarSettingMenuText").setStyles({
                     "color":"#666666"
@@ -279,14 +279,14 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this),
             mouseover:function(){
                 this.naviTopTaskAdd.setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
                 });
                 //this.app.showTips(this.naviTopTaskAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskAdd+"</div>"});
                 this.app.tips(this.naviTopTaskAdd,this.lp.taskAdd)
             }.bind(this),
             mouseout:function(){
                 this.naviTopTaskAdd.setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"
                 });
             }.bind(this)
         });
@@ -360,13 +360,13 @@ MWF.xApplication.TeamWork.Project = new Class({
             }.bind(this),
             mouseover:function(){
                 this.naviViewAdd.setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"
                 });
                 this.app.showTips(this.naviViewAdd,{_html:"<div style='margin:2px 5px;'>"+this.lp.viewAdd+"</div>"});
             }.bind(this),
             mouseout:function(){
                 this.naviViewAdd.setStyles({
-                    "background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png)"
+                    "background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"
                 });
             }.bind(this)
         });
@@ -559,11 +559,11 @@ MWF.xApplication.TeamWork.Project = new Class({
                         newTaskGroup.open();
                     }.bind(this),
                     mouseover:function(){
-                        this.newTaskGroupIcon.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia_20_click.png)"});
+                        this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia_20_click.png)"});
                         this.newTaskGroupText.setStyles({"color":"#4A90E2","font-size":"16px"});
                     }.bind(this),
                     mouseout:function(){
-                        this.newTaskGroupIcon.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png)"});
+                        this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"});
                         this.newTaskGroupText.setStyles({"color":"#999999","font-size":"12px"});
                     }.bind(this)
                 });
@@ -606,8 +606,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                     });
                     menu.load();
                 }.bind(this),
-                mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_more_click.png)"})},
-                mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_more.png)"})}
+                mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_more_click.png)"})},
+                mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_more.png)"})}
             });
         }
 
@@ -630,8 +630,8 @@ MWF.xApplication.TeamWork.Project = new Class({
                 var newTask = new MWF.xApplication.TeamWork.Project.NewTask(this,pdata,opt,{});
                 newTask.open();
             }.bind(this),
-            mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"})},
-            mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Project/default/icon/icon_jia.png)"})}
+            mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"})},
+            mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"})}
         });
 
         var taskGroupItemTitleReload = new Element("div.taskGroupItemTitleReload",{styles:this.css.taskGroupItemTitleReload, title:this.lp.reload}).inject(taskGroupItemTitleContainer);

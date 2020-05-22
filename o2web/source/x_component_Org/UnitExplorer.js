@@ -339,9 +339,9 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
             var toggle_on = (this.explorer.currentItem===this) ? "toggle_current_on" : "toggle_on";
             var toggle_off = (this.explorer.currentItem===this) ? "toggle_current_off" : "toggle_off";
             if (this.isExpand){
-                this.toggleIconNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_on+".png)");
+                this.toggleIconNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_on+".png)");
             }else{
-                this.toggleIconNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_off+".png)");
+                this.toggleIconNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/"+toggle_off+".png)");
             }
         }else{
             this.toggleIconNode.setStyle("background-image", "");
@@ -435,7 +435,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         });
     },
     _getIcon: function(){
-        return (this.explorer.currentItem===this) ? "/x_component_Org/$Explorer/default/icon/unit_current.png" : "/x_component_Org/$Explorer/default/icon/unit.png";
+        return (this.explorer.currentItem===this) ? "../x_component_Org/$Explorer/default/icon/unit_current.png" : "../x_component_Org/$Explorer/default/icon/unit.png";
     },
     _isActionManager: function(){
         return (MWF.AC.isOrganizationManager() || MWF.AC.isUnitManager());
@@ -761,7 +761,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 "get": function(){return this.woPerson.mail}
             }, {
                 "getHtml": function(){
-                    return "<div style='width:24px; height:24px; background:url(/x_component_Org/$Explorer/"+
+                    return "<div style='width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -771,7 +771,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 }
             }, {
                 "getHtml": function(){
-                    return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(/x_component_Org/$Explorer/"+
+                    return "<div style='-webkit-user-select: none; -moz-user-select: none; width:24px; height:24px; cursor: move; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/move.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -966,11 +966,11 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.TitleInfor = new Class({
         return Object.merge(css, this.item.style.role);
     },
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/unit70.png";
+        return "../x_component_Org/$Explorer/default/icon/unit70.png";
     },
     setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg.png)");
+        this.titleBgNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg_bg.png)");
+        this.titleNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/unit_bg.png)");
     },
     loadRightInfor: function(){
         //var text = this.data.name+((this.data.unique) ? "（"+this.data.unique+"）" : "");

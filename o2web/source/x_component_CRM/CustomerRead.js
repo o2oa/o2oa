@@ -35,14 +35,14 @@ MWF.xApplication.CRM.CustomerRead = new Class({
         this.app = app;
         this.explorer = explorer;
         this.lp = app.lp.customer.customerRead;
-        this.path = "/x_component_CRM/$CustomerRead/";
+        this.path = "../x_component_CRM/$CustomerRead/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$CustomerRead/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$CustomerRead/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function (data) {

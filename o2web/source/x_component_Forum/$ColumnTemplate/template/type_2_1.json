@@ -15,7 +15,7 @@
         "html": "<div styles='itemNode'>"+
         "<div styles='itemLeftNode_type_2_1'>"+
         " <div styles='itemImageNode_type_2_1'>"+
-        "   <img styles='itemImage_type_2_1' item='itemImage' src='/x_component_Forum/$ColumnTemplate/default/icon/defaultImg.png'>"+
+        "   <img styles='itemImage_type_2_1' item='itemImage' src='../x_component_Forum/$ColumnTemplate/default/icon/defaultImg.png'>"+
         " </div>"+
         " <div styles='itemLeftIconNode_type_2_1'>"+
         "   <img styles='itemLeftIcon' item='icon'>"+
@@ -55,7 +55,7 @@
           //          "moderatorNames": {},
           "sectionDescription": {},
           "icon" : {
-            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
+            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '../x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
             "event" : "click^^function(documentNode, ev){ this.openSection() }"
           }
         }

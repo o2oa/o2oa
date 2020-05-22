@@ -62,7 +62,7 @@ MWF.xApplication.Common.Main = new Class({
 		this.setOptions(options);
 		this.desktop = desktop;
 
-		this.path = "/x_component_" + this.options.name.replace(/\./g, "_") + "/$Main/";
+		this.path = "../x_component_" + this.options.name.replace(/\./g, "_") + "/$Main/";
 		this.options.icon = this.path + this.options.style + "/" + this.options.icon;
 
 		this.cssPath = this.path + this.options.style + "/css.wcss";

@@ -15,8 +15,8 @@ MWF.xApplication.cms.ViewDesigner.View = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_cms_ViewDesigner/$View/";
-        this.cssPath = "/x_component_cms_ViewDesigner/$View/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_ViewDesigner/$View/";
+        this.cssPath = "../x_component_cms_ViewDesigner/$View/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -741,7 +741,7 @@ MWF.xApplication.cms.ViewDesigner.View.Column = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        //"propertyPath": "/x_component_process_FormDesigner/Module/Table$Td/table$td.html",
+        //"propertyPath": "../x_component_process_FormDesigner/Module/Table$Td/table$td.html",
         "actions": [
             {
                 "name": "insertColLeft",

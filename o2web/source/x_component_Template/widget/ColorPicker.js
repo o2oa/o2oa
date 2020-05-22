@@ -30,8 +30,8 @@ MWF.xApplication.Template.widget.ColorPicker = new Class({
         if(app)this.lp = app.lp;
         this.data = data;
 
-        this.path = "/x_component_Template/widget/$ColorPicker/";
-        this.cssPath = "/x_component_Template/widget/$ColorPicker/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Template/widget/$ColorPicker/";
+        this.cssPath = "../x_component_Template/widget/$ColorPicker/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         if( this.target ){

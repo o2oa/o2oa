@@ -24,7 +24,7 @@ MWF.xApplication.TeamWork.Emoji = new Class({
         this.data = data;
         this.actions = this.app.restActions;
 
-        this.path = "/x_component_TeamWork/$Emoji/";
+        this.path = "../x_component_TeamWork/$Emoji/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -38,7 +38,7 @@ MWF.xApplication.TeamWork.Emoji = new Class({
         //this.contentNode
         this.contentNode.setStyles({"margin":"5px"});
         var _self = this;
-        var emojiPath = "/x_component_TeamWork/$Emoji/default/icon/";
+        var emojiPath = "../x_component_TeamWork/$Emoji/default/icon/";
         for(var item in this.lp){
             var text = this.lp[item];
             var emojiItem = new Element("div.emojiItem",{styles:this.css.emojiItem}).inject(this.contentNode);

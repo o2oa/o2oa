@@ -73,7 +73,7 @@ MWF.xApplication.TeamWork.Common.Popup = new Class({
 
         this.data = data || {};
 
-        this.cssPath = "/x_component_TeamWork/$Common/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$Common/"+this.options.style+"/css.wcss";
 
         this.load();
 
@@ -144,7 +144,7 @@ MWF.xApplication.TeamWork.Common.Tips = new Class({
         this.app = app;
         if(app)this.lp = app.lp;
         this.data = data;
-        this.path = "/x_component_TeamWork/$Common/";
+        this.path = "../x_component_TeamWork/$Common/";
 
         if( this.target ){
             this.setTargetEvents();
@@ -199,7 +199,7 @@ MWF.xApplication.TeamWork.Common.ToolTips = new Class({
         this.actions = this.app.rootActions;
         this.rootActions = this.app.rootActions;
 
-        this.path = "/x_component_TeamWork/$Common/";
+        this.path = "../x_component_TeamWork/$Common/";
         if(options.path) this.path = options.path;
 
         if( this.target ){

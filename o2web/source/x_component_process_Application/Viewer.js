@@ -21,8 +21,8 @@ MWF.xApplication.process.Application.Viewer = new Class({
     initialize: function(container, json, options){
         this.setOptions(options);
 
-        this.path = "/x_component_process_Application/$Viewer/";
-        this.cssPath = "/x_component_process_Application/$Viewer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Application/$Viewer/";
+        this.cssPath = "../x_component_process_Application/$Viewer/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = MWF.xApplication.process.Application.LP;
 
@@ -500,7 +500,7 @@ MWF.xApplication.process.Application.Viewer = new Class({
     },
     loadGroupData: function(){
         if (this.selectTitleCell){
-            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
         }
@@ -518,7 +518,7 @@ MWF.xApplication.process.Application.Viewer = new Class({
         if (icon.get("html").indexOf("expand.png")===-1){
             this.items.each(function(item){
                 item.collapse();
-                icon.set("html", "<img src='/x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+                icon.set("html", "<img src='../x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>");
             }.bind(this));
         }else{
             this.items.each(function(item, i){
@@ -526,7 +526,7 @@ MWF.xApplication.process.Application.Viewer = new Class({
                     item.expand();
                 }.bind(this), 10*i+5);
 
-                icon.set("html", "<img src='/x_component_process_Application/$Viewer/"+this.options.style+"/icon/down.png'/>");
+                icon.set("html", "<img src='../x_component_process_Application/$Viewer/"+this.options.style+"/icon/down.png'/>");
             }.bind(this));
         }
     },
@@ -801,7 +801,7 @@ MWF.xApplication.process.Application.Viewer.Item = new Class({
                     if (!this.isSelected){
                         var iconName = "checkbox";
                         if (this.view.json.select==="single") iconName = "radiobox";
-                        this.selectTd.setStyles({"background": "url("+"/x_component_process_Application/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                        this.selectTd.setStyles({"background": "url("+"../x_component_process_Application/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
                     }
                 }.bind(this),
                 "mouseout": function(){
@@ -831,7 +831,7 @@ MWF.xApplication.process.Application.Viewer.Item = new Class({
 
     selected: function(){
         this.view.selectedItems.push(this);
-        this.selectTd.setStyles({"background": "url("+"/x_component_process_Application/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
+        this.selectTd.setStyles({"background": "url("+"../x_component_process_Application/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
     },
@@ -845,7 +845,7 @@ MWF.xApplication.process.Application.Viewer.Item = new Class({
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
         this.view.selectedItems = [this];
         this.view.currentSelectedItem = this;
-        this.selectTd.setStyles({"background": "url("+"/x_component_process_Application/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
+        this.selectTd.setStyles({"background": "url("+"../x_component_process_Application/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
         this.node.setStyles(this.css.viewContentTrNode_selected);
         this.isSelected = true;
     },
@@ -891,7 +891,7 @@ MWF.xApplication.process.Application.Viewer.ItemCategory = new Class({
             var text = this.data.group;
         }
 
-        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='../x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
         this.setEvent();
@@ -915,13 +915,13 @@ MWF.xApplication.process.Application.Viewer.ItemCategory = new Class({
         this.items.each(function(item){
             item.node.setStyle("display", "none");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+        this.node.getElement("span").set("html", "<img src='../x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
     },
     expand: function(){
         this.items.each(function(item){
             item.node.setStyle("display", "table-row");
         }.bind(this));
-        this.node.getElement("span").set("html", "<img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+        this.node.getElement("span").set("html", "<img src='../x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
         if (!this.loadChild){
             //window.setTimeout(function(){
             this.data.list.each(function(line){

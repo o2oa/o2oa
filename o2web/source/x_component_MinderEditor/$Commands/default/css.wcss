@@ -59,7 +59,7 @@
   },
   "zoominIcon":{
     "cursor" : "pointer",
-    "background": "url(/x_component_MinderEditor/$LeftToolbar/default/icon/plus.png)",
+    "background": "url(../x_component_MinderEditor/$LeftToolbar/default/icon/plus.png)",
     "width": "20px",
     "height": "20px",
     "margin": "2px auto",
@@ -68,7 +68,7 @@
   },
   "zoomoutIcon": {
     "cursor" : "pointer",
-    "background": "url(/x_component_MinderEditor/$LeftToolbar/default/icon/minus.png)",
+    "background": "url(../x_component_MinderEditor/$LeftToolbar/default/icon/minus.png)",
     "width": "20px",
     "height": "20px",
     "margin": "2px auto",
@@ -191,7 +191,7 @@
   },
   "nextButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_MinderEditor/$LeftToolbar/default/icon/next.png) 2px 2px no-repeat",
+    "background": "url(../x_component_MinderEditor/$LeftToolbar/default/icon/next.png) 2px 2px no-repeat",
     "background-color" : "#eee",
     "display": "block",
     "width": "22px",
@@ -202,7 +202,7 @@
   },
   "prevButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_MinderEditor/$LeftToolbar/default/icon/prev.png) 2px 2px no-repeat",
+    "background": "url(../x_component_MinderEditor/$LeftToolbar/default/icon/prev.png) 2px 2px no-repeat",
     "background-color" : "#eee",
     "display": "block",
     "width": "22px",
@@ -213,7 +213,7 @@
   },
   "closeButton" : {
     "cursor" : "pointer",
-    "background": "url(/x_component_MinderEditor/$LeftToolbar/default/icon/close14.png) 4px 4px no-repeat",
+    "background": "url(../x_component_MinderEditor/$LeftToolbar/default/icon/close14.png) 4px 4px no-repeat",
     "display": "block",
     "width": "22px",
     "height": "22px",

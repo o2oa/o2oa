@@ -165,7 +165,7 @@ o2.addReady(function () {
                                                 // workUrl.toURI().go();
 
                                             } else {
-                                                history.replaceState(null, "startProcess", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                                                history.replaceState(null, "startProcess", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                                 // var workUrl = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=appMobile.html%3Fapp%3Dprocess.TaskCenter";
                                                 // workUrl.toURI().go();
                                             }
