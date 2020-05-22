@@ -5,6 +5,7 @@ MWF.xApplication.Setting.LP = {
     "tab_base": "基础配置",
     "tab_ui": "界面配置",
     "tab_mobile": "移动办公配置",
+    "tab_dispose": "系统部署",
     "tab_name": "系统名称配置",
     "tab_user": "系统用户配置",
     "tab_login": "系统登录配置",
@@ -17,7 +18,8 @@ MWF.xApplication.Setting.LP = {
     "tab_ui_login": "登录页样式",
     "tab_ui_index": "主页样式",
     "tab_ui_module": "模块部署",
-
+    "tab_ui_resource": "资源部署",
+    "tab_ui_service": "服务部署",
 
     "base_nameSetting": "配置您的系统名称",
 
@@ -193,6 +195,23 @@ MWF.xApplication.Setting.LP = {
     "ui_module_modules": "已部署模块",
     "ui_module_modules_infor": "",
     "ui_module_modules_Action": "部署模块",
+
+    "ui_moduleSetting_resource": "web端资源部署",
+    "ui_moduleSetting_service": "服务部署",
+
+    "resource_upload":"资源选择",
+    "resource_replace":"是否覆盖",
+    "resource_replaceDesc":"覆盖类型：‘是’删除原文件然后上传，‘否’覆盖原文件",
+    "resource_replace_yes":"是",
+    "resource_replace_no":"否",
+    "resource_filePath":"存放目录",
+    "resource_filePathDesc":"zip文件可以为空，其他不能为空path:/xxx/xxx",
+    "resource_success":"部署成功",
+
+    "service_ctl":"命令名称",
+    "service_node":"服务器节点",
+    "service_allNode":"全部节点",
+    "service_success":"部署成功,app应用会自动重启，请稍候操作，大概一分钟。。",
 
     "on": "开",
     "off": "关",

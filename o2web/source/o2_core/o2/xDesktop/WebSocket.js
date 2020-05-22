@@ -162,6 +162,9 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
+                            case "im_create":
+                                console.log("im 消息来了！！！");
+                                this.receiveIMMessage(data);
                                 break;
                             default:
                         }
@@ -294,13 +297,44 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveCustomMessage: function(data){
-        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"</font>"+data.body;
+        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+data.body;
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
         };
         var messageItem = layout.desktop.message.addMessage(msg);
         var tooltipItem = layout.desktop.message.addTooltip(msg);
+    },
+    receiveIMMessage: function(data){
+        var imBody = data.body;
+        var jsonBody = imBody.body;
+        var conversationId = imBody.conversationId;
+
+        var body = JSON.parse(jsonBody);
+        var msgBody = body.body; //默认text 文本消息
+        if (body.type && body.type == "emoji") { //表情 消息
+            msgBody = "[表情]";
+        }
+        var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>"+msgBody;
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.customMessageTitle,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var options = {"conversationId": conversationId};
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            layout.desktop.openApplication(e, "IMV2", options);
+        }.bind(this));
+
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            layout.desktop.openApplication(e, "IMV2", options);
+        }.bind(this));
+
+       
     },
 
 
