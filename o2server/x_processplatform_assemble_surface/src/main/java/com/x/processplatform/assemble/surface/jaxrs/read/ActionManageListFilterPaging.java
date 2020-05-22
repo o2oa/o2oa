@@ -62,37 +62,37 @@ class ActionManageListFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
 		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(Read_.person), wi.person));
+			p = cb.and(p,cb.equal(root.get(Read_.person), wi.getPerson()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue01));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.getStringValue01()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.stringValue02));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.getStringValue02()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.stringValue03));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.getStringValue03()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.stringValue04));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.stringValue05));
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.getStringValue05()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue06));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue06), wi.getStringValue06()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue07));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue07), wi.getStringValue07()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue08));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue08), wi.getStringValue08()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue09));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue09), wi.getStringValue09()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue10));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue10), wi.getStringValue10()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
@@ -149,37 +149,37 @@ class ActionManageListFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
 		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(Read_.person), wi.person));
+			p = cb.and(p,cb.equal(root.get(Read_.person), wi.getPerson()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue01));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.getStringValue01()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.stringValue02));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue02), wi.getStringValue02()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.stringValue03));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue03), wi.getStringValue03()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.stringValue04));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.stringValue05));
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue05), wi.getStringValue05()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue06));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue06), wi.getStringValue06()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue07));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue07), wi.getStringValue07()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue08));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue08), wi.getStringValue08()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue09));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue09), wi.getStringValue09()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(Read_.stringValue01), wi.stringValue10));
+			p = cb.and(p,cb.equal(root.get(Read_.stringValue10), wi.getStringValue10()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
@@ -285,6 +285,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			return applicationList;
 		}
 
+
+
 		public String getPerson() { return person; }
 		public String getStringValue01() { return stringValue01; }
 		public String getStringValue02() { return stringValue02; }
@@ -296,6 +298,19 @@ class ActionManageListFilterPaging extends BaseAction {
 		public String getStringValue08() { return stringValue08; }
 		public String getStringValue09() { return stringValue09; }
 		public String getStringValue10() { return stringValue10; }
+		public void setStringValue01(String stringValue01) { this.stringValue01 = stringValue01; }
+		public void setStringValue02(String stringValue02) { this.stringValue02 = stringValue02; }
+		public void setStringValue03(String stringValue03) { this.stringValue03 = stringValue03; }
+		public void setStringValue04(String stringValue04) { this.stringValue04 = stringValue04; }
+		public void setStringValue05(String stringValue05) { this.stringValue05 = stringValue05; }
+		public void setStringValue06(String stringValue06) { this.stringValue06 = stringValue06; }
+		public void setStringValue07(String stringValue07) { this.stringValue07 = stringValue07; }
+		public void setStringValue08(String stringValue08) { this.stringValue08 = stringValue08; }
+		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
+		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
+		public void setPerson(String person) {
+			this.person = person;
+		}
 
 		public void setApplicationList(List<String> applicationList) {
 			this.applicationList = applicationList;

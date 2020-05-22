@@ -101,6 +101,50 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("关键字")
 		private String key;
 
+
+		@FieldDescribe("业务数据String值01")
+		private String stringValue01;
+		@FieldDescribe("业务数据String值02")
+		private String stringValue02;
+		@FieldDescribe("业务数据String值03")
+		private String stringValue03;
+		@FieldDescribe("业务数据String值04")
+		private String stringValue04;
+		@FieldDescribe("业务数据String值05")
+		private String stringValue05;
+		@FieldDescribe("业务数据String值06")
+		private String stringValue06;
+		@FieldDescribe("业务数据String值07")
+		private String stringValue07;
+		@FieldDescribe("业务数据String值08")
+		private String stringValue08;
+		@FieldDescribe("业务数据String值09")
+		private String stringValue09;
+		@FieldDescribe("业务数据String值10")
+		private String stringValue10;
+
+		public String getStringValue01() { return stringValue01; }
+		public String getStringValue02() { return stringValue02; }
+		public String getStringValue03() { return stringValue03; }
+		public String getStringValue04() { return stringValue04; }
+		public String getStringValue05() { return stringValue05; }
+		public String getStringValue06() { return stringValue06; }
+		public String getStringValue07() { return stringValue07; }
+		public String getStringValue08() { return stringValue08; }
+		public String getStringValue09() { return stringValue09; }
+		public String getStringValue10() { return stringValue10; }
+		public void setStringValue01(String stringValue01) { this.stringValue01 = stringValue01; }
+		public void setStringValue02(String stringValue02) { this.stringValue02 = stringValue02; }
+		public void setStringValue03(String stringValue03) { this.stringValue03 = stringValue03; }
+		public void setStringValue04(String stringValue04) { this.stringValue04 = stringValue04; }
+		public void setStringValue05(String stringValue05) { this.stringValue05 = stringValue05; }
+		public void setStringValue06(String stringValue06) { this.stringValue06 = stringValue06; }
+		public void setStringValue07(String stringValue07) { this.stringValue07 = stringValue07; }
+		public void setStringValue08(String stringValue08) { this.stringValue08 = stringValue08; }
+		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
+		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
+
+
 		public Boolean getNotCompleted() {
 			return notCompleted;
 		}
@@ -401,6 +445,38 @@ abstract class V2Base extends StandardJaxrsAction {
 		}else{
 			p = cb.equal(root.get(Review_.person), effectivePerson.getDistinguishedName());
 		}
+
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue01), wi.getStringValue01()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue02())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue02), wi.getStringValue02()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue03())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue03), wi.getStringValue03()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue04())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue04), wi.getStringValue04()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue05), wi.getStringValue05()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue06())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue06), wi.getStringValue06()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue07())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue07), wi.getStringValue07()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue08())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue08), wi.getStringValue08()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue09())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue09), wi.getStringValue09()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue10())){
+			p = cb.and(p,cb.equal(root.get(Review_.stringValue10), wi.getStringValue10()));
+		}
+
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Review_.application).in(wi.getApplicationList()));
 		}
