@@ -73,7 +73,7 @@
 	  "height": "30px",
 	  "width": "40px",
 	  "color": "#FFF",
-	  "background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 15px center no-repeat",
+	  "background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 15px center no-repeat",
 	  "background-size" : "8px 17px"
 	},
 	"titleTextNodeMobile": {
