@@ -38,7 +38,7 @@ class TaskCompletedWorkListFragment : DialogFragment(), TaskCompletedWorkListCon
             override fun convert(holder: CommonRecyclerViewHolder?, t: WorkVO?) {
                 if (t != null) {
                     val content = if (t is Work) {
-                        "文件于 ${t.startTime} 流转至 ${t.activityName} "
+                        "文件于 ${t.startTime} 流转至 ${t.activityName} ，处理人：${t.manualTaskIdentityText ?: ""}"
                     } else if (t is WorkCompleted) {
                         "${t.title} 文件于 ${t.completedTime} 流转完成"
                     } else {
@@ -122,6 +122,7 @@ class TaskCompletedWorkListFragment : DialogFragment(), TaskCompletedWorkListCon
 
     override fun loadWorkCompletedInfo(info: TaskCompleteInfoDataWithControl) {
         circleProgressBar_task_completed_work.gone()
+
         tv_fragment_task_completed_work_list_application?.text = info.applicationName ?: ""
         tv_fragment_task_completed_work_list_title?.text = formatTitle(info.title, info.processName)
         tv_fragment_task_completed_work_list_node?.text = info.activityName ?: ""

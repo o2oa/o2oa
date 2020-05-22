@@ -3,7 +3,9 @@ package com.x.server.console;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,11 +44,28 @@ public class NodeAgent extends Thread {
 
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
 
-	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$",
+			Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern read_log_pattern = Pattern.compile("^readLog:(.+)$", Pattern.CASE_INSENSITIVE);
 
+	public static final Pattern execute_command_pattern = Pattern.compile("^command:(.+)$", Pattern.CASE_INSENSITIVE);
+
 	public static final int LOG_MAX_READ_SIZE = 6 * 1024;
+
+	private static final int BUFFER_SIZE = 1024 * 1024 * 1000;
+
+	private LinkedBlockingQueue<String> commandQueue;
+
+	private FileOutputStream fos;
+
+	public LinkedBlockingQueue<String> getCommandQueue() {
+		return commandQueue;
+	}
+
+	public void setCommandQueue(LinkedBlockingQueue<String> commandQueue) {
+		this.commandQueue = commandQueue;
+	}
 
 	@Override
 	public void run() {
@@ -55,9 +74,11 @@ public class NodeAgent extends Thread {
 			while (true) {
 				try (Socket socket = serverSocket.accept()) {
 					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+							DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						String json = dis.readUTF();
-						//logger.info("receive socket json={}",json);
+
+						// logger.info("receive socket json={}",json);
+
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
@@ -70,24 +91,57 @@ public class NodeAgent extends Thread {
 
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
-							byte[] bytes = Base64.decodeBase64(commandObject.getBody());
-							String result = this.redeploy(matcher.group(1), bytes);
-							dos.writeUTF(result);
-							dos.flush();
+							String strCommand = commandObject.getCommand();
+							strCommand = strCommand.trim();
+							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+							logger.info("收接到命令:" + strCommand);
+							String filename = dis.readUTF();
+							File tempFile = null;
+							switch (strCommand) {
+								case "storeWar":
+									tempFile = Config.dir_store();
+									break;
+								case "storeJar":
+									tempFile = Config.dir_store_jars();
+									break;
+								case "customWar":
+									tempFile = Config.dir_custom();
+									break;
+								case "customJar":
+									tempFile = Config.dir_custom_jars();
+									break;
+							}
+							FileTools.forceMkdir(tempFile);
+							logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
+							File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
+							fos = new FileOutputStream(file);
+							byte[] bytes = new byte[1024];
+							int length = 0;
+							while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
+								fos.write(bytes, 0, length);
+								fos.flush();
+							}
+							fos.close();
+							bytes = FileUtils.readFileToByteArray(file);
+							filename = filename.substring(0, filename.lastIndexOf("."));
+							// 部署
+							String result = this.redeploy(filename, bytes);
+							logger.info("部署:" + result);
 							continue;
+
 						}
 
 						matcher = upload_resource_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							int fileLength = dis.readInt();
 							byte[] bytes;
-							try(ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+							try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 								byte[] onceBytes = new byte[1024];
 								int length = 0;
 								while ((length = dis.read(onceBytes, 0, onceBytes.length)) != -1) {
 									bos.write(onceBytes, 0, length);
 									bos.flush();
-									if(bos.size() == fileLength){
+									if (bos.size() == fileLength) {
 										break;
 									}
 								}
@@ -104,6 +158,16 @@ public class NodeAgent extends Thread {
 						if (matcher.find()) {
 							long lastTimeFileSize = dis.readLong();
 							readLog(lastTimeFileSize, dos);
+							continue;
+						}
+
+						matcher = execute_command_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							String strCommand = commandObject.getCommand();
+							strCommand = strCommand.trim();
+							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+							logger.info("收接到命令:" + strCommand);
+							commandQueue.add(strCommand);
 							continue;
 						}
 
@@ -124,12 +188,12 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception{
+	private void readLog(long lastTimeFileSize, DataOutputStream dos) throws Exception {
 		try {
 			File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
-			if(logFile.exists()){
+			if (logFile.exists()) {
 				List<Map<String, String>> list = new ArrayList<>();
-				try(RandomAccessFile randomFile = new RandomAccessFile(logFile,"r")) {
+				try (RandomAccessFile randomFile = new RandomAccessFile(logFile, "r")) {
 					long curFileSize = randomFile.length();
 					if (lastTimeFileSize <= 0 || lastTimeFileSize > curFileSize) {
 						lastTimeFileSize = (curFileSize > LOG_MAX_READ_SIZE) ? (curFileSize - LOG_MAX_READ_SIZE) : 0;
@@ -149,8 +213,8 @@ public class NodeAgent extends Thread {
 							if (DateTools.isDateTime(time)) {
 								time = StringUtils.left(lineStr, 23);
 								curTime = time;
-								if(lineStr.length() > 29){
-									logLevel = StringUtils.right(StringUtils.left(lineStr, 29),5).trim();
+								if (lineStr.length() > 29) {
+									logLevel = StringUtils.right(StringUtils.left(lineStr, 29), 5).trim();
 								}
 							} else {
 								if (StringUtils.isEmpty(curTime)) {
@@ -167,16 +231,16 @@ public class NodeAgent extends Thread {
 							}
 						}
 						Map<String, String> map = new HashMap<>();
-						map.put("logTime",time+"#"+Config.node());
+						map.put("logTime", time + "#" + Config.node());
 						map.put("node", Config.node());
 						map.put("logLevel", logLevel);
 						map.put("lineLog", lineStr);
 						list.add(map);
-						if (curReadSize > LOG_MAX_READ_SIZE){
+						if (curReadSize > LOG_MAX_READ_SIZE) {
 							break;
 						}
 					}
-					if(curReadSize>0) {
+					if (curReadSize > 0) {
 						lastTimeFileSize = lastTimeFileSize + curReadSize - 1;
 					}
 				}
@@ -195,20 +259,20 @@ public class NodeAgent extends Thread {
 		dos.flush();
 	}
 
-	private String uploadResource(Map<String,Object> param, byte[] bytes){
+	private String uploadResource(Map<String, Object> param, byte[] bytes) {
 		String result = "success";
-		if(param == null || param.isEmpty()){
+		if (param == null || param.isEmpty()) {
 			result = "failure";
 			return result;
 		}
 		try {
-			String fileName = (String)param.get("fileName");
-			String filePath = (String)param.get("filePath");
-			Boolean flag = (Boolean)param.get("asNew");
-			boolean asNew = flag==null ? false : flag;
+			String fileName = (String) param.get("fileName");
+			String filePath = (String) param.get("filePath");
+			Boolean flag = (Boolean) param.get("asNew");
+			boolean asNew = flag == null ? false : flag;
 
-			if(StringUtils.isNotEmpty(fileName)){
-				if(fileName.toLowerCase().endsWith(".zip")) {
+			if (StringUtils.isNotEmpty(fileName)) {
+				if (fileName.toLowerCase().endsWith(".zip")) {
 					File tempFile = new File(Config.base(), "local/temp/upload");
 					FileTools.forceMkdir(tempFile);
 					FileUtils.cleanDirectory(tempFile);
@@ -221,26 +285,24 @@ public class NodeAgent extends Thread {
 						FileTools.forceMkdir(dist);
 					}
 					List<String> subs = new ArrayList<>();
-					subs.add("x_");
-					subs.add("o2_");
 					JarTools.unjar(zipFile, subs, dist, asNew);
 
 					FileUtils.cleanDirectory(tempFile);
 					logger.print("upload resource {} success!", fileName);
-				}else if(StringUtils.isNotEmpty(filePath)){
+				} else if (StringUtils.isNotEmpty(filePath)) {
 					File dist = new File(Config.base(), Config.DIR_SERVERS_WEBSERVER);
 					dist = new File(dist, filePath);
 					FileTools.forceMkdir(dist);
 					File file = new File(dist, fileName);
-					if(file.exists()){
+					if (file.exists()) {
 						file.delete();
 					}
 					FileUtils.writeByteArrayToFile(file, bytes);
 					logger.print("upload resource {} success!", fileName);
-				}else{
+				} else {
 					result = "failure";
 				}
-			}else{
+			} else {
 				result = "failure";
 			}
 
@@ -256,18 +318,18 @@ public class NodeAgent extends Thread {
 		try {
 			logger.print("redeploy:{}.", name);
 			switch (this.type(name)) {
-			case "storeWar":
-				storeWar(name, bytes);
-				break;
-			case "storeJar":
-				storeJar(name, bytes);
-				break;
-			case "customWar":
-				customWar(name, bytes);
-				break;
-			case "customJar":
-				customJar(name, bytes);
-				break;
+				case "storeWar":
+					storeWar(name, bytes);
+					break;
+				case "storeJar":
+					storeJar(name, bytes);
+					break;
+				case "customWar":
+					customWar(name, bytes);
+					break;
+				case "customJar":
+					customJar(name, bytes);
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -503,9 +565,13 @@ public class NodeAgent extends Thread {
 			this.credential = credential;
 		}
 
-		public Map<String,Object> getParam() { return param; }
+		public Map<String, Object> getParam() {
+			return param;
+		}
 
-		public void setParam(Map<String, Object> param) { this.param = param; }
+		public void setParam(Map<String, Object> param) {
+			this.param = param;
+		}
 
 	}
 
@@ -525,40 +591,41 @@ public class NodeAgent extends Thread {
 		return null;
 	}
 
-	public static void main(String[] args) throws  Exception{
-		//File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(), "yyyy_MM_dd") + ".out.log");
+	public static void main(String[] args) throws Exception {
+		// File logFile = new File(Config.base(), "logs/" + DateTools.format(new Date(),
+		// "yyyy_MM_dd") + ".out.log");
 		File logFile = new File("/Users/chengjian/Desktop/temp/temp/2020_03_12.out.log");
-		RandomAccessFile randomFile = new RandomAccessFile(logFile,"r");
-		long lastTimeFileSize = randomFile.length()-10*1024;
+		RandomAccessFile randomFile = new RandomAccessFile(logFile, "r");
+		long lastTimeFileSize = randomFile.length() - 10 * 1024;
 		long tempSize = lastTimeFileSize;
 		randomFile.seek(lastTimeFileSize);
 		String tmp = "";
 		String curTime = "";
-		while( (tmp = randomFile.readLine())!= null) {
+		while ((tmp = randomFile.readLine()) != null) {
 			byte[] bytes = tmp.getBytes("ISO8859-1");
 			String lineStr = new String(bytes);
-			tempSize = tempSize + bytes.length+1;
+			tempSize = tempSize + bytes.length + 1;
 			String time = curTime;
-			if(lineStr.length()>23){
+			if (lineStr.length() > 23) {
 				time = StringUtils.left(lineStr, 19);
-				if(DateTools.isDateTime(time)){
+				if (DateTools.isDateTime(time)) {
 					time = StringUtils.left(lineStr, 23);
 					curTime = time;
-					//System.out.println(lineStr);
-				}else{
-					if(StringUtils.isEmpty(curTime)){
+					// System.out.println(lineStr);
+				} else {
+					if (StringUtils.isEmpty(curTime)) {
 						continue;
-					}else {
+					} else {
 						time = curTime;
-						//System.out.println(lineStr);
+						// System.out.println(lineStr);
 					}
 				}
-			}else{
-				if(StringUtils.isEmpty(curTime)){
+			} else {
+				if (StringUtils.isEmpty(curTime)) {
 					continue;
-				}else{
+				} else {
 					time = curTime;
-					//System.out.println(lineStr);
+					// System.out.println(lineStr);
 				}
 			}
 		}

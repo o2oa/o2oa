@@ -48,8 +48,8 @@ var MGrid = new Class({
 
         this.setOptions(options);
 
-        this.path = "/x_component_Template/$MGrid/";
-        this.cssPath = "/x_component_Template/$MGrid/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_Template/$MGrid/";
+        this.cssPath = "../x_component_Template/$MGrid/" + this.options.style + "/css.wcss";
         this._loadCss();
         if (css) {
             this.css = Object.merge(this.css, css)

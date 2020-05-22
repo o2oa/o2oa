@@ -65,7 +65,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
 	},
 
     setCustomToolbars: function(tools, node){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         var iconPath = "";
         if( this.json.customIconStyle ){
             iconPath = this.json.customIconStyle+"/";
@@ -114,7 +114,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     },
 
     setToolbarItem: function(tool, node, readonly, noCondition){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         var flag = true;
         if (tool.control){
             flag = this.form.businessData.control[tool.control]
@@ -129,7 +129,7 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
         //     }
         // }
         if (tool.id == "action_downloadAll" || tool.id == "action_print"){
-            if (!this.form.businessData.activity || !this.form.businessData.activity.id){
+            if (!this.form.businessData.work.startTime){
                 flag = false;
             }
         }

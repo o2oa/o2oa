@@ -14,8 +14,8 @@ MWF.xApplication.process.ProcessManager.widget.ProcessSelector = new Class({
         //this.node = $(node);
         this.app = app;
         this.processes = [];
-        this.path = "/x_component_process_ProcessManager/widget/$ProcessSelector/";
-        this.cssPath = "/x_component_process_ProcessManager/widget/$ProcessSelector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessManager/widget/$ProcessSelector/";
+        this.cssPath = "../x_component_process_ProcessManager/widget/$ProcessSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.selectedItems = [];

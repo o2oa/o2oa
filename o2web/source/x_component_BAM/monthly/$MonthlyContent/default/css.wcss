@@ -137,7 +137,7 @@
     "monthlyTableColSelectTd": {
         "border-right": "1px solid #999",
         "border-bottom": "1px solid #999",
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "height": "20px",
         "padding": "3px"
@@ -145,7 +145,7 @@
     "monthlyTableRowSelectTd": {
         "border-right": "1px solid #BBB",
         "border-bottom": "1px solid #BBB",
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat",
         "cursor": "pointer",
         "width": "30px",
         "padding": "3px"
@@ -155,7 +155,7 @@
         "border-bottom": "1px solid #BBB",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAll.png) center center no-repeat",
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/checkAll.png) center center no-repeat",
         "padding": "3px"
     },
     "monthlyTableAllColSelectTd": {
@@ -163,7 +163,7 @@
         "border-bottom": "1px solid #BBB",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllCol.png) center center no-repeat",
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllCol.png) center center no-repeat",
         "padding": "3px"
     },
     "monthlyTableAllRowSelectTd": {
@@ -171,14 +171,14 @@
         "border-bottom": "1px solid #BBB",
         "height": "20px",
         "cursor": "pointer",
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllRow.png) center center no-repeat",
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/checkAllRow.png) center center no-repeat",
         "padding": "3px"
     },
     "monthlyTableSelectedTd": {
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/checked.png) center center no-repeat"
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/checked.png) center center no-repeat"
     },
     "monthlyTableSelectTd": {
-        "background": "url(/x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat"
+        "background": "url(../x_component_BAM/monthly/$MonthlyContent/default/icon/check.png) center center no-repeat"
     },
     "monthlyTableUnSelectTd": {
         "border-right": "1px solid #BBB",

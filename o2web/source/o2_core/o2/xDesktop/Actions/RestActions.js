@@ -14,7 +14,6 @@ MWF.xDesktop.Actions.RestActions = new Class({
 		var callback = new MWF.xApplication.Common.Actions.RestActions.Callback(success, failure);
 		MWF.getJSON(url, callback);
 	},
-	
 	getAddress: function(success, failure){
 //		var name = "x_processplatform_core_designer";
 //		var url = this.actions.getAddress.replace(/{id}/g, name);
@@ -26,13 +25,16 @@ MWF.xDesktop.Actions.RestActions = new Class({
 //		MWF.getJSON(url, callback);
 		
 		//this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
+        debugger;
         var addressObj = layout.serviceAddressList[this.serviceName];
-
         if (addressObj){
+            //var mapping = layout.getAppUrlMapping(layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context);
             this.address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
+
+            //var mapping = layout.getCenterUrlMapping(layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center");
             this.address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
         }
 
@@ -100,7 +102,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 res = MWF.restful(method, uri, data, callback, async, credentials, option.cache);
             }
         }.bind(this));
-        return res
+        return res;
 	},
 	formDataUpdateProgress: function(){
 		

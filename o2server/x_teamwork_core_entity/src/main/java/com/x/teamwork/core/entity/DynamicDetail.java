@@ -16,7 +16,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.DynamicDetail.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.DynamicDetail.table + JpaObject.IndexNameMiddle

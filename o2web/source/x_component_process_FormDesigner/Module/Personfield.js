@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Personfield = MWF.FCPersonfield = n
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Personfield/personfield.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Personfield/personfield.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Personfield/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Personfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Personfield/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Personfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

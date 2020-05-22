@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.okr.assemble.control.dataadapter.webservice.sms.SmsMessageOperator;
 import com.x.okr.assemble.control.jaxrs.queue.WrapInWorkDynamic;
 import com.x.okr.entity.OkrWorkBaseInfo;
@@ -43,7 +44,7 @@ public class ExcuteWorkReportCreateService {
 					logger.warn("system list work ids what needs report new got an exception." );
 					logger.error(e);
 				}
-				if (ids != null && ids.size() > 0) {
+				if ( ListTools.isNotEmpty( ids ) ) {
 					for (String id : ids) {
 						check = true;
 						if (check) {

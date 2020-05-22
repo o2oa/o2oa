@@ -27,17 +27,17 @@
         "padding-right": "8px",
         "cursor": "pointer",
         "color" : "#000",
-        "background": "url(/x_component_process_Work/$Processor/task/nocheck.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/task/nocheck.png) no-repeat 5px center",
         "background-color": "#f0f0f0"
     },
     "routeNode_over" : {
         "color" : "#000",
-        "background": "url(/x_component_process_Work/$Processor/task/nocheck.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/task/nocheck.png) no-repeat 5px center",
         "background-color": "#e6ecf8"
     },
     "routeNode_selected" : {
         "color" : "#fff",
-        "background": "url(/x_component_process_Work/$Processor/task/checked.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/task/checked.png) no-repeat 5px center",
         "background-color": "#4a90e2"
     },
 
@@ -56,7 +56,7 @@
 //        "width": "24px",
 //        "height": "24px",
 //        "float": "left",
-//        "background": "url("+"/x_component_process_Work/$Processor/task/nocheck.png) no-repeat center center",
+//        "background": "url("+"../x_component_process_Work/$Processor/task/nocheck.png) no-repeat center center",
 //    },
 //    "routeTextNode": {
 //        "margin-left": "24px",
@@ -137,7 +137,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/task/ok-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/task/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
         "font-size": "14px",
@@ -161,7 +161,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/task/cancel-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/task/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -195,7 +195,7 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -224,7 +224,7 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",

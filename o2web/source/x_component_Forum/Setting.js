@@ -15,13 +15,13 @@ MWF.xApplication.Forum.Setting = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Forum/$Setting/";
+        this.path = "../x_component_Forum/$Setting/";
         this.loadCss();
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Forum/$Setting/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Forum/$Setting/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -536,7 +536,7 @@ MWF.xApplication.Forum.Setting.CategorySettingForm = new Class({
         if (this.defalutTypeTemplateList){
             if (callback) callback();
         }else{
-            var url = "/x_component_Forum/$ColumnTemplate/template/setting.json";
+            var url = "../x_component_Forum/$ColumnTemplate/template/setting.json";
             MWF.getJSON(url, function(json){
                 this.defalutTypeTemplateList = json;
                 if (callback) callback();
@@ -1271,7 +1271,7 @@ MWF.xApplication.Forum.Setting.SectionSettingForm = new Class({
         it.form.getItem(preStr + "Result").setStyles( styles );
     },
     createIconNode: function(){
-        var iconPth = "/x_component_Forum/$Setting/"+ this.options.style +"/sectionIcon/";
+        var iconPth = "../x_component_Forum/$Setting/"+ this.options.style +"/sectionIcon/";
         var defaultIconSrc = iconPth + "forum_icon.png";
         var sectionIconArea = this.formTableArea.getElements("[item='sectionIconArea']")[0];
         this.iconNode = new Element("img",{
@@ -1435,8 +1435,8 @@ MWF.xApplication.Forum.Setting.SectionIconForm = new Class({
         "closeAction": true
     },
     _createTableContent: function () {
-        var iconPath = "/x_component_Forum/$Setting/" + this.options.style +"/sectionIcon/";
-        var jsonPath = "/x_component_Forum/$Setting/sectionIcon.json";
+        var iconPath = "../x_component_Forum/$Setting/" + this.options.style +"/sectionIcon/";
+        var jsonPath = "../x_component_Forum/$Setting/sectionIcon.json";
 
         var div = new Element("div",{
             "styles" : this.css.sectionFormContent

@@ -49,13 +49,13 @@
 		"height": "18px"
 	},
 	"authorfieldIcon": {
-		"background": "url("+"/x_component_cms_FormDesigner/Module/Authorfield/default/icon/selectauthor.png) center center no-repeat",
+		"background": "url("+"../x_component_cms_FormDesigner/Module/Authorfield/default/icon/selectauthor.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "right"
 	},
 	"orgfieldIcon": {
-	  "background": "url("+"/x_component_process_FormDesigner/Module/Orgfield/default/icon/selectorg.png) center center no-repeat",
+	  "background": "url("+"../x_component_process_FormDesigner/Module/Orgfield/default/icon/selectorg.png) center center no-repeat",
 	  "width": "18px",
 	  "height": "18px",
 	  "float": "right"

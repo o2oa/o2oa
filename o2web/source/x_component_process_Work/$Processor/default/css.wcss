@@ -31,7 +31,7 @@
         "float": "left",
         "background": "url("
         +
-        "/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+        "../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
     },
     "routeTextNode": {
         "margin-left": "24px",
@@ -104,7 +104,7 @@
         "float": "left",
         "background": "url("
         +
-        "/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
         "font-size": "14px",
@@ -127,7 +127,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url(/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center"
+        "background": "url(../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -162,7 +162,7 @@
         "cursor": "pointer",
         "background": "url("
         +
-        "/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -194,7 +194,7 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",

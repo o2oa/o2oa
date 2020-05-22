@@ -20,14 +20,14 @@
         "height": "60px",
         "width": "80px",
         "display": "none",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/back.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/back.png) center center no-repeat",
         "cursor": "pointer",
         "float": "left"
     },
     "closeNode": {
         "height": "60px",
         "width": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/close.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/close.png) center center no-repeat",
         "cursor": "pointer",
         "float": "right"
     },
@@ -67,31 +67,31 @@
     "statusConnectIconCenterNode": {
         "width": "64px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
         "float": "left"
     },
     "statusConnectIconConnectNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
         "float": "left"
     },
     "statusConnectIconConnectedNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
         "float": "left"
     },
     "statusConnectIconDisconnectNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
         "float": "left"
     },
     "statusConnectIconCollectNode": {
         "width": "64px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/o2Server64.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/o2Server64.png) center center no-repeat",
         "float": "left"
     },
     "statusConnectTextNode": {
@@ -111,31 +111,31 @@
     "statusLoginIconCenterNode": {
         "width": "64px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/centerServer64.png) center center no-repeat",
         "float": "left"
     },
     "statusLoginIconConnectNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/connect.png) center center no-repeat",
         "float": "left"
     },
     "statusLoginIconConnectedNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/connected.png) center center no-repeat",
         "float": "left"
     },
     "statusLoginIconDisconnectNode": {
         "width": "100px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/disconnect.png) center center no-repeat",
         "float": "left"
     },
     "statusLoginIconCollectNode": {
         "width": "64px",
         "height": "80px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/o2ServerLogin64.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/o2ServerLogin64.png) center center no-repeat",
         "float": "left"
     },
     "statusLoginTextNode": {
@@ -245,31 +245,31 @@
     "loginUsernameIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
         "float": "left"
     },
     "registerNewNameIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
         "float": "left"
     },
     "loginPasswordIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
         "float": "left"
     },
     "registerSecretIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
         "float": "left"
     },
     "registerKeyIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
         "float": "left"
     },
     "loginInputAreaNode": {
@@ -337,25 +337,25 @@
     "registerUsernameIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_username.png) center center no-repeat",
         "float": "left"
     },
     "registerPasswordIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_password_or.png) center center no-repeat",
         "float": "left"
     },
     "registerMobileIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_phone.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_phone.png) center center no-repeat",
         "float": "left"
     },
     "registerCodeIconNode": {
         "width": "60px",
         "height": "40px",
-        "background": "url("+"/x_component_Collect/$Main/default/icon/icon_verify_code.png) center center no-repeat",
+        "background": "url("+"../x_component_Collect/$Main/default/icon/icon_verify_code.png) center center no-repeat",
         "float": "left"
     },
     "registerCheckIconNode": {

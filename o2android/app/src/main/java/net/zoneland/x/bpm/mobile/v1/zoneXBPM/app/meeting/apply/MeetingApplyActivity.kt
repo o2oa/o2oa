@@ -16,6 +16,7 @@ import com.borax12.materialdaterangepicker.time.RadialPickerLayout
 import com.borax12.materialdaterangepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.content_meeting_create_form.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.room.MeetingRoomChooseActivity
@@ -204,6 +205,7 @@ class MeetingApplyActivity : BaseMVPActivity<MeetingApplyContract.View, MeetingA
                 savePersonList.remove(invitePersonAdd)
                 info.invitePersonList = savePersonList
                 info.room = roomId
+                info.applicant = O2SDKManager.instance().distinguishedName
                 if (TextUtils.isEmpty(meetingId)) {
                     mPresenter.saveMeetingNoFile(info)
                 } else {

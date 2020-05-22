@@ -4,14 +4,14 @@
         "height": "24px",
         "width": "24px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_add.png)  center center no-repeat"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_add.png)  center center no-repeat"
     },
     "delScriptNode": {
         "float": "right",
         "height": "24px",
         "width": "20px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_delete.png)  center center no-repeat"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/script_delete.png)  center center no-repeat"
     },
     "addScriptNode": {
         "height": "20px",
@@ -65,7 +65,7 @@
         "width": "30px",
         "height": "30px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
         "cursor": "pointer"
     },
     "windowContentNode": {
@@ -83,7 +83,7 @@
     "okActionNode": {
         "width": "150px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -94,7 +94,7 @@
     "cancelActionNode": {
         "width": "100px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",

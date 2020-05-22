@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Personfield = MWF.CMSFCPersonfield = ne
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Personfield/personfield.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Personfield/personfield.html"
 	}
 });

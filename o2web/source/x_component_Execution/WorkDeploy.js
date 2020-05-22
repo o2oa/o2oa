@@ -27,7 +27,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.WorkDeploy;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$WorkDeploy/";
+        this.path = "../x_component_Execution/$WorkDeploy/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -259,7 +259,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
                 }).inject(this.importDiv);
                 this.importTemplateDiv.addEvents({
                     "click":function(){
-                        window.open("/x_component_Execution/baseWork.xls")
+                        window.open("../x_component_Execution/baseWork.xls")
                     }.bind(this)
                 });
                 this.importTitleDiv = new Element("div.importTitleDiv",{

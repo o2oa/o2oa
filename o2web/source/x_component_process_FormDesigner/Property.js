@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"path": "/x_component_process_FormDesigner/property/property.html"
+		"path": "../x_component_process_FormDesigner/property/property.html"
 	},
 	
 	initialize: function(module, propertyNode, designer, options){
@@ -13,7 +13,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		this.module = module;
 		this.form = module.form;
 		this.data = module.json;
-		this.data.pid = this.form.json.id+this.data.id;
+		this.data.pid = this.form.options.mode+this.form.json.id+this.data.id;
 		this.htmlPath = this.options.path;
 		this.designer = designer;
 		this.maplists = {};
@@ -181,7 +181,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 
                             MWF.widget.ace.load(function(){
-                                COMMON.AjaxModule.loadDom("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                                COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                                     var highlight = ace.require("ace/ext/static_highlight");
                                     highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
                                 }.bind(this));
@@ -495,7 +495,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadDocumentTempleteSelect: function(){
         var nodes = this.propertyContent.getElements(".MWFDocumentTempleteSelect");
         if (nodes.length){
-            o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+            o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
                 nodes.each(function(node){
                     var name = node.get("name");
                     Object.each(json, function(o, k){
@@ -626,7 +626,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.iconMenu = iconSelectMenu;
             var _self = this;
             for (var i=0; i<=48; i++){
-                var icon = "/x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
+                var icon = "../x_component_process_ProcessManager/$Explorer/default/processIcon/process_icon_"+i+".png";
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");
@@ -671,7 +671,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.iconMenu = iconSelectMenu;
             var _self = this;
             for (var i=1; i<=21; i++){
-                var icon = "/x_component_process_FormDesigner/Module/Label/default/icon/flag/"+i+".png";
+                var icon = "../x_component_process_FormDesigner/Module/Label/default/icon/flag/"+i+".png";
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");
@@ -1440,7 +1440,8 @@ debugger;
                     "onSave": function(){
                         this.designer.saveForm();
                     }.bind(this),
-                    "style": style || "default"
+                    "style": style || "default",
+                    "runtime": "web"
                 });
                 scriptArea.load(scriptContent);
             }.bind(this));
@@ -1562,6 +1563,7 @@ debugger;
                     "noDelete": false,
                     "noCode": true,
                     "noReadShow": true,
+                    "target" : node.get("data-target"),
                     "noEditShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
@@ -1721,7 +1723,8 @@ debugger;
             if (this.module){
                 var id = this.data.pid;
                 //var id = this.form.json.id;
-                input.set("name", this.form.options.mode+id+jsondata);
+                // input.set("name", this.form.options.mode+id+jsondata);
+                input.set("name", id+jsondata);
             }
 
 			if (jsondata){
@@ -1847,7 +1850,8 @@ debugger;
         //var id = this.form.json.id;
         var id = this.data.pid;
 
-		var checkboxList = $$("input[name='"+this.form.options.mode+id+name+"']");
+		// var checkboxList = $$("input[name='"+this.form.options.mode+id+name+"']");
+        var checkboxList = $$("input[name='"+id+name+"']");
 		var values = [];
 		checkboxList.each(function(checkbox){
 			if (checkbox.get("checked")){

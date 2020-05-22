@@ -40,7 +40,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 		this.userName = layout.desktop.session.user.distinguishedName;
 		this.restActions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
-		this.path = "/x_component_ForumSection/$Main/"+this.options.style+"/";
+		this.path = "../x_component_ForumSection/$Main/"+this.options.style+"/";
 		this.createNode();
 		this.loadApplicationContent();
 	},
@@ -313,7 +313,7 @@ MWF.xApplication.ForumSection.Main = new Class({
 		}).inject(sectionLeftNode);
 		var sectionLeftIcon = new Element("img", {
 			"styles": this.css.sectionLeftIcon,
-			"src" : this.sectionData.icon ?  ('data:image/png;base64,'+ this.sectionData.icon) : "/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png"
+			"src" : this.sectionData.icon ?  ('data:image/png;base64,'+ this.sectionData.icon) : "../x_component_Forum/$Setting/default/sectionIcon/forum_icon.png"
 		}).inject(sectionLeftIconNode);
 
 		var sectionLeftContent = new Element("div.sectionLeftContent", {

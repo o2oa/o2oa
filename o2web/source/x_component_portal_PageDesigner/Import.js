@@ -6,12 +6,12 @@ MWF.xApplication.portal.PageDesigner.Import = MWF.FormImport = MWF.PageImport = 
     options: {
         "style": "default",
         "type": "portal",
-        "stylePath": "/x_component_portal_PageDesigner/$Import/{style}/style.css",
-        "viewPath": "/x_component_portal_PageDesigner/$Import/{style}/view.html"
+        "stylePath": "../x_component_portal_PageDesigner/$Import/{style}/style.css",
+        "viewPath": "../x_component_portal_PageDesigner/$Import/{style}/view.html"
     },
     initialize: function(form, options){
         this.setOptions(options);
-        this.path = "/x_component_portal_PageDesigner/$Import/";
+        this.path = "../x_component_portal_PageDesigner/$Import/";
         this.stylePath = this.options.stylePath.replace("{style}", this.options.style);
         this.viewPath = this.options.viewPath.replace("{style}", this.options.style);
         this.form = form;
@@ -127,8 +127,8 @@ MWF.FormImport.O2 = new Class({
 MWF.FormImport.Html = new Class({
     Extends: MWF.FormImport,
     options: {
-        "stylePath": "/x_component_portal_PageDesigner/$Import/{style}/style_html.css",
-        "viewPath": "/x_component_portal_PageDesigner/$Import/{style}/view_html.html"
+        "stylePath": "../x_component_portal_PageDesigner/$Import/{style}/style_html.css",
+        "viewPath": "../x_component_portal_PageDesigner/$Import/{style}/view_html.html"
     },
     init: function(){
         this.inforText = this.form.designer.lp.importHTML_infor;
@@ -748,7 +748,7 @@ MWF.FormImport.Html = new Class({
 MWF.FormImport.Office = new Class({
     Extends: MWF.FormImport.Html,
     options: {
-        "stylePath": "/x_component_portal_PageDesigner/$Import/{style}/style_office.css"
+        "stylePath": "../x_component_portal_PageDesigner/$Import/{style}/style_office.css"
     },
     init: function(){
         this.inforText = this.form.designer.lp.importOffice_infor;

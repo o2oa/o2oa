@@ -14,7 +14,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         "noDelete": false,
         "noCode": false,
         "noHide": false,
-        "systemToolsAddress" : "/x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
+        "systemToolsAddress" : "../x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
 	},
 	initialize: function(node, designer, module, options){
 		this.setOptions(options);
@@ -22,8 +22,8 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
 		this.module = module;
         this.designer = designer;
 		
-		this.path = "/x_component_process_FormDesigner/widget/$ActionsEditor/";
-		this.cssPath = "/x_component_process_FormDesigner/widget/$ActionsEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/widget/$ActionsEditor/";
+		this.cssPath = "../x_component_process_FormDesigner/widget/$ActionsEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
 		
 		this.actions = [];
@@ -91,6 +91,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
             }).inject(this.actionTitleArea);
 
             this.restoreActionButtonButton.addEvent("click", function(){
+                debugger;
                 this.restoreButtonAction();
             }.bind(this));
         }
@@ -100,6 +101,19 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         if( !this.defaultTools ){
             MWF.getJSON( this.options.systemToolsAddress, function(tools){
                 this.defaultTools = tools;
+                if( this.options.target && this.options.target === "mobileForm" ){
+                    this.defaultTools.push({
+                        "type": "MWFToolBarButton",
+                        "img": "read.png",
+                        "title": "标记为已阅",
+                        "action": "readedWork",
+                        "text": "已阅",
+                        "id": "action_readed",
+                        "control": "allowReadProcessing",
+                        "condition": "",
+                        "read": true
+                    });
+                }
             }.bind(this), false);
         }
         this.defaultTools.each( function( tool ){

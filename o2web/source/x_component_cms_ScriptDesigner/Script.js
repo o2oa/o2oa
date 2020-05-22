@@ -16,8 +16,8 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_cms_ScriptDesigner/$Script/";
-        this.cssPath = "/x_component_cms_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_ScriptDesigner/$Script/";
+        this.cssPath = "../x_component_cms_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -104,12 +104,20 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             if (this.data.text) {
                 this.editor.editor.setValue(this.data.text);
             }
-            this.editor.editor.on("change", function (e) {
-                if (!this.isChanged) {
+            this.editor.addEditorEvent("change", function(){
+                if (!this.isChanged){
                     this.isChanged = true;
-                    this.page.textNode.set("text", " * " + this.page.textNode.get("text"));
+                    this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
                 }
             }.bind(this));
+
+            // this.editor.editor.on("change", function (e) {
+            //     if (!this.isChanged) {
+            //         this.isChanged = true;
+            //         this.page.textNode.set("text", " * " + this.page.textNode.get("text"));
+            //     }
+            // }.bind(this));
+
             this.editor.addEvent("save", function () {
                 this.save();
             }.bind(this));
@@ -151,6 +159,39 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
                     }
                 }
             }
+
+            if(this.designer.editorSelectNode) {
+                var options = this.designer.editorSelectNode.options;
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    if (option.value == this.editor.options.type) {
+                        option.set("selected", true);
+                        break;
+                    }
+                }
+            }
+
+            if (this.designer.monacoStyleSelectNode){
+                options = this.designer.monacoStyleSelectNode.options;
+                for (var i=0; i<options.length; i++){
+                    var option = options[i];
+                    if (option.value==this.editor.theme){
+                        option.set("selected", true);
+                        break;
+                    }
+                }
+            }
+
+            if (this.designer.styleSelectNode && this.designer.monacoStyleSelectNode){
+                if (this.editor.options.type=="ace"){
+                    this.designer.monacoStyleSelectNode.hide();
+                    this.designer.styleSelectNode.show();
+                }else{
+                    this.designer.monacoStyleSelectNode.show();
+                    this.designer.styleSelectNode.hide();
+                }
+            }
+
         }.bind(this));
 
         if (this.options.showTab) this.page.showTabIm();

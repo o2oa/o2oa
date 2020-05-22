@@ -79,7 +79,7 @@
   },
   "rightToolbarItem_style": {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/style_normal.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/style_normal.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -87,7 +87,7 @@
   },
   "rightToolbarItem_style_active": {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/style_active.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/style_active.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -95,7 +95,7 @@
   },
   "rightToolbarItem_resource": {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/resource_normal.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/resource_normal.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -103,7 +103,7 @@
   },
   "rightToolbarItem_resource_active": {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/resource_active.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/resource_active.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -111,7 +111,7 @@
   },
   "rightToolbarItem_note": {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/note_normal.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/note_normal.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -119,7 +119,7 @@
   },
   "rightToolbarItem_note_active" : {
     "cursor": "pointer",
-    "background": "url(/x_component_MinderEditor/$Main/default/icon/note_active.png) no-repeat center center",
+    "background": "url(../x_component_MinderEditor/$Main/default/icon/note_active.png) no-repeat center center",
     "display": "block",
     "width": "25px",
     "height": "25px",
@@ -222,7 +222,7 @@
     "right" : "1px",
     "width" : "16px",
     "height" : "16px",
-    "background-image": "url(/x_component_MinderEditor/$Main/default/icon/icon_off.png)",
+    "background-image": "url(../x_component_MinderEditor/$Main/default/icon/icon_off.png)",
     "background-repeat": "no-repeat",
     "background-position": "center center",
     "cursor" : "pointer"

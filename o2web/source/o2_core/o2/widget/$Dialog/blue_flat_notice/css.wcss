@@ -82,7 +82,7 @@
 	"cursor" : "pointer"
   },
 	"closeAction": {
-	  "background" : "url(/x_component_process_FormDesigner/Module/Form/notice/icon/close2.png) no-repeat center center",
+	  "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close2.png) no-repeat center center",
 	  "position" : "absolute",
 	  "top" : "5px",
 	  "right" : "5px",

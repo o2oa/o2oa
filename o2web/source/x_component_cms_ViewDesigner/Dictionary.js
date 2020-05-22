@@ -17,8 +17,8 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_cms_DictionaryDesigner/$Dictionary/";
-        this.cssPath = "/x_component_cms_DictionaryDesigner/$Dictionary/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_DictionaryDesigner/$Dictionary/";
+        this.cssPath = "../x_component_cms_DictionaryDesigner/$Dictionary/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -240,9 +240,9 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.item = new Class({
         if (this.type=="array" || this.type=="object"){
             this.itemExpColActionNode = new Element("div", {"styles": this.css.itemExpColActionNode}).inject(this.itemNode);
             if (this.exp){
-                this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
+                this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
             }else{
-                this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
+                this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
             }
         }
 
@@ -287,9 +287,9 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.item = new Class({
             if (!this.itemExpColActionNode){
                 this.itemExpColActionNode = new Element("div", {"styles": this.css.itemExpColActionNode}).inject(this.itemTextNode, "before");
                 if (this.exp){
-                    this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
+                    this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
                 }else{
-                    this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
+                    this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
                 }
                 this.itemExpColActionNode.addEvents({
                     "click": function(){this.expOrColChildren();}.bind(this)
@@ -385,11 +385,11 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.item = new Class({
     expOrColChildren: function(){
         if (this.exp){
             this.colChildren();
-            this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
+            this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/exp.png)");
             this.exp = false;
         }else{
             this.expChildren();
-            this.itemExpColActionNode.setStyle("background-image", "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
+            this.itemExpColActionNode.setStyle("background-image", "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/col.png)");
             this.exp = true;
         }
     },
@@ -1111,7 +1111,7 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.ItemReader= new Class({
 //		this.process = process;
 //		this.paper = this.process.paper;
 //		this.data = process.process;
-//		this.htmlPath = "/x_component_process_ProcessDesigner//$Process/process.html";
+//		this.htmlPath = "../x_component_process_ProcessDesigner//$Process/process.html";
 //	}
 //});
 

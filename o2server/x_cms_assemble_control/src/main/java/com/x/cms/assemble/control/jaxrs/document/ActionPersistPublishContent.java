@@ -176,6 +176,15 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+				if ( StringUtils.isEmpty( wi.getIdentity())) {
+					wi.setCreatorIdentity( wi.getIdentity() );
+				}
+
+				if ( StringUtils.isEmpty( wi.getCreatorPerson())) {
+					wi.setCreatorPerson( effectivePerson.getDistinguishedName() );
+				}
+
 				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
 					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
 						wi.setCreatorIdentity("cipher");
@@ -188,13 +197,13 @@ public class ActionPersistPublishContent extends BaseAction {
 						wi.setCreatorUnitName("xadmin");
 						wi.setCreatorTopUnitName("xadmin");
 					}else {
-						//尝试一下根据当前用户获取用户的第一个身份
-						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
+						//尝试一下根据传入的用户或者当前用户获取用户的第一个身份
+						wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( wi.getCreatorPerson() ) );
 					}
 				}
 				
 				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
-					//说明是指定的发布者，并不使用cipher和xadmin代替
+					//说明是实际的用户，并不使用cipher和xadmin代替
 					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
 						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
 						wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
@@ -450,7 +459,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		private String id = null;
 
-		@FieldDescribe( "文档操作者身份." )
+		@FieldDescribe( "文档操作者身份" )
 		private String identity = null;
 		
 		@FieldDescribe( "数据的路径列表." )
@@ -488,14 +497,17 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
 		private String documentType = "信息";
 
+		@FieldDescribe("文档状态: published | draft | checking | error")
+		private String docStatus = "draft";
+
+		@FieldDescribe("分类ID")
+		private String categoryId;
+
 		private String appId;
 
 		private String appName;
 
 		private String appAlias;
-
-		@FieldDescribe("分类ID")
-		private String categoryId;
 
 		private String categoryName;
 
@@ -518,9 +530,6 @@ public class ActionPersistPublishContent extends BaseAction {
 		private String creatorUnitName;
 
 		private String creatorTopUnitName;
-
-		@FieldDescribe("文档状态: published | draft | checking | error")
-		private String docStatus = "draft";
 
 		private String description = null;
 

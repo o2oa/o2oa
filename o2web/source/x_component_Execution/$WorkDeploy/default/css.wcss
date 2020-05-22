@@ -35,7 +35,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDeploy/default/icon/document.png) no-repeat center 4px"
+    "background": "url(../x_component_Execution/$WorkDeploy/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "16px",
@@ -47,7 +47,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkDeploy/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkDeploy/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -64,7 +64,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -236,7 +236,7 @@
     "font-size": "14px"
   },
   "appointNode":{
-    "background-image" :"url(/x_component_Execution/$Main/default/icon/appoint.png)",
+    "background-image" :"url(../x_component_Execution/$Main/default/icon/appoint.png)",
     "width":"35px",
     "height":"35px",
     "display":"block",
@@ -263,7 +263,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -275,7 +275,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -287,7 +287,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
 

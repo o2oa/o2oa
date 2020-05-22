@@ -684,7 +684,7 @@ public class BBSSubjectInfoServiceAdv {
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			encodeList = business.subjectInfoFactory().getSubjectContent( id );
-			if( encodeList != null && encodeList.size() > 0 ){
+			if( ListTools.isNotEmpty(encodeList) ){
 				subjectContent = encodeList.get( 0 );
 			}
 			if( subjectContent != null ){

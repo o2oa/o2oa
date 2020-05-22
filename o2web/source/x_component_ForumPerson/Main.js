@@ -33,7 +33,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		this.userName = layout.desktop.session.user.distinguishedName;
 		this.restActions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
-		this.path = "/x_component_ForumPerson/$Main/"+this.options.style+"/";
+		this.path = "../x_component_ForumPerson/$Main/"+this.options.style+"/";
 		this.createNode();
 		this.loadApplicationContent();
 	},
@@ -93,7 +93,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 					}
 				}else{
 					if( json.data ){
-						json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+						json.data.icon = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 						if( callback )callback( json );
 					}
 				}
@@ -104,7 +104,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 				//	}
 				//}.bind(this), function(){
 				//	if( json.data ){
-				//		json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+				//		json.data.icon = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 				//		if( callback )callback( json );
 				//	}
 				//});

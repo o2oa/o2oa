@@ -365,14 +365,14 @@
         "width": "20px",
         "height": "24px",
         "float": "left",
-        "background": "url("+"/x_component_cms_ViewDesigner/$View/default/icon/add.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_ViewDesigner/$View/default/icon/add.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemDelActionNode": {
         "width": "20px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"/x_component_cms_ViewDesigner/$View/default/icon/del.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_ViewDesigner/$View/default/icon/del.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemExpColActionNode": {
@@ -393,7 +393,7 @@
     "typeSelActionNode": {
         "width": "20px",
         "height": "24px",
-        "background": "url("+"/x_component_cms_ViewDesigner/$View/default/icon/sel.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_ViewDesigner/$View/default/icon/sel.png) center center no-repeat",
         "cursor": "pointer"
     },
     "valueActionsAreaNode": {
@@ -405,7 +405,7 @@
     "valueSelActionNode": {
         "width": "20px",
         "height": "24px",
-        "background": "url("+"/x_component_cms_ViewDesigner/$View/default/icon/sel.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_ViewDesigner/$View/default/icon/sel.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemTextNode": {
@@ -553,7 +553,7 @@
         "margin-right": "5px",
         "background-position" : "center center",
         "background-repeat" : "no-repeat",
-        "background-image" : "url(/x_component_cms_ViewDesigner/$View/default/icon/dblsort.gif)"
+        "background-image" : "url(../x_component_cms_ViewDesigner/$View/default/icon/dblsort.gif)"
     },
     "alignleftNode" : {
         "height": "16px",
@@ -562,7 +562,7 @@
         "margin-top": "12px",
         "float": "right",
         "margin-right": "5px",
-        "background": "url(/x_component_cms_ViewDesigner/$View/default/icon/alignleft3.png) center center no-repeat"
+        "background": "url(../x_component_cms_ViewDesigner/$View/default/icon/alignleft3.png) center center no-repeat"
     },
     "alignrightNode" : {
         "height": "16px",
@@ -571,6 +571,6 @@
         "margin-top": "12px",
         "float": "right",
         "margin-right": "5px",
-        "background": "url(/x_component_cms_ViewDesigner/$View/default/icon/alignright3.png) center center no-repeat"
+        "background": "url(../x_component_cms_ViewDesigner/$View/default/icon/alignright3.png) center center no-repeat"
     }
 }

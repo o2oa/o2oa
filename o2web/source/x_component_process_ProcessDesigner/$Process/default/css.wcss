@@ -20,7 +20,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/begin.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/begin.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -29,7 +29,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/begin.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/begin.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -56,7 +56,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/end.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/end.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -65,7 +65,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/end.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/end.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -92,7 +92,7 @@
                 "z-index": 100
             },
             "icon":{
-                "src": "/x_component_process_ProcessDesigner/$Process/default/icon/cancel.png",
+                "src": "../x_component_process_ProcessDesigner/$Process/default/icon/cancel.png",
                 "attr": {
                     "cursor": "pointer",
                     "z-index": 100
@@ -101,7 +101,7 @@
             "list": {
                 "width": "30px",
                 "height": "24px",
-                "background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/cancel.gif"+")",
+                "background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/cancel.gif"+")",
                 "background-position": "center center",
                 "background-repeat": "no-repeat",
                 "border-bottom": "1px dashed #CCC",
@@ -128,7 +128,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/manual.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/manual.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -137,7 +137,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/manual.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/manual.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -164,7 +164,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/condition.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/condition.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -173,7 +173,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/condition.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/condition.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -200,7 +200,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/auto.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/auto.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -209,7 +209,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/auto.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/auto.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -236,7 +236,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -245,7 +245,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/invoke.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -272,7 +272,7 @@
 				"z-index": 100
 			},
 			"icon":{
-				"src": "/x_component_process_ProcessDesigner/$Process/default/icon/embed.gif",
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/embed.gif",
 				"attr": {
 					"cursor": "pointer",
 					"z-index": 100
@@ -281,7 +281,7 @@
 			"list": {
 				"width": "30px",
 				"height": "24px",
-				"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/embed.gif"+")",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/embed.gif"+")",
 				"background-position": "center center",
 				"background-repeat": "no-repeat",
 				"border-bottom": "1px dashed #CCC",
@@ -330,7 +330,7 @@
 			"background-repeat": "no-repeat",
 			"border-bottom": "1px dashed #CCC",
 			"cursor": "pointer",
-			"background-image": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/route.gif"+")"
+			"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/route.gif"+")"
 		},
 		"listText":{
 			"border-bottom": "1px dashed #CCC",
@@ -549,7 +549,7 @@
         "width": "24px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessDesigner/$Process/default/icon/refresh.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/refresh.png) no-repeat center center",
         "cursor": "pointer"
     },
 

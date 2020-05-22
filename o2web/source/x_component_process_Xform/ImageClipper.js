@@ -66,8 +66,13 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
                 });
                 if( window.o2android && window.o2android.uploadImage2FileStorage ){
                     window.o2android.uploadImage2FileStorage(jsonString)
-                }else{
+                }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage){
                     window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
+                }else {
+                    this.selectImage( d, function(data){
+                        this.setData( data ? data.id : "" );
+                        this.validation();
+                    }.bind(this));
                 }
             }else{
                 this.selectImage( d, function(data){
@@ -150,7 +155,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
                 "width": "20px",
                 "height": "20px",
                 "float": "left",
-                "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {

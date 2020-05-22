@@ -38,7 +38,7 @@
     "margin-top" : "10px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/document.png) no-repeat center 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "18px",
@@ -56,7 +56,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -73,7 +73,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -174,7 +174,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/report.png) no-repeat 4px 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/report.png) no-repeat 4px 4px"
   },
   "reportTopTextNode" : {
     "margin-left" : "5px",
@@ -206,7 +206,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/rep.png) no-repeat 4px 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/rep.png) no-repeat 4px 4px"
   },
   "reportItemTextNode":{
     "float": "left",
@@ -233,7 +233,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/question.png) no-repeat 4px 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/question.png) no-repeat 4px 4px"
   },
   "questionTopTextNode" : {
     "margin-left" : "5px",
@@ -256,7 +256,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/que.png) no-repeat 4px 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/que.png) no-repeat 4px 4px"
   },
   "questionItemTextNode":{
     "float": "left",
@@ -281,7 +281,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/detail.png) no-repeat center center"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/detail.png) no-repeat center center"
   },
   "detailTopTextNode" : {
     "margin-left" : "5px",
@@ -361,7 +361,7 @@
     "width": "32px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkDetail/default/icon/chat.png) no-repeat 4px 4px"
+    "background": "url(../x_component_Execution/$WorkDetail/default/icon/chat.png) no-repeat 4px 4px"
   },
   "chatTopTextNode" : {
     "margin-left" : "5px",
@@ -394,7 +394,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkReport/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "prevContentDiv":{

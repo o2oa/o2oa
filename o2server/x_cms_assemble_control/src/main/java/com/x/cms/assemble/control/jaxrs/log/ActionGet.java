@@ -24,7 +24,7 @@ public class ActionGet extends BaseAction {
 			Business business = new Business(emc);
 			Log log = business.getLogFactory().get(id);
 			if ( null == log ) {
-				throw new Exception( "log{id:" + id + "} 信息不存在." );
+				throw new Exception( "需要查询的日志信息不存在，请联系管理员。ID:" + id  );
 			}
 			wo = Wo.copier.copy( log );
 			result.setData( wo );

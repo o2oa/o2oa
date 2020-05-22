@@ -18,7 +18,7 @@
     "width": "200px",
     "height": "60px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/pic_o2shequ.png) no-repeat center 14px"
+    "background": "url(../x_component_Forum/$Main/default/icon/pic_o2shequ.png) no-repeat center 14px"
   },
   "topTextNode" : {
     "color" : "#fff",
@@ -59,17 +59,17 @@
     "float" : "left",
     "height" : "26px",
     "line-height" : "26px",
-    "background": "url(/x_component_Forum/$Main/default/icon/search-20.png) no-repeat center center",
+    "background": "url(../x_component_Forum/$Main/default/icon/search-20.png) no-repeat center center",
     "width" : "26px",
     "background-color" : "#f5f5f5",
     "cursor" : "pointer"
   },
   "searchAction_over" : {
-    "background": "url(/x_component_Forum/$Main/default/icon/search-20-over.png) no-repeat center center",
+    "background": "url(../x_component_Forum/$Main/default/icon/search-20-over.png) no-repeat center center",
     "background-color" : "#fff"
   },
   "searchAction_over2" : {
-    "background": "url(/x_component_Forum/$Main/default/icon/search-20-color.png) no-repeat center center",
+    "background": "url(../x_component_Forum/$Main/default/icon/search-20-color.png) no-repeat center center",
     "background-color" : "#fff"
   },
   "topSepNode" : {
@@ -95,7 +95,7 @@
     "width": "24px",
     "height": "24px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/signup.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Main/default/icon/signup.png) no-repeat center center"
   },
   "signupTextNode" : {
     "height": "24px",
@@ -116,7 +116,7 @@
     "width": "24px",
     "height": "24px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/logout.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Main/default/icon/logout.png) no-repeat center center"
   },
   "logoutTextNode" : {
     "height": "24px",
@@ -137,7 +137,7 @@
     "width": "24px",
     "height": "24px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
   },
   "loginTextNode" : {
     "height": "24px",
@@ -159,7 +159,7 @@
     "width": "24px",
     "height": "24px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/settings.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Main/default/icon/settings.png) no-repeat center center"
   },
   "settingTextNode" : {
     "height": "24px",
@@ -179,7 +179,7 @@
     "width": "24px",
     "height": "24px",
     "float": "left",
-    "background": "url(/x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Main/default/icon/user.png) no-repeat center center"
   },
   "personTextNode" : {
     "height": "24px",

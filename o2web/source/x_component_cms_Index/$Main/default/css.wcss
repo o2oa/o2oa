@@ -32,7 +32,7 @@
     "line-height": "50px",
     "color" : "#666",
     "font-size" : "16px",
-    "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument.png) 5px center no-repeat",
+    "background": "url(../x_component_cms_Index/$Main/default/icon/createDocument.png) 5px center no-repeat",
     "float": "right",
     "padding-left" : "27px",
     "margin-right" : "16px",
@@ -40,7 +40,7 @@
   },
   "createDocumentAction_over": {
     "color" : "#3c76b7",
-    "background": "url(/x_component_cms_Index/$Main/default/icon/createDocument_over.png) 5px center no-repeat"
+    "background": "url(../x_component_cms_Index/$Main/default/icon/createDocument_over.png) 5px center no-repeat"
   },
   "searchBarAreaNode": {
     //"margin": "0px 20px 0px 20px",
@@ -62,14 +62,14 @@
   "searchBarActionNode": {
     "width": "30px",
     "height": "30px",
-    "background": "url("+"/x_component_cms_Index/$Main/default/icon/search.png) center center no-repeat",
+    "background": "url("+"../x_component_cms_Index/$Main/default/icon/search.png) center center no-repeat",
     "float": "left",
     "cursor": "pointer"
   },
   "searchBarResetActionNode": {
     "width": "30px",
     "height": "30px",
-    "background": "url("+"/x_component_cms_Index/$Main/default/icon/reset.png) center center no-repeat",
+    "background": "url("+"../x_component_cms_Index/$Main/default/icon/reset.png) center center no-repeat",
     "float": "left",
     "cursor": "pointer"
   },
@@ -96,7 +96,7 @@
     "width": "40px",
     "height": "60px",
     "line-height": "60px",
-    "background": "url(/x_component_cms_Index/$Main/default/icon/refresh.png) center center no-repeat",
+    "background": "url(../x_component_cms_Index/$Main/default/icon/refresh.png) center center no-repeat",
     "cursor": "pointer"
   },
   "columnTop_All": {
@@ -108,7 +108,7 @@
     "border-bottom": "2px solid #FAFAFA",
     "font-size": "16px",
     "color": "#333333",
-    "background": "url(/x_component_cms_Column/$Main/default/icon/icon_quanbu.png) 0 center no-repeat",
+    "background": "url(../x_component_cms_Column/$Main/default/icon/icon_quanbu.png) 0 center no-repeat",
     "cursor": "pointer"
   },
   "columnTop_All_over": {
@@ -117,7 +117,7 @@
   "columnTop_All_current": {
     "color": "#4A90E2",
     "border-bottom": "2px solid #4A90E2",
-    "background": "url(/x_component_cms_Column/$Main/default/icon/icon_quanbu_click.png) 0 center no-repeat"
+    "background": "url(../x_component_cms_Column/$Main/default/icon/icon_quanbu_click.png) 0 center no-repeat"
   },
 
 
@@ -125,7 +125,7 @@
     "float": "right",
     "margin-right": "30px",
     "width": "56px",
-    "background": "url(/x_component_cms_Column/$Main/default/icon/icon__leading_in_grey.png) 0 center no-repeat",
+    "background": "url(../x_component_cms_Column/$Main/default/icon/icon__leading_in_grey.png) 0 center no-repeat",
     "padding-left": "22px",
     "height": "50px",
     "line-height": "50px",
@@ -159,7 +159,7 @@
     "border-bottom": "2px solid #FAFAFA",
     "font-size": "14px",
     "color": "#333333",
-    "background": "url(/x_component_cms_Column/$Main/default/icon/icon_files.png) 0 center no-repeat",
+    "background": "url(../x_component_cms_Column/$Main/default/icon/icon_files.png) 0 center no-repeat",
     "cursor": "pointer"
   },
   "columnTop_categoryItem_over": {
@@ -168,7 +168,7 @@
   "columnTop_categoryItem_current": {
     "color": "#4A90E2",
     "border-bottom": "2px solid #4A90E2",
-    "background": "url(/x_component_cms_Column/$Main/default/icon/icon_files_click.png) 0 center no-repeat"
+    "background": "url(../x_component_cms_Column/$Main/default/icon/icon_files_click.png) 0 center no-repeat"
   },
 
 
@@ -188,7 +188,7 @@
     "font-weight": "bold",
     /*border": "1px solid #eeeeee",*/
     "border-radius": "5px",
-    "background-image": "url(/x_component_cms_Column/$Main/default/icon/more.png)",
+    "background-image": "url(../x_component_cms_Column/$Main/default/icon/more.png)",
     "background-position": "center center",
     "background-repeat": "no-repeat",
     /*background-color": "#dddddd",*/
@@ -254,7 +254,7 @@
 //    "height": "47px",
 //    "position": "relative",
 //    "top": "-80px",
-//    "background": "url(/x_component_cms_Index/$Main/default/icon/new.png) no-repeat right"
+//    "background": "url(../x_component_cms_Index/$Main/default/icon/new.png) no-repeat right"
 //  },
   "columnItemIconAreaNode" : {
     "width": "180px",
@@ -310,20 +310,20 @@
     "height": "50px",
     "line-height" : "50px",
     "cursor" : "pointer",
-    "background":"url(/x_component_cms_Index/$Main/default/icon/down.png) center center no-repeat",
+    "background":"url(../x_component_cms_Index/$Main/default/icon/down.png) center center no-repeat",
     "float" : "right",
     "background-color" : "#fff"
   },
   "categoryArrowNode_over" : {
-    "background":"url(/x_component_cms_Index/$Main/default/icon/down_over.png) center center no-repeat"
+    "background":"url(../x_component_cms_Index/$Main/default/icon/down_over.png) center center no-repeat"
     //"background-color" : "#eee"
   },
   "categoryArrowNode_down" : {
-    "background":"url(/x_component_cms_Index/$Main/default/icon/up.png) center center no-repeat",
+    "background":"url(../x_component_cms_Index/$Main/default/icon/up.png) center center no-repeat",
   "background-color" : "#fff"
   },
   "categoryArrowNode_down_over" : {
-    "background":"url(/x_component_cms_Index/$Main/default/icon/up_over.png) center center no-repeat",
+    "background":"url(../x_component_cms_Index/$Main/default/icon/up_over.png) center center no-repeat",
     "float" : "right"
     //"background-color" : "#eee"
   },
@@ -379,12 +379,12 @@
     "text-overflow" : "ellipsis",
      "overflow":"hidden",
      "white-space":"nowrap",
-    "background":"url(/x_component_cms_Index/$Main/default/icon/documentDot.png) 0px 12px no-repeat"
+    "background":"url(../x_component_cms_Index/$Main/default/icon/documentDot.png) 0px 12px no-repeat"
 
   },
   "documentItem_over" : {
     "color": "#3c76b7",//"#98b7d5",
-    "background":"url(/x_component_cms_Index/$Main/default/icon/documentDot_over.png) 0px 12px no-repeat"
+    "background":"url(../x_component_cms_Index/$Main/default/icon/documentDot_over.png) 0px 12px no-repeat"
   },
   "moreArea" : {
     "position" : "absolute",
@@ -412,7 +412,7 @@
     "width" : "14px",
     "height" : "14px",
     "margin-top" : "4px",
-    "background":"url(/x_component_cms_Index/$Main/default/icon/right.png) 0px 0px no-repeat"
+    "background":"url(../x_component_cms_Index/$Main/default/icon/right.png) 0px 0px no-repeat"
   },
   "moreLinkText_over" : {
     "color": "#3c76b7"
@@ -420,7 +420,7 @@
   "moreLinkImage_over" : {
     "width" : "14px",
     "height" : "14px",
-    "background":"url(/x_component_cms_Index/$Main/default/icon/right_over.png) 0px 0px no-repeat"
+    "background":"url(../x_component_cms_Index/$Main/default/icon/right_over.png) 0px 0px no-repeat"
   },
 
   "rightContentNode": {

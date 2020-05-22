@@ -25,7 +25,7 @@
 		"float": "left",
 		"width": "80px",
 		"height": "80px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
 		"cursor": "pointer",
 		"border-right": "1px solid #EEE",
 		"border-left": "0px solid #EEE"
@@ -50,7 +50,7 @@
 		"width": "80px",
 		"height": "80px",
 		"margin-right": "40px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"searchElementInputAreaNode": {
@@ -162,7 +162,7 @@
 		"height": "16px",
 		"opacity": 0,
 		"cursor": "pointer",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
 	},
 	"itemTextDescriptionNode": {
 	    "margin-left": "50px",
@@ -188,7 +188,7 @@
         "position": "relative",
         "top": "-70px",
         "left": "-10px",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
     },
 
     "createTemplateMaskNode": {
@@ -308,7 +308,7 @@
         "position": "absolute",
         "top": "0px",
         "right": "0px",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
         "display": "none"
     },
 

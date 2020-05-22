@@ -13,8 +13,8 @@ MWF.xApplication.cms.Index.Starter = new Class({
 	},
     initialize: function(columnData, categoryData, app, options){
         this.setOptions(options);
-        this.path = "/x_component_cms_Index/$Starter/";
-        this.cssPath = "/x_component_cms_Index/$Starter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Index/$Starter/";
+        this.cssPath = "../x_component_cms_Index/$Starter/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         MWF.xDesktop.requireApp("cms.Index", "$Starter."+MWF.language, null, false);

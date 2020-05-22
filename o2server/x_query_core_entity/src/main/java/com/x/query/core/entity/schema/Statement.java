@@ -32,7 +32,7 @@ import com.x.query.core.entity.PersistenceProperties;
 import com.x.query.core.entity.Query;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @javax.persistence.Table(name = PersistenceProperties.Schema.Statement.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Schema.Statement.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.ExceptionStatisticCycleProcess;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -20,6 +19,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionSave extends BaseAction {
 
@@ -58,7 +58,7 @@ public class ActionSave extends BaseAction {
 				ids = business.getAttendanceStatisticalCycleFactory().listByParameter(wrapIn.getTopUnitName(),
 						wrapIn.getUnitName(), wrapIn.getCycleYear(), wrapIn.getCycleMonth());
 				emc.beginTransaction(AttendanceStatisticalCycle.class);
-				if (ids != null && ids.size() > 0) {
+				if ( ListTools.isNotEmpty(ids) ) {
 					// 说明有重复的
 					_attendanceStatisticalCycle = emc.find(wrapIn.getId(), AttendanceStatisticalCycle.class);
 					if (_attendanceStatisticalCycle != null) {
@@ -72,7 +72,7 @@ public class ActionSave extends BaseAction {
 					}
 				} else {
 					// 新增就行了
-					if (wrapIn.getId() != null && wrapIn.getId().length() > 10) {
+					if ( wrapIn.getId() != null && wrapIn.getId().length() > 10 ) {
 						attendanceStatisticalCycle.setId(wrapIn.getId());
 					}
 					Wi.copier.copy(wrapIn, attendanceStatisticalCycle);

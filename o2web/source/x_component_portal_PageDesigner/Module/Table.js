@@ -4,15 +4,15 @@ MWF.xApplication.portal.PageDesigner.Module.Table = MWF.PCTable = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Table/table.html",
-        "propertyMultiPath": "/x_component_portal_PageDesigner/Module/Table$Td/table$tdMulti.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Table/table.html",
+        "propertyMultiPath": "../x_component_portal_PageDesigner/Module/Table$Td/table$tdMulti.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Table/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Table/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Table/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Table/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";

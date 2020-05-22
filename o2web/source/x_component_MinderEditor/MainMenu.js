@@ -13,8 +13,8 @@ MWF.xApplication.MinderEditor.MainMenu = new Class({
         this.lp = this.app.lp;
         this.isHidden = false;
 
-        this.path = "/x_component_MinderEditor/$MainMenu/";
-        this.cssPath = "/x_component_MinderEditor/$MainMenu/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_MinderEditor/$MainMenu/";
+        this.cssPath = "../x_component_MinderEditor/$MainMenu/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.itemJson = [

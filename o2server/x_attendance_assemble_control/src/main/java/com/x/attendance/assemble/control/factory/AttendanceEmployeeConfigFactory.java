@@ -16,7 +16,6 @@ import com.x.attendance.entity.AttendanceEmployeeConfig_;
 import com.x.base.core.project.exception.ExceptionWhen;
 /**
  * 员工考勤需求配置服务器
- * @author liyi
  */
 public class AttendanceEmployeeConfigFactory extends AbstractFactory {
 	

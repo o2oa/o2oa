@@ -233,13 +233,13 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "根据Flag获取分类信息对象.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "根据分类标识Flag获取分类信息对象.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("栏目标识") @PathParam("flag") String flag) {
+			@JaxrsParameterDescribe("分类标识") @PathParam("flag") String flag) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGet.Wo> result = null;
 		try {
@@ -275,13 +275,13 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-	@JaxrsMethodDescribe(value = "根据别名获取分类信息对象.", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "根据分类别名获取分类信息对象.", action = ActionGet.class)
 	@GET
 	@Path("alias/{alias}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getByAlias( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, 
-			@JaxrsParameterDescribe("栏目别名") @PathParam("alias") String alias ) {
+			@JaxrsParameterDescribe("分类别名") @PathParam("alias") String alias ) {
 		EffectivePerson effectivePerson = this.effectivePerson( request );
 		ActionResult<ActionGetByAlias.Wo> result = null;
 		try {

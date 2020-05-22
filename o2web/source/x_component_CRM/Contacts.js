@@ -18,14 +18,14 @@ MWF.xApplication.CRM.Contacts = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.contact;
-        this.path = "/x_component_CRM/$Contacts/";
+        this.path = "../x_component_CRM/$Contacts/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Contacts/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Contacts/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {

@@ -5,13 +5,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AppealConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.AppealConfig;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionAttendanceAppealProcess;
-import com.x.attendance.assemble.control.jaxrs.attendanceappealinfo.exception.ExceptionAttendanceDetailNotExists;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.entity.JpaObject;

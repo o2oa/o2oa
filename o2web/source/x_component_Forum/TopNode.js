@@ -20,9 +20,9 @@ MWF.xApplication.Forum.TopNode = new Class({
         this.explorer = explorer;
         this.userName = layout.desktop.session.user.distinguishedName || "";
 
-        this.path = "/x_component_Forum/$TopNode/";
+        this.path = "../x_component_Forum/$TopNode/";
 
-        this.cssPath = "/x_component_Forum/$TopNode/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Forum/$TopNode/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function(){

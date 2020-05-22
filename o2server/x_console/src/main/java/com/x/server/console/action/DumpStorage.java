@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,7 +25,10 @@ import com.google.gson.Gson;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.StorageObject;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.ContainerEntity.Reference;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -38,13 +42,13 @@ public class DumpStorage {
 
 	private static Logger logger = LoggerFactory.getLogger(DumpStorage.class);
 
-	private Date start= new Date();
+	private Date start = new Date();
 
 	private File dir;
 
 	private DumpRestoreStorageCatalog catalog;
 
-	private Gson pureGsonDateFormated=XGsonBuilder.instance();
+	private Gson pureGsonDateFormated = XGsonBuilder.instance();
 
 	public boolean execute(String path) throws Exception {
 		if (StringUtils.isEmpty(path)) {
@@ -60,8 +64,7 @@ public class DumpStorage {
 		FileUtils.cleanDirectory(this.dir);
 		this.catalog = new DumpRestoreStorageCatalog();
 
-		List<String> storageContainerEntityNames = new ArrayList<>();
-		storageContainerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES));
+		List<String> storageContainerEntityNames = this.entities();
 		List<String> classNames = ListTools.includesExcludesWildcard(storageContainerEntityNames,
 				Config.dumpRestoreStorage().getIncludes(), Config.dumpRestoreStorage().getExcludes());
 		logger.print("dump storage find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
@@ -153,8 +156,9 @@ public class DumpStorage {
 		List<T> normalList = null;
 		List<T> emptyList = null;
 		List<T> invalidStorageList = null;
+		ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
 		do {
-			list = this.list(em, cls, id, Config.dumpRestoreStorage().getBatchSize());
+			list = this.list(em, cls, id, containerEntity.dumpSize());
 			if (ListTools.isNotEmpty(list)) {
 				count += list.size();
 				directory = new File(classDirectory, Integer.toString(count));
@@ -166,10 +170,10 @@ public class DumpStorage {
 				for (T t : list) {
 					name = t.getStorage();
 					mapping = storageMappings.get(cls, name);
-					if(StringUtils.isNotEmpty(name)) {
+					if (StringUtils.isNotEmpty(name)) {
 						if (null == mapping && Config.dumpRestoreStorage().getExceptionInvalidStorage()) {
-							throw new Exception("can not find storageMapping class: " + cls.getName() + ", storage: " + name
-									+ ", id: " + t.getId() + ", name: " + t.getName()
+							throw new Exception("can not find storageMapping class: " + cls.getName() + ", storage: "
+									+ name + ", id: " + t.getId() + ", name: " + t.getName()
 									+ ", set exceptionInvalidStorage to false will ignore item.");
 						}
 					}
@@ -195,7 +199,6 @@ public class DumpStorage {
 				this.dumpWrite(file, normalList, emptyList, invalidStorageList);
 			}
 			em.clear();
-			Runtime.getRuntime().gc();
 		} while (ListTools.isNotEmpty(list));
 		DumpRestoreStorageCatalogItem item = new DumpRestoreStorageCatalogItem();
 		item.setCount(count);
@@ -228,5 +231,32 @@ public class DumpStorage {
 		}
 		cq.select(root).where(p).orderBy(cb.asc(root.get("id")));
 		return em.createQuery(cq).setMaxResults(size).getResultList();
+	}
+
+	/**
+	 * 根据设置的模式不同输出需要dump的entity className
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> entities() throws Exception {
+		List<String> list = new ArrayList<>();
+		if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
+			list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+			return list;
+		}
+		for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
+			Class<?> cls = Class.forName(str);
+			ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
+			if (Objects.equals(containerEntity.reference(), Reference.strong)) {
+				list.add(str);
+			}
+		}
+		return list;
+	}
+
+	public static class Item {
+
 	}
 }

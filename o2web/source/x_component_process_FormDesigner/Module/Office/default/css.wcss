@@ -63,7 +63,7 @@
 	"iconNodeIcon":{
 		"width": "34px",
 		"height": "34px",
-		"background": "url("+"/x_component_process_FormDesigner/Module/Office/default/icon/office.png) 5px center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Office/default/icon/office.png) 5px center no-repeat",
 		"float": "left"
 	},
 	"iconNodeText":{

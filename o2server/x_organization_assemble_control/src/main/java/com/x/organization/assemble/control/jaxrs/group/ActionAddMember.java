@@ -52,6 +52,14 @@ class ActionAddMember extends BaseAction {
 					group.setGroupList(ListTools.trim(ListUtils.sum(group.getGroupList(), group_add_ids), true, true));
 				}
 			}
+			if (ListTools.isNotEmpty(wi.getIdentityList())) {
+				List<String> identity_add_ids = ListTools.extractProperty(
+						business.identity().pick(ListTools.trim(wi.getIdentityList(), true, true)), JpaObject.id_FIELDNAME,
+						String.class, true, true);
+				if (ListTools.isNotEmpty(identity_add_ids)) {
+					group.setIdentityList(ListTools.trim(ListUtils.sum(group.getIdentityList(), identity_add_ids), true, true));
+				}
+			}
 			emc.check(group, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Group.class);

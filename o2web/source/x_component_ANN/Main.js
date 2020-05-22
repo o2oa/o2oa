@@ -19,7 +19,7 @@ MWF.xApplication.ANN.Main = new Class({
         this.setOptions(options);
         this.desktop = desktop;
 
-        this.path = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
+        this.path = "../x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
         this.options.icon = this.path+this.options.style+"/"+this.options.icon;
 
         //this.cssPath =this.path+this.options.style+"/css.wcss";
@@ -115,7 +115,7 @@ MWF.xApplication.ANN.Model = new Class({
             this.node.getElement(".o2_ann_model_nodeContentDate").set("text", this.data.updateTime);
             var rightIcon = this.node.getElement(".o2_ann_model_nodeRight");
             rightIcon.set("title", this.lp.status[this.data.status||'idle']);
-            rightIcon.setStyle("background-image", "url(/x_component_ANN/$Main/default/icon/"+(this.data.status || 'idle')+".png")
+            rightIcon.setStyle("background-image", "url(../x_component_ANN/$Main/default/icon/"+(this.data.status || 'idle')+".png")
         }.bind(this));
     },
 	load: function(){
@@ -133,7 +133,7 @@ MWF.xApplication.ANN.Model = new Class({
 			this.node = this.listNode.getLast();
             // var rightIcon = this.node.getElement(".o2_ann_model_nodeRight");
             // rightIcon.set("title", this.lp.status[this.data.status||'idle']);
-            // rightIcon.setStyle("background-image", "url(/x_component_ANN/$Main/default/icon/"+(this.data.status || 'idle')+".png")
+            // rightIcon.setStyle("background-image", "url(../x_component_ANN/$Main/default/icon/"+(this.data.status || 'idle')+".png")
 			if (callback) callback();
 		}.bind(this));
 	},
@@ -220,7 +220,7 @@ MWF.xApplication.ANN.Model.Context = new Class({
             this.lines = this.content.getElements(".o2_ann_modelContext_line");
 
             o2.widget.ace.load(function(){
-                o2.load("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                o2.load("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                     this.loadContent();
                     this.loadToolbar();
 

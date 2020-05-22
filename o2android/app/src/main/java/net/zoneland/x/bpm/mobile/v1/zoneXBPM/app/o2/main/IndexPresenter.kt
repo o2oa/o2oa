@@ -74,25 +74,44 @@ class IndexPresenter : BasePresenterImpl<IndexContract.View>(), IndexContract.Pr
     }
 
     override fun getMyAppList() {
-        RealmDataService().findMyAppList()
-                .subscribeOn(Schedulers.io())
-                .flatMap { result ->
-                    XLog.debug("getmyApplist..........................${result.size}.")
-                    val list = ArrayList<MyAppListObject>()
-                    if (result.isEmpty()) {
-                        ApplicationEnum.values().mapIndexed { index, applicationEnum ->
-                            if (index < 4) {
-                                val myObj = MyAppListObject()
-                                myObj.appId = applicationEnum.key
-                                myObj.appTitle = applicationEnum.appName
-                                list.add(myObj)
-                            }
-                        }
-                    } else {
-                        list.addAll(result)
+        Observable.zip(RealmDataService().findAllNativeApp(), RealmDataService().findAllPortalList(), RealmDataService().findMyAppList()){ all, allPortal, my ->
+            val list = ArrayList<MyAppListObject>()
+            if (my.isEmpty()) {
+                for (appItemOnlineVo  in all) {
+                    if (list.size < 4 && appItemOnlineVo.enable) {
+                        val myObj = MyAppListObject()
+                        myObj.appId = appItemOnlineVo.key
+                        myObj.appTitle = appItemOnlineVo.name
+                        list.add(myObj)
                     }
-                    Observable.just(list)
                 }
+            }else {
+                for (myAppListObject in my) {
+                    if (all.any { vo -> vo.key == myAppListObject.appId && vo.enable } || allPortal.any{ p -> p.id == myAppListObject.appId && p.enable}) {
+                        list.add(myAppListObject)
+                    }
+                }
+//                list.addAll(my)
+            }
+            list
+        }.subscribeOn(Schedulers.io())
+//                .flatMap { result ->
+//                    XLog.debug("getmyApplist..........................${result.size}.")
+//                    val list = ArrayList<MyAppListObject>()
+//                    if (result.isEmpty()) {
+//                        ApplicationEnum.values().mapIndexed { index, applicationEnum ->
+//                            if (index < 4) {
+//                                val myObj = MyAppListObject()
+//                                myObj.appId = applicationEnum.key
+//                                myObj.appTitle = applicationEnum.appName
+//                                list.add(myObj)
+//                            }
+//                        }
+//                    } else {
+//                        list.addAll(result)
+//                    }
+//                    Observable.just(list)
+//                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { result ->

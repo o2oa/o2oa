@@ -56,6 +56,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
                     this.createApplicationItem(json.data, "top");
                 }.bind(this));
 
+                this.reloadApplicationCategoryList(true);
                 this.notice(this.lp.application.createApplicationSuccess, "success");
             }.bind(this));
         }else{
@@ -100,6 +101,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
 
                 var complete = function(){
                     if (doCount == readyCount){
+                        _self.reloadApplicationCategoryList( true );
                         if (errorText){
                             _self.app.notice(errorText, "error");
                         }
@@ -204,14 +206,14 @@ MWF.xApplication.query.QueryExplorer.Query = new Class({
         if (this.data.icon){
             this.iconNode.setStyle("background-image", "url(data:image/png;base64,"+this.data.icon+")");
         }else{
-            this.iconNode.setStyle("background-image", "url("+"/x_component_query_QueryExplorer/$Main/default/icon/application.png)")
+            this.iconNode.setStyle("background-image", "url("+"../x_component_query_QueryExplorer/$Main/default/icon/application.png)")
         }
         this.iconNode.makeLnk({
             "par": this._getLnkPar()
         });
     },
     _getLnkPar: function(){
-        var lnkIcon = "/x_component_query_QueryExplorer/$Main/default/lnk.png";
+        var lnkIcon = "../x_component_query_QueryExplorer/$Main/default/lnk.png";
         if (this.data.icon) lnkIcon = "data:image/png;base64,"+this.data.icon;
 
         var appId = "query.QueryManager"+this.data.id;

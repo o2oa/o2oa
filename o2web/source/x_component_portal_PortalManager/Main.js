@@ -25,19 +25,29 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
 	},
 
     keyCopyItems: function(e){
-        if (this.pageConfigurator){
-            this.pageConfigurator.keyCopy(e);
-        }
-        if (this.scriptConfigurator){
-            this.scriptConfigurator.keyCopy(e);
+        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId){
+            if (this.pageConfigurator){
+                this.pageConfigurator.keyCopy(e);
+            }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyCopy(e);
+            }
+            if (this.widgetConfigurator){
+                this.widgetConfigurator.keyCopy(e);
+            }
         }
     },
     keyPasteItems: function(e){
-        if (this.pageConfigurator){
-            this.pageConfigurator.keyPaste(e);
-        }
-        if (this.scriptConfigurator){
-            this.scriptConfigurator.keyPaste(e);
+        if (layout.desktop.currentApp && layout.desktop.currentApp.appId===this.appId) {
+            if (this.pageConfigurator){
+                this.pageConfigurator.keyPaste(e);
+            }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyPaste(e);
+            }
+            if (this.widgetConfigurator){
+                this.widgetConfigurator.keyPaste(e);
+            }
         }
     },
 
@@ -252,7 +262,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         var host = window.location.host;
         //var port = window.location.port;
         var par = '?id='+this.data.id;
-        //var url = "http://"+host+(((!port || port==80) ? "" : ":"+port))+"/x_desktop/portal.html"+par;
+        //var url = "http://"+host+(((!port || port==80) ? "" : ":"+port))+"../x_desktop/portal.html"+par;
         var url = "http://"+host+"/x_desktop/portal.html"+par;
         this.urlInput = new MWF.xApplication.portal.PortalManager.Input(this.propertyContentNode.getElement("#formApplicationUrl"), url, this.app.css.formInput);
     },

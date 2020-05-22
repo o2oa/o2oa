@@ -226,16 +226,15 @@ MWF.xApplication.cms.Module.Main = new Class({
 						//if(this.options.columnData.ignoreTitle===undefined) this.options.columnData.ignoreTitle = false;
 
 						this.creater = new MWF.xApplication.cms.Index.Newer( this.options.columnData, null, this, this.view, {
-							restrictToColumn : true,
-							onPostPublish : function () {
-								debugger;
-								try{
-									if(this.view && this.view.reload){
-										this.view.reload();
-									}
-								}catch (e) {
-								}
-							}.bind(this)
+							restrictToColumn : true
+							// onAfterPublish : function () {
+							// 	try{
+							// 		if(this.view && this.view.reload){
+							// 			this.view.reload();
+							// 		}
+							// 	}catch (e) {
+							// 	}
+							// }.bind(this)
 							//ignoreTitle : this.options.columnData.ignoreTitle,
 							//latest : this.options.columnData.latest
 						});
@@ -882,7 +881,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	loadTitleIconNode : function(){
 
-		this.defaultColumnIcon = "/x_component_cms_Index/$Main/"+this.options.style+"/icon/column.png";
+		this.defaultColumnIcon = "../x_component_cms_Index/$Main/"+this.options.style+"/icon/column.png";
 
 		var iconAreaNode = this.iconAreaNode = new Element("div",{
 			"styles" : this.css.titleIconAreaNode

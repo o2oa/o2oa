@@ -62,7 +62,7 @@ o2.addReady(function () {
             _loadProgressBar();
         }
     });
-    o2.getJSON("/x_desktop/res/config/config.json", function (config) {
+    o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         _loadProgressBar();
         layout.config = config;
         configLoaded = true
@@ -108,7 +108,7 @@ o2.addReady(function () {
                     //o2.xDesktop.requireApp("Common", "", null, false);
                     var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
                     o2.require("o2.widget.Common", function () {
                         _loadProgressBar();
                         o2.require(modules, {
@@ -177,7 +177,7 @@ o2.addReady(function () {
                     //o2.xDesktop.requireApp("Common", "", null, false);
                     var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    //o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    //o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
                     o2.require("o2.widget.Common", function () {
                         _loadProgressBar();
                         o2.require(modules, {
@@ -308,6 +308,10 @@ o2.addReady(function () {
             window.location = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
         } else if (options.workCompletedId) {
             window.location = "workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        }else if (options.draft){
+            window.location = "workmobilewithaction.html?draft=" + JSON.stringify(options.draft) + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+        }else {
+            console.log("open work 错误，缺少参数！");
         }
     };
     var _openWork = function (options) {

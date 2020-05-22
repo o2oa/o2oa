@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Number = MWF.FCNumber = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Number/number.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Number/number.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Number/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Number/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Number/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Number/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

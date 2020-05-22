@@ -102,7 +102,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         //this.json.documentTempleteType!="cus"
         this.getTempleteJson(function(){
             var templete = this.json.documentTempleteName || "standard";
-            pageContentNode.loadHtml("/x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file, function(){
+            pageContentNode.loadHtml("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file, function(){
                 if (this.attachmentTemplete){
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
@@ -116,7 +116,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.templeteJson){
             if (callback) callback();
         }else{
-            o2.getJSON("/x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+            o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
                 this.templeteJson = json;
                 if (callback) callback();
             }.bind(this));
@@ -653,7 +653,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
             if (!layout.mobile) this.loadSideToolbar();
 
-            o2.load("/o2_lib/diff-match-patch/diff_match_patch.js");
+            o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
 
             var id = this.form.businessData.data["$work"].job;
             o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
@@ -724,19 +724,28 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     // },
     resizeToolbar: function(){
         if (this.toolbarNode){
-            var p = this.toolNode.getPosition(this.form.app.content);
+            var p = this.toolNode.getPosition(this.scrollNode);
             var size = this.toolNode.getSize();
             var pl = this.toolbarNode.getStyle("padding-left").toInt();
             var pr = this.toolbarNode.getStyle("padding-right").toInt();
             var x = size.x-pl-pr;
 
-            if (p.y<0){
-                this.toolbarNode.inject(this.form.node);
+            //var pNode = this.toolNode.getOffsetParent();
+
+            var paddingTop = this.form.node.getStyle("padding-top");
+            try {
+                paddingTop = paddingTop.toInt();
+            }catch (e) {
+                paddingTop = 0;
+            }
+
+            if (p.y<paddingTop){
+                this.toolbarNode.inject(this.scrollNode);
                 this.toolbarNode.setStyles({
                     "position": "absolute",
                     "width": ""+x+"px",
                     "z-index": 20000,
-                    "top": "0px",
+                    "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });
             }else{
@@ -784,7 +793,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         }.bind(this));
                     }
 
-                    html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+                    html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
 
                     this.sidebarNode.set("html", html);
 
@@ -1109,15 +1118,15 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     _loadToolbars: function(){
         var html ="";
         if (this.allowEdit){
-            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
-            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
-            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
+            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+            //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
         }
         if (this.allowPrint){
-            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
         }
         if (this.allowHistory){
-           html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
+           html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
         }
         this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
         this.toolbarNode.set("html", html);
@@ -1579,7 +1588,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     loadCkeditorFiletext: function(callback, inline){
         if (this.layout_filetext){
-            o2.load("/o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
+            o2.load("../o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
                 this.layout_filetext.setAttribute('contenteditable', true);
 
@@ -1927,7 +1936,7 @@ debugger;
                 "width": "20px",
                 "height": "20px",
                 "float": "left",
-                "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {

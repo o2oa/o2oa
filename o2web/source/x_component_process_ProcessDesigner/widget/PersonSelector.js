@@ -20,8 +20,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
 
         debugger;
 
-        this.path = "/x_component_process_ProcessDesigner/widget/$PersonSelector/";
-        this.cssPath = "/x_component_process_ProcessDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessDesigner/widget/$PersonSelector/";
+        this.cssPath = "../x_component_process_ProcessDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.identitys = [];

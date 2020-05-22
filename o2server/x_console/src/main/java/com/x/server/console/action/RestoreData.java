@@ -133,7 +133,7 @@ public class RestoreData {
 		File file = null;
 		for (int i = 0; i < files.size(); i++) {
 			file = files.get(i);
-			System.out.println("restoring " + (i + 1) + "/" + files.size() + " part of data: " + cls.getName() + ".");
+			logger.print("restoring {}/{} part of data:{}.", (i + 1),  files.size(), cls.getName());
 			JsonArray raws = this.convert(file);
 			em.getTransaction().begin();
 			for (JsonElement o : raws) {
@@ -143,7 +143,6 @@ public class RestoreData {
 			}
 			em.getTransaction().commit();
 			em.clear();
-			Runtime.getRuntime().gc();
 		}
 		System.out.println("restore data: " + cls.getName() + " completed, count: " + count + ".");
 		return count;

@@ -7,8 +7,8 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$AddressExplorer/";
-        this.cssPath = "/x_component_Attendance/$AddressExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$AddressExplorer/";
+        this.cssPath = "../x_component_Attendance/$AddressExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -171,7 +171,7 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduMap = new Class({
             COMMON.AjaxModule.loadDom(apiPath, function () {
                 window.BDMapApiLoaded = true;
                 if( !window.BDMarkerToolLoaded ){
-                    COMMON.AjaxModule.load( "/x_component_Attendance/BDMarkerTool.js", function(){
+                    COMMON.AjaxModule.load( "../x_component_Attendance/BDMarkerTool.js", function(){
                         window.BDMarkerToolLoaded = true;
                         this._loadMap();
                         if (callback)callback();

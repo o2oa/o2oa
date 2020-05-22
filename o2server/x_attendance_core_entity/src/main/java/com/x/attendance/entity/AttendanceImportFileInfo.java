@@ -10,14 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
@@ -26,15 +22,12 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
 
 /**
  * 内容管理应用目录分类信息
- * 
- * @author 李义
  *
  */
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceImportFileInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceImportFileInfo.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -75,20 +68,23 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	 * =====
 	 */
 
+	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xlastUpdateTime")
+	@Column( name = ColumnNamePrefix + lastUpdateTime_FIELDNAME )
 	@Index(name = TABLE + "_lastUpdateTime")
 	@CheckPersist(allowEmpty = false)
 	private Date lastUpdateTime;
 
+	public static final String fileName_FIELDNAME = "fileName";
 	@FieldDescribe("文件真实名称")
-	@Column(name = "xfileName", length = AbstractPersistenceProperties.processPlatform_name_length)
+	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + fileName_FIELDNAME )
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String fileName = "";
 
+	public static final String name_FIELDNAME = "name";
 	@FieldDescribe("文件真实名称")
-	@Column(name = "xname", length = AbstractPersistenceProperties.processPlatform_name_length)
+	@Column( length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix + name_FIELDNAME )
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String name = "";
 
@@ -96,95 +92,112 @@ public class AttendanceImportFileInfo extends SliceJpaObject {
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("文件内容, 10M大约可以存储50万行Excel")
-	@Column(name = ColumnNamePrefix + fileBody_FIELDNAME, length = JpaObject.length_10M)
+	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + fileBody_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private byte[] fileBody;
 
+	public static final String dataContent_FIELDNAME = "dataContent";
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("文件数据JSON内容, 10M大约可以存储50万行Excel")
-	@Column(name = "xdataContent", length = JpaObject.length_10M)
+	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + dataContent_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String dataContent;
 
+	public static final String errorContent_FIELDNAME = "errorContent";
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@FieldDescribe("错误数据JSON内容, 10M大约可以存储50万行Excel")
-	@Column(name = "xerrorContent", length = JpaObject.length_10M)
+	@Column( length = JpaObject.length_10M, name = ColumnNamePrefix + errorContent_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String errorContent;
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("文件说明")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String description = "";
 
+	public static final String creatorUid_FIELDNAME = "creatorUid";
 	@FieldDescribe("创建者UID")
-	@Column(name = "xcreatorUid", length = JpaObject.length_64B)
+	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + creatorUid_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String creatorUid = "";
 
+	public static final String extension_FIELDNAME = "extension";
 	@FieldDescribe("扩展名")
-	@Column(name = "xextension", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + extension_FIELDNAME )
 	@CheckPersist(fileNameString = true, allowEmpty = true)
 	private String extension = "xlsx";
 
+	public static final String length_FIELDNAME = "length";
 	@FieldDescribe("文件大小.")
-	@Column(name = "xlength")
+	@Column( name = ColumnNamePrefix + length_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Long length = 0L;
 
+	public static final String rowCount_FIELDNAME = "rowCount";
 	@FieldDescribe("记录行数.")
-	@Column(name = "xrowCount")
+	@Column( name = ColumnNamePrefix + rowCount_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Long rowCount = 0L;
 
+	public static final String fileStatus_FIELDNAME = "fileStatus";
 	@FieldDescribe("文件状态:new|imported.")
-	@Column(name = "xfileStatus", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + fileStatus_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String fileStatus = "new";
 
+	public static final String tempFilePath_FIELDNAME = "tempFilePath";
 	@FieldDescribe("临时文件地址")
-	@Column(name = "xtempFilePath", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + tempFilePath_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String tempFilePath = null;
 
+	public static final String currentProcessName_FIELDNAME = "currentProcessName";
 	@FieldDescribe("当前数据处理操作步骤:GETDATA|CHECKDATA|SAVEDATA|SUPPLEMENT|ANALYSIS")
-	@Column(name = "xcurrentProcessName", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + currentProcessName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String currentProcessName = "NONE";
 
+	public static final String validateOk_FIELDNAME = "validateOk";
 	@FieldDescribe("数据校验结果")
-	@Column(name = "xvalidateOk")
+	@Column( name = ColumnNamePrefix + validateOk_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Boolean validateOk = false;
 
+	public static final String processing_FIELDNAME = "processing";
 	@FieldDescribe("数据操作状态")
-	@Column(name = "xprocessing")
+	@Column( name = ColumnNamePrefix + processing_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Boolean processing = false;
 
+	public static final String recordTotle_FIELDNAME = "recordTotle";
 	@FieldDescribe("数据总量")
-	@Column(name = "xrecordTotle")
+	@Column( name = ColumnNamePrefix + recordTotle_FIELDNAME )
 	private Long recordTotle = 0L;
 
+	public static final String processCount_FIELDNAME = "processCount";
 	@FieldDescribe("当前数据操作数量")
-	@Column(name = "xprocessCount")
+	@Column( name = ColumnNamePrefix + processCount_FIELDNAME )
 	private Long processCount = 0L;
 
+	public static final String startDate_FIELDNAME = "startDate";
 	@FieldDescribe("数据开始日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xstartDate")
+	@Column( name = ColumnNamePrefix + startDate_FIELDNAME )
 	private Date startDate = null;
 
+	public static final String endDate_FIELDNAME = "endDate";
 	@FieldDescribe("数据结束日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "xendDate")
+	@Column( name = ColumnNamePrefix + endDate_FIELDNAME )
 	private Date endDate = null;
 
+	public static final String site_FIELDNAME = "site";
 	@FieldDescribe("附件框分类.")
-	@Column(length = JpaObject.length_64B, name = "xsite")
-	@CheckPersist(allowEmpty = true)
+	@Column(length = JpaObject.length_64B,  name = ColumnNamePrefix + site_FIELDNAME )
+			@CheckPersist(allowEmpty = true)
 	private String site;
 
 	public String getFileName() {

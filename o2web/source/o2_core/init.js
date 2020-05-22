@@ -46,7 +46,7 @@
         },
         "session": {
             "isDebugger": _debug,
-            "path": "/o2_core/o2"
+            "path": "../o2_core/o2"
         },
         "language": _lp,
         "splitStr": /\s*(?:,|;)\s*/
@@ -268,22 +268,22 @@
     //load js
     //use framework url
     var _frameworks = {
-        "o2.core": ["/o2_core/o2/o2.core.js"],
-        "o2.more": ["/o2_core/o2/o2.more.js"],
-        "ie_adapter": ["/o2_lib/o2/ie_adapter.js"],
-        "jquery": ["/o2_lib/jquery/jquery.min.js"],
-        "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["/o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
-        "ckeditor5": ["/o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
-        "raphael": ["/o2_lib/raphael/raphael.js"],
-        "d3": ["/o2_lib/d3/d3.min.js"],
-        "ace": ["/o2_lib/ace/src-noconflict/ace.js","/o2_lib/ace/src-noconflict/ext-language_tools.js"],
-        "JSBeautifier": ["/o2_lib/JSBeautifier/beautify.js"],
-        "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
-        "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
-        "JSONTemplate": ["/o2_lib/mootools/plugin/Template.js"],
-        "kity": ["/o2_lib/kityminder/kity/kity.min.js"],
-        "kityminder": ["/o2_lib/kityminder/core/dist/kityminder.core.js"]
+        "o2.core": ["../o2_core/o2/o2.core.js"],
+        "o2.more": ["../o2_core/o2/o2.more.js"],
+        "ie_adapter": ["../o2_lib/o2/ie_adapter.js"],
+        "jquery": ["../o2_lib/jquery/jquery.min.js"],
+        "mootools": ["../o2_lib/mootools/mootools-1.6.0_all.js"],
+        "ckeditor": ["../o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
+        "ckeditor5": ["../o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
+        "raphael": ["../o2_lib/raphael/raphael.js"],
+        "d3": ["../o2_lib/d3/d3.min.js"],
+        "ace": ["../o2_lib/ace/src-noconflict/ace.js","../o2_lib/ace/src-noconflict/ext-language_tools.js"],
+        "JSBeautifier": ["../o2_lib/JSBeautifier/beautify.js"],
+        "JSBeautifier_css": ["../o2_lib/JSBeautifier/beautify-css.js"],
+        "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],
+        "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
+        "kity": ["../o2_lib/kityminder/kity/kity.min.js"],
+        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"]
     };
     var _loaded = {};
     var _loadedCss = {};
@@ -827,7 +827,7 @@ o2.addReady(function(){
     MWF.require(modules, function(){
         if (layout.config) _getDistribute(function(){ _load(); });
     });
-    o2.getJSON("/x_desktop/res/config/config.json", function(config){
+    o2.getJSON("../x_desktop/res/config/config.json", function(config){
         layout.config = config;
         if (MWF.xDesktop.getServiceAddress) _getDistribute(function(){ _load(); });
     });

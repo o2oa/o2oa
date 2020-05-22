@@ -16,13 +16,13 @@ MWF.xApplication.CRM.Clue = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = this.app.lp.clue;
-        this.path = "/x_component_CRM/$Clue/";
+        this.path = "../x_component_CRM/$Clue/";
         this.loadCss();
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Clue/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Clue/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {

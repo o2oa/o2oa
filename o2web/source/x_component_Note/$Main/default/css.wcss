@@ -35,7 +35,7 @@
         "border": "1px solid #f8f7b6",
         "text-align": "center",
         "cursor": "pointer",
-        "background": "url("+"/x_component_Note/$Main/default/icon/add.png) no-repeat center center",
+        "background": "url("+"../x_component_Note/$Main/default/icon/add.png) no-repeat center center",
         "margin": "6px auto 6px 6px"
     },
     "addActionNode_over": {
@@ -47,7 +47,7 @@
         "width": "16px",
         "border": "1px solid #f8f7b6",
         "cursor": "pointer",
-        "background": "url("+"/x_component_Note/$Main/default/icon/close.png) no-repeat center center",
+        "background": "url("+"../x_component_Note/$Main/default/icon/close.png) no-repeat center center",
         "margin": "6px 6px auto 6px"
     },
     "closeActionNode_over":{
@@ -61,7 +61,7 @@
         "-webkit-user-select": "none",
         "-moz-user-select": "none",
         "cursor": "nw-resize",
-        "background": "url("+"/x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
+        "background": "url("+"../x_component_Note/$Main/default/icon/resize.png) no-repeat center center",
         "margin": "0px 2px 2px 0px"
     }
 }

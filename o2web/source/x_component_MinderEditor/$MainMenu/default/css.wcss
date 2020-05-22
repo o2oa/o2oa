@@ -80,7 +80,7 @@
     "margin-top" : "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_MinderEditor/$MainMenu/default/icon/document.png)",
+    "background-image" : "url(../x_component_MinderEditor/$MainMenu/default/icon/document.png)",
     "width" : "24px",
     "height" : "24px"
   },

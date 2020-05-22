@@ -9,8 +9,8 @@ var MWFCalendarMonthView = MWF.xApplication.Calendar.MonthView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Calendar/$MonthView/";
-        this.cssPath = "/x_component_Calendar/$MonthView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Calendar/$MonthView/";
+        this.cssPath = "../x_component_Calendar/$MonthView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         //this.titleContainer = $(titleNode);
@@ -1014,6 +1014,7 @@ MWFCalendarMonthView.Calendar.WholeDayWeek = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getContainer : function(){
         return this.calendar.dataTdList[ this.weekInfor.index ]
@@ -1142,6 +1143,7 @@ MWFCalendarMonthView.Calendar.InOnDayDocument = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getContainer : function(){
         return this.calendar.dataTdList[ this.index.weekIndex ]
@@ -1201,7 +1203,7 @@ MWFCalendarMonthView.Document = new Class({
         //this.node.set("title", this.data.subject);
         //
         //if (this.data.myWaitAccept){
-        //    this.iconNode.setStyle("background", "url(/x_component_Calendar/$MonthView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
+        //    this.iconNode.setStyle("background", "url(../x_component_Calendar/$MonthView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
         //}
 
         this.node.addEvents({
@@ -1233,6 +1235,7 @@ MWFCalendarMonthView.Document = new Class({
                 this.day.collapse();
             }.bind(this)
         });
+        this.tooltip.view = this.view;
     },
     showTooltip: function(  ){
         //if( this.index > 3 && this.day.isCollapse ){
@@ -1252,6 +1255,7 @@ MWFCalendarMonthView.Document = new Class({
                     //    this.day.collapseDisable = false;
                     //}.bind(this)
                 });
+                this.tooltip.view = this.view;
                 this.tooltip.load();
             }
         //}

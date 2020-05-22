@@ -38,8 +38,8 @@ MWF.xApplication.Selector.Person = new Class({
         this.active = true;
         this.setOptions(options);
 
-        this.path = "/x_component_Selector/$Selector/";
-        this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Selector/$Selector/";
+        this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss(true);
 
         this.container = $(container);
@@ -85,7 +85,7 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.node = new Element("div", {"styles": this.css.containerNodeMobile});
         this.node.setStyle("z-index", this.options.zIndex.toInt()+1);
-        this.node.setStyle("height", ( document.body.getSize().y ) + "px");
+        this.node.setStyle("height", ( $(document.body).getSize().y ) + "px");
         this.titleNode = new Element("div", {
             "styles": this.css.titleNodeMobile
         }).inject(this.node);
@@ -108,7 +108,7 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
 
-        var size = document.body.getSize();
+        var size = $(document.body).getSize();
         var height = size.y-40;
         //var height = size.y;
         this.contentNode.setStyle("height", ""+height+"px");
@@ -116,7 +116,7 @@ MWF.xApplication.Selector.Person = new Class({
 
         this.loadContent();
 
-        this.node.inject(document.body);
+        this.node.inject($(document.body));
         this.node.setStyles({
             "top": "0px",
             "left": "0px"
@@ -1629,7 +1629,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     },
     load: function(){
         this.selector.fireEvent("queryLoadItem",[this]);
@@ -2461,7 +2461,7 @@ MWF.xApplication.Selector.Person.ItemGroupCategory = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     }
 });
 
@@ -2472,7 +2472,7 @@ MWF.xApplication.Selector.Person.ItemRoleCategory = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
     }
 });
 

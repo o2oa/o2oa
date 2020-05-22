@@ -73,7 +73,7 @@
         "min-width": "80px",
         "margin": "10px 5px",
         "color": "#fff",
-        "background-color": "#999999 !important",
+        "background-color": "#999999"
 
-    },
+    }
 }

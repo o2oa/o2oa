@@ -42,7 +42,7 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
     //    }.bind(this));
     //
     //    var _self = this;
-    //    var url = "/x_component_cms_FormDesigner/Module/Form/template/templates.json";
+    //    var url = "../x_component_cms_FormDesigner/Module/Form/template/templates.json";
     //    MWF.getJSON(url, function(json){
     //        json.each(function(template){
     //            var templateNode = new Element("div", {"styles": this.css.templateNode}).inject(createTemplateContentNode);
@@ -51,7 +51,7 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
     //            templateNode.store("template", template.name);
     //
     //            var templateIconImgNode = new Element("img", {"styles": this.css.templateIconImgNode}).inject(templateIconNode);
-    //            templateIconImgNode.set("src", "/x_component_cms_FormDesigner/Module/Form/template/"+template.icon);
+    //            templateIconImgNode.set("src", "../x_component_cms_FormDesigner/Module/Form/template/"+template.icon);
     //
     //            templateNode.addEvents({
     //                "mouseover": function(){this.setStyles(_self.css.templateNode_over)},
@@ -99,6 +99,9 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     "onQueryLoad": function(){
                         this.actions = _self.app.restActions;
                         this.application = _self.app.options.application;
+                    },
+                    "onPostSave" : function () {
+                        _self.reload();
                     }
                 };
                 layout.desktop.openApplication(e, "cms.FormDesigner", options);
@@ -112,6 +115,9 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     "onQueryLoad": function(){
                         this.actions = _self.app.restActions;
                         this.application = _self.app.options.application;
+                    },
+                    "onPostSave" : function () {
+                        _self.reload();
                     }
                 };
                 layout.desktop.openApplication(e, "cms.FormDesigner", options);
@@ -166,7 +172,7 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
             if (this.defalutFormTemplateList){
                 if (callback) callback();
             }else{
-                var url = "/x_component_cms_FormDesigner/Module/Form/template/templates.json";
+                var url = "../x_component_cms_FormDesigner/Module/Form/template/templates.json";
                 MWF.getJSON(url, function(json){
                     this.defalutFormTemplateList = json;
                     if (callback) callback();
@@ -182,7 +188,7 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     templateNode.store("template", template.name);
 
                     var templateIconImgNode = new Element("img", {"styles": this.css.formTemplateIconImgNode}).inject(templateIconNode);
-                    templateIconImgNode.set("src", "/x_component_cms_FormDesigner/Module/Form/template/"+template.icon);
+                    templateIconImgNode.set("src", "../x_component_cms_FormDesigner/Module/Form/template/"+template.icon);
 
                     templateNode.addEvents({
                         "mouseover": function(){this.setStyles(_self.css.formTemplateNode_over)},
@@ -241,7 +247,7 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                                 });
                                 e.stopPropagation();
                             });
-                            //templateIconImgNode.set("src", "/x_component_process_FormDesigner/Module/Form/template/"+template.icon);
+                            //templateIconImgNode.set("src", "../x_component_process_FormDesigner/Module/Form/template/"+template.icon);
 
                             templateNode.addEvents({
                                 "mouseover": function(){

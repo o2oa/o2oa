@@ -95,7 +95,7 @@
           "remove" : { "action" : "remove" },
           "userIcon" : {
             "value": "",
-            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
+            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
           },
           "index" : { "value" : "function(){ return '满意回复'}" },
           "messageAction": {

@@ -66,7 +66,7 @@ MWF.xApplication.Selector.QueryTable.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/table.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/table.png)");
     },
     loadSubItem: function(){
         return false;
@@ -114,7 +114,7 @@ MWF.xApplication.Selector.QueryTable.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/table.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/table.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -148,7 +148,7 @@ MWF.xApplication.Selector.QueryTable.ItemCategory = new Class({
         }).inject(this.container);
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
         return (this.data.tableList && this.data.tableList.length);

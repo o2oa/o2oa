@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 数据指处理，比如修改项目名称引起的所有工作任务名称需要修改，人员权限重新计算等工作
  */
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.BatchOperation.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BatchOperation.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

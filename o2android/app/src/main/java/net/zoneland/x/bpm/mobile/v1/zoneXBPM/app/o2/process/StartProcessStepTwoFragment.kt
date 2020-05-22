@@ -14,6 +14,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessDraftWorkDat
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
 import org.jetbrains.anko.dip
 
@@ -102,10 +103,8 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
 
     override fun startProcessSuccess(workId: String) {
         hideLoadingDialog()
-        val bundle = Bundle()
-        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
-        bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, "拟稿")
-        (activity as StartProcessActivity).goThenKill<TaskWebViewActivity>(bundle)
+        val name = if (!TextUtils.isEmpty(processName)){ processName}else{"拟稿"}
+        (activity as StartProcessActivity).goThenKill<TaskWebViewActivity>(TaskWebViewActivity.start(workId, "", name))
     }
 
     override fun startProcessFail(message:String) {

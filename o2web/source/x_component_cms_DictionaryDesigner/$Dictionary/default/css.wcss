@@ -223,14 +223,14 @@
         "width": "20px",
         "height": "24px",
         "float": "left",
-        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/add.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/add.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemDelActionNode": {
         "width": "20px",
         "height": "24px",
         "float": "right",
-        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/del.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/del.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemExpColActionNode": {
@@ -251,7 +251,7 @@
     "typeSelActionNode": {
         "width": "20px",
         "height": "24px",
-        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
         "cursor": "pointer"
     },
     "valueActionsAreaNode": {
@@ -263,7 +263,7 @@
     "valueSelActionNode": {
         "width": "20px",
         "height": "24px",
-        "background": "url("+"/x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_DictionaryDesigner/$Dictionary/default/icon/sel.png) center center no-repeat",
         "cursor": "pointer"
     },
     "itemTextNode": {
@@ -338,7 +338,7 @@
         "border": "1px solid red"
     },
     "itemSelectOrgNode": {
-        "background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
+        "background": "url("+"../x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
         "width": "18px",
         "height": "18px",
         "margin-left" : "5px",

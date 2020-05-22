@@ -30,7 +30,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.File.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.File.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -134,11 +134,6 @@ public class File extends SliceJpaObject {
 	private Long length;
 
 	/* 更新运行方法 */
-
-	// public static String[] FLA GS = new String[] { id_FIELDNAME, alias_FIELDNAME
-	// };
-
-	// public static String[] RESTRICTFLA GS = new String[] { name_FIELDNAME };
 
 	public String getName() {
 		return name;

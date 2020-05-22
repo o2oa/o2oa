@@ -25,7 +25,7 @@ MWF.xApplication.Execution.CreateMainTask = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp;
-        this.path = "/x_component_Execution/$CreateMainTask/";
+        this.path = "../x_component_Execution/$CreateMainTask/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -119,7 +119,7 @@ MWF.xApplication.Execution.CreateMainTask = new Class({
         this.topTitleLi = new Element("li.topTitleLi", {
             "styles": this.css.topTitleLi
         }).inject(this.formTopContentNode);
-        htmlStr = "<img class='topTitleImg' style='width:25px; height:25px;margin-top:10px;' src='/x_component_Execution/$Main/default/icon/Document-104.png' />";
+        htmlStr = "<img class='topTitleImg' style='width:25px; height:25px;margin-top:10px;' src='../x_component_Execution/$Main/default/icon/Document-104.png' />";
         htmlStr += "<span class='topTitleSpan' style='position:absolute;margin-top:0px;'>"+MWF.xApplication.Execution.LP.createMainTask.topTitle+"</span>";
         this.topTitleLi.set("html",htmlStr);
 
@@ -354,7 +354,7 @@ MWF.xApplication.Execution.CreateMainTask = new Class({
         }).inject(this.bottomDiv);
         this.bottomIconImg = new Element("img.bottomIconImg",{
             "styles":this.css.bottomIconImg,
-            "src":"/x_component_Execution/$Main/default/icon/okr.png"
+            "src":"../x_component_Execution/$Main/default/icon/okr.png"
         }).inject(this.bottomIconLi);
     },
     saveMainTask: function(data, callback){

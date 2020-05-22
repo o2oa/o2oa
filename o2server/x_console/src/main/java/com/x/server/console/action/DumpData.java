@@ -1,9 +1,12 @@
 package com.x.server.console.action;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -20,7 +23,10 @@ import org.apache.openjpa.persistence.OpenJPAPersistence;
 import com.google.gson.Gson;
 import com.x.base.core.container.factory.PersistenceXmlHelper;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.ContainerEntity;
+import com.x.base.core.entity.annotation.ContainerEntity.Reference;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -40,6 +46,7 @@ public class DumpData {
 
 	private Gson pureGsonDateFormated = XGsonBuilder.instance();
 
+	@SuppressWarnings("unchecked")
 	public boolean execute(String path) throws Exception {
 		if (StringUtils.isEmpty(path)) {
 			this.dir = new File(Config.base(), "local/dump/dumpData_" + DateTools.compact(this.start));
@@ -56,8 +63,9 @@ public class DumpData {
 
 		/* 初始化完成 */
 
-		List<String> containerEntityNames = new ArrayList<>();
-		containerEntityNames.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+		List<String> containerEntityNames = this.entities();
+
+		/** 过滤include exclude 条件 */
 		List<String> classNames = ListTools.includesExcludesWildcard(containerEntityNames,
 				Config.dumpRestoreData().getIncludes(), Config.dumpRestoreData().getExcludes());
 		logger.print("dump data find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
@@ -65,18 +73,17 @@ public class DumpData {
 		PersistenceXmlHelper.write(persistence.getAbsolutePath(), classNames);
 		for (int i = 0; i < classNames.size(); i++) {
 			Class<JpaObject> cls = (Class<JpaObject>) Class.forName(classNames.get(i));
-				EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-						persistence.getName(),
-						PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
-				EntityManager em = emf.createEntityManager();
-				try {
-					logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
-							this.estimateCount(em, cls));
-					this.dump(cls, em);
-				} finally {
-					em.close();
-					emf.close();
-				}
+			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+			EntityManager em = emf.createEntityManager();
+			try {
+				long estimateCount = this.estimateCount(em, cls);
+				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(), estimateCount);
+				this.dump(cls, em, estimateCount);
+			} finally {
+				em.close();
+				emf.close();
+			}
 		}
 		FileUtils.write(new File(dir, "catalog.json"), pureGsonDateFormated.toJson(this.catalog),
 				DefaultCharset.charset);
@@ -97,25 +104,28 @@ public class DumpData {
 		return this.catalog.values().stream().mapToInt(Integer::intValue).sum();
 	}
 
-	private <T> void dump(Class<T> cls, EntityManager em) throws Exception {
+	private <T> void dump(Class<T> cls, EntityManager em, long total)
+			throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		/** 创建最终存储文件的目录 */
 		File directory = new File(dir, cls.getName());
 		FileUtils.forceMkdir(directory);
 		FileUtils.cleanDirectory(directory);
-		int count = 0;
-		int size = Config.dumpRestoreData().getBatchSize();
+		ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
 		String id = "";
 		List<T> list = null;
+		int count = 0;
+		int loop = 1;
+		int btach = (int) ((total + 0.0) / containerEntity.dumpSize());
 		do {
-			list = this.list(em, cls, id, size);
+			list = this.list(em, cls, id, containerEntity.dumpSize());
 			if (ListTools.isNotEmpty(list)) {
 				count = count + list.size();
 				id = BeanUtils.getProperty(list.get(list.size() - 1), JpaObject.id_FIELDNAME);
 				File file = new File(directory, count + ".json");
 				FileUtils.write(file, pureGsonDateFormated.toJson(list), DefaultCharset.charset);
+				logger.print("dumping {}/{} part of data:{}.", loop, btach, cls.getName());
 			}
 			em.clear();
-			Runtime.getRuntime().gc();
 		} while (ListTools.isNotEmpty(list));
 		this.catalog.put(cls.getName(), count);
 	}
@@ -132,4 +142,26 @@ public class DumpData {
 		return em.createQuery(cq).setMaxResults(size).getResultList();
 	}
 
+	/**
+	 * 根据设置的模式不同输出需要dump的entity className
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> entities() throws Exception {
+		List<String> list = new ArrayList<>();
+		if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
+			list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+			return list;
+		}
+		for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
+			Class<?> cls = Class.forName(str);
+			ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
+			if (Objects.equals(containerEntity.reference(), Reference.strong)) {
+				list.add(str);
+			}
+		}
+		return list;
+	}
 }

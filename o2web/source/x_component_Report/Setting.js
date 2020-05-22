@@ -174,7 +174,7 @@ MWF.xApplication.Report.SettingForm = new Class({
             //"</td></tr>" +
             //
             //"<tr item='CRON_EXPRESSION_TR' style='display: "+( this.data.AUTOCREATE_TYPE == 'CUSTOMDATELIST' ? "none" : "" )+"'>" +
-            //"   <td>自动启动时间表达式：<a styles='helpNode' href='/x_component_Report/$Setting/cron_express_description.html' target='_blank'></a></td>" +
+            //"   <td>自动启动时间表达式：<a styles='helpNode' href='../x_component_Report/$Setting/cron_express_description.html' target='_blank'></a></td>" +
             //"    <td styles='formTableValue14' colspan='3' item='CRON_EXPRESSION'>"+
             //"</td></tr>" +
             //
@@ -258,7 +258,7 @@ MWF.xApplication.Report.SettingForm = new Class({
             "</td></tr>" +
 
             "<tr item='CRON_EXPRESSION_TR' style='display: "+( this.data.AUTOCREATE_TYPE == 'CUSTOMDATELIST' ? "none" : "" )+"'>" +
-            "   <td>自动启动时间表达式：<a styles='helpNode' href='/x_component_Report/$Setting/cron_express_description.html' target='_blank'></a></td>" +
+            "   <td>自动启动时间表达式：<a styles='helpNode' href='../x_component_Report/$Setting/cron_express_description.html' target='_blank'></a></td>" +
             "    <td styles='formTableValue14' colspan='3' item='CRON_EXPRESSION'>"+
             "</td></tr>" +
 

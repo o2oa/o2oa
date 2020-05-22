@@ -1,6 +1,7 @@
 o2.widget = o2.widget || {};
 o2.require("o2.widget.ScriptArea", null, false);
-o2.require("o2.widget.CssEditor", null, false);
+//o2.require("o2.widget.CssEditor", null, false);
+
 o2.widget.CssArea = new Class({
     Implements: [Options, Events],
     Extends: o2.widget.ScriptArea,
@@ -52,22 +53,31 @@ o2.widget.CssArea = new Class({
     loadEditor: function(content){
         var value=(content) ? content.code : "";
         value = (value) ? value : "";
-        this.jsEditor = new o2.widget.CssEditor(this.contentNode,{
+        this.jsEditor = new o2.widget.JavascriptEditor(this.contentNode,{
             "option": {
+                "mode": "css",
                 "value": value,
                 "lineNumbers": false
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
                 this.editor.id = "2";
-                this.editor.on("change", function() {
+
+                this.jsEditor.addEditorEvent("change", function() {
                     this.fireEvent("change");
                 }.bind(this));
-                this.editor.on("blur", function() {
+                this.jsEditor.addEditorEvent("blur", function() {
                     this.fireEvent("blur");
                 }.bind(this));
 
-                this.editor.resize();
+                // this.editor.on("change", function() {
+                //     this.fireEvent("change");
+                // }.bind(this));
+                // this.editor.on("blur", function() {
+                //     this.fireEvent("blur");
+                // }.bind(this));
+
+                this.jsEditor.resize();
                 this.fireEvent("postLoad");
             }.bind(this),
             "onSave": function(){

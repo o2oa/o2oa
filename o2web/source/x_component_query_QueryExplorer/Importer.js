@@ -12,8 +12,8 @@ MWF.xApplication.query.QueryExplorer.Importer = new Class({
         this.actions = this.app.restActions;
         this.event = e;
 
-        this.path = "/x_component_query_QueryExplorer/$Importer/";
-        this.cssPath = "/x_component_query_QueryExplorer/$Importer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_QueryExplorer/$Importer/";
+        this.cssPath = "../x_component_query_QueryExplorer/$Importer/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){
