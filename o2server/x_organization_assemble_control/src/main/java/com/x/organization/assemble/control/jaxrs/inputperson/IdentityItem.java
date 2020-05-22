@@ -10,6 +10,9 @@ public class IdentityItem extends GsonPropertyObject {
 	private String unitName;
 	private Integer unitLevel;
 	private String unitLevelName;
+	
+	private String personCode;
+	private String unitCode;
 	private Boolean major;
 	
 
@@ -61,6 +64,22 @@ public class IdentityItem extends GsonPropertyObject {
 
 	public void setUnitLevelName(String unitLevelName) {
 		this.unitLevelName = unitLevelName;
+	}
+	
+	public String getPersonCode() {
+		return personCode;
+	}
+
+	public void setPersonCode(String personCode) {
+		this.personCode = personCode;
+	}
+	
+	public String getUnitCode() {
+		return unitCode;
+	}
+
+	public void setUnitCode(String unitCode) {
+		this.unitCode = unitCode;
 	}
 
 	public Boolean getMajor() {
