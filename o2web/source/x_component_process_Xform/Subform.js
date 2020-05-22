@@ -272,7 +272,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                         formName = data;
                     }else{
                         if( data.application )app = data.application;
-                        if( data.subform )formName = data.subform;
+                        if( data.form )formName = data.form;
                     }
                     if( formName ){
                         if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
