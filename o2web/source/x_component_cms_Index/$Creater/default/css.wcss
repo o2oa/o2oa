@@ -17,7 +17,7 @@
   "startDocumentCloseNode": {
     "height": "20px",
     "width": "20px",
-    "background": "url(/x_component_cms_Index/$Creater/default/close.png) center center no-repeat",
+    "background": "url(../x_component_cms_Index/$Creater/default/close.png) center center no-repeat",
     "cursor": "pointer",
     "float": "right"
   },
@@ -107,7 +107,7 @@
     "margin-left": "2px",
     "width": "24px",
     "height": "24px",
-    "background": "url(/x_component_cms_Index/$Creater/default/category.png) center center no-repeat",
+    "background": "url(../x_component_cms_Index/$Creater/default/category.png) center center no-repeat",
     "float": "left"
   },
   "categoryTextNode": {

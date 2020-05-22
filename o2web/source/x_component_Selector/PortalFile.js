@@ -104,7 +104,7 @@ MWF.xApplication.Selector.PortalFile.Item = new Class({
 	Extends: MWF.xApplication.Selector.Process.Item,
 
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/attr.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/attr.png)");
     },
     loadSubItem: function(){
         return false;
@@ -178,7 +178,7 @@ MWF.xApplication.Selector.PortalFile.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/attr.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/attr.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -245,7 +245,7 @@ MWF.xApplication.Selector.PortalFile.ItemCategory = new Class({
         }).inject(this.container);
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     afterLoad: function(){
         return true;

@@ -43,7 +43,7 @@
     "includeTitleActionNode": {
         "height": "24px",
         "width": "30px",
-        "background": "url("+"/x_component_service_InvokeDesigner/$Invoke/default/icon/add.png) no-repeat center center",
+        "background": "url("+"../x_component_service_InvokeDesigner/$Invoke/default/icon/add.png) no-repeat center center",
         "float": "right",
         "cursor": "pointer"
     },

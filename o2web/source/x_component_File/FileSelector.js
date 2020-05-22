@@ -28,7 +28,7 @@ MWF.xApplication.File.FileSelector = new Class({
         this.setOptions(options);
 		this.container = $(container);
 
-        this.path = "/x_component_File/$FileSelector/";
+        this.path = "../x_component_File/$FileSelector/";
         this.cssPath =this.path+this.options.style+"/css.wcss";
         this._loadCss();
 		this.lp = MWF.xApplication.File.LP;
@@ -47,7 +47,7 @@ MWF.xApplication.File.FileSelector = new Class({
 		//this.restActions = new MWF.xApplication.File.Actions.RestActions();
 
         this.restActions = MWF.Actions.get("x_file_assemble_control");
-		MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+		MWF.getJSON("../x_component_File/$Main/icon.json", function(json){
 			this.icons = json;
 		}.bind(this), false, false);
 		

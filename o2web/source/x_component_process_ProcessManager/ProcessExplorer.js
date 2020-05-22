@@ -236,7 +236,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         }.bind(this));
 
         var _self = this;
-        var url = "/x_component_process_ProcessDesigner/$Process/template/templates.json";
+        var url = "../x_component_process_ProcessDesigner/$Process/template/templates.json";
         MWF.getJSON(url, function(json){
             json.each(function(template){
                 var templateNode = new Element("div", {"styles": this.css.templateNode}).inject(createTemplateContentNode);
@@ -245,7 +245,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
                 templateNode.store("template", template.name);
 
                 var templateIconImgNode = new Element("img", {"styles": this.css.templateIconImgNode}).inject(templateIconNode);
-                templateIconImgNode.set("src", "/x_component_process_ProcessDesigner/$Process/template/"+template.icon);
+                templateIconImgNode.set("src", "../x_component_process_ProcessDesigner/$Process/template/"+template.icon);
 
                 templateNode.addEvents({
                     "mouseover": function(){this.setStyles(_self.css.templateNode_over)},

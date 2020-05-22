@@ -6,7 +6,7 @@
         "cursor":"pointer",
         "margin":"2px",
         "border":"1px solid #ffffff",
-        "background":"url(/x_component_TeamWork/$Emoji/default/icon/icon_emoji.png) no-repeat center",
+        "background":"url(../x_component_TeamWork/$Emoji/default/icon/icon_emoji.png) no-repeat center",
         "background-size":"contain"
     }
 }

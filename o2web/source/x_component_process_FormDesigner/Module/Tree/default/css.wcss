@@ -14,7 +14,7 @@
 		"color": "#666",
 		"width": "100px",
 	//	"padding-left": "22px",
-	//	"background": "url("+"/x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat",
+	//	"background": "url("+"../x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat",
 		"cursor": "move"
 	},
 	"moduleNodeShow": {
@@ -49,7 +49,7 @@
 		"left": "auto",
 		"width": "auto",
 		"opacity": 1
-	//	"background": "url("+"/x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat"
+	//	"background": "url("+"../x_component_process_FormDesigner/Module/Tree/default/icon/tree1.png) 3px center no-repeat"
 	}
 	
 }

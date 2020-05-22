@@ -49,7 +49,7 @@
 		"height": "18px"
 	},
 	"fieldIcon": {
-		"background": "url("+"/x_component_process_FormDesigner/Module/Org/default/icon/field.png) center center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Org/default/icon/field.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "right"

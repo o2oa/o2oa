@@ -13,7 +13,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
     initialize: function (node, app, actions, options) {
         this.app = app;
         this.lp = app.lp.workStat;
-        this.path = "/x_component_Execution/$WorkStat/";
+        this.path = "../x_component_Execution/$WorkStat/";
 
         this.actions = actions;
         this.options.style = this.getViewStyle();
@@ -23,7 +23,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$WorkStat/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$WorkStat/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {

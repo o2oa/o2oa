@@ -42,7 +42,7 @@
           "type" : {},
           "icon" : {
             "type" : "html",
-            "value" : "function(d){ if(d.isTopSubject){ return '<img src=/x_component_ForumSection/$Main/default/icon/icon_zhiding.png title=置顶帖>' }else{ return d.isCreamSubject ? '<img src=/x_component_ForumSection/$Main/default/icon/icon_jinghua.png title=精华帖>' :  '<img src=/x_component_ForumSection/$Main/default/icon/icon_normal.png>'} }"
+            "value" : "function(d){ if(d.isTopSubject){ return '<img src=../x_component_ForumSection/$Main/default/icon/icon_zhiding.png title=置顶帖>' }else{ return d.isCreamSubject ? '<img src=../x_component_ForumSection/$Main/default/icon/icon_jinghua.png title=精华帖>' :  '<img src=../x_component_ForumSection/$Main/default/icon/icon_normal.png>'} }"
           }
         }
       }

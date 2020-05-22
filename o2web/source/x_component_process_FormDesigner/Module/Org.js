@@ -5,13 +5,13 @@ MWF.xApplication.process.FormDesigner.Module.Org = MWF.FCOrg = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Org/org.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Org/org.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_process_FormDesigner/Module/Org/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Org/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Org/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Org/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

@@ -20,7 +20,7 @@
             "margin-top":"12px",
             "width":"16px",
             "height":"16px",
-            "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+            "background":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
         },
         newProjectContainer:{
             "margin-top":"10px",
@@ -89,7 +89,7 @@
             "height":"16px",
             "margin-top":"10px",
             "margin-right":"10px",
-            "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_triangle_down.png) no-repeat center "
+            "background":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_triangle_down.png) no-repeat center "
         },
         newProjectAdd:{
             "text-align":"center",

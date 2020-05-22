@@ -12,7 +12,7 @@
         "float": "left",
         "background-position": "center center",
         "background-repeat": "no-repeat",
-        "background-image": "url("+"/x_component_process_TaskCenter/$TaskWidget/default/task2.png)"
+        "background-image": "url("+"../x_component_process_TaskCenter/$TaskWidget/default/task2.png)"
     },
     "itemActionAreaNode": {
         "width": "30px",
@@ -20,7 +20,7 @@
         "float": "right",
         "background-position": "center center",
         "background-repeat": "no-repeat",
-        "background-image": "url("+"/x_component_process_TaskCenter/$TaskWidget/default/go.png)"
+        "background-image": "url("+"../x_component_process_TaskCenter/$TaskWidget/default/go.png)"
     },
     "itemContentNode": {
         "height": "76px",

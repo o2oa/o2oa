@@ -197,7 +197,7 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
     createNaviItem: function(navi){
         var naviItemNode = new Element("div", {"styles": this.css.naviItemNode}).inject(this.naviNode);
         //var naviItemIconNode = new Element("div", {"styles": this.css.naviItemIconNode}).inject(naviItemNode);
-        naviItemNode.setStyle("background-image", "url(/x_component_Setting/$Main/default/icon/"+navi.icon+".png)");
+        naviItemNode.setStyle("background-image", "url(../x_component_Setting/$Main/default/icon/"+navi.icon+".png)");
         //var naviItemTextNode = new Element("div", {"styles": this.css.naviItemTextNode}).inject(naviItemNode);
         naviItemNode.set("text", navi.text);
         naviItemNode.store("navi", navi);
@@ -217,11 +217,11 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
             if (content) content.destroy();
             node.eliminate("content");
             node.setStyles(this.css.naviItemNode);
-            node.setStyle("background-image", "url(/x_component_Setting/$Main/default/icon/"+itemNavi.icon+".png)");
+            node.setStyle("background-image", "url(../x_component_Setting/$Main/default/icon/"+itemNavi.icon+".png)");
         }.bind(this));
 
         item.setStyles(this.css.naviItemNode_current);
-        item.setStyle("background-image", "url(/x_component_Setting/$Main/default/icon/"+navi.icon+"_current.png)");
+        item.setStyle("background-image", "url(../x_component_Setting/$Main/default/icon/"+navi.icon+"_current.png)");
         if (this[navi.action]) this[navi.action](item);
     },
     getNaviJson: function(){

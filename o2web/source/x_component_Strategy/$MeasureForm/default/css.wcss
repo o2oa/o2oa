@@ -80,7 +80,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_max.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_max.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -89,7 +89,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_restore.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_restore.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopTextNode" : {
@@ -106,7 +106,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_max.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_max.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -115,7 +115,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_restore.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_restore.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopCloseActionNode": {
@@ -123,7 +123,7 @@
     "height": "50px",
     "float": "right",
     "padding-right" : "10px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_off.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_off.png')",
     "background-repeat": "no-repeat",
     "background-position":"center",
     "cursor": "pointer"
@@ -142,7 +142,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -305,7 +305,7 @@
     "font-size": "14px"
   },
   "appointNode":{
-    "background-image" :"url(/x_component_Execution/$Main/default/icon/appoint.png)",
+    "background-image" :"url(../x_component_Execution/$Main/default/icon/appoint.png)",
     "width":"35px",
     "height":"35px",
     "display":"block",
@@ -332,7 +332,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -344,7 +344,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -356,7 +356,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
 

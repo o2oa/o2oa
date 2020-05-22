@@ -25,7 +25,7 @@
 		"float": "left",
 		"width": "80px",
 		"height": "80px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/createProcess.png) no-repeat center center",
 		"cursor": "pointer",
 		"border-right": "1px solid #EEE",
 		"border-left": "0px solid #EEE"
@@ -50,7 +50,7 @@
     "categoryElementItemAllNode": {
         "float": "left",
         "cursor": "pointer",
-        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu.png') 0 center no-repeat",
+        "background": "url('../x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu.png') 0 center no-repeat",
         "height": "38px",
         "margin-left": "30px",
         "padding-left": "22px",
@@ -59,14 +59,14 @@
         "border-bottom": "2px solid #ffffff"
     },
     "categoryElementItemAllNode_current": {
-        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu_click.png') 0 center no-repeat",
+        "background": "url('../x_component_process_ProcessManager/$Explorer/default/icon/icon_quanbu_click.png') 0 center no-repeat",
         "color": "#4a90e2",
         "border-bottom": "2px solid #4a90e2"
     },
     "categoryElementItemNode": {
         "float": "left",
         "cursor": "pointer",
-        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_grey.png') 0 center no-repeat",
+        "background": "url('../x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_grey.png') 0 center no-repeat",
         "height": "38px",
         "margin-left": "30px",
         "padding-left": "22px",
@@ -75,7 +75,7 @@
         "border-bottom": "2px solid #ffffff"
     },
     "categoryElementItemNode_current": {
-        "background": "url('/x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_click.png') 0 center no-repeat",
+        "background": "url('../x_component_process_ProcessManager/$Explorer/default/icon/icon__leading_in_click.png') 0 center no-repeat",
         "color": "#4a90e2",
         "border-bottom": "2px solid #4a90e2"
     },
@@ -88,7 +88,7 @@
 		"width": "80px",
 		"height": "80px",
 		"margin-right": "40px",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/categoryIcon/searchCategory.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"searchElementInputAreaNode": {
@@ -203,7 +203,7 @@
 		"height": "16px",
 		"opacity": 0,
 		"cursor": "pointer",
-		"background": "url("+"/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
 	},
 	"itemTextDescriptionNode": {
 	    "margin-left": "50px",
@@ -229,7 +229,7 @@
         "position": "relative",
         "top": "-70px",
         "left": "-10px",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
     },
 
     "createTemplateMaskNode": {
@@ -349,7 +349,7 @@
         "position": "absolute",
         "top": "0px",
         "right": "0px",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
         "display": "none"
     },
 

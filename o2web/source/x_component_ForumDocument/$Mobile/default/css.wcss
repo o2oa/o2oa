@@ -77,7 +77,7 @@
     "margin" : "0px 10px 0px 10px"
   },
   "itemLeftArrow" : {
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/pl_bg.png) no-repeat",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/pl_bg.png) no-repeat",
     "background-position" : "0 -20px",
     "height" : "20px",
     "width" : "20px",
@@ -171,7 +171,7 @@
     "right" : 0,
     "width" : "37px",
     "height" : "33px",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/jing.gif) no-repeat center center"
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/jing.gif) no-repeat center center"
   },
   "itemRightNode" : {
     "position" : "relative",
@@ -234,7 +234,7 @@
 
   "replyAction" : {
     "float" : "right",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/icon_xinxi2.png ) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/icon_xinxi2.png ) no-repeat center center",
     "width" : "24px",
     "height" : "22px",
     "line-height" : "22px",
@@ -265,13 +265,13 @@
   },
   "quoteLeft" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteLeft.gif) no-repeat center center",
     "width" : "14px",
     "height" : "10px"
   },
   "quoteRight" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteRight.gif) no-repeat center center",
     "width" : "14px",
     "height" : "10px"
   },
@@ -289,7 +289,7 @@
   },
   "quoteLeftBig" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft_big.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteLeft_big.gif) no-repeat center center",
     "width" : "28px",
     "height" : "27px",
     "margin-left" : "10px",
@@ -297,7 +297,7 @@
   },
   "quoteRightBig" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight_big.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteRight_big.gif) no-repeat center center",
     "width" : "28px",
     "height" : "27px",
     "margin-left" : "15px",
@@ -325,7 +325,7 @@
     "font-size" : "12px",
     "margin-top" : "10px",
     "padding" : "10px 0px 10px 35px",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/cross.png) no-repeat 9px center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/cross.png) no-repeat 9px center",
     "background-color" : "#fafafa",
     //"border" : "1px dotted #8ca53e",
     "color" : "#999"

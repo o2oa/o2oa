@@ -16,8 +16,8 @@ MWF.xApplication.Org.List = new Class({
         "deleteItemText": MWF.xApplication.Org.LP.deleteAttribute
 	},
     _loadPath: function(){
-        this.path = "/x_component_Org/$List/";
-        this.cssPath = "/x_component_Org/$List/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Org/$List/";
+        this.cssPath = "../x_component_Org/$List/"+this.options.style+"/css.wcss";
     },
     initialize: function(node, content, options){
         this.setOptions(options);

@@ -16,7 +16,7 @@
 		"float": "left",
 		"width": "80px",
 		"height": "80px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/createCategory.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/createCategory.png) no-repeat center center",
 		"cursor": "pointer",
 		"border-right": "1px solid #EEE",
 		"border-left": "0px solid #EEE"
@@ -30,7 +30,7 @@
 		"width": "80px",
 		"height": "80px",
 		"margin-right": "40px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/searchCategory.png) no-repeat center center",
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/searchCategory.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"searchCategoryInputAreaNode": {
@@ -82,7 +82,7 @@
 	"categoryCreateNewNode": {
 		"width": "47px",
 		"height": "47px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat"
 	},
 	"categoryCreateFormNode": {
 		"border-radius": "8px",
@@ -108,7 +108,7 @@
 		"margin-right": "20px",
 		"margin-top": "20px",
 		"box-shadow": "0px 0px 0px #666", 
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editOk_bg.png) no-repeat"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editOk_bg.png) no-repeat"
 	},
 	"categoryCreateCancelActionNode": {
 		"height": "30px",
@@ -124,7 +124,7 @@
 		"margin-top": "20px",
 		"box-shadow": "0px 0px 0px #666", 
 		"border": "1px solid #999",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCancel_bg.png) no-repeat"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCancel_bg.png) no-repeat"
 	},
 	
 	
@@ -191,14 +191,14 @@
 		"height": "47px",
 		"position": "relative",
 		"top": "-60px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
 	},
 	"categoryNewNode": {
 		"width": "47px",
 		"height": "47px",
 		"position": "relative",
 		"top": "-120px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/new.png) no-repeat right"
 	},
 	"categoryCountNode": {
 		"opacity": 0.6,
@@ -242,7 +242,7 @@
 		"margin-right": "0px",
 		"top": "0px",
 		"display": "block",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/expand.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/expand.png) no-repeat center center"
 	},
 	"categoryExpandActionNode_expand": {
 		"height": "30px",
@@ -252,7 +252,7 @@
 		"position": "relative",
 		"margin-right": "90px",
 		"top": "-45px",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/collapse.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/collapse.png) no-repeat center center"
 	},
 	"categoryActionNode": {
 		"margin-right": "30px",
@@ -275,21 +275,21 @@
 		"width": "24px",
 		"float": "left",
 		"cursor": "pointer",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/addProcess.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/addProcess.png) no-repeat center center"
 	},
 	"categoryEditActionNode": {
 		"height": "30px",
 		"width": "24px",
 		"float": "left",
 		"cursor": "pointer",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCategory.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/editCategory.png) no-repeat center center"
 	},
 	"categoryDeleteActionNode": {
 		"height": "30px",
 		"width": "24px",
 		"float": "left",
 		"cursor": "pointer",
-		"background": "url("+"/x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/deleteCategory.png) no-repeat center center"
+		"background": "url("+"../x_component_process_ProcessManager/$ProcessExplorer/default/categoryIcon/deleteCategory.png) no-repeat center center"
 	},
 	noProcessNoticeNode: {
 		"text-align": "left",

@@ -14,7 +14,7 @@
     "margin-right" : "20px"
   },
   "titleLeftArrowNode" : {
-    "background": "url('/x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
+    "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
     "margin": "15px 0px 15px 40px",
     "width" : "40px",
     "height" : "30px",
@@ -22,24 +22,24 @@
     "cursor" : "pointer"
   },
   "titleLeftArrowNode_over": {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
   },
   "titleLeftArrowNode_down": {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
   },
   "titleRightArrowNode": {
     "height": "30px",
     "width": "40px",
     "margin": "15px 0px",
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "titleRightArrowNode_over": {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
   },
   "titleRightArrowNode_down": {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
   },
   "titleTextNode": {
     "line-height": "60px",
@@ -68,15 +68,15 @@
     "height": "60px",
     "width": "32px",
     "line-height": "60px",
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/past.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/past.png) no-repeat center center",
     "margin": "0px 20px 14px 0px",
     "cursor" : "pointer"
   },
   "titleScheduleIconNode_over" : {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
   },
   "titleScheduleIconNode_down" : {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/past_down.png) no-repeat center center"
   },
   "scheduleNode": {
     "width": "200px",
@@ -151,7 +151,7 @@
      "cursor" : "default"
   },
   "calendarLeftArrowNode" : {
-      "background": "url('/x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
+      "background": "url('../x_component_Attendance/$MyIndex/default/icon/left.png') no-repeat center",
       "width" : "40px",
       "line-height" : "30px",
       "height" : "30px",
@@ -159,10 +159,10 @@
       "cursor" : "pointer"
     },
     "calendarLeftArrowNode_over": {
-      "background": "url(/x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
+      "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_over.png) no-repeat center center"
     },
     "calendarLeftArrowNode_down": {
-      "background": "url(/x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
+      "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_down.png) no-repeat center center"
     },
     "calendarLeftArrowNode_disable": {
       "cursor" : "default",
@@ -172,15 +172,15 @@
       "height": "30px",
       "line-height" : "30px",
       "width": "40px",
-      "background": "url(/x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
+      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right.png) no-repeat center center",
       "cursor": "pointer",
       "float": "right"
     },
     "calendarRightArrowNode_over": {
-      "background": "url(/x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
+      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_over.png) no-repeat center center"
     },
     "calendarRightArrowNode_down": {
-      "background": "url(/x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
+      "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_down.png) no-repeat center center"
     },
     "calendarRightArrowNode_disable": {
           "cursor" : "default",
@@ -216,10 +216,10 @@
     "border-left" : "1px solid #ccc",
     "height" : "28px",
     "line-height" : "28px",
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/down.png) no-repeat center center"
   },
   "holidayActionIconNode_over" : {
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/down_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/down_over.png) no-repeat center center"
   },
   "holidayListNode" : {
     "position" : "absolute",
@@ -317,14 +317,14 @@
     "height": "40px",
     "width": "40px",
     "float": "left",
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/left_year.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/left_year.png) no-repeat center center",
     "cursor": "pointer"
   },
   "calendarMonthSelectTitleNextYearNode": {
     "height": "40px",
     "width": "40px",
     "float": "right",
-    "background": "url(/x_component_Attendance/$MyIndex/default/icon/right_year.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$MyIndex/default/icon/right_year.png) no-repeat center center",
     "cursor": "pointer"
   },
   "calendarMonthSelectTitleTextNode": {

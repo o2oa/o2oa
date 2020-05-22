@@ -81,7 +81,7 @@ MWF.xApplication.Org.GroupExplorer.Group = new Class({
         });
     },
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/group.png";
+        return "../x_component_Org/$Explorer/default/icon/group.png";
     }
 });
 MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
@@ -147,7 +147,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
@@ -190,7 +190,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName",  //"description",
             {
                 "getHtml": function(){
-                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -209,7 +209,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", //"typeList",
             {
                 "getHtml": function(){
-                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -481,7 +481,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
 MWF.xApplication.Org.GroupExplorer.GroupContent.TitleInfor = new Class({
     Extends: MWF.xApplication.Org.RoleExplorer.RoleContent.TitleInfor,
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/group70.png";
+        return "../x_component_Org/$Explorer/default/icon/group70.png";
     }
 });
 

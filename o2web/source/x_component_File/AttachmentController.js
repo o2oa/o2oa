@@ -171,7 +171,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
                 "styles": {
                     "width": "24px",
                     "height": "24px",
-                    "background": "url("+"/x_component_File/$Main/default/icon/share_flag_preview.png) center center no-repeat",
+                    "background": "url("+"../x_component_File/$Main/default/icon/share_flag_preview.png) center center no-repeat",
                     "position": "relative",
                     "top": "-28px"
                 }
@@ -186,7 +186,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
                 "styles": {
                     "width": "16px",
                     "height": "16px",
-                    "background": "url("+"/x_component_File/$Main/default/icon/share_flag_icon.png) center center no-repeat",
+                    "background": "url("+"../x_component_File/$Main/default/icon/share_flag_icon.png) center center no-repeat",
                     "position": "relative",
                     "top": "-18px"
                 }
@@ -201,7 +201,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
                 "styles": {
                     "width": "10px",
                     "height": "10px",
-                    "background": "url("+"/x_component_File/$Main/default/icon/share_flag_list.png) center center no-repeat",
+                    "background": "url("+"../x_component_File/$Main/default/icon/share_flag_list.png) center center no-repeat",
                     "position": "relative",
                     "top": "-14px"
                 }
@@ -226,7 +226,7 @@ MWF.xApplication.File.AttachmentController.Folder = new Class({
     getIcon: function(){
         //if (!this.data.extension) this.data.extension="unkonw";
         //var iconName = this.controller.icons[this.data.extension.toLowerCase()] || this.controller.icons.unknow;
-        return "/x_component_File/$Main/default/file/folder.png";
+        return "../x_component_File/$Main/default/file/folder.png";
     },
     createInforNode: function(callback){
         var size = "";

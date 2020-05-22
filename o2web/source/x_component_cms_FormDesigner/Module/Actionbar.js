@@ -5,14 +5,14 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 	Extends: MWF.FCActionbar,
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Actionbar/actionbar.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Actionbar/actionbar.html"
 	},
 	Implements : [MWF.CMSFCMI],
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_cms_FormDesigner/Module/Actionbar/";
-		this.cssPath = "/x_component_cms_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_FormDesigner/Module/Actionbar/";
+		this.cssPath = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";

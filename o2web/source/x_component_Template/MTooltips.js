@@ -42,7 +42,7 @@ var MTooltips = new Class({
         if(app)this.lp = app.lp;
         this.data = data;
 
-        this.path = "/x_component_Template/$MTooltips/";
+        this.path = "../x_component_Template/$MTooltips/";
 
         if( this.target ){
             this.setTargetEvents();
@@ -329,7 +329,7 @@ var MTooltips = new Class({
                     "position" : "absolute",
                     "top": "0px",
                     "right" : "0px",
-                    "background": "url(/x_component_Template/$MTooltips/default/icon/off_gray.png) no-repeat center center",
+                    "background": "url(../x_component_Template/$MTooltips/default/icon/off_gray.png) no-repeat center center",
                     "cursor": "pointer"
                 }
             }

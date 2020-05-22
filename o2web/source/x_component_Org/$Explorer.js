@@ -7,8 +7,8 @@ MWF.xApplication.Org.$Explorer = new Class({
         "style": "default"
     },
     _loadPath: function(){
-        this.path = "/x_component_Org/$Explorer/";
-        this.cssPath = "/x_component_Org/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Org/$Explorer/";
+        this.cssPath = "../x_component_Org/$Explorer/"+this.options.style+"/css.wcss";
     },
     initialize: function(node, actions, options){
         this.setOptions(options);
@@ -812,16 +812,16 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
     },
 
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
 
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "/x_component_Org/$Explorer/default/icon/female24.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/female24.png"
         //     }else{
-        //         src = "/x_component_Org/$Explorer/default/icon/man24.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/man24.png"
         //     }
         // }
         // return src;
@@ -952,8 +952,8 @@ MWF.xApplication.Org.$Explorer.ItemContent.TitleInfor = new Class({
         });
     },
     setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg.png)");
+        this.titleBgNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg_bg.png)");
+        this.titleNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/person_bg.png)");
     },
     loadLeftInfor: function(){
         if (!this.iconAreaNode) this.iconAreaNode = new Element("div", {"styles": this.style.titleInforIconAreaNode}).inject(this.titleInforLeftNode);
@@ -961,14 +961,14 @@ MWF.xApplication.Org.$Explorer.ItemContent.TitleInfor = new Class({
         this.iconNode.set("src", this._getIcon());
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "/x_component_Org/$Explorer/default/icon/female.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/female.png"
         //     }else{
-        //         src = "/x_component_Org/$Explorer/default/icon/man.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/man.png"
         //     }
         // }
         // return src;

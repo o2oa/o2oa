@@ -13,8 +13,8 @@ MWF.xApplication.Meeting.RoomView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Meeting/$RoomView/";
-        this.cssPath = "/x_component_Meeting/$RoomView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Meeting/$RoomView/";
+        this.cssPath = "../x_component_Meeting/$RoomView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);
@@ -488,7 +488,7 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
         var deviceList = this.data.device.split("#");
         deviceList.each(function(name){
             var node = new Element("div", {"styles": this.css.roomItemIconNode, "title": this.app.lp.device[name]}).inject(this.iconsNode);
-            node.setStyle("background-image", "url(/x_component_Meeting/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
+            node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
         }.bind(this));
 
         this.actionsNode = new Element("div.actionsNode", {

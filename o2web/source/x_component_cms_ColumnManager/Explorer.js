@@ -21,8 +21,8 @@ MWF.xApplication.cms.ColumnManager.Explorer = new Class({
 	initialize: function(node, actions, options){
 		this.setOptions(options);
 		this.setTooltip();
-		this.path = "/x_component_cms_ColumnManager/$Explorer/";
-		this.cssPath = "/x_component_cms_ColumnManager/$Explorer/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_ColumnManager/$Explorer/";
+		this.cssPath = "../x_component_cms_ColumnManager/$Explorer/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		
@@ -399,7 +399,7 @@ MWF.xApplication.cms.ColumnManager.Explorer.Item = new Class({
         if (!this.deleteMode){
             this.deleteMode = true;
             this.node.setStyle("background-color", "#ffb7b7");
-            this.deleteActionNode.setStyle("background-image", "url("+"/x_component_cms_ColumnManager/$Explorer/default/processIcon/deleteProcess_red1.png)");
+            this.deleteActionNode.setStyle("background-image", "url("+"../x_component_cms_ColumnManager/$Explorer/default/processIcon/deleteProcess_red1.png)");
             this.deleteActionNode.removeEvents("mouseover");
             this.deleteActionNode.removeEvents("mouseout");
             this.node.removeEvents("mouseover");

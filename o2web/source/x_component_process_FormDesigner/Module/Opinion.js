@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Opinion = MWF.FCOpinion = new Class
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Opinion/opinion.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Opinion/opinion.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Opinion/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Opinion/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Opinion/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Opinion/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

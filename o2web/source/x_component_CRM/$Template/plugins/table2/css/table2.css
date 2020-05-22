@@ -361,7 +361,7 @@ ul.laytable-page-pagination {
     position: absolute;
     left: 0;
     top: 0;
-    background: url("/x_component_CRM/$Template/plugins/table2/images/loading.gif") no-repeat center center;
+    background: url("../x_component_CRM/$Template/plugins/table2/images/loading.gif") no-repeat center center;
 }
 
 .laytable-msg {
@@ -391,7 +391,7 @@ ul.laytable-page-pagination {
     position: absolute;
     right: -3px;
     top: -12px;
-    background: url("/x_component_CRM/$Template/plugins/table2/images/close.png") no-repeat
+    background: url("../x_component_CRM/$Template/plugins/table2/images/close.png") no-repeat
 }
 
 .laytable-tips-close:hover {

@@ -119,14 +119,14 @@ MWF.xApplication.portal.PortalExplorer.Portal = new Class({
         if (this.data.icon){
             this.iconNode.setStyle("background-image", "url(data:image/png;base64,"+this.data.icon+")");
         }else{
-            this.iconNode.setStyle("background-image", "url("+"/x_component_portal_PortalExplorer/$Main/default/icon/application.png)")
+            this.iconNode.setStyle("background-image", "url("+"../x_component_portal_PortalExplorer/$Main/default/icon/application.png)")
         }
         this.iconNode.makeLnk({
             "par": this._getLnkPar()
         });
     },
     _getLnkPar: function(){
-        var lnkIcon = "/x_component_portal_PortalExplorer/$Main/default/lnk.png";
+        var lnkIcon = "../x_component_portal_PortalExplorer/$Main/default/lnk.png";
         if (this.data.icon) lnkIcon = "data:image/png;base64,"+this.data.icon;
 
         var appId = "portal.PortalManager"+this.data.id;

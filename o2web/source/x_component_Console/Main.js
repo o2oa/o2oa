@@ -30,9 +30,9 @@ MWF.xApplication.Console.Main = new Class({
         this.beginButton = new Element("div", {"styles": this.css.toolbarButton}).inject(this.toolbarNode);
         this.pauseButton = new Element("div", {"styles": this.css.toolbarButton}).inject(this.toolbarNode);
         this.stopButton = new Element("div", {"styles": this.css.toolbarButton}).inject(this.toolbarNode);
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play.png)");
-        this.pauseButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/pause_gray.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop_gray.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play.png)");
+        this.pauseButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/pause_gray.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop_gray.png)");
 
         this.beginButton.addEvents({
             "mouseover": function(){if (this.status != "begin") this.beginButton.setStyles(this.css.toolbarButton_over);}.bind(this),
@@ -61,23 +61,23 @@ MWF.xApplication.Console.Main = new Class({
     },
     begin: function(){
 
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play_gray.png)");
-        this.pauseButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/pause.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play_gray.png)");
+        this.pauseButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/pause.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop.png)");
         this.status = "begin";
     },
     pause: function(){
 
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play.png)");
-        this.pauseButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/pause_gray.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play.png)");
+        this.pauseButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/pause_gray.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop.png)");
         this.status = "pause";
     },
     stop: function(){
 
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play.png)");
-        this.pauseButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/pause_gray.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop_gray.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play.png)");
+        this.pauseButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/pause_gray.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop_gray.png)");
         this.status = "stop";
     },
 

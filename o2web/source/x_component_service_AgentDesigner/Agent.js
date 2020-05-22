@@ -16,8 +16,8 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_service_AgentDesigner/$Agent/";
-        this.cssPath = "/x_component_service_AgentDesigner/$Agent/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_service_AgentDesigner/$Agent/";
+        this.cssPath = "../x_component_service_AgentDesigner/$Agent/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

@@ -23,7 +23,7 @@
     "float":"left",
     "height":"50px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_zdgj.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_zdgj.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -44,7 +44,7 @@
     "float":"left",
     "height":"50px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_zljc.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_zljc.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -64,7 +64,7 @@
     "float":"left",
     "height":"50px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_5x.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_5x.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },

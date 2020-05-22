@@ -32,7 +32,7 @@ MWF.xApplication.Execution.WorkMinder = new Class({
         this.actions = this.app.restActions;
         this.explorer = explorer;
 
-        this.path = "/x_component_Execution/$WorkMinder/";
+        this.path = "../x_component_Execution/$WorkMinder/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 

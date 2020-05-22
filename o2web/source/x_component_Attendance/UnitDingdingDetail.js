@@ -10,8 +10,8 @@ MWF.xApplication.Attendance.UnitDingdingDetail = new Class({
     initialize: function (node, app, actions, options) {
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$UnitDetail/";
-        this.cssPath = "/x_component_Attendance/$UnitDetail/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_Attendance/$UnitDetail/";
+        this.cssPath = "../x_component_Attendance/$UnitDetail/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         this.actions = actions;

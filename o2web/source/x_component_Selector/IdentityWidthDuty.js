@@ -129,7 +129,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.Item = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     }
 });
 MWF.xApplication.Selector.IdentityWidthDuty.SearchItem = new Class({
@@ -149,7 +149,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     }
 });
 
@@ -166,7 +166,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded  && !this.loading){

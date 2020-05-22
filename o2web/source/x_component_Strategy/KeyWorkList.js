@@ -15,7 +15,7 @@ MWF.xApplication.Strategy.KeyWorkList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.keyWork;
-        this.path = "/x_component_Strategy/$KeyWorkList/";
+        this.path = "../x_component_Strategy/$KeyWorkList/";
         this.loadCss();
 
         this.actions = actions;
@@ -39,7 +39,7 @@ MWF.xApplication.Strategy.KeyWorkList = new Class({
                 if(this.allArrowArr.length>0){
                     this.allArrowArr.each(function(d){
                         $(d).setStyles({
-                            "background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
+                            "background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
                         });
                     }.bind(this));
                 }

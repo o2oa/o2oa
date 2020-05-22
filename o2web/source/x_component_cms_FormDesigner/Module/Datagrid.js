@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Datagrid = MWF.CMSFCDatagrid = new Clas
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Datagrid/datagrid.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Datagrid/datagrid.html"
 	}
 });
