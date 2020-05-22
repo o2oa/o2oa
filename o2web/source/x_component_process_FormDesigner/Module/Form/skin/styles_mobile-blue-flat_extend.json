@@ -67,7 +67,7 @@
       "hasSelectedSearchbar" : true,
       "contentUrl" : "../x_component_Selector/$Selector/blue_flat_mobile/selector.html",
       "injectToBody" : true,
-      "itemHeight" : 88,
+      "itemHeight" : 44,
       "flatCategory" : true
     }
   }
