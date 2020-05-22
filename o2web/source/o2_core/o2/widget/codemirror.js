@@ -11,8 +11,8 @@ o2.widget.codemirror = {
 		"php": COMMON.contentPath+"/res/framework/codemirror/mode/php/php.js"
 	},
 	"addon": {
-		
-		
+
+
 	},
 	"load": function(callback){
 		var jsLoaded = false;
@@ -42,9 +42,5 @@ o2.widget.codemirror = {
 			if (callback) callback();
 		}
 	}
-	
+
 };
-
-
-
-

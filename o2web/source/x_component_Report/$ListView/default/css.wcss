@@ -50,7 +50,7 @@
         "font-size": "16px",
         "cursor": "pointer",
         "padding-left" : "46px",
-        "background" : "url(/x_component_Report/$ListView/default/icon/icon_triangle_down.png) no-repeat 20px center"
+        "background" : "url(../x_component_Report/$ListView/default/icon/icon_triangle_down.png) no-repeat 20px center"
     },
     "menuItemNode": {
         "height": "30px",
@@ -94,7 +94,7 @@
         "margin-left": "5px",
         "background-position" : "center center",
         "background-repeat" : "no-repeat",
-        "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.png)"
+        "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.png)"
     },
     "sortIconNode_asc" : {
         "height": "21px",
@@ -104,7 +104,7 @@
         "margin-left": "5px",
         "background-position" : "center center",
         "background-repeat" : "no-repeat",
-        "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.png)"
+        "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.png)"
     },
     "sortIconNode_desc" : {
         "height": "21px",
@@ -114,7 +114,7 @@
         "margin-left": "5px",
         "background-position" : "center center",
         "background-repeat" : "no-repeat",
-        "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.png)"
+        "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.png)"
     },
     "listViewTableTd": {
         "min-height": "40px",
@@ -161,13 +161,13 @@
         "position": "relative",
         "top": "-36px",
         "margin-left": "140px",
-        "background": "url(/x_component_Report/$DayView/default/icon/down.png) no-repeat center center"
+        "background": "url(../x_component_Report/$DayView/default/icon/down.png) no-repeat center center"
     },
     "dayTitleDownNode_over": {
-        "background": "url(/x_component_Report/$DayView/default/icon/down_over.png) no-repeat center center"
+        "background": "url(../x_component_Report/$DayView/default/icon/down_over.png) no-repeat center center"
     },
     "dayTitleDownNode_down": {
-        "background": "url(/x_component_Report/$DayView/default/icon/down_down.png) no-repeat center center"
+        "background": "url(../x_component_Report/$DayView/default/icon/down_down.png) no-repeat center center"
     },
 
     "dayTitleDateNode": {

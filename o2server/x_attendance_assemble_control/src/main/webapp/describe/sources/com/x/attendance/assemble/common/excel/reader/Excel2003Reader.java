@@ -32,7 +32,6 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 /**
  * 抽象Excel2003读取器，通过实现HSSFListener监听器，采用事件驱动模式解析excel2003
  * 中的内容，遇到特定事件才会触发，大大减少了内存的使用。
- *
  */
 public  class Excel2003Reader implements HSSFListener{
 	private int minColumns = -1;

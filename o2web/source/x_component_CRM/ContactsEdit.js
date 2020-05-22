@@ -20,7 +20,7 @@ MWF.xApplication.CRM.ContactsEdit = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.contact.contactEdit;
-        this.path = "/x_component_CRM/$ContactEdit/";
+        this.path = "../x_component_CRM/$ContactEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -39,12 +39,12 @@ MWF.xApplication.CRM.ContactsEdit = new Class({
     loadResource: function ( callback ) {
         if(callback)callback();
         /*var baseUrls = [
-            "/x_component_CRM/$Template/assets/js/jquery.min.js",
+            "../x_component_CRM/$Template/assets/js/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/assets/js/notifyme.js";
-        var confirmUrl = "/x_component_CRM/$Template/assets/js/showBo.js";
-        //var confirmUrl = "/x_component_CRM/$Main/laydate/laydate.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/assets/js/notifyme.js";
+        var confirmUrl = "../x_component_CRM/$Template/assets/js/showBo.js";
+        //var confirmUrl = "../x_component_CRM/$Main/laydate/laydate.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -55,12 +55,12 @@ MWF.xApplication.CRM.ContactsEdit = new Class({
             }.bind(this))
         }.bind(this));
 
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/date/css/jquery-ui.css",function(){
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/date/css/jquery-ui.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
-                COMMON.AjaxModule.load("/x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
+                COMMON.AjaxModule.load("../x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
                     if(callback)callback();
-                    /!* COMMON.AjaxModule.load("/x_component_CRM/$Template/date/js/datepicker.all.js", function(){
+                    /!* COMMON.AjaxModule.load("../x_component_CRM/$Template/date/js/datepicker.all.js", function(){
                      if(callback)callback();
                      }.bind(this))*!/
                 }.bind(this));
@@ -84,7 +84,7 @@ MWF.xApplication.CRM.ContactsEdit = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
             if(stype=="select" || stype=="hide"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
             if(i=="customername"){
                 innerHtml = '<input type="text" class="inline-input"  readonly="true" style="background-color: #e2ebf9;cursor:pointer;" name="'+i+'" id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'">';
@@ -316,8 +316,8 @@ MWF.xApplication.CRM.ContactsEdit.selectForm = new Class({
     load: function(){
         //console.log(this.container);
         //this.lp = this.lp.chanceEdit||{};
-        this.cssPath = "/x_component_CRM/$CustomerEdit/"+this.options.style+"/opencss.wcss";
-        this.path = "/x_component_CRM/$CustomerEdit/";
+        this.cssPath = "../x_component_CRM/$CustomerEdit/"+this.options.style+"/opencss.wcss";
+        this.path = "../x_component_CRM/$CustomerEdit/";
         this.type ={};
         this._loadCss();
         this.loadData();

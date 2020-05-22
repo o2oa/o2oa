@@ -20,6 +20,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         }
     },
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){

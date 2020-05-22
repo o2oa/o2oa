@@ -18,8 +18,8 @@ MWF.xApplication.cms.Column.Main = new Class({
     },
     onQueryLoad: function () {
         this.lp = MWF.xApplication.cms.Column.LP;
-        this.defaultColumnIcon = "/x_component_cms_Column/$Main/" + this.options.style + "/icon/column.png";
-        this.defaultCategoryIcon = "/x_component_cms_Column/$Main/" + this.options.style + "/icon/category2.png";
+        this.defaultColumnIcon = "../x_component_cms_Column/$Main/" + this.options.style + "/icon/column.png";
+        this.defaultCategoryIcon = "../x_component_cms_Column/$Main/" + this.options.style + "/icon/category2.png";
     },
     loadApplication: function (callback) {
         this.isAdmin = MWF.AC.isCMSManager();
@@ -846,7 +846,7 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
         if (!this.isNew && this.data.appIcon) {
             this.iconPreviewNode.setStyle("background", "url(data:image/png;base64," + this.data.appIcon + ") center center no-repeat");
         } else {
-            this.iconPreviewNode.setStyle("background", "url(" + "/x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat")
+            this.iconPreviewNode.setStyle("background", "url(" + "../x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat")
         }
         var changeIconAction = new Element("div", {
             "styles": {

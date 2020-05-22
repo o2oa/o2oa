@@ -7,6 +7,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         "inforTime": 2000
     },
     initialize: function(documentEditor, options){
+        debugger;
         this.setOptions(options);
         this.documentEditor = documentEditor;
         this.css = this.documentEditor.css;
@@ -32,6 +33,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     if (!layout.mobile) this.loadHistoryList();
                     if (callback) callback();
                 }.bind(this));
+            }else{
+                this.documentEditor.form.app.notice(MWF.xApplication.process.Xform.LP.documentHistory.nodiff, "info", this.documentEditor.node);
             }
         }.bind(this));
     },
@@ -46,14 +49,14 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     loadHistoryToolbar: function(){
-        var html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
+        var html = "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/play.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.play+"\" MWFButtonAction=\"play\"></span>";
+        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/pause.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.pause+"\" MWFButtonAction=\"pause\"></span>";
+        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/stop.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.stop+"\" MWFButtonAction=\"stopPlay\"></span>";
         html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
+        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/prev.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.prev+"\" MWFButtonAction=\"prev\"></span>";
+        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/next.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.next+"\" MWFButtonAction=\"next\"></span>";
         html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
-        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"/x_component_process_Xform/$Form/default/documenteditoricon/exit.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\" MWFButtonAction=\"exit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\"></span>";
+        html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/documenteditoricon/exit.png\" title=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\" MWFButtonAction=\"exit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.documentHistory.exit+"\"></span>";
         html += "<span MWFnodetype=\"MWFToolBarSeparator\"></span>";
 
         var text = MWF.xApplication.process.Xform.LP.documentHistory.diff_patch_count;
@@ -204,7 +207,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
         this.originaHistoryData = historyDataList[0].json.data || null;
 
         if (this.documentEditor.allowEdit){
-            o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+            o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
                 var originaData = this.documentEditor.form.businessData.originalData[this.documentEditor.json.id];
                 var data = this.documentEditor.data.filetext;
                 var earlyData = originaData.filetext;
@@ -254,7 +257,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
     },
 
     beginDiffHistory: function(){
-        //o2.load("/o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
+        //o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
             this.initAnimation();
             //if (callback) callback();
         //}.bind(this));
@@ -483,6 +486,8 @@ MWF.xApplication.process.Xform.widget.DocumentHistory = new Class({
                     if (callback) callback();
 
                 }.bind(this));
+            }else{
+                this.documentEditor.form.app.notice(MWF.xApplication.process.Xform.LP.documentHistory.nodiff, "info", this.documentEditor.node);
             }
         }.bind(this));
     },

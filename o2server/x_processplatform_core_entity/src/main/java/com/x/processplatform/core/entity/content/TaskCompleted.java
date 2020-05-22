@@ -43,7 +43,7 @@ import com.x.processplatform.core.entity.element.Route;
  *
  */
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.TaskCompleted.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Content.TaskCompleted.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

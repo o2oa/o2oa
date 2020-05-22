@@ -10,7 +10,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import javax.persistence.*;
 import java.util.Date;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.DingdingQywxSyncRecord.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.DingdingQywxSyncRecord.table
         + JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

@@ -39,8 +39,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     initialize: function (columnData, categoryData, app, view, options) {
 
-        this.path = "/x_component_cms_Index/$Newer/";
-        this.cssPath = "/x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Index/$Newer/";
+        this.cssPath = "../x_component_cms_Index/$Newer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         MWF.xDesktop.requireApp("cms.Index", "$Newer.lp."+MWF.language, null, false);
@@ -271,10 +271,10 @@ MWF.xApplication.cms.Index.Newer = new Class({
             if (this.columnData.appIcon){
                 this.columnIconNode.set("src", "data:image/png;base64,"+this.columnData.appIcon+"");
             }else{
-                this.columnIconNode.set("src", "/x_component_cms_Index/$Main/default/icon/column.png");
+                this.columnIconNode.set("src", "../x_component_cms_Index/$Main/default/icon/column.png");
             }
         }else{
-            this.columnIconNode.set("src","/x_component_cms_Index/$Main/default/icon/all_40.png");
+            this.columnIconNode.set("src","../x_component_cms_Index/$Main/default/icon/all_40.png");
         }
 
         this.columnTextNode = new Element("div", {
@@ -322,7 +322,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
                     if (this.columnData.appIcon){
                         this.columnIconNode.set("src", "data:image/png;base64,"+this.columnData.appIcon+"");
                     }else{
-                        this.columnIconNode.set("src", "/x_component_cms_Index/$Main/default/icon/column.png");
+                        this.columnIconNode.set("src", "../x_component_cms_Index/$Main/default/icon/column.png");
                     }
                     this.columnTextNode.set("text", this.columnData.appName);
 
@@ -492,10 +492,13 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "documentId": id,
                 "appId": appId,
                 "onPostPublish" : function(){
+                    this.fireEvent( "postPublish" );
+                }.bind(this),
+                "onAfterPublish" : function () {
                     debugger;
                     if(_self.view && _self.view.reload )_self.view.reload();
-                    this.fireEvent( "postPublish" );
-                }.bind(this)
+                    _self.fireEvent( "afterPublish" );
+                }
             };
             if( typeOf(this.options.autoSave) == "boolean" )options.autoSave = this.options.autoSave;
             if( typeOf(this.options.saveOnClose) == "boolean" )options.saveOnClose = this.options.saveOnClose;
@@ -805,11 +808,11 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Column = new Class({
             "styles" : this.css.columnItemIconNode
         }).inject(this.node);
         if( this.options.isAll ){
-            this.iconNode.set("src", "/x_component_cms_Index/$Main/default/icon/all_40.png")
+            this.iconNode.set("src", "../x_component_cms_Index/$Main/default/icon/all_40.png")
         }else if (this.data.appIcon){
             this.iconNode.set("src", "data:image/png;base64,"+this.data.appIcon+"");
         }else{
-            this.iconNode.set("src", "/x_component_cms_Index/$Main/default/icon/column.png")
+            this.iconNode.set("src", "../x_component_cms_Index/$Main/default/icon/column.png")
         }
 
         this.textNode = new Element("div", {"styles": this.css.columnItemTextNode}).inject(this.node);

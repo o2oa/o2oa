@@ -18,7 +18,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.ProjectAction;
 
-        this.path = "/x_component_TeamWork/$ProjectList/";
+        this.path = "../x_component_TeamWork/$ProjectList/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -104,7 +104,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                             this.allItemText.setStyles({"color":"#4A90E2"});
                             this.allItemCount.setStyles({"color":"#4A90E2"});
                             this.allItemAdd.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_zengjia_blue2_click.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_zengjia_blue2_click.png)"
                             });
 
                         }.bind(this),
@@ -135,7 +135,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 "background-color":"#F2F5F7"
                             });
                             this.starItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1_blue.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1_blue.png)"
                             });
                             this.starItemText.setStyles({
                                 "color":"#4A90E2"
@@ -166,7 +166,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 "background-color":"#F2F5F7"
                             });
                             this.myItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxm_xm_click.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxm_xm_click.png)"
                             });
                             this.myItemText.setStyles({
                                 "color":"#4A90E2"
@@ -197,7 +197,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 "background-color":"#F2F5F7"
                             });
                             this.unGroupItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wfzxm_xm_click.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wfzxm_xm_click.png)"
                             });
                             this.unGroupItemText.setStyles({
                                 "color":"#4A90E2"
@@ -228,7 +228,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 "background-color":"#F2F5F7"
                             });
                             this.completeItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_renwu_ywc_click.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_renwu_ywc_click.png)"
                             });
                             this.completeItemText.setStyles({
                                 "color":"#4A90E2"
@@ -289,7 +289,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                 "background-color":"#F2F5F7"
                             });
                             this.removeItemImg.setStyles({
-                                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_delete_blue_click.png)"
+                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_delete_blue_click.png)"
                             });
                             this.removeItemText.setStyles({
                                 "color":"#4A90E2"
@@ -331,7 +331,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         this.groupMenuText.setStyles({"color":"#4A90E2"});
 
                         this.groupMenuAdd.setStyles({
-                            "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_zengjia_blue2_click.png)"
+                            "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_zengjia_blue2_click.png)"
                         })
                     }.bind(this),
                     mouseout:function(){
@@ -653,8 +653,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         this.menuSettingList.addEvents({
             click:function(){
                 this.currentListType = "list";
-                this.menuSettingList.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_liebiao_click.png)");
-                this.menuSettingBlock.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_tubiao.png)");
+                this.menuSettingList.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_liebiao_click.png)");
+                this.menuSettingBlock.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_tubiao.png)");
                 this.openItem()
             }.bind(this),
             mouseover:function(){
@@ -665,8 +665,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         this.menuSettingBlock.addEvents({
             click:function(){
                 this.currentListType = "block";
-                this.menuSettingList.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_liebiao.png)");
-                this.menuSettingBlock.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_tubiao_click.png)");
+                this.menuSettingList.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_liebiao.png)");
+                this.menuSettingBlock.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_tubiao_click.png)");
                 this.openItem()
             }.bind(this),
             mouseover:function(){
@@ -675,9 +675,9 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         });
 
         if(this.currentListType == "block"){
-            this.menuSettingBlock.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_tubiao_click.png)");
+            this.menuSettingBlock.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_tubiao_click.png)");
         }else{
-            this.menuSettingList.setStyle("background-image","url(/x_component_TeamWork/$ProjectList/default/icon/icon_liebiao_click.png)");
+            this.menuSettingList.setStyle("background-image","url(../x_component_TeamWork/$ProjectList/default/icon/icon_liebiao_click.png)");
         }
 
     },
@@ -891,7 +891,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
         if(d.star){
             projectBlockItemIconFav.setStyles({
-                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
+                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
 
@@ -1014,11 +1014,11 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 });
                 if(projectListItemFavIcon.getStyle("background-image").indexOf("icon_wdxx_click.png")>-1){
                     projectListItemFavIcon.setStyles({
-                        "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1.png)"
+                        "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_1.png)"
                     })
                 }else{
                     projectListItemFavIcon.setStyles({
-                        "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
+                        "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
                     })
                 }
                 e.stopPropagation();
@@ -1027,7 +1027,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
         if(d.star){
             projectListItemFavIcon.setStyles({
-                "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
+                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
 

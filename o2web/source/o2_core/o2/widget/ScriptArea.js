@@ -12,6 +12,7 @@ o2.widget.ScriptArea = new Class({
         "isload": false,
         "isbind": true,
         "mode": "javascript",
+        "runtime": "all",
         "key": "code"
     },
     initialize: function(node, options){
@@ -68,6 +69,7 @@ o2.widget.ScriptArea = new Class({
         }
     },
     maxSize: function(){
+        debugger;
         var obj = this.options.maxObj;
         var coordinates = obj.getCoordinates(obj.getOffsetParent());
 
@@ -80,8 +82,8 @@ o2.widget.ScriptArea = new Class({
             "position": "absolute",
             // "top": coordinates.top,
             // "left": coordinates.left,
-            "top": "0px",
-            "left": "0px",
+            "top": coordinates.top+"px",
+            "left": coordinates.left+"px",
             "width": coordinates.width,
             "height": coordinates.height-2,
             "z-index": 20001
@@ -97,7 +99,8 @@ o2.widget.ScriptArea = new Class({
     returnSize: function(){
         var size = this.container.retrieve("size");
 
-        this.editor.setOption("lineNumbers", false);
+        //this.editor.setOption("lineNumbers", false);
+        this.jsEditor.hideLineNumbers();
         this.container.inject(this.node);
         this.container.setStyles({
             "position": "static",
@@ -120,7 +123,7 @@ o2.widget.ScriptArea = new Class({
         var th = this.titleNode.getStyle("height").toInt();
         var height = (size.y || h)-(titleSize.y || th)-2-6;
         this.contentNode.setStyle("height", ""+height+"px");
-        if (this.editor) this.editor.resize();
+        if (this.jsEditor) this.jsEditor.resize();
     },
     toJson: function(){
         return (this.editor) ? {"code": this.editor.getValue(), "html": this.editor.getValue()} : this.contentCode;
@@ -169,7 +172,7 @@ o2.widget.ScriptArea = new Class({
                 "set": function(v){
                     content.editors.each(function(editor){
                         if (editor.editor){
-                            if (v!==editor.editor.getValue()) editor.editor.setValue(v);
+                            if (v!==editor.editor.getValue()) editor.editor.setValue(v,1);
                         }else{
                             editor.reload();
                         }
@@ -183,6 +186,7 @@ o2.widget.ScriptArea = new Class({
         var value=(content) ? content.code : "";
         value = (value) ? value : "";
         this.jsEditor = new o2.widget.JavascriptEditor(this.contentNode,{
+            "runtime": this.options.runtime || "all",
             "option": {
                 "value": value,
                 "lineNumbers": false,
@@ -190,10 +194,18 @@ o2.widget.ScriptArea = new Class({
             },
             "onPostLoad": function(){
                 this.editor = this.jsEditor.editor;
-                this.editor.id = "2";
-                this.editor.on("change", function() {
+                //this.editor.id = "2";
+
+                this.jsEditor.addEditorEvent("change", function() {
                     this.fireEvent("change");
                 }.bind(this));
+                this.jsEditor.addEditorEvent("blur", function() {
+                    this.fireEvent("blur");
+                }.bind(this));
+
+                // this.editor.on("change", function() {
+                //     this.fireEvent("change");
+                // }.bind(this));
                 // this.editor.on("paste", function() {
                 //     o2.load("JSBeautifier", function(){
                 //         this.editor.setValue(js_beautify(this.editor.getValue()));
@@ -201,7 +213,7 @@ o2.widget.ScriptArea = new Class({
                 //     this.fireEvent("paste");
                 // }.bind(this));
 
-                this.editor.resize();
+                this.jsEditor.resize();
                 this.fireEvent("postLoad");
             }.bind(this),
             "onSave": function(){

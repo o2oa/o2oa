@@ -21,7 +21,7 @@ MWF.xApplication.CRM.CustomerEdit = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.customer.customerEdit;
-        this.path = "/x_component_CRM/$CustomerEdit/";
+        this.path = "../x_component_CRM/$CustomerEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -59,7 +59,7 @@ MWF.xApplication.CRM.CustomerEdit = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
             if(stype=="select" || stype=="hide"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" notEmpty="'+notEmpty+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
             if(stype=="map"){
                 innerHtml = '<div class="setMap" id="setMap"' +' stype="'+stype+'"></div>';

@@ -23,7 +23,7 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.file.core.entity.PersistenceProperties;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Personal.Folder.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Personal.Folder.table + JpaObject.IndexNameMiddle

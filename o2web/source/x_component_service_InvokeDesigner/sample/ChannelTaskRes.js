@@ -111,7 +111,7 @@ function setWorkData( branchWorkId, dateStr, Task_state ){
         return text;
     }else{
         printRecorder("根据branchWorkId'"+branchWorkId+"'获取workCompletedId为"+workCompletedId);
-        printRecorder( "文件URL：/x_desktop/work.html?workcompletedid="+workCompletedId );
+        printRecorder( "文件URL：../x_desktop/work.html?workcompletedid="+workCompletedId );
     }
     var webservicesClient = resources.getWebservicesClient();
 

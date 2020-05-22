@@ -25,7 +25,7 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Element.ApplicationDict.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.ApplicationDict.table + JpaObject.IndexNameMiddle
@@ -53,6 +53,7 @@ public class ApplicationDict extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		//nothing
 	}
 
 	/* 更新运行方法 */

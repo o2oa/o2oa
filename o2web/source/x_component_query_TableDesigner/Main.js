@@ -118,7 +118,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
 	},
 
 	loadNewViewData: function(callback){
-        var url = "/x_component_query_TableDesigner/$Table/table.json";
+        var url = "../x_component_query_TableDesigner/$Table/table.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 this.actions.getUUID(function(id){

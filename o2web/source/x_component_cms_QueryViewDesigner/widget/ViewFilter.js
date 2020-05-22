@@ -15,8 +15,8 @@ MWF.xApplication.cms.QueryViewDesigner.widget.ViewFilter = new Class({
         this.app = app;
         this.filtrData = filtrData;
 
-        this.path = "/x_component_cms_QueryViewDesigner/widget/$ViewFilter/";
-        this.cssPath = "/x_component_cms_QueryViewDesigner/widget/$ViewFilter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_QueryViewDesigner/widget/$ViewFilter/";
+        this.cssPath = "../x_component_cms_QueryViewDesigner/widget/$ViewFilter/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.items = [];

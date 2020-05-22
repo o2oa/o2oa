@@ -149,13 +149,13 @@ MWF.xApplication.Strategy.Main = new Class({
 			}.bind(this),
 			"mouseover":function(){
 				if(this.currentNavi != "keyWork"){
-					this.keyWorkTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zdgj_click.png')"});
+					this.keyWorkTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zdgj_click.png')"});
 					this.keyWorkTabLabel.setStyles({"color":"#3C76B7"})
 				}
 			}.bind(this),
 			"mouseout":function(){
 				if(this.currentNavi != "keyWork"){
-					this.keyWorkTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
+					this.keyWorkTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
 					this.keyWorkTabLabel.setStyles({"color":"#333333"})
 				}
 			}.bind(this)
@@ -175,13 +175,13 @@ MWF.xApplication.Strategy.Main = new Class({
 			}.bind(this),
 			"mouseover":function(){
 				if(this.currentNavi != "measures"){
-					this.measureTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zljc_click.png')"});
+					this.measureTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zljc_click.png')"});
 					this.measureTabLabel.setStyles({"color":"#3C76B7"})
 				}
 			}.bind(this),
 			"mouseout":function(){
 				if(this.currentNavi != "measure"){
-					this.measureTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
+					this.measureTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
 					this.measureTabLabel.setStyles({"color":"#333333"})
 				}
 			}.bind(this)
@@ -201,13 +201,13 @@ MWF.xApplication.Strategy.Main = new Class({
 		//	}.bind(this),
 		//	"mouseover":function(){
 		//		if(this.currentNavi != "priority"){
-		//			this.priorityTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_5x_click.png')"});
+		//			this.priorityTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_5x_click.png')"});
 		//			this.priorityTabLabel.setStyles({"color":"#3C76B7"})
 		//		}
 		//	}.bind(this),
 		//	"mouseout":function(){
 		//		if(this.currentNavi != "priority"){
-		//			this.priorityTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_5x.png')"});
+		//			this.priorityTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_5x.png')"});
 		//			this.priorityTabLabel.setStyles({"color":"#333333"})
 		//		}
 		//	}.bind(this)
@@ -252,33 +252,33 @@ MWF.xApplication.Strategy.Main = new Class({
 			this.measureTab.setStyles({"border-bottom":"0px"});
 			//this.priorityTab.setStyles({"border-bottom":"0px"});
 
-			this.keyWorkTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zdgj_click.png')"});
+			this.keyWorkTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zdgj_click.png')"});
 			this.keyWorkTabLabel.setStyles({"color":"#3C76B7"});
-			this.measureTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
+			this.measureTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
 			this.measureTabLabel.setStyles({"color":"#333333"});
-			//this.priorityTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_5x.png')"});
+			//this.priorityTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_5x.png')"});
 			//this.priorityTabLabel.setStyles({"color":"#333333"})
 		}else if(str == "measure"){
 			this.keyWorkTab.setStyles({"border-bottom":"0px"});
 			this.measureTab.setStyles({"border-bottom":"2px solid #4990E2"});
 			//this.priorityTab.setStyles({"border-bottom":"0px"});
 
-			this.keyWorkTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
+			this.keyWorkTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
 			this.keyWorkTabLabel.setStyles({"color":"#333333"});
-			this.measureTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zljc_click.png')"});
+			this.measureTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zljc_click.png')"});
 			this.measureTabLabel.setStyles({"color":"#3C76B7"});
-			//this.priorityTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_5x.png')"});
+			//this.priorityTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_5x.png')"});
 			//this.priorityTabLabel.setStyles({"color":"#333333"});
 		}else if(str == "priority"){
 			this.keyWorkTab.setStyles({"border-bottom":"0px"});
 			this.measureTab.setStyles({"border-bottom":"0px"});
 			//this.priorityTab.setStyles({"border-bottom":"2px solid #4990E2"});
 
-			this.keyWorkTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
+			this.keyWorkTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zdgj.png')"});
 			this.keyWorkTabLabel.setStyles({"color":"#333333"});
-			this.measureTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
+			this.measureTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_zljc.png')"});
 			this.measureTabLabel.setStyles({"color":"#333333"});
-			//this.priorityTabImg.setStyles({"background-image":"url('/x_component_Strategy/$Main/default/icon/icon_5x_click.png')"});
+			//this.priorityTabImg.setStyles({"background-image":"url('../x_component_Strategy/$Main/default/icon/icon_5x_click.png')"});
 			//this.priorityTabLabel.setStyles({"color":"#3C76B7"});
 		}
 

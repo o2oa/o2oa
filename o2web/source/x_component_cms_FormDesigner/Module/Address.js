@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Address = MWF.CMSFCAddress = new Class(
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Address/address.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Address/address.html"
 	}
 });

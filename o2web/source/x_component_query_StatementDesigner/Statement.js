@@ -6,6 +6,7 @@ MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
 MWF.xDesktop.requireApp("query.StatementDesigner", "lp."+MWF.language, null, false);
 //MWF.xDesktop.requireApp("query.StatementDesigner", "Property", null, false);
 MWF.xDesktop.requireApp("query.TableDesigner", "Property", null, false);
+o2.require("o2.widget.JavascriptEditor", null, false);
 
 MWF.xApplication.query.StatementDesigner.Statement = new Class({
     Extends: MWF.widget.Common,
@@ -14,14 +15,14 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_query_StatementDesigner/$Statement/statement.html"
+        "propertyPath": "../x_component_query_StatementDesigner/$Statement/statement.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_StatementDesigner/$Statement/";
-        this.cssPath = "/x_component_query_StatementDesigner/$Statement/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_StatementDesigner/$Statement/";
+        this.cssPath = "../x_component_query_StatementDesigner/$Statement/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -156,10 +157,11 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
     },
     loadStatementScriptEditor: function(){
         if (! this.scriptEditor){
+            debugger;
             o2.require("o2.widget.ScriptArea", function(){
                 this.scriptEditor = new o2.widget.ScriptArea(this.scriptArea, {
                     "isbind": false,
-                    "maxObj": this.designer.content,
+                    "maxObj": this.designer.designNode,
                     "title": this.designer.lp.scriptTitle,
                     "onChange": function(){
                         this.json.scriptText = this.scriptEditor.toJson().code;
@@ -208,10 +210,16 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     }
                     this.json.data = this.editor.editor.getValue();
 
-                    this.editor.editor.on("change", function(){
-                        this.data.data = this.editor.editor.getValue();
+                    this.editor.addEditorEvent("change", function(){
+                        debugger;
+                        this.data.data = this.editor.getValue();
                         this.checkJpqlType();
                     }.bind(this));
+
+                    // this.editor.editor.on("change", function(){
+                    //     this.data.data = this.editor.getValue();
+                    //     this.checkJpqlType();
+                    // }.bind(this));
                 }.bind(this));
             }.bind(this), false);
         }

@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Checkbox = MWF.FCCheckbox = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Checkbox/checkbox.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Checkbox/checkbox.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Checkbox/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Checkbox/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Checkbox/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Checkbox/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

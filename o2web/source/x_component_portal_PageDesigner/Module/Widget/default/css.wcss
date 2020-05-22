@@ -67,7 +67,7 @@
     "iconNodeIcon":{
         "width": "24px",
         "height": "24px",
-        "background": "url(/x_component_portal_PageDesigner/Module/Widget/default/icon/widget.png) 5px center no-repeat",
+        "background": "url(../x_component_portal_PageDesigner/Module/Widget/default/icon/widget.png) 5px center no-repeat",
         "float": "left"
     },
     "iconNodeText":{

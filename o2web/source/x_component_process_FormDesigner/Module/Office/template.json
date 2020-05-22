@@ -11,9 +11,9 @@
 //	"makerKey": "E138DABB4AC26C2D8E09FAE59AB3BDE87AFB9D7B",
 //	"version": "5.0.3.1",
 //	"clsid": "A64E3073-2016-4baf-A89D-FFE1FAA10EC0",
-//	"codeBase": "/x_desktop/res/framework/officecontrol/OfficeControl.cab",
+//	"codeBase": "../x_desktop/res/framework/officecontrol/OfficeControl.cab",
 //	"clsid64": "A64E3073-2016-4baf-A89D-FFE1FAA10EC0",
-//	"codeBase64": "/x_desktop/res/framework/officecontrol/OfficeControl.cab",
+//	"codeBase64": "../x_desktop/res/framework/officecontrol/OfficeControl.cab",
 	"isNotLoadNow": false,
 	"script": {
 		"code": "",

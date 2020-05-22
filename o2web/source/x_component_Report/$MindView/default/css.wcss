@@ -109,7 +109,7 @@
     "cursor":"pointer",
     "height":"30px",
     "width":"25px",
-    "background-image": "url('/x_component_Report/$Main/default/icon/icon_off.png')",
+    "background-image": "url('../x_component_Report/$Main/default/icon/icon_off.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -118,7 +118,7 @@
     "cursor":"pointer",
     "height":"30px",
     "width":"25px",
-    "background-image": "url('/x_component_Report/$Main/default/icon/search.png')",
+    "background-image": "url('../x_component_Report/$Main/default/icon/search.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -197,7 +197,7 @@
     "width":"30px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"
+    "background":"url(../x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"
   },
   "listContentDiv":{
     "background-color":"#fff",

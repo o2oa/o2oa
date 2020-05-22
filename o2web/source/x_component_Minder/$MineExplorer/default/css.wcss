@@ -54,7 +54,7 @@
 	"margin-left": "5px",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.png)"
+	"background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.png)"
   },
   "sortIconNode_asc" : {
 	"height": "21px",
@@ -64,7 +64,7 @@
 	"margin-left": "5px",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.png)"
+	"background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.png)"
   },
   "sortIconNode_desc" : {
 	"height": "21px",
@@ -74,7 +74,7 @@
 	"margin-left": "5px",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.png)"
+	"background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.png)"
   },
   "listViewTableTd_noclick": {
 	"min-height": "50px",
@@ -134,7 +134,7 @@
 	"cursor" : "pointer",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Minder/$Main/default/icon/shared_blue.png)"
+	"background-image" : "url(../x_component_Minder/$Main/default/icon/shared_blue.png)"
   },
   "listViewTableTr" : {
 	"background-color": "#FFF"
@@ -161,10 +161,10 @@
 	"line-height" : "40px",
 	"background-position" : "left center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Minder/$MineExplorer/default/icon/circle.png)"
+	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle.png)"
   },
   "tileSelectAllNode_selected" : {
-	"background-image" : "url(/x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
+	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
   },
   "tileNode" : {
 	"padding" : "10px",
@@ -203,11 +203,11 @@
 	"display" : "none",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Minder/$MineExplorer/default/icon/circle.png)"
+	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle.png)"
   },
   "tileItemSelectNode_selected" : {
 	"display" : "",
-	"background-image" : "url(/x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
+	"background-image" : "url(../x_component_Minder/$MineExplorer/default/icon/circle_selected.png)"
   },
   "tileItemIconNode" : {
   },
@@ -220,7 +220,7 @@
 	"position" : "absolute",
 	"background-position" : "center center",
 	"background-repeat" : "no-repeat",
-	"background-image" : "url(/x_component_Minder/$Main/default/icon/shared_blue.png)"
+	"background-image" : "url(../x_component_Minder/$Main/default/icon/shared_blue.png)"
   },
 
   "toolbar" : {
@@ -232,7 +232,7 @@
 //  "cancelAction" : {
 //	"width": "16px",
 //	"height": "16px",
-//	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/remove.png) no-repeat left",
+//	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/remove.png) no-repeat left",
 //	"margin-left": "2px",
 //	"margin-right": "2px",
 //	"float": "left",
@@ -241,7 +241,7 @@
 //  "cancelAction_over" : {
 //	"width": "16px",
 //	"height": "16px",
-//	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/remove_over.png) no-repeat left",
+//	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/remove_over.png) no-repeat left",
 //	"margin-left": "2px",
 //	"margin-right": "2px",
 //	"float": "left",
@@ -251,7 +251,7 @@
   "deleteAction" : {
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/delete_white.png) no-repeat left",
+	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/delete_white.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
@@ -260,7 +260,7 @@
   "deleteAction_over" : {
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/delete_gray.png) no-repeat left",
+	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/delete_gray.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
@@ -270,7 +270,7 @@
   "editAction" : {
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/edit_white.png) no-repeat left",
+	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/edit_white.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",
@@ -279,7 +279,7 @@
   "editAction_over" : {
 	"width": "16px",
 	"height": "16px",
-	"background" : "url(/x_component_Minder/$MineExplorer/default/icon/edit_gray.png) no-repeat left",
+	"background" : "url(../x_component_Minder/$MineExplorer/default/icon/edit_gray.png) no-repeat left",
 	"margin-left": "2px",
 	"margin-right": "2px",
 	"float": "left",

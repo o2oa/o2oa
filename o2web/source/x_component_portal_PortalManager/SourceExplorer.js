@@ -92,7 +92,7 @@ MWF.xApplication.portal.PortalManager.SourceExplorer = new Class({
             if (this.defalutPageTemplateList){
                 if (callback) callback();
             }else{
-                var url = "/x_component_portal_PageDesigner/Module/Page/template/templates.json";
+                var url = "../x_component_portal_PageDesigner/Module/Page/template/templates.json";
                 MWF.getJSON(url, function(json){
                     this.defalutPageTemplateList = json;
                     if (callback) callback();
@@ -108,7 +108,7 @@ MWF.xApplication.portal.PortalManager.SourceExplorer = new Class({
                     templateNode.store("template", template.name);
 
                     var templateIconImgNode = new Element("img", {"styles": this.css.formTemplateIconImgNode}).inject(templateIconNode);
-                    templateIconImgNode.set("src", "/x_component_portal_PageDesigner/Module/Page/template/"+template.icon);
+                    templateIconImgNode.set("src", "../x_component_portal_PageDesigner/Module/Page/template/"+template.icon);
 
                     templateNode.addEvents({
                         "mouseover": function(){this.setStyles(_self.css.formTemplateNode_over)},

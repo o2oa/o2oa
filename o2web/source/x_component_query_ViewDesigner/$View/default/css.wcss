@@ -60,7 +60,7 @@
         "float": "left",
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
     },
     "viewContentTdGroupTextNode": {
         "height": "20px",
@@ -68,17 +68,23 @@
         "line-height": "20px",
         "margin-left": "20px"
     },
+    "noDataTextNode" : {
+        "height" : "50px",
+        "font-size" : "16px",
+        "margin" : "20px auto",
+        "text-align" : "center"
+    },
 
     "refreshNode": {
         "width": "29px",
         "height": "40px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/refresh.png) center center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/refresh.png) center center no-repeat",
         "float": "left"
     },
     "addColumnNode": {
         "width": "29px",
         "height": "40px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
         "float": "right"
     },
 
@@ -152,7 +158,7 @@
         "height": "26px",
         "width": "26px",
         "float": "left",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
     },
     "cloumnListTextNode": {
         "margin-left": "26px"
@@ -229,7 +235,7 @@
         "text-align": "right",
         "cursor": "pointer",
         "font-size": "12px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat"
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat"
     },
     "columnFilterValueNode": {
         "width": "95%",
@@ -251,12 +257,12 @@
         "font-size": "12px"
     },
     "filterAddActionNode":{
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat",
         "height": "24px",
         "cursor": "pointer"
     },
     "filterDelActionNode":{
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/del.png) 3px center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/del.png) 3px center no-repeat",
         "height": "24px",
         "cursor": "pointer"
     },
@@ -325,7 +331,7 @@
     },
     "columnHideFlagNode": {
         "height": "40px",
-        "background": "url("+"/x_component_process_ViewDesigner/$View/default/icon/hidden.png) right center no-repeat",
+        "background": "url("+"../x_component_process_ViewDesigner/$View/default/icon/hidden.png) right center no-repeat",
         "position": "relative",
         "margin-right": "8px",
         "top": "-38px"

@@ -37,7 +37,7 @@ import com.x.file.core.entity.PersistenceProperties;
  *
  */
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Open.File.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Open.File.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

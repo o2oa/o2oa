@@ -12,6 +12,8 @@ MWF.xDesktop.WebSocket = new Class({
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
         this.ws = wsScheme+"://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
 
+
+
         this.reConnect = true;
         this.checking = false;
         this.heartTimeout = 60000;
@@ -149,7 +151,7 @@ MWF.xDesktop.WebSocket = new Class({
                                 this.receiveAttendanceAppealRejectMessage(data);
                                 break;
                             case "calendar_alarm":
-                                this.receiveAttendanceAppealRejectMessage(data);
+                                this.receiveCalendarAlarmMessage(data);
                                 break;
                             case "teamwork_taskCreate":
                             case "teamwork_taskUpdate":
@@ -160,6 +162,9 @@ MWF.xDesktop.WebSocket = new Class({
                                 break;
                             case "custom_create":
                                 this.receiveCustomMessage(data);
+                            case "im_create":
+                                console.log("im 消息来了！！！");
+                                this.receiveIMMessage(data);
                                 break;
                             default:
                         }
@@ -292,13 +297,44 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveCustomMessage: function(data){
-        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"</font>"+data.body;
+        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+data.body;
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
         };
         var messageItem = layout.desktop.message.addMessage(msg);
         var tooltipItem = layout.desktop.message.addTooltip(msg);
+    },
+    receiveIMMessage: function(data){
+        var imBody = data.body;
+        var jsonBody = imBody.body;
+        var conversationId = imBody.conversationId;
+
+        var body = JSON.parse(jsonBody);
+        var msgBody = body.body; //默认text 文本消息
+        if (body.type && body.type == "emoji") { //表情 消息
+            msgBody = "[表情]";
+        }
+        var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>"+msgBody;
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.customMessageTitle,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var options = {"conversationId": conversationId};
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            layout.desktop.openApplication(e, "IMV2", options);
+        }.bind(this));
+
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            layout.desktop.openApplication(e, "IMV2", options);
+        }.bind(this));
+
+       
     },
 
 
@@ -593,6 +629,52 @@ MWF.xDesktop.WebSocket = new Class({
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
             layout.desktop.openApplication(e, "Attendance", {"curNaviId":"12"});
+        });
+    },
+    receiveCalendarAlarmMessage: function(data){
+        debugger;
+        var content = MWF.LP.desktop.messsage.canlendarAlarm;
+        content = content.replace(/{title}/g, data.title);
+
+        var msg = {
+            "subject": MWF.LP.desktop.messsage.canlendarAlarmMessage,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+            if ( layout.desktop.apps && layout.desktop.apps["Calendar"] ) {
+                if( layout.desktop.apps["Calendar"].openEvent ){
+                    layout.desktop.apps["Calendar"].setCurrent();
+                    layout.desktop.apps["Calendar"].openEvent( data.body.id );
+                }else if(layout.desktop.apps["Calendar"].options){
+                    layout.desktop.apps["Calendar"].options.eventId = data.body.id;
+                    layout.desktop.apps["Calendar"].setCurrent();
+                }else{
+                    layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+                }
+            }else{
+                layout.desktop.openApplication(e, "Calendar", {"eventId": data.body.id });
+            }
         });
     },
     receiveTeamWorkMessage: function(data){

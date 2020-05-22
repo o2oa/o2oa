@@ -17,7 +17,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.SystemConfig.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.SystemConfig.table + JpaObject.IndexNameMiddle

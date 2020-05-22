@@ -79,7 +79,7 @@
     };
     if (!this.o2.session) this.o2.session ={
         "isDebugger": _debug,
-        "path": "/o2_core/o2"
+        "path": "../o2_core/o2"
     };
     this.o2.language = _lp;
     this.o2.splitStr = /\s*(?:,|;)\s*/;
@@ -92,7 +92,7 @@
     //     },
     //     "session": {
     //         "isDebugger": _debug,
-    //         "path": "/o2_core/o2"
+    //         "path": "../o2_core/o2"
     //     },
     //     "language": _lp,
     //     "splitStr": /\s*(?:,|;)\s*/
@@ -147,6 +147,7 @@
         var MSXML = function(){ return new ActiveXObject('Microsoft.XMLHTTP'); };
         return _attempt(XMLHTTP, MSXML2, MSXML);
     })();
+    this.o2.request = _request;
 
     var _returnBase = function(number, base) {
         return (number).toString(base).toUpperCase();
@@ -271,6 +272,16 @@
                 }
             }
         }
+
+        if (window.layout && layout.config && layout.config.urlMapping){
+            for (var k in layout.config.urlMapping){
+                var regex = new RegExp(k);
+                if (regex.test(url)){
+                    return url.replace(regex, layout.config.urlMapping[k]);
+                }
+            }
+        }
+
         return url;
     };
     this.o2.filterUrl = _filterUrl;
@@ -290,13 +301,13 @@
             _removeListener(xhr, 'load', _checkCssLoaded);
             _removeListener(xhr, 'error', _checkCssErrorLoaded);
 
-            if (err) {failure(xhr); return}
+            if (err) {if (failure) failure(xhr); return}
             var status = xhr.status;
             status = (status == 1223) ? 204 : status;
             if ((status >= 200 && status < 300))
-                success(xhr);
+                if (success) success(xhr);
             else if ((status >= 300 && status < 400))
-                failure(xhr);
+                if (failure) failure(xhr);
             else
                 failure(xhr);
             if (completed) completed(xhr);
@@ -308,7 +319,7 @@
         _addListener(xhr, "readystatechange", _checkCssLoaded);
         xhr.send();
     };
-
+    this.o2.xhr_get = _xhr_get;
     var _loadSequence = function(ms, cb, op, n, thisLoaded, loadSingle, uuid, fun){
         loadSingle(ms[n], function(module){
             if (module) thisLoaded.push(module);
@@ -336,28 +347,30 @@
     //load js
     //use framework url
     var _frameworks = {
-        "o2.core": ["/o2_core/o2/o2.core.js"],
-        "o2.more": ["/o2_core/o2/o2.more.js"],
-        "ie_adapter": ["/o2_core/o2/ie_adapter.js"],
-        "jquery": ["/o2_lib/jquery/jquery.min.js"],
-        "mootools": ["/o2_lib/mootools/mootools-1.6.0_all.js"],
-        "ckeditor": ["/o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
-        "ckeditor5": ["/o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
-        "raphael": ["/o2_lib/raphael/raphael.js"],
-        "d3": ["/o2_lib/d3/d3.min.js"],
-        "ace": ["/o2_lib/ace/src-min-noconflict/ace.js","/o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
-        "JSBeautifier": ["/o2_lib/JSBeautifier/beautify.js"],
-        "JSBeautifier_css": ["/o2_lib/JSBeautifier/beautify-css.js"],
-        "JSBeautifier_html": ["/o2_lib/JSBeautifier/beautify-html.js"],
-        "JSONTemplate": ["/o2_lib/mootools/plugin/Template.js"],
-        "kity": ["/o2_lib/kityminder/kity/kity.js"],
-        "kityminder": ["/o2_lib/kityminder/core/dist/kityminder.core.js"]
+        "o2.core": ["../o2_core/o2/o2.core.js"],
+        "o2.more": ["../o2_core/o2/o2.more.js"],
+        "ie_adapter": ["../o2_core/o2/ie_adapter.js"],
+        "jquery": ["../o2_lib/jquery/jquery.min.js"],
+        "mootools": ["../o2_lib/mootools/mootools-1.6.0_all.js"],
+        "ckeditor": ["../o2_lib/htmleditor/ckeditor4114/ckeditor.js"],
+        "ckeditor5": ["../o2_lib/htmleditor/ckeditor5-12-1-0/ckeditor.js"],
+        "raphael": ["../o2_lib/raphael/raphael.js"],
+        "d3": ["../o2_lib/d3/d3.min.js"],
+        "ace": ["../o2_lib/ace/src-min-noconflict/ace.js","../o2_lib/ace/src-min-noconflict/ext-language_tools.js"],
+        "monaco": ["../o2_lib/vs/loader.js"],
+        "JSBeautifier": ["../o2_lib/JSBeautifier/beautify.js"],
+        "JSBeautifier_css": ["../o2_lib/JSBeautifier/beautify-css.js"],
+        "JSBeautifier_html": ["../o2_lib/JSBeautifier/beautify-html.js"],
+        "JSONTemplate": ["../o2_lib/mootools/plugin/Template.js"],
+        "kity": ["../o2_lib/kityminder/kity/kity.js"],
+        "kityminder": ["../o2_lib/kityminder/core/dist/kityminder.core.js"]
     };
     var _loaded = {};
     var _loadedCss = {};
     var _loadedHtml = {};
     var _loadCssRunning = {};
     var _loadCssQueue = [];
+    var _loadingModules = {};
 
     var _loadSingle = function(module, callback, op){
         var url = module;
@@ -368,38 +381,51 @@
             if (callback)callback(); return;
         }
 
-        var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
-        var s = op.doc.createElement('script');
-        head.appendChild(s);
-        s.id = uuid;
-        s.src = this.o2.filterUrl(url);
+        if (_loadingModules[key]){
+            if (!_loadingModules[key].callbacks) _loadingModules[key].callbacks = [];
+            _loadingModules[key].callbacks.push(callback);
+        }else{
+            _loadingModules[key] = { callbacks: [callback] };
 
-        var _checkScriptLoaded = function(_, isAbort, err){
-            if (isAbort || !s.readyState || s.readyState === "loaded" || s.readyState === "complete") {
-                var scriptObj = {"module": module, "id": uuid, "script": s, "doc": op.doc};
-                if (!err) _loaded[key] = scriptObj;
-                _removeListener(s, 'readystatechange', _checkScriptLoaded);
-                _removeListener(s, 'load', _checkScriptLoaded);
-                _removeListener(s, 'error', _checkScriptErrorLoaded);
-                if (!isAbort || err){
-                    if (err){
-                        if (s) head.removeChild(s);
-                        if (callback)callback();
-                    }else{
-                        //head.removeChild(s);
-                        if (callback)callback(scriptObj);
+            var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
+            var s = op.doc.createElement('script');
+            head.appendChild(s);
+            s.id = uuid;
+            s.src = this.o2.filterUrl(url);
+
+            var _checkScriptLoaded = function(_, isAbort, err){
+                if (isAbort || !s.readyState || s.readyState === "loaded" || s.readyState === "complete") {
+                    var scriptObj = {"module": module, "id": uuid, "script": s, "doc": op.doc};
+                    if (!err) _loaded[key] = scriptObj;
+                    _removeListener(s, 'readystatechange', _checkScriptLoaded);
+                    _removeListener(s, 'load', _checkScriptLoaded);
+                    _removeListener(s, 'error', _checkScriptErrorLoaded);
+                    if (!isAbort || err){
+                        if (err){
+                            if (s) head.removeChild(s);
+                            while (_loadingModules[key].callbacks.length){
+                                (_loadingModules[key].callbacks.shift())();
+                            }
+                            //if (callback)callback();
+                        }else{
+                            //head.removeChild(s);
+                            while (_loadingModules[key].callbacks.length){
+                                (_loadingModules[key].callbacks.shift())(scriptObj);
+                            }
+                            //if (callback)callback(scriptObj);
+                        }
                     }
                 }
-            }
-        };
-        var _checkScriptErrorLoaded = function(e, err){
-            console.log("Error: load javascript module: "+module);
-            _checkScriptLoaded(e, true, "error");
-        };
+            };
+            var _checkScriptErrorLoaded = function(e, err){
+                console.log("Error: load javascript module: "+module);
+                _checkScriptLoaded(e, true, "error");
+            };
 
-        if ('onreadystatechange' in s) _addListener(s, 'readystatechange', _checkScriptLoaded);
-        _addListener(s, 'load', _checkScriptLoaded);
-        _addListener(s, 'error', _checkScriptErrorLoaded);
+            if ('onreadystatechange' in s) _addListener(s, 'readystatechange', _checkScriptLoaded);
+            _addListener(s, 'load', _checkScriptLoaded);
+            _addListener(s, 'error', _checkScriptErrorLoaded);
+        }
     };
 
     var _load = function(urls, options, callback){

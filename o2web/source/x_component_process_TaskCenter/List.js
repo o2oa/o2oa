@@ -667,7 +667,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
         this.newIconNode = new Element("div", {"styles": this.list.css.itemNewIconNode}).inject(this.node);
 
         this.getApplicationIcon(function(icon){
-            var pic = "/x_component_process_ApplicationExplorer/$Main/default/icon/application.png";
+            var pic = "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png";
             if (icon.icon){
                 pic = "data:image/png;base64,"+icon.icon;
             }
@@ -693,7 +693,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
     setTimeIcon: function(){
         //this.data.expireTime = "2017-08-31 19:00";
         if (this.data.completed){
-            this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/pic_ok.png)");
+            this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/pic_ok.png)");
             return true;
         }
         this.timeIconNode.empty();
@@ -716,15 +716,15 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             }else if (n<1){
                 text = this.list.app.lp.expire2.replace(/{time}/g, this.data.expireTime);
                 img = "3.png";
-                this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/pic_jichao.png)");
+                this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/pic_jichao.png)");
             }else if (n<2){
                 text = this.list.app.lp.expire3.replace(/{time}/g, this.data.expireTime);
                 img = "4.png";
-                this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/pic_yichao.png)");
+                this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/pic_yichao.png)");
             }else{
                 text = this.list.app.lp.expire3.replace(/{time}/g, this.data.expireTime);
                 img = "5.png";
-                this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/pic_yanchao.png)");
+                this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/pic_yanchao.png)");
             }
             this.timeIconNode.setStyle("background-image", "url("+this.list.app.path+this.list.app.options.style+"/time/"+img+")");
             this.timeIconNode.set("title", text);
@@ -955,12 +955,12 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             if (scrollX<0) scrollX = 0;
 
             if (scrollX>0){
-                //    this.flowInforLeftNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/processor/left.png)");
+                //    this.flowInforLeftNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/processor/left.png)");
             }else{
                 this.flowInforLeftNode.setStyle("background-image", "");
             }
             if (scrollX+size.x<scrollSize.x){
-                this.flowInforRightNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/processor/right.png)");
+                this.flowInforRightNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/processor/right.png)");
             }else{
                 //    this.flowInforRightNode.setStyle("background-image", "");
             }
@@ -980,12 +980,12 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             if (scrollX>scrollSize.x) scrollX = scrollSize.x;
 
             if (scrollX>0){
-                this.flowInforLeftNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/processor/left.png)");
+                this.flowInforLeftNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/processor/left.png)");
             }else{
                 //this.flowInforLeftNode.setStyle("background-image", "");
             }
             if (scrollX+size.x<scrollSize.x){
-                //this.flowInforRightNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/processor/right.png)");
+                //this.flowInforRightNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/processor/right.png)");
             }else{
                 this.flowInforRightNode.setStyle("background-image", "");
             }
@@ -1002,7 +1002,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
         if (scrollSize.x>size.x){
             if (!this.flowInforScrollFx) this.flowInforScrollFx = new Fx.Scroll(this.flowInforScrollNode, {"wheelStops": false});
             this.flowInforScrollFx.toRight();
-            this.flowInforLeftNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/processor/left.png)");
+            this.flowInforLeftNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/processor/left.png)");
             this.flowInforLeftNode.addEvent("click", function(){this.toFlowInforLeft();}.bind(this));
             this.flowInforRightNode.addEvent("click", function(){this.toFlowInforRight();}.bind(this));
         }
@@ -1037,7 +1037,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
             taskTextNode.set("text", task.person.substring(0, task.person.indexOf("@"))+" "+this.list.app.lp.processing);
         }.bind(this));
 
-        var icon = "url("+"/x_component_process_TaskCenter/$Main/default/processor/"+iconName+iconSuffix+".png)";
+        var icon = "url("+"../x_component_process_TaskCenter/$Main/default/processor/"+iconName+iconSuffix+".png)";
         logActivityIconNode.setStyle("background-image", icon);
 
         if (taskList.length){
@@ -1263,7 +1263,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
                 this.applicationIconNode.setStyle("background-image", "url(data:image/png;base64,"+icon.icon+")");
             }else{
                 this.mainContentNode.setStyle("border-top", "4px solid #4e82bd");
-                this.applicationIconNode.setStyle("background-image", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
+                this.applicationIconNode.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
             }
         }.bind(this));
     },
@@ -1298,7 +1298,7 @@ MWF.xApplication.process.TaskCenter.List.Item = new Class({
         var start = new Date().parse(this.data.startTime);
         var now = new Date();
         if (now.getTime()-start.getTime()<86400000){
-            this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/new.png)");
+            this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/new.png)");
         }
     },
 

@@ -35,7 +35,7 @@ public class ActionGet extends BaseAction {
 				Business business = new Business(emc);
 				Form form = business.getFormFactory().get(id);
 				if ( null == form ) {
-					throw new Exception("form{id:" + id + "} 信息不存在.");
+					throw new Exception("需要查询的表单信息不存在，请联系管理员。ID:" + id );
 				}
 				wo = new Wo();
 				Wo.copier.copy( form, wo );

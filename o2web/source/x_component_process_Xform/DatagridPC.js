@@ -1003,7 +1003,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
             this._setBusinessData(this.gridData);
 
-            return (this.gridData.data.length) ? this.gridData : null;
+            return (this.gridData.data.length) ? this.gridData : {data:[]};
         }else{
             return this._getBusinessData();
         }
@@ -1018,7 +1018,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
                 "width": "20px",
                 "height": "20px",
                 "float": "left",
-                "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {

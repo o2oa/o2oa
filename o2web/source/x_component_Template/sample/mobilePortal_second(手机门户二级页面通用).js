@@ -204,7 +204,7 @@ var MobileProcessStarter = new Class({
         }else{
             redirectlink = encodeURIComponent(redirectlink);
         }
-        var href = "/x_desktop/appMobile.html?app=portal.Portal&appid=" + this.applactionId;
+        var href = "../x_desktop/appMobile.html?app=portal.Portal&appid=" + this.applactionId;
         if( this.processId ){
             href = href + "&processId=" + this.processId
         }
@@ -223,7 +223,7 @@ var MobileProcessStarter = new Class({
         }else{
             redirectlink = encodeURIComponent(redirectlink);
         }
-        window.location = "/x_desktop/appMobile.html?app=portal.Portal&appid=" + this.process.application + "&processId=" + this.process.id + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink;
+        window.location = "../x_desktop/appMobile.html?app=portal.Portal&appid=" + this.process.application + "&processId=" + this.process.id + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink;
     },
     loadSelectProcessLayout : function( applactionId, processId ){
         this.applactionId = applactionId;
@@ -593,14 +593,14 @@ var MobileProcessStarter = new Class({
                 // "width": "47px",
                 // "height": "47px",
                 // "float": "left",
-                // "background": "url("+"/x_component_process_TaskCenter/$ProcessStarter/default/new.png) no-repeat"
+                // "background": "url("+"../x_component_process_TaskCenter/$ProcessStarter/default/new.png) no-repeat"
             },
             "createCloseNode": {
                 "width": "47px",
                 "height": "47px",
                 "float": "right",
                 "cursor": "pointer",
-                "background": "url(" + "/x_component_process_TaskCenter/$ProcessStarter/default/close.png) center center no-repeat"
+                "background": "url(" + "../x_component_process_TaskCenter/$ProcessStarter/default/close.png) center center no-repeat"
             },
             "formNode": {
                 "border-radius": "8px",
@@ -633,7 +633,7 @@ var MobileProcessStarter = new Class({
                 "margin-top": "20px",
                 "margin-bottom": "20px",
                 "box-shadow": "0px 0px 0px #666",
-                "background": "url(" + "/x_component_process_TaskCenter/$ProcessStarter/default/editOk_bg.png) no-repeat"
+                "background": "url(" + "../x_component_process_TaskCenter/$ProcessStarter/default/editOk_bg.png) no-repeat"
             },
             "cancelActionNode": {
                 "height": "30px",
@@ -650,7 +650,7 @@ var MobileProcessStarter = new Class({
                 "margin-bottom": "20px",
                 "box-shadow": "0px 0px 0px #666",
                 "border": "1px solid #999",
-                "background": "url(" + "/x_component_process_TaskCenter/$ProcessStarter/default/editCancel_bg.png) no-repeat"
+                "background": "url(" + "../x_component_process_TaskCenter/$ProcessStarter/default/editCancel_bg.png) no-repeat"
             },
             "departSelNode": {
                 "padding": "5px",

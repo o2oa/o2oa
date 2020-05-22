@@ -15,6 +15,7 @@ import com.x.program.center.jaxrs.captcha.CaptchaAction;
 import com.x.program.center.jaxrs.center.CenterAction;
 import com.x.program.center.jaxrs.code.CodeAction;
 import com.x.program.center.jaxrs.collect.CollectAction;
+import com.x.program.center.jaxrs.command.CommandAction;
 import com.x.program.center.jaxrs.config.ConfigAction;
 import com.x.program.center.jaxrs.datastructure.DataStructureAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
@@ -49,6 +50,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(PromptErrorLogAction.class);
 		classes.add(UnexpectedErrorLogAction.class);
 		classes.add(WarnLogAction.class);
+		classes.add(CommandAction.class);
 		classes.add(JestAction.class);
 		classes.add(ModuleAction.class);
 		classes.add(PmsAction.class);

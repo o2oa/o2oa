@@ -5,14 +5,14 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 	Extends: MWF.FCActionbar,
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Actionbar/actionbar.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Actionbar/actionbar.html"
 	},
 	Implements : [MWF.CMSFCMI],
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_cms_FormDesigner/Module/Actionbar/";
-		this.cssPath = "/x_component_cms_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_FormDesigner/Module/Actionbar/";
+		this.cssPath = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";
@@ -36,7 +36,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this.json.customIconOverStyle = "white";
 	},
 	setAllStyles: function(){
-		this._refreshActionbar();
+		//this._refreshActionbar();
+		this._resetActionbar();
 	},
 	_createNode: function(callback){
 		this.node = new Element("div", {
@@ -86,8 +87,8 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.toolbarNode = this.node.getFirst("div");
 			this.toolbarNode.empty();
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
-            //if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
-            //this.toolbarWidget.css = this.json.actionStyles;
+            if (!this.json.actionStyles) this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            this.toolbarWidget.css = this.json.actionStyles;
 
 			if (this.json.defaultTools){
 				var json = Array.clone(this.json.defaultTools);
@@ -146,6 +147,46 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 	//	}
     //
 	//},
+	_resetActionbar: function(){
+        if (this.form.options.mode == "Mobile"){
+            this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
+            this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
+        }else{
+            this.toolbarNode = this.node.getFirst("div");
+            this.toolbarNode.empty();
+			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
+            // this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+            if (!this.json.actionStyles){
+                this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            }else{
+                this.toolbarWidget.css = Object.merge( Object.clone(this.json.actionStyles), this.toolbarWidget.css );
+                this.json.actionStyles = Object.clone(this.toolbarWidget.css);
+            }
+
+            if (this.json.defaultTools){
+                var json = Array.clone(this.json.defaultTools);
+                //if (this.json.tools) json.append(this.json.tools);
+                this.setToolbars(json, this.toolbarNode);
+                if (this.json.tools){
+                    this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+                }
+                this.toolbarWidget.load();
+                //json = null;
+            }else{
+                MWF.getJSON(this.path+"toolbars.json", function(json){
+                    this.json.defaultTools = json;
+                    var json = Array.clone(this.json.defaultTools);
+                    //if (this.json.tools) json.append(this.json.tools);
+                    this.setToolbars(json, this.toolbarNode);
+                    if (this.json.tools){
+                        this.setCustomToolbars(Array.clone(this.json.tools), this.toolbarNode);
+                    }
+                    this.toolbarWidget.load();
+                    //json = null;
+                }.bind(this), false);
+            }
+        }
+    },
 	setToolbars: function(tools, node){
 		tools.each(function(tool){
 			var actionNode = new Element("div", {

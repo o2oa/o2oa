@@ -36,7 +36,7 @@ MWF.xApplication.TeamWork.Main = new Class({
 		this.rootActions = MWF.Actions.load("x_teamwork_assemble_control");
 		this.orgActions = MWF.Actions.load("x_organization_assemble_express");
 
-		this.path = "/x_component_TeamWork/$Main/";
+		this.path = "../x_component_TeamWork/$Main/";
 		if(!this.css){
 			this.cssPath = this.path+this.options.style+"/css.wcss";
 			this._loadCss();
@@ -187,8 +187,8 @@ MWF.xApplication.TeamWork.Main = new Class({
 	setLoading:function(container){
 		var _height = container.getHeight();
 		var _width = container.getWidth();
-		var loading = new Element("img",{styles:this.css.loading,"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
-		//var loading = new Element("img",{"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
+		var loading = new Element("img",{styles:this.css.loading,"src":"../x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
+		//var loading = new Element("img",{"src":"../x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
 
 		loading.setStyles({
 			"margin-left":(_width-loading.getWidth())/2+"px"

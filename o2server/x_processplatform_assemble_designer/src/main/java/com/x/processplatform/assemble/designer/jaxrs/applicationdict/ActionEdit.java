@@ -10,6 +10,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -83,6 +84,7 @@ class ActionEdit extends BaseAction {
 				Arrays.asList(JpaObject.createTime_FIELDNAME, JpaObject.updateTime_FIELDNAME,
 						JpaObject.sequence_FIELDNAME, JpaObject.distributeFactor_FIELDNAME));
 
+		@FieldDescribe("字典数据(json格式).")
 		private JsonElement data;
 
 		public JsonElement getData() {

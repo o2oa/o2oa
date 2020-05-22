@@ -91,7 +91,7 @@
           "remove" : { "action" : "remove" },
           "userIcon" : {
             "value": "",
-            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
+            "attr" : "src^^function( d ){ if( d.userIcon ){ return d.userIcon }else{ return '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif' } }"
           },
           "index" : { "value" : "function(d){ return d.orderNumber || (d.index + 2) }" },
           "messageAction": {

@@ -25,7 +25,6 @@ import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 /**
  * 系统配置信息表基础功能服务类
- * @author liyi
  */
 public class AttendanceDetailFactory extends AbstractFactory {
 	

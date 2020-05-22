@@ -33,8 +33,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         this.setOptions(options);
 
-        this.path = "/x_component_query_Query/$Viewer/";
-        this.cssPath = "/x_component_query_Query/$Viewer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_Query/$Viewer/";
+        this.cssPath = "../x_component_query_Query/$Viewer/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = MWF.xApplication.query.Query.LP;
 
@@ -368,12 +368,23 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                     this._initPage();
                     if (this.bundleItems.length){
+                        if( this.noDataTextNode )this.noDataTextNode.destroy();
                         this.loadCurrentPageData( function () {
                             this.fireEvent("postLoad"); //用户配置的事件
                         }.bind(this));
                     }else{
                         //this._loadPageNode();
                         this.viewPageAreaNode.empty();
+                        if( this.viewJson.noDataText ){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.viewJson.viewStyles && this.viewJson.viewStyles["noDataTextNode"] ){
+                                noDataTextNodeStyle = this.viewJson.viewStyles["noDataTextNode"];
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.viewJson.noDataText
+                            }).inject( this.contentAreaNode );
+                        }
                         if (this.loadingAreaNode){
                             this.loadingAreaNode.destroy();
                             this.loadingAreaNode = null;
@@ -384,7 +395,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }
         }.bind(this));
     },
-    loadCurrentPageData: function( callback ){
+    loadCurrentPageData: function( callback, async ){
         //是否需要在翻页的时候清空之前的items ?
         this.items = [];
 
@@ -421,7 +432,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.fireEvent("postLoadPage");
 
             if(callback)callback();
-        }.bind(this));
+        }.bind(this), null, async === false ? false : true );
     },
 
 
@@ -484,7 +495,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                 }).inject( this.selectTitleCell );
                 this.selectTitleCell.setStyle("cursor", "pointer");
             }else{
-                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
             }
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
@@ -528,7 +539,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             if (icon.get("html").indexOf("expand.png")===-1){
                 this.items.each(function(item){
                     item.collapse();
-                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
+                    icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>");
                 }.bind(this));
                 this.expandAll = false;
             }else{
@@ -537,7 +548,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                         item.expand();
                     }.bind(this), 10*i+5);
 
-                    icon.set("html", "<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
+                    icon.set("html", "<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/down.png'/>");
                 }.bind(this));
                 this.expandAll = true;
             }
@@ -1493,7 +1504,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                         }else{
                             var iconName = "checkbox";
                             if (flag==="single") iconName = "radiobox";
-                            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
+                            this.selectTd.setStyles({"background": "url("+"../x_component_query_Query/$Viewer/default/icon/"+iconName+".png) center center no-repeat"});
                         }
                     }
                 }.bind(this),
@@ -1530,7 +1541,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.selectTd.setStyles( viewStyles["checkedCheckboxNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
         }else{
-            this.selectTd.setStyles({"background": "url("+"/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
+            this.selectTd.setStyles({"background": "url("+"../x_component_query_Query/$Viewer/default/icon/checkbox_checked.png) center center no-repeat"});
             this.node.setStyles(this.css.viewContentTrNode_selected);
         }
         this.isSelected = true;
@@ -1557,7 +1568,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.selectTd.setStyles( viewStyles["checkedRadioNode"] );
             this.node.setStyles( viewStyles["contentSelectedTr"] );
         }else {
-            this.selectTd.setStyles({"background": "url(" + "/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
+            this.selectTd.setStyles({"background": "url(" + "../x_component_query_Query/$Viewer/default/icon/radiobox_checked.png) center center no-repeat"});
             this.node.setStyles(this.css.viewContentTrNode_selected);
         }
         this.isSelected = true;
@@ -1629,7 +1640,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
             new Element("span", { text : text }).inject( this.categoryTd );
             // this.categoryTd.set("text", text );
         }else{
-            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
         }
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
@@ -1665,7 +1676,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if( this.expandNode ){
             this.expandNode.setStyles( this.view.viewJson.viewStyles["groupCollapseNode"] )
         }else{
-            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
+            this.node.getElement("span").set("html", "<img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/>");
         }
         this.expanded = false;
     },
@@ -1676,7 +1687,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         if( this.expandNode ){
             this.expandNode.setStyles( this.view.viewJson.viewStyles["groupExpandNode"] )
         }else{
-            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+            this.node.getElement("span").set("html", "<img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
         }
         this.expanded = true;
         if (!this.loadChild){
@@ -1922,7 +1933,7 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     },
 
     setCustomToolbars: function(tools, node){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         var iconPath = "";
         if( this.json.customIconStyle ){
             iconPath = this.json.customIconStyle+"/";
@@ -1971,8 +1982,8 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
     },
 
     setToolbarItem: function(tool, node, readonly, noCondition){
-        //var path = "/x_component_process_FormDesigner/Module/Actionbar/";
-        var path = "/x_component_query_ViewDesigner/$View/";
+        //var path = "../x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_query_ViewDesigner/$View/";
         var flag = true;
         // if (tool.control){
         //     flag = this.form.businessData.control[tool.control]
@@ -2183,7 +2194,7 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
             onJumpingPage : function( pageNum, itemNum ){
                 this.view.currentPage = pageNum;
                 this.fireEvent("jump");
-                this.view.loadCurrentPageData();
+                this.view.loadCurrentPageData( null, false );
             }.bind(this),
             onPostLoad : function () {
                 if( firstLoading ){

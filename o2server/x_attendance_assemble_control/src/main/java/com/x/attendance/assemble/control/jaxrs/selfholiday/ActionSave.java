@@ -2,7 +2,6 @@ package com.x.attendance.assemble.control.jaxrs.selfholiday;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.selfholiday.exception.ExceptionSelfHolidayProcess;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
@@ -105,7 +104,7 @@ public class ActionSave extends BaseAction {
 					logger.info("++++++++休假数据有变动，对该员工的该请假时间内的所有打卡记录进行分析......" );
 					//休假数据有更新，对该员工的该请假时间内的所有打卡记录进行分析
 					List<String> ids = attendanceDetailAnalyseServiceAdv.getAnalyseAttendanceDetailIds( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime() );
-					if( ids != null && ids.size() > 0 ){
+					if( ListTools.isNotEmpty( ids ) ){
 						try {//查询所有的周期配置，组织成Map
 							topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
 						} catch (Exception e) {

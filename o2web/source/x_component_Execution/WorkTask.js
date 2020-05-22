@@ -17,14 +17,14 @@ MWF.xApplication.Execution.WorkTask = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Execution/$WorkTask/";
+        this.path = "../x_component_Execution/$WorkTask/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$WorkTask/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$WorkTask/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -104,7 +104,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
             });
         var naviContentImg = new Element("img.naviContentImg",{
             "styles":this.css.naviContentImg,
-            "src":"/x_component_Execution/$WorkReportList/default/icon/Prototype-100.png"
+            "src":"../x_component_Execution/$WorkReportList/default/icon/Prototype-100.png"
         }).inject(naviContentLi);
         var naviContentSpan = new Element("span.naviContentSpan",{
             "styles":this.css.naviContentSpan,
@@ -114,7 +114,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
         //var naviContentLi = new Element("li.naviContentLi",{"styles":this.css.naviContentLi}).inject(this.naviContentDiv);
         //var naviContentImg = new Element("img.naviContentImg",{
         //    "styles":this.css.naviContentImg,
-        //    "src":"/x_component_Execution/$WorkReportList/default/icon/Conference-100.png"
+        //    "src":"../x_component_Execution/$WorkReportList/default/icon/Conference-100.png"
         //}).inject(naviContentLi);
         //var naviContentSpan = new Element("span.naviContentSpan",{
         //    "styles":this.css.naviContentSpan,
@@ -124,7 +124,7 @@ MWF.xApplication.Execution.WorkTask = new Class({
         //var naviContentLi = new Element("li.naviContentLi",{"styles":this.css.naviContentLi}).inject(this.naviContentDiv);
         //var naviContentImg = new Element("img.naviContentImg",{
         //    "styles":this.css.naviContentImg,
-        //    "src":"/x_component_Execution/$WorkReportList/default/icon/Department-100.png"
+        //    "src":"../x_component_Execution/$WorkReportList/default/icon/Department-100.png"
         //}).inject(naviContentLi);
         //var naviContentSpan = new Element("span.naviContentSpan",{
         //    "styles":this.css.naviContentSpan,
@@ -623,7 +623,7 @@ MWF.xApplication.Execution.WorkTask.WorkForm = new Class({
             }).inject(this.formNode);
             this.formTopImg = new Element("img.formTopImg",{
                 "styles":this.css.formTopImg,
-                "src":"/x_component_Execution/$Main/default/icon/Document-104.png"
+                "src":"../x_component_Execution/$Main/default/icon/Document-104.png"
             }).inject(this.formTopNode);
             this.formTopSpan = new Element("span.formTopSpan",{
                 "styles": this.css.formTopSpan,

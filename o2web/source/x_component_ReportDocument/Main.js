@@ -41,7 +41,7 @@ MWF.xApplication.ReportDocument.Main = new Class({
 		this.restActions = this.actions =  MWF.Actions.get("x_report_assemble_control"); //new MWF.xApplication.Report.Actions.RestActions();
 		this.common = new MWF.xApplication.Report.Common(this);
 
-		this.path = "/x_component_ReportDocument/$Main/"+this.options.style+"/";
+		this.path = "../x_component_ReportDocument/$Main/"+this.options.style+"/";
 
 		if( this.status ){
 			this.setOptions( this.status )

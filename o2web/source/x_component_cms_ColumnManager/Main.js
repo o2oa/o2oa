@@ -190,7 +190,7 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
             if (icon){
                 this.leftTitleIconNode.setStyle("background-image", "url(data:image/png;base64,"+icon+")");
             }else{
-                this.leftTitleIconNode.setStyle("background-image", "url("+"/x_component_cms_Column/$Main/default/icon/column.png)");
+                this.leftTitleIconNode.setStyle("background-image", "url("+"../x_component_cms_Column/$Main/default/icon/column.png)");
             }
         }
 
@@ -925,7 +925,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         if (icon){
             this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+icon+") center center no-repeat");
         }else{
-            this.iconPreviewNode.setStyle("background", "url("+"/x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat")
+            this.iconPreviewNode.setStyle("background", "url("+"../x_component_cms_Column/$Main/default/icon/column.png) center center no-repeat")
         }
         var changeIconAction = new Element("div", {
             "styles": this.app.css.selectButtonStyle,
@@ -961,7 +961,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
                                     if (this.data.appIcon){
                                         this.iconPreviewNode.setStyle("background", "url(data:image/png;base64,"+this.data.appIcon+") center center no-repeat");
                                     }else{
-                                        this.iconPreviewNode.setStyle("background", "url("+"/x_component_cms_Column/$Main/default/icon/category2.png) center center no-repeat")
+                                        this.iconPreviewNode.setStyle("background", "url("+"../x_component_cms_Column/$Main/default/icon/category2.png) center center no-repeat")
                                     }
                                 }
                             }.bind(this), false)

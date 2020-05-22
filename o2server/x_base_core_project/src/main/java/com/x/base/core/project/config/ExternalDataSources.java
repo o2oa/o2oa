@@ -47,7 +47,7 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 			}
 		}
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("externalDataSource not in externalDataSources.");
+			throw new Exception("externalDataSource not in externalDataSources." + externalDataSource);
 		}
 		return name;
 	}

@@ -61,7 +61,10 @@ public class DynamicEntityBuilder {
 	public JavaFile build() throws Exception {
 
 		AnnotationSpec annotationSpec_entity = AnnotationSpec.builder(Entity.class).build();
-		AnnotationSpec annotationSpec_containerEntity = AnnotationSpec.builder(ContainerEntity.class).build();
+		AnnotationSpec annotationSpec_containerEntity = AnnotationSpec.builder(ContainerEntity.class)
+				.addMember("dumpSize", "500")
+				.addMember("type", "com.x.base.core.entity.annotation.ContainerEntity.Type.custom")
+				.addMember("reference", "com.x.base.core.entity.annotation.ContainerEntity.Reference.strong").build();
 		AnnotationSpec annotationSpec_table = AnnotationSpec.builder(Table.class)
 				.addMember("name", "\"" + dynamicEntity.tableName() + "\"")
 				.addMember("uniqueConstraints", "{@javax.persistence.UniqueConstraint(name = \""
@@ -119,16 +122,16 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createIdField(Builder builder) {
-//		public String getId() {
-//			return id;
-//		}
-//		public void setId(String id) {
-//			this.id = id;
-//		}
-//		@FieldDescribe("数据库主键,自动生成.")
-//		@Id
-//		@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-//		private String id = createId();
+		// public String getId() {
+		// return id;
+		// }
+		// public void setId(String id) {
+		// this.id = id;
+		// }
+		// @FieldDescribe("数据库主键,自动生成.")
+		// @Id
+		// @Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
+		// private String id = createId();
 		AnnotationSpec fieldDescribe = AnnotationSpec.builder(FieldDescribe.class).addMember("value", "\"数据库主键,自动生成.\"")
 				.build();
 		AnnotationSpec id = AnnotationSpec.builder(Id.class).build();
@@ -174,12 +177,13 @@ public class DynamicEntityBuilder {
 	}
 
 	private void createField(Builder builder, Field field, Class<?> typeClass) {
-//		public static final String stringValue_FIELDNAME = "stringValue";
-//		@FieldDescribe("文本字段.")
-//		@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + stringValue_FIELDNAME)
-//		@Index(name = TABLE + IndexNameMiddle + stringValue_FIELDNAME)
-//		@CheckPersist(allowEmpty = true)
-//		private String stringValue;
+		// public static final String stringValue_FIELDNAME = "stringValue";
+		// @FieldDescribe("文本字段.")
+		// @Column(length = JpaObject.length_255B, name = ColumnNamePrefix +
+		// stringValue_FIELDNAME)
+		// @Index(name = TABLE + IndexNameMiddle + stringValue_FIELDNAME)
+		// @CheckPersist(allowEmpty = true)
+		// private String stringValue;
 		AnnotationSpec column = null;
 		if (typeClass == String.class) {
 			column = AnnotationSpec.builder(Column.class).addMember("length", "length_255B")
@@ -314,16 +318,20 @@ public class DynamicEntityBuilder {
 
 	private void createListFields(Builder builder, Field field, Class<?> typeClass) {
 
-//		public static final String groupList_FIELDNAME = "groupList";
-//		@FieldDescribe("群组的群组成员.存放群组 ID.")
-//		@ContainerTable(name = TABLE + ContainerTableNameMiddle + groupList_FIELDNAME, joinIndex = @Index(name = TABLE
-//				+ IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
-//		@ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME + ElementIndexNameSuffix)
-//		@PersistentCollection(fetch = FetchType.EAGER)
-//		@OrderColumn(name =  ORDERCOLUMNCOLUMN)
-//		@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + groupList_FIELDNAME)
-//		@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Group.class))
-//		private List<String> groupList;
+		// public static final String groupList_FIELDNAME = "groupList";
+		// @FieldDescribe("群组的群组成员.存放群组 ID.")
+		// @ContainerTable(name = TABLE + ContainerTableNameMiddle +
+		// groupList_FIELDNAME, joinIndex = @Index(name = TABLE
+		// + IndexNameMiddle + groupList_FIELDNAME + JoinIndexNameSuffix))
+		// @ElementIndex(name = TABLE + IndexNameMiddle + groupList_FIELDNAME +
+		// ElementIndexNameSuffix)
+		// @PersistentCollection(fetch = FetchType.EAGER)
+		// @OrderColumn(name = ORDERCOLUMNCOLUMN)
+		// @ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix +
+		// groupList_FIELDNAME)
+		// @CheckPersist(allowEmpty = true, citationExists = @CitationExist(type =
+		// Group.class))
+		// private List<String> groupList;
 
 		AnnotationSpec containerTable = AnnotationSpec.builder(ContainerTable.class)
 				.addMember("name", "TABLE + ContainerTableNameMiddle + " + field.fieldName())
@@ -375,11 +383,12 @@ public class DynamicEntityBuilder {
 
 	private void createStringLobField(Builder builder, Field field) {
 
-//		public static final String stringLobValue_FIELDNAME = "stringLobValue";
-//		@FieldDescribe("长文本.")
-//		@Lob
-//		@Basic(fetch = FetchType.EAGER)
-//		@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + stringLobValue_FIELDNAME)
+		// public static final String stringLobValue_FIELDNAME = "stringLobValue";
+		// @FieldDescribe("长文本.")
+		// @Lob
+		// @Basic(fetch = FetchType.EAGER)
+		// @Column(length = JpaObject.length_10M, name = ColumnNamePrefix +
+		// stringLobValue_FIELDNAME)
 
 		AnnotationSpec lob = AnnotationSpec.builder(Lob.class).build();
 
@@ -410,15 +419,20 @@ public class DynamicEntityBuilder {
 
 	private void createStringMapField(Builder builder, Field field) {
 
-//		@FieldDescribe("Map类型.")
-//		@CheckPersist(allowEmpty = true)
-//		@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
-//		@ContainerTable(name = TABLE + ContainerTableNameMiddle + mapValueMap_FIELDNAME, joinIndex = @Index(name = TABLE
-//				+ IndexNameMiddle + mapValueMap_FIELDNAME + JoinIndexNameSuffix))
-//		@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-//		@ElementColumn(length = length_255B, name = ColumnNamePrefix + mapValueMap_FIELDNAME)
-//		@ElementIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + ElementIndexNameSuffix)
-//		@KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + KeyIndexNameSuffix)
+		// @FieldDescribe("Map类型.")
+		// @CheckPersist(allowEmpty = true)
+		// @PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType =
+		// String.class)
+		// @ContainerTable(name = TABLE + ContainerTableNameMiddle +
+		// mapValueMap_FIELDNAME, joinIndex = @Index(name = TABLE
+		// + IndexNameMiddle + mapValueMap_FIELDNAME + JoinIndexNameSuffix))
+		// @KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+		// @ElementColumn(length = length_255B, name = ColumnNamePrefix +
+		// mapValueMap_FIELDNAME)
+		// @ElementIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME +
+		// ElementIndexNameSuffix)
+		// @KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME +
+		// KeyIndexNameSuffix)
 
 		AnnotationSpec persistentMap = AnnotationSpec.builder(PersistentMap.class)
 				.addMember("fetch", " javax.persistence.FetchType.EAGER").addMember("elementType", "String.class")

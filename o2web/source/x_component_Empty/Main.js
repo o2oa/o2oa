@@ -19,7 +19,7 @@ MWF.xApplication.Empty.Main = new Class({
 		this.lp = MWF.xApplication.Empty.LP;
 	},
 	loadApplication: function(callback){
-		//1var url = "/x_component_Empty/$Main/default/view.html";
+		//1var url = "../x_component_Empty/$Main/default/view.html";
 		var url = this.path+this.options.style+"/view.html";
 		var url2 = this.path+this.options.style+"/view2.html";
 		o2.Actions.load("x_processplatform_assemble_surface").TaskAction.listMyPaging(1,20, function(json){

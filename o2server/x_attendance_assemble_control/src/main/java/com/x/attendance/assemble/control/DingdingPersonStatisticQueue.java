@@ -57,7 +57,7 @@ public class DingdingPersonStatisticQueue extends AbstractQueue<Date> {
                     List<String> ids = business.dingdingAttendanceFactory()
                             .getStatPersonForMonthIds(year, month, person.getDistinguishedName());
                     emc.beginTransaction(StatisticDingdingPersonForMonth.class);
-                    if (ids != null && ids.size() > 0) {
+                    if ( ListTools.isNotEmpty( ids ) ) {
                         for (String item : ids) {
                             StatisticDingdingPersonForMonth personForMonth_temp = emc.find(item, StatisticDingdingPersonForMonth.class);
                             emc.remove(personForMonth_temp);

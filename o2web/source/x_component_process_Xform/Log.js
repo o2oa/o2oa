@@ -536,7 +536,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = person+"("+task.unit.substring(0, task.unit.indexOf("@"))+"), 【"+task.fromActivityName+"】" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.properties.startTime;
             textNode.set("html", html);
-            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
     },
 
@@ -1144,13 +1144,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var timeNode = new Element("div", {"styles": this.form.css.logActivityTimeNode}).inject(titleNode);
 
             if (log.connected){
-                iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/ok14.png)");
+                iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/ok14.png)");
             }else{
-                iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+                iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
             }
             fromAvtivityNode.set("html", "<b>"+log.fromActivityName+"</b>");
             if (log.arrivedActivityName){
-                arrowNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/right.png)");
+                arrowNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/right.png)");
                 arrivedAvtivityNode.set("html", "<b>"+log.arrivedActivityName+"</b>");
                 timeNode.set("html", "<b>"+MWF.xApplication.process.Xform.LP.begin+": </b>"+log.fromTime+"<br/><b>"+MWF.xApplication.process.Xform.LP.end+": </b>"+log.arrivedTime)
 
@@ -1358,13 +1358,13 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             var timeNode = new Element("div", {"styles": this.form.css.logActivityTimeNode}).inject(titleNode);
 
             if (log.connected) {
-                iconNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/ok14.png)");
+                iconNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/ok14.png)");
             } else {
-                iconNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/rightRed.png)");
+                iconNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/rightRed.png)");
             }
             fromAvtivityNode.set("html", "<b>" + log.fromActivityName + "</b>");
             if (log.arrivedActivityName) {
-                arrowNode.setStyle("background-image", "url(/x_component_process_Xform/$Form/" + this.form.options.style + "/icon/right.png)");
+                arrowNode.setStyle("background-image", "url(../x_component_process_Xform/$Form/" + this.form.options.style + "/icon/right.png)");
                 arrivedAvtivityNode.set("html", "<b>" + log.arrivedActivityName + "</b>");
                 timeNode.set("html", "<b>" + MWF.xApplication.process.Xform.LP.begin + ": </b>" + log.fromTime + "<br/><b>" + MWF.xApplication.process.Xform.LP.end + ": </b>" + log.arrivedTime)
 
@@ -1549,7 +1549,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             html = task.person.substring(0, task.person.indexOf("@"))+"("+task.unit.substring(0, task.unit.indexOf("@"))+")" + MWF.xApplication.process.Xform.LP.processing+", "+
                 MWF.xApplication.process.Xform.LP.comeTime + ": " + task.startTime;
             textNode.set("html", html);
-            if(iconNode)iconNode.setStyle("background-image", "url("+"/x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
+            if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
     },
     loadMediaOpinion: function(atts, node, type){
@@ -1647,9 +1647,10 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 var imgAreaNode = new Element("div", {"styles": this.form.css.logMediaOpinionContentArea}).inject(imgNode);
 
-                //var height = 260;
-                //var width = 390;
+                // var height = 260;
+                // var width = 390;
                 var width;
+                //var height;
                 if (layout.mobile){
                     width = node.getParent().getParent().getSize().x-2;
                     //height = width*2/3;
@@ -1692,23 +1693,23 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 
                 //}
 
-                var p = iconNode.getPosition(this.form.app.content);
-                var s = iconNode.getSize();
-                var size = (layout.mobile) ? {"x": width, "y": height}: imgNode.getSize();
-                var contentSize = this.form.app.content.getSize();
-                var contentScroll = (layout.mobile) ? document.body.getFirst().getScroll() : {"x": 0, "y": 0};
-                var y = p.y-size.y;
-                var x = p.x+s.x/2-size.x/2;
-
-                if (x<10) x = 10;
-                if (x+size.x>contentSize.x-10) x = contentSize.x-size.x-20;
-                if (y+size.y>contentSize.y-10) y = contentSize.y-size.y-20;
-                if (y<10) y = 10;
-                y=y+contentScroll.y;
-
-                if (layout.mobile){
-                    x = 0;
-                }
+                // var p = iconNode.getPosition(this.form.app.content);
+                // var s = iconNode.getSize();
+                // var size = (layout.mobile) ? {"x": width, "y": height}: imgNode.getSize();
+                // var contentSize = this.form.app.content.getSize();
+                // var contentScroll = (layout.mobile) ? document.body.getFirst().getScroll() : {"x": 0, "y": 0};
+                // var y = p.y-size.y;
+                // var x = p.x+s.x/2-size.x/2;
+                //
+                // if (x<10) x = 10;
+                // if (x+size.x>contentSize.x-10) x = contentSize.x-size.x-20;
+                // if (y+size.y>contentSize.y-10) y = contentSize.y-size.y-20;
+                // if (y<10) y = 10;
+                // y=y+contentScroll.y;
+                //
+                // if (layout.mobile){
+                //     x = 0;
+                // }
                 // imgNode.setStyles({
                 //     "top": ""+y+"px",
                 //     "left": ""+x+"px"

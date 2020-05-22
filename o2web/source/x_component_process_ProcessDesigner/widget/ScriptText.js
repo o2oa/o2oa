@@ -14,8 +14,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         this.app = app;
         this.code = code;
 
-        this.path = "/x_component_process_ProcessDesigner/widget/$ScriptText/";
-        this.cssPath = "/x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessDesigner/widget/$ScriptText/";
+        this.cssPath = "../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.createEditor();
@@ -28,7 +28,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         this.titleNode = new Element("div", {"styles": this.css.titleNode}).inject(this.areaNode);
 
         this.referenceNode = new Element("div", {"styles": this.css.actionReferenceNode}).inject(this.titleNode);
-        if (!this.code) this.referenceNode.setStyle("background", "url("+"/x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/reference_empty.png) no-repeat center center")
+        if (!this.code) this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/reference_empty.png) no-repeat center center")
         this.maxNode = new Element("div", {"styles": this.css.actionMaxNode}).inject(this.titleNode);
 
         this.returnNode = new Element("div", {"styles": this.css.actionReturnNode}).inject(this.titleNode);
@@ -54,18 +54,25 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         }
         MWF.require("MWF.widget.JavascriptEditor", function(){
             this.editor = new MWF.widget.JavascriptEditor(this.editorNode, {
+                "runtime": "server",
                 "option": {"value": this.code},
                 "onSave": function(){
-                    var value = this.editor.editor.getValue();
+                    var value = this.editor.getValue();
                     this.fireEvent("change", [value]);
                     this.app.saveProcess();
                 }.bind(this)
             });
             this.editor.load(function(){
-                this.editor.editor.on("blur", function(){
-                    var value = this.editor.editor.getValue();
+
+                this.editor.addEditorEvent("blur", function(){
+                    var value = this.editor.getValue();
                     this.fireEvent("change", [value]);
                 }.bind(this));
+
+                // this.editor.editor.on("blur", function(){
+                //     var value = this.editor.editor.getValue();
+                //     this.fireEvent("change", [value]);
+                // }.bind(this));
 
                 this.createScriptReferenceMenu();
 
@@ -142,7 +149,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         var size = this.areaNode.getSize();
         var y = size.y-20;
         this.editorNode.setStyle("height", ""+y+"px");
-        if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize();
     },
 
     returnSize: function(){

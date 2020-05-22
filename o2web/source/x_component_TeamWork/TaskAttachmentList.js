@@ -18,7 +18,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.AttachmentAction;
 
-        this.path = "/x_component_TeamWork/$TaskAttachmentList/";
+        this.path = "../x_component_TeamWork/$TaskAttachmentList/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -70,24 +70,24 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
             }.bind(this)
         });
         var attachmentIcon = new Element("div.attachmentIcon",{styles:this.css.attachmentIcon}).inject(attachmentItem);
-        var bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_unknow.png)";
+        var bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_unknow.png)";
         var ex = att.extension.toLowerCase();
         if(ex == "zip" || ex == "rar" || ex == "7z"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_zip.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_zip.png)"
         }else if(ex == "xls" || ex == "xlsx"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_excel.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_excel.png)"
         }else if(ex == "doc" || ex == "docx"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_word.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_word.png)"
         }else if(ex == "ppt" || ex == "pptx"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_ppt.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_ppt.png)"
         }else if(ex == "pdf"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_pdf.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_pdf.png)"
         }else if(ex == "png" || ex == "jpg" || ex == "jpeg" || ex == "bmp" || ex == "gif"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_image.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_image.png)"
         }else if(ex == "mp3"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_mp3.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_mp3.png)"
         }else if(ex == "mp4"){
-            bgicon = "url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_mp4.png)"
+            bgicon = "url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_mp4.png)"
         }
         attachmentIcon.setStyles({"background-image":bgicon});
         var attachmentName = new Element("div.attachmentName",{styles:this.css.attachmentName,text:att.name}).inject(attachmentItem);
@@ -100,10 +100,10 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         var attachmentMore = new Element("div.attachmentMore",{styles:this.css.attachmentMore}).inject(attachmentItem);
         attachmentMore.addEvents({
             mouseover:function(){
-                this.setStyles({"background-color":"#ecf6fe","background-image":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down_click.png)"})
+                this.setStyles({"background-color":"#ecf6fe","background-image":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down_click.png)"})
             },
             mouseout:function(){
-                this.setStyles({"background-color":"","background-image":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down.png)"})
+                this.setStyles({"background-color":"","background-image":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down.png)"})
             },
             click:function(e){
                 var data = {
@@ -316,7 +316,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
         //     mouseleave:function(){this.setStyles({"background-color":""})}
         // });
         // var detailsIcon = new Element("div.detailsIcon",{styles:this.css.topMoreItemIcon}).inject(details);
-        // detailsIcon.setStyles({"background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_details.png) no-repeat center"});
+        // detailsIcon.setStyles({"background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_details.png) no-repeat center"});
         // var detailsText = new Element("div.detailsText",{styles:this.css.topMoreItemText,text:this.lp.attachmentDetails}).inject(details);
 
         var download = new Element("div.download",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -328,7 +328,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
             }.bind(this)
         });
         var downloadIcon = new Element("div.downloadIcon",{styles:this.css.topMoreItemIcon}).inject(download);
-        downloadIcon.setStyles({"background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_download.png) no-repeat center"});
+        downloadIcon.setStyles({"background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_download.png) no-repeat center"});
         var downloadText = new Element("div.downloadText",{styles:this.css.topMoreItemText,text:this.lp.attachmentDownload}).inject(download);
 
         var remove = new Element("div.remove",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -345,7 +345,7 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
             }.bind(this)
         });
         var removeIcon = new Element("div.removeIcon",{styles:this.css.topMoreItemIcon}).inject(remove);
-        removeIcon.setStyles({"background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_remove.png) no-repeat center"});
+        removeIcon.setStyles({"background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_remove.png) no-repeat center"});
         var removeText = new Element("div.removeText",{styles:this.css.topMoreItemText,text:this.lp.attachmentRemove}).inject(remove);
 
         if(callback)callback();

@@ -5,13 +5,13 @@ MWF.xApplication.cms.FormDesigner.Module.Readerfield = MWF.CMSFCReaderfield = ne
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Readerfield/readerfield.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Readerfield/readerfield.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_cms_FormDesigner/Module/Readerfield/";
-		this.cssPath = "/x_component_cms_FormDesigner/Module/Readerfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_FormDesigner/Module/Readerfield/";
+		this.cssPath = "../x_component_cms_FormDesigner/Module/Readerfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Textfield = MWF.FCTextfield = new C
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Textfield/textfield.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Textfield/textfield.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Textfield/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Textfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Textfield/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Textfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

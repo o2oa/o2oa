@@ -223,7 +223,8 @@ MWF.xApplication.process.Xform.LP = {
         "prev": "上一个修改记录",
         "exit": "退出痕迹审查",
         "diff_patch_count": "共有{history}个历史版本，{diff}处修订。",
-        "original": "原始版本"
+        "original": "原始版本",
+        "nodiff": "目前还没有历史修改信息"
     }
 
 };

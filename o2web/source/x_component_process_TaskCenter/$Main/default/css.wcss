@@ -11,7 +11,7 @@
         "float": "right"
     },
     "taskTitleUserIconNode": {
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/user.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/user.png) center center no-repeat",
         "width": "20px",
         "height": "20px",
         "float": "left"
@@ -25,7 +25,7 @@
     "startProcessAction": {
         "width": "59px",
         "height": "50px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/stratProcess.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/stratProcess.png) center center no-repeat",
         "float": "left",
         //"border-right": "1px solid #FFF",
         "cursor": "pointer"
@@ -57,7 +57,7 @@
     "searchBarActionNode": {
         "width": "40px",
         "height": "24px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/search.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/search.png) center center no-repeat",
         "float": "right",
         "cursor": "pointer"
     },
@@ -149,7 +149,7 @@
         "font-size": "14px",
         "color": "#333333",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/filter.png) 5px 6px no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/filter.png) 5px 6px no-repeat",
     },
     "applicationFilterAreaNode": {
         "margin-right": "80px",
@@ -286,28 +286,28 @@
     "titleActionEditNode":{
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/edit.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/edit.png) center center no-repeat",
         "cursor": "pointer",
         "opacity": 1
     },
     "titleActionReadedNode": {
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/readed.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/readed.png) center center no-repeat",
         "cursor": "pointer",
         "opacity": 1
     },
     "titleActionShowNode":{
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/open.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/open.png) center center no-repeat",
         "cursor": "pointer",
         "opacity": 1
     },
     "titleActionCloseNode":{
         "width": "20px",
         "height": "20px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/closeEdit.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/closeEdit.png) center center no-repeat",
         "cursor": "pointer",
         "opacity": 1,
         "display": "none"
@@ -448,7 +448,7 @@
         "width": "60px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/searchProcess.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/searchProcess.png) center center no-repeat",
     },
     "startProcessSearchAreaNode": {
         "margin": "0px 60px 0px 30px",
@@ -469,14 +469,14 @@
     "startProcessCloseNode": {
         "height": "20px",
         "width": "20px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/close.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/close.png) center center no-repeat",
         "cursor": "pointer",
         "float": "right"
     },
     "startProcessCloseNode_mobile": {
         "height": "50px",
         "width": "60px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/closeMobile.png) 17px center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/closeMobile.png) 17px center no-repeat",
         "padding-left": "40px",
         "color": "#ffffff",
         "line-height": "50px",
@@ -635,7 +635,7 @@
     "filterAreaTipNode":{
         "width": "24px",
         "height": "6px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/sj.png) center top no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/sj.png) center top no-repeat",
     },
     "filterListNode": {
         "margin-left": "30px",
@@ -658,10 +658,10 @@
         "height": "24px",
         "width": "24px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/closeFilter.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/closeFilter.png) center center no-repeat",
     },
     "filterListItemActionNode_over": {
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/closeFilterOver.png) center center no-repeat"
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/closeFilterOver.png) center center no-repeat"
     },
     "filterAreaTitleNode": {
         "height": "50px",
@@ -707,7 +707,7 @@
     "filterAreaTitleSearchIconNode": {
         "height": "26px",
         "width": "22px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/icon/filterSearch.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/icon/filterSearch.png) center center no-repeat",
         "float": "left",
     },
     "filterAreaTitleSearchInputAreaNode": {
@@ -814,14 +814,14 @@
         "width": "6%",
         "height": "10px",
         "float": "left",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/tab/shadow.png)",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/tab/shadow.png)",
         "border-top": "1px solid #999"
     },
     "tabShadowItemNode": {
         "height": "10px",
         "float": "left",
         "width": "22%",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/tab/shadow.png)",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/tab/shadow.png)",
         "border-top": "1px solid #999"
     },
     "tabShadowItemNode_current": {
@@ -977,7 +977,7 @@
         "width": "20px",
         "margin": "auto",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/down.png) center top no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/down.png) center top no-repeat",
     },
 
 
@@ -1001,7 +1001,7 @@
         "float": "left",
         "width": "16px",
         "height": "40px",
-        "background": "url("+"/x_component_process_TaskCenter/$Main/default/processor/line.png) center center no-repeat",
+        "background": "url("+"../x_component_process_TaskCenter/$Main/default/processor/line.png) center center no-repeat",
     },
     "logActivityNode": {
         "float": "left",

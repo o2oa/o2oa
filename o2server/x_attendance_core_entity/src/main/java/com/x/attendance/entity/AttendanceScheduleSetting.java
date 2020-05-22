@@ -15,7 +15,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceScheduleSetting.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceScheduleSetting.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -56,43 +56,51 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
-	@Column(name = "xtopUnitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName;
 
+	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column(name = "xunitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String unitName;
 
+	public static final String unitOu_FIELDNAME = "unitOu";
 	@FieldDescribe("组织编号")
-	@Column(name = "xunitOu", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitOu_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String unitOu;
 
+	public static final String onDutyTime_FIELDNAME = "onDutyTime";
 	@FieldDescribe("上班时间")
-	@Column(name = "xonDutyTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String onDutyTime;
 
+	public static final String offDutyTime_FIELDNAME = "offDutyTime";
 	@FieldDescribe("下班时间")
-	@Column(name = "xoffDutyTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String offDutyTime;
 
+	public static final String lateStartTime_FIELDNAME = "lateStartTime";
 	@FieldDescribe("迟到起算时间")
-	@Column(name = "xlateStartTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + lateStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String lateStartTime;
 
+	public static final String absenceStartTime_FIELDNAME = "absenceStartTime";
 	@FieldDescribe("缺勤起算时间")
-	@Column(name = "xabsenceStartTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + absenceStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String absenceStartTime;
 
+	public static final String leaveEarlyStartTime_FIELDNAME = "leaveEarlyStartTime";
 	@FieldDescribe("早退起算时间")
-	@Column(name = "xleaveEarlyStartTime", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveEarlyStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String leaveEarlyStartTime;
 

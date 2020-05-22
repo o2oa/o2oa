@@ -1041,7 +1041,7 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
 			        }
 			    },
 			    {	
-			    	"content": "<img src=\""+"/x_component_process_ProcessDesigner/$Process/default/icon/copy.png"+"\" />",
+			    	"content": "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/copy.png"+"\" />",
 			    	"properties": {
 			    		"styles": this.process.css.list.listIcon,
 			    		"events": {
@@ -1050,7 +1050,7 @@ MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
 			        }
 			    },
 			    {	
-			    	"content": "<img src=\""+"/x_component_process_ProcessDesigner/$Process/default/icon/delete.png"+"\" />",
+			    	"content": "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/delete.png"+"\" />",
 			    	"properties": {
 			    		"styles": this.process.css.list.listIcon,
 			    		"events": {
@@ -1098,7 +1098,7 @@ MWF.xApplication.process.ProcessDesigner.Route.Property = new Class({
 		this.process = route.process;
 		this.paper = this.process.paper;
 		this.data = route.data;
-		this.htmlPath = "/x_component_process_ProcessDesigner/$Process/route.html";
+		this.htmlPath = "../x_component_process_ProcessDesigner/$Process/route.html";
 	},
 	setValue: function(name, value){
 		this.data[name] = value;

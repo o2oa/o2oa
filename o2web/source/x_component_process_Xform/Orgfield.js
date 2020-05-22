@@ -247,7 +247,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             if (this.json.showIcon!='no' && !this.form.json.hideModuleIcon) {
                 this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
                     "styles": {
-                        "background": "url(" + "/x_component_process_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
+                        "background": "url(" + "../x_component_process_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
                         "width": "18px",
                         "height": "18px",
                         "float": "right"
@@ -581,7 +581,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         }else{
             if (this.json.styles) this.node.setStyles(this.json.styles);
             if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-            if (this.iconNode){
+            if (this.iconNode && this.iconNode.offsetParent !== null ){
                 var size = this.node.getSize();
                 this.iconNode.setStyle("height", ""+size.y+"px");
             }

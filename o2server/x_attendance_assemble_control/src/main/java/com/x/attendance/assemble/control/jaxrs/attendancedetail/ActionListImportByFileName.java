@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionFileIdEmpty;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

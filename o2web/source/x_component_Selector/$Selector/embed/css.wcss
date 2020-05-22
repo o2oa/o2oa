@@ -82,7 +82,7 @@
 		"width": "30px",
 		"height": "30px",
 		"float": "right",
-		"background": "url("+"/x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
+		"background": "url("+"../x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"titleTextNodeMobile": {
@@ -170,7 +170,7 @@
   "okActionNode": {
 	"width": "100px",
 	"height": "30px",
-	"background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
+	"background": "url("+"../x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
 	"border": "0px",
 	"color": "#FFF",
 	"font-size": "18px",
@@ -181,7 +181,7 @@
   "cancelActionNode": {
 	"width": "72px",
 	"height": "30px",
-	"background": "url("+"/x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
+	"background": "url("+"../x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
 	"border": "0px",
 	"color": "#FFF",
 	"font-size": "18px",
@@ -308,10 +308,10 @@
         "float": "left"
 	},
 	"selectorItemLevelNode_expand":{
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/expand.png) no-repeat center right"
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/expand.png) no-repeat center right"
     },
 	"selectorItemLevelNode_collapse":{
-	    "background": "url("+"/x_component_Selector/$Selector/default/icon/collapse.png) no-repeat center right"
+	    "background": "url("+"../x_component_Selector/$Selector/default/icon/collapse.png) no-repeat center right"
 	},
 	"selectorItemIconNode": {
 		"width": "28px",
@@ -330,37 +330,37 @@
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/remove.png) no-repeat center center"
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/remove.png) no-repeat center center"
     },
 	"selectorItemActionNode_over": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/right.png) no-repeat center center"
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/right.png) no-repeat center center"
     },
 	"selectorItemActionNode_selected": {
 		"width": "28px",
 		"height": "28px",
 		"float": "right",
-		"background": "url("+"/x_component_Selector/$Selector/default/icon/check.png) no-repeat center center"
+		"background": "url("+"../x_component_Selector/$Selector/default/icon/check.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_expand": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/minus.png) no-repeat center center"
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/minus.png) no-repeat center center"
 	},
 	"selectorItemCategoryActionNode_collapse": {
         "width": "28px",
         "height": "28px",
         "float": "right",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/add.png) no-repeat center center"
     },
 	"selectorItemCategoryActionNode_selectAll": {
 	  "width": "28px",
 	  "height": "28px",
 	  "float": "right",
-	  "background": "url("+"/x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
+	  "background": "url("+"../x_component_Selector/$Selector/default/icon/selectall.png) no-repeat center center"
 	},
 
 	"selectorItemTextNode": {

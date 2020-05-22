@@ -51,7 +51,7 @@ public class Timertask_BatchOperationTask extends AbstractJob {
 				}
 			} else {
 				logger.info(
-						"Timertask_BatchOperationTask -> not fount any cms batch operation, try to check unreview document in database......");
+						"Timertask_BatchOperationTask -> not found any cms batch operation, try to check unreview document in database......");
 				// 如果队列里已经没有任务了，那么检查一下是否还有未revieiw的文档，添加到队列
 				DocumentInfoService documentInfoService = new DocumentInfoService();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

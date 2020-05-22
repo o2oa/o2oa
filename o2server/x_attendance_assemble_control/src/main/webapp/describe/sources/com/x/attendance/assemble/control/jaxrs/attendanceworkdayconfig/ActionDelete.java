@@ -1,9 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendanceworkdayconfig;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendanceworkdayconfig.exception.ExceptionWorkDayConfigNotExists;
-import com.x.attendance.assemble.control.jaxrs.attendanceworkdayconfig.exception.ExceptionWorkDayConfigProcess;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;

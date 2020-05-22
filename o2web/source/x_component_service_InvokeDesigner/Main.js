@@ -350,17 +350,58 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                     _self.changeFontSize(this);
                 });
 
+                this.editorSelectNode = toolbarNode.getElement("select[MWFnodetype='editor']");
+                this.editorSelectNode.addEvent("change", function(){
+                    _self.changeEditor(this);
+                });
+
+                this.monacoStyleSelectNode = toolbarNode.getElement("select[MWFnodetype='monaco-theme']");
+                this.monacoStyleSelectNode.addEvent("change", function(){
+                    _self.changeEditorStyle(this);
+                });
+
 				if (callback) callback();
 			}.bind(this));
 		}.bind(this));
 	},
+
+    changeEditor: function(node){
+        var idx = node.selectedIndex;
+        var value = node.options[idx].value;
+
+        if (!MWF.editorData){
+            MWF.editorData = {
+                "javascriptEditor": {
+                    "monaco_theme": "vs",
+                    "theme": "tomorrow",
+                    "fontSize" : "12px"
+                }
+            };
+        }
+        MWF.editorData.javascriptEditor["editor"] = value;
+        MWF.UD.putData("editor", MWF.editorData);
+
+        this.invokeTab.pages.each(function(page){
+            var editor = page.invoke.editor;
+            if (editor) editor.changeEditor(value);
+        }.bind(this));
+
+        if (value=="ace"){
+            this.monacoStyleSelectNode.hide();
+            this.styleSelectNode.show();
+        }else{
+            this.monacoStyleSelectNode.show();
+            this.styleSelectNode.hide();
+        }
+
+    },
     changeFontSize: function(node){
         var idx = node.selectedIndex;
         var value = node.options[idx].value;
         //var editorData = null;
         this.invokeTab.pages.each(function(page){
             //if (!editorData) editorData = page.invoke.editor.editorData;
-            var editor = page.invoke.editor.editor;
+            var editor = page.invoke.editor;
             if (editor) editor.setFontSize(value);
         }.bind(this));
         //if (!editorData) editorData = MWF.editorData;
@@ -368,6 +409,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         if (!MWF.editorData){
             MWF.editorData = {
                 "javascriptEditor": {
+                    "monaco_theme": "vs",
                     "theme": "tomorrow",
                     "fontSize" : "12px"
                 }
@@ -383,24 +425,29 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         var value = node.options[idx].value;
         //var editorData = null;
         this.invokeTab.pages.each(function(page){
-            //if (!editorData) editorData = page.invoke.editor.editorData;
-            var editor = page.invoke.editor.editor;
-            if (editor) editor.setTheme("ace/theme/"+value);
+            //if (!editorData) editorData = page.script.editor.editorData;
+            var editor = page.invoke.editor;
+            if (editor) editor.setTheme(value);
         }.bind(this));
         //if (!editorData) editorData = MWF.editorData;
-        //editorData.javainvokeEditor.theme = value;
+        //editorData.javascriptEditor.theme = value;
         if (!MWF.editorData){
             MWF.editorData = {
                 "javascriptEditor": {
+                    "monaco_theme": "vs",
                     "theme": "tomorrow",
                     "fontSize" : "12px"
                 }
             };
         }
-        MWF.editorData.javascriptEditor.theme = value;
+
+        if (MWF.editorData.javascriptEditor.editor === "monaco"){
+            MWF.editorData.javascriptEditor.monaco_theme = value;
+        }else{
+            MWF.editorData.javascriptEditor.theme = value;
+        }
 
         MWF.UD.putData("editor", MWF.editorData);
-
     },
 	getFormToolbarHTML: function(callback){
 		var toolbarUrl = this.path+this.options.style+"/toolbars.html";

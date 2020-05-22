@@ -126,7 +126,7 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
 	},
 
 	loadNewViewData: function(callback){
-        var url = "/x_component_query_StatDesigner/$Stat/stat.json";
+        var url = "../x_component_query_StatDesigner/$Stat/stat.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 this.actions.getUUID(function(id){

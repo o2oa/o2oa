@@ -429,7 +429,7 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
         ((loadingNode) ? loadingNode.getFirst() : contentNode).empty();
         var html= "<div style='width: 800px; color: #ffffff; margin: 30px auto'>" +
             "<div style='height: 40px;'>" +
-            "   <div style='height: 40px; width: 40px; float: left; background: url(/x_desktop/img/error.png)'></div>" +
+            "   <div style='height: 40px; width: 40px; float: left; background: url(../x_desktop/img/error.png)'></div>" +
             "   <div style='margin-left: 50px; font-size: 20px; line-height: 40px;'>"+MWF.LP.desktop.notice.errorConnectCenter1+"</div>" +
             "</div><div style='margin-left: 0px;'>";
         if (typeOf(config.center)==="array"){
@@ -605,6 +605,12 @@ MWF.org = {
             // "unitLevel": data.unitLevel,
             "unitLevelName": data.unitLevelName
         };
+
+        if( data.personName )rData.personName = data.personName;
+        if( data.personEmployee )rData.personEmployee = data.personEmployee;
+        if( data.personUnique )rData.personUnique = data.personUnique;
+        if( data.personDn )rData.personDn = data.personDn;
+
         if( data.ignoreEmpower )rData.ignoreEmpower = true;
         if( data.ignoredEmpower )rData.ignoredEmpower = true;
 

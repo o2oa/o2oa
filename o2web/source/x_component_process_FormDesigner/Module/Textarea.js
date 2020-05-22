@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Textarea = MWF.FCTextarea = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Textarea/textarea.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Textarea/textarea.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Textarea/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Textarea/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Textarea/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Textarea/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

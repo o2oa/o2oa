@@ -13,8 +13,8 @@ MWF.xApplication.query.Query.Statistician = MWF.QStatistician = new Class({
     initialize: function(app, container, json, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_Query/$Statistician/";
-        this.cssPath = "/x_component_query_Query/$Statistician/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_Query/$Statistician/";
+        this.cssPath = "../x_component_query_Query/$Statistician/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = MWF.xApplication.query.Query.LP;
 

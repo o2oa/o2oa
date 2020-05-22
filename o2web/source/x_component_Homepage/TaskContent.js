@@ -44,7 +44,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
                 "refreshAll": function(){},
                 "notice": this.app.notice,
             }
-            o2.JSON.get("/x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
+            o2.JSON.get("../x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
                 obj.css = data;
             }, false);
 
@@ -397,6 +397,15 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
                 "click": function () { this.nextPage(); }.bind(this),
             });
 
+            var size = this.pageNode.getSize();
+            var w1 = this.prevPageNode.getEdgeWidth();
+            var w2 = this.nextPageNode.getEdgeWidth();
+            var x1 = this.prevPageNode.getSize().x;
+            var x2 = this.nextPageNode.getSize().x;
+            var x = size.x - w1 - w2 - x1 - x2;
+            var count = (x/30).toInt()-2;
+            if (count<3) count = 3;
+            this.options.showPages = count;
             this.loadPageNumber();
         }else{
 
@@ -492,7 +501,7 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
         var range = this.getCurrentPageRange();
         var beginNumber = range.endNumber+1;
         var endNumber = beginNumber+(this.options.showPages-1);
-        if (beginNumber>this.pages) endNumber = this.pages;
+        if (beginNumber>=this.pages) endNumber = this.pages;
         this.page = endNumber-((this.options.showPages/2).toInt());
         this.reload();
     }
@@ -545,7 +554,14 @@ MWF.xApplication.Homepage.TaskContent.TaskCompleted = new Class({
         return row;
     },
 
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.taskCompleted){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -618,7 +634,14 @@ MWF.xApplication.Homepage.TaskContent.Read = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.read){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -692,6 +715,14 @@ MWF.xApplication.Homepage.TaskContent.ReadCompleted = new Class({
         new Element("div.o2_homepage_task_item_time", {"text": time, "title": this.app.lp.readCompletedTime + ": " + time}).inject(cell);
 
         return row;
+    },
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.readCompleted){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
     },
     addLoadPageEvent: function(){
         var loadPage = function(){
@@ -775,7 +806,14 @@ MWF.xApplication.Homepage.TaskContent.Draft = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.draft){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
@@ -848,7 +886,14 @@ MWF.xApplication.Homepage.TaskContent.ProcessDraft = new Class({
 
         return row;
     },
-
+    checkLoadPage: function(){
+        if (this.content.itemCounts && this.content.itemCounts.processDraft){
+            this.getPageCount();
+            this.loadPage();
+        }else{
+            this.addLoadPageEvent();
+        }
+    },
     addLoadPageEvent: function(){
         var loadPage = function(){
             this.getPageCount();
