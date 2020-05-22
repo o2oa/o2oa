@@ -70,6 +70,7 @@ class ActionInputAll extends BaseAction {
 	private  boolean wholeFlag = true;
 	
 	private static Map<String, String> typeMap = new HashMap<String,String>();
+	private static Map<String, String> dutyMap = new HashMap<String,String>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws Exception {
@@ -140,41 +141,58 @@ class ActionInputAll extends BaseAction {
 			wholeFlag = this.checkUnit(business, workbook, configurator, unit); 
 			if(wholeFlag){
 				//this.persistUnit(workbook, configurator, unit);
-				this.scanPerson(business, workbook);
+				this.scanPerson(business, workbook,unit);
 			}
 	}
 	
-	private void scanPerson(Business business, XSSFWorkbook workbook) throws Exception {
+	private void scanPerson(Business business, XSSFWorkbook workbook,List<UnitItem> unit) throws Exception {
 	//导入人员信息	
 		Sheet sheet = workbook.getSheetAt(3);
 		PersonSheetConfigurator configurator = new PersonSheetConfigurator(workbook, sheet);
 		List<PersonItem> person = this.scanPersonList(configurator, sheet);
 		wholeFlag = this.checkPerson(business, workbook, configurator, person); 
 		if(wholeFlag){
-			this.scanIdentity(business, workbook);
+			this.scanIdentity(business, workbook,person,unit);
 		}
 	}
 	
-	private void scanIdentity(Business business, XSSFWorkbook workbook) throws Exception {
+	private void scanIdentity(Business business, XSSFWorkbook workbook ,List<PersonItem> persons,List<UnitItem> units) throws Exception {
 		//导入身份信息	
 			Sheet sheet = workbook.getSheetAt(4);
 			IdentitySheetConfigurator configurator = new IdentitySheetConfigurator(workbook, sheet);
-			List<IdentityItem> identity = this.scanIdentityList(business,configurator, sheet);
-			wholeFlag = this.checkIdentity(business, workbook, configurator, identity); 
-			if(wholeFlag){
-				
+			//List<IdentityItem> identity = this.scanIdentityList(business,configurator, sheet,persons);
+			//校验导入的职务信息
+			this.scanDuty(business,workbook);
+			if(dutyFlag){
+				wholeFlag = this.checkIdentity(business, workbook, configurator, sheet,persons,units); 
+				if(wholeFlag){
+						List<IdentityItem> identity = this.scanIdentityList(business,configurator, sheet,persons);
+						List<DutyItem> duty = this.scanDutyList(business,configurator, sheet);
+													
+				}
 			}
+			
+			
 	}
 	
 	private void scanDuty(Business business, XSSFWorkbook workbook) throws Exception {
 		//导入职务信息	
 			Sheet sheet = workbook.getSheetAt(5);
 			DutySheetConfigurator configurator = new DutySheetConfigurator(workbook, sheet);
-			//List<DutyItem> duty = this.scanIdentityList(business,configurator, sheet);
-			/*wholeFlag = this.checkIdentity(business, workbook, configurator, duty); 
-			if(wholeFlag){
-				
-			}*/
+			for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+				Row row = sheet.getRow(i);
+				if (null != row) {
+					String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
+					String key = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+					System.out.println("职务name="+name+"_职务value="+key);
+					if(StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(key)){
+						dutyMap.put(key, name);
+						
+					}else{
+						dutyFlag = true;
+					}
+				}
+			}
 	}
 
 	private List<UnitItem> scanUnitList(UnitSheetConfigurator configurator, Sheet sheet) throws Exception {
@@ -327,7 +345,7 @@ class ActionInputAll extends BaseAction {
 		return people;
 	}
 	
-	private List<IdentityItem> scanIdentityList(Business business,IdentitySheetConfigurator configurator, Sheet sheet) throws Exception {
+	private List<IdentityItem> scanIdentityList(Business business,IdentitySheetConfigurator configurator, Sheet sheet ,List<PersonItem> persons) throws Exception {
 
 		if (null == configurator.getUniqueColumn()) {
 			throw new ExceptionUniqueColumnEmpty();
@@ -350,15 +368,18 @@ class ActionInputAll extends BaseAction {
 				//if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 					IdentityItem identityItem = new IdentityItem();
 					identityItem.setRow(i);
+					identityItem.setPersonCode(unique);
+					identityItem.setUnitCode(unitCode);
+					identityItem.setMajor(major);
 					
 					EntityManagerContainer emc = business.entityManagerContainer();
 					Person person = null;
 					person = emc.flag(unique, Person.class);
 					if(person != null){
 						identityItem.setName(StringUtils.trimToEmpty(person.getName()));
-						identityItem.setPerson(StringUtils.trimToEmpty(person.getId()));
-						identityItem.setMajor(major);
+						identityItem.setPerson(StringUtils.trimToEmpty(person.getId()));					
 					}
+					
 					Unit u = null;
 					u = emc.flag(unitCode, Unit.class);
 					if(u != null){
@@ -376,58 +397,50 @@ class ActionInputAll extends BaseAction {
 		return identity;
 	}
 	
-	private List<DutyItem> scanDutyList(DutySheetConfigurator configurator, Sheet sheet) throws Exception {
-		if (null == configurator.getNameColumn()) {
-			throw new ExceptionDutyNameColumnEmpty();
-		}
-		if (null == configurator.getUniqueColumn()) {
+	private List<DutyItem> scanDutyList(Business business,IdentitySheetConfigurator configurator, Sheet sheet) throws Exception {
+		if (null == configurator.getDutyCodeColumn()) {
 			throw new ExceptionDutyCodeColumnEmpty();
 		}
 		
-		List<DutyItem> duty = new ArrayList<>();
-		/*for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+		List<DutyItem> dutys = new ArrayList<>();
+		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
 			if (null != row) {
-				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
-				String mobile = configurator.getCellStringValue(row.getCell(configurator.getMobileColumn()));
-				//if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
-					DutyItem dutyItem = new DutyItem();
-					dutyItem.setRow(i);
-					name = StringUtils.trimToEmpty(name);
-					mobile = StringUtils.trimToEmpty(mobile);
-
-					dutyItem.setName(name);
-					dutyItem.setGenderType(genderType);
-					dutyItem.setMobile(mobile);
-					if (null != configurator.getEmployeeColumn()) {
-						String employee = configurator
-								.getCellStringValue(row.getCell(configurator.getEmployeeColumn()));
-						employee = StringUtils.trimToEmpty(employee);
-						dutyItem.setEmployee(employee);
-					}
-					if (null != configurator.getUniqueColumn()) {
-						String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
-						unique = StringUtils.trimToEmpty(unique);
-						dutyItem.setUnique(unique);
-					}
-					if (null != configurator.getMailColumn()) {
-						String mail = configurator.getCellStringValue(row.getCell(configurator.getMailColumn()));
-						mail = StringUtils.trimToEmpty(mail);
-						dutyItem.setMail(mail);
-					}
-					if (!configurator.getAttributes().isEmpty()) {
-						for (Entry<String, Integer> en : configurator.getAttributes().entrySet()) {
-							String value = configurator.getCellStringValue(row.getCell(en.getValue()));
-							value = StringUtils.trimToEmpty(value);
-							dutyItem.getAttributes().put(en.getKey(), value);
+				String dutyCode = configurator.getCellStringValue(row.getCell(configurator.getDutyCodeColumn()));
+				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
+				String personCode = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				
+				for (DutyItem dutyItem : dutys) {
+					if (StringUtils.isNotEmpty(dutyItem.getUnique()) && StringUtils.equals(dutyItem.getUnique(), dutyCode)) {
+					}else{
+						DutyItem duty = new DutyItem();
+						dutyItem.setRow(i);
+						dutyItem.setUnique(dutyCode);
+						dutyItem.setName(dutyMap.get(dutyCode));
+						EntityManagerContainer emc = business.entityManagerContainer();
+						
+						Unit u = null;
+						u = emc.flag(unitCode, Unit.class);
+						if(u != null){
+							dutyItem.setUnit(u.getId());
 						}
+						
+						/*Identity iden = null;
+						iden = emc.flag(personCode, Identity.class);
+						if(iden != null){
+							
+						}*/
+						
+						
+						logger.debug("scan duty:{}.", duty);
+						dutys.add(duty);
 					}
-					duty.add(dutyItem);
-					logger.debug("scan duty:{}.", dutyItem);
-				//}
+				}
+					
+				
 			}
-		}*/
-		return duty;
+		}
+		return dutys;
 	}
 
 	private boolean checkUnit(Business business, XSSFWorkbook workbook, UnitSheetConfigurator configurator,
@@ -537,24 +550,167 @@ class ActionInputAll extends BaseAction {
 	}
 	
 	private boolean checkIdentity(Business business, XSSFWorkbook workbook, IdentitySheetConfigurator configurator,
-			List<IdentityItem> identity) throws Exception {
+			 Sheet sheet ,List<PersonItem> persons,List<UnitItem> units) throws Exception {
 		//校验导入的身份
+		if (null == configurator.getUniqueColumn()) {
+			throw new ExceptionUniqueColumnEmpty();
+		}
+		if (null == configurator.getUnitCodeColumn()) {
+			throw new ExceptionUnitUniqueColumnEmpty();
+		}
+		List<IdentityItem> identity = new ArrayList<>();	
 		EntityManagerContainer emc = business.entityManagerContainer();
 		boolean validate = true;
-		for (IdentityItem o : identity) {
-			System.out.println("正在校验人员 :{}."+ o.getName());
-			if (StringUtils.isEmpty(o.getName())) {
-				this.setIdentityMemo(workbook, configurator, o, "系统不存在该人员.");
-				validate = false;
-				continue;
+		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+			Row row = sheet.getRow(i);
+			if (null != row) {
+				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
+				String dutyCode = configurator.getCellStringValue(row.getCell(configurator.getDutyCodeColumn()));
+				System.out.println("正在校验人员 :{}."+ unique);
+				boolean personcheck = false;
+				boolean unitcheck = false;
+				IdentityItem identityItem = new IdentityItem();
+				identityItem.setRow(i);
+				identity.add(identityItem);
+				if (StringUtils.isEmpty(unique)) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "人员编号不能为空.");
+					validate = false;
+					continue;
+				}
+				if (StringUtils.isEmpty(unitCode)) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "组织编号不能为空.");
+					validate = false;
+					continue;
+				}
+				if (StringUtils.isNotEmpty(dutyCode)) {
+					String dutyName = dutyMap.get(dutyCode);
+					if (StringUtils.isEmpty(dutyName)) {
+						this.setIdentityMemo(workbook, configurator, identityItem, "系统没有对应的职务.");
+						validate = false;
+						continue;
+					}
+					
+				}
+				
+				Person person = null;
+				person = emc.flag(unique, Person.class);
+				if(person != null){
+					personcheck = true;
+				}else{
+					for (PersonItem personItem : persons) {
+						if (StringUtils.isNotEmpty(personItem.getUnique()) && StringUtils.equals(personItem.getUnique(), unique)) {
+							personcheck = true;
+						}
+					}
+				}
+				
+				Unit unit = null;
+				unit = emc.flag(unitCode, Unit.class);
+				if(unit != null){
+					unitcheck = true;
+				}else{
+					for (UnitItem unitItem : units) {
+						if (StringUtils.isNotEmpty(unitItem.getUnique()) && StringUtils.equals(unitItem.getUnique(), unitCode)) {
+							unitcheck = true;
+						}
+					}
+				}
+				
+				if (personcheck) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "系统不存在该人员.");
+					validate = false;
+					continue;
+				}
+				if (unitcheck) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "系统不存在该组织.");
+					validate = false;
+					continue;
+				}
+				
 			}
-			if (StringUtils.isEmpty(o.getUnit())) {
-				this.setIdentityMemo(workbook, configurator, o, "系统不存在该组织.");
-				validate = false;
-				continue;
-			}
-			
 		}
+		
+		if (validate) {
+			for (IdentityItem o : identity) {
+				this.setIdentityMemo(workbook, configurator, o, "校验通过.");
+			}
+		}
+		return validate;
+	}
+	
+	private boolean checkDuty(Business business, XSSFWorkbook workbook, IdentitySheetConfigurator configurator,
+			 Sheet sheet ,List<PersonItem> persons,List<UnitItem> units) throws Exception {
+		//校验导入的身份
+		if (null == configurator.getUniqueColumn()) {
+			throw new ExceptionUniqueColumnEmpty();
+		}
+		if (null == configurator.getUnitCodeColumn()) {
+			throw new ExceptionUnitUniqueColumnEmpty();
+		}
+		List<IdentityItem> identity = new ArrayList<>();	
+		EntityManagerContainer emc = business.entityManagerContainer();
+		boolean validate = true;
+		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
+			Row row = sheet.getRow(i);
+			if (null != row) {
+				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
+				System.out.println("正在校验人员 :{}."+ unique);
+				boolean personcheck = false;
+				boolean unitcheck = false;
+				IdentityItem identityItem = new IdentityItem();
+				identityItem.setRow(i);
+				identity.add(identityItem);
+				if (StringUtils.isEmpty(unique)) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "人员编号不能为空.");
+					validate = false;
+					continue;
+				}
+				if (StringUtils.isEmpty(unitCode)) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "组织编号不能为空.");
+					validate = false;
+					continue;
+				}
+				
+				Person person = null;
+				person = emc.flag(unique, Person.class);
+				if(person != null){
+					personcheck = true;
+				}else{
+					for (PersonItem personItem : persons) {
+						if (StringUtils.isNotEmpty(personItem.getUnique()) && StringUtils.equals(personItem.getUnique(), unique)) {
+							personcheck = true;
+						}
+					}
+				}
+				
+				Unit unit = null;
+				unit = emc.flag(unitCode, Unit.class);
+				if(unit != null){
+					unitcheck = true;
+				}else{
+					for (UnitItem unitItem : units) {
+						if (StringUtils.isNotEmpty(unitItem.getUnique()) && StringUtils.equals(unitItem.getUnique(), unitCode)) {
+							unitcheck = true;
+						}
+					}
+				}
+				
+				if (personcheck) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "系统不存在该人员.");
+					validate = false;
+					continue;
+				}
+				if (unitcheck) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "系统不存在该组织.");
+					validate = false;
+					continue;
+				}
+				
+			}
+		}
+		
 		if (validate) {
 			for (IdentityItem o : identity) {
 				this.setIdentityMemo(workbook, configurator, o, "校验通过.");
