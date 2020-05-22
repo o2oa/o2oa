@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.exception.ExceptionAttendanceDetailProcess;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;

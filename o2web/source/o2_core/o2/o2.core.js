@@ -307,7 +307,7 @@
                 // if (!xToken) xToken = this.getHeader("x-token");
                 var xToken = this.getHeader("x-token");
                 if (xToken){
-                    if (layout){
+                    if (window.layout){
                         if (!layout.session) layout.session = {};
                         layout.session.token = xToken;
                     }

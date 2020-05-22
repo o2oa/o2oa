@@ -36,7 +36,7 @@ class V2Count extends V2Base {
 		Wo wo = new Wo();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
+			Predicate p = this.toFilterPredicate(effectivePerson, business, wi, null);
 			wo.setCount(this.count(business, p));
 			if (BooleanUtils.isTrue(wi.getGroupByApplication())) {
 				wo.setApplicationList(this.groupByApplication(business, p));

@@ -1003,7 +1003,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
             this._setBusinessData(this.gridData);
 
-            return (this.gridData.data.length) ? this.gridData : null;
+            return (this.gridData.data.length) ? this.gridData : {data:[]};
         }else{
             return this._getBusinessData();
         }
