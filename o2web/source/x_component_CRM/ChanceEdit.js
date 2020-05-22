@@ -22,8 +22,8 @@ MWF.xApplication.CRM.ChanceEdit = new Class({
     },
     load: function(){
         this.lp = this.lp.chanceEdit||{};
-        this.cssPath = "/x_component_CRM/$ChanceEdit/"+this.options.style+"/css.wcss";
-        this.path = "/x_component_CRM/$ChanceEdit/";
+        this.cssPath = "../x_component_CRM/$ChanceEdit/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_CRM/$ChanceEdit/";
         this.type ={};
         this._loadCss();
         this.loadData();
@@ -77,12 +77,12 @@ MWF.xApplication.CRM.ChanceEdit = new Class({
     loadResource: function ( callback ) {
         callback();
         /*var baseUrls = [
-            "/x_component_CRM/$Template/assets/js/jquery.min.js",
+            "../x_component_CRM/$Template/assets/js/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/assets/js/notifyme.js";
-        var confirmUrl = "/x_component_CRM/$Template/assets/js/showBo.js";
-        //var confirmUrl = "/x_component_CRM/$Main/laydate/laydate.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/assets/js/notifyme.js";
+        var confirmUrl = "../x_component_CRM/$Template/assets/js/showBo.js";
+        //var confirmUrl = "../x_component_CRM/$Main/laydate/laydate.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -92,12 +92,12 @@ MWF.xApplication.CRM.ChanceEdit = new Class({
                 }.bind(this));
             }.bind(this))
         }.bind(this));
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/date/css/jquery-ui.css",function(){
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/date/css/jquery-ui.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
-                COMMON.AjaxModule.load("/x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
+                COMMON.AjaxModule.load("../x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
                     if(callback)callback();
-                    /!* COMMON.AjaxModule.load("/x_component_CRM/$Template/date/js/datepicker.all.js", function(){
+                    /!* COMMON.AjaxModule.load("../x_component_CRM/$Template/date/js/datepicker.all.js", function(){
                      if(callback)callback();
                      }.bind(this))*!/
                 }.bind(this));
@@ -207,7 +207,7 @@ MWF.xApplication.CRM.ChanceEdit = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  '+(this.isEdited||this.isNew?'':'readOnly')+' id="'+i+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;">'+itemTemplateObject[i].value+'</textarea>';
             }
             if(stype=="select"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;" '+(this.isEdited||this.isNew?'':'readOnly')+' id="'+i+'" stype="'+stype+'" >'+itemTemplateObject[i].value+'</div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$ChanceEdit/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;" '+(this.isEdited||this.isNew?'':'readOnly')+' id="'+i+'" stype="'+stype+'" >'+itemTemplateObject[i].value+'</div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="../x_component_CRM/$ChanceEdit/default/icons/arrow.png"></div>';
             }
             section_conent = section_conent+'<div class="conent-inline"><div class="conent-title" lable="'+i+'">'+itemTemplateObject[i].text+'</div>' +
                 '<div class="conent-value">'+innerHtml+'</div></div>';
@@ -361,8 +361,8 @@ MWF.xApplication.CRM.ChanceEdit.selectForm = new Class({
     load: function(){
         //console.log(this.container);
         //this.lp = this.lp.chanceEdit||{};
-        this.cssPath = "/x_component_CRM/$ChanceEdit/"+this.options.style+"/css.wcss";
-        this.path = "/x_component_CRM/$ChanceEdit/";
+        this.cssPath = "../x_component_CRM/$ChanceEdit/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_CRM/$ChanceEdit/";
         this.type ={};
         this._loadCss();
         this.loadData();

@@ -57,7 +57,7 @@ o2.addReady(function () {
             if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
         }
     });
-    o2.getJSON("/x_desktop/res/config/config.json", function (config) {
+    o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         layout.config = config;
         configLoaded = true
         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
@@ -101,7 +101,7 @@ o2.addReady(function () {
                     //o2.xDesktop.requireApp("Common", "", null, false);
                     var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { isLoadedA = true; _check(); });
+                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { isLoadedA = true; _check(); });
                     o2.require("o2.widget.Common", function () {
                         o2.require(modules, {
                             "onSuccess": function () {

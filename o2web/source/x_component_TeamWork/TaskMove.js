@@ -51,7 +51,7 @@ MWF.xApplication.TeamWork.TaskMove = new Class({
         }
 
         this.data = data || {};
-        this.cssPath = "/x_component_TeamWork/$TaskMove/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$TaskMove/"+this.options.style+"/css.wcss";
 
         this.load();
     },

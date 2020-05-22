@@ -15,7 +15,7 @@ MWF.xApplication.Strategy.MeasureList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.measure;
-        this.path = "/x_component_Strategy/$MeasureList/";
+        this.path = "../x_component_Strategy/$MeasureList/";
         this.loadCss();
 
         this.actions = actions;
@@ -35,7 +35,7 @@ MWF.xApplication.Strategy.MeasureList = new Class({
                 if(this.allArrowArr.length>0){
                     this.allArrowArr.each(function(d){
                         $(d).setStyles({
-                            "background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
+                            "background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
                         });
                     }.bind(this))
                 }

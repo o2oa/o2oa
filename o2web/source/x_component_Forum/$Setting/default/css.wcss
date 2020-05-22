@@ -147,7 +147,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -159,7 +159,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -171,7 +171,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
 
@@ -257,7 +257,7 @@
     "top": "5px",
     "opacity": 0,
     "cursor" : "pointer",
-    "background": "url(/x_component_Forum/$Setting/default/icon/delete.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Setting/default/icon/delete.png) no-repeat center center"
   },
   "sectionItemTopDiv" : {
     "overflow":"hidden","padding-top":"7px"
@@ -389,7 +389,7 @@
     "width": "28px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "16px",
@@ -405,7 +405,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -422,7 +422,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -689,7 +689,7 @@
     "position": "absolute",
     "top": "0px",
     "right": "0px",
-    "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
+    "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/formIcon/delete.png) no-repeat center center",
     "display": "none"
   },
 

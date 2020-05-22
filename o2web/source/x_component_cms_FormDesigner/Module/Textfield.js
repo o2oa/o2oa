@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Textfield = MWF.CMSFCTextfield = new Cl
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Textfield/textfield.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Textfield/textfield.html"
 	}
 });

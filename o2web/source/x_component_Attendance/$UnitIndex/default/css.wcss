@@ -6,7 +6,7 @@
     "overflow": "hidden"
   },
   "titleLeftArrowNode" : {
-    "background": "url('/x_component_Attendance/$UnitIndex/default/icon/left.png') no-repeat center",
+    "background": "url('../x_component_Attendance/$UnitIndex/default/icon/left.png') no-repeat center",
     "margin": "15px 0px 15px 40px",
     "width" : "40px",
     "height" : "30px",
@@ -14,24 +14,24 @@
     "cursor" : "pointer"
   },
   "titleLeftArrowNode_over": {
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/left_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/left_over.png) no-repeat center center"
   },
   "titleLeftArrowNode_down": {
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/left_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/left_down.png) no-repeat center center"
   },
   "titleRightArrowNode": {
     "height": "30px",
     "width": "40px",
     "margin": "15px 0px",
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/right.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/right.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "titleRightArrowNode_over": {
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/right_over.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/right_over.png) no-repeat center center"
   },
   "titleRightArrowNode_down": {
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/right_down.png) no-repeat center center"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/right_down.png) no-repeat center center"
   },
   "titleTextNode": {
     "line-height": "60px",
@@ -85,10 +85,10 @@
     "width" : "28px",
     "height": "60px",
     "line-height": "60px",
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/down1.png) no-repeat center 55%"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/down1.png) no-repeat center 55%"
   },
   "titleUnitActionIconNode_over" : {
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/down1_down.png) no-repeat center 55%"
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/down1_down.png) no-repeat center 55%"
   },
   "titleUnitListNode" : {
     "position" : "absolute",
@@ -133,14 +133,14 @@
     "height": "40px",
     "width": "40px",
     "float": "left",
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/left_year.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/left_year.png) no-repeat center center",
     "cursor": "pointer"
   },
   "calendarMonthSelectTitleNextYearNode": {
     "height": "40px",
     "width": "40px",
     "float": "right",
-    "background": "url(/x_component_Attendance/$UnitIndex/default/icon/right_year.png) no-repeat center center",
+    "background": "url(../x_component_Attendance/$UnitIndex/default/icon/right_year.png) no-repeat center center",
     "cursor": "pointer"
   },
   "calendarMonthSelectTitleTextNode": {

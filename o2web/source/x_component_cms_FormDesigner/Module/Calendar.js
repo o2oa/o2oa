@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Calendar = MWF.CMSFCCalendar = new Clas
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Calendar/calendar.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Calendar/calendar.html"
 	}
 });

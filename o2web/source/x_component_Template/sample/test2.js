@@ -582,9 +582,9 @@ var UploadExcelDialog = new Class({
                         });
                     }.bind(this)}
                 },
-                url2: { type : "Innerhtml", text : "下载模板", value : "<a target='_blank' href='/x_component_cms_Module/$ExcelForm/"+encodeURIComponent("Excel导入合法性说明.xls")+"'>点击查看校验说明</a>" },
+                url2: { type : "Innerhtml", text : "下载模板", value : "<a target='_blank' href='../x_component_cms_Module/$ExcelForm/"+encodeURIComponent("Excel导入合法性说明.xls")+"'>点击查看校验说明</a>" },
 
-                url: { type : "Innerhtml", text : "下载模板", value : "<a target='_blank' href='/x_component_cms_Module/$ExcelForm/"+encodeURIComponent("Excel模板下载.xls")+"'>Excel模板下载</a>" },
+                url: { type : "Innerhtml", text : "下载模板", value : "<a target='_blank' href='../x_component_cms_Module/$ExcelForm/"+encodeURIComponent("Excel模板下载.xls")+"'>Excel模板下载</a>" },
                 file: { type : "button", value : "选择Excel文件",text : "选择文件", event :{
                     click : function(){
                         this.selectFile();
@@ -1066,7 +1066,7 @@ this.define("openMinder", function( workId ){
     if( layout.desktop.openApplication ){
         layout.desktop.openApplication(null, "portal.Portal", options)
     }else{
-        window.open( "/x_desktop/app.html?app=portal.Portal&option="+ JSON.stringify(options) );
+        window.open( "../x_desktop/app.html?app=portal.Portal&option="+ JSON.stringify(options) );
     }
 });
 

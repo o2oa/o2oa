@@ -11,8 +11,8 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
     initialize: function(container, worklog, processid, options){
         this.setOptions(options);
 
-        this.path = "/x_component_process_Xform/widget/$Monitor/";
-        this.cssPath = "/x_component_process_Xform/widget/$Monitor/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Xform/widget/$Monitor/";
+        this.cssPath = "../x_component_process_Xform/widget/$Monitor/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.container = $(container);
@@ -125,7 +125,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
         }
     },
     playBegin: function(){
-        var src = "/x_component_process_Xform/widget/$Monitor/"+this.options.style+"/fly.png";
+        var src = "../x_component_process_Xform/widget/$Monitor/"+this.options.style+"/fly.png";
         this.playIcon = this.paper.image(src, this.process.begin.center.x-16, this.process.begin.center.y-16, 32, 32);
         this.playLogNode = null;
         this.playsStatus = {

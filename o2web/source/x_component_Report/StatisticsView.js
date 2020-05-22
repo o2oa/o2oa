@@ -16,7 +16,7 @@ MWF.xApplication.Report.StatisticsView = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Report/$StatisticsView/";
+        this.path = "../x_component_Report/$StatisticsView/";
         this.loadCss();
 
         this.actions = actions;

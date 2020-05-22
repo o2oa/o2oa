@@ -22,7 +22,7 @@
     "position" : "absolute",
     "top": "0px",
     "right" : "0px",
-    "background": "url(/x_component_Template/$MTooltips/default/icon/off_gray.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MTooltips/default/icon/off_gray.png) no-repeat center center",
     "cursor": "pointer"
   },
   "maskStyles" : {

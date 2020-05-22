@@ -17,8 +17,8 @@ MWF.xApplication.Report.DepartmentMinder = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Report/$DepartmentMinder/";
-        this.cssPath = "/x_component_Report/$DepartmentMinder/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Report/$DepartmentMinder/";
+        this.cssPath = "../x_component_Report/$DepartmentMinder/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = this.app.lp;
 

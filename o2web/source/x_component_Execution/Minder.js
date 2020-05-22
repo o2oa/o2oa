@@ -43,7 +43,7 @@ MWF.xApplication.Execution.Minder = new Class({
         this.lp = this.app.lp.minder;
         this.actions = this.app.restActions;
 
-        this.path = "/x_component_Execution/$Minder/";
+        this.path = "../x_component_Execution/$Minder/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -73,7 +73,7 @@ MWF.xApplication.Execution.Minder = new Class({
         delete this;
     },
     loadResource: function (callback) {
-        var kityminderPath = "/x_desktop/res/framework/kityminder/";
+        var kityminderPath = "../x_desktop/res/framework/kityminder/";
 
         COMMON.AjaxModule.loadCss(kityminderPath + "core/src/kityminder.css", function () {
             COMMON.AjaxModule.load("kity", function () {

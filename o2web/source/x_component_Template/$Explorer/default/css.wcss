@@ -191,7 +191,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -203,7 +203,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -215,7 +215,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
   "documentNode": {
@@ -263,12 +263,12 @@
     "float": "left",
     "margin-right": "5px",
     "background": "no-repeat center center",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/delete.png)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/delete.png)"
   },
   "documentActionNode_over":{
     "box-shadow": "1px 1px 2px #999",
     "background": "no-repeat center center",
-    "background-image": "url(/x_component_Template/$Explorer/default/icon/delete_over.png)",
+    "background-image": "url(../x_component_Template/$Explorer/default/icon/delete_over.png)",
     "background-color": "#666"
   },
   "documentActionNode_down":{
@@ -314,7 +314,7 @@
     "width": "28px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+    "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
   },
   "formTopTextNode" : {
     "font-size": "16px",
@@ -333,13 +333,13 @@
     "width": "30px",
     "height": "30px",
     "float": "right",
-    "background": "url(/x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
+    "background": "url(../x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -379,7 +379,7 @@
     "color": "#FFF",
     "margin-right": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
   },
   "formCancelActionNode": {
     "height": "30px",
@@ -395,7 +395,7 @@
     "margin-right": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
   },
   "pagingBar" : {
     "float" : "right",
@@ -420,7 +420,7 @@
     "padding-left" : "20px",
     "padding-right" : "20px",
     "font-size" : "12px",
-    "background-image" : "url( /x_component_ForumDocument/$Main/default/icon/back_16.png )",
+    "background-image" : "url( ../x_component_ForumDocument/$Main/default/icon/back_16.png )",
     "background-position-x" : "2px",
     "background-position-y" : "center",
     "background-repeat" : "no-repeat",
@@ -447,7 +447,7 @@
     "border" : "1px solid #f3f3f3",
     "margin" : "5px",
     "cursor" : "pointer",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/back_16.png) no-repeat center center",
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/back_16.png) no-repeat center center",
     "background-color" : "#f3f3f3"
   },
   "prePage_over" : {
@@ -521,7 +521,7 @@
     "margin" : "5px",
     "cursor" : "pointer",
     "color" : "#333",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat center center",
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat center center",
     "background-color" : "#f3f3f3"
   },
   "nextPage_over" : {
@@ -539,7 +539,7 @@
     "cursor" : "pointer",
     "color" : "#666",
     "background-color" : "#EEE",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat 620px center"
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat 620px center"
   },
   "nextPageNode_over" : {
     "background-color" : "#eee"

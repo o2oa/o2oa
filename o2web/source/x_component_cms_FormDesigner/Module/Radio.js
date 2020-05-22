@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Radio = MWF.CMSFCRadio = new Class({
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Radio/radio.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Radio/radio.html"
 	}
 });

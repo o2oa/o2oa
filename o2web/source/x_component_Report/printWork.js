@@ -6,12 +6,12 @@ if (href.indexOf("debugger")!=-1) layout.debugger = true;
 layout.desktop = layout;
 layout.session = layout.session || {};
 COMMON.DOM.addReady(function(){
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
-    COMMON.AjaxModule.load("/x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
+    COMMON.AjaxModule.load("../x_desktop/res/framework/mootools/plugin/mBox.Notice.js", null, false);
+    COMMON.AjaxModule.load("../x_desktop/res/framework/mootools/plugin/mBox.Tooltip.js", null, false);
 
-    COMMON.setContentPath("/x_desktop");
+    COMMON.setContentPath("../x_desktop");
     COMMON.AjaxModule.load("mwf", function(){
-        MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+        MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
         MWF.require("MWF.widget.Mask", null, false);
@@ -30,8 +30,8 @@ COMMON.DOM.addReady(function(){
 
                         this.node = $("layout");
                         this.content = $(document.body);
-                        this.path = "/x_component_process_Work/$Main/";
-                        this.cssPath = "/x_component_process_Work/$Main/default/css.wcss";
+                        this.path = "../x_component_process_Work/$Main/";
+                        this.cssPath = "../x_component_process_Work/$Main/default/css.wcss";
                         this._loadCss();
 
                         MWF.require("MWF.xDesktop.MessageMobile", function(){
@@ -393,7 +393,7 @@ COMMON.DOM.addReady(function(){
 
                 layout.addEvent = function(){};
 
-                MWF.getJSON("/x_desktop/res/config/config.json", function(config){
+                MWF.getJSON("../x_desktop/res/config/config.json", function(config){
                     layout.config = config;
 
 

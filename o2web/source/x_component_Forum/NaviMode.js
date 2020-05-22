@@ -17,8 +17,8 @@ MWF.xApplication.Forum.NaviMode = MWFForum.NaviMode = new Class({
     },
     initialize: function(app, container, options){
         this.setOptions(options);
-        this.path = "/x_component_Forum/$NaviMode/";
-        this.cssPath = "/x_component_Forum/$NaviMode/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Forum/$NaviMode/";
+        this.cssPath = "../x_component_Forum/$NaviMode/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(container);

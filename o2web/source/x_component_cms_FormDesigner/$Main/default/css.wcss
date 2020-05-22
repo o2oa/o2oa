@@ -38,7 +38,7 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"/x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
+		"background": "url("+"../x_component_process_FormDesigner/$Main/default/left.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
@@ -46,7 +46,7 @@
 		"width": "22px",
 		"height": "22px",
 		"margin-top": "-26px",
-		"background": "url("+"/x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
+		"background": "url("+"../x_component_process_FormDesigner/$Main/default/right.png) no-repeat center center",
 		"float": "right",
 		"cursor": "pointer"
 	},
@@ -161,7 +161,7 @@
 		//"height": "100%",
 		"margin": "15px",
 		"box-shadow": "0px 0px 20px #606060", 
-		"background": "url("+"/x_component_process_FormDesigner/$Main/default/designerBg.png)",
+		"background": "url("+"../x_component_process_FormDesigner/$Main/default/designerBg.png)",
 		"-webkit-user-select": "none",
 		"overflow": "auto",
 		"font-size": "14px",
@@ -172,7 +172,7 @@
 	    "width": "360px",
 	    "height": "580px",
         "box-shadow": "0px 0px 20px #606060",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/designerBg.png)",
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/designerBg.png)",
         "font-siez": "12px",
         "-webkit-user-select": "none",
         "overflow": "auto",
@@ -185,7 +185,7 @@
         "float": "right",
         "margin": "2px 2px 2px 0px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/icon/toBottom.png) center center no-repeat"
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/icon/toBottom.png) center center no-repeat"
     },
 	"propertyTitleNode": {
 		"height": "26px",
@@ -268,13 +268,13 @@
         "float": "left",
         "width": "22px",
         "height": "24px",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/formtoolbar/pc.png) no-repeat center center"
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/formtoolbar/pc.png) no-repeat center center"
     },
     "designerActionMobileIconNode":{
         "float": "left",
         "width": "22px",
         "height": "24px",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/formtoolbar/mobile.png) no-repeat center center"
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/formtoolbar/mobile.png) no-repeat center center"
     },
     "designerActiontextNode": {
         "margin-left": "22px",
@@ -340,7 +340,7 @@
         "margin-top": "20px",
         "margin-bottom": "0px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/editOk_bg.png) no-repeat"
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/editOk_bg.png) no-repeat"
     },
     "templateCancelActionNode": {
         "height": "30px",
@@ -357,7 +357,7 @@
         "margin-bottom": "0px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url("+"/x_component_process_FormDesigner/$Main/default/editCancel_bg.png) no-repeat"
+        "background": "url("+"../x_component_process_FormDesigner/$Main/default/editCancel_bg.png) no-repeat"
     },
 
     "designTabScriptAreaNode": {

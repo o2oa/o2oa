@@ -3,14 +3,14 @@ MWF.xApplication.portal.PageDesigner.Module.Radio = MWF.PCRadio = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Radio/radio.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Radio/radio.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Radio/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Radio/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Radio/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Radio/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

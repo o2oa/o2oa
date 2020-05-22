@@ -18,8 +18,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	initialize: function(paper, process, designer, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_ProcessDesigner/$Process/";
-		this.cssPath = "/x_component_process_ProcessDesigner/$Process/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_ProcessDesigner/$Process/";
+		this.cssPath = "../x_component_process_ProcessDesigner/$Process/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		
@@ -1559,7 +1559,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
         this.jsonStringNode.set("text", JSON.stringify(json,null,2));
 
         MWF.widget.ace.load(function(){
-            COMMON.AjaxModule.loadDom("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+            COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
                 var highlight = ace.require("ace/ext/static_highlight");
                 highlight(this.jsonStringNode, {mode: "ace/mode/json", theme: "ace/theme/tomorrow", "fontSize": 16});
             }.bind(this));
@@ -1909,7 +1909,7 @@ MWF.xApplication.process.ProcessDesigner.Process.Property = new Class({
 		this.process = process;
 		this.paper = this.process.paper;
 		this.data = process.process;
-		this.htmlPath = "/x_component_process_ProcessDesigner/$Process/process.html";
+		this.htmlPath = "../x_component_process_ProcessDesigner/$Process/process.html";
 	}
 });
 

@@ -481,7 +481,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         //        "width": "100%",
         //        "height": "100%"
         //    },
-        //    //"src": "/x_component_process_FormDesigner/$Main/blank.html",
+        //    //"src": "../x_component_process_FormDesigner/$Main/blank.html",
         //    "border": "0"
         //}).inject(this.formContentNode);
 
@@ -682,7 +682,7 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
     reloadPropertyStyles: function(){
         //MWF.release(this.css);
         this.css = null;
-        this.cssPath = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         if (this.options.style=="bottom"){
@@ -1216,8 +1216,8 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
         }
     },
     loadNewFormData: function(callback){
-        var url = "/x_component_cms_FormDesigner/Module/Form/template/"+this.options.template;
-        //MWF.getJSON("/x_component_process_FormDesigner/Module/Form/template.json", {
+        var url = "../x_component_cms_FormDesigner/Module/Form/template/"+this.options.template;
+        //MWF.getJSON("../x_component_process_FormDesigner/Module/Form/template.json", {
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 this.formData = obj.pcData;

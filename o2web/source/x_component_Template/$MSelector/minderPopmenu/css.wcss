@@ -25,13 +25,13 @@
     "width":"30px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/minderPopmenu/icon/arrow-left.png) no-repeat center"
+    "background":"url(../x_component_Template/$MSelector/minderPopmenu/icon/arrow-left.png) no-repeat center"
   },
   "selectArrowNode_up":{
     "width":"30px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/minderPopmenu/icon/arrow-right.png) no-repeat center"
+    "background":"url(../x_component_Template/$MSelector/minderPopmenu/icon/arrow-right.png) no-repeat center"
   },
   "tooltipNode":{
     "font-size" : "14px",

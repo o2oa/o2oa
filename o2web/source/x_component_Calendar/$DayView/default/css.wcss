@@ -50,29 +50,29 @@
     "height": "30px",
     "width": "40px",
     "margin": "10px 0px 10px 40px",
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_gray.png) no-repeat center center",
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_gray.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "calendarPrevDayNode_over": {
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
   },
   "calendarPrevDayNode_down": {
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
   },
   "calendarNextDayNode": {
     "height": "30px",
     "width": "40px",
     "margin": "10px 0px",
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_gray.png) no-repeat center center",
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_gray.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "calendarNextDayNode_over": {
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
   },
   "calendarNextDayNode_down": {
-    "background": "url(/x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
   },
   "calendarTitleTextNode": {
     "line-height": "48px",
@@ -178,10 +178,10 @@
     "padding-left" : "5px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_newapply.png) no-repeat center center"
+    "background" : "url(../x_component_Calendar/$Main/default/icon/icon_newapply.png) no-repeat center center"
   },
   "createCalendarAction_over" : {
-    "background" : "url(/x_component_Calendar/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
+    "background" : "url(../x_component_Calendar/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
   }
 
 }

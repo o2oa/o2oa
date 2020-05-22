@@ -9,7 +9,7 @@ MWF.xApplication.Setting.UIModuleDocument = new Class({
     },
     initialize: function(explorer, content, options){
         this.setOptions(options);
-        this.path = "/x_component_Setting/$SettingModuleUI/";
+        this.path = "../x_component_Setting/$SettingModuleUI/";
         this.cssPath =this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -196,16 +196,16 @@ MWF.xApplication.Setting.UIModuleDocument.Component = new Class({
 
         this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.node);
 
-        //var icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+        //var icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
         var icon;
         if (this.data.path.substring(0, 4)==="@url"){
             if (this.data.iconPath){
                 icon = this.data.iconPath;
             }else{
-                icon = "/x_component_Setting/$Main/default/icon/site.png";
+                icon = "../x_component_Setting/$Main/default/icon/site.png";
             }
         }else{
-            icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+            icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
         }
 
         this.iconNode.setStyle("background-image", "url("+icon+")");
@@ -439,7 +439,7 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy = new Class({
             "title": this.titleInputNode.get("value"),
             "path": path,
             "visible": (visible==="yes") ? true : false,
-            "iconPath": (path.substring(0, 4)==="@url") ? "/x_component_Setting/$Main/default/icon/site.png" : "appicon.png",
+            "iconPath": (path.substring(0, 4)==="@url") ? "../x_component_Setting/$Main/default/icon/site.png" : "appicon.png",
             "widgetName": "",
             "widgetTitle": "",
             "widgetIconPath": "",
@@ -634,7 +634,7 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy.Icon = new Class({
         var path = this.deploy.pathInputNode.get("value") || ((this.deploy.data) ? this.deploy.data.path : "");
         if (path.substring(0,4)==="@url"){
             if (!this.deploy.data || !this.deploy.data.iconPath){
-                this.iconNode.setStyle("background", "url(/x_component_Setting/$Main/default/icon/site.png) no-repeat center center");
+                this.iconNode.setStyle("background", "url(../x_component_Setting/$Main/default/icon/site.png) no-repeat center center");
             }else{
                 this.iconNode.setStyle("background", "url("+this.deploy.data.iconPath+") no-repeat center center");
             }
@@ -642,7 +642,7 @@ MWF.xApplication.Setting.UIModuleDocument.Deploy.Icon = new Class({
         }else{
             if (path){
                 var p = path.replace(".", "_");
-                this.iconNode.setStyle("background", "url(/x_component_"+p+"/$Main/appicon.png) no-repeat center center");
+                this.iconNode.setStyle("background", "url(../x_component_"+p+"/$Main/appicon.png) no-repeat center center");
             }
             if (this.actionNode) this.actionNode.hide();
         }

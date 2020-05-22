@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Tab$Content/tab$Content.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Tab$Content/tab$Content.html",
 		"actions": [],
 		"injectActions" : [
 			{
@@ -28,8 +28,8 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 	initialize: function(tab, page, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Tab$Content/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Tab$Content/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Tab$Content/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Tab$Content/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";

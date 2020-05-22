@@ -24,7 +24,7 @@ MWF.xApplication.File.Main = new Class({
 		
 		//this.restActions = new MWF.xApplication.File.Actions.RestActions();
 		
-		MWF.getJSON("/x_component_File/$Main/icon.json", function(json){
+		MWF.getJSON("../x_component_File/$Main/icon.json", function(json){
 			this.icons = json;
 		}.bind(this), false, false);
 		
@@ -1036,16 +1036,16 @@ MWF.xApplication.File.Main = new Class({
 		}
 	},
 	enabledLeftNode: function(){
-		this.leftNode.setStyle("background-image", "url("+"/x_component_File/$Main/default/icon/left_enabled.png)");
+		this.leftNode.setStyle("background-image", "url("+"../x_component_File/$Main/default/icon/left_enabled.png)");
 	},
 	enabledRightNode: function(){
-		this.rightNode.setStyle("background-image", "url("+"/x_component_File/$Main/default/icon/right_enabled.png)");
+		this.rightNode.setStyle("background-image", "url("+"../x_component_File/$Main/default/icon/right_enabled.png)");
 	},
 	disabledLeftNode: function(){
-		this.leftNode.setStyle("background-image", "url("+"/x_component_File/$Main/default/icon/left.png)");
+		this.leftNode.setStyle("background-image", "url("+"../x_component_File/$Main/default/icon/left.png)");
 	},
 	disabledRightNode: function(){
-		this.rightNode.setStyle("background-image", "url("+"/x_component_File/$Main/default/icon/right.png)");
+		this.rightNode.setStyle("background-image", "url("+"../x_component_File/$Main/default/icon/right.png)");
 	},
 	
 	leftPath: function(){
@@ -1240,7 +1240,7 @@ MWF.xApplication.File.Attachment = new Class({
 	},
 	getIcon: function(){
 		var iconName = this.file.icons[this.extension] || this.file.icons.unknow;
-		return "/x_component_File/$Main/default/file/"+iconName;
+		return "../x_component_File/$Main/default/file/"+iconName;
 	},
 	load: function(){
 		this.node = new Element("div", {"styles": this.file.css.attachmentNode});
@@ -1323,7 +1323,7 @@ MWF.xApplication.File.Folder = new Class({
 		this.load();
 	},
 	getIcon: function(){
-		return "/x_component_File/$Main/default/file/folder.png";
+		return "../x_component_File/$Main/default/file/folder.png";
 	},
 	load: function(){
 		this.node = new Element("div", {"styles": this.file.css.attachmentNode});

@@ -95,18 +95,18 @@
     "float": "right",
     "width": "16px",
     "height": "16px",
-    "background-image" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus.png)",
+    "background-image" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus.png)",
     "background-repeat": "no-repeat",
     "background-position": "center center"
   },
   "startMenuCreateNode_over" : {
-    "background-image" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus_unselected_over.png)"
+    "background-image" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus_unselected_over.png)"
   },
   "startMenuCreateNode_current" : {
-    "background-image" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus_current.png)"
+    "background-image" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus_current.png)"
   },
   "startMenuCreateNode_current_over" : {
-    "background-image" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus.png)"
+    "background-image" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/plus.png)"
   },
   "startMenuEmptyNode" : {
     "margin-top": "12px",
@@ -119,24 +119,24 @@
     "float": "left",
     "width": "16px",
     "height": "16px",
-    "background-image" : "url(/x_component_cms_ColumnManager/$Main/default/icon/icon_down2.png)",
+    "background-image" : "url(../x_component_cms_ColumnManager/$Main/default/icon/icon_down2.png)",
     "background-repeat": "no-repeat",
     "background-position": "center center"
   },
   "startMenuExpandNode_current" : {
-    "background-image" : "url(/x_component_cms_ColumnManager/$Main/default/icon/icon_down2_current.png)"
+    "background-image" : "url(../x_component_cms_ColumnManager/$Main/default/icon/icon_down2_current.png)"
   },
   "startMenuCollapseNode" : {
     "margin-top": "12px",
     "float": "left",
     "width": "16px",
     "height": "16px",
-    "background-image" : "url(/x_component_cms_ColumnManager/$Main/default/icon/icon_down2_click.png)",
+    "background-image" : "url(../x_component_cms_ColumnManager/$Main/default/icon/icon_down2_click.png)",
     "background-repeat": "no-repeat",
     "background-position": "center center"
   },
   "startMenuCollapseNode_current" : {
-    "background-image" : "url(/x_component_cms_ColumnManager/$Main/default/icon/icon_down2_click_current.png)"
+    "background-image" : "url(../x_component_cms_ColumnManager/$Main/default/icon/icon_down2_click_current.png)"
   },
   "propertyTitleBar": {
     "font-size" : "16px",
@@ -190,7 +190,7 @@
     "width": "200px"
   },
   "editBaseNode": {
-    "background": "url(" + "/x_component_cms_ColumnManager/$Main/default/icon/edit.png) 3px center no-repeat",
+    "background": "url(" + "../x_component_cms_ColumnManager/$Main/default/icon/edit.png) 3px center no-repeat",
     "float": "right",
     "cursor": "pointer",
     "margin-top": "12px",
@@ -205,7 +205,7 @@
     "border-radius": "3px"
   },
   "cancelBaseNode": {
-    "background": "url(" + "/x_component_cms_ColumnManager/$Main/default/icon/editCancel.png) 3px center no-repeat",
+    "background": "url(" + "../x_component_cms_ColumnManager/$Main/default/icon/editCancel.png) 3px center no-repeat",
     "float": "right",
     "cursor": "pointer",
     "margin-top": "12px",
@@ -220,7 +220,7 @@
     "border-radius": "3px"
   },
   "saveBaseNode": {
-    "background": "url(" + "/x_component_cms_ColumnManager/$Main/default/icon/editOk.png) 15px center no-repeat",
+    "background": "url(" + "../x_component_cms_ColumnManager/$Main/default/icon/editOk.png) 15px center no-repeat",
     "float": "right",
     "cursor": "pointer",
     "margin-top": "12px",

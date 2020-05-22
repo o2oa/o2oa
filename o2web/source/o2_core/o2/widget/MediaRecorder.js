@@ -57,7 +57,7 @@ o2.widget.MediaRecorder = o2.MediaRecorder = new Class({
 	//	return flag;
 	//},
 	loadResource : function( callback ){
-		var path = "/o2_lib/adapter/adapter.js";
+		var path = "../o2_lib/adapter/adapter.js";
 		COMMON.AjaxModule.load( path, function () {
 			if (callback)callback();
 		}.bind(this));

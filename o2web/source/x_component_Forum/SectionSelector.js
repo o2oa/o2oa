@@ -14,8 +14,8 @@ MWF.xApplication.Forum.SectionSelector = new Class({
     initialize: function(container, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Selector/$Selector/";
-        this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Selector/$Selector/";
+        this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss(true);
 
         this.container = $(container);
@@ -80,7 +80,7 @@ MWF.xApplication.Forum.SectionSelector.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        //this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        //this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -114,7 +114,7 @@ MWF.xApplication.Forum.SectionSelector.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        //this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/processicon.png)");
+        //this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -143,7 +143,7 @@ MWF.xApplication.Forum.SectionSelector.ItemCategory = new Class({
         }).inject(this.container);
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
         return (this.data.sectionList && this.data.sectionList.length);

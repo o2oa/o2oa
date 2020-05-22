@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Number = MWF.CMSFCNumber = new Class({
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Number/number.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Number/number.html"
 	}
 });

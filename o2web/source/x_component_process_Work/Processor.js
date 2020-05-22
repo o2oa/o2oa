@@ -23,8 +23,8 @@ MWF.xApplication.process.Work.Processor = new Class({
     initialize: function(node, task, options, form){
         this.setOptions(options);
 
-        this.path = "/x_component_process_Work/$Processor/";
-        this.cssPath = "/x_component_process_Work/$Processor/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Work/$Processor/";
+        this.cssPath = "../x_component_process_Work/$Processor/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.task = task;
@@ -415,7 +415,7 @@ MWF.xApplication.process.Work.Processor = new Class({
                 node.addClass("mainColor_bg");
                 node.removeClass("lightColor_bg");
                 //node.setStyle("background-color", "#da7429");
-                //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
+                //node.getFirst().setStyle("background-image", "url("+"../x_component_process_Work/$Processor/default/checked.png)");
                 //node.getLast().setStyle("color", "#FFF");
 
             }else{
@@ -433,7 +433,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             node.addClass("mainColor_bg");
             node.removeClass("lightColor_bg");
             //node.setStyle("background-color", "#da7429");
-            //node.getFirst().setStyle("background-image", "url("+"/x_component_process_Work/$Processor/default/checked.png)");
+            //node.getFirst().setStyle("background-image", "url("+"../x_component_process_Work/$Processor/default/checked.png)");
             //node.getLast().setStyle("color", "#FFF");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
@@ -1614,7 +1614,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.switchUser({"credential": ( _self.task.personDn || _self.task.person ) }, function(){
                 var text = MWF.xApplication.process.Work.LP.managerLoginSuccess.replace("{user}", user );
                 MWF.xDesktop.notice("success", {x: "right", y:"top"}, text );
-                window.open("/x_desktop/work.html?workid="+_self.task.work);
+                window.open("../x_desktop/work.html?workid="+_self.task.work);
             }.bind(this));
             this.close();
         }, function () {
@@ -2371,7 +2371,7 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                         "width": "20px",
                         "height": "20px",
                         "float": "left",
-                        "background": "url(" + "/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                        "background": "url(" + "../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
                     }
                 }).inject(node);
                 var textNode = new Element("div", {

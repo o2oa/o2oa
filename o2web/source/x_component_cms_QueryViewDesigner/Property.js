@@ -3,7 +3,7 @@ MWF.xApplication.cms.QueryViewDesigner.Property = MWF.CMSQVDProperty = new Class
     Extends: MWF.xApplication.process.ViewDesigner.Property,
     options: {
         "style": "default",
-        "path": "/x_component_cms_FormDesigner/property/property.html"
+        "path": "../x_component_cms_FormDesigner/property/property.html"
     },
     loadColumnExportEditor: function(){
         var _self = this;

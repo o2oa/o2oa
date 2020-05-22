@@ -89,7 +89,7 @@
     "margin-top" : "5px",
     "line-height" : "30px",
     "padding" : "0px 10px 0px 35px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
     "background-color" : "#4a90e2",
     "border-radius" : "2px",
     "float" : "right",
@@ -118,11 +118,11 @@
     "margin" : "0px auto",
     "width" : "100px",
     "padding-left" : "30px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_add2.png) no-repeat 10px center",
     "color" : "#4a90e2"
   },
   "listAddAction_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_zengjia_click2.png) no-repeat 10px center",
     "color" : "#fff"
   },
   "listNode" : {
@@ -175,10 +175,10 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_chakan.png) no-repeat center center"
   },
   "action_view_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_chakan_click.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_chakan_click.png) no-repeat center center"
   },
   "action_edit" : {
     "cursor" : "pointer",
@@ -186,10 +186,10 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_bianji.png) no-repeat center center"
   },
   "action_edit_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_bianji_click.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_bianji_click.png) no-repeat center center"
   },
   "action_remove" : {
     "cursor" : "pointer",
@@ -197,9 +197,9 @@
     "padding-right" : "10px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_grey.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_delete_grey.png) no-repeat center center"
   },
   "action_remove_over" : {
-    "background" : "url(/x_component_Report/$Explorer/default/icon/icon_delete_blue_click2.png) no-repeat center center"
+    "background" : "url(../x_component_Report/$Explorer/default/icon/icon_delete_blue_click2.png) no-repeat center center"
   }
 }

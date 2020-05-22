@@ -25,8 +25,8 @@ MWF.xApplication.cms.Module.ViewExplorer = new Class({
         this.revealData = revealData;
         this.searchNode = searchNode;
 
-        this.path = "/x_component_cms_Module/$ViewExplorer/";
-        this.cssPath = "/x_component_cms_Module/$ViewExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Module/$ViewExplorer/";
+        this.cssPath = "../x_component_cms_Module/$ViewExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     reload: function(){
@@ -154,8 +154,8 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
         this.app = app;
         this.searchContainer = searchContainer;
 
-        this.path = "/x_component_cms_Module/$ViewExplorer/";
-        this.cssPath = "/x_component_cms_Module/$ViewExplorer/"+this.options.style+"/viewer.wcss";
+        this.path = "../x_component_cms_Module/$ViewExplorer/";
+        this.cssPath = "../x_component_cms_Module/$ViewExplorer/"+this.options.style+"/viewer.wcss";
         this._loadCss();
         this.lp = MWF.xApplication.query.Query.LP;
 
@@ -439,7 +439,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
                 }).inject( this.selectTitleCell );
                 this.selectTitleCell.setStyle("cursor", "pointer");
             }else{
-                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+                this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_query_Query/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
             }
             this.selectTitleCell.setStyle("cursor", "pointer");
             this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
@@ -788,7 +788,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
             new Element("span", { text : text }).inject( this.categoryTd );
             // this.categoryTd.set("text", text );
         }else{
-            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+            this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
         }
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
@@ -804,7 +804,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
                if( this.expandNode ){
             this.expandNode.setStyles( this.view.viewJson.viewStyles["groupExpandNode"] )
         }else{
-            this.node.getElement("span").set("html", "<img src='/x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+            this.node.getElement("span").set("html", "<img src='../x_component_query_Query/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
         }
         this.expanded = true;
         if (!this.loadChild){
@@ -844,8 +844,8 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 //        this.app = app;
 //        this.searchContainer = searchContainer;
 //
-//        this.path = "/x_component_cms_Module/$ViewExplorer/";
-//        this.cssPath = "/x_component_cms_Module/$ViewExplorer/"+this.options.style+"/viewer.wcss";
+//        this.path = "../x_component_cms_Module/$ViewExplorer/";
+//        this.cssPath = "../x_component_cms_Module/$ViewExplorer/"+this.options.style+"/viewer.wcss";
 //        this._loadCss();
 //        this.lp = MWF.xApplication.process.Application.LP;
 //
@@ -1011,7 +1011,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 //    },
 //    loadGroupData: function(){
 //        if (this.selectTitleCell){
-//            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='/x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
+//            this.selectTitleCell.set("html", "<span style='font-family: Webdings'>"+"<img src='../x_component_process_Application/$Viewer/"+this.options.style+"/icon/expand.png'/>"+"</span>");
 //            this.selectTitleCell.setStyle("cursor", "pointer");
 //            this.selectTitleCell.addEvent("click", this.expandOrCollapseAll.bind(this));
 //        }
@@ -1226,7 +1226,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 //            var text = this.data.group;
 //        }
 //
-//        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
+//        this.categoryTd.set("html", "<span style='font-family: Webdings'><img src='../x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/expand.png'/></span> "+text);
 //        if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 //
 //        this.setEvent();
@@ -1235,7 +1235,7 @@ MWF.xApplication.cms.Module.QueryViewer.ItemCategory = new Class({
 //        this.items.each(function(item){
 //            item.node.setStyle("display", "table-row");
 //        }.bind(this));
-//        this.node.getElement("span").set("html", "<img src='/x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
+//        this.node.getElement("span").set("html", "<img src='../x_component_process_Application/$Viewer/"+this.view.options.style+"/icon/down.png'/>");
 //        if (!this.loadChild){
 //            //window.setTimeout(function(){
 //            this.data.list.each(function(line){

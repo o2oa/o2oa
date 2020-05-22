@@ -17,7 +17,7 @@ MWF.xApplication.Common.Widget = new Class({
     initialize: function (desktop, options) {
         this.setOptions(options);
         this.desktop = desktop;
-        this.path = "/x_component_" + this.options.appName.replace(/\./g, "_") + "/$" + this.options.name.replace(/\./g, "/") + "/";
+        this.path = "../x_component_" + this.options.appName.replace(/\./g, "_") + "/$" + this.options.name.replace(/\./g, "/") + "/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
     },

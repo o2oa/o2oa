@@ -24,7 +24,7 @@
     "createNewNode": {
         "width": "47px",
         "height": "47px",
-        "background": "url("+"/x_component_cms_Index/$Starter/default/new.png) no-repeat"
+        "background": "url("+"../x_component_cms_Index/$Starter/default/new.png) no-repeat"
     },
     "formNode": {
         "border-radius": "8px",
@@ -50,7 +50,7 @@
         "margin-right": "20px",
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url("+"/x_component_cms_Index/$Starter/default/editOk_bg.png) no-repeat"
+        "background": "url("+"../x_component_cms_Index/$Starter/default/editOk_bg.png) no-repeat"
     },
     "cancelActionNode": {
         "height": "30px",
@@ -66,7 +66,7 @@
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url("+"/x_component_cms_Index/$Starter/default/editCancel_bg.png) no-repeat"
+        "background": "url("+"../x_component_cms_Index/$Starter/default/editCancel_bg.png) no-repeat"
     },
     "departSelNode": {
         "padding": "5px",

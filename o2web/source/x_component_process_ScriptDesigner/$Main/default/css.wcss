@@ -77,7 +77,7 @@
     "listScriptItemIcon": {
         "height": "24px",
         "width": "26px",
-        "background": "url("+"/x_component_process_ScriptDesigner/$Main/default/script.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ScriptDesigner/$Main/default/script.png) no-repeat center center",
         "float": "left"
     },
     "listScriptItemText": {
@@ -95,7 +95,7 @@
     "includeTitleActionNode": {
         "height": "24px",
         "width": "30px",
-        "background": "url("+"/x_component_process_ScriptDesigner/$Script/default/icon/add.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ScriptDesigner/$Script/default/icon/add.png) no-repeat center center",
         "float": "right",
         "cursor": "pointer"
     },
@@ -113,7 +113,7 @@
     "includeScriptItemAction": {
         "height": "26px",
         "width": "30px",
-        "background": "url("+"/x_component_process_ScriptDesigner/$Script/default/icon/del.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ScriptDesigner/$Script/default/icon/del.png) no-repeat center center",
         "float": "right",
         "cursor": "pointer"
     },

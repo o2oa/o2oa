@@ -34,13 +34,13 @@
     "width":"20px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/blue_flat/icon/arrow_down.png) no-repeat center"
+    "background":"url(../x_component_Template/$MSelector/blue_flat/icon/arrow_down.png) no-repeat center"
   },
   "selectArrowNode_up":{
     "width":"20px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/blue_flat/icon/arrow_up.png) no-repeat center"
+    "background":"url(../x_component_Template/$MSelector/blue_flat/icon/arrow_up.png) no-repeat center"
   },
   "tooltipNode":{
     "font-size" : "14px",
@@ -94,7 +94,7 @@
     //"text-indent":"10px",
     "padding-left":"10px",
     "color" : "#1989ff",
-    "background":"url(/x_component_Template/$MSelector/blue_flat/icon/checked.png) no-repeat right 3px center",
+    "background":"url(../x_component_Template/$MSelector/blue_flat/icon/checked.png) no-repeat right 3px center",
     "background-color" : "#fff"
   }
 }

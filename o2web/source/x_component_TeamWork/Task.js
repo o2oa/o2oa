@@ -66,7 +66,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.data = data || {};
 
         this.css = {};
-        this.cssPath = "/x_component_TeamWork/$Task/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$Task/"+this.options.style+"/css.wcss";
 
         this.load();
         this.lp = this.app.lp.task;
@@ -172,7 +172,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                     tm.load();
                 }.bind(this),
                 mouseover:function(){
-                    this.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_more_click.png)"});
+                    this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_more_click.png)"});
                 },
                 mouseout:function(){
                     this.setStyles(_self.css.topIconMore)
@@ -188,7 +188,7 @@ MWF.xApplication.TeamWork.Task = new Class({
                     }
                 }.bind(this),
                 mouseover:function(){
-                    this.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_off_click.png)"});
+                    this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_off_click.png)"});
                 },
                 mouseout:function(){
                     this.setStyles(_self.css.topIconClose)
@@ -391,11 +391,11 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.dynamicBar.addEvents({
             mouseover:function(){
                 this.dynamicText.setStyle("color","#4a90e2");
-                this.dynamicIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_dw_click.png)")
+                this.dynamicIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_dw_click.png)")
             }.bind(this),
             mouseout:function(){
                 this.dynamicText.setStyle("color","#666666");
-                this.dynamicIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_dw.png)")
+                this.dynamicIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_dw.png)")
             }.bind(this),
             click:function(){
                 var pc = new MWF.xApplication.TeamWork.Task.DynamicType(this.container, this.dynamicBar, this.app, {data:this.taskData}, {
@@ -497,44 +497,44 @@ MWF.xApplication.TeamWork.Task = new Class({
         var objectType = data.objectType.toUpperCase();
         if(objectType == "CHAT"){
             //if(optType.toUpperCase() == "PUBLISH"){
-            dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_chat.png)")
+            dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_chat.png)")
             //}
         }else if(objectType == "ATTACHMENT"){
             if(optType == "DELETE"){  //UPLOAD、DOWNLOAD、DELETE
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_remove.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_remove.png)")
             }else{
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_attachment.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_attachment.png)")
             }
         }else if(objectType == "TASK"){
             //UPDATE_NAME、UPDATE_EXECUTOR、UPDATE_STATUS、UPDATE_TIME、UPDATE_PROGRESS、ADD_TAGS、REMOVE_TAGS、
             //ADD_MANAGER、REMOVE_MANAGER、ADD_PARTICIPANTS、REMOVE_PARTICIPANTS、CREATE、DELETE
             if(optType=="SPLIT"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_subtask.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_subtask.png)")
             }else if(optType=="DELETE_SUBTASK"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_remove.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_remove.png)")
             }else if(optType=="UPDATE_EXECUTOR"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_duty.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_duty.png)")
             }else if(optType=="UPDATE_NAME"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_title.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_title.png)")
             }else if(optType=="UPDATE_WORKSTATUS"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_status.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_status.png)")
             }else if(optType=="UPDATE_WORKDATE"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_time.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_time.png)")
             }else if(optType=="UPDATE_DESCRIPTION"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_remark.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_remark.png)")
             }else if(optType=="ADD_PARTICIPANTS" || optType == "REMOVE_PARTICIPANTS"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_participant.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_participant.png)")
             }else if(optType=="CREATE"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_jia.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_jia.png)")
             }else{
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_edit.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_edit.png)")
             }
 
         }else if(objectType=="TASK_TAG"){
             if(optType=="REMOVE"){
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_remove.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_remove.png)")
             }else{
-                dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/dy_tag.png)")
+                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/dy_tag.png)")
             }
         }
 
@@ -545,7 +545,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             //转换表情
             for(var item in this.app.lp.emoji){
                 var val = this.app.lp.emoji[item]; //alert(val)
-                chattext = chattext.split("["+val+"]").join('<img style="margin:0px 2px; width:30px;height:30px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
+                chattext = chattext.split("["+val+"]").join('<img style="margin:0px 2px; width:30px;height:30px;" src="../x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
             }
             new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
         }else{
@@ -576,8 +576,8 @@ MWF.xApplication.TeamWork.Task = new Class({
         this.chatBarTool = new Element("div.chatBarTool",{styles:this.css.chatBarTool}).inject(this.chatBarContent);
         this.chatBarEmoji = new Element("div.chatBarEmoji",{styles:this.css.chatBarEmoji,title:this.lp.chatInsertEmoji}).inject(this.chatBarTool);
         this.chatBarEmoji.addEvents({
-            mouseover:function(){this.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_emoji_click.png)")},
-            mouseout:function(){this.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_emoji.png)")},
+            mouseover:function(){this.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_emoji_click.png)")},
+            mouseout:function(){this.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_emoji.png)")},
             click:function(){
                 MWF.xDesktop.requireApp("TeamWork", "Emoji", function(){
                     var pc = new MWF.xApplication.TeamWork.Emoji(this,this.container, this.chatBarEmoji, this.app, {}, {
@@ -630,14 +630,14 @@ MWF.xApplication.TeamWork.Task = new Class({
 
                             var dynamicItem = new Element("div.dynamicItem",{styles:this.css.dynamicItem}).inject(this.dynamicContent);
                             var dynamicItemIcon = new Element("div.dynamicItemIcon",{styles:this.css.dynamicItemIcon}).inject(dynamicItem);
-                            dynamicItemIcon.setStyle("background-image","url(/x_component_TeamWork/$Task/default/icon/icon_chat.png)")
+                            dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_chat.png)")
                             var dynamicItemText = new Element("div.dynamicItemText",{styles:this.css.dynamicItemText}).inject(dynamicItem);
                             new Element("div.dynamicItemUser",{styles:this.css.dynamicItemUser,text:person.split("@")[0]}).inject(dynamicItemText);
 
                             var chattext = content.split("\n").join("<br/>");
                             for(var item in this.app.lp.emoji){
                                 var val = this.app.lp.emoji[item];
-                                chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px; width:30px;height:30px;" src="/x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
+                                chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px; width:30px;height:30px;" src="../x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
                             }
 
                             new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
@@ -818,19 +818,19 @@ MWF.xApplication.TeamWork.Task = new Class({
 
         if(this.taskData.workStatus == "draft"){
             this.taskStatusValueContainer.setStyles({"color":"#666666"});
-            this.taskStatusValueIcon.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_draft.png)"});
+            this.taskStatusValueIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_draft.png)"});
             this.taskStatusValueText.set("text",this.lp.status.draft);
         }else if(this.taskData.workStatus == "flow"){
             this.taskStatusValueContainer.setStyles({"color":"#666666"});
-            this.taskStatusValueIcon.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_flow.png)"});
+            this.taskStatusValueIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_flow.png)"});
             this.taskStatusValueText.set("text",this.lp.status.flow);
         }else if(this.taskData.workStatus == "processing") {
             this.taskStatusValueContainer.setStyles({"color": "#666666"});
-            this.taskStatusValueIcon.setStyles({"background-image": "url(/x_component_TeamWork/$Task/default/icon/icon_flow.png)"});
+            this.taskStatusValueIcon.setStyles({"background-image": "url(../x_component_TeamWork/$Task/default/icon/icon_flow.png)"});
             this.taskStatusValueText.set("text",this.lp.status.processing);
         }else if(this.taskData.workStatus == "completed"){
             this.taskStatusValueContainer.setStyles({"color":"#69b439"});
-            this.taskStatusValueIcon.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_complete.png)"});
+            this.taskStatusValueIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_complete.png)"});
             this.taskStatusValueText.set("text",this.lp.status.completed);
         }
 
@@ -878,13 +878,13 @@ MWF.xApplication.TeamWork.Task = new Class({
                 }.bind(this),
                 mouseover:function(){
                     this.setStyles({"background-color":"#efefef"});
-                    this.getElement(".taskStatusValueIcon").setStyles({ "background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_down.png)"})
+                    this.getElement(".taskStatusValueIcon").setStyles({ "background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_down.png)"})
                 },
                 mouseout:function(){
                     this.setStyles(_self.css.taskStatusValueContainer);
-                    var bgurl = "url(/x_component_TeamWork/$Task/default/icon/icon_draft.png)";
-                    if(_self.taskData.workStatus == "processing")bgurl = "url(/x_component_TeamWork/$Task/default/icon/icon_flow.png)";
-                    else if(_self.taskData.workStatus == "completed")bgurl = "url(/x_component_TeamWork/$Task/default/icon/icon_complete.png)";
+                    var bgurl = "url(../x_component_TeamWork/$Task/default/icon/icon_draft.png)";
+                    if(_self.taskData.workStatus == "processing")bgurl = "url(../x_component_TeamWork/$Task/default/icon/icon_flow.png)";
+                    else if(_self.taskData.workStatus == "completed")bgurl = "url(../x_component_TeamWork/$Task/default/icon/icon_complete.png)";
                     this.getElement(".taskStatusValueIcon").setStyles({"background-image":bgurl})
                 }
             });
@@ -1100,8 +1100,8 @@ MWF.xApplication.TeamWork.Task = new Class({
         });
         this.taskTagAdd = new Element("div.taskTagAdd",{styles:this.css.taskTagAdd}).inject(this.taskTagAddContainer);
         this.taskTagAdd.addEvents({
-            mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_subtask_add.png)"})},
-            mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$Task/default/icon/icon_jia.png)"})},
+            mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_subtask_add.png)"})},
+            mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_jia.png)"})},
             click:function(){
                 this.loadTaskTag(this.taskTagAdd)
             }.bind(this)
@@ -1455,7 +1455,7 @@ MWF.xApplication.TeamWork.Task = new Class({
 
         var closeStyles={
             "width":"16px","height":"16px","position":"absolute","right":"-5px","top":"-2px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
         };
         var circleDiv = new Element("div",{styles:circleStyles,text:name.substr(0,1)}).inject(container);
 
@@ -1506,7 +1506,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         };
         var closeStyles={
             "width":"16px","height":"16px","position":"absolute","right":"0px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
         };
         var circleDiv = new Element("div",{styles:circleStyles,text:name.substr(0,1)}).inject(container);
         var nameDiv = new Element("div",{styles:nameStyles,text:name}).inject(container);
@@ -1577,7 +1577,7 @@ MWF.xApplication.TeamWork.Task = new Class({
         };
         var closeStyles={
             "width":"16px","height":"16px","position":"absolute","right":"0px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_off.png) no-repeat center"
         };
         var circleDiv = new Element("div",{styles:circleStyles,text:name.substr(0,1)}).inject(container);
         var nameDiv = new Element("div",{styles:nameStyles,text:name}).inject(container);
@@ -1751,7 +1751,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
             }.bind(this)
         });
         var copyTaskIcon = new Element("div.copyTaskIcon",{styles:this.css.topMoreItemIcon}).inject(copyTask);
-        copyTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskcopy.png) no-repeat center"});
+        copyTaskIcon.setStyles({"background":"url(../x_component_TeamWork/$Task/default/icon/taskcopy.png) no-repeat center"});
         var copyTaskText = new Element("div.copyTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskCopy}).inject(copyTask);
 
         var moveTask = new Element("div.moveTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -1770,7 +1770,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
             }.bind(this)
         });
         var moveTaskIcon = new Element("div.moveTaskIcon",{styles:this.css.topMoreItemIcon}).inject(moveTask);
-        moveTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskmove.png) no-repeat center"});
+        moveTaskIcon.setStyles({"background":"url(../x_component_TeamWork/$Task/default/icon/taskmove.png) no-repeat center"});
         var moveTaskText = new Element("div.moveTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskMove}).inject(moveTask);
 
         // var favTask = new Element("div.favTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -1779,7 +1779,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
         //     mouseleave:function(){this.setStyles({"background-color":""})}
         // });
         // var favTaskIcon = new Element("div.favTaskIcon",{styles:this.css.topMoreItemIcon}).inject(favTask);
-        // favTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskfav.png) no-repeat center"});
+        // favTaskIcon.setStyles({"background":"url(../x_component_TeamWork/$Task/default/icon/taskfav.png) no-repeat center"});
         // var favTaskText = new Element("div.favTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskFav}).inject(favTask);
 
         var subTask = new Element("div.subTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -1806,7 +1806,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
             mouseleave:function(){this.setStyles({"background-color":""})}
         });
         var subTaskIcon = new Element("div.subTaskIcon",{styles:this.css.topMoreItemIcon}).inject(subTask);
-        subTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/tasksub.png) no-repeat center"});
+        subTaskIcon.setStyles({"background":"url(../x_component_TeamWork/$Task/default/icon/tasksub.png) no-repeat center"});
         var subTaskText = new Element("div.subTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskSub}).inject(subTask);
 
         var removeTask = new Element("div.removeTask",{styles:this.css.topMoreItem}).inject(this.contentNode);
@@ -1826,7 +1826,7 @@ MWF.xApplication.TeamWork.Task.TaskMore = new Class({
             mouseleave:function(){this.setStyles({"background-color":""})}
         });
         var removeTaskIcon = new Element("div.removeTaskIcon",{styles:this.css.topMoreItemIcon}).inject(removeTask);
-        removeTaskIcon.setStyles({"background":"url(/x_component_TeamWork/$Task/default/icon/taskremove.png) no-repeat center"});
+        removeTaskIcon.setStyles({"background":"url(../x_component_TeamWork/$Task/default/icon/taskremove.png) no-repeat center"});
         var removeTaskText = new Element("div.removeTaskText",{styles:this.css.topMoreItemText,text:this.lp.taskRemove}).inject(removeTask);
 
 
@@ -1861,7 +1861,7 @@ MWF.xApplication.TeamWork.Task.StatusCheck = new Class({
         var icon = {
             "float":"right","width":"24px","height":"24px",
             "margin-top":"6px","margin-right":"8px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
         };
         var flowContainer = new Element("div",{styles:container}).inject(this.contentNode);
         var flowText = new Element("div",{styles:text,text:this.lp.status.processing}).inject(flowContainer);
@@ -1927,7 +1927,7 @@ MWF.xApplication.TeamWork.Task.PriorityCheck = new Class({
         var icon = {
             "float":"right","width":"24px","height":"24px",
             "margin-top":"6px","margin-right":"8px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
         };
 
         var normalContainer = new Element("div",{styles:container}).inject(this.contentNode);
@@ -2007,7 +2007,7 @@ MWF.xApplication.TeamWork.Task.DynamicType = new Class({
         var icon = {
             "float":"right","width":"24px","height":"24px",
             "margin-top":"6px","margin-right":"8px",
-            "background":"url(/x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
         };
 
         var allContainer = new Element("div",{styles:container}).inject(this.contentNode);

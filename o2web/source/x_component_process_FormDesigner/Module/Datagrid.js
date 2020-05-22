@@ -9,14 +9,14 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Datagrid/datagrid.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Datagrid/datagrid.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Datagrid/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Datagrid/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Datagrid/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Datagrid/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";

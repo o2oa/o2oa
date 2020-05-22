@@ -13,8 +13,8 @@ MWF.xApplication.process.TaskCenter.ProcessStarter = new Class({
 	},
     initialize: function(data, app, options){
         this.setOptions(options);
-        this.path = "/x_component_process_TaskCenter/$ProcessStarter/";
-        this.cssPath = "/x_component_process_TaskCenter/$ProcessStarter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_TaskCenter/$ProcessStarter/";
+        this.cssPath = "../x_component_process_TaskCenter/$ProcessStarter/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         MWF.xDesktop.requireApp("process.TaskCenter", "$ProcessStarter."+MWF.language, null, false);
@@ -301,9 +301,9 @@ MWF.xApplication.process.TaskCenter.ProcessStarter.Identity = new Class({
         //     img = "<img width='50' height='50' border='0' src='data:image/png;base64,"+this.item.data.icon+"'></img>"
         // }else{
         //     if (this.item.data.genderType=="f"){
-        //         img = "<img width='50' height='50' border='0' src='"+"/x_component_Organization/$PersonExplorer/default/icon/female.png'></img>";
+        //         img = "<img width='50' height='50' border='0' src='"+"../x_component_Organization/$PersonExplorer/default/icon/female.png'></img>";
         //     }else{
-        //         img = "<img width='50' height='50' border='0' src='"+"/x_component_Organization/$PersonExplorer/default/icon/man.png'></img>";
+        //         img = "<img width='50' height='50' border='0' src='"+"../x_component_Organization/$PersonExplorer/default/icon/man.png'></img>";
         //     }
         // }
 

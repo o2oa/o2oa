@@ -11,8 +11,8 @@ MWF.xApplication.process.Application.SerialExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_process_Application/$SerialExplorer/";
-        this.cssPath = "/x_component_process_Application/$SerialExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Application/$SerialExplorer/";
+        this.cssPath = "../x_component_process_Application/$SerialExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

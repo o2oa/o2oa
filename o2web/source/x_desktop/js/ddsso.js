@@ -8,7 +8,7 @@ layout.session = layout.session || {};
 
 o2.addReady(function () {
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], { "sequence": true }, function () {
-        //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+        //MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
         MWF.require("MWF.xDesktop.Layout", function () {
             MWF.require("MWF.xDesktop.Authentication", null, false);
@@ -67,12 +67,12 @@ o2.addReady(function () {
                                                     history.replaceState(null, "page", redirect);
                                                     redirect.toURI().go();
                                                 } else {
-                                                    history.replaceState(null, "page", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                                                    history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                                     "appMobile.html?app=process.TaskCenter".toURI().go();
                                                 }
 
                                             }.bind(this), "failure": function (xhr, text, error) {
-                                                history.replaceState(null, "page", "/x_desktop/appMobile.html?app=process.TaskCenter");
+                                                history.replaceState(null, "page", "../x_desktop/appMobile.html?app=process.TaskCenter");
                                                 "appMobile.html?app=process.TaskCenter".toURI().go();
                                             }.bind(this)
                                         });

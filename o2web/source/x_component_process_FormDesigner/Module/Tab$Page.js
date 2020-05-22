@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Tab$Page/tab$Page.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Tab$Page/tab$Page.html",
 		"actions": [
 			{
 		    	"name": "move",
@@ -42,8 +42,8 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 	initialize: function(tab, page, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Tab$Page/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Tab$Page/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Tab$Page/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Tab$Page/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

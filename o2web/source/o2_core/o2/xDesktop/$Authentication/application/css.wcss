@@ -94,7 +94,7 @@
   "formNewNode": {
 	"width": "47px",
 	"height": "47px",
-	"background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+	"background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
 	"width": "47px",
@@ -321,7 +321,7 @@
 	"font-size": "16px",
 	"color":"#ff5c42",
 	"padding-left": "20px",
-	"background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+	"background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   },
   "noticeMessageNode" : {
 	"float" : "left",
@@ -329,7 +329,7 @@
 	"font-size": "16px",
 	"color":"#ff5c42",
 	"padding-left": "20px",
-	"background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_right.png) left center no-repeat"
+	"background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_right.png) left center no-repeat"
   },
   "title" : {
 	"height" : "30px",
