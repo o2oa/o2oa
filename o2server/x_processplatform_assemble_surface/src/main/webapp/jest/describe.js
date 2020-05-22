@@ -679,7 +679,7 @@ Describe.createSampleCommon= function(m,className) {
 				});
 			}
 		 strSample += formData;
-		 strSample += "var action = this.Actions.get(\"" + root + "\");\n";
+		 strSample += "var action = this.Actions.load(\"" + root + "\");\n";
 		 //strSample += "action."+m.name+ "(//平台封装好的方法\n";
 		 strSample += "       action."+ className + "."+m.name+ "(//平台封装好的方法\n";
 		 strSample += "      "+parameter  +",//uri的参数\n";

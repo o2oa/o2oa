@@ -50,6 +50,9 @@ class ActionCreate extends BaseAction {
 			group.setGroupList(
 					ListTools.extractProperty(business.group().pick(ListTools.trim(group.getGroupList(), true, true)),
 							JpaObject.id_FIELDNAME, String.class, true, true));
+			group.setIdentityList(
+					ListTools.extractProperty(business.identity().pick(ListTools.trim(group.getIdentityList(), true, true)),
+							JpaObject.id_FIELDNAME, String.class, true, true));
 			emc.beginTransaction(Group.class);
 			emc.persist(group, CheckPersistType.all);
 			emc.commit();

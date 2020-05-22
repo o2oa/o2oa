@@ -1,10 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig.exception.ExceptionAttendanceEmployeeProcess;
-import com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig.exception.ExceptionConfigIdEmpty;
-import com.x.attendance.assemble.control.jaxrs.attendanceemployeeconfig.exception.ExceptionConfigNotExists;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

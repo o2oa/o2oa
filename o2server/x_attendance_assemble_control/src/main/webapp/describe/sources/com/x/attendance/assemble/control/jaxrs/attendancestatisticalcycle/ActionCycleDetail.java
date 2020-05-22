@@ -1,8 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle;
 
 import com.alibaba.druid.util.StringUtils;
-import com.x.attendance.assemble.control.exception.PersonHasNoIdentityException;
-import com.x.attendance.assemble.control.jaxrs.attendancestatisticalcycle.exception.*;
 import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.entity.JpaObject;
@@ -54,7 +52,7 @@ public class ActionCycleDetail extends BaseAction {
 					Exception exception = new ExceptionCanNotFindTopUnitNameByPerson( effectivePerson.getDistinguishedName());
 					result.error(exception);
 				}
-			} catch (PersonHasNoIdentityException e) {
+			} catch (ExceptionPersonHasNoIdentity e) {
 				check = false;
 				result.error(e);
 				logger.error(e, effectivePerson, request, null);
@@ -73,7 +71,7 @@ public class ActionCycleDetail extends BaseAction {
 					Exception exception = new ExceptionCanNotFindUnitNameByPerson( effectivePerson.getDistinguishedName());
 					result.error(exception);
 				}
-			} catch (PersonHasNoIdentityException e) {
+			} catch (ExceptionPersonHasNoIdentity e) {
 				check = false;
 				result.error(e);
 				logger.error(e, effectivePerson, request, null);

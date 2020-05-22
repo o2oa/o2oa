@@ -36,16 +36,21 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.load();
     },
     load: function(){
+        if( layout.mobile ){
+            this.content = new Element("div").inject(this.node);
+        }else{
+            this.content = this.node;
+        }
         if( !this.form && this.options.isManagerProcess ){
-            this.managerProcessNoticeNode = new Element("div", {"styles": this.css.managerProcessNoticeNode, "html": MWF.xApplication.process.Work.LP.managerProcessNotice}).inject(this.node);
-            this.managerLoginNode = new Element("div", {"styles": this.css.managerLoginNode, "text": MWF.xApplication.process.Work.LP.managerLogin }).inject(this.node);
+            this.managerProcessNoticeNode = new Element("div", {"styles": this.css.managerProcessNoticeNode, "html": MWF.xApplication.process.Work.LP.managerProcessNotice}).inject(this.content);
+            this.managerLoginNode = new Element("div", {"styles": this.css.managerLoginNode, "text": MWF.xApplication.process.Work.LP.managerLogin }).inject(this.content);
 
             this.managerLoginNode.addEvent("click", function(ev){
                 this.managerLogin(ev);
             }.bind(this));
 
             //var text = MWF.xApplication.process.Work.LP.managerLoginReturn.replace( "{user}", layout.session.user.name );
-            //this.managerLoginReturnNode = new Element("div", {"styles": this.css.managerLoginNode, "text": text }).inject(this.node);
+            //this.managerLoginReturnNode = new Element("div", {"styles": this.css.managerLoginNode, "text": text }).inject(this.content);
             //this.managerLoginReturnNode.hide();
             //this.managerPerson = layout.session.user.distinguishedName;
             //this.managerLoginReturnNode.addEvent("click", function(ev){
@@ -53,23 +58,27 @@ MWF.xApplication.process.Work.Processor = new Class({
             //}.bind(this))
         }
 
-        this.routeOpinionTile = new Element("div", {"styles": this.css.routeOpinionTile, "text": MWF.xApplication.process.Work.LP.inputOpinion}).inject(this.node);
-        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.node);
+        this.routeOpinionTile = new Element("div", {"styles": this.css.routeOpinionTile, "text": MWF.xApplication.process.Work.LP.inputOpinion}).inject(this.content);
+        this.routeOpinionArea = new Element("div", {"styles": this.css.routeOpinionArea}).inject(this.content);
 
         this.setOpinion();
 
         if( this.form ){
             if( layout.mobile ){
-                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
                 this.orgsArea.hide();
             }else{
-                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.node);
+                this.orgsArea = new Element("div", {"styles": this.css.orgsArea}).inject(this.content);
                 this.orgsTile = new Element("div", {"styles": this.css.orgsTitle, "text": MWF.xApplication.process.Work.LP.selectPerson}).inject(this.orgsArea);
             }
         }
 
-        this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.node);
+        if( layout.mobile ){
+            this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.node);
+        }else{
+            this.buttonsArea = new Element("div", {"styles": this.css.buttonsArea}).inject(this.content);
+        }
         this.setButtons();
 
         if( this.form ){
@@ -207,7 +216,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             list.push( this.splitByStartNumber( k).name )
         }.bind(this));
 
-        var flag = true;
+        var flag = false;
         list.each( function( routeGroupName ){
             var routeList = this.routeGroupObject[routeGroupName];
             var routeGroupNode = new Element("div", {"styles": this.css.routeGroupNode, "text": routeGroupName}).inject(this.routeGroupArea);
@@ -224,10 +233,12 @@ MWF.xApplication.process.Work.Processor = new Class({
                 this.selectRouteGroup(routeGroupNode);
                 flag = false;
             }else{
-                // this.setSize(0);
+                flag = true;
             }
         }.bind(this))
-        if( flag )this.setSize(0);
+        if( flag ){
+            this.setSize(0);
+        }
     },
     overRouteGroup: function(node){
         if (this.selectedRouteGroup){
@@ -317,6 +328,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //this.task.routeNameList = ["送审核", "送办理", "送公司领导阅"];
         if( !routeList )routeList = this.getRouteDataList();
         //this.task.routeNameList.each(function(route, i){
+        var flag = false;
         routeList.each(function(route, i){
             if( route.hiddenScriptText && this.form && this.form.Macro ){
                 if( this.form.Macro.exec(route.hiddenScriptText, this).toString() === "true" )return;
@@ -341,11 +353,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                 this.selectRoute(routeNode);
                 flag = false;
             }else{
-                // this.setSize(0);
+                flag = true;
             }
 
         }.bind(this));
-        if(flag)this.setSize(0);
+        if( flag ){
+            this.setSize(0);
+        }
     },
     overRoute: function(node){
         if (this.selectedRoute){
@@ -406,8 +420,8 @@ MWF.xApplication.process.Work.Processor = new Class({
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
-                this.selectedRoute.addClass("mainColor_bg");
-                this.selectedRoute.removeClass("lightColor_bg");
+                this.selectedRoute.addClass("lightColor_bg");
+                this.selectedRoute.removeClass("mainColor_bg");
                 //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
 
@@ -1119,6 +1133,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         var data = this.getOrgData( route );
         var routeConfig = this.getRouteData( route );
         var ignoreFirstOrgOldData = false; //(routeConfig.type === "appendTask" && routeConfig.appendTaskIdentityType === "select");
+        this.setSize( data.length );
         if( data.length  ){
             this.orgsArea.show();
 
@@ -1351,8 +1366,31 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.fireEvent("resize");
     },
     setSize : function( currentOrgLength ){
-        if( layout.mobile )return;
-
+        if( layout.mobile ){
+            this.setSize_mobile();
+        }else{
+            this.setSize_pc( currentOrgLength );
+        }
+        //this.node.store("width", this.node.getStyle("width").toInt() + ( flag ? 20 : 0 ));
+        this.fireEvent("resize");
+    },
+    setSize_mobile : function(){
+        if( this.buttonsArea ){
+            debugger;
+            var bodySize = $(document.body).getSize();
+            var nodeHeight = bodySize.y - this.getOffsetY(this.node);
+            this.node.setStyles({
+                "overflow-y": "hidden",
+                "height" : nodeHeight
+            });
+            var buttonsAreaSize = this.buttonsArea.getSize();
+            this.content.setStyles({
+                "height" : nodeHeight - buttonsAreaSize.y - this.getOffsetY(this.buttonsArea) - this.getOffsetY(this.content),
+                "overflow-y" : "auto"
+            })
+        }
+    },
+    setSize_pc : function( currentOrgLength ){
         var lines = ((currentOrgLength+1)/2).toInt();
         var flag = false;
 
@@ -1364,6 +1402,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         //if( this.buttonsArea )height = height + this.getOffsetY(this.buttonsArea) +  this.buttonsArea.getStyle("height").toInt();
 
         if( lines > 0 ){
+            if(this.orgsArea)this.orgsArea.show();
             if( this.orgsTile )height = height + this.getOffsetY(this.orgsTile) +  this.orgsTile.getStyle("height").toInt();
             height = height + lines*this.options.orgHeight + this.getOffsetY(this.orgsArea);
             this.node.setStyle( "height", height );
@@ -1371,10 +1410,11 @@ MWF.xApplication.process.Work.Processor = new Class({
             //flag = (lines*this.options.orgHeight + 431) > Math.floor( this.form.app.content.getSize().y * 0.9);
             //this.node.store("height", Math.min( Math.floor( this.form.app.content.getSize().y * 0.9) , lines*this.options.orgHeight + 431 ));
         }else{
-            this.orgsArea.hide();
+            if(this.orgsArea)this.orgsArea.hide();
             this.node.setStyle( "height", height );
             //this.node.store("height", 401 );
         }
+        debugger;
         if( this.getMaxOrgLength() > 1 ){
             this.node.setStyles( this.css.node_wide );
             this.inputOpinionNode.setStyles( this.css.inputOpinionNode_wide );
@@ -1389,8 +1429,6 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.inputTextareaStyle = this.css.inputTextarea;
             this.selectIdeaNode.setStyles( this.css.selectIdeaNode );
         }
-        //this.node.store("width", this.node.getStyle("width").toInt() + ( flag ? 20 : 0 ));
-        this.fireEvent("resize");
     },
     validationOrgs : function(){
         if( !this.orgItems || !this.orgItems.length )return true;
@@ -1427,12 +1465,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             return true;
         }
         if( !this.validationOrgs() )return false;
-        if( !this.isOrgsHasEmpower() ){
+        if( layout.mobile ){
             if( callback )callback();
             return true;
+        }else{
+            if( !this.isOrgsHasEmpower() ){
+                if( callback )callback();
+                return true;
+            }
+            //this.checkEmpowerMode = true;
+            this.showEmpowerDlg( callback );
         }
-        //this.checkEmpowerMode = true;
-        this.showEmpowerDlg( callback );
     },
     showEmpowerDlg : function( callback ){
         //this.empowerMask = new Element("div", {"styles": this.css.handwritingMask}).inject(this.node);
@@ -1505,7 +1548,7 @@ MWF.xApplication.process.Work.Processor = new Class({
 
         //var width = this.node.retrieve("width");
         //empowerNode.setStyle( "width", width );
-        var width = "880";
+        var width = 840;
         //if( len > 1 ){
         //    width = "840"
         //}else{
@@ -1522,9 +1565,17 @@ MWF.xApplication.process.Work.Processor = new Class({
             "isResize": false,
             "content": empowerNode,
             //"container" : this.node,
-            "width": width, //600,
+            "width": width + 40, //600,
             "height": "auto", //dlgHeight,
             "mark" : false,
+            "onPostLoad" : function () {
+                if( this.nodeWidth ){
+                    this.node.setStyle("width", this.nodeWidth+"px" );
+                }
+                if( this.nodeHeight ){
+                    this.node.setStyle("height", this.nodeHeight+"px" );
+                }
+            },
             "buttonList": [
                 {
                     "type" : "ok",
@@ -2394,6 +2445,47 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             this.css = this.processor.css;
             this.checkedAllItems = true;
         },
+        load : function( data, callback, container ){
+            if( typeOf(data)==="array" && this.json.isCheckEmpower && this.json.identityResultType === "identity" ){
+                var array = [];
+                data.each( function( d ){
+                    if( d.distinguishedName ){
+                        var flag = d.distinguishedName.substr(d.distinguishedName.length-1, 1).toLowerCase();
+                        if( flag === "i" ){
+                            array.push( d.distinguishedName )
+                        }
+                    }
+                }.bind(this));
+                if( array.length > 0 ){
+                    o2.Actions.get("x_organization_assemble_express").listEmpowerWithIdentity({
+                        "application" : (this.form.businessData.work || this.form.businessData.workCompleted).application,
+                        "process" : (this.form.businessData.work || this.form.businessData.workCompleted).process,
+                        "work" : (this.form.businessData.work || this.form.businessData.workCompleted).id,
+                        "identityList" : array
+                    }, function( json ){
+                        var arr = [];
+                        json.data.each( function(d){
+                            if(d.fromIdentity !== d.toIdentity )arr.push(d);
+                        });
+                        if( arr.length > 0 ){
+                            if( layout.mobile ){
+                                this.openSelectEmpowerDlg( arr, data, callback, container );
+                            }else{
+                                this.openSelectEmpowerDlg_embedded( arr, data, callback, container );
+                            }
+                        }else{
+                            if( callback )callback( data );
+                        }
+                    }.bind(this), function(){
+                        if( callback )callback( data );
+                    }.bind(this))
+                }else{
+                    if( callback )callback( data );
+                }
+            }else{
+                if( callback )callback( data );
+            }
+        },
         hasEmpowerIdentity: function( data ){
             var flag = false;
             if( typeOf(data)==="array" && this.json.isCheckEmpower && this.json.identityResultType === "identity" ) {
@@ -2424,14 +2516,14 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             }
             return flag;
         },
-        openSelectEmpowerDlg : function( data, orgData, callback, container ){
+        openSelectEmpowerDlg_embedded : function( data, orgData, callback, container ){
             var node = new Element("div", {"styles": this.css.empowerAreaNode});
             //var html = "<div style=\"line-height: 30px; color: #333333; overflow: hidden\">"+MWF.xApplication.process.Xform.LP.empowerDlgText+"</div>";
             var html = "<div style=\"margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
             node.set("html", html);
             var itemNode = node.getLast();
             this.getEmpowerItems(itemNode, data);
-            node.inject( container || this.container );
+            node.inject( container || this.form.app.content );
 
             if( this.selectAllNode ){
                 var selectNode = this.createSelectAllEmpowerNode();

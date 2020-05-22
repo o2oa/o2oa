@@ -21,6 +21,7 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
                     this.fireEvent("afterLoad");
                 }.bind(this)
             }, this);
+            if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
 
             //var json = this.readonly ? this.json.sysTools.readTools : this.json.sysTools.editTools;
             //if( this.json.style == "xform_red_simple" ){
