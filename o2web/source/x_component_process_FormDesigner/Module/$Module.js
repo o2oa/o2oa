@@ -64,7 +64,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		],
 
 
-		"propertyPath": "/x_component_process_FormDesigner/Module/Label/label.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Label/label.html"
 	},
 
 	_getNewId: function(prefix, moduleName){

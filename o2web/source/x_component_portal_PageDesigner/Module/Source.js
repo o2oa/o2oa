@@ -3,14 +3,14 @@ MWF.xApplication.portal.PageDesigner.Module.Source = MWF.PCSource = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Source/source.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Source/source.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Source/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Source/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Source/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Source/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";

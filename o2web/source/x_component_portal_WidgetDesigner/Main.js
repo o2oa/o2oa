@@ -65,7 +65,7 @@ MWF.xApplication.portal.WidgetDesigner.Main = new Class({
                 }.bind(this))
         },
         loadNewPageData: function(callback){
-                var url = "/x_component_portal_PageDesigner/Module/Page/template/"+this.options.template;
+                var url = "../x_component_portal_PageDesigner/Module/Page/template/"+this.options.template;
                 MWF.getJSON(url, {
                         "onSuccess": function(obj){
                                 this.pageData = obj.pcData;
@@ -89,7 +89,7 @@ MWF.xApplication.portal.WidgetDesigner.Main = new Class({
         previewPage: function(){
                 this.savePage();
                 //this.page.preview();
-                var url = "/x_desktop/portal.html?id="+this.application.id+"&widget="+this.page.json.id;
+                var url = "../x_desktop/portal.html?id="+this.application.id+"&widget="+this.page.json.id;
                 window.open(url);
         }
 });

@@ -14,7 +14,7 @@ MWF.xApplication.Report.StrategyExplorer.Print = new Class({
         this.css = this.explorer.css;
         this.actions = this.app.restActions;
         this.data = data;
-        this.path = "/x_component_Report/$StrategyExplorer/";
+        this.path = "../x_component_Report/$StrategyExplorer/";
     },
     load: function(){
         if( this.data.detail.opinions ){

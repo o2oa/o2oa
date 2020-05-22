@@ -5,7 +5,7 @@ MWF.xApplication.cms.FormDesigner.Module.Textarea = MWF.CMSFCTextarea = new Clas
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Textarea/textarea.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Textarea/textarea.html"
 	}
 	
 });

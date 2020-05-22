@@ -162,7 +162,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
 
         if (this.faceLogin) {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                COMMON.AjaxModule.loadDom("/o2_lib/adapter/adapter.js", function () {
+                COMMON.AjaxModule.loadDom("../o2_lib/adapter/adapter.js", function () {
                     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                         //暂时隐藏此功能
                         this.cameraLoginIcon = new Element("div", { "styles": this.explorer.css.cameraLoginIcon }).inject(this.formTopContentNode);
@@ -392,7 +392,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
 
     cameraLoginSuccess: function () {
-        COMMON.AjaxModule.loadDom(["/o2_lib/CryptoJS/tripledes.js", "/o2_lib/CryptoJS/mode-ecb.js"], function () {
+        COMMON.AjaxModule.loadDom(["../o2_lib/CryptoJS/tripledes.js", "../o2_lib/CryptoJS/mode-ecb.js"], function () {
             //COMMON.AjaxModule.loadDom(, function(){
 
             var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
@@ -821,7 +821,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             styles: this.css.oauthItemNode,
             events: {
                 click: function () {
-                    var url = "/x_desktop/oauth.html?oauth=" + encodeURIComponent(this.name);
+                    var url = "../x_desktop/oauth.html?oauth=" + encodeURIComponent(this.name);
                     if (this.qywx) {
                         url += "&qywx=" + this.qywx;
                     }

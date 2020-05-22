@@ -176,7 +176,7 @@ MWF.xApplication.Calendar.Main = new Class({
         //
         //var iconNode = this.iconNode = new Element("img",{
         //    "styles" : this.css.titleIconNode,
-        //    "src" : "/x_component_Calendar/$Main/appicon.png"
+        //    "src" : "../x_component_Calendar/$Main/appicon.png"
         //}).inject(iconAreaNode);
         //
         //this.titleTextNode = new Element("div.titleTextNode", {
@@ -214,7 +214,7 @@ MWF.xApplication.Calendar.Main = new Class({
         var actionNode = new Element("div", {"styles": this.css.topMenuNode_right, "title" : text}).inject(this.topMenuRight);
         var actionIconNode = new Element("div", {"styles": this.css.topMenuIconNode}).inject(actionNode);
         var actionTextNode = new Element("div",{styles: this.css.topMenuTextNode, "text":text}).inject(actionNode);
-        actionIconNode.setStyle("background", "url(/x_component_Calendar/$Main/default/icon/"+icon+".png) no-repeat center center");
+        actionIconNode.setStyle("background", "url(../x_component_Calendar/$Main/default/icon/"+icon+".png) no-repeat center center");
         actionNode.store("icon",icon);
         actionNode.store("iconNode",actionIconNode);
 
@@ -222,15 +222,15 @@ MWF.xApplication.Calendar.Main = new Class({
         actionNode.addEvents({
             "mouseover": function(){
                 this.node.setStyles(_self.css.topMenuNode_over);
-                this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
+                this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 this.node.setStyles(_self.css.topMenuNode_right);
-                this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
+                this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
             }.bind({ node:actionNode }),
             "click": function(){
                 this.node.setStyles(_self.css.topMenuNode_down);
-                this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
+                this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 if (_self[action]) _self[action].apply(_self);
             }.bind({ node : actionNode })
         });
@@ -258,7 +258,7 @@ MWF.xApplication.Calendar.Main = new Class({
 
         var actionNode = new Element("div", {"styles": this.css.topMenuNode}).inject(this.topMenu);
         var actionIconNode = new Element("div", {"styles": this.css.topMenuIconNode}).inject(actionNode);
-        actionIconNode.setStyle("background", "url(/x_component_Calendar/$Main/default/icon/"+icon+".png) no-repeat center center");
+        actionIconNode.setStyle("background", "url(../x_component_Calendar/$Main/default/icon/"+icon+".png) no-repeat center center");
         var actionTextNode = new Element("div", {"styles": this.css.topMenuTextNode, "text": text}).inject(actionNode);
         actionNode.store("icon",icon);
         actionNode.store("iconNode",actionIconNode);
@@ -269,13 +269,13 @@ MWF.xApplication.Calendar.Main = new Class({
             "mouseover": function(){
                 if( this.node != _self.currentTopMenuNode ){
                     this.node.setStyles(_self.css.topMenuNode_over);
-                    this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
+                    this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 if(this.node != _self.currentTopMenuNode){
                     this.node.setStyles(_self.css.topMenuNode);
-                    this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
+                    this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
                 }
             }.bind({ node:actionNode }),
             //"mousedown": function(){this.setStyles(_self.css.topMenuNode_down);},
@@ -283,11 +283,11 @@ MWF.xApplication.Calendar.Main = new Class({
             "click": function(){
                 if( this.node != _self.currentTopMenuNode ){
                     this.node.setStyles( _self.css.topMenuNode_down );
-                    this.node.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
+                    this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
                 if( _self.currentTopMenuNode && this.node != _self.currentTopMenuNode){
                     _self.currentTopMenuNode.setStyles( _self.css.topMenuNode );
-                    _self.currentTopMenuNode.retrieve("iconNode").setStyle( "background","url(/x_component_Calendar/$Main/default/icon/"+_self.currentTopMenuNode.retrieve("icon")+".png) no-repeat center center" );
+                    _self.currentTopMenuNode.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+_self.currentTopMenuNode.retrieve("icon")+".png) no-repeat center center" );
                 }
                 _self.currentTopMenuNode = this.node;
                 if (_self[action]) _self[action].apply(_self);

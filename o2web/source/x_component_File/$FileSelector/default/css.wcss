@@ -50,7 +50,7 @@
 	"width": "30px",
 	"height": "30px",
 	"float": "right",
-	"background": "url(/x_component_File/$FileSelector/default/icon/close.png) no-repeat center center",
+	"background": "url(../x_component_File/$FileSelector/default/icon/close.png) no-repeat center center",
 	"cursor": "pointer"
   },
   "okButton" : {
@@ -139,7 +139,7 @@
 		"float": "right",
 		"width": "8px",
 		"height": "20px",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/down.png) center center no-repeat"
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/down.png) center center no-repeat"
 	},
 	
 	"leftNode": {
@@ -151,7 +151,7 @@
 		"border": "1px solid #999",
 		"margin-left": "4px",
 		"border-radius": "3px",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/left.png) center center no-repeat"
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/left.png) center center no-repeat"
 	},
 	"rightNode": {
 		"height": "24px",
@@ -162,7 +162,7 @@
 		"border": "1px solid #999",
 		"margin-left": "4px",
 		"border-radius": "3px",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/right.png) center center no-repeat"
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/right.png) center center no-repeat"
 	},
 	"refreshNode": {
 		"height": "24px",
@@ -173,7 +173,7 @@
 		"border": "1px solid #999",
 		"margin-left": "4px",
 		"border-radius": "3px",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/refresh.png) center center no-repeat"
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/refresh.png) center center no-repeat"
 	},
 	"searchNode": {
 		"height": "24px",
@@ -279,7 +279,7 @@
 	"shareIconNode": {
 		"width": "80px",
 		"height": "20px",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/share.png) center center no-repeat",
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/share.png) center center no-repeat",
 		"position": "relative",
 		"z-index":100,
 		"top": "-56px"
@@ -329,7 +329,7 @@
 		"width": "10px",
 		"height": "24px",
 		"float": "left",
-		"background": "url("+"/x_component_File/$FileSelector/default/icon/next.png) center center no-repeat"
+		"background": "url("+"../x_component_File/$FileSelector/default/icon/next.png) center center no-repeat"
 	},
 	"dropUploadInforNode": {
 		"width": "260px",

@@ -119,7 +119,7 @@ MWF.xApplication.Selector.CMSFormField.Item = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -168,7 +168,7 @@ MWF.xApplication.Selector.CMSFormField.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     }
 });
 
@@ -177,7 +177,7 @@ MWF.xApplication.Selector.CMSFormField.ItemCategory = new Class({
 
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded){

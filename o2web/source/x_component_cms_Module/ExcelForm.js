@@ -29,8 +29,8 @@ MWF.xApplication.cms.Module.ImportForm = new Class({
 
         this.action = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Module.Actions.RestActions();
 
-        this.path = "/x_component_cms_Module/$ExcelForm/";
-        this.cssPath = "/x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Module/$ExcelForm/";
+        this.cssPath = "../x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
 
         this.load();
         //this.orgAction = new MWF.xAction.org.express.RestActions();
@@ -141,8 +141,8 @@ MWF.xApplication.cms.Module.ExportForm = new Class({
 
         this.action = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Module.Actions.RestActions();
 
-        this.path = "/x_component_cms_Module/$ExcelForm/";
-        this.cssPath = "/x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Module/$ExcelForm/";
+        this.cssPath = "../x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
 
         this.load();
         //this.orgAction = new MWF.xAction.org.express.RestActions();

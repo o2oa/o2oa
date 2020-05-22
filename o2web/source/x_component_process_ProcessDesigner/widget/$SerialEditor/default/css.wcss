@@ -15,7 +15,7 @@
     },
     "downNode": {
         "height": "24px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$SerialEditor/default/down.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$SerialEditor/default/down.png) no-repeat center center"
     },
 
     "itemNode": {
@@ -38,10 +38,10 @@
         "float": "right",
         "width": "16px",
         "height": "18px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$SerialEditor/default/flag.png) no-repeat center right"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$SerialEditor/default/flag.png) no-repeat center right"
     },
     "itemIconNode_over": {
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$SerialEditor/default/flag_over.png) no-repeat center right"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$SerialEditor/default/flag_over.png) no-repeat center right"
     },
     "itemTextNode": {
         "margin-right": "16px"
@@ -90,7 +90,7 @@
         "float": "right",
         "height": "20px",
         "width": "14px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$SerialEditor/default/delete.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$SerialEditor/default/delete.png) no-repeat center center"
     },
     "selectedItemNode_over": {
         "background": "#F1F1F1",

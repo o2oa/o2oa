@@ -1436,7 +1436,7 @@ MWF.xDesktop.Layout.Top = new Class({
         if (app.appIcon){
             icon = "url(data:image/png;base64,"+app.appIcon+")";
         }else{
-            icon = "url(/x_component_cms_Index/$Main/default/icon/column.png)";
+            icon = "url(../x_component_cms_Index/$Main/default/icon/column.png)";
         }
         applicationMenuIconNode.setStyle("background-image", icon);
 
@@ -1484,7 +1484,7 @@ MWF.xDesktop.Layout.Top = new Class({
         if (app.icon){
             icon = "url(data:image/png;base64,"+app.icon+")";
         }else{
-            icon = "url(/x_component_portal_PortalExplorer/$Main/default/icon/application.png)";
+            icon = "url(../x_component_portal_PortalExplorer/$Main/default/icon/application.png)";
         }
         applicationMenuIconNode.setStyle("background-image", icon);
 
@@ -1527,7 +1527,7 @@ MWF.xDesktop.Layout.Top = new Class({
         if (app.icon){
             icon = "url(data:image/png;base64,"+app.icon+")";
         }else{
-            icon = "url(/x_component_query_Query/$Main/appicon.png)";
+            icon = "url(../x_component_query_Query/$Main/appicon.png)";
         }
         applicationMenuIconNode.setStyle("background-image", icon);
 
@@ -1570,7 +1570,7 @@ MWF.xDesktop.Layout.Top = new Class({
         if (app.icon){
             icon = "url(data:image/png;base64,"+app.icon+")";
         }else{
-            icon = "url(/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)";
+            icon = "url(../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)";
         }
         applicationMenuIconNode.setStyle("background-image", icon);
 
@@ -1616,10 +1616,10 @@ MWF.xDesktop.Layout.Top = new Class({
             if (value.iconPath){
                 icon = value.iconPath;
             }else{
-                icon = "/x_component_Setting/$Main/default/icon/site.png";
+                icon = "../x_component_Setting/$Main/default/icon/site.png";
             }
         }else{
-            icon = "/x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
+            icon = "../x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
         }
         applicationMenuIconNode.setStyle("background-image", "url("+icon+")");
 
@@ -1668,7 +1668,7 @@ MWF.xDesktop.Layout.Top = new Class({
             "styles": this.layout.css.widgetMenuIconNode
         }).inject(applicationMenuNode);
 
-        var icon = "/x_component_"+appName.replace(/\./g, "_")+"/$"+name+"/"+icon;
+        var icon = "../x_component_"+appName.replace(/\./g, "_")+"/$"+name+"/"+icon;
         applicationMenuIconNode.setStyle("background-image", "url("+icon+")");
 
         new Element("div", {

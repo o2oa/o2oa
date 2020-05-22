@@ -132,11 +132,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete.png) no-repeat center center"
     },
     "actionDeleteNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/delete_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionDeleteNode_down":{
@@ -155,11 +155,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "5px",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/edit.png) no-repeat center center"
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/edit.png) no-repeat center center"
     },
     "actionEditNode_over":{
         "box-shadow": "1px 1px 2px #999",
-        "background": "url("+"/x_component_process_Application/$WorkExplorer/default/icon/edit_over.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Application/$WorkExplorer/default/icon/edit_over.png) no-repeat center center",
         "background-color": "#666"
     },
     "actionEditNode_down":{

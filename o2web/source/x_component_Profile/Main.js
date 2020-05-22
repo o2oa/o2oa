@@ -443,7 +443,7 @@ MWF.xApplication.Profile.Main = new Class({
 
         if(!this[type+"NoDataDiv"]){
             this[type+"NoDataDiv"] = new Element("div.o2_profile_emPower_noData").adopt(
-                new Element("img",{src:"/x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
+                new Element("img",{src:"../x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
                 new Element("div",{text:"无待办"})
             ).inject(content.getElement(".profile_common_tableDiv"));
         }
@@ -627,7 +627,7 @@ MWF.xApplication.Profile.Main = new Class({
 
         if(!this[type+"NoDataDiv"]){
             this[type+"NoDataDiv"] = new Element("div.o2_profile_emPower_noData").adopt(
-                new Element("img",{src:"/x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
+                new Element("img",{src:"../x_component_Profile/$Main/newVersion/icon_wuweituo.png"}),
                 new Element("div",{text:this.lp.empower.noData}),
                 type=="myEmPower"?new Element("div.o2_profile_emPower_Add.mainColor_color",{text:"新建委托"}).addEvent("click",function(){
                     var popForm = new MWF.xApplication.Profile.emPowerPopupForm(null, {}, {
@@ -712,7 +712,7 @@ MWF.xApplication.Profile.Main = new Class({
                     "styles": {"font-size": "14px", "display": "block", "margin-bottom": "10px"},
                     "text": d.displayName,
                     "target": "_blank",
-                    "href": "/x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
+                    "href": "../x_desktop/oauth.html?oauth="+encodeURIComponent(d.name)+"&redirect="+"&method=oauthBind"
                 }).inject(this.ssoConfigAreaNode)
             }.bind(this));
         }.bind(this));
@@ -835,7 +835,7 @@ MWF.xApplication.Profile.Main = new Class({
                 var imgArea = new Element("div.o2_profile_previewBackground").inject(UINode);
                 if (currentSrc==style.style){
                     //imgArea.setStyles({"border": "4px solid #ffea00"});
-                    new Element("img.icon",{"src":"/x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png"}).inject(imgArea);
+                    new Element("img.icon",{"src":"../x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png"}).inject(imgArea);
                     imgArea.addClass("profile_previewBackground_current");
                 }
                 new Element("img", {"src": img}).inject(imgArea);
@@ -859,7 +859,7 @@ MWF.xApplication.Profile.Main = new Class({
                 }
             }.bind(this));
             //item.setStyles({"border": "4px solid #ffea00"});
-            new Element("img.icon",{"src":"/x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png"}).inject(item);
+            new Element("img.icon",{"src":"../x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png"}).inject(item);
             item.addClass("profile_previewBackground_current");
 
             var dskImg = MWF.defaultPath+"/xDesktop/$Layout/"+desktopImg+"/desktop.jpg";
@@ -1074,7 +1074,7 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
     },
     load: function () {
         //重新指定css文件，由于临时用，所以尽可能写一个文件里
-        this.cssPath = "/x_component_Profile/$Main/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_Profile/$Main/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.configData = this.options.configData||{};
@@ -1222,10 +1222,10 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
             height: "30",
         }).inject(this.applicationNode).setStyles(this.css.selectNode).addEvents({
             "hover":function(){
-                this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat");
+                this.setStyle("background","url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat");
             },
             "blur":function(){
-                this.setStyle("background","url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat");
+                this.setStyle("background","url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat");
             }
         });
         this.showApplicationNode = new Element("div.showNode", {

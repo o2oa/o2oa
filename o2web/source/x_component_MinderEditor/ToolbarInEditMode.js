@@ -6,7 +6,7 @@ MWF.xApplication.MinderEditor.TopToolbar = new Class({
         this.container = container;
         this.commands = this.editor.commands;
 
-        this.path = "/x_component_MinderEditor/$ToolbarInEditMode/";
+        this.path = "../x_component_MinderEditor/$ToolbarInEditMode/";
         this.cssPath = this.path + this.editor.options.style + "/css.wcss";
         this._loadCss();
     },
@@ -177,7 +177,7 @@ MWF.xApplication.MinderEditor.RightToolbar = new Class({
         this.container = container;
         this.commands = this.editor.commands;
 
-        this.path = "/x_component_MinderEditor/$ToolbarInEditMode/";
+        this.path = "../x_component_MinderEditor/$ToolbarInEditMode/";
         this.cssPath = this.path + this.editor.options.style + "/css.wcss";
         this._loadCss();
     },

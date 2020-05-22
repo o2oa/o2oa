@@ -460,7 +460,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         }
     },
     loadNewStatementData: function(callback){
-        var url = "/x_component_query_StatementDesigner/$Statement/statement.json";
+        var url = "../x_component_query_StatementDesigner/$Statement/statement.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 this.actions.getUUID(function(id){

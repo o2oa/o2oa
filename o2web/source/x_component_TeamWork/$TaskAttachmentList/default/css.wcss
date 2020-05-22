@@ -9,7 +9,7 @@
         "width":"48px",
         "height":"48px",
         "margin-left":"20px",
-        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_attachment.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_attachment.png) no-repeat center"
     },
     titleText:{
         "float":"left",
@@ -35,7 +35,7 @@
         "margin-left":"10px",
         "height":"40px",
         "width":"20px",
-        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_unknow.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_unknow.png) no-repeat center"
     },
     attachmentName:{
         "cursor":"pointer",
@@ -61,7 +61,7 @@
         "margin-top":"5px",
         "height":"30px",
         "width":"30px",
-        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_down.png) no-repeat center"
     },
     addContainer:{
         "width":"100%",
@@ -72,7 +72,7 @@
         "float":"left",
         "width":"40px",
         "height":"40px",
-        "background":"url(/x_component_TeamWork/$TaskAttachmentList/default/icon/icon_subtask_add.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$TaskAttachmentList/default/icon/icon_subtask_add.png) no-repeat center"
     },
     addText:{
         "float":"left",

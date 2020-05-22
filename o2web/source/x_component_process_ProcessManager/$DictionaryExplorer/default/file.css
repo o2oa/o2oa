@@ -24,7 +24,7 @@
     height: 16px;
     opacity: 0;
     cursor: pointer;
-    background: url('/x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png') no-repeat center center;
+    background: url('../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png') no-repeat center center;
 }
 .o2_fileItemIconNode {
     padding: 0;

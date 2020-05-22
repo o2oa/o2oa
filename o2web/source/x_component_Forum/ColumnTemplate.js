@@ -21,9 +21,9 @@ MWF.xApplication.Forum.ColumnTemplate = new Class({
         this.actions = app.restActions;
         this.explorer = explorer;
 
-        this.path = "/x_component_Forum/$ColumnTemplate/";
+        this.path = "../x_component_Forum/$ColumnTemplate/";
 
-        this.cssPath = "/x_component_Forum/$ColumnTemplate/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Forum/$ColumnTemplate/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function(){
@@ -31,7 +31,7 @@ MWF.xApplication.Forum.ColumnTemplate = new Class({
         this.loadView();
     },
     _loadSetting: function(){
-        var path = "/x_component_Forum/$ColumnTemplate/template/setting.json";
+        var path = "../x_component_Forum/$ColumnTemplate/template/setting.json";
         var templateSetting;
         if (MWF.xApplication.Forum.ColumnTemplate.Setting){
             templateSetting = MWF.xApplication.Forum.ColumnTemplate.Setting;

@@ -8,8 +8,8 @@ MWF.xApplication.Attendance.ScheduleExplorer = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$ScheduleExplorer/";
-        this.cssPath = "/x_component_Attendance/$ScheduleExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$ScheduleExplorer/";
+        this.cssPath = "../x_component_Attendance/$ScheduleExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -196,9 +196,9 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
 //
 //        var inputStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;";
 //        var inputTimeStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;"+
-//            "background : url(/x_component_Attendance/$ScheduleExplorer/default/icon/calendar.png) 98% center no-repeat";
+//            "background : url(../x_component_Attendance/$ScheduleExplorer/default/icon/calendar.png) 98% center no-repeat";
 //        var inputPersonStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;"+
-//            "background : url(/x_component_Attendance/$PermissionExplorer/default/icon/selectperson.png) 98% center no-repeat";
+//            "background : url(../x_component_Attendance/$PermissionExplorer/default/icon/selectperson.png) 98% center no-repeat";
 //
 //        var html = "<table width='100%' height='270' border='0' cellPadding='0' cellSpacing='0'>" +
 //            "<tr>"+

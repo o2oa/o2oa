@@ -18,7 +18,7 @@ MWF.xApplication.CRM.Publicseas = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.publicseas;
-        this.path = "/x_component_CRM/$Publicseas/";
+        this.path = "../x_component_CRM/$Publicseas/";
         this.loadCss();
 
         this.actions = actions;
@@ -26,7 +26,7 @@ MWF.xApplication.CRM.Publicseas = new Class({
         debugger
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Publicseas/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Publicseas/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {

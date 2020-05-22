@@ -20,7 +20,7 @@ MWF.xApplication.Template.widget.CronPicker = new Class({
         value : ""
 	},
     _loadCornCss: function(reload){
-        this.cornCssPath = "/x_component_Template/widget/$CronPicker/"+this.options.style+"/css.wcss";
+        this.cornCssPath = "../x_component_Template/widget/$CronPicker/"+this.options.style+"/css.wcss";
         var key = encodeURIComponent(this.cornCssPath);
         if (!reload && MWF.widget.css[key]){
             this.css = MWF.widget.css[key];
@@ -89,7 +89,7 @@ MWF.xApplication.Template.widget.CronPicker = new Class({
         }.bind(this));
         this.helpNode = new Element("a", {
             styles : this.css.helpNode,
-            href : '/x_component_Template/widget/$CronPicker/cron_express_description.html',
+            href : '../x_component_Template/widget/$CronPicker/cron_express_description.html',
             target: '_blank'
         }).inject(this.tabNode);
 

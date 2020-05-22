@@ -179,13 +179,13 @@
     "height": "30px",
     "float": "right",
     "margin":"10px",
-    "background": "url(/x_component_Execution/$Main/default/icon/DeleteFilled-100.png) no-repeat center center",
+    "background": "url(../x_component_Execution/$Main/default/icon/DeleteFilled-100.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -229,7 +229,7 @@
     "margin-right": "20px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editOk_bg.png) no-repeat"
   },
   "formCancelActionNode": {
     "height": "30px",
@@ -246,7 +246,7 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url(/x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/editCancel_bg.png) no-repeat"
   },
 
   "viewHeadNode": {
@@ -275,7 +275,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -287,7 +287,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -299,7 +299,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
 

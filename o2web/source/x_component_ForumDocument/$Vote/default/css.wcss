@@ -143,7 +143,7 @@
     "float" : "left",
     "width" : "16px",
     "height" : "16px",
-    "background": "url(/x_component_ForumDocument/$Vote/default/icon/checked.png) no-repeat center center"
+    "background": "url(../x_component_ForumDocument/$Vote/default/icon/checked.png) no-repeat center center"
   },
   "formMaskNode": {
     "width": "100%",
@@ -208,7 +208,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -225,7 +225,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",

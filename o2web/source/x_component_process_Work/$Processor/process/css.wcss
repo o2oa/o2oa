@@ -69,15 +69,15 @@
         "line-height": "24px",
         "margin-top": "5px",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
     },
     "routeGroupNode_over" : {
         "background-color": "#E3E3E3",
-        "background": "url(/x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/process/route.png) no-repeat 5px center"
     },
     "routeGroupNode_selected" : {
         "background-color": "#E3E3E3",
-        "background": "url(/x_component_process_Work/$Processor/process/routegroup_selected.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/process/routegroup_selected.png) no-repeat 5px center"
     },
 
     "routeSelectorArea_hasGroup_single" : {
@@ -96,17 +96,17 @@
         "padding-right": "8px",
         "cursor": "pointer",
         "color" : "#000",
-        "background": "url(/x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
         "background-color": "#f0f0f0"
     },
     "routeNode_over" : {
         "color" : "#000",
-        "background": "url(/x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/process/nocheck.png) no-repeat 5px center",
         "background-color": "#e6ecf8"
     },
     "routeNode_selected" : {
         "color" : "#fff",
-        "background": "url(/x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
+        "background": "url(../x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
         "background-color": "#4a90e2"
     },
 
@@ -114,8 +114,8 @@
 //        "width": "24px",
 //        "height": "24px",
 //        "float": "left",
-//        "background": "url(/x_component_process_Work/$Processor/default/route.png) no-repeat center center"
-//        //"background": "url(/x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center"
+//        "background": "url(../x_component_process_Work/$Processor/default/route.png) no-repeat center center"
+//        //"background": "url(../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center"
 //    },
 //    "routeTextNode": {
 //        "margin-left": "24px",
@@ -178,7 +178,7 @@
         "background-color": "#FFF",
         "margin-top": "2px",
         "padding": "2px 2px 2px 12px",
-        "background": "url("+"/x_component_process_Work/$Processor/process/point.png) no-repeat 3px center",
+        "background": "url("+"../x_component_process_Work/$Processor/process/point.png) no-repeat 3px center",
         "overflow": "hidden"
     },
     "selectIdeaItemNode_over": {
@@ -206,7 +206,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
     },
     "okTextNode": {
         "font-size": "14px",
@@ -230,7 +230,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"/x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url("+"../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -274,7 +274,7 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
 
     "handwritingMask" : {
@@ -317,7 +317,7 @@
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",
@@ -422,15 +422,15 @@
         "color" : "inherit",
         "cursor" : "pointer",
         "color" : "#3C76B7",
-        "background": "url(/x_component_process_Work/$Processor/process/empower_unchecked.png) no-repeat left center"
+        "background": "url(../x_component_process_Work/$Processor/process/empower_unchecked.png) no-repeat left center"
     },
     "empowerSelectAllItemNode_over" : {
         "color" : "#3C76B7",
-        "background": "url(/x_component_process_Work/$Processor/process/empower_unchecked.png) no-repeat left center"
+        "background": "url(../x_component_process_Work/$Processor/process/empower_unchecked.png) no-repeat left center"
     },
     "empowerSelectAllItemNode_selected" : {
         "color" : "#3C76B7",
-        "background": "url(/x_component_process_Work/$Processor/process/empower_checked.png) no-repeat left center"
+        "background": "url(../x_component_process_Work/$Processor/process/empower_checked.png) no-repeat left center"
     },
     "empowerItemOddNode": {
         "float" : "left",
@@ -471,10 +471,10 @@
         "width": "30px",
         "float": "right",
         "overflow": "hidden",
-        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+        "background": "url(../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
     },
     "empowerItemIconNode_selected": {
-        "background": "url(/x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+        "background": "url(../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
     },
     "empowerItemContentNode": {
         "height": "20px"

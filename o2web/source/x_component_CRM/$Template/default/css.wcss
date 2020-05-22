@@ -21,7 +21,7 @@
     "width":"30px",
     "height":"30px",
     "float":"right",
-    "background":"url(/x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"
+    "background":"url(../x_component_CRM/$Template/default/icons/arrow.png) no-repeat center"
   },
   "listContentDiv":{
     "background-color":"#fff",

@@ -21,7 +21,7 @@ MWF.xApplication.MinderEditor.LeftToolbar = new Class({
             this.commands.load();
         }
 
-        this.path = "/x_component_MinderEditor/$LeftToolbar/";
+        this.path = "../x_component_MinderEditor/$LeftToolbar/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
     },

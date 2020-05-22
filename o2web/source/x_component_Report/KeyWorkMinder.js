@@ -17,8 +17,8 @@ MWF.xApplication.Report.KeyWorkMinder = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Report/$KeyWorkMinder/";
-        this.cssPath = "/x_component_Report/$KeyWorkMinder/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Report/$KeyWorkMinder/";
+        this.cssPath = "../x_component_Report/$KeyWorkMinder/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = this.app.lp;
 

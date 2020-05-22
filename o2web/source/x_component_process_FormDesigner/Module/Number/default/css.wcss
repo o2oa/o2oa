@@ -48,7 +48,7 @@
 		"height": "18px"
 	},
 	"textfieldIcon": {
-		"background": "url("+"/x_component_process_FormDesigner/Module/Number/default/icon/number.png) center center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Number/default/icon/number.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "right"

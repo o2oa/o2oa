@@ -17,14 +17,14 @@ MWF.xApplication.ExeManager.BaseWorkList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_ExeManager/$BaseWorkList/";
+        this.path = "../x_component_ExeManager/$BaseWorkList/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_ExeManager/$BaseWorkList/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_ExeManager/$BaseWorkList/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -303,7 +303,7 @@ MWF.xApplication.ExeManager.BaseWorkList.WorkForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.baseWorkForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_ExeManager/$BaseWorkList/";
+        this.path = "../x_component_ExeManager/$BaseWorkList/";
         this.cssPath = this.path + this.options.style + "/baseWorkForm.wcss";
 
         this._loadCss();

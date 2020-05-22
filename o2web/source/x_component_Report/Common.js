@@ -1429,7 +1429,7 @@ MWF.xApplication.Report.SideBar = new Class({
         //this.css = this.app.css;
         this.lp = this.app.lp;
         this.isHidden = false;
-        this.cssPath = "/x_component_Report/$Common/"+this.options.style+"/sidebar/css.wcss";
+        this.cssPath = "../x_component_Report/$Common/"+this.options.style+"/sidebar/css.wcss";
         this._loadCss();
 
         this.load();
@@ -1744,8 +1744,8 @@ MWF.xApplication.Report.ReportArea = new Class({
         this.userName = ( layout.desktop.session.user || layout.user ).distinguishedName;
         this.userId = ( layout.desktop.session.user || layout.user ).id;
 
-        this.path = "/x_component_Report/$Common/default/reportarea/";
-        this.cssPath = "/x_component_Report/$Common/default/reportarea/css.wcss";
+        this.path = "../x_component_Report/$Common/default/reportarea/";
+        this.cssPath = "../x_component_Report/$Common/default/reportarea/css.wcss";
         this._loadCss();
         this.load();
     },

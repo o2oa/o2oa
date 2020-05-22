@@ -68,7 +68,7 @@
     "float":"left",
     "height":"30px",
     "width":"16px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_zengjia_click2.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_zengjia_click2.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -107,7 +107,7 @@
     "cursor":"pointer",
     "height":"30px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_off.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_off.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -116,7 +116,7 @@
     "cursor":"pointer",
     "height":"30px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_sousuo.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_sousuo.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -340,7 +340,7 @@
     "float":"left",
     "height":"25px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_open.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_open.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -348,7 +348,7 @@
     "float":"left",
     "height":"25px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_bianji.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_bianji.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -356,7 +356,7 @@
     "float":"left",
     "height":"25px",
     "width":"25px",
-    "background-image": "url('/x_component_Strategy/$Main/default/icon/icon_delete_grey.png')",
+    "background-image": "url('../x_component_Strategy/$Main/default/icon/icon_delete_grey.png')",
     "background-repeat": "no-repeat",
     "background-position":"center"
   },
@@ -367,13 +367,13 @@
     "margin-right": "5px"
   },
   "documentOpenActionNode_over":{
-    "background-image":"url('/x_component_Strategy/$Main/default/icon/icon_open_click.png')"
+    "background-image":"url('../x_component_Strategy/$Main/default/icon/icon_open_click.png')"
   },
   "documentEditActionNode_over":{
-    "background-image":"url('/x_component_Strategy/$Main/default/icon/icon_bianji_click.png')"
+    "background-image":"url('../x_component_Strategy/$Main/default/icon/icon_bianji_click.png')"
   },
   "documentDeleteActionNode_over":{
-    "background-image":"url('/x_component_Strategy/$Main/default/icon/icon_delete_blue_click2.png')"
+    "background-image":"url('../x_component_Strategy/$Main/default/icon/icon_delete_blue_click2.png')"
   },
   "documentActionNode_down":{
     "color": "#000"

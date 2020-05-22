@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Div = MWF.FCDiv = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Div/div.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Div/div.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Div/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Div/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Div/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Div/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";

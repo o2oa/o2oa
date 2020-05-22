@@ -75,7 +75,7 @@ o2.widget.JavascriptEditor = new Class({
     loadMonacoEditor: function(callback){
         if (!window.monaco){
             o2.load("monaco", {"sequence": true}, function(){
-                require.config({ paths: { "vs": "/o2_lib/vs" }});
+                require.config({ paths: { "vs": "../o2_lib/vs" }});
                 require(["vs/editor/editor.main"], function() {
                     if (callback) callback();
                 });

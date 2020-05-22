@@ -8,7 +8,7 @@
     float: right;
 }
 .o2_profile_titleUserIconNode {
-    background: url(/x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
+    background: url(../x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
     width: 24px;
     height: 24px;
     margin-top: 13px;

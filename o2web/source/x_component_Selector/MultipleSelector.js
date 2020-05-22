@@ -25,8 +25,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.active = true;
         this.setOptions(options);
 
-        this.path = "/x_component_Selector/$Selector/";
-        this.cssPath = "/x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Selector/$Selector/";
+        this.cssPath = "../x_component_Selector/$Selector/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.container = $(container);
