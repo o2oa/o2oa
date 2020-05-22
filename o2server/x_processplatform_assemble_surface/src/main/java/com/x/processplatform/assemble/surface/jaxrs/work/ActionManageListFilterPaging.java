@@ -16,6 +16,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.*;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -53,7 +54,7 @@ class ActionManageListFilterPaging extends BaseAction {
 	}
 
 	private List<Work> list(EffectivePerson effectivePerson, Business business, Integer adjustPage,
-			Integer adjustPageSize, Wi wi) throws Exception {
+							Integer adjustPageSize, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(Work.class);
 		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -63,6 +64,44 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Work_.application).in(wi.getApplicationList()));
 		}
+
+		if(null != wi.getWorkThroughManual()){
+			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
+		}
+		if(StringUtils.isNotBlank(wi.getWorkCreateType())){
+			p = cb.and(p, cb.equal(root.get(Work_.workCreateType), wi.getWorkCreateType()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue02())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue02), wi.getStringValue02()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue03())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue03), wi.getStringValue03()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue04())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue04), wi.getStringValue04()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue05), wi.getStringValue05()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue06())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue06), wi.getStringValue06()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue07())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue07), wi.getStringValue07()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue08())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue08), wi.getStringValue08()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue09())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue09), wi.getStringValue09()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue10())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
+		}
+
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
 		}
@@ -109,8 +148,52 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(Work_.application).in(wi.getApplicationList()));
 		}
+
+		if(null != wi.getWorkThroughManual()){
+			p = cb.and(p, cb.equal(root.get(Work_.workThroughManual), wi.getWorkThroughManual()));
+		}
+		if(StringUtils.isNotBlank(wi.getWorkCreateType())){
+			p = cb.and(p, cb.equal(root.get(Work_.workCreateType), wi.getWorkCreateType()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue01())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue01), wi.getStringValue01()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue02())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue02), wi.getStringValue02()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue03())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue03), wi.getStringValue03()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue04())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue04), wi.getStringValue04()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue05), wi.getStringValue05()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue06())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue06), wi.getStringValue06()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue07())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue07), wi.getStringValue07()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue08())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue08), wi.getStringValue08()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue09())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue09), wi.getStringValue09()));
+		}
+		if (StringUtils.isNotBlank(wi.getStringValue10())){
+			p = cb.and(p,cb.equal(root.get(Work_.stringValue10), wi.getStringValue10()));
+		}
+
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
 			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
+		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
+		}
+		if (ListTools.isNotEmpty(wi.getJobList())) {
+			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
 		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(Work_.startTime), DateTools.parse(wi.getStartTime())));
@@ -124,15 +207,6 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			p = cb.and(p, root.get(Work_.creatorUnit).in(wi.getCreatorUnitList()));
 		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
-		}
-		if (ListTools.isNotEmpty(wi.getJobList())) {
-			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			p = cb.and(p, root.get(Work_.startTimeMonth).in(wi.getStartTimeMonthList()));
-		}
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Work_.activityName).in(wi.getActivityNameList()));
 		}
@@ -143,6 +217,7 @@ class ActionManageListFilterPaging extends BaseAction {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
 			p = cb.and(p,cb.like(root.get(Work_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
+
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
@@ -185,13 +260,63 @@ class ActionManageListFilterPaging extends BaseAction {
 		@FieldDescribe("关键字")
 		private String key;
 
+		@FieldDescribe("是否已经经过人工节点,")
+		private Boolean workThroughManual;
+		@FieldDescribe("工作创建类型,")
+		private String workCreateType;
+
+		@FieldDescribe("业务数据String值01")
+		private String stringValue01;
+		@FieldDescribe("业务数据String值02")
+		private String stringValue02;
+		@FieldDescribe("业务数据String值03")
+		private String stringValue03;
+		@FieldDescribe("业务数据String值04")
+		private String stringValue04;
+		@FieldDescribe("业务数据String值05")
+		private String stringValue05;
+		@FieldDescribe("业务数据String值06")
+		private String stringValue06;
+		@FieldDescribe("业务数据String值07")
+		private String stringValue07;
+		@FieldDescribe("业务数据String值08")
+		private String stringValue08;
+		@FieldDescribe("业务数据String值09")
+		private String stringValue09;
+		@FieldDescribe("业务数据String值10")
+		private String stringValue10;
 		public Wi() {
 		}
+
+		public Boolean getWorkThroughManual() { return workThroughManual; }
+		public String getWorkCreateType() {return workCreateType;}
+		public String getStringValue01() { return stringValue01; }
+		public String getStringValue02() { return stringValue02; }
+		public String getStringValue03() { return stringValue03; }
+		public String getStringValue04() { return stringValue04; }
+		public String getStringValue05() { return stringValue05; }
+		public String getStringValue06() { return stringValue06; }
+		public String getStringValue07() { return stringValue07; }
+		public String getStringValue08() { return stringValue08; }
+		public String getStringValue09() { return stringValue09; }
+		public String getStringValue10() { return stringValue10; }
+
+		public void setWorkThroughManual(Boolean workThroughManual) { this.workThroughManual = workThroughManual; }
+		public void setWorkCreateType(String workCreateType) { this.workCreateType = workCreateType; }
+		public void setStringValue01(String stringValue01) { this.stringValue01 = stringValue01; }
+		public void setStringValue02(String stringValue02) { this.stringValue02 = stringValue02; }
+		public void setStringValue03(String stringValue03) { this.stringValue03 = stringValue03; }
+		public void setStringValue04(String stringValue04) { this.stringValue04 = stringValue04; }
+		public void setStringValue05(String stringValue05) { this.stringValue05 = stringValue05; }
+		public void setStringValue06(String stringValue06) { this.stringValue06 = stringValue06; }
+		public void setStringValue07(String stringValue07) { this.stringValue07 = stringValue07; }
+		public void setStringValue08(String stringValue08) { this.stringValue08 = stringValue08; }
+		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
+		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
 
 		public List<String> getApplicationList() {
 			return applicationList;
 		}
-
 		public void setApplicationList(List<String> applicationList) {
 			this.applicationList = applicationList;
 		}
