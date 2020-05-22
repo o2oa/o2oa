@@ -60,11 +60,21 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 }).inject(this.naviTable);
 
                 var naviTitle = new Element("div.naviTitle",{styles:this.css.naviTitle,text:this.lp.navi.title}).inject(this.naviContent);
-                naviTitle.addEvents({
-                    click:function(){
+                this.rootActions.GlobalAction.isManager(function(json){
+                    if(json.data == "yes"){ //有权限后台管理
+                        var bam = new Element("div.bam",{ styles: this.css.bam, text: this.lp.navi.bam }).inject(naviTitle);
+                        bam.addEvents({
+                            click:function(){
+                                MWF.xDesktop.requireApp("TeamWork", "Bam", function(){
+                                    var b = new MWF.xApplication.TeamWork.Bam(this.container,this.app);
+                                    b.load();
+                                }.bind(this));
+                            }.bind(this)
+                        });
+                    }
+                }.bind(this))
 
-                    }.bind(this)
-                });
+
 
                 //全部项目
                 if(resData.hasOwnProperty("allCount")){
@@ -235,37 +245,37 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         }.bind(this)
                     });
                 }
-
-                //已归档
-                if(resData.hasOwnProperty("archiveCount")){
-                    this.historyItem = new Element("div.historyItem",{styles:this.css.naviItem}).inject(this.naviContent);
-                    this.historyItemImg = new Element("div.historyItemImg",{styles:this.css.historyItemImg}).inject(this.historyItem);
-                    this.historyItemText = new Element("div.historyItemText",{styles:this.css.historyItemText,text:this.lp.navi.historyItem}).inject(this.historyItem);
-                    this.historyItemCount = new Element("div.historyItemCount",{styles:this.css.historyItemCount,text:resData.archiveCount}).inject(this.historyItem);
-                    // this.historyItemIcon = new Element("div.historyItemIcon",{styles:this.css.historyItemIcon}).inject(this.historyItem);
-                    this.historyItem.addEvents({
-                        mouseover:function(){
-                            this.historyItem.setStyles({
-                                "background-color":"#F2F5F7"
-                            });
-                            this.historyItemImg.setStyles({
-                                "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_lsck_xm_click.png)"
-                            });
-                            this.historyItemText.setStyles({
-                                "color":"#4A90E2"
-                            });
-                        }.bind(this),
-                        mouseout:function(){
-                            this.historyItem.setStyles(this.css.naviItem);
-                            this.historyItemImg.setStyles(this.css.historyItemImg);
-                            this.historyItemText.setStyles(this.css.historyItemText);
-                        }.bind(this),
-                        click:function(){
-                            this.openItem({type:"archive"});
-                            this.currentNavi = "archive"
-                        }.bind(this)
-                    });
-                }
+                //
+                // //已归档
+                // if(resData.hasOwnProperty("archiveCount")){
+                //     this.historyItem = new Element("div.historyItem",{styles:this.css.naviItem}).inject(this.naviContent);
+                //     this.historyItemImg = new Element("div.historyItemImg",{styles:this.css.historyItemImg}).inject(this.historyItem);
+                //     this.historyItemText = new Element("div.historyItemText",{styles:this.css.historyItemText,text:this.lp.navi.historyItem}).inject(this.historyItem);
+                //     this.historyItemCount = new Element("div.historyItemCount",{styles:this.css.historyItemCount,text:resData.archiveCount}).inject(this.historyItem);
+                //     // this.historyItemIcon = new Element("div.historyItemIcon",{styles:this.css.historyItemIcon}).inject(this.historyItem);
+                //     this.historyItem.addEvents({
+                //         mouseover:function(){
+                //             this.historyItem.setStyles({
+                //                 "background-color":"#F2F5F7"
+                //             });
+                //             this.historyItemImg.setStyles({
+                //                 "background-image":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_lsck_xm_click.png)"
+                //             });
+                //             this.historyItemText.setStyles({
+                //                 "color":"#4A90E2"
+                //             });
+                //         }.bind(this),
+                //         mouseout:function(){
+                //             this.historyItem.setStyles(this.css.naviItem);
+                //             this.historyItemImg.setStyles(this.css.historyItemImg);
+                //             this.historyItemText.setStyles(this.css.historyItemText);
+                //         }.bind(this),
+                //         click:function(){
+                //             this.openItem({type:"archive"});
+                //             this.currentNavi = "archive"
+                //         }.bind(this)
+                //     });
+                // }
 
                 //回收站
                 if(resData.hasOwnProperty("deleteCount")){
@@ -383,7 +393,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     addNewProject:function(){
         MWF.xDesktop.requireApp("TeamWork", "NewProject", function(){
             this.np = new MWF.xApplication.TeamWork.NewProject(this,{},
-                {"width": 350,"height": 350,
+                {"width": 350,"height": 430,
                     onPostOpen:function(){
                         this.np.formAreaNode.setStyles({"top":"10px"});
                         var fx = new Fx.Tween(this.np.formAreaNode,{duration:200});
@@ -522,6 +532,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     },
                     click:function(){
                         //alert(this.get("text"))
+                        _self.openItem({group:d.id});
+                        _self.currentNavi = d.id;
                     }
                 });
                 var customGroupItem = new Element("div.customGroupItem",{styles:this.css.customGroupItem,text:d.name}).inject(customGroupItemContainer);
@@ -715,25 +727,32 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             var projectItemData = json.data;
 
             if(options && options.type && options.type=="all"){
-                this.menuTitle.set("text","全部项目");
+                this.menuTitle.set("text",this.lp.navi.allItem);
             }else if(options && options.type && options.type=="star"){
-                this.menuTitle.set("text","我的星标")
+                this.menuTitle.set("text",this.lp.navi.starItem);
             }else if(options && options.type && options.type=="my"){
-                typeAction = "projectMyListNext"
+                this.menuTitle.set("text",this.lp.navi.myItem);
+                //typeAction = "projectMyListNext"
             }else if(options && options.type && options.type=="complete"){
-                typeAction = "projectCompleteListNext"
+                this.menuTitle.set("text",this.lp.navi.completeItem);
+                //typeAction = "projectCompleteListNext"
             }else if(options && options.type && options.type=="archive"){
-                typeAction = "projectArchiveListNext"
+                //typeAction = "projectArchiveListNext";
             }else if(options && options.type && options.type=="remove"){
-                typeAction = "projectRemoveListNext"
+                this.menuTitle.set("text",this.lp.navi.removeItem);
+                //typeAction = "projectRemoveListNext"
             }else if(options && options.type && options.type=="unGroup"){
-                typeAction = "projectUnGroupListNext"
+                this.menuTitle.set("text",this.lp.navi.unGroupItem);
+                //typeAction = "projectUnGroupListNext"
             }
 
             if(options && options.group){
                 groupId = options.group;
                 //typeAction = "projectListNext";
                 filter = {group:groupId};
+                this.rootActions.ProjectGroupAction.get(groupId,function(json){
+                    this.menuTitle.set("text",json.data.name||"");
+                }.bind(this))
             }
 
             this.menuCount.set("text","("+json.count+")");
@@ -790,7 +809,6 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
             }else{
                 if(projectItemData) {
-
                     projectItemData.each(function(d){
                         var projectBlockItem = new Element("div.projectBlockItem",{styles:this.css.projectBlockItem}).inject(this.layoutList);
                         projectBlockItem.set("id",d.id);
@@ -857,7 +875,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectBlockItemContainer = new Element("div.projectBlockItemContainer",{styles:this.css.projectBlockItemContainer}).inject(container);
         var projectBlockItemIconContainer = new Element("div.projectBlockItemIconContainer",{styles:this.css.projectBlockItemIconContainer}).inject(projectBlockItemContainer);
 
-        var projectBlockItemIconFav = new Element("div.projectBlockItemIconFav",{styles:this.css.projectBlockItemIconFav}).inject(projectBlockItemIconContainer);
+        var projectBlockItemIconFav = new Element("div.projectBlockItemIconFav",{styles:this.css.projectBlockItemIconFav,title: this.lp.icon.star}).inject(projectBlockItemIconContainer);
         projectBlockItemIconFav.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
@@ -877,56 +895,93 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             });
         }
 
-        var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting}).inject(projectBlockItemIconContainer);
-        projectBlockItemIconSetting.addEvents({
+        var projectBlockItemIconGroup = new Element("div.projectBlockItemIconGroup",{styles:this.css.projectBlockItemIconGroup,title:this.lp.icon.group}).inject(projectBlockItemIconContainer);
+        projectBlockItemIconGroup.addEvents({
             click:function(e){
-                MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
-                    var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": "800","height": "80%",
-                            onPostOpen:function(){
-                                ps.formAreaNode.setStyles({"top":"10px"});
-                                var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
-                                fx.start(["top"] ,"10px", "100px");
+                this.getProject(d.id,function(json){
+                    var pdata = json;
+                    var data = {groups:json.groups};
+                    MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
+                        var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectBlockItemIconGroup, this.app, data, {
+                            axis : "y",
+                            nodeStyles : {
+                                "min-width":"190px",
+                                "z-index" : "102"
                             },
-                            onPostClose:function(json){
-                                // _self.actions.projectGet(d.id,function(json){
-                                //     _self.loadSingleBlockItem(container,json.data)
-                                // });
-                                //_self.reload();
+                            onClose:function(rs){
+                                if(rs){
+                                    var ddata={
+                                        id:pdata.id,
+                                        title:pdata.title,
+                                        description:pdata.description,
+                                        groups:rs
+                                    };
 
-                            }
-                        },{
-                            container : _self.container,
-                            lp : _self.lp.projectSetting,
-                            css:_self.css
-
-                        }
-                    );
-                    ps.open();
-                });
-
-                e.stopPropagation();
-            }
-        });
-        var projectBlockItemIconRemove = new Element("div.projectBlockItemIconRemove",{styles:this.css.projectBlockItemIconRemove}).inject(projectBlockItemIconContainer);
-        projectBlockItemIconRemove.set("title","删除");
-        projectBlockItemIconRemove.addEvents({
-            click:function(e){
-                _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                    var id = d.id;
-                    _self.actions.delete(id,function(){
-                        //刷新代码
-                        this.close();
-                        _self.reload();
+                                    this.rootActions.ProjectAction.save(ddata,function(json){
+                                        //debugger;
+                                    }.bind(this))
+                                }
+                            }.bind(this)
+                        });
+                        gs.load();
                     }.bind(this));
-                },function(){
-                    this.close();
-                });
+                }.bind(this));
 
                 e.stopPropagation();
-
             }.bind(this)
         });
+
+
+        if(d.control.founder){
+            var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting,title:this.lp.icon.setting}).inject(projectBlockItemIconContainer);
+            projectBlockItemIconSetting.addEvents({
+                click:function(e){
+                    MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
+                        var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
+                            {"width": "800","height": "80%",
+                                onPostOpen:function(){
+                                    ps.formAreaNode.setStyles({"top":"10px"});
+                                    var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
+                                    fx.start(["top"] ,"10px", "100px");
+                                },
+                                onPostClose:function(json){
+                                    if(json)_self.openItem({type:_self.currentNavi});
+                                }
+                            },{
+                                container : _self.container,
+                                lp : _self.lp.projectSetting,
+                                css:_self.css
+                            }
+                        );
+                        ps.open();
+                    });
+
+                    e.stopPropagation();
+                }
+            });
+        }
+
+        // if(d.control.delete){
+        //     var projectBlockItemIconRemove = new Element("div.projectBlockItemIconRemove",{styles:this.css.projectBlockItemIconRemove}).inject(projectBlockItemIconContainer);
+        //     projectBlockItemIconRemove.set("title","删除");
+        //     projectBlockItemIconRemove.addEvents({
+        //         click:function(e){
+        //             _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
+        //                 var id = d.id;
+        //                 _self.actions.delete(id,function(){
+        //                     //刷新代码
+        //                     this.close();
+        //                     _self.reload();
+        //                 }.bind(this));
+        //             },function(){
+        //                 this.close();
+        //             });
+        //
+        //             e.stopPropagation();
+        //
+        //         }.bind(this)
+        //     });
+        // }
 
         var projectBlockItemName = new Element("div.projectBlockItemName",{styles:this.css.projectBlockItemName,text:d.title}).inject(projectBlockItemContainer);
         var projectBlockItemDes = new Element("div.projectBlockItemDes",{styles:this.css.projectBlockItemDes,text:d.description||""}).inject(projectBlockItemContainer);
@@ -948,7 +1003,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectListItemDes = new Element("div.projectListItemDes",{styles:this.css.projectListItemDes,text:d.description||""}).inject(projectListItemInforContainer);
         var projectListItemIconContainer = new Element("div.projectListItemIconContainer",{styles:this.css.projectListItemIconContainer}).inject(projectListItemContainer);
 
-        var projectListItemFavIcon = new Element("div.projectListItemFavIcon",{styles:this.css.projectListItemFavIcon}).inject(projectListItemIconContainer);
+        var projectListItemFavIcon = new Element("div.projectListItemFavIcon",{styles:this.css.projectListItemFavIcon,title:this.lp.icon.star}).inject(projectListItemIconContainer);
         projectListItemFavIcon.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
@@ -966,7 +1021,6 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                         "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
                     })
                 }
-
                 e.stopPropagation();
             }
         });
@@ -976,53 +1030,96 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                 "background-image":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_wdxx_click.png)"
             });
         }
-        var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
-        projectListItemSettingIcon.addEvents({
-            click:function(e){
 
-                MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
-                    var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
-                        {"width": "800","height": "80%",
-                            onPostOpen:function(){
-                                ps.formAreaNode.setStyles({"top":"10px"});
-                                var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
-                                fx.start(["top"] ,"10px", "100px");
+        var projectListItemGroupIcon = new Element("div.projectListItemGroupIcon",{styles:this.css.projectListItemGroupIcon,title:this.lp.icon.group}).inject(projectListItemIconContainer);
+        projectListItemGroupIcon.addEvents({
+            click:function(e){
+                this.getProject(d.id,function(json){
+                    var pdata = json;
+                    var data = {groups:json.groups};
+                    MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
+                        var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectListItemGroupIcon, this.app, data, {
+                            axis : "y",
+                            nodeStyles : {
+                                "min-width":"190px",
+                                "z-index" : "102"
                             },
-                            onPostClose:function(json){
-                                _self.actions.get(d.id,function(json){
-                                    _self.loadSingleListItem(container,json.data)
-                                });
-                            }
-                        },{
-                            container : _self.container,
-                            lp : _self.lp.projectSetting,
-                            css:_self.css
+                            onClose:function(rs){
+                                if(rs){
+                                    var ddata={
+                                        id:pdata.id,
+                                        title:pdata.title,
+                                        description:pdata.description,
+                                        groups:rs
+                                    };
 
-                        }
-                    );
-                    ps.open();
-                });
-
-                e.stopPropagation();
-            }
-        });
-        var projectListItemRemoveIcon = new Element("div.projectListItemRemoveIcon",{styles:this.css.projectListItemRemoveIcon}).inject(projectListItemIconContainer);
-        projectListItemRemoveIcon.addEvents({
-            click:function(e){
-                _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
-                    var id = d.id;
-                    _self.actions.delete(id,function(){
-                        //刷新代码
-                        this.close();
-                        _self.reload();
+                                    this.rootActions.ProjectAction.save(ddata,function(json){
+                                        //debugger;
+                                    }.bind(this))
+                                }
+                            }.bind(this)
+                        });
+                        gs.load();
                     }.bind(this));
-                },function(){
-                    this.close();
-                });
+                }.bind(this));
 
                 e.stopPropagation();
-            }
+            }.bind(this)
         });
+
+
+        if(d.control.founder){
+            var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon,title:this.lp.icon.setting}).inject(projectListItemIconContainer);
+            projectListItemSettingIcon.addEvents({
+                click:function(e){
+
+                    MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
+                        var ps = new MWF.xApplication.TeamWork.ProjectSetting(_self,d,
+                            {"width": "800","height": "80%",
+                                onPostOpen:function(){
+                                    ps.formAreaNode.setStyles({"top":"10px"});
+                                    var fx = new Fx.Tween(ps.formAreaNode,{duration:200});
+                                    fx.start(["top"] ,"10px", "100px");
+                                },
+                                onPostClose:function(json){
+                                    _self.actions.get(d.id,function(json){
+                                        _self.loadSingleListItem(container,json.data)
+                                    });
+                                }
+                            },{
+                                container : _self.container,
+                                lp : _self.lp.projectSetting,
+                                css:_self.css
+
+                            }
+                        );
+                        ps.open();
+                    });
+
+                    e.stopPropagation();
+                }
+            });
+        }
+
+        // if(d.control.delete){
+        //     var projectListItemRemoveIcon = new Element("div.projectListItemRemoveIcon",{styles:this.css.projectListItemRemoveIcon}).inject(projectListItemIconContainer);
+        //     projectListItemRemoveIcon.addEvents({
+        //         click:function(e){
+        //             _self.app.confirm("warn",e,_self.app.lp.common.confirm.removeTitle,_self.app.lp.common.confirm.removeContent,300,120,function(){
+        //                 var id = d.id;
+        //                 _self.actions.delete(id,function(){
+        //                     //刷新代码
+        //                     this.close();
+        //                     _self.reload();
+        //                 }.bind(this));
+        //             },function(){
+        //                 this.close();
+        //             });
+        //
+        //             e.stopPropagation();
+        //         }
+        //     });
+        // }
     },
     setFav:function(d,callback){
         if(d.star){
@@ -1046,6 +1143,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             );
             p.load();
         }.bind(this));
+    },
+    getProject:function(id,callback){
+        this.rootActions.ProjectAction.get(id,function(json){
+            var data = json.data;
+            if(callback) callback(data);
+        }.bind(this))
     },
     test:function(){
 
