@@ -21,7 +21,7 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.TeamWork.Task.LP;
 		//this.lp = MWF.xApplication.TeamWork.LP; debugger;
-		this.cssPath = "/x_component_TeamWork/$Task/"+this.options.style+"/css.wcss";
+		this.cssPath = "../x_component_TeamWork/$Task/"+this.options.style+"/css.wcss";
 
 
 		if (!this.status) {
@@ -54,7 +54,7 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 		//this.actions = this.rootActions.TaskAction;
 
 
-		//http://dev.o2oa.net/x_desktop/app.html?app=TeamWork.Task&status={"taskId":"abb0621d-c35c-4010-9cd3-49a439b36a09"}
+		//http://dev.o2oa.net../x_desktop/app.html?app=TeamWork.Task&status={"taskId":"abb0621d-c35c-4010-9cd3-49a439b36a09"}
 		this.node = new Element("div").inject(this.content);
 		//alert(this.taskId)
 
@@ -112,8 +112,8 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 				"margin-bottom":"10px",
 				"width":"100px",
 				"height":"20px"
-			},"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
-		//var loading = new Element("img",{"src":"/x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
+			},"src":"../x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
+		//var loading = new Element("img",{"src":"../x_component_TeamWork/$Main/default/icon/loading.gif"}).inject(container);
 
 		loading.setStyles({
 			"margin-left":(_width-loading.getWidth())/2+"px"

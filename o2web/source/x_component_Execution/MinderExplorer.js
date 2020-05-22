@@ -13,7 +13,7 @@ MWF.xApplication.Execution.MinderExplorer = new Class({
     initialize: function (node, app, actions, options) {
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Execution/$MinderExplorer/";
+        this.path = "../x_component_Execution/$MinderExplorer/";
 
         this.actions = actions;
         this.options.style = this.getViewStyle();
@@ -23,7 +23,7 @@ MWF.xApplication.Execution.MinderExplorer = new Class({
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$MinderExplorer/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$MinderExplorer/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -81,7 +81,7 @@ MWF.xApplication.Execution.MinderExplorer = new Class({
                 });
                 var naviContentImg = new Element("img.naviContentImg",{
                     "styles":this.css.naviContentImg,
-                    "src":"/x_component_Execution/$Main/default/icon/"+data.icon
+                    "src":"../x_component_Execution/$Main/default/icon/"+data.icon
                 }).inject(naviContentLi);
                 var naviContentSpan = new Element("span.naviContentSpan",{
                     "styles":this.css.naviContentSpan,

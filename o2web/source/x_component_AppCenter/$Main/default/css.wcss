@@ -29,7 +29,7 @@
         "float": "left",
         "width": "50px",
         "height": "50px",
-        "background": "url(/x_component_AppCenter/$Main/default/icon/create.png) no-repeat center center",
+        "background": "url(../x_component_AppCenter/$Main/default/icon/create.png) no-repeat center center",
         "cursor": "pointer",
         "border-right": "1px solid #EEE",
         "border-left": "0px solid #EEE"
@@ -38,7 +38,7 @@
         "float": "left",
         "width": "50px",
         "height": "50px",
-        "background": "url(/x_component_AppCenter/$Main/default/icon/setup.png) no-repeat center center",
+        "background": "url(../x_component_AppCenter/$Main/default/icon/setup.png) no-repeat center center",
         "cursor": "pointer",
         "border-right": "1px solid #EEE",
         "border-left": "0px solid #EEE"
@@ -57,7 +57,7 @@
         "width": "100px",
         "height": "100px",
         "float": "left",
-        "background": "url(/x_component_AppMarket/$Main/default/icon/default.png) center center no-repeat"
+        "background": "url(../x_component_AppMarket/$Main/default/icon/default.png) center center no-repeat"
     },
     "moduleSetupContentNode": {
         "width": "90%",
@@ -363,7 +363,7 @@
     "moduleSetupIconNode": {
         "width": "130px",
         "height": "130px",
-        "background": "url(/x_component_AppMarket/$Main/default/icon/logo1.png) center center no-repeat"
+        "background": "url(../x_component_AppMarket/$Main/default/icon/logo1.png) center center no-repeat"
     },
     "moduleSetupIconAreaNode": {
         "width": "130px",

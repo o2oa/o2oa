@@ -17,7 +17,7 @@
     "logoNode": {
 	    "height": "40px",
 	    "width": "40px",
-	    "background": "url("+"/x_component_Search/$Main/default/icon/logo.png) no-repeat center center",
+	    "background": "url("+"../x_component_Search/$Main/default/icon/logo.png) no-repeat center center",
 	    "float": "left"
 	},
 

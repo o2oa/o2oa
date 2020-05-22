@@ -11,8 +11,8 @@ MWF.xApplication.Attendance.TopUnitDetail = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Attendance/$TopUnitDetail/";
-        this.cssPath = "/x_component_Attendance/$TopUnitDetail/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$TopUnitDetail/";
+        this.cssPath = "../x_component_Attendance/$TopUnitDetail/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

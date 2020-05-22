@@ -45,7 +45,7 @@
     "width": "30px",
     "height": "30px",
     "float": "right",
-    "background": "url(/o2_core/o2/widget/$AttachmentSelector/cms/icon/close.png) no-repeat center center",
+    "background": "url(../o2_core/o2/widget/$AttachmentSelector/cms/icon/close.png) no-repeat center center",
     "cursor": "pointer"
   },
   "okButton" : {

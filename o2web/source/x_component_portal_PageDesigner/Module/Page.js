@@ -5,7 +5,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Page/page.html",
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Page/page.html",
         "mode": "PC",
         "fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "Org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
@@ -28,8 +28,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
     initializeBase: function(options){
         this.setOptions(options);
 
-        this.path = "/x_component_portal_PageDesigner/Module/Page/";
-        this.cssPath = "/x_component_portal_PageDesigner/Module/Page/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_portal_PageDesigner/Module/Page/";
+        this.cssPath = "../x_component_portal_PageDesigner/Module/Page/"+this.options.style+"/css.wcss";
 
         this._loadCss();
     },
@@ -163,7 +163,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
     },
 
     loadStylesList: function(callback){
-        var stylesUrl = "/x_component_portal_PageDesigner/Module/Page/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+        var stylesUrl = "../x_component_portal_PageDesigner/Module/Page/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(responseJSON){
                     this.stylesList= responseJSON;
@@ -334,7 +334,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		if (this.dataTemplate[className]){
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
-			var templateUrl = "/x_component_portal_PageDesigner/Module/"+className+"/template.json";
+			var templateUrl = "../x_component_portal_PageDesigner/Module/"+className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);
@@ -640,7 +640,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 		return this.data;
 	},
 	preview: function(){
-        var url = "/x_desktop/portal.html?id="+this.json.application+"&page="+this.json.id;
+        var url = "../x_desktop/portal.html?id="+this.json.application+"&page="+this.json.id;
         window.open(url);
         // MWF.xDesktop.requireApp("process.FormDesigner", "Preview", function(){
         //

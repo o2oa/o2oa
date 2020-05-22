@@ -266,7 +266,7 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
             if (this.defalutFormTemplateList){
                 if (callback) callback();
             }else{
-                var url = "/x_component_process_FormDesigner/Module/Form/template/templates.json";
+                var url = "../x_component_process_FormDesigner/Module/Form/template/templates.json";
                 MWF.getJSON(url, function(json){
                     this.defalutFormTemplateList = json;
                     if (callback) callback();
@@ -282,7 +282,7 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
                     templateNode.store("template", template.name);
 
                     var templateIconImgNode = new Element("img", {"styles": this.css.formTemplateIconImgNode}).inject(templateIconNode);
-                    templateIconImgNode.set("src", "/x_component_process_FormDesigner/Module/Form/template/"+template.icon);
+                    templateIconImgNode.set("src", "../x_component_process_FormDesigner/Module/Form/template/"+template.icon);
 
                     templateNode.addEvents({
                         "mouseover": function(){this.setStyles(_self.css.formTemplateNode_over)},
@@ -337,7 +337,7 @@ MWF.xApplication.process.ProcessManager.FormExplorer = new Class({
                                 });
                                 e.stopPropagation();
                             });
-                            //templateIconImgNode.set("src", "/x_component_process_FormDesigner/Module/Form/template/"+template.icon);
+                            //templateIconImgNode.set("src", "../x_component_process_FormDesigner/Module/Form/template/"+template.icon);
 
                             templateNode.addEvents({
                                 "mouseover": function(){

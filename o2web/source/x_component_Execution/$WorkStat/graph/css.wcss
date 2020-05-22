@@ -148,11 +148,11 @@
     "left" : "92px",
     "width" : "68px",
     "height" : "68px",
-    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
+    "background": "url(../x_component_Execution/$MinderExplorer/default/icon/xmind68.png) no-repeat center center",
     "position" : "absolute"
   },
   "documentItemIconNode_over" : {
-    "background": "url(/x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
+    "background": "url(../x_component_Execution/$MinderExplorer/default/icon/xmind_over68.png) no-repeat center center"
   },
   "documentItemStatNode" : {
     "float" : "left",

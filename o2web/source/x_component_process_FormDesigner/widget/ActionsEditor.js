@@ -14,7 +14,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         "noDelete": false,
         "noCode": false,
         "noHide": false,
-        "systemToolsAddress" : "/x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
+        "systemToolsAddress" : "../x_component_process_FormDesigner/Module/Actionbar/toolbars.json"
 	},
 	initialize: function(node, designer, module, options){
 		this.setOptions(options);
@@ -22,8 +22,8 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
 		this.module = module;
         this.designer = designer;
 		
-		this.path = "/x_component_process_FormDesigner/widget/$ActionsEditor/";
-		this.cssPath = "/x_component_process_FormDesigner/widget/$ActionsEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/widget/$ActionsEditor/";
+		this.cssPath = "../x_component_process_FormDesigner/widget/$ActionsEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
 		
 		this.actions = [];

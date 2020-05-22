@@ -96,7 +96,7 @@
   "formNewNode": {
 	"width": "47px",
 	"height": "47px",
-	"background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+	"background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
 	"width": "47px",
@@ -217,10 +217,10 @@
 	"margin-top" : "10px",
 	"width": "40px",
 	"height": "40px",
-	"background": "url(/x_component_cms_Index/$Main/default/icon/down3_over.png) 0px 10px no-repeat"
+	"background": "url(../x_component_cms_Index/$Main/default/icon/down3_over.png) 0px 10px no-repeat"
   },
   "columnSelectNode_over" : {
-	"background": "url(/x_component_cms_Index/$Main/default/icon/down3.png) 0px 10px no-repeat"
+	"background": "url(../x_component_cms_Index/$Main/default/icon/down3.png) 0px 10px no-repeat"
   },
   "categoryTextNode" : {
 	"padding-left" : "20px",
@@ -243,7 +243,7 @@
 	"margin-right": "20px",
 	"margin-top": "20px",
 	"box-shadow": "0px 0px 0px #666",
-	"background": "url("+"/x_component_cms_Index/$Starter/default/editOk_bg.png) no-repeat"
+	"background": "url("+"../x_component_cms_Index/$Starter/default/editOk_bg.png) no-repeat"
   },
   "cancelActionNode": {
 	"height": "30px",
@@ -259,7 +259,7 @@
 	"margin-top": "20px",
 	"box-shadow": "0px 0px 0px #666",
 	"border": "1px solid #999",
-	"background": "url("+"/x_component_cms_Index/$Starter/default/editCancel_bg.png) no-repeat"
+	"background": "url("+"../x_component_cms_Index/$Starter/default/editCancel_bg.png) no-repeat"
   },
   "departSelNode": {
 	"padding": "5px",
@@ -343,7 +343,7 @@
 	"margin-top" : "10px",
 	"width": "40px",
 	"height": "40px",
-	"background": "url(/x_component_cms_Index/$Main/default/icon/down3_over.png) 0px 10px no-repeat"
+	"background": "url(../x_component_cms_Index/$Main/default/icon/down3_over.png) 0px 10px no-repeat"
   },
 
 

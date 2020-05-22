@@ -98,7 +98,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
     },
     setTimeIcon: function(){
         if (this.data.completed){
-            this.newIconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/time/pic_ok.png)");
+            this.newIconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/time/pic_ok.png)");
             return true;
         }
     },

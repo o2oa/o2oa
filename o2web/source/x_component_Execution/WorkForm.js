@@ -24,7 +24,7 @@ MWF.xApplication.Execution.WorkForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.workForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$WorkForm/";
+        this.path = "../x_component_Execution/$WorkForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

@@ -18,7 +18,7 @@ MWF.xApplication.Execution.WorkList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.workList;
-        this.path = "/x_component_Execution/$WorkList/";
+        this.path = "../x_component_Execution/$WorkList/";
         this.loadCss();
 
         this.actions = actions;
@@ -26,7 +26,7 @@ MWF.xApplication.Execution.WorkList = new Class({
         this.actionProcess = MWF.Actions.get("x_processplatform_assemble_surface");
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$WorkList/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$WorkList/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -584,7 +584,7 @@ MWF.xApplication.Execution.WorkList.WorkForm = new Class({
             }).inject(this.formNode);
             this.formTopImg = new Element("img.formTopImg",{
                 "styles":this.css.formTopImg,
-                "src":"/x_component_Execution/$Main/default/icon/Document-104.png"
+                "src":"../x_component_Execution/$Main/default/icon/Document-104.png"
             }).inject(this.formTopNode);
             this.formTopSpan = new Element("span.formTopSpan",{
                 "styles": this.css.formTopSpan,

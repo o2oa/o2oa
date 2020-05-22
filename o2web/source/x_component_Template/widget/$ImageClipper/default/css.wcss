@@ -14,7 +14,7 @@
 	"iconNode": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url("+"/x_component_Template/widget/$ImageClipper/default/icon/code_empty.png) center center no-repeat",
+		"background": "url("+"../x_component_Template/widget/$ImageClipper/default/icon/code_empty.png) center center no-repeat",
 		"float": "left"
 	},
 	"actionNode": {
@@ -34,13 +34,13 @@
 	"actionNodeDelete": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url("+"/x_component_Template/widget/$ImageClipper/default/icon/delete1.png) center center no-repeat",
+		"background": "url("+"../x_component_Template/widget/$ImageClipper/default/icon/delete1.png) center center no-repeat",
 		"float": "right"
 	},
 	"actionNodeAdd": {
 		"width": "20px",
 		"height": "20px",
-		"background": "url("+"/x_component_Template/widget/$ImageClipper/default/icon/add2.png) center center no-repeat",
+		"background": "url("+"../x_component_Template/widget/$ImageClipper/default/icon/add2.png) center center no-repeat",
 		"float": "right"
 	},
 	"codeNode": {

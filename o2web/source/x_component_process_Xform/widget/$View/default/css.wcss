@@ -11,7 +11,7 @@
         "overflow": "hidden",
         "float": "right",
         "cursor": "pointer",
-        "background": "url(/x_component_process_Xform/widget/$View/select/icon/search.png) center center no-repeat"
+        "background": "url(../x_component_process_Xform/widget/$View/select/icon/search.png) center center no-repeat"
     },
     "searchInputNode": {
         "border": "0px",
@@ -80,7 +80,7 @@
     "viewLoadingIconNode": {
         "height": "26px",
         "width": "28px",
-        "background": "url("+"/x_component_process_Xform/widget/$View/default/icon/loading.gif) center center no-repeat",
+        "background": "url("+"../x_component_process_Xform/widget/$View/default/icon/loading.gif) center center no-repeat",
         "float": "left"
     },
     "viewLoadingTextNode": {

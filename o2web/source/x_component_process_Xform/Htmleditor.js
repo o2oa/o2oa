@@ -85,7 +85,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             });
             this.editor.ui.add('ecnet', CKEDITOR.UI_BUTTON, {
                 label:'智能纠错',
-                icon: '/x_component_process_Xform/$Form/default/icon/ecnet.png',
+                icon: '../x_component_process_Xform/$Form/default/icon/ecnet.png',
                 command:"ecnet"
             });
 
@@ -387,7 +387,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
                 "width": "20px",
                 "height": "20px",
                 "float": "left",
-                "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {

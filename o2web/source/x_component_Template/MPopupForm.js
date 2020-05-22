@@ -66,7 +66,7 @@ var MPopupForm = new Class({
         }
         this.data = data || {};
 
-        this.cssPath = "/x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_Template/$MPopupForm/"+this.options.style+"/css.wcss";
 
         this.load();
     },

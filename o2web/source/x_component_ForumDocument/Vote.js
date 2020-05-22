@@ -17,9 +17,9 @@ MWF.xApplication.ForumDocument.Vote = new Class({
         this.actions = app.restActions || app.action;
         this.data = data;
         this.userName = (layout.user && layout.user.distinguishedName) ? layout.user.distinguishedName :layout.desktop.session.user.distinguishedName;
-        this.path = "/x_component_ForumDocument/$Vote/";
+        this.path = "../x_component_ForumDocument/$Vote/";
 
-        this.cssPath = "/x_component_ForumDocument/$Vote/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_ForumDocument/$Vote/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function(){

@@ -86,15 +86,15 @@ MWF.xApplication.Org.PersonExplorer.Person = new Class({
         });
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "/x_component_Org/$Explorer/default/icon/female24.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/female24.png"
         //     }else{
-        //         src = "/x_component_Org/$Explorer/default/icon/man24.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/man24.png"
         //     }
         // }
         // return src;
@@ -282,10 +282,10 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
             }, {
                 "getHtml": function(){
                     if (this.major){
-                        return "<div style='width:24px; height:24px; background:url(/x_component_Org/$Explorer/"+
+                        return "<div style='width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/mainid.png) center center no-repeat'></div>";
                     }else{
-                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/select.png) center center no-repeat'></div>";
                     }
                 },
@@ -299,7 +299,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
             },{
                 "getHtml": function(){
                     if (_self.data.control.allowEdit){
-                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                             _self.explorer.app.options.style+"/icon/edit.png) center center no-repeat'></div>";
                     }
                     return "";
@@ -888,15 +888,15 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         MWF.release(this);
     },
     _getIcon: function(nocache){
-        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        var url = (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         return (nocache) ? url+"?"+(new Date().getTime()) : url;
-        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "/x_component_Org/$Explorer/default/icon/man.png";
+        //return (this.data.id) ? this.explorer.actions.getPersonIcon(this.data.id) : "../x_component_Org/$Explorer/default/icon/man.png";
         // var src = "data:image/png;base64,"+this.data.icon;
         // if (!this.data.icon){
         //     if (this.data.genderType==="f"){
-        //         src = "/x_component_Org/$Explorer/default/icon/female.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/female.png"
         //     }else{
-        //         src = "/x_component_Org/$Explorer/default/icon/man.png"
+        //         src = "../x_component_Org/$Explorer/default/icon/man.png"
         //     }
         // }
         // return src;

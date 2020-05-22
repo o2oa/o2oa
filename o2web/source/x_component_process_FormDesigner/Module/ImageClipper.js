@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.ImageClipper = MWF.FCImageClipper =
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/ImageClipper/imageclipper.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/ImageClipper/imageclipper.html"
 	},
 
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_process_FormDesigner/Module/ImageClipper/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/ImageClipper/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/ImageClipper/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/ImageClipper/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

@@ -27,7 +27,7 @@ MWF.xApplication.Strategy.MeasureForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.measure.popupForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Strategy/$MeasureForm/";
+        this.path = "../x_component_Strategy/$MeasureForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

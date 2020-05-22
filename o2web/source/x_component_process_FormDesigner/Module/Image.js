@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Image/image.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Image/image.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Image/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Image/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Image/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Image/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

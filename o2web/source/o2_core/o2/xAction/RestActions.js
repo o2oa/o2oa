@@ -22,7 +22,7 @@ MWF.xAction.RestActions = MWF.Actions = {
         var jaxrs = null;
         //var url = this.getHost(root)+"/"+root+"/describe/describe.json";
         var url = this.getHost(root)+"/"+root+"/describe/api.json";
-        //var url = "/o2_core/o2/xAction/temp.json";
+        //var url = "../o2_core/o2/xAction/temp.json";
         MWF.getJSON(url, function(json){jaxrs = json.jaxrs;}.bind(this), false, false, false);
         if (jaxrs){
             var actionObj = {};
@@ -147,10 +147,12 @@ MWF.xAction.RestActions = MWF.Actions = {
         var addressObj = layout.serviceAddressList[root];
         var address = "";
         if (addressObj){
+            //var mapping = layout.getAppUrlMapping();
             address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port);
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
+            //var mapping = layout.getCenterUrlMapping();
             address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port);
         }
         return address;
@@ -293,16 +295,6 @@ MWF.xAction.RestActions.Action = new Class({
     },
     invoke: function(service, options){
         return this.action.invoke(options);
-    }
-});
-
-Date.implement({
-    "getFromServer": function(){
-        var d;
-        o2.Actions.get("x_program_center").echo(function(json){
-            d = Date.parse(json.data.serverTime);
-        }, null, false);
-        return d;
     }
 });
 

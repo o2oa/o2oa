@@ -13,8 +13,8 @@ MWF.xApplication.Minder.MineExplorer = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Minder/$MineExplorer/";
-        this.cssPath = "/x_component_Minder/$MineExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Minder/$MineExplorer/";
+        this.cssPath = "../x_component_Minder/$MineExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);

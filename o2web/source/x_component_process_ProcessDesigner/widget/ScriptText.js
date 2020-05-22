@@ -14,8 +14,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         this.app = app;
         this.code = code;
 
-        this.path = "/x_component_process_ProcessDesigner/widget/$ScriptText/";
-        this.cssPath = "/x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessDesigner/widget/$ScriptText/";
+        this.cssPath = "../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.createEditor();
@@ -28,7 +28,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         this.titleNode = new Element("div", {"styles": this.css.titleNode}).inject(this.areaNode);
 
         this.referenceNode = new Element("div", {"styles": this.css.actionReferenceNode}).inject(this.titleNode);
-        if (!this.code) this.referenceNode.setStyle("background", "url("+"/x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/reference_empty.png) no-repeat center center")
+        if (!this.code) this.referenceNode.setStyle("background", "url("+"../x_component_process_ProcessDesigner/widget/$ScriptText/"+this.options.style+"/icon/reference_empty.png) no-repeat center center")
         this.maxNode = new Element("div", {"styles": this.css.actionMaxNode}).inject(this.titleNode);
 
         this.returnNode = new Element("div", {"styles": this.css.actionReturnNode}).inject(this.titleNode);

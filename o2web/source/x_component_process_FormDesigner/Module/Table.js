@@ -6,8 +6,8 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Table/table.html",
-        "propertyMultiPath": "/x_component_process_FormDesigner/Module/Table$Td/table$tdMulti.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Table/table.html",
+        "propertyMultiPath": "../x_component_process_FormDesigner/Module/Table$Td/table$tdMulti.html",
 		"multiActions": [
 			{
 		    	"name": "mergerCell",
@@ -22,8 +22,8 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Table/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Table/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Table/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Table/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "component";

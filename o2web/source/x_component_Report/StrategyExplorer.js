@@ -15,8 +15,8 @@ MWF.xApplication.Report.StrategyExplorer = new Class({
     initialize: function( app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Report/$StrategyExplorer/";
-        this.cssPath = "/x_component_Report/$StrategyExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Report/$StrategyExplorer/";
+        this.cssPath = "../x_component_Report/$StrategyExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.lp = this.app.lp;
 
@@ -349,10 +349,10 @@ MWF.xApplication.Report.StrategyExplorer = new Class({
 
         if ( businessData.workCompleted){
             var application = businessData.workCompleted.application;
-            return window.location.protocol + "//" + window.location.host +"/x_component_Report/$Common/printWork.html?workCompletedId="+ businessData.workCompleted.id+"&app="+application+"&form="+form+"&debugger";
+            return window.location.protocol + "//" + window.location.host +"../x_component_Report/$Common/printWork.html?workCompletedId="+ businessData.workCompleted.id+"&app="+application+"&form="+form+"&debugger";
         }else{
             var application = businessData.work.application;
-            return window.location.protocol + "//" + window.location.host +"/x_component_Report/$Common/printWork.html?workid="+ businessData.work.id+"&app="+application+"&form="+form+"&debugger";
+            return window.location.protocol + "//" + window.location.host +"../x_component_Report/$Common/printWork.html?workid="+ businessData.work.id+"&app="+application+"&form="+form+"&debugger";
         }
     }
 });

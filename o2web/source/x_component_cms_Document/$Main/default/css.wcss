@@ -106,7 +106,7 @@
         "float": "right",
         "padding-left" : "30px",
         "padding-right" : "10px",
-        "background": "url(/x_component_cms_Document/$Main/default/close.png) no-repeat center 10px",
+        "background": "url(../x_component_cms_Document/$Main/default/close.png) no-repeat center 10px",
         "cursor": "pointer"
     },
     "formTopContentNode" : {
@@ -123,7 +123,7 @@
     "formNewNode": {
         "width": "47px",
         "height": "47px",
-        "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+        "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
     },
     "formIconNode": {
         "width": "47px",

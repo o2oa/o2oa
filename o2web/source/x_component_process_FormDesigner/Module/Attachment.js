@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Attachment/attachment.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Attachment/attachment.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Attachment/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Attachment/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Attachment/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Attachment/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

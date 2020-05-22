@@ -881,7 +881,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	loadTitleIconNode : function(){
 
-		this.defaultColumnIcon = "/x_component_cms_Index/$Main/"+this.options.style+"/icon/column.png";
+		this.defaultColumnIcon = "../x_component_cms_Index/$Main/"+this.options.style+"/icon/column.png";
 
 		var iconAreaNode = this.iconAreaNode = new Element("div",{
 			"styles" : this.css.titleIconAreaNode

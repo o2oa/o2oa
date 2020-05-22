@@ -70,7 +70,7 @@
     "margin" : "0px 10px 0px 10px"
   },
   "itemLeftArrow" : {
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/pl_bg.png) no-repeat",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/pl_bg.png) no-repeat",
     "background-position" : "0 -20px",
     "height" : "20px",
     "width" : "20px",
@@ -214,7 +214,7 @@
 
   "replyAction" : {
     "float" : "right",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/icon_xinxi2.png ) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/icon_xinxi2.png ) no-repeat center center",
     "width" : "24px",
     "height" : "22px",
     "line-height" : "22px",
@@ -245,13 +245,13 @@
   },
   "quoteLeft" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteLeft.gif) no-repeat center center",
     "width" : "14px",
     "height" : "10px"
   },
   "quoteRight" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteRight.gif) no-repeat center center",
     "width" : "14px",
     "height" : "10px"
   },
@@ -269,7 +269,7 @@
   },
   "quoteLeftBig" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteLeft_big.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteLeft_big.gif) no-repeat center center",
     "width" : "28px",
     "height" : "27px",
     "margin-left" : "10px",
@@ -277,7 +277,7 @@
   },
   "quoteRightBig" : {
     "float" : "left",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/quoteRight_big.gif) no-repeat center center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/quoteRight_big.gif) no-repeat center center",
     "width" : "28px",
     "height" : "27px",
     "margin-left" : "15px",
@@ -305,7 +305,7 @@
     "font-size" : "12px",
     "margin-top" : "10px",
     "padding" : "10px 0px 10px 35px",
-    "background" : "url(/x_component_ForumDocument/$Mobile/default/icon/cross.png) no-repeat 9px center",
+    "background" : "url(../x_component_ForumDocument/$Mobile/default/icon/cross.png) no-repeat 9px center",
     "background-color" : "#fafafa",
     //"border" : "1px dotted #8ca53e",
     "color" : "#999"
@@ -404,7 +404,7 @@
     "border" : "1px solid #f3f3f3",
     "margin" : "5px",
     "cursor" : "pointer",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/back_16.png) no-repeat center center",
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/back_16.png) no-repeat center center",
     "background-color" : "#f3f3f3"
   },
   "prePage_over" : {
@@ -478,7 +478,7 @@
     "margin" : "5px",
     "cursor" : "pointer",
     "color" : "#333",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat center center",
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat center center",
     "background-color" : "#f3f3f3"
   },
   "nextPage_over" : {
@@ -495,7 +495,7 @@
     //"margin-top" : "6px",
     "cursor" : "pointer",
     "color" : "#666",
-    "background": "url(/x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat 620px center",
+    "background": "url(../x_component_ForumDocument/$Main/default/icon/forward_16.png) no-repeat 620px center",
     "background-color" : "#fff"
   },
   "nextPageNode_over" : {
@@ -509,8 +509,8 @@
   },
   "editAction" : {
     "float" : "right",
-    "background" : "url(/x_component_cms_Module/$ListExplorer/default/icon/editing.png) no-repeat left 1px",
-    //"background" : "url(/x_component_ForumDocument/$Main/default/icon/action_edit.png) no-repeat left 1px",
+    "background" : "url(../x_component_cms_Module/$ListExplorer/default/icon/editing.png) no-repeat left 1px",
+    //"background" : "url(../x_component_ForumDocument/$Main/default/icon/action_edit.png) no-repeat left 1px",
     "width" : "16px",
     "height" : "24px",
     "line-height" : "24px",
@@ -522,13 +522,13 @@
     "opacity" : "0.8"
   },
   "editAction_over" : {
-    "background" : "url(/x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat left 1px",
+    "background" : "url(../x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat left 1px",
     "opacity" : "1"
   },
   "deleteAction" : {
     "float" : "right",
-    "background" : "url(/x_component_cms_Module/$ListExplorer/default/icon/delete.png) no-repeat left 1px",
-    //"background" : "url(/x_component_ForumDocument/$Main/default/icon/action_delete.png) no-repeat left 1px",
+    "background" : "url(../x_component_cms_Module/$ListExplorer/default/icon/delete.png) no-repeat left 1px",
+    //"background" : "url(../x_component_ForumDocument/$Main/default/icon/action_delete.png) no-repeat left 1px",
     "width" : "16px",
     "height" : "24px",
     "line-height" : "24px",
@@ -540,7 +540,7 @@
     "opacity" : "0.8"
   },
   "deleteAction_over" : {
-    "background" : "url(/x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat left 1px",
+    "background" : "url(../x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat left 1px",
     "opacity" : "1"
   }
 }

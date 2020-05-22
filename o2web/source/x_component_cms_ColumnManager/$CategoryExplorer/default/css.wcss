@@ -25,7 +25,7 @@
 	"float": "left",
 	"width": "80px",
 	"height": "80px",
-	"background": "url("+"/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/createCategory.png) no-repeat center center",
+	"background": "url("+"../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/createCategory.png) no-repeat center center",
 	"cursor": "pointer",
 	"border-right": "1px solid #EEE",
 	"border-left": "0px solid #EEE"
@@ -50,7 +50,7 @@
 	"width": "80px",
 	"height": "80px",
 	"margin-right": "40px",
-	"background": "url("+"/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/searchCategory.png) no-repeat center center",
+	"background": "url("+"../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/searchCategory.png) no-repeat center center",
 	"cursor": "pointer"
   },
   "searchElementInputAreaNode": {
@@ -162,7 +162,7 @@
 	"height": "16px",
 	"opacity": 0,
 	"cursor": "pointer",
-	"background": "url("+"/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/deleteCategory.png) no-repeat center center"
+	"background": "url("+"../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/deleteCategory.png) no-repeat center center"
   },
   "itemTextDescriptionNode": {
 	"margin-left": "50px",
@@ -188,7 +188,7 @@
 	"position": "relative",
 	"top": "-70px",
 	"left": "-10px",
-	"background": "url("+"/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/new.png) no-repeat right"
+	"background": "url("+"../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/new.png) no-repeat right"
   },
 
   "createTemplateMaskNode": {
@@ -325,7 +325,7 @@
   "categoryCreateNewNode": {
 	"width": "47px",
 	"height": "47px",
-	"background": "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/new.png) no-repeat"
+	"background": "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/new.png) no-repeat"
   },
   "categoryCreateIconNode": {
 	"width": "47px",
@@ -359,7 +359,7 @@
 	"margin-right": "20px",
 	"margin-top": "20px",
 	"box-shadow": "0px 0px 0px #666",
-	"background": "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/editOk_bg.png) no-repeat"
+	"background": "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/editOk_bg.png) no-repeat"
   },
   "categoryCreateCancelActionNode": {
 	"height": "30px",
@@ -375,7 +375,7 @@
 	"margin-top": "20px",
 	"box-shadow": "0px 0px 0px #666",
 	"border": "1px solid #999",
-	"background": "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/editCancel_bg.png) no-repeat"
+	"background": "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/editCancel_bg.png) no-repeat"
   },
   "categoryCheckBox" : {
 	"margin-right" : "5px",
@@ -409,7 +409,7 @@
 	"font-family": "Microsoft YaHei",
 	"overflow" : "hidden",
 	"font-size": "14px",
-//	"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+//	"background" : "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 //	"background-color": "#fff",
 	"border-bottom" : "1px solid #ccc",
 	"position" : "relative"
@@ -424,7 +424,7 @@
 	"line-height" : "39px",
 	"font-family": "Microsoft YaHei",
 	"font-size": "14px",
-	//"background" : "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+	//"background" : "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 	//"background-color": "#fff",
 	"position" : "relative",
 	"background-color" : "#f7f7f7",
@@ -441,7 +441,7 @@
   },
   "categoryNaviNode_over" : {
   	"color" : "#333",
-	//"background": "url(/x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
+	//"background": "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
 	"background-color" : "#f2f2f2"
   },
   "categoryListResizeNode": {
@@ -474,7 +474,7 @@
 	"line-height" : "30px",
 	"font-family": "Microsoft YaHei",
 	"font-size": "14px"
-	//"background" : "url(/x_component_cms_Module/$Main/default/icon/category_view.png) no-repeat 30px 8px",
+	//"background" : "url(../x_component_cms_Module/$Main/default/icon/category_view.png) no-repeat 30px 8px",
 	//"background-color": "#fff"
   },
   "viewNaviNode_selected" : {
@@ -497,7 +497,7 @@
 	//    "position" : "absolute",
 	//    "bottom" : "88px",
 	//    "left" : "0px",
-	//    "background-image" : "url(/x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
+	//    "background-image" : "url(../x_component_cms_Module/$Main/default/icon/titleBackground2.png)",
 	//    "background-position" : "-538px -508px"
   },
   "formAreaNode" : {
@@ -528,10 +528,10 @@
 	"cursor" : "pointer",
 	"height" : "24px",
 	"line-height" : "24px",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
   },
   "formCreateNode_over" : {
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
   },
   "formTitleSepNode" : {
 	"float" : "right",
@@ -603,10 +603,10 @@
 	"height" : "24px",
 	"line-height" : "24px",
 	"color" : "#666",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat 5px center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat 5px center"
   },
   "viewAddNode_over" : {
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat 5px center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat 5px center"
   },
   "viewCreateNode" : {
 	"float" : "right",
@@ -616,10 +616,10 @@
 	"cursor" : "pointer",
 	"height" : "24px",
 	"line-height" : "24px",
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add.png) no-repeat center center"
   },
   "viewCreateNode_over" : {
-	"background" : "url(/x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
+	"background" : "url(../x_component_cms_ColumnManager/$CategoryExplorer/default/icon/add_blue.png) no-repeat center center"
   },
   "viewTitleSepNode" : {
 	"float" : "left",

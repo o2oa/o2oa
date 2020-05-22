@@ -16,8 +16,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_service_InvokeDesigner/$Invoke/";
-        this.cssPath = "/x_component_service_InvokeDesigner/$Invoke/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_service_InvokeDesigner/$Invoke/";
+        this.cssPath = "../x_component_service_InvokeDesigner/$Invoke/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

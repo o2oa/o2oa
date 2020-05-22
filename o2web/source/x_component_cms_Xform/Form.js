@@ -44,8 +44,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         this.json = data.json;
         this.html = data.html;
 
-        this.path = "/x_component_cms_Xform/$Form/";
-        this.cssPath = this.options.cssPath || "/x_component_cms_Xform/$Form/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_cms_Xform/$Form/";
+        this.cssPath = this.options.cssPath || "../x_component_cms_Xform/$Form/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         this.modules = [];
@@ -382,7 +382,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             form = this.json.id;
             if (this.json.printForm && this.json.printForm !== "none") form = this.json.printForm;
         }
-        window.open("/x_desktop/printcmsdoc.html?documentid=" + this.businessData.document.id + "&form=" + form);
+        window.open("../x_desktop/printcmsdoc.html?documentid=" + this.businessData.document.id + "&form=" + form);
     },
 
     formValidation: function (status) {
@@ -619,7 +619,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             form = this.json.id;
             if (this.json.printForm) form = this.json.printForm;
         }
-        window.open("/x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form);
+        window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form);
     },
     openWindow: function (form, app) {
         var form = form;
@@ -628,7 +628,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         }
         if (this.businessData.document) {
             //var application = app;
-            //window.open("/x_desktop/printWork.html?workCompletedId="+this.businessData.workCompleted.id+"&app="+application+"&form="+form);
+            //window.open("../x_desktop/printWork.html?workCompletedId="+this.businessData.workCompleted.id+"&app="+application+"&form="+form);
         }
     },
 

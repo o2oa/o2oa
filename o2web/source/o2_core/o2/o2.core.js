@@ -163,7 +163,7 @@
         //levels.shift();
         var root = "x_component_"+levels.join("_");
         var clazzName = clazz || "Main";
-        var path = "/"+root+"/"+clazzName.replace(/\./g, "/")+".js";
+        var path = "../"+root+"/"+clazzName.replace(/\./g, "/")+".js";
         var loadAsync = (async!==false);
         _requireJs(path, callback, loadAsync, compression);
     };
@@ -484,6 +484,15 @@
         }
         return arr;
     }
+    Date.implement({
+        "getFromServer": function(){
+            var d;
+            o2.Actions.get("x_program_center").echo(function(json){
+                d = Date.parse(json.data.serverTime);
+            }, null, false);
+            return d;
+        }
+    });
 
 })();
 o2.core = true;

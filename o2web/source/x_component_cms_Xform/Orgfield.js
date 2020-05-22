@@ -37,7 +37,7 @@ MWF.xApplication.cms.Xform.Orgfield = MWF.CMSOrgfield =  new Class({
 			});
 			if (this.json.showIcon!='no')this.iconNode = new Element("div", {  //this.form.css[this.iconStyle],
 				"styles": {
-					"background": "url("+"/x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
+					"background": "url("+"../x_component_cms_Xform/$Form/default/icon/selectorg.png) center center no-repeat",
 					"width": "18px",
 					"height": "18px",
 					"float": "right"

@@ -1,8 +1,42 @@
 MWF.xApplication.TeamWork.LP = {
 	"title": "TeamWork",
+	"bam":{
+		"title":"后台管理",
+		"backProject":"返回主页",
+		"base" :"基础",
+		"navi":{
+			"template":"模板管理",
+			"priority":"优先级设定",
+			"extField":"自定义字段",
+			"access":"权限管理"
+		},
+		"template":{
+			"title":"模板管理",
+			"tips":"项目所属类别，可设置默认泳道等。",
+			"description":"描述",
+			"add":"新建模板",
+			"edit":"编辑",
+			"remove":"删除",
+			"name":"模板名称",
+			"lane":"泳道",
+			"laneTip":"多个泳道逗号隔开",  //用于项目中得默认泳道,可以在项目中自由更改.
+			"ok":"确定",
+			"close":"关闭"
+		},
+		"priority":{
+			"title":"优先级设定",
+			"tips":"用来定义任务的优先处理等级。",
+			"description":"列表顺序由上至下为：最高优先级 至 最低优先级",
+			"add":"添加",
+			"success":"保存成功"
+
+		}
+
+	},
 	"ProjectList":{
 		"navi":{
 			"title":"TeamWork",
+			"bam":"后台管理",
 			"newItem":"新建项目",
 			"allItem":"全部项目",
 			"starItem":"我的星标",
@@ -28,6 +62,11 @@ MWF.xApplication.TeamWork.LP = {
 			"addProjectListText":"创建新项目",
 			"listTip":"列表视图",
 			"blockTip":"卡片视图"
+		},
+		"icon":{
+			"star":"星标",
+			"setting":"设置",
+			"group":"分组"
 		}
 	},
 	"newProject":{
@@ -35,10 +74,13 @@ MWF.xApplication.TeamWork.LP = {
 		"name":"项目名称",
 		"description":"项目简介",
 		"group":"项目分组",
+		"template":"模板",
+		"templateTitle":"选择模板",
+
 		"add":"创建"
 	},
 	"projectSetting":{
-		"general":"概述",
+		"projectGeneral":"概述",
 		"customField":"自定义字段",
 		"title":"项目设置",
 		"projectSettingBgText":"项目封面",
@@ -54,7 +96,42 @@ MWF.xApplication.TeamWork.LP = {
 		"remove":"删除",
 		"description":"描述",
 		"updateTime":"最后更新时间",
-		"option":"选项"
+		"option":"选项",
+		"projectDetail":"项目详情",
+		"projectDetails":{
+			"title":"项目详情",
+			"total":"总数",
+			"process":"进行中",
+			"complete":"已完成",
+			"over":"已逾期",
+			"taskStat":"任务统计",
+			"create":"创建",
+			"at":"于"
+		},
+		"projectAccess":"权限管理",
+		"projectMore":"更多设置",
+		"auth":{
+			"task":"项目",
+			"taskCreate":"新建项目",
+			"taskCopy":"复制项目",
+			"taskDelete":"删除项目",
+			"list":"列表",
+			"listCreate":"新建列表",
+			"attachment":"附件",
+			"attachmentUpload":"上传附件",
+			"comment":"评论",
+			"canComment":"允许评论"
+		},
+		"moreActionTitle":"项目操作",
+		"moreActionDescription":"您可以执行以下操作",
+		"moreActionComplete":"完成项目",
+		"moreActionCompleteTips":"一旦完成项目，则该项目下的所有任务都会被设置为已完成，只能查看项目，不能对项目进行编辑等操作。",
+		"moreActionUnComplete":"取消完成",
+		"moreActionUnCompleteTips":"取消完成，任务恢复成可新建状态",
+		"moreActionRemove":"删除项目",
+		"moreActionRemoveTips":"一旦删除项目，则该项目下的所有任务都会被设置为删除，其中的项目等内容不会被搜索和统计收录。",
+		"moreActionRecover":"恢复项目",
+		"moreActionRecoverTips":"恢复项目，该项目下的所有任务都会被恢复到删除前的状态，"
 	},
 	"extField":{
 		"field":"字段",

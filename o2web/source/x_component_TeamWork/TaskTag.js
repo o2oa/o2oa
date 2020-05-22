@@ -25,7 +25,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
         this.rootActions = this.app.rootActions;
         this.actions = this.rootActions.TaskTagAction;
 
-        this.path = "/x_component_TeamWork/$TaskTag/";
+        this.path = "../x_component_TeamWork/$TaskTag/";
         if(options.path) this.path = options.path;
 
         if( this.target ){
@@ -162,8 +162,8 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
         var tagSelect = new Element("div.tagSelect",{styles:this.css.tagSelect}).inject(tagItem);
         var tagEdit = new Element("div.tagEdit",{styles:this.css.tagEdit}).inject(tagItem);
         tagEdit.addEvents({
-            mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_edit_click.png)"})},
-            mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_edit.png)"})},
+            mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$TaskTag/default/icon/icon_edit_click.png)"})},
+            mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$TaskTag/default/icon/icon_edit.png)"})},
             click:function(e){
                 this.selectList.hide();
                 this.createTag(data);
@@ -195,13 +195,13 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
             colorItem.setStyles({"background-color":colors[i]})
             var colorGet = new Element("div.colorGet",{styles:this.css.colorGet}).inject(colorItem);
             if(i==0){
-                colorGet.setStyles({"background-image":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"});
+                colorGet.setStyles({"background-image":"url(../x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"});
                 this.curColor = colors[i];
             }
             colorItem.addEvents({
                 click:function(){
                     _self.addColorContainer.getElements(".colorGet").setStyles({"background-image":""});
-                    this.getChildren().setStyles({"background-image":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"});
+                    this.getChildren().setStyles({"background-image":"url(../x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"});
                     _self.curColor = this.getStyle("background-color");
                 }
             })
@@ -216,7 +216,7 @@ MWF.xApplication.TeamWork.TaskTag = new Class({
             var items = this.addColorContainer.getElements(".colorItem");
             items.each(function(d){
                 if(d.getStyle("background-color") == data.tagColor){
-                    d.getChildren().setStyles({"background-image":"url(/x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"})
+                    d.getChildren().setStyles({"background-image":"url(../x_component_TeamWork/$TaskTag/default/icon/icon_dagou_white.png)"})
                 }else{
                     d.getChildren().setStyles({"background-image":""})
                 }

@@ -11,8 +11,8 @@ MWF.xApplication.query.QueryExplorer.Exporter = new Class({
         this.container = this.app.content;
         this.data = data;
 
-        this.path = "/x_component_portal_PortalExplorer/$Exporter/";
-        this.cssPath = "/x_component_portal_PortalExplorer/$Exporter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_portal_PortalExplorer/$Exporter/";
+        this.cssPath = "../x_component_portal_PortalExplorer/$Exporter/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){
