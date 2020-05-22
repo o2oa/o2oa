@@ -11,8 +11,8 @@ MWF.xApplication.cms.Document.Processor = new Class({
 	initialize: function(node, task, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_cms_Document/$Processor/";
-		this.cssPath = "/x_component_cms_Document/$Processor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_Document/$Processor/";
+		this.cssPath = "../x_component_cms_Document/$Processor/"+this.options.style+"/css.wcss";
 		this._loadCss();
 		
 		this.task = task;
@@ -79,7 +79,7 @@ MWF.xApplication.cms.Document.Processor = new Class({
 
                 this.selectedRoute = node;
                 node.setStyle("background-color", "#da7429");
-                node.getFirst().setStyle("background-image", "url("+"/x_component_cms_Document/$Processor/default/checked.png)");
+                node.getFirst().setStyle("background-image", "url("+"../x_component_cms_Document/$Processor/default/checked.png)");
                 node.getLast().setStyle("color", "#FFF");
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
@@ -91,7 +91,7 @@ MWF.xApplication.cms.Document.Processor = new Class({
         }else{
             this.selectedRoute = node;
             node.setStyle("background-color", "#da7429");
-            node.getFirst().setStyle("background-image", "url("+"/x_component_cms_Document/$Processor/default/checked.png)");
+            node.getFirst().setStyle("background-image", "url("+"../x_component_cms_Document/$Processor/default/checked.png)");
             node.getLast().setStyle("color", "#FFF");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");

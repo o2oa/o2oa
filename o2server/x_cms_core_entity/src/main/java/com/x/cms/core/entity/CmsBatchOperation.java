@@ -18,7 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * 数据指处理，比如修改栏目名称引起的所有分类 和文档别名需要修改
  */
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.CmsBatchOperation.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.CmsBatchOperation.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

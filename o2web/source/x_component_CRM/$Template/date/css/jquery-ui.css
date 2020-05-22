@@ -273,9 +273,9 @@ body .ui-tooltip { border-width: 2px; }
 ----------------------------------*/
 
 /* states and images */
-.ui-icon { width: 16px; height: 16px; background-image: url(http://172.16.92.55/x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsContent}*/; }
-.ui-widget-content .ui-icon {background-image: url(http://172.16.92.55/x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsContent}*/; }
-.ui-widget-header .ui-icon {background-image: url(http://172.16.92.55/x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsHeader}*/; }
+.ui-icon { width: 16px; height: 16px; background-image: url(http://172.16.92.55../x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsContent}*/; }
+.ui-widget-content .ui-icon {background-image: url(http://172.16.92.55../x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsContent}*/; }
+.ui-widget-header .ui-icon {background-image: url(http://172.16.92.55../x_component_CRM/$Template/date/css/images/ui-icons_0073ea_256x240.png)/*{iconsHeader}*/; }
 .ui-state-default .ui-icon { background-image: url(images/ui-icons_888888_256x240.png)/*{iconsDefault}*/; }
 .ui-state-hover .ui-icon, .ui-state-focus .ui-icon {background-image: url(images/ui-icons_454545_256x240.png)/*{iconsHover}*/; }
 .ui-state-active .ui-icon {background-image: url(images/ui-icons_454545_256x240.png)/*{iconsActive}*/; }

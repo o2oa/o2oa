@@ -3,13 +3,13 @@ MWF.xApplication.portal.PageDesigner.Module.SourceText = MWF.PCSourceText = new 
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/SourceText/sourceText.html"
+		"propertyPath": "../x_component_portal_PageDesigner/Module/SourceText/sourceText.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/SourceText/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/SourceText/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/SourceText/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/SourceText/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

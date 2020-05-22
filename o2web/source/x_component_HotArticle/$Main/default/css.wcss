@@ -28,7 +28,7 @@
     "width": "40px",
     "height": "60px",
     "float": "left",
-    "background": "url(/x_component_HotArticle/$Main/default/icon/topIcon.png) no-repeat center center"
+    "background": "url(../x_component_HotArticle/$Main/default/icon/topIcon.png) no-repeat center center"
   },
   "topTextNode" : {
     "color" : "#fff",
@@ -64,17 +64,17 @@
     "float" : "left",
     "height" : "26px",
     "line-height" : "26px",
-    "background": "url(/x_component_HotArticle/$Main/default/icon/search-20.png) no-repeat center center",
+    "background": "url(../x_component_HotArticle/$Main/default/icon/search-20.png) no-repeat center center",
     "width" : "26px",
     "background-color" : "#f5f5f5",
     "cursor" : "pointer"
   },
   "searchAction_over" : {
-    "background": "url(/x_component_HotArticle/$Main/default/icon/search-20-over.png) no-repeat center center",
+    "background": "url(../x_component_HotArticle/$Main/default/icon/search-20-over.png) no-repeat center center",
     "background-color" : "#fff"
   },
   "searchAction_over2" : {
-    "background": "url(/x_component_HotArticle/$Main/default/icon/search-20-color.png) no-repeat center center",
+    "background": "url(../x_component_HotArticle/$Main/default/icon/search-20-color.png) no-repeat center center",
     "background-color" : "#fff"
   },
 
@@ -134,7 +134,7 @@
     "bottom": "6px",
     "opacity": 0,
     "cursor" : "pointer",
-    "background": "url(/x_component_Forum/$Setting/default/icon/delete.png) no-repeat center center"
+    "background": "url(../x_component_Forum/$Setting/default/icon/delete.png) no-repeat center center"
   }
 	
 }

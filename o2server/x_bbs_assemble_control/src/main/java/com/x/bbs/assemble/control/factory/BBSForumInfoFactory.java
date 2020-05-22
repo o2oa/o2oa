@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSForumInfo;
@@ -64,7 +65,7 @@ public class BBSForumInfoFactory extends AbstractFactory {
 		CriteriaQuery<BBSForumInfo> cq = cb.createQuery(BBSForumInfo.class);
 		Root<BBSForumInfo> root = cq.from(BBSForumInfo.class);
 		Predicate p = cb.equal( root.get( BBSForumInfo_.forumVisible ), "所有人" );
-		if( viewAbleForumIds != null && !viewAbleForumIds.isEmpty() ){
+		if( ListTools.isNotEmpty(viewAbleForumIds) ){
 			p = cb.or( p, root.get( BBSForumInfo_.id ).in( viewAbleForumIds ) );
 		}
 		cq.orderBy( cb.asc( root.get( BBSForumInfo_.orderNumber ) ) );

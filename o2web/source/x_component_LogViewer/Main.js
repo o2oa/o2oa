@@ -27,7 +27,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         if (callback) callback();
     },
     doLog: function(){
-        this.status = "prompt";
+        this.status = "systemLog";
         this.actions = MWF.Actions.get("x_program_center");
 
         this.node = new Element("div", {"styles": this.css.contentNode}).inject(this.content);
@@ -39,6 +39,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.loadToolbar();
         this.loadScreen();
 
+        this.loadBottom();
 
         this.initLog();
         this.loadLog();
@@ -52,13 +53,53 @@ MWF.xApplication.LogViewer.Main = new Class({
 
         //定时器
     },
+    loadBottom: function(){
 
+        this.nodeSelect = new Element("select", {"styles": this.css.toolbarNodeSelect}).inject(this.bottomNode);
+        o2.Actions.load("x_program_center").CommandAction.getNodeInfoList(
+            function( json ){
+                var nodeList = json.data.nodeList;
+                nodeList.each(function (node) {
+                    new Element("option", {
+                        "value": node.node.nodeAgentPort,
+                        "text": node.nodeAddress
+                    }).inject(this.nodeSelect);
+                }.bind(this));
+            }.bind(this),null, false
+        );
+
+        this.commandNode = new Element("input",{"styles":this.css.commandNode}).inject(this.bottomNode);
+        this.commandBtnNode = new Element("button",{"text":"submit","styles":this.css.commandBtnNode}).inject(this.bottomNode);
+
+
+        this.commandNode.addEvent('keyup', function(e) {
+            if(e.key==="enter"){
+                this.executeCommand();
+            }
+        }.bind(this));
+
+        this.commandBtnNode.addEvent("click",function () {
+            this.executeCommand();
+        }.bind(this));
+    },
+    executeCommand : function(){
+        if(this.commandNode.get("value")!==""){
+            var data = {};
+            data["ctl"] = this.commandNode.get("value");
+            data["nodeName"] = this.nodeSelect.getElement("option:selected").get("text");
+            data["nodePort"] = this.nodeSelect.getElement("option:selected").get("value");
+            o2.Actions.load("x_program_center").CommandAction.executeCommand(data, function( json ){
+                this.commandNode.set("value","");
+            }.bind(this),null, false);
+        }
+    },
     loadToolbar: function(){
+
+        this.systemLogButton = this.createTopButton("SystemLog", "systemLog.png", "systemLog");
+
         this.promptErrorButton = this.createTopButton("PromptError", "prompt.png", "prompt");
         this.unexpectedErrorButton = this.createTopButton("UnexpectedError", "unexpected.png", "unexpected");
         this.warnErrorButton = this.createTopButton("Warn", "warn.png", "warn");
-
-        this.systemLogButton = this.createTopButton("SystemLog", "systemLog.png", "systemLog");
 
         this.dateSelect = new Element("select", {"styles": this.css.toolbarDateSelect}).inject(this.toolbarNode);
         new Element("option", {
@@ -168,7 +209,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         var node = new Element("div", {"styles": this.css.toolbarButton}).inject(this.toolbarNode);
         var iconNode = new Element("div", {"styles": this.css.toolbarIconButton}).inject(node);
         var textNode = new Element("div", {"styles": this.css.toolbarTextButton, "text": text}).inject(node);
-        iconNode.setStyle("background-image", "url("+"/x_component_LogViewer/$Main/default/"+img+")");
+        iconNode.setStyle("background-image", "url("+"../x_component_LogViewer/$Main/default/"+img+")");
         if (status==this.status) node.setStyles(this.css.toolbarButton_down);
 
         var _self = this;
@@ -184,9 +225,8 @@ MWF.xApplication.LogViewer.Main = new Class({
 
     loadLog: function(){
 
-
-
         this.date = this.dateSelect.options[this.dateSelect.selectedIndex].value;
+
         switch (this.status){
             case "prompt":
                 this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
@@ -201,7 +241,8 @@ MWF.xApplication.LogViewer.Main = new Class({
                 this.method = "listSystemLog";
                 break;
             default:
-                this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
+                //this.method = (this.date==="all") ? "listPromptErrorLog" : "listPromptErrorLogWithDate";
+                this.method = "listSystemLog";
         }
         if(this.method==="listSystemLog"){
             this.actions[this.method](this.tagId, function(json){
@@ -209,7 +250,7 @@ MWF.xApplication.LogViewer.Main = new Class({
             }.bind(this));
 
             //添加定时器
-            this.timeDo = this.tiemShowSystemLog.periodical(2000,this);
+            this.timeDo = this.tiemShowSystemLog.periodical(1000,this);
 
         }else{
             if (this.date==="all"){
@@ -321,13 +362,13 @@ MWF.xApplication.LogViewer.Main = new Class({
     // },
 
     begin: function(){
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play_gray.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play_gray.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop.png)");
         this.status = "begin";
     },
     stop: function(){
-        this.beginButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/play.png)");
-        this.stopButton.setStyle("background-image", "url("+"/x_component_Console/$Main/default/stop_gray.png)");
+        this.beginButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/play.png)");
+        this.stopButton.setStyle("background-image", "url("+"../x_component_Console/$Main/default/stop_gray.png)");
         this.status = "stop";
     },
 
@@ -379,7 +420,7 @@ MWF.xApplication.LogViewer.Log = new Class({
 
         var m = this.log.message.substr(0, this.log.message.indexOf("\n"));
         var message = m + ((this.log.person) ? "&nbsp;("+this.log.person+")": "");
-        var html = "<pre><span  class='MWFLogCheckbox' style='cursor: pointer;float: left; height: 20px; width: 30px; background: url(/x_component_LogViewer/$Main/default/check.png) no-repeat center center'></span>" +
+        var html = "<pre><span  class='MWFLogCheckbox' style='cursor: pointer;float: left; height: 20px; width: 30px; background: url(../x_component_LogViewer/$Main/default/check.png) no-repeat center center'></span>" +
             "<span style='float: left;font-size: 14px; font-weight: bold; width: 160px; text-align: right'>"+this.log.occurTime+"</span>" +
             "<span style='float:left'>\t</span>" +
             "<span style='font-size: 14px; font-weight: bold;'>"+o2.common.encodeHtml(message)+"</span><br/>";
@@ -401,7 +442,7 @@ MWF.xApplication.LogViewer.Log = new Class({
             html += "<span class='MWFLogStackTrace'><span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>StackTrace: </span>" +
                 "<span style='float:left'>\t</span>";
             if (traces.length>1) {
-                html += "<span  class='MWFLogStackTraceAction' style='float: left; cursor: pointer; height: 20px; width: 16px; background: url(/x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
+                html += "<span  class='MWFLogStackTraceAction' style='float: left; cursor: pointer; height: 20px; width: 16px; background: url(../x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
             }
             html += "<span>"+o2.common.encodeHtml(traces[0])+"</span></span><br/>";
 
@@ -420,7 +461,7 @@ MWF.xApplication.LogViewer.Log = new Class({
                 ((this.log.requestRemoteAddr) ? "&nbsp; From &nbsp;"+this.log.requestRemoteAddr : "");
             html += "<span  class='MWFLogRequest'><span style='float: left; width: 190px; text-align: right; color: #6BC5FC;'>RequestInfor: </span>" +
                 "<span style='float:left'>\t</span>";
-            html += "<span  class='MWFLogRequestAction' style='float: left;cursor: pointer; height: 20px; width: 16px; background: url(/x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
+            html += "<span  class='MWFLogRequestAction' style='float: left;cursor: pointer; height: 20px; width: 16px; background: url(../x_component_LogViewer/$Main/default/right.png) no-repeat left center'></span>";
             html += "<span>"+o2.common.encodeHtml(request)+"</span></span><br/>";
         }
 
@@ -481,7 +522,7 @@ MWF.xApplication.LogViewer.Log = new Class({
     expandedTrace: function(){
         if (!this.traceAllNode) this.createTraceAllNode();
         this.traceAllNode.setStyle("display", "inline");
-        this.traceActionNode.setStyle("background-image", "url(/x_component_LogViewer/$Main/default/down.png)");
+        this.traceActionNode.setStyle("background-image", "url(../x_component_LogViewer/$Main/default/down.png)");
         this.isTraceExpanded = true;
     },
     collapseTrace: function(){
@@ -489,7 +530,7 @@ MWF.xApplication.LogViewer.Log = new Class({
             this.traceAllNode.destroy();
             this.traceAllNode = null;
         }
-        this.traceActionNode.setStyle("background-image", "url(/x_component_LogViewer/$Main/default/right.png)");
+        this.traceActionNode.setStyle("background-image", "url(../x_component_LogViewer/$Main/default/right.png)");
         this.isTraceExpanded = false;
     },
     createTraceAllNode: function(){
@@ -519,7 +560,7 @@ MWF.xApplication.LogViewer.Log = new Class({
     expandedRequest: function(){
         if (!this.requestAllNode) this.createRequestAllNode();
         this.requestAllNode.setStyle("display", "inline");
-        this.requestActionNode.setStyle("background-image", "url(/x_component_LogViewer/$Main/default/down.png)");
+        this.requestActionNode.setStyle("background-image", "url(../x_component_LogViewer/$Main/default/down.png)");
         this.isRequestExpanded = true;
     },
     collapseRequest: function(){
@@ -527,7 +568,7 @@ MWF.xApplication.LogViewer.Log = new Class({
             this.requestAllNode.destroy();
             this.requestAllNode = null;
         }
-        this.requestActionNode.setStyle("background-image", "url(/x_component_LogViewer/$Main/default/right.png)");
+        this.requestActionNode.setStyle("background-image", "url(../x_component_LogViewer/$Main/default/right.png)");
         this.isRequestExpanded = false;
     },
     createRequestAllNode: function(){

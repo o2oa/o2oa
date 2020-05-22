@@ -12,8 +12,8 @@ MWF.xApplication.process.ApplicationExplorer.Importer = new Class({
         this.actions = this.app.restActions;
         this.event = e;
 
-        this.path = "/x_component_process_ApplicationExplorer/$Importer/";
-        this.cssPath = "/x_component_process_ApplicationExplorer/$Importer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ApplicationExplorer/$Importer/";
+        this.cssPath = "../x_component_process_ApplicationExplorer/$Importer/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){

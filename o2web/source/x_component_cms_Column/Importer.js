@@ -13,8 +13,8 @@ MWF.xApplication.cms.Column.Importer = new Class({
         this.actions = this.app.restActions;
         this.event = e;
 
-        this.path = "/x_component_cms_Column/$Importer/";
-        this.cssPath = "/x_component_cms_Column/$Importer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Column/$Importer/";
+        this.cssPath = "../x_component_cms_Column/$Importer/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){

@@ -7,7 +7,7 @@
   "naviTopNode" : {
 	"width" : "70px",
 	"height" : "70px",
-	"background" : "url(/x_component_Minder/$Main/default/icon/navi_top.png) no-repeat center center",
+	"background" : "url(../x_component_Minder/$Main/default/icon/navi_top.png) no-repeat center center",
 	"background-color" : "#000"
   },
   "naviItemNode" : {
@@ -38,25 +38,25 @@
 	"float" : "left",
 	"width" : "30px",
 	"height" : "30px",
-	"background" : "url(/x_component_Minder/$Main/default/icon/undo.png) no-repeat center center"
+	"background" : "url(../x_component_Minder/$Main/default/icon/undo.png) no-repeat center center"
   },
   "undoNode_active" : {
 	"float" : "left",
 	"width" : "30px",
 	"height" : "30px",
-	"background" : "url(/x_component_Minder/$Main/default/icon/undo_active.png) no-repeat center center"
+	"background" : "url(../x_component_Minder/$Main/default/icon/undo_active.png) no-repeat center center"
   },
   "redoNode" : {
 	"float" : "left",
 	"width" : "30px",
 	"height" : "30px",
-	"background" : "url(/x_component_Minder/$Main/default/icon/redo.png) no-repeat center center"
+	"background" : "url(../x_component_Minder/$Main/default/icon/redo.png) no-repeat center center"
   },
   "redoNode_active" : {
 	"float" : "left",
 	"width" : "30px",
 	"height" : "30px",
-	"background" : "url(/x_component_Minder/$Main/default/icon/redo_active.png) no-repeat center center"
+	"background" : "url(../x_component_Minder/$Main/default/icon/redo_active.png) no-repeat center center"
   },
   "patchNode" : {
 	"float" : "left",

@@ -36,7 +36,7 @@
   "createNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/new.png) no-repeat"
   },
   "createIconNode": {
     "width": "47px",
@@ -100,7 +100,7 @@
   "inputTimeStyle" : {
     "width": "99%",
     "border":"1px solid #999",
-    "background":"url(/x_component_Attendance/$SelfHoliday/default/icon/calendar.png) 98% center no-repeat",
+    "background":"url(../x_component_Attendance/$SelfHoliday/default/icon/calendar.png) 98% center no-repeat",
     "border-radius": "3px",
     "box-shadow": "0px 0px 6px #CCC",
     "height": "26px"
@@ -108,7 +108,7 @@
   "inputPersonStyle" : {
     "width": "99%",
     "border":"1px solid #999",
-    "background":"url(/x_component_Attendance/$SelfHoliday/default/icon/selectperson.png) 98% center no-repeat",
+    "background":"url(../x_component_Attendance/$SelfHoliday/default/icon/selectperson.png) 98% center no-repeat",
     "border-radius": "3px",
     "box-shadow": "0px 0px 6px #CCC",
     "height": "26px"
@@ -129,7 +129,7 @@
     "margin-right": "20px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/editOk_bg.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/editOk_bg.png) no-repeat"
   },
   "createDenyActionNode": {
     "height": "30px",
@@ -146,7 +146,7 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/editCancel_bg.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/editCancel_bg.png) no-repeat"
   },
   "createCancelActionNode": {
     "height": "30px",

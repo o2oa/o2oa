@@ -15,8 +15,8 @@ MWF.xApplication.query.QueryManager.TableExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_query_QueryManager/$Explorer/";
-        this.cssPath = "/x_component_query_QueryManager/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_QueryManager/$Explorer/";
+        this.cssPath = "../x_component_query_QueryManager/$Explorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

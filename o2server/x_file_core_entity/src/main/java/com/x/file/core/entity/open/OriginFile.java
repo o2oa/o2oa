@@ -16,7 +16,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
 import javax.persistence.*;
 import java.util.Date;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Open.OriginFile.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Open.OriginFile.table + JpaObject.IndexNameMiddle

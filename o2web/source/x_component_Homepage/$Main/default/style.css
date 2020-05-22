@@ -1,7 +1,7 @@
 .o2_homepage_content {
     margin: 15px;
-    min-width: 1000px;
-    min-height: 600px;
+    min-width: 1280px;
+    min-height: 700px;
     font-size: 14px;
 }
 .o2_homepage_layout_right {
@@ -83,7 +83,7 @@
     padding-left: 20px;
     color: #4A90E2;
     cursor: pointer;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
 }
 .o2_homepage_title_tabarea {
     font-size: 16px;
@@ -119,10 +119,10 @@
     background-repeat: no-repeat;
 }
 .o2_homepage_area_content_loading {
-    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/loading.gif);
+    background-image: url(../o2_core/o2/xDesktop/$Default/red/icons/loading.gif);
 }
 .o2_homepage_task_area_content_empty {
-    background-image: url(/o2_core/o2/xDesktop/$Default/red/icons/icon_wugongzuo.png);
+    background-image: url(../o2_core/o2/xDesktop/$Default/red/icons/icon_wugongzuo.png);
 }
 .o2_homepage_task_area_content_empty_node {
     font-size: 14px;
@@ -130,7 +130,7 @@
     text-align: center;
     background-position: top;
     background-repeat: no-repeat;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wugongzuo.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_wugongzuo.png);
     width: 90px;
     height: 30px;
     padding-top: 60px;
@@ -257,7 +257,7 @@
     text-align: center;
     line-height: 24px;
     float: left;
-    margin-left: 10px;
+    margin-left: 5px;
     cursor: pointer;
     user-select: none;
     -ms-user-select: none;
@@ -280,7 +280,7 @@
     background-color: #ffffff;
     line-height: 20px;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     border: 1px solid #E6E6E6;
@@ -293,7 +293,7 @@
     border-radius: 10px;
     background-color: #ffffff;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     float: left;
@@ -308,7 +308,7 @@
     border-radius: 10px;
     background-color: #ffffff;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 8px;
     color: #666666;
     cursor: pointer;
     float: left;
@@ -342,7 +342,7 @@
     padding-left: 20px;
     color: #4A90E2;
     cursor: pointer;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_zengjia_blue2_click.png);
 }
 .o2_homepage_task_title_tabarea {
     font-size: 16px;
@@ -374,7 +374,7 @@
 
 .o2_homepage_infor_hotpicArea {
     height: 100%;
-    width: 42%;
+    width: 36%;
     float: left;
     background: #F7FBFF;
     border-radius: 8px;
@@ -392,7 +392,6 @@
 }
 
 .o2_homepage_infor_itemsArea {
-    margin-left: 42%;
     height: 100%;
 }
 .o2_homepage_infor_itemsArea_content {
@@ -457,7 +456,7 @@
     text-align: center;
     background-position: top;
     background-repeat: no-repeat;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuxiaoxi.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuxiaoxi.png);
     width: 120px;
     height: 30px;
     padding-top: 60px;
@@ -493,7 +492,7 @@
     text-align: center;
     background-position: top;
     background-repeat: no-repeat;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuhuiyi.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuhuiyi.png);
     width: 90px;
     height: 30px;
     padding-top: 60px;
@@ -594,7 +593,7 @@
     text-align: center;
     background-position: top;
     background-repeat: no-repeat;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuwenjian.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuwenjian.png);
     cursor: pointer;
     width: 90px;
     height: 30px;
@@ -621,7 +620,7 @@
     width: 50px;
     text-align: center;
     line-height: 50px;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_down.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_down.png);
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -653,7 +652,7 @@
     text-align: center;
     background-position: top;
     background-repeat: no-repeat;
-    background-image: url(/x_component_Homepage/$Main/default/icon/icon_wuricheng.png);
+    background-image: url(../x_component_Homepage/$Main/default/icon/icon_wuricheng.png);
     width: 90px;
     height: 30px;
     padding-top: 60px;

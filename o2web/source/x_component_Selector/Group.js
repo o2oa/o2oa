@@ -108,7 +108,7 @@ MWF.xApplication.Selector.Group.Item = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
         this.selector.orgAction.listPersonNested(this.data.id, function(json){
@@ -144,7 +144,7 @@ MWF.xApplication.Selector.Group.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/groupicon.png)");
     },
     loadSubItem: function(){
         this.selector.orgAction.listPersonNested(this.data.id, function(json){

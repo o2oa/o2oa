@@ -840,7 +840,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var infoNode = new Element("div", { "styles": css.attachmentOrderInforNode, "text": lp.attachmentOrderInfo }).inject(node);
             var attrchmentsNode = new Element("div", { "styles": css.attachmentOrderAreaNode }).inject(node);
 
-            var iconUrl = "/x_component_File/$Main/icon.json";
+            var iconUrl = "../x_component_File/$Main/icon.json";
             var icons = null;
             o2.getJSON(iconUrl, function (json) {
                 icons = json;
@@ -848,7 +848,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
             this.attachments.each(function (att, idx) {
                 var iconName = icons[att.data.extension.toLowerCase()] || icons.unknow;
-                var iconFolderUrl = "/x_component_File/$Main/default/file/" + iconName;
+                var iconFolderUrl = "../x_component_File/$Main/default/file/" + iconName;
 
                 var itemNode = new Element("div", { "styles": css.attachmentOrderItemNode }).inject(attrchmentsNode);
                 itemNode.store("att", att);
@@ -1496,7 +1496,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                 "width": "20px",
                 "height": "20px",
                 "float": "left",
-                "background": "url(" + "/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                "background": "url(" + "../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
             }
         }).inject(node);
         var textNode = new Element("div", {

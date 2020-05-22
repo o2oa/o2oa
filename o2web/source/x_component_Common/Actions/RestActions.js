@@ -3,7 +3,7 @@ MWF.xApplication.Common.Actions.RestActions = new Class({
 	initialize: function(){
 
 		this.designAddress = "";	
-		MWF.getJSON("/x_component_Common/Actions/properties.jsp", function(json){
+		MWF.getJSON("../x_component_Common/Actions/properties.jsp", function(json){
 			this.actions = json;
 		}.bind(this), false);
 	},

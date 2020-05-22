@@ -53,29 +53,29 @@
         "height": "16px",
         "width": "16px",
         "margin": "12px 3px",
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left.png) no-repeat center center",
         "cursor": "pointer",
         "float": "right"
     },
     "calendarPrevMonthNode_over": {
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left_click.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left_click.png) no-repeat center center"
     },
     "calendarPrevMonthNode_down": {
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left_click.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_left_click.png) no-repeat center center"
     },
     "calendarNextMonthNode": {
         "height": "16px",
         "width": "16px",
         "margin": "12px 3px",
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right.png) no-repeat center center",
         "cursor": "pointer",
         "float": "right"
     },
     "calendarNextMonthNode_over": {
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right_click.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right_click.png) no-repeat center center"
     },
     "calendarNextMonthNode_down": {
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right_click.png) no-repeat center center"
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_triangle_right_click.png) no-repeat center center"
     },
     "calendarTitleTextNode": {
         "line-height": "38px",
@@ -109,14 +109,14 @@
         "height": "40px",
         "width": "40px",
         "float": "left",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/icon_left.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/icon_left.png) no-repeat center center",
         "cursor": "pointer"
     },
     "calendarMonthSelectTitleNextYearNode": {
         "height": "40px",
         "width": "40px",
         "float": "right",
-        "background": "url(/x_component_Calendar/$MonthView/default/icon/icon_right.png) no-repeat center center",
+        "background": "url(../x_component_Calendar/$MonthView/default/icon/icon_right.png) no-repeat center center",
         "cursor": "pointer"
     },
     "calendarMonthSelectTitleTextNode": {
@@ -250,7 +250,7 @@
         "height": "20px",
         "width": "40px",
         "float": "left",
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_zj_click.png) no-repeat  left center",
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_zj_click.png) no-repeat  left center",
         "cursor": "pointer"
     },
     "rightTool_more" : {
@@ -258,7 +258,7 @@
         "height": "20px",
         "width": "40px",
         "float": "right",
-        "background": "url(/x_component_Calendar/widget/$Schedule/default/icon/icon_more.png) no-repeat  left center",
+        "background": "url(../x_component_Calendar/widget/$Schedule/default/icon/icon_more.png) no-repeat  left center",
         "cursor": "pointer"
     },
     "calendarTable": {

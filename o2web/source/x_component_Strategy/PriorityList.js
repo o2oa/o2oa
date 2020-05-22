@@ -16,7 +16,7 @@ MWF.xApplication.Strategy.PriorityList = new Class({
         //alert(JSON.stringify(app.lp.priority))
         this.app = app;
         this.lp = app.lp.priority;
-        this.path = "/x_component_Strategy/$PriorityList/";
+        this.path = "../x_component_Strategy/$PriorityList/";
         this.loadCss();
 
         this.actions = actions;
@@ -42,7 +42,7 @@ MWF.xApplication.Strategy.PriorityList = new Class({
                 if(this.allArrowArr.length>0){
                     this.allArrowArr.each(function(d){
                         $(d).setStyles({
-                            "background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
+                            "background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"
                         });
                     }.bind(this))
                 }
@@ -412,7 +412,7 @@ MWF.xApplication.Strategy.PriorityList = new Class({
         this.loadImg = new Element("img.loadImg",{
             styles:{"width":"16px","height":"16px","float":"left"},
             //src:this.path+"default/icon/loading.gif"
-            src:"/x_component_Strategy/$Main/default/icon/loading.gif"
+            src:"../x_component_Strategy/$Main/default/icon/loading.gif"
         }).inject(this.inforDiv);
 
         this.shadeTxtSpan = new Element("span.shadeTxtSpan").inject(this.inforDiv);

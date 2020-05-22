@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -278,7 +279,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
-		if( needPicture != null && needPicture ){
+		if( BooleanUtils.isTrue(needPicture) ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( StringUtils.isNotEmpty( creatorName ) ){
@@ -321,7 +322,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
-		if( needPicture != null && needPicture ){
+		if( BooleanUtils.isTrue(needPicture) ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( StringUtils.isNotEmpty( creatorName ) ){
@@ -426,7 +427,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
-		if( needPicture != null && needPicture ){
+		if( BooleanUtils.isTrue(needPicture) ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( StringUtils.isNotEmpty( searchTitle ) ){
@@ -465,7 +466,7 @@ public class BBSSubjectInfoFactory extends AbstractFactory {
 		if( StringUtils.isNotEmpty( sectionId ) ){
 			p = cb.and( p, cb.equal( root.get( BBSSubjectInfo_.sectionId ), sectionId));
 		}
-		if( needPicture != null && needPicture ){
+		if( BooleanUtils.isTrue(needPicture) ){
 			p = cb.and( p, cb.isNotNull( root.get( BBSSubjectInfo_.picId ) ),  cb.notEqual( root.get( BBSSubjectInfo_.picId ), ""));
 		}
 		if( StringUtils.isNotEmpty( searchTitle ) ){

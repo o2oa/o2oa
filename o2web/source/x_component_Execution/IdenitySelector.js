@@ -36,7 +36,7 @@ MWF.xApplication.Execution.IdenitySelector = new Class({
         this.create();
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$Main/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$Main/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
 

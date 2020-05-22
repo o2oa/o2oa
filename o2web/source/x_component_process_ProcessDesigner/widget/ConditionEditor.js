@@ -14,8 +14,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ConditionEditor = new Class({
 		this.setOptions(options);
 		this.node = $(node);
 		
-		this.path = "/x_component_process_ProcessDesigner/widget/$ConditionEditor/";
-		this.cssPath = "/x_component_process_ProcessDesigner/widget/$ConditionEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_ProcessDesigner/widget/$ConditionEditor/";
+		this.cssPath = "../x_component_process_ProcessDesigner/widget/$ConditionEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
 
         this.loadConditionArea();

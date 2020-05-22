@@ -5,7 +5,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"path": "/x_component_query_FormDesigner/property/property.html"
+		"path": "../x_component_query_FormDesigner/property/property.html"
 	},
 	
 	initialize: function(module, propertyNode, designer, options){
@@ -370,7 +370,8 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     "onSave": function(){
                         this.designer.saveView();
                     }.bind(this),
-                    "style": style || "default"
+                    "style": style || "default",
+                    "runtime": "server"
                 });
                 scriptArea.load({"code": scriptContent});
             }.bind(this));
@@ -603,6 +604,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 }
             }.bind(this));
             select.addEvent("change", function(e){
+                debugger;
                 var v = select.options[select.selectedIndex].value;
                 if (v!="none"){
                     var flag = false;
@@ -629,6 +631,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             var group = this.view.data.data.group;
             if (group.column==this.data.column) radios[0].set("checked", true);
             radios.addEvent("click", function(e){
+                debugger;
                 if (this.checked){
                     if (this.value=="true") {
                         _self.view.data.data.group.column = _self.data.column;
@@ -640,6 +643,9 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                                     if (r.value=="false") r.set("checked", true);
                                 });
                             }
+                        });
+                        ( _self.view.data.data.selectList ).each(function(s) {
+                            if( s.column !== _self.data.column )s.groupEntry = false;
                         });
                         this.set("checked", true);
                     }else{
@@ -880,7 +886,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
-                    "systemToolsAddress" : "/x_component_query_ViewDesigner/$View/toolbars.json",
+                    "systemToolsAddress" : "../x_component_query_ViewDesigner/$View/toolbars.json",
                     "noCreate": true,
                     "noDelete": false,
                     "noCode": true,

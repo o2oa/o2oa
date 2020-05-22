@@ -34,7 +34,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
 @Entity
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Group.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Group.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
@@ -165,6 +165,17 @@ public class Group extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Unit.class))
 	private List<String> unitList;
 
+	public static final String identityList_FIELDNAME = "identityList";
+	@FieldDescribe("群组存放身份成员,identity ID.")
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + identityList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + identityList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementIndex(name = TABLE + IndexNameMiddle + identityList_FIELDNAME + ElementIndexNameSuffix)
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + identityList_FIELDNAME)
+	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Identity.class))
+	private List<String> identityList;
+
 	public String getName() {
 		return name;
 	}
@@ -243,5 +254,13 @@ public class Group extends SliceJpaObject {
 
 	public void setUnitList(List<String> unitList) {
 		this.unitList = unitList;
+	}
+
+	public List<String> getIdentityList() {
+		return identityList;
+	}
+
+	public void setIdentityList(List<String> identityList) {
+		this.identityList = identityList;
 	}
 }

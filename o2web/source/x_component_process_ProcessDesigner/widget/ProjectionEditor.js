@@ -20,8 +20,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
 		this.node = $(node);
         this.data = (text) ? JSON.decode(text) : [];
         this.name = node.get("name");
-		this.path = "/x_component_process_ProcessDesigner/widget/$ProjectionEditor/";
-		this.cssPath = "/x_component_process_ProcessDesigner/widget/$ProjectionEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_ProcessDesigner/widget/$ProjectionEditor/";
+		this.cssPath = "../x_component_process_ProcessDesigner/widget/$ProjectionEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
         this.selectedItems = [];
         this.items = {};

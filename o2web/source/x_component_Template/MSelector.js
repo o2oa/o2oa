@@ -46,8 +46,8 @@ var MSelector = new Class({
         this.setOptions(options);
         if( !this.options.isEdited && !this.options.isCreateReadNode ){
         }else{
-            this.path = "/x_component_Template/$MSelector/";
-            this.cssPath = "/x_component_Template/$MSelector/"+this.options.style+"/css.wcss";
+            this.path = "../x_component_Template/$MSelector/";
+            this.cssPath = "../x_component_Template/$MSelector/"+this.options.style+"/css.wcss";
             this._loadCss();
             if( css ){
                 this.css = Object.merge( this.css, css )

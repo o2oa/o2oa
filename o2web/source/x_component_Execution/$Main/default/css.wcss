@@ -411,7 +411,7 @@
     "width": "28px",
     "height": "32px",
     "float": "left",
-    "background": "url(/x_component_Execution/$Main/default/icon/UserMale-32.png) no-repeat 2px 6px"
+    "background": "url(../x_component_Execution/$Main/default/icon/UserMale-32.png) no-repeat 2px 6px"
   },
   "formTopTextNode" : {
     "margin-left" : "5px",
@@ -427,7 +427,7 @@
     "float": "right",
     "padding-left" : "30px",
     "padding-right" : "10px",
-    "background": "url(/x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
+    "background": "url(../x_component_Execution/$WorkForm/default/icon/close.png) no-repeat center 4px",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -444,7 +444,7 @@
   "formNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Template/$Explorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Template/$Explorer/default/icon/new.png) no-repeat"
   },
   "formIconNode": {
     "width": "47px",
@@ -596,7 +596,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblsort.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblsort.gif)"
   },
   "sortIconNode_asc" : {
     "height": "16px",
@@ -608,7 +608,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dblasc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dblasc.gif)"
   },
   "sortIconNode_desc" : {
     "height": "16px",
@@ -620,7 +620,7 @@
     "margin-right": "5px",
     "background-position" : "center center",
     "background-repeat" : "no-repeat",
-    "background-image" : "url(/x_component_Template/$Explorer/default/icon/dbldesc.gif)"
+    "background-image" : "url(../x_component_Template/$Explorer/default/icon/dbldesc.gif)"
   },
 
 

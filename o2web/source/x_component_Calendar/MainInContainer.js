@@ -30,7 +30,7 @@ MWF.xApplication.Calendar.MainInContainer = new Class({
         this.container = container;
         this.content = content;
         this.scrollNode = scrollNode; 
-        this.path = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
+        this.path = "../x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
         this.options.icon = this.path+this.options.style+"/"+this.options.icon;
 
         this.cssPath =this.path+this.options.style+"/css.wcss" ;

@@ -68,7 +68,7 @@
 	    "width": "24px",
 	    "height": "24px",
 	    "float": "right",
-	    "background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
+	    "background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/refresh.png) no-repeat center center",
 	    "cursor": "pointer"
 	},
 	"processIconNode": {
@@ -189,7 +189,7 @@
 	"width" : "40px",
 	"top" : "8px",
 	"left" : "48px",
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_before.png) no-repeat left center"
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_before.png) no-repeat left center"
   },
   "injectActionAfter" : {
 	"cursor" : "pointer",
@@ -198,7 +198,7 @@
 	"width" : "24px",
 	"bottom" : "8px",
 	"left" : "48px",
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_after.png) no-repeat left center"
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_after.png) no-repeat left center"
   },
   "injectActionTop" : {
 	"cursor" : "pointer",
@@ -207,7 +207,7 @@
 	"width" : "24px",
 	"left" : "8px",
 	"top" : "48px",
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_top.png) no-repeat left center"
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_top.png) no-repeat left center"
   },
   "injectActionBottom" : {
 	"cursor" : "pointer",
@@ -216,7 +216,7 @@
 	"width" : "24px",
 	"right" : "8px",
 	"top" : "48px",
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_bottom.png) no-repeat left center"
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_bottom.png) no-repeat left center"
   },
 
 //  "injectActionTopNode" : {
@@ -256,7 +256,7 @@
 	"border-radius" : "30px",
 	"margin": "0px auto",
 	"padding-top" : "5px",
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel.png) no-repeat left center",
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel.png) no-repeat left center",
 	"background-color" : "#fff",
 	"cursor": "pointer",
 	"position" : "absolute",
@@ -265,7 +265,7 @@
 	//"opacity": 1
   },
   "injectActionCancelNode_over": {
-	"background": "url(/x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel_over.png) no-repeat left center"
+	"background": "url(../x_component_process_FormDesigner/Module/Form/default/icon/inject_cancel_over.png) no-repeat left center"
   },
   "injectNoticeNode" : {
 	"height" : "20px",

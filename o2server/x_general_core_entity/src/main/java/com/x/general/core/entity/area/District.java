@@ -17,7 +17,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.general.core.entity.PersistenceProperties;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.soft)
 @Entity
 @Table(name = PersistenceProperties.Area.District.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Area.District.table + JpaObject.IndexNameMiddle

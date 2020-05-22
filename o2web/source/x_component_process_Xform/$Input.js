@@ -69,6 +69,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         this.node.empty();
     },
     loadDescription: function(){
+        if (this.readonly || this.json.isReadonly)return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){
@@ -158,7 +159,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
     _loadStyles: function(){
         if (this.json.styles) this.node.setStyles(this.json.styles);
         if (this.json.inputStyles) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
-        if (this.iconNode){
+        if (this.iconNode && this.iconNode.offsetParent !== null){
             var size = this.node.getSize();
             //if (!size.y){
             //    var y1 = this.node.getStyle("height");
@@ -275,7 +276,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                     "width": "20px",
                     "height": "20px",
                     "float": "left",
-                    "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                    "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
                 }
             }).inject(node);
             var textNode = new Element("div", {

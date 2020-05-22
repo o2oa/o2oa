@@ -869,7 +869,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 },
                 events : {
                     click : function(){
-                        window.open( "/x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id, "_blank" );
+                        window.open( "../x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id, "_blank" );
                     }.bind(this)
                 }
             }).inject( this.qrCodeArea );
@@ -1036,7 +1036,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var deviceList = room.device.split("#");
         deviceList.each(function(name){
             var node = new Element("div", {"styles": this.css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
-            node.setStyle("background-image", "url(/x_component_Meeting/$RoomView/default/icon/device/"+name+"_disable.png)");
+            node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+name+"_disable.png)");
         }.bind(this));
         if ((i % 2)!=0) roomNode.setStyle("background-color", "#f4f8ff");
         roomNode.store("room", room);
@@ -1427,7 +1427,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
                     "width": "14px",
                     "margin-right": "3px",
                     "float": "left",
-                    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
+                    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
                 }}).inject(item.node, "top");
                 new Element("div", {
                     "styles" : {"color": "#1fbf04", "clear":"both","text-align":"center"},
@@ -1442,7 +1442,7 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
                     "width": "14px",
                     "margin-right": "3px",
                     "float": "left",
-                    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
+                    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
                 }}).inject(item.node, "top");
                 new Element("div", {
                     "styles" : {"color": "#FF0000", "clear":"both","text-align":"center"},
@@ -1577,8 +1577,8 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
 
         this.parseData();
 
-        this.path = "/x_component_Meeting/$Common/default/meetingarea/";
-        this.cssPath = "/x_component_Meeting/$Common/default/meetingarea/css.wcss";
+        this.path = "../x_component_Meeting/$Common/default/meetingarea/";
+        this.cssPath = "../x_component_Meeting/$Common/default/meetingarea/css.wcss";
         this._loadCss();
         this.load();
     },
@@ -1931,7 +1931,7 @@ MWF.xApplication.Meeting.SideBar = new Class({
         //this.css = this.app.css;
         this.lp = this.app.lp;
         this.isHidden = false;
-        this.cssPath = "/x_component_Meeting/$Common/"+this.options.style+"/sidebar/css.wcss";
+        this.cssPath = "../x_component_Meeting/$Common/"+this.options.style+"/sidebar/css.wcss";
         this._loadCss();
 
         this.load();

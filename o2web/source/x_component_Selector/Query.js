@@ -63,7 +63,7 @@ MWF.xApplication.Selector.Query.Item = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -110,7 +110,7 @@ MWF.xApplication.Selector.Query.ItemSelected = new Class({
         return this.data.name;
     },
     _setIcon: function(){
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -144,7 +144,7 @@ MWF.xApplication.Selector.Query.ItemSelected = new Class({
 //        }).inject(this.container);
 //    },
 //    _setIcon: function(){
-//        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/default/icon/applicationicon.png)");
+//        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
 //    },
 //    _hasChild: function(){
 //        return (this.data.viewList && this.data.viewList.length);

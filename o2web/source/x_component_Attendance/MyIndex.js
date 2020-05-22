@@ -24,8 +24,8 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Attendance/$MyIndex/";
-        this.cssPath = "/x_component_Attendance/$MyIndex/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$MyIndex/";
+        this.cssPath = "../x_component_Attendance/$MyIndex/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

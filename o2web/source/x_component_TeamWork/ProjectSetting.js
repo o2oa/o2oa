@@ -9,7 +9,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
     open: function (e) {
         //设置css 和 lp等
         var css = this.css;
-        this.cssPath = "/x_component_TeamWork/$ProjectSetting/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$ProjectSetting/"+this.options.style+"/css.wcss";
         this._loadCss();
         if(css) this.css = Object.merge(  css, this.css );
 
@@ -53,17 +53,18 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviGeneralHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviGeneral);
         this.naviGeneralHover.setStyles({"height":"58px","margin-top":"2px"});
         this.naviGeneralIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviGeneral);
-        this.naviGeneralIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
+
+        this.naviGeneralIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
         this.naviGeneralText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.projectGeneral}).inject(this.naviGeneral);
         this.naviGeneral.addEvents({
             mouseover:function(){
                 if(_self.curNavi == "general") return;
-                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general_click.png)"});
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_general_click.png)"});
                 this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
             },
             mouseout:function(){
                 if(_self.curNavi == "general") return;
-                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_general.png)"});
                 this.getElement(".naviItemText").setStyles({"color":""});
             },
             click:function(){
@@ -155,17 +156,17 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
         this.naviCustomHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviCustom);
         this.naviCustomIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviCustom);
-        this.naviCustomIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+        this.naviCustomIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
         this.naviCustomText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.customField}).inject(this.naviCustom);
         this.naviCustom.addEvents({
             mouseover:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
                 this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
             },
             mouseout:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
                 this.getElement(".naviItemText").setStyles({"color":""});
             },
             click:function(){
@@ -178,17 +179,17 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
         this.naviCustomHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviCustom);
         this.naviCustomIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviCustom);
-        this.naviCustomIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+        this.naviCustomIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
         this.naviCustomText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:"任务设置"}).inject(this.naviCustom);
         this.naviCustom.addEvents({
             mouseover:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
                 this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
             },
             mouseout:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
                 this.getElement(".naviItemText").setStyles({"color":""});
             },
             click:function(){
@@ -201,17 +202,17 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         this.naviCustom = new Element("div.naviCustom",{styles:this.css.naviItem}).inject(this.projectSettingNaviLayout);
         this.naviCustomHover = new Element("div.naviItemHover",{styles:this.css.naviItemHover}).inject(this.naviCustom);
         this.naviCustomIcon = new Element("div.naviItemIcon",{styles:this.css.naviItemIcon}).inject(this.naviCustom);
-        this.naviCustomIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+        this.naviCustomIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
         this.naviCustomText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:"更多设置"}).inject(this.naviCustom);
         this.naviCustom.addEvents({
             mouseover:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElements(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
+                this.getElements(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom_click.png)"});
                 this.getElements(".naviItemText").setStyles({"color":"#4a90e2"});
             },
             mouseout:function(){
                 if(_self.curNavi == "custom") return;
-                this.getElement(".naviItemIcon").setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
+                this.getElement(".naviItemIcon").setStyles({"background-image":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_custom.png)"});
                 this.getElement(".naviItemText").setStyles({"color":""});
             },
             click:function(){

@@ -10,8 +10,8 @@ var MWFCalendarWeekView = MWF.xApplication.Calendar.WeekView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Calendar/$WeekView/";
-        this.cssPath = "/x_component_Calendar/$WeekView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Calendar/$WeekView/";
+        this.cssPath = "../x_component_Calendar/$WeekView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);
@@ -1255,6 +1255,7 @@ MWFCalendarWeekView.Calendar.WholeDayDocument = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "y", "delay" : 350
         });
+        this.tooltip.view = this.view;
     },
     getCoordinate : function(){
         var data = this.data;
@@ -1454,7 +1455,7 @@ MWFCalendarWeekView.Calendar.Document = new Class({
         this.tooltip = new MWF.xApplication.Calendar.EventTooltip(this.app.content, this.node, this.app, this.data, {
             axis : "x", "delay" : 350
         });
-
+        this.tooltip.view = this.view;
     },
     resize : function(){
         this.node.setStyles(this.getCoordinate());

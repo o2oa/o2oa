@@ -3,7 +3,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Div/div.html",
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Div/div.html",
 		"actions": [
 			{
 				"name": "move",
@@ -39,8 +39,8 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Div/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Div/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Div/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Div/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";
@@ -53,7 +53,7 @@ MWF.xApplication.portal.PageDesigner.Module.Div = MWF.PCDiv = new Class({
 
 
 	loadNewWidgetData: function(name, callback){
-		var url = "/x_component_portal_PageDesigner/Module/Page/template/page.json";
+		var url = "../x_component_portal_PageDesigner/Module/Page/template/page.json";
 		MWF.getJSON(url, {
 			"onSuccess": function(obj){
 				obj.pcData.id="";

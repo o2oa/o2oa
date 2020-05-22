@@ -14,14 +14,14 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_query_TableDesigner/$Table/table.html"
+        "propertyPath": "../x_component_query_TableDesigner/$Table/table.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_TableDesigner/$Table/";
-        this.cssPath = "/x_component_query_TableDesigner/$Table/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_TableDesigner/$Table/";
+        this.cssPath = "../x_component_query_TableDesigner/$Table/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -637,7 +637,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 MWF.xApplication.query.TableDesigner.Table.Column = new Class({
     Extends:MWF.xApplication.query.ViewDesigner.ViewBase.Column,
     initialize: function(json, view, next){
-        this.propertyPath = "/x_component_query_TableDesigner/$Table/column.html";
+        this.propertyPath = "../x_component_query_TableDesigner/$Table/column.html";
         this.view = view;
         this.json = json;
         this.next = next;
@@ -1088,7 +1088,7 @@ MWF.xApplication.query.TableDesigner.Table.JPQLRunner = new Class({
     //     this.contentArea.set("text", this.select);
     //     o2.require("o2.widget.ace", function(){
     //         o2.widget.ace.load(function(){
-    //             o2.load("/o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+    //             o2.load("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
     //                 var highlight = ace.require("ace/ext/static_highlight");
     //                 highlight(this.contentArea, {mode: "ace/mode/jql", theme: "ace/theme/tomorrow", "fontSize": 16});
     //             }.bind(this));
@@ -1099,9 +1099,13 @@ MWF.xApplication.query.TableDesigner.Table.JPQLRunner = new Class({
         o2.require("o2.widget.JavascriptEditor", function(){
             this.editor = new o2.widget.JavascriptEditor(this.contentWhereArea, {"title": "JPQL", "option": {"mode": "sql"}});
             this.editor.load(function(){
-                this.editor.editor.on("change", function(){
+                this.editor.addEditorEvent("change", function(){
                     this.checkJpqlType();
                 }.bind(this));
+
+                // this.editor.editor.on("change", function(){
+                //     this.checkJpqlType();
+                // }.bind(this));
                 if (callback) callback();
             }.bind(this));
         }.bind(this), false);

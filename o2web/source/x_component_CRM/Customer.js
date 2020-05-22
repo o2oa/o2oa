@@ -18,7 +18,7 @@ MWF.xApplication.CRM.Customer = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp.customer;
-        this.path = "/x_component_CRM/$Customer/";
+        this.path = "../x_component_CRM/$Customer/";
         this.loadCss();
 
         this.actions = actions;
@@ -26,7 +26,7 @@ MWF.xApplication.CRM.Customer = new Class({
         debugger
     },
     loadCss: function () {
-        this.cssPath = "/x_component_CRM/$Customer/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_CRM/$Customer/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {

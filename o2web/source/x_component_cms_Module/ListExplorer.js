@@ -22,8 +22,8 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
     initialize: function(node, actions, columnData, categoryData, revealData, options, searchNode){
         this.setOptions(options);
         this.setTooltip();
-        this.path = "/x_component_cms_Module/$ListExplorer/";
-        this.cssPath = "/x_component_cms_Module/$ListExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Module/$ListExplorer/";
+        this.cssPath = "../x_component_cms_Module/$ListExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.categoryData = categoryData;

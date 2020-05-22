@@ -159,7 +159,9 @@
     background-size: cover;
     border-radius: 20px;
 }
-.layout_content_taskbar_area_user_text {}
+.layout_content_taskbar_area_user_text {
+    display: inline-block;
+}
 
 .layout_content_taskbar_area_action {
     height: 70px;

@@ -15,14 +15,14 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_query_ViewDesigner/$View/view.html"
+        "propertyPath": "../x_component_query_ViewDesigner/$View/view.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_query_ViewDesigner/$View/";
-        this.cssPath = "/x_component_query_ViewDesigner/$View/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_query_ViewDesigner/$View/";
+        this.cssPath = "../x_component_query_ViewDesigner/$View/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -71,7 +71,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
     parseData: function(){
         this.json = this.data;
         if( !this.json.data.events ){
-            var url = "/x_component_query_ViewDesigner/$View/view.json";
+            var url = "../x_component_query_ViewDesigner/$View/view.json";
             MWF.getJSON(url, {
                 "onSuccess": function(obj){
                     this.json.data.events = obj.data.events;
@@ -257,14 +257,14 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                                         if (subtrs[0].getStyle("display")=="none"){
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "table-row"); });
                                             if( iconNode ) {
-                                                iconNode.setStyle("background", "url(" + "/x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
+                                                iconNode.setStyle("background", "url(" + "../x_component_process_ViewDesigner/$View/default/icon/down.png) center center no-repeat");
                                             }else{
                                                 this.setStyles( _self.json.data.viewStyles["groupExpandNode"] )
                                             }
                                         }else{
                                             subtrs.each(function(subtr){ subtr.setStyle("display", "none"); });
                                             if( iconNode ) {
-                                                iconNode.setStyle("background", "url(" + "/x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
+                                                iconNode.setStyle("background", "url(" + "../x_component_process_ViewDesigner/$View/default/icon/right.png) center center no-repeat");
                                             }else{
                                                 this.setStyles( _self.json.data.viewStyles["groupCollapseNode"] )
                                             }
@@ -275,6 +275,19 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }.bind(this));
                             this.setContentColumnWidth();
                             this.setContentHeight();
+                        }else if(this.json.data.noDataText){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.json.data.viewStyles ){
+                                if( this.json.data.viewStyles["noDataTextNode"] ){
+                                    noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
+                                }else{
+                                     this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
+                                }
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.json.data.noDataText
+                            }).inject( this.viewContentBodyNode );
                         }
 
                     }else{
@@ -310,6 +323,19 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }.bind(this));
                             this.setContentColumnWidth();
                             this.setContentHeight();
+                        }else if(this.json.data.noDataText){
+                            var noDataTextNodeStyle = this.css.noDataTextNode;
+                            if( this.json.data.viewStyles ){
+                                if( this.json.data.viewStyles["noDataTextNode"] ){
+                                    noDataTextNodeStyle = this.json.data.viewStyles["noDataTextNode"]
+                                }else{
+                                    this.json.data.viewStyles["noDataTextNode"] = this.css.noDataTextNode
+                                }
+                            }
+                            this.noDataTextNode = new Element( "div", {
+                                "styles": noDataTextNodeStyle,
+                                "text" : this.json.data.noDataText
+                            }).inject( this.viewContentBodyNode );
                         }
                     }
                 }.bind(this));
@@ -614,7 +640,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             return;
         }
         this.saveSilence( function () {
-            var url = "/x_desktop/app.html?app=query.Query&status=";
+            var url = "../x_desktop/app.html?app=query.Query&status=";
             url += JSON.stringify({
                 id : this.data.application,
                 viewId : this.data.id
@@ -955,7 +981,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             if (callback) callback({});
             return;
         }
-        var stylesUrl = "/x_component_query_ViewDesigner/$View/skin/"+file;
+        var stylesUrl = "../x_component_query_ViewDesigner/$View/skin/"+file;
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(responseJSON){
                     //this.templateStylesList[file] = responseJSON;
@@ -975,7 +1001,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             if (callback) callback({});
             return;
         }
-        var stylesUrl = "/x_component_query_ViewDesigner/$View/skin/"+extendFile;
+        var stylesUrl = "../x_component_query_ViewDesigner/$View/skin/"+extendFile;
         MWF.getJSON(stylesUrl,{
                 "onSuccess": function(responseJSON){
                     //this.templateStylesList[file] = responseJSON;
@@ -991,7 +1017,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         );
     },
     loadStylesList: function(callback){
-        var configUrl = "/x_component_query_ViewDesigner/$View/skin/config.json";
+        var configUrl = "../x_component_query_ViewDesigner/$View/skin/config.json";
         MWF.getJSON(configUrl,{
                 "onSuccess": function(responseJSON){
                     this.stylesList = responseJSON;
@@ -1074,7 +1100,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
 
 MWF.xApplication.query.ViewDesigner.View.Column = new Class({
 	initialize: function(json, view, next){
-        this.propertyPath = "/x_component_query_ViewDesigner/$View/column.html";
+        this.propertyPath = "../x_component_query_ViewDesigner/$View/column.html";
 		this.view = view;
         this.json = json;
         this.next = next;
@@ -1303,7 +1329,6 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
         if (!e) e = this.node;
         this.view.designer.confirm("warn", e, MWF.APPDVD.LP.notice.deleteColumnTitle, MWF.APPDVD.LP.notice.deleteColumn, 300, 120, function(){
             _self.destroy();
-
             this.close();
         }, function(){
             this.close();
@@ -1323,6 +1348,19 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
                 tr.deleteCell(idx);
             }.bind(this));
         }
+
+        if (this.view.json.data.group.column === this.json.column){
+            this.view.json.data.group.column = null;
+        }
+
+        var sortList = this.view.json.data.orderList || [];
+        var deleteItem = null;
+        sortList.each(function(order){
+            if (order.column==this.json.column){
+                deleteItem = order;
+            }
+        }.bind(this));
+        if (deleteItem) sortList.erase(deleteItem);
 
         if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
         if (this.view.json.data.calculate) if (this.view.json.data.calculate.calculateList) this.view.json.data.calculate.calculateList.erase(this.json);
@@ -1652,11 +1690,11 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
     },
     initialize: function(json, jsonList, view, options){
         this.setOptions( options );
-        this.propertyPath = "/x_component_query_ViewDesigner/$View/actionbar.html";
-        this.path = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_default = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_custom = "/x_component_process_FormDesigner/Module/Actionbar/";
-        this.cssPath = "/x_component_query_ViewDesigner/$View/"+this.options.style+"/actionbar.wcss";
+        this.propertyPath = "../x_component_query_ViewDesigner/$View/actionbar.html";
+        this.path = "../x_component_query_ViewDesigner/$View/";
+        this.imagePath_default = "../x_component_query_ViewDesigner/$View/";
+        this.imagePath_custom = "../x_component_process_FormDesigner/Module/Actionbar/";
+        this.cssPath = "../x_component_query_ViewDesigner/$View/"+this.options.style+"/actionbar.wcss";
 
         this.view = view;
         this.json = json;
@@ -1969,7 +2007,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
     },
     initialize: function(json, jsonList, view, options){
         this.setOptions( options );
-        this.propertyPath = "/x_component_query_ViewDesigner/$View/paging.html";
+        this.propertyPath = "../x_component_query_ViewDesigner/$View/paging.html";
 
         this.view = view;
         this.json = json;

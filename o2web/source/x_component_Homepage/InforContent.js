@@ -289,6 +289,8 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
     },
     loadItemsRes_item:function(){
         o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(this.page, this.pageSize, {
+            "orderField": "publishTime",
+            "orderType": "DESC",
             "readFlag": "UNREAD"
         }, function(json){
             this.itemCount = json.count;
@@ -460,7 +462,7 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
         var range = this.getCurrentPageRange();
         var beginNumber = range.endNumber+1;
         var endNumber = beginNumber+(this.options.showPages-1);
-        if (beginNumber>this.pages) endNumber = this.pages;
+        if (beginNumber>=this.pages) endNumber = this.pages;
         this.page = endNumber-((this.options.showPages/2).toInt());
         this.reloadItem();
     }
@@ -519,6 +521,8 @@ MWF.xApplication.Homepage.InforContent.Infor  = new Class({
     },
     loadItemsRes: function(){
         o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(this.page, this.pageSize, {
+            "orderField": "publishTime",
+            "orderType": "DESC",
             "readFlag": "UNREAD",
             "appIdList": [this.id]
         }, function(json){

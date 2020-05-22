@@ -28,7 +28,7 @@ MWF.xApplication.Strategy.ImportForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.importForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Strategy/$ImportForm/";
+        this.path = "../x_component_Strategy/$ImportForm/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         if(this.options.from){
             this.cssPath = this.path + this.options.style + "/css_portal.wcss";

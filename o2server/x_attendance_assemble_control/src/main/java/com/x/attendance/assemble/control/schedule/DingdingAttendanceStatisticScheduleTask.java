@@ -24,7 +24,6 @@ public class DingdingAttendanceStatisticScheduleTask extends AbstractJob {
     @Override
     public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
         try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            logger.info("开始执行钉钉考勤统计的程序。。。。。。。。。。。。。。。。。。。。。");
             //前一天 0点到23点
             Date from = new Date();
             from = DateTools.addDay(from, -1);//前面一天

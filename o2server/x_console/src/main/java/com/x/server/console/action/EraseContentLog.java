@@ -1,10 +1,10 @@
 package com.x.server.console.action;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.processplatform.core.entity.element.FormVersion;
+import com.x.processplatform.core.entity.element.ProcessVersion;
+import com.x.processplatform.core.entity.element.ScriptVersion;
 import com.x.program.center.core.entity.PromptErrorLog;
 import com.x.program.center.core.entity.ScheduleLog;
 import com.x.program.center.core.entity.UnexpectedErrorLog;
@@ -14,12 +14,17 @@ public class EraseContentLog extends EraseContentProcessPlatform {
 
 	private static Logger logger = LoggerFactory.getLogger(EraseContentLog.class);
 
-	public boolean execute(String password) throws Exception {
+	@Override
+	public boolean execute() throws Exception {
 		this.init("log", null);
 		addClass(ScheduleLog.class);
 		addClass(PromptErrorLog.class);
 		addClass(UnexpectedErrorLog.class);
 		addClass(WarnLog.class);
+		addClass(ProcessVersion.class);
+		addClass(FormVersion.class);
+		addClass(ScriptVersion.class);
+		this.run();
 		this.run();
 		return true;
 	}

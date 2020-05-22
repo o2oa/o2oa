@@ -10,8 +10,8 @@ MWF.xApplication.cms.Index.Creater = new Class({
     },
     initialize: function(app, columnData, view, options){
         this.setOptions(options);
-        this.path = "/x_component_cms_Index/$Creater/";
-        this.cssPath = "/x_component_cms_Index/$Creater/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_cms_Index/$Creater/";
+        this.cssPath = "../x_component_cms_Index/$Creater/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.view = view;

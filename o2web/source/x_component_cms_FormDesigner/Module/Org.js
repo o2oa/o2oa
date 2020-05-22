@@ -5,6 +5,6 @@ MWF.xApplication.cms.FormDesigner.Module.Org = MWF.CMSFCOrg = new Class({
 	Implements : [MWF.CMSFCMI],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Org/org.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Org/org.html"
 	}
 });

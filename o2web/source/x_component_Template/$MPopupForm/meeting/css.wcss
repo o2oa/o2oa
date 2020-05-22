@@ -48,7 +48,7 @@
     "line-height" : "50px",
     "float": "right",
     "margin-right" : "20px",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_off_2.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_off_2.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopMaxActionNode": {
@@ -56,7 +56,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_max_2.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_max_2.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -65,7 +65,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_restore_2.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_restore_2.png) no-repeat center center",
     "cursor": "pointer"
   },
   "resizeNode" : {
@@ -145,14 +145,14 @@
     "width": "14px",
     "margin-right": "3px",
     "float": "left",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
   },
   "rejectIconNode": {
     "height": "20px",
     "width": "14px",
     "margin-right": "3px",
     "float": "left",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
   },
   "acceptTextNode": {
     "height": "20px",

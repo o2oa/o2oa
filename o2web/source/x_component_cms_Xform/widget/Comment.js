@@ -14,8 +14,8 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
         this.setOptions(options);
         this.app = app;
         this.node = node;
-        this.path = "/x_component_cms_Xform/widget/$Comment/";
-        this.cssPath = "/x_component_cms_Xform/widget/$Comment/" + this.options.style + "/css.wcss";
+        this.path = "../x_component_cms_Xform/widget/$Comment/";
+        this.cssPath = "../x_component_cms_Xform/widget/$Comment/" + this.options.style + "/css.wcss";
         this._loadCss();
 
         MWF.xDesktop.requireApp("cms.Xform", "lp."+MWF.language, null, false);
@@ -197,14 +197,14 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
         //if( url ){
         //    icon = url;
         //}else{
-        //    icon = "/x_component_ForumDocument/$Main/default/icon/noavatar_big.png";
+        //    icon = "../x_component_ForumDocument/$Main/default/icon/noavatar_big.png";
         //}
         //return icon;
         this.getUserData( name, function( json ){
             if( json && json.data && json.data.icon ){
                 icon = json.data.icon;
             }else{
-                icon = "/x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png";
+                icon = "../x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png";
             }
         });
         return icon;
@@ -222,7 +222,7 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
                 this.userCache[ name ] = json;
                 if( callback )callback( json );
             }else{
-                var json =  { data : { icon : "/x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png" } };
+                var json =  { data : { icon : "../x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png" } };
                 this.userCache[ name ] = json;
                 if( callback )callback( json );
             }
@@ -238,7 +238,7 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
                     }
                 }else{
                     if( json.data ){
-                        json.data.icon = "/x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png";
+                        json.data.icon = "../x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png";
                         this.userCache[ name ] = json;
                         if( callback )callback( json );
                     }
@@ -251,13 +251,13 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
                 //	}
                 //}.bind(this), function(){
                 //	if( json.data ){
-                //		json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.png";
+                //		json.data.icon = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.png";
                 //		this.userCache[ name ] = json;
                 //		if( callback )callback( json );
                 //	}
                 //}.bind(this));
             }.bind(this), function(){
-                var json =  { data : { icon : "/x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png" } };
+                var json =  { data : { icon : "../x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png" } };
                 this.userCache[ name ] = json;
                 if( callback )callback( json );
             }.bind(this), name, true )
@@ -364,7 +364,7 @@ O2CMSComment.Editor = new Class({
                         if( layout.session.user.icon ){
                             return "data:image/png;base64," + layout.session.user.icon
                         }else{
-                            return "/x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png"
+                            return "../x_component_cms_Xform/widget/$Comment/"+this.options.style+"/icon/noavatar_big.png"
                         }
                     }.bind(this)},
                     creatorName: { type : "innerText", value : layout.session.user.name },

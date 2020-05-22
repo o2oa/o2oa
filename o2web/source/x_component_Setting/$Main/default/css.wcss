@@ -282,7 +282,7 @@
     "explorerContentListActionIconNode": {
         "height": "40px",
         "width": "40px",
-        "background": "url(/x_component_Setting/$Main/default/icon/add.png) no-repeat center center"
+        "background": "url(../x_component_Setting/$Main/default/icon/add.png) no-repeat center center"
     },
     "explorerContentListActionTextAreaNode": {
         "margin-left": "50px",
@@ -300,14 +300,14 @@
         "width": "40px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url(/x_component_Setting/$Main/default/icon/ok.png) no-repeat center center"
+        "background": "url(../x_component_Setting/$Main/default/icon/ok.png) no-repeat center center"
     },
     "explorerContentListNotCheckIconAreaNode": {
         "height": "40px",
         "width": "40px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url(/x_component_Setting/$Main/default/icon/ok_gray.png) no-repeat center center"
+        "background": "url(../x_component_Setting/$Main/default/icon/ok_gray.png) no-repeat center center"
     },
 
     "explorerContentListItemIconNode": {

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
-import com.x.attendance.assemble.control.jaxrs.attendancestatistic.exception.ExceptionAttendanceStatisticProcess;
-import com.x.attendance.assemble.control.jaxrs.attendancestatistic.exception.ExceptionQueryStatisticUnitNameEmpty;
 import com.x.attendance.entity.StatisticUnitForDay;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;

@@ -44,7 +44,7 @@
       "height": "30px",
       "line-height": "30px",
       "padding-left" : "20px",
-      "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/right.png)",
+      "background-image": "url(../x_component_process_ViewDesigner/$View/default/icon/right.png)",
       "background-repeat" : "no-repeat",
       "background-position": "left center"
     },
@@ -52,29 +52,35 @@
       "height": "30px",
       "line-height": "30px",
       "padding-left" : "20px",
-      "background-image": "url(/x_component_process_ViewDesigner/$View/default/icon/down.png)",
+      "background-image": "url(../x_component_process_ViewDesigner/$View/default/icon/down.png)",
       "background-repeat" : "no-repeat",
       "background-position": "left center"
     },
     "checkboxNode" : {
-      "background-image": "url(/x_component_query_Query/$Viewer/default/icon/checkbox.png)",
+      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/checkbox.png)",
       "background-repeat" : "no-repeat",
       "background-position": "center center"
     },
     "checkedCheckboxNode" : {
-      "background-image": "url(/x_component_query_Query/$Viewer/default/icon/checkbox_checked.png)",
+      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/checkbox_checked.png)",
       "background-repeat" : "no-repeat",
       "background-position": "center center"
     },
     "radioNode" : {
-      "background-image": "url(/x_component_query_Query/$Viewer/default/icon/radiobox.png)",
+      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/radiobox.png)",
       "background-repeat" : "no-repeat",
       "background-position": "center center"
     },
     "checkedRadioNode" : {
-      "background-image": "url(/x_component_query_Query/$Viewer/default/icon/radiobox_checked.png)",
+      "background-image": "url(../x_component_query_Query/$Viewer/default/icon/radiobox_checked.png)",
       "background-repeat" : "no-repeat",
       "background-position": "center center"
+    },
+    "noDataTextNode" : {
+      "height" : "50px",
+      "font-size" : "16px",
+      "margin" : "20px auto",
+      "text-align" : "center"
     },
     "tableProperties": {
       "width": "100%",

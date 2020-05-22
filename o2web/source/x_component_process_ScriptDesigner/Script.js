@@ -16,8 +16,8 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_process_ScriptDesigner/$Script/";
-        this.cssPath = "/x_component_process_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ScriptDesigner/$Script/";
+        this.cssPath = "../x_component_process_ScriptDesigner/$Script/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -63,6 +63,7 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
     //},
 
     load : function(){
+        debugger;
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
 
@@ -86,9 +87,10 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
             this.setPropertyContent();
             this.setIncludeNode();
 
-            if (this.editor.editor){
-                this.editor.editor.focus();
-                //this.editor.editor.navigateFileStart();
+            if (this.editor){
+                this.editor.focus();
+            }else{
+                this.loadEditor();
             }
         }.bind(this));
         var _self = this;
@@ -100,40 +102,49 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
         });
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
 
-
-
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode);
+        if (this.options.showTab) this.page.showTabIm();
+    },
+    loadEditor:function(){
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"option": {"value": this.data.text}});
         this.editor.load(function(){
-            if (this.data.text){
-                this.editor.editor.setValue(this.data.text);
-            }
-            this.editor.editor.on("change", function(e){
+
+            if (this.data.text) this.editor.setValue(this.data.text);
+
+            // this.editor.addEditorEvent("onDidChangeModelContent", function(e){
+            //     if (!this.isChanged){
+            //         this.isChanged = true;
+            //         this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
+            //     }
+            // }.bind(this));
+            this.editor.addEditorEvent("change", function(e){
                 if (!this.isChanged){
                     this.isChanged = true;
                     this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
                 }
             }.bind(this));
+
             this.editor.addEvent("save", function(){
                 this.save();
             }.bind(this));
-            this.editor.addEvent("reference", function(editor, e, e1){
-                if (!this.scriptReferenceMenu){
-                    MWF.require("MWF.widget.ScriptHelp", function(){
-                        this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
-                            "onPostLoad": function(){
-                                this.showReferenceMenu();
-                            }.bind(this)
-                        });
-                        this.scriptReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
-                    }.bind(this));
-                }else{
-                    this.showReferenceMenu();
-                }
-            }.bind(this));
+
+            // this.editor.addEvent("reference", function(editor, e, e1){
+            //     if (!this.scriptReferenceMenu){
+            //         MWF.require("MWF.widget.ScriptHelp", function(){
+            //             this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
+            //                 "onPostLoad": function(){
+            //                     this.showReferenceMenu();
+            //                 }.bind(this)
+            //             });
+            //             this.scriptReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
+            //         }.bind(this));
+            //     }else{
+            //         this.showReferenceMenu();
+            //     }
+            // }.bind(this));
 
             var options = this.designer.styleSelectNode.options;
             for (var i=0; i<options.length; i++){
-                    var option = options[i];
+                var option = options[i];
                 if (option.value==this.editor.theme){
                     option.set("selected", true);
                     break;
@@ -148,10 +159,35 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
                     break;
                 }
             }
-        }.bind(this));
 
-        if (this.options.showTab) this.page.showTabIm();
+            options = this.designer.editorSelectNode.options;
+            for (var i=0; i<options.length; i++){
+                var option = options[i];
+                if (option.value==this.editor.options.type){
+                    option.set("selected", true);
+                    break;
+                }
+            }
+            options = this.designer.monacoStyleSelectNode.options;
+            for (var i=0; i<options.length; i++){
+                var option = options[i];
+                if (option.value==this.editor.theme){
+                    option.set("selected", true);
+                    break;
+                }
+            }
+
+            if (this.editor.options.type=="ace"){
+                this.designer.monacoStyleSelectNode.hide();
+                this.designer.styleSelectNode.show();
+            }else{
+                this.designer.monacoStyleSelectNode.show();
+                this.designer.styleSelectNode.hide();
+            }
+        }.bind(this));
     },
+
+
     showReferenceMenu: function(){
         var pos = this.editor.getCursorPixelPosition();
         var e = {"page": {}};
@@ -172,11 +208,13 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
     },
     setAreaNodeSize: function(){
-        var size = this.node.getSize();
+        //var size = this.node.getSize();
+        var size = this.node.getComputedSize();
+        size.y = size.height;
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize(y);
     },
 
     addInclude: function(){
@@ -186,15 +224,20 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
 
     save: function(callback){
         if (!this.isSave){
-            var session = this.editor.editor.getSession();
-            var annotations = session.getAnnotations();
-            var validated = true;
-            for (var i=0; i<annotations.length; i++){
-                if (annotations[i].type=="error"){
-                    validated = false;
-                    break;
-                }
-            }
+            debugger;
+            // var m = monaco.editor.getModelMarkers();
+            // var mod = this.editor.editor.getModel();
+            // var ms = monaco.editor.getModelMarkers({"resource": mod.uri});
+            //
+            // var session = this.editor.editor.getSession();
+            // var annotations = session.getAnnotations();
+            var validated = this.editor.validated();
+            // for (var i=0; i<annotations.length; i++){
+            //     if (annotations[i].type=="error"){
+            //         validated = false;
+            //         break;
+            //     }
+            // }
 
             var name = this.designer.propertyNameNode.get("value");
             var alias = this.designer.propertyAliasNode.get("value");
@@ -207,7 +250,7 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
             this.data.alias = alias;
             this.data.description = description;
             this.data.validated = validated;
-            this.data.text = this.editor.editor.getValue();
+            this.data.text = this.editor.getValue();
 
             this.isSave = true;
             this.designer.actions.saveScript(this.data, function(json){

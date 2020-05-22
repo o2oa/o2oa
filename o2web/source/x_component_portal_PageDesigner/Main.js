@@ -764,7 +764,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
     reloadPropertyStyles: function(){
         //MWF.release(this.css);
         this.css = null;
-        this.cssPath = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         if (this.options.style=="bottom"){
@@ -1276,7 +1276,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 		}
 	},
 	loadNewPageData: function(callback){
-        var url = "/x_component_portal_PageDesigner/Module/Page/template/"+this.options.template;
+        var url = "../x_component_portal_PageDesigner/Module/Page/template/"+this.options.template;
         MWF.getJSON(url, {
 			"onSuccess": function(obj){
 				this.pageData = obj.pcData;

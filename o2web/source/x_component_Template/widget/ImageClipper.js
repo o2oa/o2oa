@@ -17,8 +17,8 @@ MWF.xApplication.Template.widget.ImageClipper = new Class({
 	initialize: function(app, options){
 		this.setOptions(options);
         this.app = app;
-		this.path = "/x_component_Template/widget/$ImageClipper/";
-		this.cssPath = "/x_component_Template/widget/$ImageClipper/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_Template/widget/$ImageClipper/";
+		this.cssPath = "../x_component_Template/widget/$ImageClipper/"+this.options.style+"/css.wcss";
 		this._loadCss();
 	},
 

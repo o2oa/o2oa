@@ -9,7 +9,7 @@
         "height": "24px",
         "width": "24px",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$PersonSelector/default/icon/addPerson.png)  center center no-repeat"
     },
 
     "dutyMaskNode": {
@@ -47,7 +47,7 @@
         "width": "30px",
         "height": "30px",
         "float": "right",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/close.png) no-repeat center center",
         "cursor": "pointer"
     },
 
@@ -67,7 +67,7 @@
     "dutyOkActionNode": {
         "width": "100px",
         "height": "30px",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/editOk_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -78,7 +78,7 @@
     "dutyCancelActionNode": {
         "width": "100px",
         "height": "30px",
-        "background": "url("+"/x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_Selector/$Selector/default/icon/editCancel_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",

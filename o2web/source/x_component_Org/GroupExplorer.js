@@ -1,14 +1,14 @@
 MWF.xDesktop.requireApp("Org", "RoleExplorer", null, false);
 MWF.xApplication.Org.GroupExplorer = new Class({
-	Extends: MWF.xApplication.Org.$Explorer,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
+    Extends: MWF.xApplication.Org.$Explorer,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
         "lp": {
 
         },
         "creator": false
-	},
+    },
     _loadLp: function(){
         this.options.lp = {
             "elementLoaded": this.app.lp.groupLoaded,
@@ -81,7 +81,7 @@ MWF.xApplication.Org.GroupExplorer.Group = new Class({
         });
     },
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/group.png";
+        return "../x_component_Org/$Explorer/default/icon/group.png";
     }
 });
 MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
@@ -106,12 +106,13 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
     },
     loadItemPropertyTab: function(callback){
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
+
         MWF.require("MWF.widget.Tab", function(){
             this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "unit"});
             this.propertyTab.load();
 
             this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);
-
+            this.propertyTab.tabNodeContainer.setStyle("width","600px");
             if (callback) callback();
         }.bind(this));
     },
@@ -123,11 +124,15 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         this.personMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.personMemberPage = this.propertyTab.addTab(this.personMemberContentNode, this.explorer.app.lp.groupMemberPersonText);
 
+        this.identityMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
+        this.identityMemberPage = this.propertyTab.addTab(this.identityMemberContentNode, this.explorer.app.lp.groupMemberIdentityText);
+
         this.groupMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.groupMemberPage = this.propertyTab.addTab(this.groupMemberContentNode, this.explorer.app.lp.groupMemberGroupText);
 
         this.unitMemberContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.unitMemberPage = this.propertyTab.addTab(this.unitMemberContentNode, this.explorer.app.lp.unitMemberGroupText);
+
     },
     _loadContent: function(){
         debugger;
@@ -142,7 +147,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
@@ -159,10 +164,33 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
             {"style": "width: 30px", "text": ""}
         ], this.addPersonMember.bind(this), "personCountNode", this.explorer.app.lp.deletePersonMemeberTitle, this.explorer.app.lp.deletePersonMemeber);
 
+        this.identityMemberList = this._listMembers("identityList", "woIdentityList", this.identityMemberContentNode, [{
+            "getHtml": function(){
+                var src = _self.explorer.actions.getPersonIcon(this.person);
+                return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
+            },
+            "set": function(){}
+        }, "name", "unitLevelName", {
+            "getHtml": function(){
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                    _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+            },
+            "events": {
+                "click": function(){
+                }
+            }
+        }], [
+            {"style": "width: 30px", "text": ""},
+            {"style": "width: 20%", "text": this.explorer.app.lp.personName},
+            {"style": "", "text": this.explorer.app.lp.unitLevelName},
+            {"style": "width: 30px", "text": ""}
+        ], this.addIdentityMember.bind(this), "identityCountNode", this.explorer.app.lp.deleteIdentityMemeberTitle, this.explorer.app.lp.deleteIdentityMemeber);
+
+
         this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName",  //"description",
             {
                 "getHtml": function(){
-                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -180,16 +208,16 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
 
         this.unitMemberList = this._listMembers("unitList", "woUnitList", this.unitMemberContentNode, ["name", "levelName", //"typeList",
             {
-            "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
-                    _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
-            },
-            "events": {
-                "click": function(){
-                    _self.explorer.openUnit(this.data, this.td);
+                "getHtml": function(){
+                    return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
+                        _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+                },
+                "events": {
+                    "click": function(){
+                        _self.explorer.openUnit(this.data, this.td);
+                    }
                 }
-            }
-        }], [
+            }], [
             {"style": "width: 20%", "text": this.explorer.app.lp.unitName},
             {"style": "width: 40%", "text": this.explorer.app.lp.unitLevelName},
             //{"style": "", "text": this.explorer.app.lp.unitTypeList},
@@ -207,6 +235,18 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
         }else{
             if (this.personCountNode) this.personCountNode.destroy();
         }
+
+        var identityCount = this.data.identityList.length;
+        if (identityCount){
+            if (this.identityCountNode){
+                this.identityCountNode.set("text", identityCount);
+            }else{
+                this.identityCountNode = new Element("div", {"styles": this.item.style.tabCountNode, "text": identityCount}).inject(this.identityMemberPage.tabNode);
+            }
+        }else{
+            if (this.identityCountNode) this.identityCountNode.destroy();
+        }
+
         var groupCount = this.data.groupList.length;
         if (groupCount){
             if (this.groupCountNode){
@@ -335,6 +375,34 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
             }.bind(this));
         }.bind(this));
     },
+
+    addIdentityMember: function(){
+        this.checkSaveBaseInfor(function(){
+            MWF.xDesktop.requireApp("Selector", "Identity", function(){
+                var selector = new MWF.xApplication.Selector.Identity(this.explorer.app.content,{
+                    "values": this.data.identityList,
+                    "onComplete": function(items){
+                        var ids = [];
+                        var identitys = [];
+                        items.each(function(item){
+                            ids.push(item.data.id);
+                            identitys.push(item.data);
+                        });
+                        this.data.identityList = ids;
+                        this.data.woIdentityList = identitys;
+
+                        this._saveElement(this.data, function(){
+                            this.identityMemberList.clear();
+                            this.data.woIdentityList.each(function(d){
+                                this.addListItem(this.identityMemberList, d, "identityList", "woIdentityList");
+                            }.bind(this));
+                        }.bind(this));
+                    }.bind(this)
+                });
+                selector.load();
+            }.bind(this));
+        }.bind(this));
+    },
     addGroupMember: function(){
         this.checkSaveBaseInfor(function(){
             MWF.xDesktop.requireApp("Selector", "Group", function(){
@@ -413,7 +481,7 @@ MWF.xApplication.Org.GroupExplorer.GroupContent = new Class({
 MWF.xApplication.Org.GroupExplorer.GroupContent.TitleInfor = new Class({
     Extends: MWF.xApplication.Org.RoleExplorer.RoleContent.TitleInfor,
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/group70.png";
+        return "../x_component_Org/$Explorer/default/icon/group70.png";
     }
 });
 
