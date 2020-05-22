@@ -532,6 +532,8 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                     },
                     click:function(){
                         //alert(this.get("text"))
+                        _self.openItem({group:d.id});
+                        _self.currentNavi = d.id;
                     }
                 });
                 var customGroupItem = new Element("div.customGroupItem",{styles:this.css.customGroupItem,text:d.name}).inject(customGroupItemContainer);
@@ -807,7 +809,6 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
             }else{
                 if(projectItemData) {
-
                     projectItemData.each(function(d){
                         var projectBlockItem = new Element("div.projectBlockItem",{styles:this.css.projectBlockItem}).inject(this.layoutList);
                         projectBlockItem.set("id",d.id);
@@ -874,7 +875,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectBlockItemContainer = new Element("div.projectBlockItemContainer",{styles:this.css.projectBlockItemContainer}).inject(container);
         var projectBlockItemIconContainer = new Element("div.projectBlockItemIconContainer",{styles:this.css.projectBlockItemIconContainer}).inject(projectBlockItemContainer);
 
-        var projectBlockItemIconFav = new Element("div.projectBlockItemIconFav",{styles:this.css.projectBlockItemIconFav}).inject(projectBlockItemIconContainer);
+        var projectBlockItemIconFav = new Element("div.projectBlockItemIconFav",{styles:this.css.projectBlockItemIconFav,title: this.lp.icon.star}).inject(projectBlockItemIconContainer);
         projectBlockItemIconFav.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
@@ -894,10 +895,11 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             });
         }
 
-        var projectBlockItemIconGroup = new Element("div.projectBlockItemIconGroup",{styles:this.css.projectBlockItemIconGroup}).inject(projectBlockItemIconContainer);
+        var projectBlockItemIconGroup = new Element("div.projectBlockItemIconGroup",{styles:this.css.projectBlockItemIconGroup,title:this.lp.icon.group}).inject(projectBlockItemIconContainer);
         projectBlockItemIconGroup.addEvents({
             click:function(e){
                 this.getProject(d.id,function(json){
+                    var pdata = json;
                     var data = {groups:json.groups};
                     MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
                         var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectBlockItemIconGroup, this.app, data, {
@@ -908,13 +910,15 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                             },
                             onClose:function(rs){
                                 if(rs){
-                                    var ddata ={
-                                        id:d.id,
+                                    var ddata={
+                                        id:pdata.id,
+                                        title:pdata.title,
+                                        description:pdata.description,
                                         groups:rs
                                     };
 
                                     this.rootActions.ProjectAction.save(ddata,function(json){
-                                        debugger;
+                                        //debugger;
                                     }.bind(this))
                                 }
                             }.bind(this)
@@ -929,7 +933,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
 
         if(d.control.founder){
-            var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting}).inject(projectBlockItemIconContainer);
+            var projectBlockItemIconSetting = new Element("div.projectBlockItemIconSetting",{styles:this.css.projectBlockItemIconSetting,title:this.lp.icon.setting}).inject(projectBlockItemIconContainer);
             projectBlockItemIconSetting.addEvents({
                 click:function(e){
                     MWF.xDesktop.requireApp("TeamWork", "ProjectSetting", function(){
@@ -941,18 +945,12 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                                     fx.start(["top"] ,"10px", "100px");
                                 },
                                 onPostClose:function(json){
-                                    // _self.actions.projectGet(d.id,function(json){
-                                    //     _self.loadSingleBlockItem(container,json.data)
-                                    // });
-                                    //_self.reload();
                                     if(json)_self.openItem({type:_self.currentNavi});
-
                                 }
                             },{
                                 container : _self.container,
                                 lp : _self.lp.projectSetting,
                                 css:_self.css
-
                             }
                         );
                         ps.open();
@@ -1005,7 +1003,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
         var projectListItemDes = new Element("div.projectListItemDes",{styles:this.css.projectListItemDes,text:d.description||""}).inject(projectListItemInforContainer);
         var projectListItemIconContainer = new Element("div.projectListItemIconContainer",{styles:this.css.projectListItemIconContainer}).inject(projectListItemContainer);
 
-        var projectListItemFavIcon = new Element("div.projectListItemFavIcon",{styles:this.css.projectListItemFavIcon}).inject(projectListItemIconContainer);
+        var projectListItemFavIcon = new Element("div.projectListItemFavIcon",{styles:this.css.projectListItemFavIcon,title:this.lp.icon.star}).inject(projectListItemIconContainer);
         projectListItemFavIcon.addEvents({
             click:function(e){
                 _self.setFav(d,function(data){
@@ -1033,10 +1031,11 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
             });
         }
 
-        var projectListItemGroupIcon = new Element("div.projectListItemGroupIcon",{styles:this.css.projectListItemGroupIcon}).inject(projectListItemIconContainer);
+        var projectListItemGroupIcon = new Element("div.projectListItemGroupIcon",{styles:this.css.projectListItemGroupIcon,title:this.lp.icon.group}).inject(projectListItemIconContainer);
         projectListItemGroupIcon.addEvents({
             click:function(e){
                 this.getProject(d.id,function(json){
+                    var pdata = json;
                     var data = {groups:json.groups};
                     MWF.xDesktop.requireApp("TeamWork", "GroupSelect", function(){
                         var gs = new MWF.xApplication.TeamWork.GroupSelect(this.container, projectListItemGroupIcon, this.app, data, {
@@ -1047,8 +1046,10 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
                             },
                             onClose:function(rs){
                                 if(rs){
-                                    var ddata ={
-                                        id:d.id,
+                                    var ddata={
+                                        id:pdata.id,
+                                        title:pdata.title,
+                                        description:pdata.description,
                                         groups:rs
                                     };
 
@@ -1068,7 +1069,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
 
 
         if(d.control.founder){
-            var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon}).inject(projectListItemIconContainer);
+            var projectListItemSettingIcon = new Element("div.projectListItemSettingIcon",{styles:this.css.projectListItemSettingIcon,title:this.lp.icon.setting}).inject(projectListItemIconContainer);
             projectListItemSettingIcon.addEvents({
                 click:function(e){
 

@@ -62,6 +62,11 @@ MWF.xApplication.TeamWork.LP = {
 			"addProjectListText":"创建新项目",
 			"listTip":"列表视图",
 			"blockTip":"卡片视图"
+		},
+		"icon":{
+			"star":"星标",
+			"setting":"设置",
+			"group":"分组"
 		}
 	},
 	"newProject":{
