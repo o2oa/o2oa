@@ -37,14 +37,14 @@
     "width":"25px",
     "height":"40px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/mobile_blue_flat/icon/arrow_down@2x.png) no-repeat left center",
+    "background":"url(../x_component_Template/$MSelector/mobile_blue_flat/icon/arrow_down@2x.png) no-repeat left center",
     "background-size" : "12px 7px"
   },
   "selectArrowNode_up":{
     "width":"23px",
     "height":"40px",
     "float":"right",
-    "background":"url(/x_component_Template/$MSelector/mobile_blue_flat/icon/close@2x.png) no-repeat left center",
+    "background":"url(../x_component_Template/$MSelector/mobile_blue_flat/icon/close@2x.png) no-repeat left center",
     "background-size" : "10px 10px"
   },
   "tooltipNode":{
