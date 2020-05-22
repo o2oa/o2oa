@@ -1128,7 +1128,7 @@ MWF.xApplication.process.ProcessDesigner.Activity.List = new Class({
         //	    }
         //	}).inject(this.listActivityNode);
 
-        var actionIcon = (this.activity.type=="begin") ? " " : "<img src=\""+"/x_component_process_ProcessDesigner/$Process/default/icon/copy.png"+"\" />";
+        var actionIcon = (this.activity.type=="begin") ? " " : "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/copy.png"+"\" />";
         this.row = this.process.activityTable.push([
                 {
                     "content": " ",
@@ -1152,7 +1152,7 @@ MWF.xApplication.process.ProcessDesigner.Activity.List = new Class({
                     }
                 },
                 {
-                    "content": "<img src=\""+"/x_component_process_ProcessDesigner/$Process/default/icon/delete.png"+"\" />",
+                    "content": "<img src=\""+"../x_component_process_ProcessDesigner/$Process/default/icon/delete.png"+"\" />",
                     "properties": {
                         "styles": this.process.css.list.listIcon,
                         "events": {
@@ -1201,7 +1201,7 @@ MWF.xApplication.process.ProcessDesigner.Activity.Property = new Class({
         this.process = activity.process;
         this.paper = this.activity.process.paper;
         this.data = activity.data;
-        this.htmlPath = "/x_component_process_ProcessDesigner/$Process/"+this.activity.type+".html";
+        this.htmlPath = "../x_component_process_ProcessDesigner/$Process/"+this.activity.type+".html";
     },
     setValue: function(name, value){
         this.data[name] = value;

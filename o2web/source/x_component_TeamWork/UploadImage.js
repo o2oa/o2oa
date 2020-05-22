@@ -55,7 +55,7 @@ MWF.xApplication.TeamWork.UploadImage = new Class({
         this.rootActions = this.app.rootActions;
 
         this.css = {};
-        this.cssPath = "/x_component_TeamWork/$UploadImage/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$UploadImage/"+this.options.style+"/css.wcss";
 
         this.load();
         this.lp = this.app.lp.uploadImage

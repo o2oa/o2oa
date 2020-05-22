@@ -190,7 +190,7 @@ MWF.xApplication.Deployment.Component = new Class({
 
         this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.node);
 
-        var icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+        var icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
         this.iconNode.setStyle("background-image", "url("+icon+")");
 
         this.titleNode.set("text", this.data.title);

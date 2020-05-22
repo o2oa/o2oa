@@ -55,7 +55,7 @@
 //          "moderatorNames": {},
           "sectionDescription": {},
           "icon" : {
-            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '/x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
+            "attr" : "src^^function( d ){ if( d.icon ){ return 'data:image/png;base64,'+ d.icon }else{ return '../x_component_Forum/$Setting/default/sectionIcon/forum_icon.png' } }",
             "event" : "click^^function(documentNode, ev){ this.openSection() }"
           }
         }

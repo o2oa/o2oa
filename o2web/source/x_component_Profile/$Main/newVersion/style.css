@@ -8,7 +8,7 @@
     float: right;
 }
 .o2_profile_titleUserIconNode {
-    background: url(/x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
+    background: url(../x_component_process_TaskCenter/$Main/default/user.png) center center no-repeat;
     width: 24px;
     height: 24px;
     margin-top: 13px;
@@ -407,41 +407,41 @@ div>.o2_profile_emPower_Add{
     float: right;
 }
 .o2_profile_emPower_Add .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) no-repeat;
 }
 .o2_profile_emPower_Add:hover .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) no-repeat;
 }
 
 div>.o2_profile_emPower_WithDraw{
     float: right;
 }
 .o2_profile_emPower_WithDraw .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_chehui.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_chehui.png) no-repeat;
 }
 .o2_profile_emPower_WithDraw:hover .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_chehui_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_chehui_click.png) no-repeat;
 }
 
 .o2_profile_emPower_Edit .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_bianji2.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_bianji2.png) no-repeat;
 }
 .o2_profile_emPower_Edit:hover .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_bianji2_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_bianji2_click.png) no-repeat;
 }
 
 .o2_profile_emPower_Enable .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_qiyong.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_qiyong.png) no-repeat;
 }
 .o2_profile_emPower_Enable:hover .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_qiyong_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_qiyong_click.png) no-repeat;
 }
 
 .o2_profile_emPower_Disable .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_jinyong.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_jinyong.png) no-repeat;
 }
 .o2_profile_emPower_Disable:hover .o2_profile_emPower_Btnimg {
-    background: url(/x_component_Profile/$Main/newVersion/icon_jinyong_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_jinyong_click.png) no-repeat;
 }
 
 
@@ -449,7 +449,7 @@ div>.o2_profile_emPower_WithDraw{
     float: left;
     width: 16px;
     height: 16px;
-    background: url(/x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
     border-radius: 8px;
     margin: 2px 10px;
 }
@@ -457,16 +457,16 @@ label.o2_profile_empower_radio{
     float: left;
     width: 16px;
     height: 16px;
-    background: url(/x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_circle2.png) no-repeat;
     border-radius: 8px;
     margin: 2px 10px;
 }
 label.o2_profile_empower_checkbox__checked{
-    background: url(/x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_ok2_click_copy_2.png) no-repeat;
 }
 
 label.o2_profile_empower_radio__checked{
-    background: url(/x_component_Profile/$Main/newVersion/icon_circle_blue_click.png) no-repeat;
+    background: url(../x_component_Profile/$Main/newVersion/icon_circle_blue_click.png) no-repeat;
 }
 
 .o2_profile_empower_checkbox input[type=checkbox]{
@@ -538,7 +538,7 @@ label.o2_profile_empower_radio input[type=radio]{
 }
 
 /*.formTableArea table .selectNode:hover {
-    background:url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat !important
+    background:url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2_click.png) center center no-repeat !important
 }*/
 
 .showNode div{
@@ -581,14 +581,14 @@ label.o2_profile_empower_radio input[type=radio]{
     float: left;
 }
 .pagination-previous{
-    background:url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
+    background:url(../x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
     -moz-transform:rotate(90deg);
     -webkit-transform:rotate(90deg);
     -o-transform:rotate(90deg);
     transform:rotate(90deg);
 }
 .pagination-next{
-    background:url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
+    background:url(../x_component_Profile/$Main/newVersion/icon_triangle_down.png) center center no-repeat !important;
     -moz-transform:rotate(-90deg);
     -webkit-transform:rotate(-90deg);
     -o-transform:rotate(-90deg);

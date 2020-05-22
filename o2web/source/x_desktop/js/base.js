@@ -293,6 +293,30 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         layout.openApplication(null, appName, option || {}, m_status);
     };
 
+    // layout.getAppUrlMapping = function(url){
+    //     return this.getUrlMapping(url, "app");
+    // };
+    // layout.getCenterUrlMapping = function(url){
+    //     return this.getUrlMapping(url,"center");
+    // };
+    // layout.getWebUrlMapping = function(url){
+    //     return this.getUrlMapping(url, "web");
+    // };
+    // layout.getUrlMapping = function(url, type){
+    //     var urlContextMapping = layout.config.urlMapping;
+    //     if (urlContextMapping && urlContextMapping.app){
+    //         var href = url || window.location.href.toString();
+    //
+    //         for (var k in urlContextMapping[type]){
+    //             var regex = new RegExp(k);
+    //             if (regex.test(href)){
+    //                 return urlContextMapping[type][k];
+    //             }
+    //         }
+    //     }
+    //     return "";
+    // };
+
 })(layout);
 
 o2.addReady(function () {
@@ -360,7 +384,7 @@ o2.addReady(function () {
             _loadProgressBar();
         }
     });
-    o2.getJSON("/x_desktop/res/config/config.json", function (config) {
+    o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         _loadProgressBar();
         layout.config = config;
         configLoaded = true
@@ -410,7 +434,7 @@ o2.addReady(function () {
                     //o2.xDesktop.requireApp("Common", "", null, false);
                     var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
                     o2.require("o2.widget.Common", function () {
                         _loadProgressBar();
                         o2.require(modules, {
@@ -487,7 +511,7 @@ o2.addReady(function () {
                     //o2.xDesktop.requireApp("Common", "", null, false);
                     var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
 
-                    o2.load(["/o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
+                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { _loadProgressBar(); isLoadedA = true; _check(); });
                     o2.require("o2.widget.Common", function () {
                         _loadProgressBar();
                         o2.require(modules, {

@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "previewPath": "/x_desktop/preview.html",
+        "previewPath": "../x_desktop/preview.html",
         "size": null,
         "mode": "pc"
 	},
@@ -13,10 +13,10 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
 	initialize: function(form, options){
 		this.setOptions(options);
         var href = window.location.href;
-        if (href.indexOf("debugger")!=-1) this.options.previewPath = "/x_desktop/preview.html?debugger";
+        if (href.indexOf("debugger")!=-1) this.options.previewPath = "../x_desktop/preview.html?debugger";
 
-        this.path = "/x_component_process_FormDesigner/$Preview/";
-        this.cssPath = "/x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_FormDesigner/$Preview/";
+        this.cssPath = "../x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -145,7 +145,7 @@ MWF.xApplication.process.FormDesigner.Preview = MWF.FCPreview = new Class({
 
     },
     loadFormData: function(node){
-        MWF.getJSON("/x_desktop/res/preview/work.json", function(json){
+        MWF.getJSON("../x_desktop/res/preview/work.json", function(json){
             MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(node, this.data);
 

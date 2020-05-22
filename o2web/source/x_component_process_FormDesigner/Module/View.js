@@ -5,17 +5,17 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/View/view.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/View/view.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/View/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/View/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/View/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/View/"+this.options.style+"/css.wcss";
 
-        this.imagePath_default = "/x_component_query_ViewDesigner/$View/";
-        this.imagePath_custom = "/x_component_process_FormDesigner/Module/Actionbar/";
+        this.imagePath_default = "../x_component_query_ViewDesigner/$View/";
+        this.imagePath_custom = "../x_component_process_FormDesigner/Module/Actionbar/";
 
 		this._loadCss();
 		this.moduleType = "element";
@@ -239,9 +239,9 @@ MWF.xApplication.process.FormDesigner.Module.View = MWF.FCView = new Class({
                 this.viewSelectCell.setStyle("width", "10px");
             }
             if (this.json["select"]=="single"){
-                this.viewSelectCell.setStyle("background", "url(/x_component_process_FormDesigner/Module/View/default/icon/single.png) center center no-repeat");
+                this.viewSelectCell.setStyle("background", "url(../x_component_process_FormDesigner/Module/View/default/icon/single.png) center center no-repeat");
             }else{
-                this.viewSelectCell.setStyle("background", "url(/x_component_process_FormDesigner/Module/View/default/icon/multi.png) center center no-repeat");
+                this.viewSelectCell.setStyle("background", "url(../x_component_process_FormDesigner/Module/View/default/icon/multi.png) center center no-repeat");
             }
         }else{
             if (this.viewSelectCell){

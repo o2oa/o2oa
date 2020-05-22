@@ -14,7 +14,7 @@ var Popmenu = MWF.xApplication.MinderEditor.PopMenu = new Class({
         this.receiver = editor.receiver;
         var fsm = this.fsm = editor.fsm;
 
-        this.path = "/x_component_MinderEditor/$PopMenu/";
+        this.path = "../x_component_MinderEditor/$PopMenu/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -305,21 +305,21 @@ MWF.xApplication.MinderEditor.NodePopMenu = new Class({
         node.setStyles( this.css.listItemNode_disable );
         keyNode.setStyles( this.css.listItemKeyNode_disable );
         if( command.icon ){
-            node.setStyle( "background-image" , "url(/x_component_MinderEditor/$Main/"+ this.popmenu.options.style +"/icon/"+command.icon+"_disable.png)" );
+            node.setStyle( "background-image" , "url(../x_component_MinderEditor/$Main/"+ this.popmenu.options.style +"/icon/"+command.icon+"_disable.png)" );
         }
     },
     setActiveStye : function( node, keyNode, command ){
         node.setStyles( this.css.listItemNode_over );
         keyNode.setStyles( this.css.listItemKeyNode_over );
         if( command.icon ) {
-            node.setStyle("background-image", "url(/x_component_MinderEditor/$Main/" + this.popmenu.options.style + "/icon/" + command.icon + "_menu.png)")
+            node.setStyle("background-image", "url(../x_component_MinderEditor/$Main/" + this.popmenu.options.style + "/icon/" + command.icon + "_menu.png)")
         }
     },
     setNormalStye : function( node, keyNode, command ){
         node.setStyles(this.css.listItemNode);
         keyNode.setStyles( this.css.listItemKeyNode );
         if( command.icon ) {
-            node.setStyle("background-image", "url(/x_component_MinderEditor/$Main/" + this.popmenu.options.style + "/icon/" + command.icon + "_normal.png)")
+            node.setStyle("background-image", "url(../x_component_MinderEditor/$Main/" + this.popmenu.options.style + "/icon/" + command.icon + "_normal.png)")
         }
     },
     checkStatus : function(){

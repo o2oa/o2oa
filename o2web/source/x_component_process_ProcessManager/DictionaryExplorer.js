@@ -13,8 +13,8 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         this.setOptions(options);
         this.setTooltip();
 
-        this.path = "/x_component_process_ProcessManager/$DictionaryExplorer/";
-        this.cssPath = "/x_component_process_ProcessManager/$DictionaryExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessManager/$DictionaryExplorer/";
+        this.cssPath = "../x_component_process_ProcessManager/$DictionaryExplorer/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 

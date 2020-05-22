@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     //var deleted = require('gulp-deleted');
     del = require('del'),
-    uglify = require('gulp-tm-uglify'),
+    //uglify = require('gulp-tm-uglify'),
+    uglify = require('gulp-uglify-es').default,
     rename = require('gulp-rename'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
@@ -11,6 +12,7 @@ var gulp = require('gulp'),
     JSFtp = require('jsftp'),
     gutil = require('gulp-util'),
     fs = require("fs");
+//let uglify = require('gulp-uglify-es').default;
 var through2 = require('through2');
 
 var assetRev = require('gulp-tm-asset-rev');

@@ -13,9 +13,9 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
 
     initialize: function(designer, content, data, options){
         this.setOptions(options);
-        this.path = "/x_component_portal_PageDesigner/$Script/";
-        this.stylePath = "/x_component_portal_PageDesigner/$Script/"+this.options.style+"/style.css";
-        this.viewPath = "/x_component_portal_PageDesigner/$Script/"+this.options.style+"/view.html";
+        this.path = "../x_component_portal_PageDesigner/$Script/";
+        this.stylePath = "../x_component_portal_PageDesigner/$Script/"+this.options.style+"/style.css";
+        this.viewPath = "../x_component_portal_PageDesigner/$Script/"+this.options.style+"/view.html";
 
         this.designer = designer;
         this.content = content;

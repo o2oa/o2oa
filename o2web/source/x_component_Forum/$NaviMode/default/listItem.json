@@ -38,7 +38,7 @@
         "items": {
           "icon" : {
             "type" : "html",
-            "value" : "function(d){ var path = '/x_component_ForumSection/$Main/default/icon/'; if(d.isTopSubject){  return '<img src='+path+'icon_zhiding.png title=置顶帖>'; }else if(d.isCreamSubject){ return '<img src='+path+'icon_jinghua.png title=精华帖>'; }else if(d.typeCategory == this.lp.vote ){ return '<img src='+path+'icon_vote.png title=投票帖>'; }else if(d.typeCategory == this.lp.question ){ return '<img src='+path+'icon_question.png title=提问帖>'; }else{ return '<img src='+path+'icon_normal.png>'} }"
+            "value" : "function(d){ var path = '../x_component_ForumSection/$Main/default/icon/'; if(d.isTopSubject){  return '<img src='+path+'icon_zhiding.png title=置顶帖>'; }else if(d.isCreamSubject){ return '<img src='+path+'icon_jinghua.png title=精华帖>'; }else if(d.typeCategory == this.lp.vote ){ return '<img src='+path+'icon_vote.png title=投票帖>'; }else if(d.typeCategory == this.lp.question ){ return '<img src='+path+'icon_question.png title=提问帖>'; }else{ return '<img src='+path+'icon_normal.png>'} }"
           }
         }
       }

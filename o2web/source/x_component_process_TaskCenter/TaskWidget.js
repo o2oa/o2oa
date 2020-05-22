@@ -122,9 +122,9 @@ MWF.xApplication.process.TaskCenter.TaskWidget.Item = new Class({
     setContent: function(){
         var i = (Math.random()*10).toInt();
         if ((i % 2)==0){
-            this.iconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$TaskWidget/default/read2.png)");
+            this.iconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$TaskWidget/default/read2.png)");
         }else{
-            this.iconNode.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$TaskWidget/default/task2.png)");
+            this.iconNode.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$TaskWidget/default/task2.png)");
         }
 
         this.inforTopActivityNode.set("text", this.data.activityName);

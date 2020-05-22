@@ -185,7 +185,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
 
     },
     setCustomToolbars: function(tools, node){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         tools.each(function(tool){
             var flag = true;
             if (this.readonly){
@@ -224,7 +224,7 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class({
         }.bind(this));
     },
     setToolbars: function(tools, node, readonly, noCondition){
-        var path = "/x_component_process_FormDesigner/Module/Actionbar/";
+        var path = "../x_component_process_FormDesigner/Module/Actionbar/";
         tools.each(function(tool){
             var flag = true;
             if (tool.control){

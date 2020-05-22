@@ -292,7 +292,7 @@ function init(){
             var json = parseResp( resp );
             setWorkFlag( id, json );
             printRecorder( "workCompletedId为"+id+"的工单同步结束" );
-            printRecorder( "文件URL：/x_desktop/work.html?workcompletedid="+id );
+            printRecorder( "文件URL：../x_desktop/work.html?workcompletedid="+id );
             if( pw !==null ){
                 pw.close();
                 pw = null
@@ -324,7 +324,7 @@ function init(){
 //        var json = parseResp( resp );
 //        setWorkFlag( id, json );
 //        printRecorder( "workCompletedId为"+id+"的工单同步结束" );
-//        printRecorder( "文件URL：/x_desktop/work.html?workcompletedid="+id );
+//        printRecorder( "文件URL：../x_desktop/work.html?workcompletedid="+id );
 //        if( pw !==null )pw.close();
 //    }
 //}

@@ -16,9 +16,9 @@ o2.widget.Schedule = o2.Schedule = new Class({
 		this.container = container;
 		this._app = app;
 
-		this.path = this.options.path || "/x_component_Calendar/widget/$Schedule/";
+		this.path = this.options.path || "../x_component_Calendar/widget/$Schedule/";
 
-		this.cssPath = "/x_component_Calendar/widget/$Schedule/"+this.options.style+"/css.wcss";
+		this.cssPath = "../x_component_Calendar/widget/$Schedule/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.fireEvent("init");

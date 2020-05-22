@@ -23,7 +23,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.publicseas.customerEdit;
-        this.path = "/x_component_CRM/$ClueEdit/";
+        this.path = "../x_component_CRM/$ClueEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -50,7 +50,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
         var clueName = this.options.openName;
         /*this.createContentHtml(this.options.clueId);*/
         var buttonHtml = '<div class = "headBottonDiv">' +
-            '<div class="headMoreBottonDiv"><span>更多</span><img class="headMoreImg" src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div>';
+            '<div class="headMoreBottonDiv"><span>更多</span><img class="headMoreImg" src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div>';
         var moreHtml = '<ul class="el-dropdown-menu"><li class="el-dropdown-menu__item">分配</li>'+
                 '<li class="el-dropdown-menu__item">领取</li>'+
             '<li class="el-dropdown-menu__item">删除</li><div class="popper__arrow"></div></ul>';
@@ -131,7 +131,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
 
             var indexContentHtml = '<div class="log-cont"><div class="log-inner1"><div class="log-inner2"><div class="log-items">'+
                     '<div class="load"><button  type="button" class="el-button el-button--text"><span>没有更多了</span></button></div></div>'+
-                    '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="/x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
+                    '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="../x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
                     '<div class="el-loading-mask" style="display: none;"><div class="el-loading-spinner"><svg viewBox="25 25 50 50" class="circular"><circle cx="50" cy="50" r="20" fill="none" class="path"></circle></svg></div></div>'+
                     '</div></div>';
 
@@ -410,7 +410,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
     loadOptions: function() {
         that = this;
         var optionsHtml = '<div class="rc-cont">'+
-            '<div class="empty-mask" style="display:none;height:370px;"><div class="empty-content" style="margin-top:0px;"><img src="/x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'
+            '<div class="empty-mask" style="display:none;height:370px;"><div class="empty-content" style="margin-top:0px;"><img src="../x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'
         jQuery(that.sectionArea).find("#tab-options").html(optionsHtml);
 
         this.actions.getOptionsRecord(this.options.openId, function (json) {
@@ -421,7 +421,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
                 for ( i in recordDatas){
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
-                        var personImg = 'http://172.16.92.55/x_component_CRM/$Template/portrait.png';
+                        var personImg = 'http://172.16.92.55../x_component_CRM/$Template/portrait.png';
                         var updatetime = recordData.updateTime;
                         logItemHtml = logItemHtml+'<div class="vux-flexbox ha-cont vux-flex-row" style="justify-content: flex-start; align-items: stretch;">'+
                             '<div class="ha-week">'+recordData.DateCN+'</div>'+
@@ -610,7 +610,7 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
                 for ( i in recordDatas){
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
-                        var personImg = '/x_component_CRM/$Template/portrait.png';
+                        var personImg = '../x_component_CRM/$Template/portrait.png';
                         if(recordData.ICONBase64 && recordData.ICONBase64!=""){
                             personImg = recordData.ICONBase64;
                         }
@@ -626,8 +626,8 @@ MWF.xApplication.CRM.PublicseasOpen = new Class({
                                 if(j<attList.length){
                                     var attData = attList[j];
                                     attHtml = attHtml+'<div class="vux-flexbox cell vux-flex-row">'+
-                                        '<img  src="/x_component_CRM/$Record/default/icons/att.png" class="cell-head"> <div class="cell-body">'+attData.name+'<span  style="color: rgb(204, 204, 204);">（'+that.toDecimal(attData.length)+'KB）</span></div>'+
-                                        '<button  type="button" class="el-button el-button--primary aname" aid="'+attData.id+'" wcrm="'+attData.wcrm+'"><img  src="/x_component_CRM/$Record/default/icons/down.png" style="margin-bottom:-3px;"><span>下载</span></button></div>'
+                                        '<img  src="../x_component_CRM/$Record/default/icons/att.png" class="cell-head"> <div class="cell-body">'+attData.name+'<span  style="color: rgb(204, 204, 204);">（'+that.toDecimal(attData.length)+'KB）</span></div>'+
+                                        '<button  type="button" class="el-button el-button--primary aname" aid="'+attData.id+'" wcrm="'+attData.wcrm+'"><img  src="../x_component_CRM/$Record/default/icons/down.png" style="margin-bottom:-3px;"><span>下载</span></button></div>'
                                 }
                             }
                             attHtml = attHtml+'</div>';

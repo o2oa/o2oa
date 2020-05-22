@@ -5,7 +5,7 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_portal_PageDesigner/Module/Subpage/subpage.html",
+		"propertyPath": "../x_component_portal_PageDesigner/Module/Subpage/subpage.html",
         "actions": [
             {
                 "name": "move",
@@ -34,8 +34,8 @@ MWF.xApplication.portal.PageDesigner.Module.Subpage = MWF.PCSubpage = new Class(
 	initialize: function(page, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_portal_PageDesigner/Module/Subpage/";
-		this.cssPath = "/x_component_portal_PageDesigner/Module/Subpage/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_portal_PageDesigner/Module/Subpage/";
+		this.cssPath = "../x_component_portal_PageDesigner/Module/Subpage/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

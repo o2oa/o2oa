@@ -66,10 +66,10 @@
         "width": "26px",
         "float": "left",
         "cursor": "pointer",
-        "background": "url(/x_component_BAM/$Main/default/max.png) center center no-repeat"
+        "background": "url(../x_component_BAM/$Main/default/max.png) center center no-repeat"
     },
     "taskRankActionNode_max": {
-        "background": "url(/x_component_BAM/$Main/default/min.png) center center no-repeat"
+        "background": "url(../x_component_BAM/$Main/default/min.png) center center no-repeat"
     },
     "taskRankTitleNode": {
         "height": "26px",

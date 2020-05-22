@@ -12,8 +12,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptSelector = new Class({
         this.app = app;
 
         this.script = script;
-        this.path = "/x_component_process_ProcessDesigner/widget/$ScriptSelector/";
-        this.cssPath = "/x_component_process_ProcessDesigner/widget/$ScriptSelector/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ProcessDesigner/widget/$ScriptSelector/";
+        this.cssPath = "../x_component_process_ProcessDesigner/widget/$ScriptSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.selNode = new Element("div", {"styles": this.css.selScriptNode}).inject(this.node, "before");

@@ -31,7 +31,7 @@
     "z-index":"1",
     "position":"relative",
     "margin":"11px -1px auto 5px",
-    "background":"url(/x_component_Execution/$Chat/default/icon/msg_box_arrow_left.png) no-repeat"
+    "background":"url(../x_component_Execution/$Chat/default/icon/msg_box_arrow_left.png) no-repeat"
   },
   "msg_arrow_right":{
     "float":"right",
@@ -40,7 +40,7 @@
     "z-index":"1",
     "position":"relative",
     "margin":"11px 5px auto -1px",
-    "background":"url(/x_component_Execution/$Chat/default/icon/msg_box_arrow_right.png) no-repeat"
+    "background":"url(../x_component_Execution/$Chat/default/icon/msg_box_arrow_right.png) no-repeat"
   },
   "msg_content_body_left":{
     "min-width":"200px",
@@ -66,7 +66,7 @@
     "width":"10px",
     "height":"9px",
     "position":"absolute",
-    "background-image":"url(/x_component_Execution/$Chat/default/icon/icon_buttons.gif)",
+    "background-image":"url(../x_component_Execution/$Chat/default/icon/icon_buttons.gif)",
     "background-repeat":"no-repeat",
     "background-position-x":"-176px",
     "background-position-y":"-32px",

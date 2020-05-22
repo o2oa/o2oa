@@ -8,7 +8,7 @@ layout.session = layout.session || {};
 if (href.indexOf("debugger")!=-1) layout.debugger = true;
 o2.addReady(function(){
     o2.load(["../o2_lib/mootools/plugin/mBox.Notice.js", "../o2_lib/mootools/plugin/mBox.Tooltip.js"], {"sequence": true}, function(){
-        //MWF.defaultPath = "/x_desktop"+MWF.defaultPath;
+        //MWF.defaultPath = "../x_desktop"+MWF.defaultPath;
         MWF.loadLP("zh-cn");
 
         MWF.require("MWF.widget.Mask", null, false);
@@ -28,8 +28,8 @@ o2.addReady(function(){
                         //
                         this.node = $("layout");
                         this.content = $(document.body);
-                        this.path = "/x_component_ForumDocument/$Mobile/";
-                        this.cssPath = "/x_component_ForumDocument/$Mobile/default/css.wcss";
+                        this.path = "../x_component_ForumDocument/$Mobile/";
+                        this.cssPath = "../x_component_ForumDocument/$Mobile/default/css.wcss";
                         this._loadCss();
 
                         // MWF.require("MWF.xDesktop.MessageMobile", function(){

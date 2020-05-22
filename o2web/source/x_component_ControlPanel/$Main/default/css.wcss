@@ -57,7 +57,7 @@
     "closeNode": {
         "height": "70px",
         "width": "60px",
-        "background": "url("+"/x_component_ControlPanel/$Main/default/close.png) center center no-repeat",
+        "background": "url("+"../x_component_ControlPanel/$Main/default/close.png) center center no-repeat",
         "cursor": "pointer",
         "float": "right"
     },

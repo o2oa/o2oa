@@ -98,7 +98,7 @@
 .o2_statement_statementRunActionContent {
     height: 50px;
     width: 50px;
-    background: url("/x_component_query_StatementDesigner/$Statement/default/icon/run.png") center center no-repeat;
+    background: url("../x_component_query_StatementDesigner/$Statement/default/icon/run.png") center center no-repeat;
     position: relative;
     top:45%;
     margin: auto;

@@ -17,14 +17,14 @@ MWF.xApplication.ExeManager.IndentityList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_ExeManager/$IndentityList/";
+        this.path = "../x_component_ExeManager/$IndentityList/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_ExeManager/$IndentityList/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_ExeManager/$IndentityList/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -242,7 +242,7 @@ MWF.xApplication.ExeManager.IndentityList.IndentityForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.indentityForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_ExeManager/$IndentityList/";
+        this.path = "../x_component_ExeManager/$IndentityList/";
         this.cssPath = this.path + this.options.style + "/indentityForm.wcss";
 
         this._loadCss();

@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Combox = MWF.FCCombox = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Combox/combox.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Combox/combox.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Combox/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Combox/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Combox/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Combox/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

@@ -275,7 +275,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                     "width": "20px",
                     "height": "20px",
                     "float": "left",
-                    "background": "url("+"/x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
+                    "background": "url("+"../x_component_process_Xform/$Form/default/icon/error.png) center center no-repeat"
                 }
             }).inject(node);
             var textNode = new Element("div", {

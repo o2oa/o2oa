@@ -141,7 +141,7 @@ MWF.xApplication.DesignCenter.Main = new Class({
             "styles": this.css.applicationMenuIconNode
         }).inject(applicationMenuNode);
 
-        var icon = "/x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
+        var icon = "../x_component_"+value.path.replace(/\./g, "_")+"/$Main/"+value.iconPath;
         applicationMenuIconNode.setStyle("background-image", "url("+icon+")");
 
         new Element("div", {

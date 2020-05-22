@@ -633,7 +633,7 @@
          "width": "24px",
          "height": "24px",
          "float": "right",
-         "background": "url("+"/x_component_process_ProcessDesigner/$Process/style1/icon/refresh.png) no-repeat center center",
+         "background": "url("+"../x_component_process_ProcessDesigner/$Process/style1/icon/refresh.png) no-repeat center center",
          "cursor": "pointer"
      }
 }

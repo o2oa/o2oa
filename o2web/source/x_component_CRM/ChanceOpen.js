@@ -22,7 +22,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = options.lp;
-        this.path = "/x_component_CRM/$ChanceEdit/";
+        this.path = "../x_component_CRM/$ChanceEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -43,12 +43,12 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
     loadResource: function ( callback ) {
         callback();
        /* var baseUrls = [
-            "/x_component_CRM/$Template/assets/js/jquery.min.js",
+            "../x_component_CRM/$Template/assets/js/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/assets/js/notifyme.js";
-        var confirmUrl = "/x_component_CRM/$Template/assets/js/showBo.js";
-        //var confirmUrl = "/x_component_CRM/$Main/laydate/laydate.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/assets/js/notifyme.js";
+        var confirmUrl = "../x_component_CRM/$Template/assets/js/showBo.js";
+        //var confirmUrl = "../x_component_CRM/$Main/laydate/laydate.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -59,12 +59,12 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
             }.bind(this))
         }.bind(this));
 
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/date/css/jquery-ui.css",function(){
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/date/css/jquery-ui.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
-                COMMON.AjaxModule.load("/x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
+                COMMON.AjaxModule.load("../x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
                     if(callback)callback();
-                    /!* COMMON.AjaxModule.load("/x_component_CRM/$Template/date/js/datepicker.all.js", function(){
+                    /!* COMMON.AjaxModule.load("../x_component_CRM/$Template/date/js/datepicker.all.js", function(){
                          if(callback)callback();
                      }.bind(this))*!/
                 }.bind(this));
@@ -76,7 +76,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
         var openName = this.options.openName;
         /*this.createContentHtml(this.options.openId);*/
         var buttonHtml = '<div class = "headBottonDiv"><div class="headMoveBottonDiv">转移</div><div class="headEditBottonDiv">编辑</div>' +
-            '<div class="headMoreBottonDiv"><span>更多</span><img class="headMoreImg" src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div>';
+            '<div class="headMoreBottonDiv"><span>更多</span><img class="headMoreImg" src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div>';
         var moreHtml = '<ul class="el-dropdown-menu"><li class="el-dropdown-menu__item">删除</li><div class="popper__arrow"></div></ul>';
         var sectionId = that.getNotifyMax();
         var sjson = this.options.openStyle?this.options.openStyle:this.xxx;
@@ -156,11 +156,11 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
             var indexHtml = '<div ><div class="mix-container"><div class="i-cont"><div class="el-textarea el-input--suffix">'+
                 '<textarea autocomplete="off" placeholder="请输入内容" class="el-textarea__inner" style="resize: none; min-height: 57px; height: 57px;"></textarea></div></div>'+
                 '<div class="vux-flexbox bar-cont vux-flex-row">'+
-                '<div class="vux-flexbox bar-item vux-flex-row"><input type="file" accept="image/*" multiple="multiple" class="bar-input"><img src="/x_component_CRM/$Template/img.png" class="bar-img"><div class="bar-title">图片</div></div>'+
-                '<div class="vux-flexbox bar-item vux-flex-row"><input type="file" id="bar-file" accept="*.*" multiple="multiple" class="bar-input"><img src="/x_component_CRM/$Template/file.png" class="bar-img"><div class="bar-title">附件</div></div></div>'+
+                '<div class="vux-flexbox bar-item vux-flex-row"><input type="file" accept="image/*" multiple="multiple" class="bar-input"><img src="../x_component_CRM/$Template/img.png" class="bar-img"><div class="bar-title">图片</div></div>'+
+                '<div class="vux-flexbox bar-item vux-flex-row"><input type="file" id="bar-file" accept="*.*" multiple="multiple" class="bar-input"><img src="../x_component_CRM/$Template/file.png" class="bar-img"><div class="bar-title">附件</div></div></div>'+
                 '</div>';
             var indexSendHtml = '<div  class="vux-flexbox se-section vux-flex-row"><div class="se-name">记录类型</div>'+
-                '<div class="el-dropdown" style="margin-right: 20px;"><div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine " ><div class="se-select-name">邮箱</div> <div class="el-icon-arrow-down el-icon--right"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div></div> </div>'+
+                '<div class="el-dropdown" style="margin-right: 20px;"><div class="vux-flexbox se-select vux-flex-row el-dropdown-selfdefine " ><div class="se-select-name">邮箱</div> <div class="el-icon-arrow-down el-icon--right"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div></div> </div>'+
                 '<div class="se-name">下次联系时间</div><div class="el-date-editor se-datepicker el-input el-input--prefix el-input--suffix el-date-editor--datetime"><input type="text"  autocomplete="off" name="" placeholder="选择日期" class="el-input__inner" id="stime" readonly="readonly"><span class="el-input__prefix"><i class="el-input__icon el-icon-time"></i></span><span class="el-input__suffix"><span class="el-input__suffix-inner"><i class="el-input__icon"></i></span></span></div>'+
                 '<button type="button" class="el-button se-send el-button--primary"><span>发布</span></button></div>'+
                 '<ul class="el-dropdown-type" style="display: none;" tid = "recordType"><li class="el-dropdown-menu__item">邮箱</li><li class="el-dropdown-menu__item">电话</li>'+
@@ -169,7 +169,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
 
             var indexContentHtml = '<div class="log-cont"><div class="log-inner1"><div class="log-inner2"><div class="log-items">'+
                 '<div class="load"><button  type="button" class="el-button el-button--text"><span>没有更多了</span></button></div></div>'+
-                '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="/x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
+                '<div class="empty-mask" style="display: none;"><div class="empty-content"><img src="../x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'+
                 '<div class="el-loading-mask" style="display: none;"><div class="el-loading-spinner"><svg viewBox="25 25 50 50" class="circular"><circle cx="50" cy="50" r="20" fill="none" class="path"></circle></svg></div></div>'+
                 '</div></div>';
 
@@ -475,7 +475,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
     loadOptions: function() {
         that = this;
         var optionsHtml = '<div class="rc-cont">'+
-            '<div class="empty-mask" style="display:none;height:370px;"><div class="empty-content" style="margin-top:0px;"><img src="/x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'
+            '<div class="empty-mask" style="display:none;height:370px;"><div class="empty-content" style="margin-top:0px;"><img src="../x_component_CRM/$Template/empty.png" class="empty-icon"> <p class="empty-text">没有找到数据</p></div></div></div>'
         jQuery(that.sectionArea).find("#tab-options").html(optionsHtml);
 
         this.actions.getOptionsRecord(this.options.openId, function (json) {
@@ -488,7 +488,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
                         debugger
-                        var personImg = 'http://172.16.92.55/x_component_CRM/$Template/portrait.png';
+                        var personImg = 'http://172.16.92.55../x_component_CRM/$Template/portrait.png';
                         var updatetime = recordData.updateTime;
                         logItemHtml = logItemHtml+'<div class="vux-flexbox ha-cont vux-flex-row" style="justify-content: flex-start; align-items: stretch;">'+
                             '<div class="ha-week">'+recordData.DateCN+'</div>'+
@@ -630,7 +630,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
             if(stype=="select"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
             if(stype=="readonly"){
                 innerHtml =  '<input type="text" class="inline-input" disabled="disabled" style="background-color:#e2ebf9;" name="'+i+'" id="'+i+'" value="'+_self.data.customer.customername+'" cid="'+_self.data.customerid+'" stype="'+stype+'">';
@@ -1021,7 +1021,7 @@ MWF.xApplication.CRM.ChanceOpen = new Class({
                 for ( i in recordDatas){
                     if(i<recordDatas.length){
                         var recordData = recordDatas[i];
-                        var personImg = 'http://172.16.92.55/x_component_CRM/$Template/portrait.png';
+                        var personImg = 'http://172.16.92.55../x_component_CRM/$Template/portrait.png';
                         logItemHtml = logItemHtml+'<div class="fl-c"><div class="vux-flexbox fl-h vux-flex-row">'+
                             '<div class="div-photo fl-h-img"  style="background-image: url(&quot;'+personImg+'&quot;);" lazy="loaded"></div> '+
                             '<div class="fl-h-b"><div class="fl-h-name">'+recordData.person.name+'</div><div class="fl-h-time">'+recordData.updateTime+'</div></div>'+

@@ -42,7 +42,7 @@ o2.widget.AttachmentSelector = o2.widget.ATTSER  = new Class({
         //});
         //r.send();
 
-        o2.getJSON("/x_component_File/$Main/icon.json", function(json){
+        o2.getJSON("../x_component_File/$Main/icon.json", function(json){
             this.icons = json;
         }.bind(this), false, false);
 

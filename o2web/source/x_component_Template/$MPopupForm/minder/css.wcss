@@ -49,7 +49,7 @@
     "line-height" : "50px",
     "float": "right",
     "margin-right" : "20px",
-    "background": "url(/x_component_Template/$MPopupForm/report/icon/icon_off.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/report/icon/icon_off.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopMaxActionNode": {
@@ -57,7 +57,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/report/icon/icon_max.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/report/icon/icon_max.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -66,7 +66,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/report/icon/icon_restore.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/report/icon/icon_restore.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopContentNode" : {
@@ -219,7 +219,7 @@
     "margin-right": "30px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
+    "background": "url("+"../x_component_Template/$MPopupForm/blue/icon/editOk_bg.png) no-repeat"
   },
   "formCancelActionNode": {
     "height": "30px",
@@ -235,6 +235,6 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url("+"/x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
+    "background": "url("+"../x_component_Template/$MPopupForm/blue/icon/editCancel_bg.png) no-repeat"
   }
 }

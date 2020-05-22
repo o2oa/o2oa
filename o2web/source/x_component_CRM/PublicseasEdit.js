@@ -21,7 +21,7 @@ MWF.xApplication.CRM.PublicseasEdit = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.lp = this.app.lp.publicseas.publicseasEdit;
-        this.path = "/x_component_CRM/$PublicseasEdit/";
+        this.path = "../x_component_CRM/$PublicseasEdit/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 
@@ -41,12 +41,12 @@ MWF.xApplication.CRM.PublicseasEdit = new Class({
     loadResource: function ( callback ) {
         if(callback)callback();
         /*var baseUrls = [
-            "/x_component_CRM/$Template/assets/js/jquery.min.js",
+            "../x_component_CRM/$Template/assets/js/jquery.min.js",
         ];
-        var fullcalendarUrl = "/x_component_CRM/$Template/assets/js/notifyme.js";
-        var confirmUrl = "/x_component_CRM/$Template/assets/js/showBo.js";
-        //var confirmUrl = "/x_component_CRM/$Main/laydate/laydate.js";
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/assets/css/notifyme.css",function(){
+        var fullcalendarUrl = "../x_component_CRM/$Template/assets/js/notifyme.js";
+        var confirmUrl = "../x_component_CRM/$Template/assets/js/showBo.js";
+        //var confirmUrl = "../x_component_CRM/$Main/laydate/laydate.js";
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/assets/css/notifyme.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -57,12 +57,12 @@ MWF.xApplication.CRM.PublicseasEdit = new Class({
             }.bind(this))
         }.bind(this));
 
-        COMMON.AjaxModule.loadCss("/x_component_CRM/$Template/date/css/jquery-ui.css",function(){
+        COMMON.AjaxModule.loadCss("../x_component_CRM/$Template/date/css/jquery-ui.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
-                COMMON.AjaxModule.load("/x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
+                COMMON.AjaxModule.load("../x_component_CRM/$Template/date/jquery-ym-datePlugin-0.1.js", function(){
                     //if(callback)callback();
-                    /!* COMMON.AjaxModule.load("/x_component_CRM/$Template/date/js/datepicker.all.js", function(){
+                    /!* COMMON.AjaxModule.load("../x_component_CRM/$Template/date/js/datepicker.all.js", function(){
                      if(callback)callback();
                      }.bind(this))*!/
                 }.bind(this));
@@ -86,7 +86,7 @@ MWF.xApplication.CRM.PublicseasEdit = new Class({
                 innerHtml =  '<textarea rows="6" class="el-textarea__inner"  id="'+i+'" stype="'+stype+'"  style="resize: none; min-height: 30.6px;"></textarea>';
             }
             if(stype=="select" || stype=="hide"){
-                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="/x_component_CRM/$Clue/default/icons/arrow.png"></div>';
+                innerHtml = '<div class="inline-input" style="display: inline-block;cursor:pointer;"  id="'+i+'" stype="'+stype+'" ></div><div class="el-icon-arrow-down el-icon--right" style="margin-left: -20px; display: inline-block;"><img src="../x_component_CRM/$Clue/default/icons/arrow.png"></div>';
             }
             if(stype=="map"){
                 innerHtml = '<div class="setMap" id="setMap"' +' stype="'+stype+'"></div>';

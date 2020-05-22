@@ -37,7 +37,7 @@ MWF.xApplication.Forum.Main = new Class({
         this.userName = layout.desktop.session.user.distinguishedName;
         this.restActions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
-        this.path = "/x_component_Forum/$Main/" + this.options.style + "/";
+        this.path = "../x_component_Forum/$Main/" + this.options.style + "/";
         this.createNode();
         this.loadApplicationContent();
     },

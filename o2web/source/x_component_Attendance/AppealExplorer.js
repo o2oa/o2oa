@@ -9,8 +9,8 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$AppealExplorer/";
-        this.cssPath = "/x_component_Attendance/$AppealExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$AppealExplorer/";
+        this.cssPath = "../x_component_Attendance/$AppealExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

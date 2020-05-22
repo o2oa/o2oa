@@ -58,7 +58,7 @@
         "overflow": "hidden"
     },
     "addTopGroupNode": {
-		"background": "url("+"/x_component_Org/$Explorer/default/icon/add.png) center center no-repeat",
+		"background": "url("+"../x_component_Org/$Explorer/default/icon/add.png) center center no-repeat",
 		"width": "40px",
 		"height": "40px",
 		"cursor": "pointer",
@@ -72,7 +72,7 @@
 		"float": "left",
 		"width": "40px",
 		"height": "40px",
-		"background": "url("+"/x_component_Org/$Explorer/default/icon/search.png) no-repeat center center",
+		"background": "url("+"../x_component_Org/$Explorer/default/icon/search.png) no-repeat center center",
 		"cursor": "pointer"
 	},
 	"searchInputAreaNode": {
@@ -95,7 +95,7 @@
 	"pingyinAction": {
 	    "height": "40px",
 	    "width": "40px",
-	    "background": "url("+"/x_component_Org/$Explorer/default/icon/pingyin.png) center center no-repeat",
+	    "background": "url("+"../x_component_Org/$Explorer/default/icon/pingyin.png) center center no-repeat",
 	    "cursor": "pointer"
 	},
 	"pingyinNode": {
@@ -215,21 +215,21 @@
 			"color": "#ffffff"
 		},
 		"actionDeleteNode": {
-			"background": "url("+"/x_component_Org/$Explorer/default/icon/delete.png) center center no-repeat",
+			"background": "url("+"../x_component_Org/$Explorer/default/icon/delete.png) center center no-repeat",
 			"height": "50px",
 			"width": "20px",
 			"float": "right",
 			"margin-right": "5px"
 		},
 		"actionDeleteNode_delete": {
-			"background": "url("+"/x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+			"background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
 			"height": "50px",
 			"width": "20px",
 			"float": "right",
 			"margin-right": "5px"
 		},
 		"actionDeleteNode_selected": {
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/delete_selected.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_selected.png) center center no-repeat",
             "height": "50px",
             "width": "20px",
             "float": "right",
@@ -363,14 +363,14 @@
             "titleCloseNode": {
                 "height": "32px",
                 "width": "32px",
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/close.png) center center no-repeat",
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/close.png) center center no-repeat",
                 "position": "relative",
                 "top": "-65px",
                 "left": "20px",
                 "cursor": "pointer"
             },
             "titleCloseNode_down": {
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/close_down.png) center center no-repeat"
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/close_down.png) center center no-repeat"
             },
 
 
@@ -495,7 +495,7 @@
                 "width": "100%",
                 "border": "1px solid #999999",
                 "border-radius": "3px",
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/calendar.png) 98% center no-repeat",
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/calendar.png) 98% center no-repeat",
                 "font-size": "14px",
                 "line-height": "24px",
                 "height": "22px",
@@ -506,7 +506,7 @@
                 "width": "100%",
                 "border": "1px solid #999999",
                 "border-radius": "3px",
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/selectperson.png) 98% center no-repeat",
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/selectperson.png) 98% center no-repeat",
                 "font-size": "14px",
                 "line-height": "24px",
                 "height": "24px",
@@ -517,7 +517,7 @@
                 "width": "100%",
                 "border": "1px solid #999999",
                 "border-radius": "3px",
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/drop.png) 98% center no-repeat",
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/drop.png) 98% center no-repeat",
                 "font-size": "14px",
                 "line-height": "24px",
                 "height": "22px",
@@ -553,7 +553,7 @@
             "typeSelectItemIconNode": {
                 "height": "30px",
                 "width": "30px",
-                "background": "url("+"/x_component_Org/$Explorer/default/icon/type.png) center center no-repeat",
+                "background": "url("+"../x_component_Org/$Explorer/default/icon/type.png) center center no-repeat",
                 "float": "left"
             },
             "typeSelectItemTextNode": {
@@ -662,7 +662,7 @@
             "height": "40px"
         },
         "actionAddNode": {
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/addUnit.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit.png) center center no-repeat",
             "height": "40px",
             "width": "20px",
             "float": "left",
@@ -670,7 +670,7 @@
             "margin-right": "5px"
         },
         "actionAddNode_delete": {
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
             "height": "40px",
             "width": "20px",
             "float": "right",
@@ -678,7 +678,7 @@
             "margin-right": "5px"
         },
         "actionAddNode_selected": {
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/addUnit_selected.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit_selected.png) center center no-repeat",
             "height": "40px",
             "width": "20px",
             "float": "right",
@@ -695,7 +695,7 @@
             "width": "30px",
             "height": "30px",
             "float": "right",
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/add.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/add.png) center center no-repeat",
             "cursor": "pointer"
 
         },
@@ -713,7 +713,7 @@
         },
         "selectNode":{
             "cursor": "pointer",
-            "background": "url("+"/x_component_Org/$Explorer/default/icon/select.png) center center no-repeat",
+            "background": "url("+"../x_component_Org/$Explorer/default/icon/select.png) center center no-repeat",
             "border-bottom": "1px solid #cccccc"
         },
         "nameNode": {

@@ -94,20 +94,20 @@
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/left_gray.png) no-repeat center center"
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/left_gray.png) no-repeat center center"
   },
   "leftNode_over" : {
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/left.png) no-repeat center center"
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/left.png) no-repeat center center"
   },
   "rightNode" : {
     "cursor" : "pointer",
     "float" : "left",
     "width" : "50px",
     "height" : "50px",
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/right_gray.png) no-repeat center center"
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/right_gray.png) no-repeat center center"
   },
   "rightNode_over" : {
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/right.png) no-repeat center center"
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/right.png) no-repeat center center"
   },
   "dayNode" : {
     "width" : "300px",
@@ -151,7 +151,7 @@
     "cursor" : "text"
   },
   "dayTitleTextNode_first" : {
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/down24_gray.png) no-repeat 240px 5px",
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/down24_gray.png) no-repeat 240px 5px",
     "font-size" : "24px",
     "height" : "32px",
     "line-height" : "32px",
@@ -174,7 +174,7 @@
     "cursor" : "text"
   },
   "dayTitleTextNode_today_first" : {
-    "background" : "url(/x_component_Meeting/$DayView/default/icon/down.png) no-repeat 240px 5px",
+    "background" : "url(../x_component_Meeting/$DayView/default/icon/down.png) no-repeat 240px 5px",
     "font-size" : "24px",
     "height" : "32px",
     "line-height" : "32px",

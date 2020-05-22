@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Table$Td/table$td.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Table$Td/table$td.html",
 		
 		"actions": [
 		    {
@@ -65,8 +65,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Table$Td/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Table$Td/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Table$Td/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Table$Td/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "container";

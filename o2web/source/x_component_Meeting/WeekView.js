@@ -10,8 +10,8 @@ MWF.xApplication.Meeting.WeekView = new Class({
     initialize: function(node, app, options){
         this.setOptions(options);
 
-        this.path = "/x_component_Meeting/$WeekView/";
-        this.cssPath = "/x_component_Meeting/$WeekView/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Meeting/$WeekView/";
+        this.cssPath = "../x_component_Meeting/$WeekView/"+this.options.style+"/css.wcss";
         this._loadCss();
         this.app = app;
         this.container = $(node);
@@ -590,7 +590,7 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
         //var deviceList = this.data.device.split("#");
         //deviceList.each(function(name){
         //    var node = new Element("div", {"styles": this.css.roomItemIconNode, "title": this.app.lp.device[name]}).inject(this.iconsNode);
-        //    node.setStyle("background-image", "url(/x_component_Meeting/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
+        //    node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
         //}.bind(this));
         //
         //this.actionsNode = new Element("div.actionsNode", {
@@ -1028,7 +1028,7 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day.Meeting = new Class({
         //this.node.set("title", this.data.subject);
         //
         //if (this.data.myWaitAccept){
-        //    this.iconNode.setStyle("background", "url(/x_component_Meeting/$WeekView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
+        //    this.iconNode.setStyle("background", "url(../x_component_Meeting/$WeekView/"+this.app.options.style+"/icon/invite.png) no-repeat center center");
         //}
 
         switch (this.data.status){

@@ -73,7 +73,7 @@
 	  "height": "60px",
 	  "width": "80px",
 	  "color": "#FFF",
-	  "background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 30px center no-repeat",
+	  "background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 30px center no-repeat",
 	  "background-size" : "16px 33px"
 	},
 	"titleTextNodeMobile": {
@@ -224,7 +224,7 @@
 		"margin-top": "12px",
 		"font-size": "30px",
 	  	"padding-left" : "30px",
-	  	"background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
+	  	"background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
 	  "background-size" : "40px 40px",
 	  	"border" : "1px solid #a1a1a1",
 	  	"border-radius" : "10px",
@@ -239,7 +239,7 @@
 	  "margin-top": "12px",
 	  "font-size": "30px",
 	  "padding-left" : "30px",
-	  "background" : "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
+	  "background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
 	  "background-size" : "40px 40px",
 	  "border" : "1px solid #a1a1a1",
 	  "border-radius" : "10px",
@@ -326,19 +326,19 @@
         "float": "left"
 	},
 	"selectorItemLevelNode_expand":{
-        "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
+        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
 	  "background-size" : "26px 16px"
     },
 	"selectorItemLevelNode_expand_over":{
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
 	  "background-size" : "26px 16px"
 	},
 	"selectorItemLevelNode_collapse":{
-	    "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
+	    "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
 	  "background-size" : "16px 27px"
 	},
 	"selectorItemLevelNode_collapse_over":{
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
 	  "background-size" : "16px 27px"
 	},
   	"selectorItemCategoryIconNode" : {
@@ -357,55 +357,55 @@
 		"width": "32px",
 		"height": "88px",
 		"float": "right",
-	  	"background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
+	  	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
 	  	"background-size" : "32px 32px"
 	},
   	"selectorItemActionNode_single" : {
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorItemActionNode_selected_over": {
 	  "width": "32px",
         "height": "88px",
         "float": "right",
-        "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checked2.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked2.png) no-repeat center center",
 	  "background-size" : "32px 32px"
     },
 	"selectorItemActionNode_single_selected_over" : {
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorItemActionNode_over": {
 	  "width": "32px",
         "height": "88px",
         "float": "right",
-        "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
     },
 	"selectorItemActionNode_single_over" : {
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorItemActionNode_selected": {
 	  "width": "32px",
 		"height": "88px",
 		"float": "right",
-		"background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
+		"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorItemActionNode_single_selected" : {
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorSelectedItemActionNode": {
 	  "width": "32px",
 	  "height": "88px",
 	  "float": "right",
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorSelectedItemActionNode_single" : {
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
 	  "background-size" : "32px 32px"
 	},
 
@@ -414,7 +414,7 @@
         "height": "88px",
         "float": "left",
         "font-size": "32px",
-        "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat center center",
 	  	"background-size" : "26px 16px"
 	},
 	"selectorItemCategoryActionNode_collapse": {
@@ -422,7 +422,7 @@
         "height": "88px",
         "font-size": "32px",
         "float": "left",
-        "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat center center",
 	  	"background-size" : "16px 27px"
     },
 
@@ -430,14 +430,14 @@
 	  "width": "32px",
 	  "height": "88px",
 	  "float": "right",
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat left center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat left center",
 	  "background-size" : "32px 32px"
 	},
 	"selectorItemCategoryActionNode_selectAll_selected": {
 	  "width": "32px",
 	  "height": "88px",
 	  "float": "right",
-	  "background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat left center",
+	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat left center",
 	  "background-size" : "32px 32px"
 	},
 
@@ -500,13 +500,13 @@
 //	  "margin" : "8px auto",
 //	  "width": "30px",
 //	  "height": "30px",
-//	  "background": "url(/x_component_Selector/$Selector/blue_flat/icon/shuttle_right.png) no-repeat left center"
+//	  "background": "url(../x_component_Selector/$Selector/blue_flat/icon/shuttle_right.png) no-repeat left center"
 //	},
 //	"goLeftNode" : {
 //	  "margin" : "8px auto",
 //	  "width": "30px",
 //	  "height": "30px",
-//	  "background": "url(/x_component_Selector/$Selector/blue_flat/icon/shuttle_left.png) no-repeat left center"
+//	  "background": "url(../x_component_Selector/$Selector/blue_flat/icon/shuttle_left.png) no-repeat left center"
 //	}
 
   "flatCategoryScrollNode" : {
@@ -558,7 +558,7 @@
 	"height": "88px",
 	"line-height": "88px",
 	"float": "right",
-	"background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat right center",
+	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat right center",
 	"background-size" : "32px 32px"
   },
   "flatCategory_selectAll_selected": {
@@ -567,7 +567,7 @@
 	"height": "88px",
 	"line-height": "88px",
 	"float": "right",
-	"background": "url(/x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat right center",
+	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat right center",
 	"background-size" : "32px 32px"
   }
 }

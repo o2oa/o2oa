@@ -43,14 +43,14 @@
         "width": "47px",
         "height": "47px",
         "float": "left",
-        "background": "url("+"/x_component_process_TaskCenter/$ProcessStarter/default/new.png) no-repeat"
+        "background": "url("+"../x_component_process_TaskCenter/$ProcessStarter/default/new.png) no-repeat"
     },
     "createCloseNode": {
         "width": "47px",
         "height": "47px",
         "float": "right",
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_TaskCenter/$ProcessStarter/default/close.png) center center no-repeat"
+        "background": "url("+"../x_component_process_TaskCenter/$ProcessStarter/default/close.png) center center no-repeat"
     },
     "formNode": {
         "border-radius": "8px",
@@ -83,7 +83,7 @@
         "margin-top": "20px",
         "margin-bottom": "20px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url("+"/x_component_process_TaskCenter/$ProcessStarter/default/editOk_bg.png) no-repeat"
+        "background": "url("+"../x_component_process_TaskCenter/$ProcessStarter/default/editOk_bg.png) no-repeat"
     },
     "cancelActionNode": {
         "height": "30px",
@@ -100,7 +100,7 @@
         "margin-bottom": "20px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url("+"/x_component_process_TaskCenter/$ProcessStarter/default/editCancel_bg.png) no-repeat"
+        "background": "url("+"../x_component_process_TaskCenter/$ProcessStarter/default/editCancel_bg.png) no-repeat"
     },
     "departSelNode": {
         "padding": "5px",
