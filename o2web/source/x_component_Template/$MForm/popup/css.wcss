@@ -16,7 +16,7 @@
     "background-color":"#FFF",
     "border-radius": "3px",
     "height": "18px",
-    "background" : "url(/x_component_Template/$MForm/default/icon/calendar.png) 99% center no-repeat"
+    "background" : "url(../x_component_Template/$MForm/default/icon/calendar.png) 99% center no-repeat"
   },
   "inputPerson" : {
     "width": "99%",
@@ -25,7 +25,7 @@
     "border-radius": "3px",
     "min-height": "18px",
     "overflow" : "hidden",
-    "background" : "url(/x_component_Template/$MForm/default/icon/selectperson.png)  99% center no-repeat"
+    "background" : "url(../x_component_Template/$MForm/default/icon/selectperson.png)  99% center no-repeat"
   },
   "inputTextarea" : {
     "width": "99%",

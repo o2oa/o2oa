@@ -27,7 +27,7 @@ MWF.xApplication.Execution.WorkGather = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.workGather;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$WorkGather/";
+        this.path = "../x_component_Execution/$WorkGather/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

@@ -49,7 +49,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.userName = this.userData.distinguishedName;
 		this.restActions = this.actions = MWF.Actions.get("x_bbs_assemble_control"); //new MWF.xApplication.Forum.Actions.RestActions();
 
-		this.path = "/x_component_ForumDocument/$Main/"+this.options.style+"/";
+		this.path = "../x_component_ForumDocument/$Main/"+this.options.style+"/";
 
 		if( this.status ){
 			this.setOptions( this.status )
@@ -417,7 +417,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.loadAttachment(attachmentArea)
 	},
 	_loadTypeSetting: function(){
-		var path = "/x_component_Forum/$ColumnTemplate/template/setting.json";
+		var path = "../x_component_Forum/$ColumnTemplate/template/setting.json";
 		var templateSetting;
 		MWF.xApplication.Forum.ColumnTemplate = MWF.xApplication.Forum.ColumnTemplate || {};
 		if (MWF.xApplication.Forum.ColumnTemplate.Setting){
@@ -1521,7 +1521,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				this.userCache[ name ] = json;
 				if( callback )callback( json );
 			}else{
-				var json =  { data : { icon : "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
+				var json =  { data : { icon : "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
 				this.userCache[ name ] = json;
 				if( callback )callback( json );
 			}
@@ -1530,7 +1530,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			//	this.userCache[ name ] = json;
 			//	if( callback )callback( json );
 			//}.bind(this), function(){
-			//	var json =  { data : { icon : "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
+			//	var json =  { data : { icon : "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
 			//	this.userCache[ name ] = json;
 			//	if( callback )callback( json );
 			//}.bind(this))
@@ -1546,7 +1546,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 					}
 				}else{
 					if( json.data ){
-						json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+						json.data.icon = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 						this.userCache[ name ] = json;
 						if( callback )callback( json );
 					}
@@ -1559,13 +1559,13 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				//	}
 				//}.bind(this), function(){
 				//	if( json.data ){
-				//		json.data.icon = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+				//		json.data.icon = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 				//		this.userCache[ name ] = json;
 				//		if( callback )callback( json );
 				//	}
 				//}.bind(this));
 			}.bind(this), function(){
-				var json =  { data : { icon : "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
+				var json =  { data : { icon : "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif" } };
 				this.userCache[ name ] = json;
 				if( callback )callback( json );
 			}.bind(this), name, true )
@@ -1737,11 +1737,11 @@ MWF.xApplication.ForumDocument.ReplyEditor = new Class({
 						if( this.app.userData.icon ){
 							return "data:image/png;base64," + this.app.userData.icon
 						}else{
-							var src = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+							var src = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 							this.app.getUserData( this.app.userData.distinguishedName, function(json ){
 								src = json.data.icon;
 							}.bind(this), function(){
-								var src = "/x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
+								var src = "../x_component_ForumDocument/$Main/"+this.options.style+"/icon/noavatar_big.gif";
 							}, false );
 							return src;
 						}

@@ -48,7 +48,7 @@
         "height":"20px",
         "margin-top":"10px",
         "margin-right":"6px",
-        "background":"url(/x_component_TeamWork/$ExtField/default/icon/icon_dw.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$ExtField/default/icon/icon_dw.png) no-repeat center"
     },
     optionLayout:{
 
@@ -83,7 +83,7 @@
         "margin-top":"10px",
         "margin-right":"5px",
         "cursor":"pointer",
-        "background":"url(/x_component_TeamWork/$ExtField/default/icon/icon_off.png) no-repeat center"
+        "background":"url(../x_component_TeamWork/$ExtField/default/icon/icon_off.png) no-repeat center"
     },
 
     inValid:{

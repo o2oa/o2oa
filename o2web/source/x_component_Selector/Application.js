@@ -52,7 +52,7 @@ MWF.xApplication.Selector.Application.Item = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -99,7 +99,7 @@ MWF.xApplication.Selector.Application.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     check: function(){
         if (this.selector.items.length){

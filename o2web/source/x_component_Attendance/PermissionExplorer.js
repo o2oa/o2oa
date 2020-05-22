@@ -8,8 +8,8 @@ MWF.xApplication.Attendance.PermissionExplorer = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$PermissionExplorer/";
-        this.cssPath = "/x_component_Attendance/$PermissionExplorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$PermissionExplorer/";
+        this.cssPath = "../x_component_Attendance/$PermissionExplorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;
@@ -186,7 +186,7 @@ MWF.xApplication.Attendance.PermissionExplorer.Permission = new Class({
 //
 //        var inputStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;";
 //        var inputPersonStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;"+
-//            "background : url(/x_component_Attendance/$PermissionExplorer/default/icon/selectperson.png) 98% center no-repeat";
+//            "background : url(../x_component_Attendance/$PermissionExplorer/default/icon/selectperson.png) 98% center no-repeat";
 //
 //        //+(!this.isNew && !this.isEdited  ? "" :
 //        //        ("<input type='text' id='role' " + "style='" + inputStyle +"'" + " value='" + ( this.data && this.data.role ? this.data.role : "") + "'/>")) +

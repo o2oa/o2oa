@@ -24,6 +24,6 @@
 	"height" : "16px",
 	"float" : "right",
 	"cursor" : "pointer",
-	"background" : "url(/x_component_Template/$MPopupForm/report/icon/icon_wen.png) no-repeat center center"
+	"background" : "url(../x_component_Template/$MPopupForm/report/icon/icon_wen.png) no-repeat center center"
   }
 }

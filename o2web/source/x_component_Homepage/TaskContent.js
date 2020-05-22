@@ -44,7 +44,7 @@ MWF.xApplication.Homepage.TaskContent = new Class({
                 "refreshAll": function(){},
                 "notice": this.app.notice,
             }
-            o2.JSON.get("/x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
+            o2.JSON.get("../x_component_process_TaskCenter/$Main/default/css.wcss", function(data){
                 obj.css = data;
             }, false);
 

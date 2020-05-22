@@ -113,20 +113,20 @@
     "height": "25px",
     "line-height" : "25px",
     "cursor" : "pointer",
-    "background":"url(/x_component_Attendance/$AddressExplorer/default/icon/down.png) center center no-repeat",
+    "background":"url(../x_component_Attendance/$AddressExplorer/default/icon/down.png) center center no-repeat",
     "float" : "left",
     "background-color" : "#fff"
   },
   "arrowNode_over" : {
-    "background":"url(/x_component_Attendance/$AddressExplorer/default/icon/down.png) center center no-repeat",
+    "background":"url(../x_component_Attendance/$AddressExplorer/default/icon/down.png) center center no-repeat",
     "background-color" : "#eee"
   },
   "arrowNode_down" : {
-    "background":"url(/x_component_Attendance/$AddressExplorer/default/icon/up.png) center center no-repeat",
+    "background":"url(../x_component_Attendance/$AddressExplorer/default/icon/up.png) center center no-repeat",
     "background-color" : "#fff"
   },
   "arrowNode_down_over" : {
-    "background":"url(/x_component_Attendance/$AddressExplorer/default/icon/up.png) center center no-repeat",
+    "background":"url(../x_component_Attendance/$AddressExplorer/default/icon/up.png) center center no-repeat",
     "float" : "left",
     "background-color" : "#eee"
   },
@@ -237,11 +237,11 @@
   //    "box-shadow": "1px 1px 2px #CCC",
   //    "color": "#888",
   //    "cursor": "pointer",
-  //    "background": "url("+"/x_component_Attendance/$PermissionExplorer/default/icon/delete.png) no-repeat center center"
+  //    "background": "url("+"../x_component_Attendance/$PermissionExplorer/default/icon/delete.png) no-repeat center center"
   //  },
   //  "actionDeleteNode_over":{
   //    "box-shadow": "1px 1px 2px #999",
-  //    "background": "url("+"/x_component_Attendance/$PermissionExplorer/default/icon/delete_over.png) no-repeat center center",
+  //    "background": "url("+"../x_component_Attendance/$PermissionExplorer/default/icon/delete_over.png) no-repeat center center",
   //    "background-color": "#666"
   //  },
   //  "actionDeleteNode_down":{
@@ -259,11 +259,11 @@
     "cursor": "pointer",
     "float": "left",
     "margin-right": "5px",
-    "background": "url("+"/x_component_Attendance/$AppealExplorer/default/icon/agree.png) no-repeat center center"
+    "background": "url("+"../x_component_Attendance/$AppealExplorer/default/icon/agree.png) no-repeat center center"
   },
   "actionAgreeNode_over":{
     "box-shadow": "1px 1px 2px #999",
-    "background": "url("+"/x_component_Attendance/$AppealExplorer/default/icon/agree_over.png) no-repeat center center",
+    "background": "url("+"../x_component_Attendance/$AppealExplorer/default/icon/agree_over.png) no-repeat center center",
     "background-color": "#666"
   },
   "actionAgreeNode_down":{
@@ -281,11 +281,11 @@
     "cursor": "pointer",
     "float": "left",
     "margin-right": "5px",
-    "background": "url("+"/x_component_Attendance/$AppealExplorer/default/icon/deny.png) no-repeat center center"
+    "background": "url("+"../x_component_Attendance/$AppealExplorer/default/icon/deny.png) no-repeat center center"
   },
   "actionDenyNode_over":{
     "box-shadow": "1px 1px 2px #999",
-    "background": "url("+"/x_component_Attendance/$AppealExplorer/default/icon/deny_over.png) no-repeat center center",
+    "background": "url("+"../x_component_Attendance/$AppealExplorer/default/icon/deny_over.png) no-repeat center center",
     "background-color": "#666"
   },
   "actionDenyNode_down":{
@@ -325,7 +325,7 @@
   "createNewNode": {
     "width": "47px",
     "height": "47px",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/new.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/new.png) no-repeat"
   },
   "createIconNode": {
     "width": "47px",
@@ -389,7 +389,7 @@
   "inputTimeStyle" : {
     "width": "99%",
     "border":"1px solid #999",
-    "background":"url(/x_component_Attendance/$SelfHoliday/default/icon/calendar.png) 98% center no-repeat",
+    "background":"url(../x_component_Attendance/$SelfHoliday/default/icon/calendar.png) 98% center no-repeat",
     "border-radius": "3px",
     "box-shadow": "0px 0px 6px #CCC",
     "height": "26px"
@@ -397,7 +397,7 @@
   "inputPersonStyle" : {
     "width": "99%",
     "border":"1px solid #999",
-    "background":"url(/x_component_Attendance/$SelfHoliday/default/icon/selectperson.png) 98% center no-repeat",
+    "background":"url(../x_component_Attendance/$SelfHoliday/default/icon/selectperson.png) 98% center no-repeat",
     "border-radius": "3px",
     "box-shadow": "0px 0px 6px #CCC",
     "height": "26px"
@@ -418,7 +418,7 @@
     "margin-right": "20px",
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/editOk_bg.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/editOk_bg.png) no-repeat"
   },
   "createDenyActionNode": {
     "height": "30px",
@@ -435,7 +435,7 @@
     "margin-top": "20px",
     "box-shadow": "0px 0px 0px #666",
     "border": "1px solid #999",
-    "background": "url(/x_component_Attendance/$PermissionExplorer/default/icon/editCancel_bg.png) no-repeat"
+    "background": "url(../x_component_Attendance/$PermissionExplorer/default/icon/editCancel_bg.png) no-repeat"
   },
   "createCancelActionNode": {
     "height": "30px",

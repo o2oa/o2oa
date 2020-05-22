@@ -79,9 +79,9 @@ o2.widget.Identity = new Class({
                     img = "<img width='50' height='50' border='0' src='data:image/png;base64,"+person.data.icon+"'></img>"
                 }else{
                     if (person.genderType=="f"){
-                        img = "<img width='50' height='50' border='0' src='"+"/x_component_Organization/$PersonExplorer/default/icon/female.png'></img>";
+                        img = "<img width='50' height='50' border='0' src='"+"../x_component_Organization/$PersonExplorer/default/icon/female.png'></img>";
                     }else{
-                        img = "<img width='50' height='50' border='0' src='"+"/x_component_Organization/$PersonExplorer/default/icon/man.png'></img>";
+                        img = "<img width='50' height='50' border='0' src='"+"../x_component_Organization/$PersonExplorer/default/icon/man.png'></img>";
                     }
                 }
 

@@ -48,7 +48,7 @@
 		"height": "18px"
 	},
 	"radioIcon": {
-		"background": "url("+"/x_component_process_FormDesigner/Module/Radio/default/icon/radio.png) center center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Radio/default/icon/radio.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "left"

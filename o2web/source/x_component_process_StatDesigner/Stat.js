@@ -14,14 +14,14 @@ MWF.xApplication.process.StatDesigner.Stat = new Class({
         "style": "default",
         "isView": false,
         "showTab": true,
-        "propertyPath": "/x_component_process_StatDesigner/$Stat/stat.html"
+        "propertyPath": "../x_component_process_StatDesigner/$Stat/stat.html"
     },
 
     initialize: function(designer, data, options){
         this.setOptions(options);
 
-        this.path = "/x_component_process_StatDesigner/$Stat/";
-        this.cssPath = "/x_component_process_StatDesigner/$Stat/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_StatDesigner/$Stat/";
+        this.cssPath = "../x_component_process_StatDesigner/$Stat/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -376,7 +376,7 @@ MWF.xApplication.process.StatDesigner.Stat = new Class({
 MWF.xApplication.process.StatDesigner.Stat.Column = new Class({
     Extends:MWF.xApplication.process.ViewDesigner.View.Column,
 	initialize: function(json, view, next){
-        this.propertyPath = "/x_component_process_StatDesigner/$Stat/column.html";
+        this.propertyPath = "../x_component_process_StatDesigner/$Stat/column.html";
 		this.view = view;
         this.json = json;
         this.next = next;

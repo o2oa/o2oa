@@ -16,8 +16,8 @@ MWF.xApplication.Attendance.Explorer = new Class({
     initialize: function(node, app, actions, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_Attendance/$Explorer/";
-        this.cssPath = "/x_component_Attendance/$Explorer/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_Attendance/$Explorer/";
+        this.cssPath = "../x_component_Attendance/$Explorer/"+this.options.style+"/css.wcss";
         this._loadCss();
 
         this.actions = actions;

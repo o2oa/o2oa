@@ -5,14 +5,14 @@ MWF.xApplication.cms.FormDesigner.Module.Comment = MWF.CMSFCComment = new Class(
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_cms_FormDesigner/Module/Comment/comment.html"
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Comment/comment.html"
 	},
 
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_cms_FormDesigner/Module/Comment/";
-		this.cssPath = "/x_component_cms_FormDesigner/Module/Comment/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_cms_FormDesigner/Module/Comment/";
+		this.cssPath = "../x_component_cms_FormDesigner/Module/Comment/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

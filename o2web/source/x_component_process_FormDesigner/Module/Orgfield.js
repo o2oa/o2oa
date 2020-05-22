@@ -5,13 +5,13 @@ MWF.xApplication.process.FormDesigner.Module.Orgfield = MWF.FCOrgfield = new Cla
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Orgfield/orgfield.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Orgfield/orgfield.html"
 	},
 	initialize: function(form, options){
 		this.setOptions(options);
 
-		this.path = "/x_component_process_FormDesigner/Module/Orgfield/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Orgfield/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Orgfield/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Orgfield/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

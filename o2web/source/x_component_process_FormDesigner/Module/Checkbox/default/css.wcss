@@ -48,7 +48,7 @@
 		"height": "18px"
 	},
 	"checkboxIcon": {
-		"background": "url("+"/x_component_process_FormDesigner/Module/Checkbox/default/icon/check.png) center center no-repeat",
+		"background": "url("+"../x_component_process_FormDesigner/Module/Checkbox/default/icon/check.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
 		"float": "left"

@@ -20,7 +20,7 @@
         "margin-top":"12px",
         "width":"16px",
         "height":"16px",
-        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
     },
     projectSettingContent:{
         "position":"absolute",
@@ -52,7 +52,7 @@
         "height":"20px",
         "margin-left":"10px",
         "margin-top":"20px",
-        "background":"url(/x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$ProjectList/default/icon/icon_off.png) no-repeat center "
     },
     naviItemText:{
         "float":"left",
@@ -100,7 +100,7 @@
         "margin-left":"50px",
         "height":"120px",
         "width":"220px",
-        "background":"url(/x_component_TeamWork/$ProjectSetting/default/icon/pic_morentu_220.png) no-repeat center ",
+        "background":"url(../x_component_TeamWork/$ProjectSetting/default/icon/pic_morentu_220.png) no-repeat center ",
         "background-size":"cover"
     },
     projectSettingBgUpload:{
@@ -180,7 +180,7 @@
         "height":"16px",
         "margin-top":"12px",
         "margin-right":"5px",
-        "background":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_triangle_down.png) no-repeat center "
+        "background":"url(../x_component_TeamWork/$ProjectSetting/default/icon/icon_triangle_down.png) no-repeat center "
     },
     projectSettingDesText:{
         "color":"#333333",

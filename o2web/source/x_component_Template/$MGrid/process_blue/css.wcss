@@ -6,7 +6,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/inputtext.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/inputtext.png) 99% center no-repeat"
   },
   "inputRadio" : {
     "float" : "left",
@@ -19,7 +19,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/calendar.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/calendar.png) 99% center no-repeat"
   },
   "inputPerson" : {
     "width": "100%",
@@ -28,7 +28,7 @@
     "border" : "0px",
     "border-bottom": "1px solid #ccc",
     "padding-right" : "20px",
-    "background": "url(/x_component_process_Xform/$Form/default/icon/selectperson.png) 99% center no-repeat"
+    "background": "url(../x_component_process_Xform/$Form/default/icon/selectperson.png) 99% center no-repeat"
   },
   "inputTextarea" : {
     "width": "100%",
@@ -112,7 +112,7 @@
   "actionRemove" : {
     "width" : "24px",
     "height" : "24px",
-    "background" : "url(/x_component_Template/$MGrid/forum/icon/remove.png) center center no-repeat"
+    "background" : "url(../x_component_Template/$MGrid/forum/icon/remove.png) center center no-repeat"
   },
   "actionRemove_over" : {
     "background-color" : "#e1edf7"
@@ -120,7 +120,7 @@
   "actionAdd" : {
     "width" : "24px",
     "height" : "24px",
-    "background" : "url(/x_component_Template/$MGrid/forum/icon/add.png) center center no-repeat"
+    "background" : "url(../x_component_Template/$MGrid/forum/icon/add.png) center center no-repeat"
   },
   "actionAdd_over" : {
     "background-color" : "#e1edf7"
@@ -130,7 +130,7 @@
     "font-size": "14px",
     "color":"#ff5c42",
     "padding-left": "20px",
-    "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+    "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
   }
 }
 

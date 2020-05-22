@@ -75,7 +75,7 @@ MWF.xApplication.Minder.Tree = new Class({
         this.explorer = explorer;
         this.app = explorer.app;
         this.node = $(node);
-        this.cssPath = "/x_component_Minder/$Common/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_Minder/$Common/"+this.options.style+"/css.wcss";
         this.load();
     },
     load: function(){
@@ -665,8 +665,8 @@ MWF.xApplication.Minder.Toolbar = new Class({
         this.lp = explorer.app.lp;
         //this.css = explorer.app.css;
 
-        this.iconPath = "/x_component_Minder/$Common/"+this.options.style+"/icon_tool/";
-        this.cssPath = "/x_component_Minder/$Common/"+this.options.style+"/css.wcss";
+        this.iconPath = "../x_component_Minder/$Common/"+this.options.style+"/icon_tool/";
+        this.cssPath = "../x_component_Minder/$Common/"+this.options.style+"/css.wcss";
 
         this.setOptions(options);
         this.tools = {

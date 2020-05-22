@@ -17,14 +17,14 @@ MWF.xApplication.ExeManager.WorkReportList = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_ExeManager/$WorkReportList/";
+        this.path = "../x_component_ExeManager/$WorkReportList/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_ExeManager/$WorkReportList/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_ExeManager/$WorkReportList/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -301,7 +301,7 @@ MWF.xApplication.ExeManager.WorkReportList.WorkReportForm = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.workReportForm;
         this.actions = this.app.restActions;
-        this.path = "/x_component_ExeManager/$WorkReportList/";
+        this.path = "../x_component_ExeManager/$WorkReportList/";
         this.cssPath = this.path + this.options.style + "/workReportForm.wcss";
 
         this._loadCss();

@@ -21,7 +21,7 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
         this.actions = actions;
         this.lp = lp;
         this.css = css;
-        this.path = "/x_component_ForumDocument/$Mobile/default/";
+        this.path = "../x_component_ForumDocument/$Mobile/default/";
     },
 
     load: function () {
@@ -135,12 +135,12 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
         if( url ){
             icon = url;
         }else{
-            icon = "/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
+            icon = "../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
         }
         //MWF.Actions.get("x_organization_assemble_control").getPersonIcon(name, function(url){
         //    icon = url;
         //}.bind(this), function(){
-        //    icon = "/x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
+        //    icon = "../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
         //});
         return icon;
     }

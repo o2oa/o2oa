@@ -64,7 +64,7 @@ MWF.xApplication.Selector.CMSView.Item = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -111,7 +111,7 @@ MWF.xApplication.Selector.CMSView.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -141,7 +141,7 @@ MWF.xApplication.Selector.CMSView.ItemCategory = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     _hasChild: function(){
         return (this.data.queryViews && this.data.queryViews.length);

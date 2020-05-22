@@ -12,8 +12,8 @@ MWF.xApplication.process.FormDesigner.widget.ValidationEditor = new Class({
 		this.node = $(node);
         this.designer = designer;
 		
-		this.path = "/x_component_process_FormDesigner/widget/$ValidationEditor/";
-		this.cssPath = "/x_component_process_FormDesigner/widget/$ValidationEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/widget/$ValidationEditor/";
+		this.cssPath = "../x_component_process_FormDesigner/widget/$ValidationEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
 		
 		this.items = [];

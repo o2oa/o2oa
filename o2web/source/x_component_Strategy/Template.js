@@ -49,14 +49,14 @@ MWF.xApplication.Strategy.Template.Select = new Class({
         this.explorer = explorer;
         this.lp = this.app.lp.template;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Strategy/Template/";
+        this.path = "../x_component_Strategy/Template/";
         this.loadCss();
 
         this.node = $(node);
         this.actions = actions;
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Strategy/$Template/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Strategy/$Template/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
 
@@ -112,7 +112,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                 if(!data)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 //if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 //if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -145,7 +145,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
 
                             _self.node.set("value",this.get("text"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
                             if(_self.selectValueDiv.get("text")!=this.get("text")){
                                 _self.selectValueDiv.set({"text":this.get("text")});
                                 if(callback)callback(d);
@@ -188,7 +188,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                 //if(!data.childNodes)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 //if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 //if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -223,7 +223,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                             });
                             _self.node.set("unit",this.get("unit"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
                             if(callback)callback(d);
                             ev.stopPropagation();
                         },
@@ -261,7 +261,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                 if(!data.value || !data.text)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 //if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 //if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -295,7 +295,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                             _self.selectValueDiv.set({"text":this.get("text")});
                             _self.node.set("value",this.get("text"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
                             if(callback)callback(d);
                             ev.stopPropagation();
                         },
@@ -334,7 +334,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                 if(!data.childNodes)return false;
                 if(_self.node.get("available")=="no") return false;
                 _self.selectArrowDiv.setStyles({
-                    "background":"url(/x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
+                    "background":"url(../x_component_Strategy/$Template/default/icons/arrow-up.png) no-repeat center"
                 });
                 //if(_self.explorer.listContentDiv)_self.explorer.listContentDiv.destroy();
                 //if(_self.explorer.listDiv)_self.explorer.listDiv.destroy();
@@ -367,7 +367,7 @@ MWF.xApplication.Strategy.Template.Select = new Class({
                             _self.selectValueDiv.set({"text":this.get("text")});
                             _self.node.set("value",this.get("text"));
                             _self.explorer.listContentDiv.destroy();
-                            _self.selectArrowDiv.setStyles({"background":"url(/x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
+                            _self.selectArrowDiv.setStyles({"background":"url(../x_component_Strategy/$Template/default/icons/arrow.png) no-repeat center"});
                             if(callback)callback(d);
                             ev.stopPropagation();
                         },
@@ -454,7 +454,7 @@ MWF.xApplication.Strategy.Template.PopupForm = new Class({
         }
         this.data = data || {};
 
-        this.cssPath = "/x_component_Strategy/$Template/"+this.options.style+"/popup.wcss";
+        this.cssPath = "../x_component_Strategy/$Template/"+this.options.style+"/popup.wcss";
 
         this.load();
     },

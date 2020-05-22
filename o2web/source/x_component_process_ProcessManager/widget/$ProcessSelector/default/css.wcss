@@ -39,7 +39,7 @@
         "width": "30px",
         "height": "30px",
         "float": "right",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/close.png) no-repeat center center",
         "cursor": "pointer"
     },
     "windowContentScrollNode": {
@@ -63,7 +63,7 @@
     "okActionNode": {
         "width": "150px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editOk_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -76,7 +76,7 @@
     "cancelActionNode": {
         "width": "100px",
         "height": "30px",
-        "background": "url("+"/x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
+        "background": "url("+"../x_component_process_ProcessDesigner/widget/$ScriptSelector/default/icon/editCancel_bg.png) no-repeat center center",
         "border": "0px",
         "color": "#FFF",
         "font-size": "18px",
@@ -134,10 +134,10 @@
         "height": "24px",
         "opacity": 1,
         "cursor": "pointer",
-        "background": "url("+"/x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/select.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/select.png) no-repeat center center"
     },
     "processItemSelectIcon_selected": {
-        "background": "url("+"/x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/selected.png) no-repeat center center"
+        "background": "url("+"../x_component_process_ProcessManager/widget/$ProcessSelector/default/icon/selected.png) no-repeat center center"
     },
     "itemTextDescriptionNode": {
         "margin-left": "50px",
@@ -163,6 +163,6 @@
         "position": "relative",
         "top": "-70px",
         "left": "-10px",
-        "background": "url("+"/x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
     },
 }

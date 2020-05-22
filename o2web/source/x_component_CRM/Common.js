@@ -47,12 +47,12 @@ MWF.xApplication.Attendance.Calendar = new Class({
     },
     loadResource: function ( callback ) {
         var baseUrls = [
-            "/x_component_Attendance/$Common/fullcalendar/lib/moment.js",
-            "/x_component_Attendance/$Common/fullcalendar/lib/jquery.js"
+            "../x_component_Attendance/$Common/fullcalendar/lib/moment.js",
+            "../x_component_Attendance/$Common/fullcalendar/lib/jquery.js"
         ];
-        var fullcalendarUrl = "/x_component_Attendance/$Common/fullcalendar/fullcalendar.js";
-        var langUrl =  "/x_component_Attendance/$Common/fullcalendar/lang/zh-cn.js";
-        COMMON.AjaxModule.loadCss("/x_component_Attendance/$Common/fullcalendar/fullcalendar.css",function(){
+        var fullcalendarUrl = "../x_component_Attendance/$Common/fullcalendar/fullcalendar.js";
+        var langUrl =  "../x_component_Attendance/$Common/fullcalendar/lang/zh-cn.js";
+        COMMON.AjaxModule.loadCss("../x_component_Attendance/$Common/fullcalendar/fullcalendar.css",function(){
             COMMON.AjaxModule.load(baseUrls, function(){
                 jQuery.noConflict();
                 COMMON.AjaxModule.load(fullcalendarUrl, function(){
@@ -123,9 +123,9 @@ MWF.xApplication.Attendance.Echarts = new Class({
     },
     loadResource: function ( callback ) {
         var baseUrls = [
-            "/x_component_Attendance/$Common/echarts/echarts.common.js"
+            "../x_component_Attendance/$Common/echarts/echarts.common.js"
         ];
-        var themeUrl = "/x_component_Attendance/$Common/echarts/theme/shine.js";
+        var themeUrl = "../x_component_Attendance/$Common/echarts/theme/shine.js";
         COMMON.AjaxModule.load(baseUrls, function(){
             COMMON.AjaxModule.load(themeUrl, function(){
                 if(callback)callback();

@@ -94,7 +94,7 @@
         "width": "30px",
         "height": "10px",
         "margin": "auto",
-        "background": "url(/x_component_Meeting/$Main/default/icon/point.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$Main/default/icon/point.png) no-repeat center center"
     },
 
     "bottomMenuPoint": {
@@ -126,7 +126,7 @@
 //        "width": "28px",
 //        "height": "32px",
 //        "float": "left",
-//        "background": "url(/x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
+//        "background": "url(../x_component_Execution/$WorkForm/default/icon/document.png) no-repeat center 4px"
 //    },
 //    "popupformTopTextNode" : {
 //        "font-size": "16px",
@@ -145,7 +145,7 @@
 //        "width": "30px",
 //        "height": "30px",
 //        "float": "right",
-//        "background": "url(/x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
+//        "background": "url(../x_component_Template/$Explorer/default/icon/close.png) no-repeat center center",
 //        "cursor": "pointer"
 //    },
 
@@ -265,7 +265,7 @@
         "margin-right": "20px",
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
-        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editOk_bg.png) no-repeat"
     },
     "createRoomCancelActionNode": {
         "height": "30px",
@@ -281,7 +281,7 @@
         "margin-top": "20px",
         "box-shadow": "0px 0px 0px #666",
         "border": "1px solid #999",
-        "background": "url(/x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
+        "background": "url(../x_component_process_ApplicationExplorer/$Main/default/icon/editCancel_bg.png) no-repeat"
     },
 
     "createRoomSelectBuildingNode": {
@@ -376,7 +376,7 @@
         "color": "#333",
         "line-height": "30px",
         "width": "99%",
-        "background" : "url(/x_component_Meeting/$Main/default/apply/down.png) 98% center no-repeat"
+        "background" : "url(../x_component_Meeting/$Main/default/apply/down.png) 98% center no-repeat"
     },
     "createMeetingInfoSelectRoomNode": {
         "background-color": "#FFF",
@@ -462,7 +462,7 @@
     "roomTitleDisabledIconNode": {
         "width": "40px",
         "height": "40px",
-        "background": "url(/x_component_Meeting/$Main/default/apply/disabled.png) no-repeat center center",
+        "background": "url(../x_component_Meeting/$Main/default/apply/disabled.png) no-repeat center center",
         "position": "relative",
         "top": "-40px",
         "margin-right": "50px",
@@ -480,14 +480,14 @@
         "height": "80px",
         "width": "60px",
         "float": "right",
-        "background": "url(/x_component_Meeting/$Main/default/apply/save.png) no-repeat center center",
+        "background": "url(../x_component_Meeting/$Main/default/apply/save.png) no-repeat center center",
         "cursor": "pointer"
     },
     "createMeetingSaveNode_over": {
-        "background": "url(/x_component_Meeting/$Main/default/apply/save_over.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$Main/default/apply/save_over.png) no-repeat center center"
     },
     "createMeetingSaveNode_down": {
-        "background": "url(/x_component_Meeting/$Main/default/apply/save_down.png) no-repeat center center"
+        "background": "url(../x_component_Meeting/$Main/default/apply/save_down.png) no-repeat center center"
     },
     "createMeetingSubjectNode": {
         "height": "80px",
@@ -564,7 +564,7 @@
     "configProcessNode": {
         "height": "30px",
         "border-bottom": "1px dashed #ccc",
-        "background": "url(/x_component_Meeting/$Main/default/icon/addPerson.png) no-repeat right center",
+        "background": "url(../x_component_Meeting/$Main/default/icon/addPerson.png) no-repeat right center",
         "margin-top" : "10px",
         "cursor": "pointer",
         "margin-bottom" : "20px"
@@ -573,7 +573,7 @@
         "min-height": "30px",
         "overflow" : "hidden",
         "border-bottom": "1px dashed #ccc",
-        "background": "url(/x_component_Meeting/$Main/default/icon/addPerson.png) no-repeat right center",
+        "background": "url(../x_component_Meeting/$Main/default/icon/addPerson.png) no-repeat right center",
         "margin-top" : "10px",
         "cursor": "pointer",
         "margin-bottom" : "20px"

@@ -5,14 +5,14 @@ MWF.xApplication.process.FormDesigner.Module.Iframe = MWF.FCIframe = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Iframe/iframe.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/Iframe/iframe.html"
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Iframe/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Iframe/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Iframe/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Iframe/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		this.moduleType = "element";

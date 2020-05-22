@@ -66,7 +66,7 @@ MWF.xApplication.Selector.Role.Item = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
     }
 });
 
@@ -77,6 +77,6 @@ MWF.xApplication.Selector.Role.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = this.selector.options.style;
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/roleicon.png)");
     }
 });

@@ -326,7 +326,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     loadNewProcessData: function(callback){
 
         //MWF.getJSON(this.path+"process.json", {
-        var url = "/x_component_process_ProcessDesigner/$Process/template/"+this.options.template;
+        var url = "../x_component_process_ProcessDesigner/$Process/template/"+this.options.template;
         MWF.getJSON(url, {
             "onSuccess": function(obj){
                 obj.id="";

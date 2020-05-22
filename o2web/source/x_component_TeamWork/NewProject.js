@@ -7,7 +7,7 @@ MWF.xApplication.TeamWork.NewProject = new Class({
     open: function (e) {
         //设置css 和 lp等
         var css = this.css;
-        this.cssPath = "/x_component_TeamWork/$NewProject/"+this.options.style+"/css.wcss";
+        this.cssPath = "../x_component_TeamWork/$NewProject/"+this.options.style+"/css.wcss";
         this._loadCss();
         if(css) this.css = Object.merge(  css, this.css );
 

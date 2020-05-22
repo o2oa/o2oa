@@ -48,7 +48,7 @@
     "line-height" : "50px",
     "float": "right",
     "margin-right" : "20px",
-    "background": "url(/x_component_Profile/$Main/newVersion/icon_off.png) no-repeat center center",
+    "background": "url(../x_component_Profile/$Main/newVersion/icon_off.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopMaxActionNode": {
@@ -56,7 +56,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_max_2.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_max_2.png) no-repeat center center",
     "cursor": "pointer"
   },
   "formTopRestoreActionNode": {
@@ -65,7 +65,7 @@
     "height" : "50px",
     "line-height" : "50px",
     "float": "right",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/icon_restore_2.png) no-repeat center center",
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/icon_restore_2.png) no-repeat center center",
     "cursor": "pointer"
   },
   "resizeNode" : {
@@ -144,14 +144,14 @@
     "width": "14px",
     "margin-right": "3px",
     "float": "left",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/accept.png) no-repeat center center"
   },
   "rejectIconNode": {
     "height": "20px",
     "width": "14px",
     "margin-right": "3px",
     "float": "left",
-    "background": "url(/x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
+    "background": "url(../x_component_Template/$MPopupForm/meeting/icon/reject.png) no-repeat center center"
   },
   "acceptTextNode": {
     "height": "20px",
@@ -238,7 +238,7 @@
     "inputTime" : {
      "border-radius" : "100px",
      "overflow" : "hidden",
-    "background" : "url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
+    "background" : "url(../x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
     "border": "1px solid #DEDEDE",
     "width": "200px",
     "height": "36px",
@@ -255,7 +255,7 @@
     "inputTimeUnformatWidth" : {
       "border-radius" : "100px",
       "overflow" : "hidden",
-     "background" : "url(/x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
+     "background" : "url(../x_component_Profile/$Main/newVersion/icon_triangle_down.png) 98% center no-repeat",
     "border": "1px solid #DEDEDE",
     "width": "100px",
     "height": "36px",
@@ -272,7 +272,7 @@
     "inputPerson" : {
      "border-radius" : "100px",
      "overflow" : "hidden",
-     "background" : "url(/x_component_Profile/$Main/newVersion/icon_choose_people.png) 98% center no-repeat",
+     "background" : "url(../x_component_Profile/$Main/newVersion/icon_choose_people.png) 98% center no-repeat",
     "border": "1px solid #DEDEDE",
     "width": "310px",
     "height": "36px",
@@ -448,14 +448,14 @@
       "font-size": "16px",
       "color":"#ff5c42",
       "padding-left": "20px",
-      "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+      "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
     },
     "warningMessageNode" : {
       "margin-top" : "10px",
       "font-size": "16px",
       "color":"#ff5c42",
       "padding-left": "20px",
-      "background" : "url(/x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
+      "background" : "url(../x_component_Template/$MForm/o2platform/icon/icon_warning.png) left center no-repeat"
     },
     "showNode": {
         "width":"274px",
@@ -469,6 +469,6 @@
       "width":"16px",
       "cursor":"pointer",
       "margin":"10px 20px 10px 10px",
-      "background":"url(/x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat"
+      "background":"url(../x_component_Profile/$Main/newVersion/icon_zengjia_blue2.png) center center no-repeat"
     }
 }

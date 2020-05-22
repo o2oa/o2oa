@@ -36,7 +36,7 @@
         "border" : "1px solid #f3f3f3",
         "margin" : "5px",
         "cursor" : "pointer",
-        "background": "url(/o2_core/o2/widget/$Paging/forum/icon/left.png) no-repeat center center",
+        "background": "url(../o2_core/o2/widget/$Paging/forum/icon/left.png) no-repeat center center",
         "background-color" : "#f3f3f3"
     },
     "prePage_over" : {
@@ -55,7 +55,7 @@
         "margin" : "5px",
         "cursor" : "pointer",
         "color" : "#333",
-        "background": "url(/o2_core/o2/widget/$Paging/forum/icon/right.png) no-repeat center center",
+        "background": "url(../o2_core/o2/widget/$Paging/forum/icon/right.png) no-repeat center center",
         "background-color" : "#f3f3f3"
     },
     "nextPage_over" : {

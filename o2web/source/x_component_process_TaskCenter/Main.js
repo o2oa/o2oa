@@ -205,7 +205,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             var tabIcon = new Element("div", {
                 "styles": this.css.tabItemIconNode
             }).inject(tab);
-            tabIcon.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/tab/"+icon+")");
+            tabIcon.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/tab/"+icon+")");
         }
         var tabText = new Element("div", {
             "styles": this.css.tabItemTextNode,
@@ -228,7 +228,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
         // var tabIcon = new Element("div", {
         //     "styles": this.css.tabItemIconNode
         // }).inject(tab);
-        // tabIcon.setStyle("background-image", "url("+"/x_component_process_TaskCenter/$Main/default/tab/"+icon+")");
+        // tabIcon.setStyle("background-image", "url("+"../x_component_process_TaskCenter/$Main/default/tab/"+icon+")");
         // var tabText = new Element("div", {
         //     "styles": this.css.tabItemTextNode,
         //     "text": text
@@ -823,7 +823,7 @@ MWF.xApplication.process.TaskCenter.Application = new Class({
         if (this.data.icon){
             this.iconNode.set("src", "data:image/png;base64,"+this.data.icon+"");
         }else{
-            this.iconNode.set("src", "/x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+            this.iconNode.set("src", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
         }
 
         this.textNode = new Element("div", {"styles": this.css.applicationTextNode}).inject(this.node);
@@ -881,7 +881,7 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
         this.node = new Element("div", {"styles": this.css.applicationNode}).inject(this.container);
         this.iconAreaNode = new Element("div", {"styles": this.css.applicationIconAreaNode}).inject(this.node);
         this.iconNode = new Element("img", {"styles": this.css.applicationIconNode}).inject(this.iconAreaNode);
-        this.iconNode.set("src", "/x_component_process_TaskCenter/$Main/default/icon/appAppliction.png");
+        this.iconNode.set("src", "../x_component_process_TaskCenter/$Main/default/icon/appAppliction.png");
 
         this.textNode = new Element("div", {"styles": this.css.applicationTextNode}).inject(this.node);
         this.textNode.set("text", this.app.lp.all);
@@ -968,7 +968,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         if (this.data.icon){
             this.iconNode.setStyle("background-image", "url("+this.data.icon+")");
         }else{
-            this.iconNode.setStyle("background-image", "url(/x_component_process_ProcessManager/$Explorer/default/processIcon/process.png)");
+            this.iconNode.setStyle("background-image", "url(../x_component_process_ProcessManager/$Explorer/default/processIcon/process.png)");
         }
         this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
         this.textNode = new Element("div", {"styles": this.css.processTextNode}).inject(this.node);
@@ -1403,7 +1403,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
 //         this.node = new Element("div", {"styles": this.css.applicationNode}).inject(this.container);
 //         this.iconAreaNode = new Element("div", {"styles": this.css.applicationIconAreaNode}).inject(this.node);
 //         this.iconNode = new Element("img", {"styles": this.css.applicationIconNode}).inject(this.iconAreaNode);
-//         this.iconNode.set("src", "/x_component_process_TaskCenter/$Main/default/icon/appAppliction.png");
+//         this.iconNode.set("src", "../x_component_process_TaskCenter/$Main/default/icon/appAppliction.png");
 //
 //         this.textNode = new Element("div", {"styles": this.css.applicationTextNode}).inject(this.node);
 //         this.textNode.set("text", this.app.lp.all);

@@ -91,7 +91,7 @@ MWF.xApplication.Org.RoleExplorer.Role = new Class({
         });
     },
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/role.png";
+        return "../x_component_Org/$Explorer/default/icon/role.png";
     }
 });
 MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
@@ -138,7 +138,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
             "set": function(){}
         }, "name", "employee", "mobile", "mail", {
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
@@ -158,7 +158,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent = new Class({
 
         this.groupMemberList = this._listMembers("groupList", "woGroupList", this.groupMemberContentNode, ["name", "distinguishedName", "description", {
             "getHtml": function(){
-                return "<div style='width:24px; height:24px; cursor: pointer; background:url(/x_component_Org/$Explorer/"+
+                return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
                     _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
             },
             "events": {
@@ -358,11 +358,11 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.TitleInfor = new Class({
         return Object.merge(css, this.item.style.role);
     },
     _getIcon: function(){
-        return "/x_component_Org/$Explorer/default/icon/role70.png";
+        return "../x_component_Org/$Explorer/default/icon/role70.png";
     },
     setBackground: function(){
-        this.titleBgNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg_bg.png)");
-        this.titleNode.setStyle("background-image", "url(/x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg.png)");
+        this.titleBgNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg_bg.png)");
+        this.titleNode.setStyle("background-image", "url(../x_component_Org/$Explorer/"+this.explorer.app.options.style+"/icon/group_bg.png)");
     },
     loadRightInfor: function(){
         //var text = this.data.name+((this.data.unique) ? "（"+this.data.unique+"）" : "");
@@ -554,9 +554,9 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
     //     var src = "data:image/png;base64,"+this.data.icon;
     //     if (!this.data.icon){
     //         if (this.data.genderType==="f"){
-    //             src = "/x_component_Org/$Explorer/default/icon/female.png"
+    //             src = "../x_component_Org/$Explorer/default/icon/female.png"
     //         }else{
-    //             src = "/x_component_Org/$Explorer/default/icon/man.png"
+    //             src = "../x_component_Org/$Explorer/default/icon/man.png"
     //         }
     //     }
     //     return src;

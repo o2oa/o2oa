@@ -902,8 +902,8 @@ o2.widget.Tablet.ImageClipper = new Class({
     initialize: function(app, options){
         this.setOptions(options);
         this.app = app;
-        this.path = "/x_component_process_Xform/widget/$ImageClipper/";
-        this.cssPath = "/x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_Xform/widget/$ImageClipper/";
+        this.cssPath = "../x_component_process_Xform/widget/$ImageClipper/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
 

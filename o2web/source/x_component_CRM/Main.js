@@ -92,7 +92,7 @@ MWF.xApplication.CRM.Main = new Class({
 					COMMON.AjaxModule.loadDom(apiPath, function () {
 						window.BDMapApiLoaded = true;
 						if( !window.BDMarkerToolLoaded ){
-							COMMON.AjaxModule.load( "/x_component_CRM/BDMarkerTool.js", function(){
+							COMMON.AjaxModule.load( "../x_component_CRM/BDMarkerTool.js", function(){
 								window.BDMarkerToolLoaded = true;
 							});
 						}else{
@@ -395,7 +395,7 @@ MWF.xApplication.CRM.Main = new Class({
 		}).inject(this.shadeDiv);
 		this.loadImg = new Element("img.loadImg",{
 			styles:{"width":"16px","height":"16px","float":"left"},
-			src:"/x_component_CRM/$Main/default/icons/loading.gif"
+			src:"../x_component_CRM/$Main/default/icons/loading.gif"
 		}).inject(this.inforDiv);
 
 		this.shadeTxtSpan = new Element("span.shadeTxtSpan").inject(this.inforDiv);

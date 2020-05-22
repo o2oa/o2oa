@@ -27,7 +27,7 @@ MWF.xApplication.Execution.CoreWork = new Class({
         this.app = explorer.app;
         this.lp = this.app.lp.coreWork;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$CoreWork/";
+        this.path = "../x_component_Execution/$CoreWork/";
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

@@ -5,7 +5,7 @@ MWF.xApplication.process.StatDesigner.Property = MWF.FVProperty = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"path": "/x_component_process_FormDesigner/property/property.html"
+		"path": "../x_component_process_FormDesigner/property/property.html"
 	},
 	
 	initialize: function(module, propertyNode, designer, options){

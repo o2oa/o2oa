@@ -617,7 +617,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 		app.createApplicationNode = content;
 		app.content = content;
 		app.notice = this.notice;
-		app.path = "/x_component_AppCenter/$Main/";
+		app.path = "../x_component_AppCenter/$Main/";
 		app.options = {"style": "default"};
 		app.cssPath = app.path + app.options.style + "/css.wcss";
 		o2.JSON.get(app.cssPath, function(json){
@@ -765,14 +765,14 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 		if (this.data.icon){
 			this.iconNode.setStyle("background-image", "url(data:image/png;base64,"+this.data.icon+")");
 		}else{
-			this.iconNode.setStyle("background-image", "url("+"/x_component_process_ApplicationExplorer/$Main/default/icon/application.png)")
+			this.iconNode.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)")
 		}
 		this.iconNode.makeLnk({
 			"par": this._getLnkPar()
 		});
 	},
 	_getLnkPar: function(){
-		var lnkIcon = "/x_component_process_ApplicationExplorer/$Main/default/lnk.png";
+		var lnkIcon = "../x_component_process_ApplicationExplorer/$Main/default/lnk.png";
 		if (this.data.icon) lnkIcon = "data:image/png;base64,"+this.data.icon;
 
 		var appId = "process.ProcessManager"+this.data.id;

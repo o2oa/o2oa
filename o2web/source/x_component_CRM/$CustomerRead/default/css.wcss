@@ -26,7 +26,7 @@
     "float":"right",
     "width":"20px",
     "height":"35px",
-    "background":"url(/x_component_CRM/$Main/default/icons/close.png) no-repeat center 8px",
+    "background":"url(../x_component_CRM/$Main/default/icons/close.png) no-repeat center 8px",
     "cursor":"pointer",
     "opacity":"0.5",
     "filter":"alpha(opacity=50)"
@@ -51,7 +51,7 @@
     "line-height":"20px",
     "margin-left":"10px",
     "padding-left":"20px",
-    "background":"url(/x_component_CRM/$CustomerRead/default/icons/location.png) no-repeat 2px center"
+    "background":"url(../x_component_CRM/$CustomerRead/default/icons/location.png) no-repeat 2px center"
   },
 
   "customerNameDiv":{

@@ -1294,7 +1294,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                     icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
                     bgcolor = this.layout.iconsJson["Url"].color;
                 }else{
-                    icon = "/x_component_Setting/$Main/default/icon/site.png";
+                    icon = "../x_component_Setting/$Main/default/icon/site.png";
                     bgcolor = "";
                 }
             }
@@ -1303,7 +1303,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 icon = this.layout.path+"appicons/"+this.layout.iconsJson[this.data.path].icon;
                 bgcolor = this.layout.iconsJson[this.data.path].color;
             }else{
-                icon = "/x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
+                icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
                 bgcolor = "";
             }
         }
@@ -1484,7 +1484,7 @@ o2.xDesktop.Default.StartMenu.PortalItem = new Class({
                 icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
                 bgcolor = this.layout.iconsJson[p].color;
             }else{
-                icon = "/x_component_portal_PortalExplorer/$Main/default/icon/application.png";
+                icon = "../x_component_portal_PortalExplorer/$Main/default/icon/application.png";
                 bgcolor = "";
             }
         }
@@ -1536,7 +1536,7 @@ o2.xDesktop.Default.StartMenu.ProcessItem = new Class({
                 icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
                 bgcolor = this.layout.iconsJson[p].color;
             }else{
-                icon = "/x_component_process_ApplicationExplorer/$Main/default/icon/application.png";
+                icon = "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png";
                 bgcolor = "";
             }
         }
@@ -1584,7 +1584,7 @@ o2.xDesktop.Default.StartMenu.InforItem = new Class({
                 icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
                 bgcolor = this.layout.iconsJson[p].color;
             }else{
-                icon = "/x_component_cms_Index/$Main/default/icon/column.png";
+                icon = "../x_component_cms_Index/$Main/default/icon/column.png";
                 bgcolor = "";
             }
         }
@@ -1633,7 +1633,7 @@ o2.xDesktop.Default.StartMenu.QueryItem = new Class({
                 icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
                 bgcolor = this.layout.iconsJson[p].color;
             }else{
-                icon = "/x_component_query_Query/$Main/appicon.png";
+                icon = "../x_component_query_Query/$Main/appicon.png";
                 bgcolor = "";
             }
 
@@ -1997,7 +1997,7 @@ o2.xDesktop.Default.Lnk = new Class({
                 if (this.layout.iconsJson[p] && this.layout.iconsJson[p].icon){
                     icon = this.layout.path+"appicons/"+this.layout.iconsJson[p].icon;
                 }else{
-                    icon = "/x_component_"+this.data.name.replace(/\./g, "_")+"/$Main/appicon.png";
+                    icon = "../x_component_"+this.data.name.replace(/\./g, "_")+"/$Main/appicon.png";
                 }
             }
         }

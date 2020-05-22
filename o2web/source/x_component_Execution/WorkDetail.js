@@ -29,7 +29,7 @@ MWF.xApplication.Execution.WorkDetail = new Class({
         this.app = explorer.app||explorer;
         this.lp = this.app.lp;
         this.actions = this.app.restActions;
-        this.path = "/x_component_Execution/$WorkDetail/"; 
+        this.path = "../x_component_Execution/$WorkDetail/"; 
         this.cssPath = this.path + this.options.style + "/css.wcss";
         this._loadCss();
 

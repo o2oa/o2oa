@@ -4,17 +4,17 @@ MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "previewPath": "/x_desktop/cmspreview.html",
+        "previewPath": "../x_desktop/cmspreview.html",
         "size": null
 	},
 	
 	initialize: function(form, options){
 		this.setOptions(options);
         var href = window.location.href;
-        if (href.indexOf("debugger")!=-1) this.options.previewPath = "/x_desktop/cmspreview.html?debugger";
+        if (href.indexOf("debugger")!=-1) this.options.previewPath = "../x_desktop/cmspreview.html?debugger";
 
-        this.path = "/x_component_process_FormDesigner/$Preview/";
-        this.cssPath = "/x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_FormDesigner/$Preview/";
+        this.cssPath = "../x_component_process_FormDesigner/$Preview/"+this.options.style+"/css.wcss";
 
         this._loadCss();
 
@@ -22,7 +22,7 @@ MWF.xApplication.cms.FormDesigner.Preview = MWF.CMSFCPreview = new Class({
 		this.data = form._getFormData();
 	},
     loadFormData: function(node){
-        MWF.getJSON("/x_desktop/res/preview/cmsdoc.json", function(json){
+        MWF.getJSON("../x_desktop/res/preview/cmsdoc.json", function(json){
             MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
                 this.appForm = new MWF.CMSForm(node, this.data);
                 this.appForm.app = this.form.designer;

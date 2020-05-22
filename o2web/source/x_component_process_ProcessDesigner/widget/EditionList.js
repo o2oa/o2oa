@@ -10,8 +10,8 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList = new Class({
 		this.application = application;
         this.edition = edition;
         this.process = process;
-		this.path = "/x_component_process_ProcessDesigner/widget/$EditionList/";
-		this.cssPath = "/x_component_process_ProcessDesigner/widget/$EditionList/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_ProcessDesigner/widget/$EditionList/";
+		this.cssPath = "../x_component_process_ProcessDesigner/widget/$EditionList/"+this.options.style+"/css.wcss";
 		this._loadCss();
         this.currentItem = null;
         this.items = [];

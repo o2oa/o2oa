@@ -14,14 +14,14 @@ MWF.xApplication.Execution.SettingExplorer = new Class({
         this.setOptions(options);
         this.app = app;
         this.lp = app.lp;
-        this.path = "/x_component_Execution/$SettingExplorer/";
+        this.path = "../x_component_Execution/$SettingExplorer/";
         this.loadCss();
 
         this.actions = actions;
         this.node = $(node);
     },
     loadCss: function () {
-        this.cssPath = "/x_component_Execution/$SettingExplorer/" + this.options.style + "/css.wcss";
+        this.cssPath = "../x_component_Execution/$SettingExplorer/" + this.options.style + "/css.wcss";
         this._loadCss();
     },
     load: function () {
@@ -73,7 +73,7 @@ MWF.xApplication.Execution.SettingExplorer = new Class({
                 });
                 var naviContentImg = new Element("img.naviContentImg",{
                     "styles":this.css.naviContentImg,
-                    "src":"/x_component_Execution/$Main/"+this.options.style+"/icon/"+data.icon
+                    "src":"../x_component_Execution/$Main/"+this.options.style+"/icon/"+data.icon
                 }).inject(naviContentLi);
                 var naviContentSpan = new Element("span.naviContentSpan",{
                     "styles":this.css.naviContentSpan,

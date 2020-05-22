@@ -13,7 +13,7 @@ MWF.xApplication.MinderEditor.MainInContainer = new Class({
         this.container = container; //container， 脑图内容容器
         this.content = content; //content, 父app的 content,比如 在流程或者门户 app的 content
         this.scrollNode = scrollNode;  //出现滚动条的节点
-        this.path = "/x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
+        this.path = "../x_component_"+this.options.name.replace(/\./g, "_")+"/$Main/";
         this.options.icon = this.path+this.options.style+"/"+this.options.icon;
 
         this.cssPath =this.path+this.options.style+"/css.wcss";

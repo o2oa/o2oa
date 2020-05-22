@@ -9,15 +9,15 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         "makerKey": "E138DABB4AC26C2D8E09FAE59AB3BDE87AFB9D7B",
         "version": "5.0.4.0",
         "clsid": "A64E3073-2016-4baf-A89D-FFE1FAA10EC0",
-        "codeBase": "/o2_lib/officecontrol/5040/OfficeControl.cab",
+        "codeBase": "../o2_lib/officecontrol/5040/OfficeControl.cab",
 
         "clsid64": "A64E3073-2016-4baf-A89D-FFE1FAA10EE1",
-        "codeBase64": "/o2_lib/officecontrol/5040/ofctnewclsid.cab",
+        "codeBase64": "../o2_lib/officecontrol/5040/ofctnewclsid.cab",
 
         "pdfType": "PDF.NtkoDocument",
         "pdfVersion": "4.0.0.3",
-        "pdfCodeBase": "/o2_lib/officecontrol/5040/ntkooledocall.cab",
-        "pdfCodeBase64": "/o2_lib/officecontrol/5040/ntkooledocall64.cab",
+        "pdfCodeBase": "../o2_lib/officecontrol/5040/ntkooledocall.cab",
+        "pdfCodeBase64": "../o2_lib/officecontrol/5040/ntkooledocall64.cab",
 
         "files": ["doc","docx","dotx","dot","xls","xlsx","xlsm","xlt","xltx","pptx","ppt","pot","potx","potm","pdf"],
 
@@ -66,7 +66,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             if (!this.isActive){
                 this.loadOfficeNotActive();
             }else{
-                MWF.getJSON("/o2_lib/officecontrol/config.json", function(json){
+                MWF.getJSON("../o2_lib/officecontrol/config.json", function(json){
                     this.officeConfig = json;
                 }.bind(this), false);
                 this.loadOfficeContorl(file);
@@ -208,7 +208,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         return "fileInput"+this.json.id+id;
     },
     getTempleteUrl: function(){
-        //return "/x_desktop/temp/杭州城管委文件.doc";
+        //return "../x_desktop/temp/杭州城管委文件.doc";
         if (this.json.template){
             var root = "";
             var flag = this.json.template.substr(0,1);
@@ -626,7 +626,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
             // this.officeOCX.ActiveDocument.Application.Selection.Font.Size = 14;
             // this.officeOCX.ActiveDocument.Application.Selection.Cut();
             //
-            // this.officeOCX.OpenFromUrl("/x_desktop/temp/1.doc", false);
+            // this.officeOCX.OpenFromUrl("../x_desktop/temp/1.doc", false);
             //
             // var mark = this.officeOCX.ActiveDocument.Bookmarks("bodyCw");
             //
@@ -745,7 +745,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                 objectHtml += "_"+key+"='"+p+"'";
             });
             objectHtml += ">";
-            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"/o2_lib/officecontrol/ntkoplugins.xpi\">安装组件</a></SPAN>";
+            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"../o2_lib/officecontrol/ntkoplugins.xpi\">安装组件</a></SPAN>";
 
             objectHtml += "</OBJECT><input type='hidden' value='"+this.json.id+"' name='site'><input style='display:none' name=\"file\" type=\"file\"/></form>";
             this.officeNode.appendHTML(objectHtml);
@@ -805,7 +805,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                 objectHtml += "_"+key+"='"+p+"'";
             });
             objectHtml += ">";
-            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"/o2_lib/officecontrol/ntkoplugins.crx\">安装组件</a></SPAN>";
+            objectHtml += "<SPAN STYLE='color:red'>尚未安装NTKO Web Chrome跨浏览器插件。请点击<a href=\"../o2_lib/officecontrol/ntkoplugins.crx\">安装组件</a></SPAN>";
 
             objectHtml += "</OBJECT><input type='hidden' value='"+this.json.id+"' name='site'><input style='display:none' name=\"file\" type=\"file\"/></form>";
             this.officeNode.appendHTML(objectHtml);
@@ -897,7 +897,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
 
             //TANGER_OCX_OBJ.CreateNew("word.document");
 
-            //this.officeOCX.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.7","/x_desktop/res/framework/officecontrol/ntkooledocall.cab",51,true);
+            //this.officeOCX.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.7","../x_desktop/res/framework/officecontrol/ntkooledocall.cab",51,true);
 
             this.doOfficeOCXEvents();
         }
@@ -1185,7 +1185,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         }else{
             this.officeOCX.AddDocTypePlugin(".pdf",pdfType,pdfVersion,pdfCodeBase,51,true);
         }
-        //this.officeOCX.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.3","/x_desktop/res/framework/officecontrol/ntkooledocall.cab",51,true);
+        //this.officeOCX.AddDocTypePlugin(".pdf","PDF.NtkoDocument","4.0.0.3","../x_desktop/res/framework/officecontrol/ntkooledocall.cab",51,true);
 
         var url = file || this.getOfficeFileUrl();
         if (url){

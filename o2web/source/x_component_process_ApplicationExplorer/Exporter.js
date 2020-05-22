@@ -11,8 +11,8 @@ MWF.xApplication.process.ApplicationExplorer.Exporter = new Class({
         this.container = this.app.content;
         this.data = data;
 
-        this.path = "/x_component_process_ApplicationExplorer/$Exporter/";
-        this.cssPath = "/x_component_process_ApplicationExplorer/$Exporter/"+this.options.style+"/css.wcss";
+        this.path = "../x_component_process_ApplicationExplorer/$Exporter/";
+        this.cssPath = "../x_component_process_ApplicationExplorer/$Exporter/"+this.options.style+"/css.wcss";
         this._loadCss();
     },
     load: function(){

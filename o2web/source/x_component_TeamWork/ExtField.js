@@ -24,7 +24,7 @@ MWF.xApplication.TeamWork.ExtField = new Class({
         this.data = data;
         this.actions = this.app.restActions;
 
-        this.path = "/x_component_TeamWork/$ExtField/";
+        this.path = "../x_component_TeamWork/$ExtField/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
 
@@ -231,8 +231,8 @@ MWF.xApplication.TeamWork.ExtField = new Class({
                 optionLayout.destroy();
                 _self.checkValid()
             }.bind(this),
-            mouseover:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_off_click.png)"})},
-            mouseout:function(){this.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_off.png)"})},
+            mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_off_click.png)"})},
+            mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_off.png)"})},
         });
     },
     rotateArrow:function(node,callback){
@@ -412,48 +412,48 @@ MWF.xApplication.TeamWork.ExtField.Types = new Class({
         var select = {
             "float":"right","width":"24px","height":"24px",
             "margin-top":"6px","margin-right":"8px",
-            "background":"url(/x_component_TeamWork/$ExtField/default/icon/icon_dagou.png) no-repeat center"
+            "background":"url(../x_component_TeamWork/$ExtField/default/icon/icon_dagou.png) no-repeat center"
         };
 
         var textContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var textIcon = new Element("div",{styles:icon}).inject(textContainer);
-        textIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_text.png)"});
+        textIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_text.png)"});
         var textText = new Element("div.text",{styles:text,text:this.lp.text,name:"TEXT"}).inject(textContainer);
         var textSelect = new Element("div.select",{styles:select}).inject(textContainer);
 
         var richtextContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var richtextIcon = new Element("div",{styles:icon}).inject(richtextContainer);
-        richtextIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_richtext.png)"});
+        richtextIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_richtext.png)"});
         var richtextText = new Element("div.text",{styles:text,text:this.lp.richtext,name:"RICHTEXT"}).inject(richtextContainer);
         var richtextSelect = new Element("div.select",{styles:select}).inject(richtextContainer);
 
         var radioContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var radioIcon = new Element("div",{styles:icon}).inject(radioContainer);
-        radioIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_radio.png)"});
+        radioIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_radio.png)"});
         var radioText = new Element("div.text",{styles:text,text:this.lp.radio,name:"RADIO"}).inject(radioContainer);
         var radioSelect = new Element("div.select",{styles:select}).inject(radioContainer);
 
         var checkboxContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var checkboxIcon = new Element("div",{styles:icon}).inject(checkboxContainer);
-        checkboxIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_checkbox.png)"});
+        checkboxIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_checkbox.png)"});
         var checkboxText = new Element("div.text",{styles:text,text:this.lp.checkbox,name:"CHECKBOX"}).inject(checkboxContainer);
         var checkboxSelect = new Element("div.select",{styles:select}).inject(checkboxContainer);
 
         var dateContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var dateIcon = new Element("div",{styles:icon}).inject(dateContainer);
-        dateIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_date.png)"});
+        dateIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_date.png)"});
         var dateText = new Element("div.text",{styles:text,text:this.lp.date,name:"DATE"}).inject(dateContainer);
         var dateSelect = new Element("div.select",{styles:select}).inject(dateContainer);
 
         var personContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var personIcon = new Element("div",{styles:icon}).inject(personContainer);
-        personIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_person.png)"});
+        personIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_person.png)"});
         var personText = new Element("div.text",{styles:text,text:this.lp.identity,name:"IDENTITY"}).inject(personContainer);
         var personSelect = new Element("div.select",{styles:select}).inject(personContainer);
 
         var unitContainer = new Element("div.container",{styles:container}).inject(this.contentNode);
         var unitIcon = new Element("div",{styles:icon}).inject(unitContainer);
-        unitIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ExtField/default/icon/icon_unit.png)"});
+        unitIcon.setStyles({"background-image":"url(../x_component_TeamWork/$ExtField/default/icon/icon_unit.png)"});
         var unitText = new Element("div.text",{styles:text,text:this.lp.unit,name:"UNIT"}).inject(unitContainer);
         var unitSelect = new Element("div.select",{styles:select}).inject(unitContainer);
 

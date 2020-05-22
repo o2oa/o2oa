@@ -16,8 +16,8 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
         }
         this.route = route;
         this.process = route.process;
-		this.path = "/x_component_process_ProcessDesigner/widget/$OrgEditor/";
-		this.cssPath = "/x_component_process_ProcessDesigner/widget/$OrgEditor/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_ProcessDesigner/widget/$OrgEditor/";
+		this.cssPath = "../x_component_process_ProcessDesigner/widget/$OrgEditor/"+this.options.style+"/css.wcss";
 		this._loadCss();
         this.selectedItems = [];
         this.lp = MWF.xApplication.process.ProcessDesigner.LP;
@@ -132,7 +132,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor = new Class({
 
     getTemplate: function(callback){
         if (!this.templateJson){
-            MWF.getJSON("/x_component_process_ProcessDesigner/widget/$OrgEditor/org.json", function(json){
+            MWF.getJSON("../x_component_process_ProcessDesigner/widget/$OrgEditor/org.json", function(json){
                 this.templateJson = json;
                 if (callback) callback();
             }.bind(this));
@@ -378,7 +378,7 @@ MWF.xApplication.process.ProcessDesigner.widget.OrgEditor.Property = new Class({
             }.bind(this),null,false);
         }
         this.data.pid = this.data.id; //this.process.process.id+this.org.route.data.id+this.data.id;
-        this.htmlPath = "/x_component_process_ProcessDesigner/widget/$OrgEditor/org.html";
+        this.htmlPath = "../x_component_process_ProcessDesigner/widget/$OrgEditor/org.html";
     },
     show: function(){
         if (!this.process.options.isView){

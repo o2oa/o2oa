@@ -235,7 +235,7 @@ MWF.xApplication.IMV2.Main = new Class({
 	//用户头像
 	_getIcon: function (id) {
 		var orgAction = MWF.Actions.get("x_organization_assemble_control")
-		var url = (id) ? orgAction.getPersonIcon(id) : "/x_component_IMV2/$Main/default/icons/group.png";
+		var url = (id) ? orgAction.getPersonIcon(id) : "../x_component_IMV2/$Main/default/icons/group.png";
 		return url + "?" + (new Date().getTime());
 	},
 	//输出特殊的时间格式

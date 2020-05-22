@@ -58,7 +58,7 @@ MWF.xApplication.Selector.CMSCategory.Item = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     loadSubItem: function(){
         return false;
@@ -122,7 +122,7 @@ MWF.xApplication.Selector.CMSCategory.ItemSelected = new Class({
     },
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/processicon.png)");
     },
     check: function(){
         if (this.selector.items.length){
@@ -149,7 +149,7 @@ MWF.xApplication.Selector.CMSCategory.ItemCategory = new Class({
 
     _setIcon: function(){
         var style = "default";
-        this.iconNode.setStyle("background-image", "url("+"/x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
+        this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/applicationicon.png)");
     },
     loadSub: function(callback){
         if (!this.loaded){

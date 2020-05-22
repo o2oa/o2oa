@@ -115,7 +115,7 @@
         "width": "200px"
     },
     "editBaseNode": {
-        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/edit.png) 3px center no-repeat",
+        "background": "url("+"../x_component_process_ProcessManager/$Main/default/icon/edit.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "12px",
@@ -130,7 +130,7 @@
         "border-radius":"3px"
     },
     "cancelBaseNode": {
-        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/editCancel.png) 3px center no-repeat",
+        "background": "url("+"../x_component_process_ProcessManager/$Main/default/icon/editCancel.png) 3px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "12px",
@@ -145,7 +145,7 @@
         "border-radius":"3px"
     },
     "saveBaseNode": {
-        "background": "url("+"/x_component_process_ProcessManager/$Main/default/icon/editOk.png) 15px center no-repeat",
+        "background": "url("+"../x_component_process_ProcessManager/$Main/default/icon/editOk.png) 15px center no-repeat",
         "float": "right",
         "cursor": "pointer",
         "margin-top": "12px",

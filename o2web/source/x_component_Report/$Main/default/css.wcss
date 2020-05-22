@@ -91,7 +91,7 @@
   "configProcessNode": {
     "height": "30px",
     "border-bottom": "1px dashed #ccc",
-    "background": "url(/x_component_Report/$Main/default/icon/addPerson.png) no-repeat right center",
+    "background": "url(../x_component_Report/$Main/default/icon/addPerson.png) no-repeat right center",
     "margin-top" : "10px",
     "cursor": "pointer",
     "margin-bottom" : "20px"
@@ -158,7 +158,7 @@
   "searchBarActionNode": {
     "width": "40px",
     "height": "30px",
-    "background": "url(/x_component_Report/$Main/default/icon/search.png) center center no-repeat",
+    "background": "url(../x_component_Report/$Main/default/icon/search.png) center center no-repeat",
     "float": "left",
     "cursor": "pointer"
   },
@@ -168,13 +168,13 @@
     "right" : "0px",
     "width": "40px",
     "height": "30px",
-    "background": "url(/x_component_Report/$Main/default/icon/icon_off.png) center center no-repeat",
+    "background": "url(../x_component_Report/$Main/default/icon/icon_off.png) center center no-repeat",
     "cursor": "pointer"
   },
   "searchMoreActionNode": {
     "width": "40px",
     "height": "30px",
-    "background": "url(/x_component_Report/$Main/default/icon/more.png) center center no-repeat",
+    "background": "url(../x_component_Report/$Main/default/icon/more.png) center center no-repeat",
     "float": "left",
     "cursor": "pointer"
   },

@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "/x_component_process_FormDesigner/Module/Form/form.html",
+		"propertyPath": "../x_component_process_FormDesigner/Module/Form/form.html",
         "mode": "PC",
 		"fields": ["Calendar", "Checkbox", "Datagrid", "Datagrid$Title", "Datagrid$Data", "Htmleditor", "Number", "Office", "Orgfield", "org", "Personfield", "Radio", "Select", "Textarea", "Textfield"],
 		"injectActions" : [
@@ -29,8 +29,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	initialize: function(designer, container, options){
 		this.setOptions(options);
 		
-		this.path = "/x_component_process_FormDesigner/Module/Form/";
-		this.cssPath = "/x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
+		this.path = "../x_component_process_FormDesigner/Module/Form/";
+		this.cssPath = "../x_component_process_FormDesigner/Module/Form/"+this.options.style+"/css.wcss";
 
 		this._loadCss();
 		
@@ -212,7 +212,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (callback) callback({});
 			return;
 		}
-		var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/"+file;
+		var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/"+file;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
 					//this.templateStylesList[file] = responseJSON;
@@ -232,7 +232,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (callback) callback({});
 			return;
 		}
-		var stylesUrl = "/x_component_process_FormDesigner/Module/Form/skin/"+extendFile;
+		var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/"+extendFile;
 		MWF.getJSON(stylesUrl,{
 				"onSuccess": function(responseJSON){
 					//this.templateStylesList[file] = responseJSON;
@@ -248,9 +248,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		);
 	},
     loadStylesList: function(callback){
-        //var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
-        //var stylesUrl = "/x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
-		var configUrl = "/x_component_process_FormDesigner/Module/Form/skin/config.json";
+        //var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "mobileStyles": "styles")+".json";
+        //var stylesUrl = "../x_component_process_FormDesigner/Module/Form/template/"+((this.options.mode=="Mobile") ? "styles": "styles")+".json";
+		var configUrl = "../x_component_process_FormDesigner/Module/Form/skin/config.json";
         MWF.getJSON(configUrl,{
                 "onSuccess": function(responseJSON){
                     this.stylesList = responseJSON;
@@ -458,7 +458,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if (this.dataTemplate[className]){
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
-			var templateUrl = "/x_component_process_FormDesigner/Module/"+className+"/template.json";
+			var templateUrl = "../x_component_process_FormDesigner/Module/"+className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);
