@@ -11,11 +11,6 @@ import java.util.stream.Collectors;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
@@ -40,6 +35,11 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 /**
  * @author Zhou Rui
  */
@@ -61,108 +61,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			return merge;
 		}
 		this.arrivingPassSame(aeiObjects, identities);
-		// if (BooleanUtils.isTrue(manual.getManualMergeSameJobActivity())) {
-		// List<String> exists =
-		// this.arriving_sameJobActivityExistIdentities(aeiObjects, manual);
-		// if (ListTools.isNotEmpty(exists)) {
-		// Work other = aeiObjects.getWorks().stream().filter(o -> {
-		// return StringUtils.equals(aeiObjects.getWork().getJob(), o.getJob())
-		// && StringUtils.equals(aeiObjects.getWork().getActivity(), o.getActivity())
-		// && (!Objects.equals(aeiObjects.getWork(), o));
-		// }).findFirst().orElse(null);
-		// if (null != other) {
-		// identities.removeAll(exists);
-		// if (ListTools.isEmpty(identities)) {
-		// this.mergeTaskCompleted(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeRead(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeReadCompleted(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
-		// this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
-		// if (ListTools.size(aeiObjects.getWork().getSplitTokenList()) > ListTools
-		// .size(other.getSplitTokenList())) {
-		// other.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
-		// other.setSplitToken(aeiObjects.getWork().getSplitToken());
-		// other.setSplitValue(aeiObjects.getWork().getSplitValue());
-		// other.setSplitting(true);
-		// }
-		// aeiObjects.getUpdateWorks().add(other);
-		// aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
-		// return other;
-		// }
-		// }
-		// }
-		// }
 		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>(identities));
-		// /* 查找是否有passSameTarget设置 */
-		// Route passSameTargetRoute = aeiObjects.getRoutes().stream()
-		// .filter(o ->
-		// BooleanUtils.isTrue(o.getPassSameTarget())).findFirst().orElse(null);
-		// /* 如果有passSameTarget,有到达ArriveWorkLog,不是调度到这个节点的 */
-		// if ((null != passSameTargetRoute) && ((null !=
-		// aeiObjects.getArriveWorkLog(aeiObjects.getWork())))
-		// && (!aeiObjects.getProcessingAttributes().ifForceJoinAtArrive())) {
-		// logger.debug("pass same target work:{}.", aeiObjects.getWork());
-		// WorkLog rollbackWorkLog = findPassSameTargetWorkLog(aeiObjects);
-		// logger.debug("pass same target workLog:{}.", rollbackWorkLog);
-		// // if (null != rollbackWorkLog) {
-		// // final String arriveActivityToken =
-		// rollbackWorkLog.getArrivedActivityToken();
-		// // aeiObjects.getJoinInquireTaskCompleteds().stream()
-		// // .filter(o ->
-		// // aeiObjects.getWork().getManualTaskIdentityList().contains(o.getIdentity())
-		// // && StringUtils.equals(o.getActivityToken(), arriveActivityToken))
-		// // .forEach(o -> {
-		// // TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(),
-		// // passSameTargetRoute, o);
-		// // try {
-		// // obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
-		// // obj.setRouteName(passSameTargetRoute.getName());
-		// // Date now = new Date();
-		// // obj.setStartTime(now);
-		// // obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// // obj.setCompletedTime(now);
-		// // obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// // obj.setDuration(0L);
-		// // obj.setExpired(false);
-		// // obj.setExpireTime(null);
-		// // obj.setTask(null);
-		// // obj.setLatest(true);
-		// // aeiObjects.getCreateTaskCompleteds().add(obj);
-		// // } catch (Exception e) {
-		// // e.printStackTrace();
-		// // }
-		// // });
-		// // }
-		// if (null != rollbackWorkLog) {
-		// for (TaskCompleted o : aeiObjects.getJoinInquireTaskCompleteds()) {
-		// if (StringUtils.equals(o.getActivityToken(),
-		// rollbackWorkLog.getArrivedActivityToken())) {
-		// List<String> values =
-		// ListUtils.union(aeiObjects.getWork().getManualTaskIdentityList(),
-		// aeiObjects.business().organization().identity().listWithPerson(o.getPerson()));
-		// if (!values.isEmpty()) {
-		// TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(),
-		// passSameTargetRoute, o);
-		// obj.setIdentity(values.get(0));
-		// obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
-		// obj.setRouteName(passSameTargetRoute.getName());
-		// Date now = new Date();
-		// obj.setStartTime(now);
-		// obj.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// obj.setCompletedTime(now);
-		// obj.setCompletedTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-		// obj.setDuration(0L);
-		// obj.setExpired(false);
-		// obj.setExpireTime(null);
-		// obj.setTask(null);
-		// obj.setLatest(true);
-		// aeiObjects.getCreateTaskCompleteds().add(obj);
-		// }
-		// }
-		// }
-		// }
-		// }
 		return aeiObjects.getWork();
 	}
 
@@ -221,6 +120,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 					if (!values.isEmpty()) {
 						TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), route, o);
 						obj.setIdentity(values.get(0));
+						obj.setUnit(aeiObjects.business().organization().unit().getWithIdentity(obj.getIdentity()));
 						obj.setProcessingType(TaskCompleted.PROCESSINGTYPE_SAMETARGET);
 						obj.setRouteName(route.getName());
 						Date now = new Date();
