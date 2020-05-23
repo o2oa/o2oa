@@ -216,7 +216,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 			for (TaskCompleted o : aeiObjects.getJoinInquireTaskCompleteds()) {
 				if (StringUtils.equals(o.getActivityToken(), workLog.getArrivedActivityToken())) {
-					List<String> values = ListUtils.union(identities,
+					List<String> values = ListUtils.intersection(identities,
 							aeiObjects.business().organization().identity().listWithPerson(o.getPerson()));
 					if (!values.isEmpty()) {
 						TaskCompleted obj = new TaskCompleted(aeiObjects.getWork(), route, o);
