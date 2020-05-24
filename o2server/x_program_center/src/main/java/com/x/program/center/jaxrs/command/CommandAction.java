@@ -70,7 +70,6 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
-
 	@JaxrsMethodDescribe(value = "上传customJar,customWar,storeJar,storeWar包并自动部署", action = ActionUploadFile.class)
 	@POST
 	@Path("upload")
@@ -86,7 +85,7 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadFile().execute(effectivePerson, ctl, nodeName, nodePort, fileInputStream, disposition);
+			result = new ActionUploadFile().execute(effectivePerson, request ,ctl, nodeName, nodePort, fileInputStream, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
