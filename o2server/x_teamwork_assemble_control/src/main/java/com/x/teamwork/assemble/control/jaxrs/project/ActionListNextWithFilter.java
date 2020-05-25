@@ -21,6 +21,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.ProjectConfig;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
@@ -105,13 +106,34 @@ public class ActionListNextWithFilter extends BaseAction {
 								try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 									business = new Business(bc);
 								}
+								
+								//查询项目配置信息
+								List<ProjectConfig>  projectConfigs = null;
+								projectConfigs = projectConfigQueryService.getProjectConfigByProject( project.getId() );
+								
 								control = new WrapOutControl();
+								
+								if(ListTools.isNotEmpty(projectConfigs)){
+									ProjectConfig projectConfig = projectConfigs.get(0);
+									control.setTaskCreate(projectConfig.getTaskCreate());
+									control.setTaskCopy(projectConfig.getTaskCopy());
+									control.setTaskRemove(projectConfig.getTaskRemove());
+									control.setLaneCreate(projectConfig.getLaneCreate());
+									control.setLaneEdit(projectConfig.getLaneEdit());
+									control.setLaneRemove(projectConfig.getLaneRemove());
+									control.setAttachmentUpload(projectConfig.getAttachmentUpload());
+									control.setComment(projectConfig.getComment());
+								}else{
+									control.setTaskCreate(true);
+								}
+								
 								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 										|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
 									control.setDelete( true );
 									control.setEdit( true );
 									control.setSortable( true );
+									control.setTaskCreate(true);
 								}else{
 									control.setDelete( false );
 									control.setEdit( false );
@@ -121,6 +143,9 @@ public class ActionListNextWithFilter extends BaseAction {
 									control.setFounder( true );
 								}else{
 									control.setFounder( false );
+								}
+								if(project.getDeleted() || project.getCompleted()){
+									control.setTaskCreate(false);
 								}
 								wo.setControl(control);
 								wos.add( wo );
