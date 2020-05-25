@@ -799,6 +799,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             var options = {
                                 "type" : "",
                                 "types": ["identity","person"],
+                                "exclude" : this.getInvitePersonExclude(),
                                 "values": [],
                                 "count": 0,
                                 "onComplete": function(items){
@@ -861,6 +862,21 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    getInvitePersonExclude : function(){
+        debugger;
+        var invitePersonList = this.invitePersonList || this.data.invitePersonList;
+        var identityList = [];
+        if( invitePersonList.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").IdentityAction.listWithPerson({
+                personList : invitePersonList
+            }, function( json ){
+                identityList = json.data ? json.data.identityList : [];
+            }, null ,false );
+            return ( identityList || [] ).concat(invitePersonList);
+        }else{
+            return [];
+        }
     },
     getString : function( str ){
         var s = "00" + str;
@@ -1293,6 +1309,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         });
     },
     rejectMeeting: function(){
+        debugger;
         var view = this.view;
         this.app.actions.rejectMeeting(this.data.id, function(){
             view.reload();
