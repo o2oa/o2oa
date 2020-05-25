@@ -62,7 +62,6 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
     save: function(){
         var data = this.form.getResult(true,null,true,false,true);
         this.actions.saveBuilding( data, function(json){
-            debugger;
             this.app.notice(this.lp.save_success, "success");
             var view = this.view;
             this.fireEvent("postSave", [data]);
@@ -473,7 +472,6 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                         },
                         "mousedown": function(e){e.stopPropagation();},
                         "click": function(e){
-                            debugger;
                             _self.selectBuilding(this);
                         }
                     });
@@ -864,7 +862,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }.bind(this), true);
     },
     getInvitePersonExclude : function(){
-        debugger;
         var invitePersonList = this.invitePersonList || this.data.invitePersonList;
         var identityList = [];
         if( invitePersonList.length > 0 ){
@@ -1309,7 +1306,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         });
     },
     rejectMeeting: function(){
-        debugger;
         var view = this.view;
         this.app.actions.rejectMeeting(this.data.id, function(){
             view.reload();
