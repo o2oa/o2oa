@@ -64,8 +64,9 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
         this.actions.saveBuilding( data, function(json){
             this.app.notice(this.lp.save_success, "success");
             var view = this.view;
+            this.fireEvent("postSave", [data]);
             this.close();
-            view.reload();
+            if(view)view.reload();
         }.bind(this));
     },
 
@@ -119,7 +120,9 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
                         this.editAction.setStyles( this.css.action_edit );
                     }.bind(this),
                     click : function(){
-                        this.editBuilding()
+                        this.editBuilding( function(data){
+                            this.node.getElement("[item='containr']").getFirst().set("text", (data.address ? data.address : this.lp.noAddress))
+                        }.bind(this))
                     }.bind(this)
                 }
             }).inject(container);
@@ -141,8 +144,11 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
             }).inject(container);
         }
     },
-    editBuilding : function(){
-        var form = new MWF.xApplication.Meeting.BuildingForm(this,this.data, {}, {app:this.app});
+    editBuilding : function( save_callback ){
+        var options = save_callback ? {
+            "onPostSave" : save_callback
+        } : {};
+        var form = new MWF.xApplication.Meeting.BuildingForm(this,this.data, options, {app:this.app});
         form.edit();
     },
     removeBuilding: function(e) {
@@ -258,7 +264,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                             "focus": function(){
                                 this.listBuildingHide();
                                 this.listBuilding();
-                            },
+                            }.bind(this),
                             "keydown": function(e){
                                 //if ([13,40,38].indexOf(e.code)!=-1){
                                 //    if (!this.selectBuildingNode){
@@ -371,6 +377,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
     remove: function(){
         var view = this.view;
         this.app.actions.deleteRoom(this.data.id, function(){
+            this.close();
             view.reload();
         }.bind(this));
     },
@@ -432,6 +439,10 @@ MWF.xApplication.Meeting.RoomForm = new Class({
         }
     },
     listBuilding: function(){
+        debugger;
+        if( this.selectBuildingNode )return;
+        if( this.listing )return;
+        this.listing = true;
         var item = this.form.getItem("buildingName");
         var key = item.getValue();
         this.listBuildingData(key, function(json){
@@ -467,6 +478,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
 
                 }.bind(this));
             }
+            this.listing = false;
         }.bind(this));
         // if( !key ){
         //     listBuilding
@@ -785,6 +797,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                             var options = {
                                 "type" : "",
                                 "types": ["identity","person"],
+                                "exclude" : this.getInvitePersonExclude(),
                                 "values": [],
                                 "count": 0,
                                 "onComplete": function(items){
@@ -847,6 +860,20 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    getInvitePersonExclude : function(){
+        var invitePersonList = this.invitePersonList || this.data.invitePersonList;
+        var identityList = [];
+        if( invitePersonList.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").IdentityAction.listWithPerson({
+                personList : invitePersonList
+            }, function( json ){
+                identityList = json.data ? json.data.identityList : [];
+            }, null ,false );
+            return ( identityList || [] ).concat(invitePersonList);
+        }else{
+            return [];
+        }
     },
     getString : function( str ){
         var s = "00" + str;
@@ -1035,8 +1062,10 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
         var deviceList = room.device.split("#");
         deviceList.each(function(name){
-            var node = new Element("div", {"styles": this.css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
-            node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+name+"_disable.png)");
+            if( name ){
+                var node = new Element("div", {"styles": this.css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
+                node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+name+"_disable.png)");
+            }
         }.bind(this));
         if ((i % 2)!=0) roomNode.setStyle("background-color", "#f4f8ff");
         roomNode.store("room", room);
@@ -1312,7 +1341,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         if( this.formMaskNode )this.formMaskNode.destroy();
         this.formAreaNode.destroy();
         this.fireEvent("postClose");
-        debugger;
         if( this.waitReload )this.view.reload();
         delete this;
     }
