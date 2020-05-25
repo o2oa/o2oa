@@ -431,7 +431,13 @@
     var _load = function(urls, options, callback){
         var ms = (_typeOf(urls)==="array") ? urls : [urls];
         var op =  (_typeOf(options)==="object") ? _getJsOptions(options) : _getJsOptions(null);
-        var cb = (_typeOf(options)==="function") ? options : callback;
+        var cbk = (_typeOf(options)==="function") ? options : callback;
+
+        var cb = cbk;
+        if (typeof define === 'function' && define.amd){
+            define.amd = false;
+            cb = (cbk) ? function(){define.amd = true; cbk();} : function(){define.amd = true;}
+        }
 
         var modules = [];
         for (var i=0; i<ms.length; i++){
