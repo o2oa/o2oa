@@ -13,7 +13,7 @@ o2.widget.monaco = {
                         while (this.callbackList.length){
                             this.callbackList.shift()();
                         }
-                        define.amd = false;
+                        //define.amd = false;
                         //if (callback) callback();
                     }.bind(this));
                 }.bind(this));
