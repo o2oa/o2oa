@@ -24,10 +24,11 @@ public class ActionProjectConfigGetByProject extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionProjectConfigGetByProject.class);
 
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
-		ActionResult<List<Wo>> result = new ActionResult<List<Wo>>();
-		List<Wo>  wo = null;
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
+		ActionResult<Wo> result = new ActionResult<Wo>();
+		Wo  wo = null;
 		List<ProjectConfig>  projectConfigs = null;
+		ProjectConfig projectConfig = null;
 		Boolean check = true;
 
 		if ( StringUtils.isEmpty( id ) ) {
@@ -39,9 +40,10 @@ public class ActionProjectConfigGetByProject extends BaseAction {
 		if( Boolean.TRUE.equals( check ) ){
 			try {
 				projectConfigs = projectConfigQueryService.getProjectConfigByProject( id );
-				/*if(ListTools.isNotEmpty(projectConfigs)){
+				if(ListTools.isNotEmpty(projectConfigs)){
 					projectConfig = projectConfigs.get(0);
 				}
+				/*
 				if ( projectConfig == null) {
 					check = false;
 					Exception exception = new ProjectConfigNotExistsException( id );
@@ -57,13 +59,8 @@ public class ActionProjectConfigGetByProject extends BaseAction {
 		
 		if( Boolean.TRUE.equals( check ) ){
 			try {
-				if(ListTools.isEmpty(projectConfigs)){
-					wo = new ArrayList<Wo>();
+					wo = Wo.copier.copy( projectConfig );					
 					result.setData(wo);
-				}else{
-					wo = Wo.copier.copy( projectConfigs );					
-					result.setData(wo);
-				}
 				
 			} catch (Exception e) {
 				Exception exception = new ProjectConfigQueryException(e, "将查询出来的项目配置信息对象转换为可输出的数据信息时发生异常。");
