@@ -88,6 +88,24 @@ public class InstantAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取当前人员的主体消息,排除IM消息,倒序.", action = ActionListWithCurrentPersonWithoutIMDesc.class)
+	@GET
+	@Path("list/currentperson/noim/count/{count}/desc")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithCurrentPersonWithoutIMDesc(@Suspended final AsyncResponse asyncResponse,
+										  @Context HttpServletRequest request, @JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+		ActionResult<List<ActionListWithCurrentPersonWithoutIMDesc.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithCurrentPersonWithoutIMDesc().execute(effectivePerson, count);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取当前人员的主体消息,顺序.", action = ActionListWithCurrentPersonAsc.class)
 	@GET
 	@Path("list/currentperson/count/{count}/asc")
