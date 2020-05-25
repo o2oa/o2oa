@@ -82,13 +82,14 @@ class ActionInputAll extends BaseAction {
 	UnitSheetConfigurator configuratorUnit = null;
 	PersonSheetConfigurator configuratorPerson = null;
 	IdentitySheetConfigurator configuratorIdentity = null;
+	DutySheetConfigurator configuratorDuty = null;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 				InputStream is = new ByteArrayInputStream(bytes);
 				XSSFWorkbook workbook = new XSSFWorkbook(is);
-				ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+				ByteArrayOutputStream os = new ByteArrayOutputStream()) { 
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			this.scan(business, workbook);
@@ -178,9 +179,13 @@ class ActionInputAll extends BaseAction {
 				if(wholeFlag){
 						//保存组织，人员
 						this.persistUnit(workbook, configuratorUnit, unit);
+						this.persistPerson(workbook, configuratorPerson, person);
 						
 						identity = this.scanIdentityList(business,configuratorIdentity, sheet);
 						duty = this.scanDutyList(business,configuratorIdentity, sheet);
+						//保存身份，职务
+						this.persistIdentity(workbook, configuratorIdentity, identity);
+						this.persistDuty(workbook, configuratorDuty, duty);
 													
 				}
 			}
@@ -188,7 +193,7 @@ class ActionInputAll extends BaseAction {
 			
 	}
 	
-	private void scanDuty(Business business, XSSFWorkbook workbook) throws Exception {
+	private void scanDuty(Business business, XSSFWorkbook workbook) throws Exception  {
 		//导入职务信息	
 			Sheet sheet = workbook.getSheetAt(5);
 			DutySheetConfigurator configurator = new DutySheetConfigurator(workbook, sheet);
@@ -665,8 +670,8 @@ class ActionInputAll extends BaseAction {
 	
 	
 	
-	private void persistUnit(XSSFWorkbook workbook, UnitSheetConfigurator configurator, List<UnitItem> unit) throws Exception {
-		for (List<UnitItem> list : ListTools.batch(unit, 200)) {
+	private void persistUnit(XSSFWorkbook workbook, UnitSheetConfigurator configurator, List<UnitItem> unitItems) throws Exception {
+		for (List<UnitItem> list : ListTools.batch(unitItems, 200)) {
 			for (UnitItem o : list) {
 				logger.debug("正在保存组织:{}.", o.getName());
 				Unit unitObject = new Unit();
@@ -679,6 +684,62 @@ class ActionInputAll extends BaseAction {
 				}else{
 					this.setUnitMemo(workbook, configurator, o, resp);
 				}
+				
+			}
+		}
+	}
+	private void persistPerson(XSSFWorkbook workbook, PersonSheetConfigurator configurator, List<PersonItem> personItems) throws Exception {
+		for (List<PersonItem> list : ListTools.batch(personItems, 200)) {
+			for (PersonItem o : list) {
+				logger.debug("正在保存人员:{}.", o.getName());
+				Person personObject = new Person();
+				o.copyTo(personObject);
+				
+				String resp = this.savePerson("person", personObject);
+				System.out.println("respMass="+resp);
+				if("".equals(resp)){
+					this.setPersonMemo(workbook, configurator, o, "已导入.");
+				}else{
+					this.setPersonMemo(workbook, configurator, o, resp);
+				}
+				
+			}
+		}
+	}
+	
+	private void persistIdentity(XSSFWorkbook workbook, IdentitySheetConfigurator configurator, List<IdentityItem> identityItems) throws Exception {
+		for (List<IdentityItem> list : ListTools.batch(identityItems, 200)) {
+			for (IdentityItem o : list) {
+				logger.debug("正在保存人员:{}.", o.getName());
+				Identity identityObject = new Identity();
+				o.copyTo(identityObject);
+				
+				String resp = this.saveIdentity("identity", identityObject);
+				System.out.println("respMass="+resp);
+				if("".equals(resp)){
+					this.setIdentityMemo(workbook, configurator, o, "已导入.");
+				}else{
+					this.setIdentityMemo(workbook, configurator, o, resp);
+				}
+				
+			}
+		}
+	}
+	
+	private void persistDuty(XSSFWorkbook workbook, DutySheetConfigurator configurator, List<DutyItem> dutyItems) throws Exception {
+		for (List<DutyItem> list : ListTools.batch(dutyItems, 200)) {
+			for (DutyItem o : list) {
+				logger.debug("正在保存职务:{}.", o.getName());
+				UnitDuty dutyObject = new UnitDuty();
+				o.copyTo(dutyObject);
+				
+				String resp = this.saveDuty("unitDuty", dutyObject);
+				System.out.println("respMass="+resp);
+				/*if("".equals(resp)){
+					this.setDutyMemo(workbook, configurator, o, "已导入.");
+				}else{
+					this.setIdentityMemo(workbook, configurator, o, resp);
+				}*/
 				
 			}
 		}
@@ -706,12 +767,29 @@ class ActionInputAll extends BaseAction {
 		cell.setCellValue(memo);
 	}
 	
-	private String saveUnit(String path ,Unit unit) throws Exception{
+	private String saveUnit(String path ,Unit unitObj) throws Exception{
 		ActionResponse resp =  ThisApplication.context().applications()
-				.postQuery(x_organization_assemble_control.class, path, unit);
+				.postQuery(x_organization_assemble_control.class, path, unitObj);
 		return resp.getMessage();
 	}
-
+	
+	private String savePerson(String path ,Person personObj) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.postQuery(x_organization_assemble_control.class, path, personObj);
+		return resp.getMessage();
+	}
+	
+	private String saveIdentity(String path ,Identity identityObj) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.postQuery(x_organization_assemble_control.class, path, identityObj);
+		return resp.getMessage();
+	}
+	
+	private String saveDuty(String path ,UnitDuty dutyObj) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.postQuery(x_organization_assemble_control.class, path, dutyObj);
+		return resp.getMessage();
+	}
 	
 	private void concretePassword(List<PersonItem> people) throws Exception {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
