@@ -106,9 +106,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
 
     layout.startProcess = function (appId, pId, redirect) {
-        console.log("开始startProcess。。。。。。。。");
-        console.log(appId);
-        console.log(pId);
         MWF.Actions.get("x_processplatform_assemble_surface").getProcessByName(pId, appId, function (json) {
   
             if (json.data) {
@@ -118,7 +115,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                         "identity": null,
                         "latest": false,
                         "onStarted": function (data, title, processName) {
-                            console.log("进入 onStarted。。。。");
                             debugger;
                             if (data.work){
                                 layout.startProcessDraft(data, title, processName, redirect);
@@ -138,8 +134,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
     };
   
     layout.startProcessDraft = function(data, title, processName, redirect){
-        console.log("草稿模式。。。。");
-        console.log(data);
         o2.require("o2.widget.UUID", function () {
             var work = data.work;
             var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
@@ -158,8 +152,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         
     };
     layout.startProcessInstance = function(data, title, processName, redirect){
-        console.log("实例模式。。。。");
-        console.log(data);
         var currentTask = [];
         data.each(function (work) {
             if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
@@ -354,12 +346,10 @@ o2.addReady(function () {
                         //     layout.readys.shift().apply(window);
                         // }
 
-                        console.log("开始执行。。。。。。。。");
                         var uri = locate.href.toURI();
                         var redirect = uri.getData("redirect");
                         var processId = uri.getData("processId");
                         var applicationId = uri.getData("appId");
-                        console.log(uri);
                         layout.content = $(document.body);
                         layout.app = layout;
                         layout.startProcess(applicationId, processId, redirect);
@@ -426,11 +416,11 @@ o2.addReady(function () {
         });
 
         layout.openLoginQywx = function () {
-            console.log("开始login。。。。。。。。。。。。。");
+
             var uri = locate.href.toURI();
 
             MWF.require("MWF.xDesktop.Actions.RestActions", function () {
-                console.log("执行单点。。。。。。。。。。");
+
                 var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                 action.getActions = function (actionCallback) {
                     this.actions = { "sso": { "uri": "/jaxrs/qiyeweixin/code/{code}", "method": "GET" } };
@@ -438,8 +428,6 @@ o2.addReady(function () {
                 };
                 action.invoke({
                     "name": "sso", "async": true, "parameter": { "code": uri.getData("code") }, "success": function (json) {
-                        console.log("单点成功。");
-                        console.log(json);
                         //基础数据。。。。
                         layout.session.user = json.data;
                         //
