@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +31,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -79,6 +85,7 @@ class ActionInputAll extends BaseAction {
 	List<PersonItem> person = new ArrayList<>();
 	List<IdentityItem> identity = new ArrayList<>();
 	List<DutyItem> duty = new ArrayList<>();
+	List<UnitDuty> editduty = new ArrayList<>();
 	UnitSheetConfigurator configuratorUnit = null;
 	PersonSheetConfigurator configuratorPerson = null;
 	IdentitySheetConfigurator configuratorIdentity = null;
@@ -180,11 +187,11 @@ class ActionInputAll extends BaseAction {
 						//保存组织，人员
 						this.persistUnit(workbook, configuratorUnit, unit);
 						this.persistPerson(workbook, configuratorPerson, person);
-						
 						identity = this.scanIdentityList(business,configuratorIdentity, sheet);
-						duty = this.scanDutyList(business,configuratorIdentity, sheet);
-						//保存身份，职务
+						//保存身份
 						this.persistIdentity(workbook, configuratorIdentity, identity);
+						//保存职务
+						duty = this.scanDutyList(business,configuratorIdentity, sheet);
 						this.persistDuty(workbook, configuratorDuty, duty);
 													
 				}
@@ -419,7 +426,7 @@ class ActionInputAll extends BaseAction {
 		if (null == configurator.getDutyCodeColumn()) {
 			throw new ExceptionDutyCodeColumnEmpty();
 		}
-		List<Identity> identitys = new ArrayList<>();
+		
 		List<DutyItem> dutys = new ArrayList<>();
 		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
 			Row row = sheet.getRow(i);
@@ -427,6 +434,7 @@ class ActionInputAll extends BaseAction {
 				String dutyCode = configurator.getCellStringValue(row.getCell(configurator.getDutyCodeColumn()));
 				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
 				String personCode = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+				List<Identity> identitys = new ArrayList<>();
 				
 				if(StringUtils.isNotEmpty(dutyCode)){
 					DutyItem dutyItem = new DutyItem();
@@ -436,29 +444,35 @@ class ActionInputAll extends BaseAction {
 					EntityManagerContainer emc = business.entityManagerContainer();
 					
 					Unit u = null;
+					String unitId = null;
 					u = emc.flag(unitCode, Unit.class);
 					if(u != null){
 						dutyItem.setUnit(u.getId());
+						unitId = u.getId();
 					}
 					
-					Person person = null;
-					person = emc.flag(personCode, Person.class);
-					if(person != null){
+					Person personObj = null;
+					personObj = emc.flag(personCode, Person.class);
+					if(personObj != null){
 						EntityManager em = business.entityManagerContainer().get(Identity.class);
 						CriteriaBuilder cb = em.getCriteriaBuilder();
 						CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 						Root<Identity> root = cq.from(Identity.class);
-						Predicate p = cb.equal(root.get(Identity_.person), person.getId());		
+						System.out.println("personid="+personObj.getId());
+						Predicate p = cb.equal(root.get(Identity_.person), personObj.getId());		
 						identitys = em.createQuery(cq.select(root).where(p)).getResultList();
 					}
+					System.out.println("identitys="+identitys.size());
+					
 					if(ListTools.isNotEmpty(identitys)){
+						List<String> didylist = new ArrayList<>();
 						for (Identity identity : identitys) {
-							if(unitCode.equals(identity.getUnit())){
-								List<String> didylist = new ArrayList<>();
+							if(unitId.equals(identity.getUnit())){
+								System.out.println("unitCode="+unitCode);
 								didylist.add(identity.getDistinguishedName());
-								dutyItem.setIdentityList(didylist);
 							}
 						}
+						dutyItem.setIdentityList(didylist);
 					}
 					
 					logger.debug("scan duty:{}.", dutyItem);
@@ -729,18 +743,22 @@ class ActionInputAll extends BaseAction {
 	private void persistDuty(XSSFWorkbook workbook, DutySheetConfigurator configurator, List<DutyItem> dutyItems) throws Exception {
 		for (List<DutyItem> list : ListTools.batch(dutyItems, 200)) {
 			for (DutyItem o : list) {
-				logger.debug("正在保存职务:{}.", o.getName());
-				UnitDuty dutyObject = new UnitDuty();
-				o.copyTo(dutyObject);
-				
-				String resp = this.saveDuty("unitDuty", dutyObject);
-				System.out.println("respMass="+resp);
-				/*if("".equals(resp)){
-					this.setDutyMemo(workbook, configurator, o, "已导入.");
+				if(StringUtils.isNotEmpty(o.getUnique()) && this.getDuty("unitduty/list/unit/"+o.getUnit(),o.getUnique(),o.getIdentityList())){
+					System.out.println("x11122345");
 				}else{
-					this.setIdentityMemo(workbook, configurator, o, resp);
-				}*/
+					logger.debug("正在保存职务:{}.", o.getName());
+					UnitDuty dutyObject = new UnitDuty();
+					o.copyTo(dutyObject);
+					
+					String resp = this.saveDuty("unitduty", dutyObject);
+					System.out.println("respMass="+resp);
+				}
 				
+			}
+		}
+		for(List<UnitDuty> unitlist : ListTools.batch(editduty, 200)){
+			for (UnitDuty uo : unitlist) {
+				this.editDuty("unitduty/"+uo.getId(),uo);
 			}
 		}
 	}
@@ -789,6 +807,45 @@ class ActionInputAll extends BaseAction {
 		ActionResponse resp =  ThisApplication.context().applications()
 				.postQuery(x_organization_assemble_control.class, path, dutyObj);
 		return resp.getMessage();
+	}
+	
+	private String editDuty(String path ,UnitDuty dutyObj) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.putQuery(x_organization_assemble_control.class, path, dutyObj);
+		return resp.getMessage();
+	}
+	
+	private boolean getDuty(String path, String dutyCode,List<String> identityLists) throws Exception{
+		boolean checkduty = false;
+		System.out.println("getDuty_path="+path);
+		ActionResponse resp =  ThisApplication.context().applications()
+				.getQuery(x_organization_assemble_control.class, path);
+		System.out.println("getDuty_resp="+resp.toString());
+		JsonObject jsonObject = new JsonParser().parse(resp.toString()).getAsJsonObject();
+		JsonArray jsonArray = null;
+		//jsonArray = new JsonParser().parse(jsonObject.getAsJsonObject().get("data").getAsString()).getAsJsonArray();
+		jsonArray = jsonObject.getAsJsonArray("data");
+		if(jsonArray.size()>0){
+			System.out.println("getDuty="+jsonArray.size());
+			Iterator it = jsonArray.iterator();
+		    while(it.hasNext()){
+		        JsonElement e = (JsonElement)it.next();
+		        //JsonElement转换为JavaBean对象
+		        UnitDuty unitduty= gson.fromJson(e, UnitDuty.class);
+		        System.out.println("getDutyUnique="+unitduty.getUnique());
+		        if(dutyCode.equals(unitduty.getUnique())){
+		        	checkduty = true;
+		        	UnitDuty dutyObject = new UnitDuty();
+		        	unitduty.copyTo(dutyObject);
+		        	List<String> identityList = dutyObject.getIdentityList();
+		        	identityList.add(identityLists.get(0));
+		        	dutyObject.setIdentityList(identityList);
+		        	editduty.add(dutyObject);
+		        }
+		    }
+		}
+		
+		return checkduty;
 	}
 	
 	private void concretePassword(List<PersonItem> people) throws Exception {
