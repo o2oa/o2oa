@@ -1204,7 +1204,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         }
     },
     listByFilterUnit : function( type, key, callback ){
-        var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
+        var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase()
 
         if ( this.includeUnit && this.includeUnit.length ){
             key = this.getUnitFilterKey( key, this.includeUnit );
