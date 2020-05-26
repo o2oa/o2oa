@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -12,8 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
@@ -45,6 +42,8 @@ import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import net.sf.ehcache.Ehcache;
 
 public class Business {
@@ -58,7 +57,7 @@ public class Business {
 		this.cache = ApplicationCache.instance().getCache(Group.class, Role.class, Person.class, PersonAttribute.class,
 				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class);
 	}
- 
+
 	public EntityManagerContainer entityManagerContainer() {
 		return this.emc;
 	}
@@ -81,7 +80,6 @@ public class Business {
 		return person;
 	}
 
-	
 	private PersonCardFactory personCard;
 
 	public PersonCardFactory personCard() throws Exception {
@@ -90,7 +88,7 @@ public class Business {
 		}
 		return personCard;
 	}
-	
+
 	private PermissionSettingFactory permissionSetting;
 
 	public PermissionSettingFactory permissionSetting() throws Exception {
@@ -99,7 +97,7 @@ public class Business {
 		}
 		return permissionSetting;
 	}
-	
+
 	private PersonAttributeFactory personAttribute;
 
 	public PersonAttributeFactory personAttribute() throws Exception {
@@ -129,9 +127,13 @@ public class Business {
 
 	private RoleFactory role;
 
-	public RoleFactory role() throws Exception {
+	public RoleFactory role() throws ExceptionRoleFactory {
 		if (null == this.role) {
-			this.role = new RoleFactory(this);
+			try{
+				this.role = new RoleFactory(this);
+			} catch (Exception e){
+				throw new ExceptionRoleFactory(e);
+			}
 		}
 		return role;
 	}
@@ -274,41 +276,34 @@ public class Business {
 		List<String> groupIds = new ArrayList<>();
 		List<String> expendGroupIds = new ArrayList<>();
 		List<String> personIds = new ArrayList<>();
-		if (ListTools.isNotEmpty(groupList)) {
-			for (String s : groupList) {
-				Group g = this.group().pick(s);
-				if (null != g) {
-					groupIds.add(g.getId());
-				}
+		for (String s : ListTools.trim(groupList, true, true)) {
+			Group g = this.group().pick(s);
+			if (null != g) {
+				groupIds.add(g.getId());
 			}
 		}
-		if (ListTools.isNotEmpty(roleList)) {
-			for (String s : roleList) {
-				Role r = this.role().pick(s);
-				if (null != r) {
-					groupIds.addAll(r.getGroupList());
-					personIds.addAll(r.getPersonList());
-				}
+		for (String s : ListTools.trim(roleList, true, true)) {
+			Role r = this.role().pick(s);
+			if (null != r) {
+				groupIds.addAll(r.getGroupList());
+				personIds.addAll(r.getPersonList());
 			}
 		}
-		if (ListTools.isNotEmpty(groupIds)) {
-			groupIds = ListTools.trim(groupIds, true, true);
-			for (String s : groupIds) {
-				expendGroupIds.add(s);
-				expendGroupIds.addAll(this.group().listSubNested(s));
-			}
-			expendGroupIds = ListTools.trim(expendGroupIds, true, true);
-			EntityManager em = this.entityManagerContainer().get(Group.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Group> cq = cb.createQuery(Group.class);
-			Root<Group> root = cq.from(Group.class);
-			Predicate p = root.get(Group_.id).in(expendGroupIds);
-			List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
-			for (Group o : os) {
-				personIds.addAll(o.getPersonList());
-			}
-			personIds = ListTools.trim(personIds, true, true);
+		for (String s : ListTools.trim(groupIds, true, true)) {
+			expendGroupIds.add(s);
+			expendGroupIds.addAll(this.group().listSubNested(s));
 		}
+		expendGroupIds = ListTools.trim(expendGroupIds, true, true);
+		EntityManager em = this.entityManagerContainer().get(Group.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
+		Root<Group> root = cq.from(Group.class);
+		Predicate p = root.get(Group_.id).in(expendGroupIds);
+		List<Group> os = em.createQuery(cq.select(root).where(p)).getResultList();
+		for (Group o : os) {
+			personIds.addAll(o.getPersonList());
+		}
+		personIds = ListTools.trim(personIds, true, true);
 		return personIds;
 	}
 
@@ -384,21 +379,17 @@ public class Business {
 		List<String> groupIds = new ArrayList<>();
 		List<String> expendGroupIds = new ArrayList<>();
 		List<String> roleIds = new ArrayList<>();
-		if (ListTools.isNotEmpty(groupList)) {
-			for (String s : groupList) {
-				Group g = this.group().pick(s);
-				if (null != g) {
-					groupIds.add(g.getId());
-				}
+		for (String s : ListTools.trim(groupList, true, true)) {
+			Group g = this.group().pick(s);
+			if (null != g) {
+				groupIds.add(g.getId());
 			}
 		}
-		if (ListTools.isNotEmpty(roleList)) {
-			for (String s : roleList) {
-				Role r = this.role().pick(s);
-				if (null != r) {
-					roleIds.add(r.getId());
-					groupIds.addAll(r.getGroupList());
-				}
+		for (String s : ListTools.trim(roleList, true, true)) {
+			Role r = this.role().pick(s);
+			if (null != r) {
+				roleIds.add(r.getId());
+				groupIds.addAll(r.getGroupList());
 			}
 		}
 		if (ListTools.isNotEmpty(groupIds)) {
@@ -478,29 +469,33 @@ public class Business {
 	}
 
 	public List<Person> listPersonWithUnit(String unitFlag) throws Exception {
-		Unit unit = this.unit().pick(unitFlag);
+		Unit u = this.unit().pick(unitFlag);
 		EntityManager em = this.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
+		Predicate p = cb.equal(root.get(Identity_.unit), u.getId());
 		List<String> os = em.createQuery(cq.select(root.get(Identity_.person)).where(p)).getResultList();
 		return this.person().pick(os);
 	}
 
 	public List<Unit> listTopUnitWithPerson(String personFlag) throws Exception {
 		List<Unit> os = new ArrayList<>();
-		Person person = this.person().pick(personFlag);
-		List<Identity> identities = emc.listEqual(Identity.class, Identity.person_FIELDNAME, person.getId());
-		List<String> unitIds = new ArrayList<>();
-		for (String id : ListTools.extractField(identities, Identity.unit_FIELDNAME, String.class, true, true)) {
-			unitIds.add(id);
-			unitIds.addAll(unit().listSupNested(id));
-		}
-		unitIds = ListTools.trim(unitIds, true, true);
-		for (Unit unit : this.unit().pick(unitIds)) {
-			if (Objects.deepEquals(Unit.TOP_LEVEL, unit.getLevel())) {
-				os.add(unit);
+		Person p = this.person().pick(personFlag);
+		if (null != p) {
+			List<Identity> identities = emc.listEqual(Identity.class, Identity.person_FIELDNAME, p.getId());
+			List<String> unitIds = new ArrayList<>();
+			for (String id : ListTools.extractField(identities, Identity.unit_FIELDNAME, String.class, true, true)) {
+				unitIds.add(id);
+				unitIds.addAll(unit().listSupNested(id));
+			}
+			// 加入预设的顶层组织
+			unitIds.addAll(p.getTopUnitList());
+			unitIds = ListTools.trim(unitIds, true, true);
+			for (Unit u : this.unit().pick(unitIds)) {
+				if (Objects.deepEquals(Unit.TOP_LEVEL, u.getLevel())) {
+					os.add(u);
+				}
 			}
 		}
 		return os;
@@ -522,9 +517,8 @@ public class Business {
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Person> root = cq.from(Person.class);
 			List<Unit> units = listTopUnitWithPerson(effectivePerson.getDistinguishedName());
-			List<String> ids = ListTools.extractField(units, Unit.id_FIELDNAME, String.class, true, true);
+			List<String> ids = ListTools.extractField(units, JpaObject.id_FIELDNAME, String.class, true, true);
 			return cb.or(root.get(Person_.topUnitList).in(ids), cb.isEmpty(root.get(Person_.topUnitList)));
 		}
 	}
-
 }
