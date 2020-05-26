@@ -31,10 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class ActionEdit extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
@@ -48,7 +49,7 @@ class ActionEdit extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			boolean isNameUpdate = false;
-			if(!person.getName().equals(wi.getName())){
+			if (!person.getName().equals(wi.getName())) {
 				isNameUpdate = true;
 			}
 			Wi.copier.copy(wi, person);
@@ -68,11 +69,13 @@ class ActionEdit extends BaseAction {
 				person.setSuperior(superior.getId());
 			}
 			this.convertControllerList(effectivePerson, business, person);
-			if (ListTools.isNotEmpty(person.getTopUnitList())) {
-				List<Unit> topUnits = business.unit().pick(person.getTopUnitList());
-				person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
-			}
-			List<Identity> identityList = business.entityManagerContainer().listEqual(Identity.class, Identity.person_FIELDNAME, person.getId());
+
+			// 重新计算顶层组织
+			person.setTopUnitList(ListTools.extractField(business.listTopUnitWithPerson(person.getId()),
+					JpaObject.id_FIELDNAME, String.class, true, true));
+
+			List<Identity> identityList = business.entityManagerContainer().listEqual(Identity.class,
+					Identity.person_FIELDNAME, person.getId());
 			emc.beginTransaction(Person.class);
 			emc.beginTransaction(Identity.class);
 			/*
@@ -84,27 +87,27 @@ class ActionEdit extends BaseAction {
 			String strOriginalPerson = gsontool.toJson(entityPerson);
 			person.copyTo(entityPerson);
 			emc.check(entityPerson, CheckPersistType.all);
-			if(isNameUpdate && !identityList.isEmpty()){
-				for(Identity identity : identityList){
+			if (isNameUpdate && !identityList.isEmpty()) {
+				for (Identity identity : identityList) {
 					identity.setName(person.getName());
 					emc.check(identity, CheckPersistType.all);
 				}
 			}
 			emc.commit();
 			/** 刷新缓存 */
-			if(isNameUpdate) {
+			if (isNameUpdate) {
 				ApplicationCache.notify(Identity.class);
 			}
 			ApplicationCache.notify(Person.class);
 			/** 通知x_collect_service_transmit同步数据到collect */
 			business.instrument().collect().person();
-			
-			/**创建 组织变更org消息通信 */
-			//createMessageCommunicate(strOriginalPerson,person,  effectivePerson);
-			
-			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
-			orgMessageFactory.createMessageCommunicate("modfiy", "person",strOriginalPerson, person, effectivePerson);
-			
+
+			/** 创建 组织变更org消息通信 */
+			// createMessageCommunicate(strOriginalPerson,person, effectivePerson);
+
+			OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
+			orgMessageFactory.createMessageCommunicate("modfiy", "person", strOriginalPerson, person, effectivePerson);
+
 			Wo wo = new Wo();
 			wo.setId(person.getId());
 			result.setData(wo);
@@ -141,10 +144,10 @@ class ActionEdit extends BaseAction {
 		ids.remove(person.getId());
 		person.setControllerList(ids);
 	}
-	
-	/**创建 组织变更org消息通信 */
-	private boolean createMessageCommunicate(String strOriginalPerson,Person person, EffectivePerson effectivePerson) {
-		try{
+
+	/** 创建 组织变更org消息通信 */
+	private boolean createMessageCommunicate(String strOriginalPerson, Person person, EffectivePerson effectivePerson) {
+		try {
 			Gson gson = new Gson();
 			String strPerson = gson.toJson(person);
 			OrgMessage orgMessage = new OrgMessage();
@@ -155,27 +158,28 @@ class ActionEdit extends BaseAction {
 			orgMessage.setReceiveSystem("");
 			orgMessage.setConsumed(false);
 			orgMessage.setConsumedModule("");
-			
+
 			OrgBodyMessage orgBodyMessage = new OrgBodyMessage();
 			orgBodyMessage.setOriginalData(strOriginalPerson);
 			orgBodyMessage.setModifyData(strPerson);
-			
-			orgMessage.setBody( gson.toJson(orgBodyMessage));
-			
-			String path ="org/create";
-		     //String address = "http://127.0.0.1:20020/x_message_assemble_communicate/jaxrs/org/create";
-		     //ActionResponse resp = CipherConnectionAction.post(false, address, body);
-		     
-			ActionResponse resp =  ThisApplication.context().applications()
-						.postQuery(x_message_assemble_communicate.class, path, orgMessage);
-		
+
+			orgMessage.setBody(gson.toJson(orgBodyMessage));
+
+			String path = "org/create";
+			// String address =
+			// "http://127.0.0.1:20020/x_message_assemble_communicate/jaxrs/org/create";
+			// ActionResponse resp = CipherConnectionAction.post(false, address, body);
+
+			ActionResponse resp = ThisApplication.context().applications()
+					.postQuery(x_message_assemble_communicate.class, path, orgMessage);
+
 			String mess = resp.getMessage();
 			String data = resp.getData().toString();
 			return true;
-			}catch(Exception e) {
-				logger.print(e.toString());
-				return false;
-			}	
+		} catch (Exception e) {
+			logger.print(e.toString());
+			return false;
+		}
 	}
 
 }
