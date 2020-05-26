@@ -139,7 +139,7 @@ o2.widget.Menu = new Class({
 				}else{
 					this.pauseCount--;
 				}
-				this.fireEvent("postShow");
+				this.fireEvent("postShow", [e]);
 			}
 		}
 		
