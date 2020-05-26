@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/z_color_background">
@@ -18,10 +20,90 @@
             android:textSize="16sp"
             android:visibility="gone"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_o2_im_conversation"
+        <LinearLayout
+            android:id="@+id/ll_o2_im_message_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_o2_instant_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small">
+                    <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+                        android:id="@+id/image_o2_in_con_avatar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:layout_width="@dimen/item_head_icon_size"
+                        android:layout_height="@dimen/item_head_icon_size"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/icon_msg"/>
+
+                    <TextView
+                        android:id="@+id/tv_o2_in_con_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textAlignment="textStart"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/image_o2_in_con_avatar"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:text="通知消息"/>
+
+                    <TextView
+                        android:id="@+id/tv_o2_in_con_last_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textAlignment="textStart"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_o2_in_con_title"
+                        app:layout_constraintStart_toEndOf="@+id/image_o2_in_con_avatar"
+                        android:layout_marginStart="@dimen/spacing_small"
+                        android:layout_marginTop="@dimen/spacing_tiny"
+                        tools:text="消息" />
+
+
+
+                    <TextView
+                        android:id="@+id/tv_o2_in_con_last_message_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/z_color_text_hint"
+                        android:textAlignment="textEnd"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="@dimen/spacing_small"
+                        tools:text="9:10" />
+
+
+                </android.support.constraint.ConstraintLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/z_color_split_meeting_line"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="@dimen/spacing_small"/>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_o2_im_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
 
     </FrameLayout>
 </RelativeLayout>

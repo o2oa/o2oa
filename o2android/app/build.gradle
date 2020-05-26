@@ -265,7 +265,8 @@ dependencies {
     implementation 'cn.jiguang.sdk:jcore:1.1.9'
 
     //im
-    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    implementation 'com.michaelpardo:activeandroid:3.1.0'
+//    implementation files('libs/activeandroid-3.1.0-SNAPSHOT.jar')
     implementation 'com.jakewharton:butterknife:8.4.0'
     kapt 'com.jakewharton:butterknife-compiler:8.4.0'
     implementation 'com.github.chrisbanes.photoview:library:1.2.4'

@@ -41,7 +41,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_round"
         android:theme="@style/XBPMTheme.NoActionBar">
-        <activity android:name=".app.im.O2ChatActivity"></activity>
+        <activity android:name=".app.im.O2InstantMessageActivity"></activity>
+        <activity android:name=".app.im.O2ChatActivity" />
         <activity android:name=".app.VideoPlayerActivity" />
         <activity
             android:name=".app.clouddrive.v2.viewer.BigImageViewActivity"

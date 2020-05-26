@@ -81,8 +81,8 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "")
         XLog.info("main activity isIndex $indexType..............")
 
-//        val newsFragment = O2IMConversationFragment()
-        val newsFragment = NewsFragment()
+        val newsFragment = O2IMConversationFragment()
+//        val newsFragment = NewsFragment()
         fragmentList.add(newsFragment)
         fragmentTitles.add(getString(R.string.tab_message))
 
@@ -373,7 +373,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
             0 -> resetToolBar(getString(R.string.tab_message))
             1 -> resetToolBar(getString(R.string.tab_contact))
             2 -> setIndexToolBar()
-            3 -> resetToolBar(getString(R.string.tab_contact))
+            3 -> resetToolBar(getString(R.string.tab_app))
             4 -> resetToolBar(getString(R.string.tab_settings))
         }
 

@@ -38,7 +38,14 @@
                 android:id="@+id/tv_o2_chat_message_body"
                 style="@style/o2_im_chat_message_text_style"
                 android:textAlignment="textStart"
+                android:visibility="gone"
                 tools:text="这里是消息内容。。。。。" />
+            <ImageView
+                android:id="@+id/image_o2_chat_message_emoji_body"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:visibility="gone"
+                tools:src="@mipmap/im_emotion_01"/>
         </LinearLayout>
 
         <ImageButton

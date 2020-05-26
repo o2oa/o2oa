@@ -2,6 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageForm
@@ -58,5 +60,13 @@ interface MessageCommunicateService {
     @POST("jaxrs/im/msg/list/{page}/size/{size}")
     fun messageByPage(@Path("page")page: Int,  @Path("size") size: Int, @Body conversation: IMMessageForm) :
             Observable<ApiResponse<List<IMMessage>>>
+
+
+    /**
+     * 个人消息 排除IM消息
+     *  列表
+     */
+    @GET("jaxrs/instant/list/currentperson/noim/count/{count}/desc")
+    fun instantMessageList(@Path("count") count: Int) : Observable<ApiResponse<List<InstantMessage>>>
 
 }
