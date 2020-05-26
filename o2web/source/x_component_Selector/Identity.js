@@ -369,9 +369,9 @@ MWF.xApplication.Selector.Identity.ItemSelected = new Class({
             var isPerson = this.selector.options.resultType === "person";
             var items = this.selector.items.filter(function(item, index){
                 if( isPerson ){
-                    return item.data.person === this.data.id ||
-                        item.data.id === this.data.person ||
-                        item.data.distinguishedName === this.data.distinguishedName;
+                    return (item.data.person && item.data.person === this.data.id) ||
+                        ( item.data.id && item.data.id === this.data.person) ||
+                        ( item.data.distinguishedName && item.data.distinguishedName === this.data.distinguishedName );
                 }else{
                     return item.data.distinguishedName === this.data.distinguishedName;
                 }
@@ -623,22 +623,37 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
     loadSub: function(callback){
         if (!this.loaded){
 
+            debugger;
+            var personContainer, identityContainer, groupContainer, unitContainer;
+            if( this.data.personList )personContainer = new Element("div").inject( this.children );
+            if( this.data.identityList )identityContainer = new Element("div").inject( this.children );
+            if( this.data.groupList )groupContainer = new Element("div").inject( this.children );
+            if( this.data.unitList )unitContainer = new Element("div").inject( this.children );
+
             var personLoadedCount = 0;
+            var identityLoadedCount = 0;
             var unitLoadedCount = 0;
             var groupLoadedCount = 0;
 
-            var checkCallback = function( type ){
+            var checkCallback = function( type, count ){
+                var addCount = count || 1;
                 if( !this.selector.options.expandSubEnable ){
-                    if( type === "person" )personLoadedCount++;
-                    if( !this.data.personList || this.data.personList.length === 0 || this.data.personList.length == personLoadedCount){
+                    if( type === "person" )personLoadedCount += addCount;
+                    if( type === "identity" )identityLoadedCount += addCount;
+                    if(
+                        (!this.data.personList || this.data.personList.length === 0 || this.data.personList.length == personLoadedCount) &&
+                        (!this.data.identityList || this.data.identityList.length === 0 || this.data.identityList.length == identityLoadedCount)
+                    ){
                         this.loaded = true;
                         if (callback) callback();
                     }
                 }else{
-                    if( type === "person" )personLoadedCount++;
-                    if( type === "unit" )unitLoadedCount++;
-                    if( type === "group" )groupLoadedCount++;
+                    if( type === "person" )personLoadedCount += addCount;
+                    if( type === "identity" )identityLoadedCount += addCount;
+                    if( type === "unit" )unitLoadedCount += addCount;
+                    if( type === "group" )groupLoadedCount += addCount;
                     if( ( !this.data.personList || this.data.personList.length === 0 || this.data.personList.length == personLoadedCount ) &&
+                        ( !this.data.identityList || this.data.identityList.length === 0 || this.data.identityList.length == identityLoadedCount )&&
                         ( !this.data.unitList || this.data.unitList.length === 0 || this.data.unitList.length == unitLoadedCount ) &&
                         ( !this.data.groupList || this.data.groupList.length === 0 || this.data.groupList.length == groupLoadedCount ) ){
                         this.loaded = true;
@@ -649,31 +664,101 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
 
             checkCallback();
 
-            ( this.data.personList || [] ).each( function(p){
-                if( this.selector.options.resultType === "person" ){
-                    this.selector.orgAction.getPerson(function (json) {
-                        this.selector.includeObject.loadPersonItem(json, this.children, this.level + 1, this );
-                        checkCallback("person");
-                    }.bind(this), function(){ checkCallback("person") }, p );
+            if( this.data.identityList && this.data.identityList.length > 0 ){
+                if( this.selector.options.resultType === "person" ) {
+                    //根据身份id批量获取人员对象
+                    o2.Actions.load("x_organization_assemble_express").PersonAction.listWithIdentityObject({
+                        identityList : this.data.identityList
+                    }, function (json) {
+                        this.selector.includeObject.loadPersonItem( json, identityContainer, this.level + 1, this);
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this), function () {
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this))
                 }else{
-                    this.selector.orgAction.listIdentityByPerson(function(json){
-                        this.selector.includeObject.loadIdentityItem(json, this.children, this.level + 1, this);
-                        checkCallback("person")
-                    }.bind(this), function(){ checkCallback("person") }, p );
+                    //根据身份id批量获取身份对象
+                    o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({
+                        identityList : this.data.identityList
+                    }, function (json) {
+                        this.selector.includeObject.loadIdentityItem( json, identityContainer, this.level + 1, this);
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this), function () {
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this))
                 }
-            }.bind(this));
+            }
+
+            if( this.data.personList && this.data.personList.length > 0 ){
+                if( this.selector.options.resultType === "person" ) {
+                    //根据人员d批量获取人员对象
+                    o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
+                        personList : this.data.personList
+                    }, function (json) {
+                        this.selector.includeObject.loadPersonItem( json, personContainer, this.level + 1, this);
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this), function () {
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this))
+                }else{
+                    //根据人员id批量获取身份对象
+                    o2.Actions.load("x_organization_assemble_express").IdentityAction.listWithPersonObject({
+                        personList : this.data.personList
+                    }, function (json) {
+                        this.selector.includeObject.loadIdentityItem( json, personContainer, this.level + 1, this);
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this), function () {
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this))
+                }
+            }
+
+            // ( this.data.personList || [] ).each( function(p){
+            //     if( this.selector.options.resultType === "person" ){
+            //         this.selector.orgAction.getPerson(function (json) {
+            //             this.selector.includeObject.loadPersonItem(json, this.children, this.level + 1, this );
+            //             checkCallback("person");
+            //         }.bind(this), function(){ checkCallback("person") }, p );
+            //     }else{
+            //         this.selector.orgAction.listIdentityByPerson(function(json){
+            //             this.selector.includeObject.loadIdentityItem(json, this.children, this.level + 1, this);
+            //             checkCallback("person")
+            //         }.bind(this), function(){ checkCallback("person") }, p );
+            //     }
+            // }.bind(this));
+
+            //list 服务不能获取下级数量
+            // if( this.selector.options.expandSubEnable ){
+            //     o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
+            //         unitList : this.data.unitList
+            //     }, function (json) {
+            //         this.selector.includeObject.loadUnitItem( json, this.children, this.level + 1, this);
+            //         checkCallback("unit", this.data.unitList.length )
+            //     }.bind(this), function () {
+            //         checkCallback("unit", this.data.unitList.length )
+            //     }.bind(this))
+            //
+            //
+            //     o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
+            //         groupList : this.data.groupList
+            //     }, function (json) {
+            //         this.selector.includeObject.loadGroupItem(json, this.children, this.level + 1, this);
+            //         checkCallback("group", this.data.groupList.length )
+            //     }.bind(this), function () {
+            //         checkCallback("group", this.data.groupList.length )
+            //     }.bind(this))
+            // }
 
             if( this.selector.options.expandSubEnable ){
                 ( this.data.unitList || [] ).each( function(u){
                     this.selector.orgAction.getUnit(function (json) {
-                        this.selector.includeObject.loadUnitItem(json, this.children, this.level + 1, this);
+                        this.selector.includeObject.loadUnitItem(json, unitContainer, this.level + 1, this);
                         checkCallback("unit");
                     }.bind(this), function(){ checkCallback("unit") }, u );
                 }.bind(this));
 
                 ( this.data.groupList || [] ).each( function(g){
                     this.selector.orgAction.getGroup(function (json) {
-                        this.selector.includeObject.loadGroupItem(json, this.children, this.level + 1, this);
+                        this.selector.includeObject.loadGroupItem(json, groupContainer, this.level + 1, this);
                         checkCallback("group");
                     }.bind(this), function(){ checkCallback("group") }, g );
                 }.bind(this));
@@ -685,15 +770,20 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
     loadCategoryChildren: function(callback){
         if (!this.categoryLoaded){
 
+            var groupContainer, unitContainer;
+            if( this.data.groupList )groupContainer = new Element("div").inject( this.children );
+            if( this.data.unitList )unitContainer = new Element("div").inject( this.children );
+
             var unitLoadedCount = 0;
             var groupLoadedCount = 0;
 
-            var checkCallback = function( type ){
+            var checkCallback = function( type, count ){
+                var addCount = count || 1;
                 if( !this.selector.options.expandSubEnable ){
                     this.categoryLoaded = true;
                 }else{
-                    if( type === "unit" )unitLoadedCount++;
-                    if( type === "group" )groupLoadedCount++;
+                    if( type === "unit" )unitLoadedCount += addCount;
+                    if( type === "group" )groupLoadedCount += addCount;
                     if( ( !this.data.unitList || this.data.unitList.length === 0 || this.data.unitList.length == unitLoadedCount ) &&
                         ( !this.data.groupList || this.data.groupList.length === 0 || this.data.groupList.length == groupLoadedCount ) ){
                         this.categoryLoaded = true;
@@ -704,17 +794,39 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
 
             checkCallback();
 
+            //list 服务不能获取下级数量
+            // if( this.selector.options.expandSubEnable ){
+            //     o2.Actions.load("x_organization_assemble_express").UnitAction.listObject({
+            //         unitList : this.data.unitList
+            //     }, function (json) {
+            //         this.selector.includeObject.loadUnitItem( json, this.children, this.level + 1, this);
+            //         checkCallback("unit", this.data.unitList.length )
+            //     }.bind(this), function () {
+            //         checkCallback("unit", this.data.unitList.length )
+            //     }.bind(this))
+            //
+            //
+            //     o2.Actions.load("x_organization_assemble_express").GroupAction.listObject({
+            //         groupList : this.data.groupList
+            //     }, function (json) {
+            //         this.selector.includeObject.loadGroupItem(json, this.children, this.level + 1, this);
+            //         checkCallback("group", this.data.groupList.length )
+            //     }.bind(this), function () {
+            //         checkCallback("group", this.data.groupList.length )
+            //     }.bind(this))
+            // }
+
             if( this.selector.options.expandSubEnable ){
                 ( this.data.unitList || [] ).each( function(u){
                     this.selector.orgAction.getUnit(function (json) {
-                        this.selector.includeObject.loadUnitItem(json, this.children, this.level + 1, this);
+                        this.selector.includeObject.loadUnitItem(json, unitContainer, this.level + 1, this);
                         checkCallback("unit");
                     }.bind(this), function(){ checkCallback("unit") }, u );
                 }.bind(this));
 
                 ( this.data.groupList || [] ).each( function(g){
                     this.selector.orgAction.getGroup(function (json) {
-                        this.selector.includeObject.loadGroupItem(json, this.children, this.level + 1, this);
+                        this.selector.includeObject.loadGroupItem(json, groupContainer, this.level + 1, this);
                         checkCallback("group");
                     }.bind(this), function(){ checkCallback("group") }, g );
                 }.bind(this));
@@ -725,11 +837,22 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
     },
     loadItemChildren: function(callback){
         if (!this.itemLoaded){
-            var personLoadedCount = 0;
 
-            var checkCallback = function( type ){
-                if( type === "person" )personLoadedCount++;
-                if( !this.data.personList || this.data.personList.length === 0 || this.data.personList.length == personLoadedCount){
+            var personContainer, identityContainer;
+            if( this.data.personList )personContainer = new Element("div").inject( this.children );
+            if( this.data.identityList )identityContainer = new Element("div").inject( this.children );
+
+            var personLoadedCount = 0;
+            var identityLoadedCount = 0;
+
+            var checkCallback = function( type, count ){
+                var addCount = count || 1;
+                if( type === "person" )personLoadedCount += addCount;
+                if( type === "identity" )identityLoadedCount += addCount;
+                if(
+                    (!this.data.personList || this.data.personList.length === 0 || this.data.personList.length == personLoadedCount) &&
+                    (!this.data.identityList || this.data.identityList.length === 0 || this.data.identityList.length == identityLoadedCount)
+                ){
                     this.itemLoaded = true;
                     if (callback) callback();
                 }
@@ -737,19 +860,67 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
 
             checkCallback();
 
-            ( this.data.personList || [] ).each( function(p){
-                if( this.selector.options.resultType === "person" ){
-                    this.selector.orgAction.getPerson(function (json) {
-                        this.selector.includeObject.loadPersonItem(json, this.children, this.level + 1, this );
-                        checkCallback("person");
-                    }.bind(this), function(){ checkCallback("person") }, p );
+            if( this.data.identityList && this.data.identityList.length > 0 ){
+                if( this.selector.options.resultType === "person" ) {
+                    //根据身份id批量获取人员对象
+                    o2.Actions.load("x_organization_assemble_express").PersonAction.listWithIdentityObject({
+                        identityList : this.data.identityList
+                    }, function (json) {
+                        this.selector.includeObject.loadPersonItem( json, identityContainer, this.level + 1, this);
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this), function () {
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this))
                 }else{
-                    this.selector.orgAction.listIdentityByPerson(function(json){
-                        this.selector.includeObject.loadIdentityItem(json, this.children, this.level + 1, this);
-                        checkCallback("person")
-                    }.bind(this), function(){ checkCallback("person") }, p );
+                    //根据身份id批量获取身份对象
+                    o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({
+                        identityList : this.data.identityList
+                }, function (json) {
+                        this.selector.includeObject.loadIdentityItem( json, identityContainer, this.level + 1, this);
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this), function () {
+                        checkCallback("identity", this.data.identityList.length )
+                    }.bind(this))
                 }
-            }.bind(this));
+            }
+
+            if( this.data.personList && this.data.personList.length > 0 ){
+                if( this.selector.options.resultType === "person" ) {
+                    //根据人员d批量获取人员对象
+                    o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
+                        personList : this.data.personList
+                    }, function (json) {
+                        this.selector.includeObject.loadPersonItem( json, personContainer, this.level + 1, this);
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this), function () {
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this))
+                }else{
+                    //根据人员id批量获取身份对象
+                    o2.Actions.load("x_organization_assemble_express").IdentityAction.listWithPersonObject({
+                        personList : this.data.personList
+                    }, function (json) {
+                        this.selector.includeObject.loadIdentityItem( json, personContainer, this.level + 1, this);
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this), function () {
+                        checkCallback("person", this.data.personList.length )
+                    }.bind(this))
+                }
+            }
+
+            // ( this.data.personList || [] ).each( function(p){
+            //     if( this.selector.options.resultType === "person" ){
+            //         this.selector.orgAction.getPerson(function (json) {
+            //             this.selector.includeObject.loadPersonItem(json, this.children, this.level + 1, this );
+            //             checkCallback("person");
+            //         }.bind(this), function(){ checkCallback("person") }, p );
+            //     }else{
+            //         this.selector.orgAction.listIdentityByPerson(function(json){
+            //             this.selector.includeObject.loadIdentityItem(json, this.children, this.level + 1, this);
+            //             checkCallback("person")
+            //         }.bind(this), function(){ checkCallback("person") }, p );
+            //     }
+            // }.bind(this));
         }else{
             if (callback) callback( );
         }
@@ -758,7 +929,8 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         var uCount = (this.data.unitList) ? this.data.unitList.length : 0;
         var gCount = (this.data.groupList) ? this.data.groupList.length : 0;
         var pCount = (this.data.personList) ? this.data.personList.length : 0;
-        return uCount + gCount + pCount;
+        var iCount = (this.data.identityList) ? this.data.identityList.length : 0;
+        return uCount + gCount + pCount + iCount;
     },
     _hasChildCategory: function(){
         var uCount = (this.data.unitList) ? this.data.unitList.length : 0;
@@ -766,7 +938,9 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
         return uCount + gCount;
     },
     _hasChildItem: function(){
-        return (this.data.personList) ? this.data.personList.length : 0;
+        var pCount = (this.data.personList) ? this.data.personList.length : 0;
+        var iCount = (this.data.identityList) ? this.data.identityList.length : 0;
+        return pCount + iCount;
     }
 });
 
