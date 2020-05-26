@@ -338,16 +338,23 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
         //this.setEditNode();
     },
     setEvent: function(){
-        this.iconMenu = new MWF.widget.Menu(this.iconNode, {"event": "click", "style": "actionbarIcon"});
+        this.iconMenu = new MWF.widget.Menu(this.iconNode, {
+            "event": "click",
+            "style": "actionbarIcon",
+            "onPostShow" : function (ev) {
+                ev.stopPropagation();
+            }
+        });
         this.iconMenu.load();
         var _self = this;
         for (var i=1; i<=136; i++){
             var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
-            var item = this.iconMenu.addMenuItem("", "click", function(){
+            var item = this.iconMenu.addMenuItem("", "click", function(ev){
                 var src = this.item.getElement("img").get("src");
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
                 _self.iconNode.setStyle("background-image", "url("+src+")");
                 _self.editor.fireEvent("change");
+                ev.stopPropagation();
             }, icon);
             item.iconName = i+".png";
         }
@@ -368,11 +375,11 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             var action = actions[index_before];
             this.node.inject(action.node, "before");
 
-            actions[index_before] = actions.splice(index, 1, actions[index_before])[0]; //���齻��λ��
+            actions[index_before] = actions.splice(index, 1, actions[index_before])[0];
             this.editor.actions = actions;
 
             var dataIndex_before = dataIndex - 1;
-            dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0]; //���齻��λ��
+            dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0];
             this.editor.data = dataList;
 
             this.editor.fireEvent("change");
