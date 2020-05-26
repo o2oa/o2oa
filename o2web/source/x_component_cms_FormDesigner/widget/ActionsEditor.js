@@ -219,16 +219,24 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
     },
     setEvent: function(){
         this.iconMenu = new MWF.widget.Menu(this.iconNode, {"event": "click", "style": "actionbarIcon"});
+        this.iconMenu = new MWF.widget.Menu(this.iconNode, {
+            "event": "click",
+            "style": "actionbarIcon",
+            "onPostShow" : function (ev) {
+                ev.stopPropagation();
+            }
+        });
         this.iconMenu.load();
         var _self = this;
         for (var i=-6; i<0; i++){
             //var icon = this.editor.path+this.editor.options.style+"/tools/"+i+".png";
             var icon = "../x_component_cms_FormDesigner/Module/Actionbar/"+this.editor.options.style+"/custom/"+i+".png";
-            var item = this.iconMenu.addMenuItem("", "click", function(){
+            var item = this.iconMenu.addMenuItem("", "click", function(ev){
                 var src = this.item.getElement("img").get("src");
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
                 _self.iconNode.setStyle("background-image", "url("+src+")");
                 _self.editor.fireEvent("change");
+                ev.stopPropagation();
             }, icon);
             item.iconName = i+".png";
         }
