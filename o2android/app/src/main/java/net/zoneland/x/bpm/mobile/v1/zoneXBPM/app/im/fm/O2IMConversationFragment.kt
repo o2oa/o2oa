@@ -3,8 +3,10 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.fm
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import com.wugang.activityresult.library.ActivityResult
 import kotlinx.android.synthetic.main.fragment_o2_im_conversation.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
@@ -12,6 +14,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2ChatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2IM
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2InstantMessageActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
@@ -19,8 +22,10 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
@@ -96,7 +101,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
         rv_o2_im_conversation.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_o2_im_conversation.adapter = adapter
         adapter.setOnItemClickListener { _, position ->
-            O2ChatActivity.startChat(activity, cList[position].id)
+            O2ChatActivity.startChat(activity, cList[position].id!!)
         }
         ll_o2_instant_message.setOnClickListener {
             if (instantList.isNotEmpty()) {
@@ -114,6 +119,16 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_news_tribe_create, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.menu_single_create -> {
+                openCreateSingleConversation()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun myConversationList(list: List<IMConversationInfo>) {
@@ -144,6 +159,18 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
          }
     }
 
+    override fun createConvSuccess(conv: IMConversationInfo) {
+        if (!cList.any { it.id == conv.id }) {
+            cList.add(conv)
+            adapter.notifyDataSetChanged()
+        }
+        O2ChatActivity.startChat(activity, conv.id!!)
+    }
+
+    override fun createConvFail(message: String) {
+        XToast.toastShort(activity, message)
+    }
+
     fun receiveMessageFromWebsocket(message: IMMessage) {
         for ((index, imConversationInfo) in cList.withIndex()) {
             if (imConversationInfo.id == message.conversationId) {
@@ -154,5 +181,23 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                 break
             }
         }
+    }
+
+    private fun openCreateSingleConversation() {
+        ActivityResult.of(activity)
+                .className(ContactPickerActivity::class.java)
+                .params(ContactPickerActivity.startPickerBundle(pickerModes = arrayListOf(ContactPickerActivity.personPicker), multiple = false))
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null && result.users.isNotEmpty()) {
+                        createSingleConversation(result.users[0].distinguishedName)
+                    }else {
+                        XLog.debug("没有选择人员！！！！")
+                    }
+                }
+    }
+
+    private fun createSingleConversation(user: String) {
+        mPresenter.createConversation("single", arrayListOf(user))
     }
 }
