@@ -4,15 +4,23 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_o2_chat.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
@@ -20,20 +28,8 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.hideSoftInput
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import java.util.*
-import android.content.IntentFilter
-import android.support.v7.widget.GridLayoutManager
-import android.view.MotionEvent
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
-import android.view.View
-
-import android.view.animation.AlphaAnimation
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 
 
 class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Presenter>(), O2ChatContract.View {
@@ -112,6 +108,9 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         emojiAdapter.setOnItemClickListener { _, position ->
             val key = emojiList[position]
             XLog.debug(key)
+            newEmojiMessage(key)
+            //更新阅读时间
+            mPresenter.readConversation(conversationId)
         }
 
 
@@ -248,14 +247,6 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         rv_o2_chat_emoji_box.layoutParams = layoutParams
     }
 
-    //打开表情框
-    private fun showEmojiBox() {
-//        rv_o2_chat_emoji_box.visible()
-        val alphaAnimation = AlphaAnimation(1f, 0f)
-        alphaAnimation.duration = 300
-        rv_o2_chat_emoji_box.startAnimation(alphaAnimation)
-        rv_o2_chat_emoji_box.visibility = View.VISIBLE
-    }
 
     private fun getPageData() {
         mPresenter.getMessage(page + 1, conversationId)
@@ -286,6 +277,22 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
     private fun newTextMessage(text: String) {
         val time = DateHelper.now()
         val body = IMMessageBody.Text(text)
+        val bodyJson = O2SDKManager.instance().gson.toJson(body)
+        XLog.debug("body: $bodyJson")
+        val uuid = UUID.randomUUID().toString()
+        val message = IMMessage(uuid, conversationId, bodyJson,
+                O2SDKManager.instance().distinguishedName, time, 1)
+        adapter.addMessage(message)
+        mPresenter.sendTextMessage(message)//发送到服务器
+        scroll2Bottom()
+    }
+
+    /**
+     * 创建表情消息
+     */
+    private fun newEmojiMessage(emoji: String) {
+        val time = DateHelper.now()
+        val body = IMMessageBody.Emoji(emoji)
         val bodyJson = O2SDKManager.instance().gson.toJson(body)
         XLog.debug("body: $bodyJson")
         val uuid = UUID.randomUUID().toString()

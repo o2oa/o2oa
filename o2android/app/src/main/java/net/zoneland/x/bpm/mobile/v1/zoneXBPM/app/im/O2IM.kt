@@ -2,6 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 
+
 object O2IM {
 
     const val IM_Message_Receiver_Action = "net.o2oa.android.im.message"
@@ -103,5 +104,114 @@ object O2IM {
     fun emojiResId(key: String) :Int {
         return im_emoji_hashMap[key] ?: R.mipmap.im_emotion_01
     }
+
+
+    //instant message type
+
+    /**
+     * 流程类型
+     */
+    const val TYPE_APPLICATION_CREATE = "application_create"
+
+    const val TYPE_APPLICATION_UPDATE = "application_update"
+
+    const val TYPE_APPLICATION_DELETE = "application_delete"
+
+    const val TYPE_PROCESS_CREATE = "process_create"
+
+    const val TYPE_PROCESS_UPDATE = "process_update"
+
+    const val TYPE_PROCESS_DELETE = "process_delete"
+
+    /* 有新的工作通过消息节点 */
+    const val TYPE_ACTIVITY_MESSAGE = "activity_message"
+
+    const val TYPE_WORK_TO_WORKCOMPLETED = "work_to_workCompleted"
+
+    const val TYPE_WORK_CREATE = "work_create"
+
+    const val TYPE_WORK_DELETE = "work_delete"
+
+    const val TYPE_WORKCOMPLETED_CREATE = "workCompleted_create"
+
+    const val TYPE_WORKCOMPLETED_DELETE = "workCompleted_delete"
+
+    const val TYPE_TASK_TO_TASKCOMPLETED = "task_to_taskCompleted"
+
+    const val TYPE_TASK_CREATE = "task_create"
+
+    const val TYPE_TASK_DELETE = "task_delete"
+
+    const val TYPE_TASK_URGE = "task_urge"
+
+    const val TYPE_TASK_EXPIRE = "task_expire"
+
+    const val TYPE_TASK_PRESS = "task_press"
+
+    const val TYPE_TASKCOMPLETED_CREATE = "taskCompleted_create"
+
+    const val TYPE_TASKCOMPLETED_DELETE = "taskCompleted_delete"
+
+    const val TYPE_READ_TO_READCOMPLETED = "read_to_readCompleted"
+
+    const val TYPE_READ_CREATE = "read_create"
+
+    const val TYPE_READ_DELETE = "read_delete"
+
+    const val TYPE_READCOMPLETED_CREATE = "readCompleted_create"
+
+    const val TYPE_READCOMPLETED_DELETE = "readCompleted_delete"
+
+    const val TYPE_REVIEW_CREATE = "review_create"
+
+    const val TYPE_REVIEW_DELETE = "review_delete"
+
+    const val TYPE_ATTACHMENT_CREATE = "attachment_create"
+
+    const val TYPE_ATTACHMENT_DELETE = "attachment_delete"
+
+    const val TYPE_MEETING_INVITE = "meeting_invite"
+
+    const val TYPE_MEETING_DELETE = "meeting_delete"
+
+    const val TYPE_MEETING_ACCEPT = "meeting_accept"
+
+    const val TYPE_MEETING_REJECT = "meeting_reject"
+
+    const val TYPE_ATTACHMENT_SHARE = "attachment_share"
+
+    const val TYPE_ATTACHMENT_SHARECANCEL = "attachment_shareCancel"
+
+    const val TYPE_ATTACHMENT_EDITOR = "attachment_editor"
+
+    const val TYPE_ATTACHMENT_EDITORCANCEL = "attachment_editorCancel"
+
+    const val TYPE_ATTACHMENT_EDITORMODIFY = "attachment_editorModify"
+
+    const val TYPE_CALENDAR_ALARM = "calendar_alarm"
+
+    const val TYPE_CUSTOM_CREATE = "custom_create"
+
+    const val TYPE_TEAMWORK_TASKCREATE = "teamwork_taskCreate"
+
+    const val TYPE_TEAMWORK_TASKUPDATE = "teamwork_taskUpdate"
+
+    const val TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelelte"
+
+    const val TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime"
+
+    const val TYPE_TEAMWORK_CHAT = "teamwork_taskChat"
+
+    const val TYPE_CMS_PUBLISH = "cms_publish"
+
+    const val TYPE_BBS_SUBJECTCREATE = "bbs_subjectCreate"
+
+    const val TYPE_BBS_REPLYCREATE = "bbs_replyCreate"
+
+    const val TYPE_MIND_FILESEND = "mind_fileSend"
+
+    const val TYPE_MIND_FILESHARE = "mind_fileShare"
+
+    const val TYPE_IM_CREATE = "im_create"
 
 }

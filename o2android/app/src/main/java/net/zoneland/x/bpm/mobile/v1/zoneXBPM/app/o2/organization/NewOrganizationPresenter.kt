@@ -1,17 +1,15 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization
 
 import net.muliba.accounting.app.ExceptionHandler
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.IdentityLevelForm
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonListLikeForm
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.unit.UnitJson
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.NewContactFragmentVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.NewContactListVO
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action0
 import rx.functions.Action1
 import rx.schedulers.Schedulers
 
@@ -90,8 +88,7 @@ class NewOrganizationPresenter : BasePresenterImpl<NewOrganizationContract.View>
     }
 
     override fun searchPersonWithKey(result: String) {
-            val form = PersonListLikeForm( result)
-            val backResult = ArrayList<NewContactListVO>()
+            val form = PersonListLikeForm(result)
             getOrganizationAssembleControlApi(mView?.getContext())?.let { service ->
                 service.personListLike(form)
                         .subscribeOn(Schedulers.io())
@@ -99,6 +96,7 @@ class NewOrganizationPresenter : BasePresenterImpl<NewOrganizationContract.View>
                             val retList = ArrayList<NewContactListVO>()
                             val list = response.data
                             if (list != null && list.isNotEmpty()) {
+                                XLog.debug("size:${list.size}")
                                 list.map {
                                     retList.add(NewContactListVO.Identity(
                                             name = it.name,
@@ -110,9 +108,15 @@ class NewOrganizationPresenter : BasePresenterImpl<NewOrganizationContract.View>
                             retList
                         }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(Action1<ArrayList<NewContactListVO>> { list -> backResult.addAll(list) },
-                                ExceptionHandler(mView?.getContext()) { e -> mView?.backError(e.message ?: "") },
-                                Action0 { mView?.callbackResult(backResult) })
+                        .o2Subscribe {
+                            onNext {
+                                list -> mView?.callbackResult(list)
+                            }
+                            onError { e, _ ->
+                                XLog.error("", e)
+                                mView?.backError(e?.message ?: "")
+                            }
+                        }
             }
         }
 }

@@ -11,9 +11,11 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2ChatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2IM
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2InstantMessageActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
@@ -30,6 +32,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     override var mPresenter: O2IMConversationContract.Presenter = O2IMConversationPresenter()
 
     override fun layoutResId(): Int = R.layout.fragment_o2_im_conversation
+    private val instantList = ArrayList<InstantMessage>()
     private val cList = ArrayList<IMConversationInfo>()
     private val adapter: CommonRecycleViewAdapter<IMConversationInfo> by lazy {
         object : CommonRecycleViewAdapter<IMConversationInfo>(activity, cList,
@@ -95,6 +98,11 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
         adapter.setOnItemClickListener { _, position ->
             O2ChatActivity.startChat(activity, cList[position].id)
         }
+        ll_o2_instant_message.setOnClickListener {
+            if (instantList.isNotEmpty()) {
+                O2InstantMessageActivity.openInstantActivity(instantList, activity)
+            }
+        }
     }
 
 
@@ -111,14 +119,29 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     override fun myConversationList(list: List<IMConversationInfo>) {
         if (list.isEmpty()) {
             tv_null_conversation.visible()
-            rv_o2_im_conversation.gone()
+            ll_o2_im_message_list.gone()
         } else {
             tv_null_conversation.gone()
-            rv_o2_im_conversation.visible()
+            ll_o2_im_message_list.visible()
             cList.clear()
             cList.addAll(list)
             adapter.notifyDataSetChanged()
         }
+        mPresenter.getMyInstantMessageList()
+    }
+
+    override fun myInstantMessageList(instantList: List<InstantMessage>) {
+         if (instantList.isNotEmpty()) {
+             this.instantList.clear()
+             this.instantList.addAll(instantList)
+             ll_o2_instant_message.visible()
+             val lastMsg = instantList.last()
+             val lastTime = DateHelper.convertStringToDate(lastMsg.createTime)
+             tv_o2_in_con_last_message_time.text = DateHelper.friendlyTime(lastTime)
+             tv_o2_in_con_last_message.text = lastMsg.title
+         }else {
+             ll_o2_instant_message.gone()
+         }
     }
 
     fun receiveMessageFromWebsocket(message: IMMessage) {

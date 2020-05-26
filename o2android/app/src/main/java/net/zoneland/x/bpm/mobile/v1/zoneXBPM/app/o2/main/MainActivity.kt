@@ -373,7 +373,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
             0 -> resetToolBar(getString(R.string.tab_message))
             1 -> resetToolBar(getString(R.string.tab_contact))
             2 -> setIndexToolBar()
-            3 -> resetToolBar(getString(R.string.tab_contact))
+            3 -> resetToolBar(getString(R.string.tab_app))
             4 -> resetToolBar(getString(R.string.tab_settings))
         }
 
