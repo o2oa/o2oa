@@ -218,7 +218,6 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
         //this.setEditNode();
     },
     setEvent: function(){
-        this.iconMenu = new MWF.widget.Menu(this.iconNode, {"event": "click", "style": "actionbarIcon"});
         this.iconMenu = new MWF.widget.Menu(this.iconNode, {
             "event": "click",
             "style": "actionbarIcon",
