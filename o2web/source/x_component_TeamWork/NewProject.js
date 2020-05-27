@@ -64,43 +64,44 @@ MWF.xApplication.TeamWork.NewProject = new Class({
         this.newProjectDesIn = new Element("textarea.newProjectDesIn",{styles:this.css.newProjectDesIn,placeholder:this.lp.description}).inject(this.newProjectDesContainer);
         this.newProjectDesIn.addEvents({
             focus:function(){  //32px
-                var v = this.newProjectDesIn.get("value");
-                if(v.trim()==""){
-                    this.newProjectDesIn.setStyle("line-height","");
-                    var _h = 36;
-                    this.newProjectDesContainer.setStyles({"height":(this.newProjectDesContainer.getHeight()+_h)+"px"});
-                    this.newProjectDesIn.setStyles({"height":(this.newProjectDesIn.getHeight()+_h-2)+"px"});
-                    this.formAreaNode.setStyles({"height":(this.formAreaNode.getHeight()+_h)+"px"});
-                    this.formNode.setStyles({"height":(this.formNode.getHeight()+_h)+"px"});
-                    this.formTableContainer.setStyles({"height":(this.formTableContainer.getHeight()+_h)+"px"});
-                    this.formTableArea.setStyles({"height":(this.formTableArea.getHeight()+_h)+"px"});
-                    this.formContentNode.setStyles({"height":(this.formContentNode.getHeight()+_h)+"px"});
-
-                    var pre = this.formTableContainer.getPrevious();
-                    if(pre){
-                        pre.destroy();
-                    }
-                }
+                // var v = this.newProjectDesIn.get("value");
+                // if(v.trim()==""){ return;
+                //     //this.newProjectDesIn.setStyle("line-height","");
+                //     var _h = 36;
+                //     //alert(this.newProjectDesContainer.getHeight()+_h)
+                //     this.newProjectDesContainer.setStyles({"height":(this.newProjectDesContainer.getHeight()+_h)+"px"});
+                //     this.newProjectDesIn.setStyles({"height":(this.newProjectDesIn.getHeight()+_h)+"px"});
+                //     this.formAreaNode.setStyles({"height":(this.formAreaNode.getHeight()+_h)+"px"});
+                //     this.formNode.setStyles({"height":(this.formNode.getHeight()+_h)+"px"});
+                //     this.formTableContainer.setStyles({"height":(this.formTableContainer.getHeight()+_h)+"px"});
+                //     this.formTableArea.setStyles({"height":(this.formTableArea.getHeight()+_h)+"px"});
+                //     this.formContentNode.setStyles({"height":(this.formContentNode.getHeight()+_h)+"px"});
+                //
+                //     var pre = this.formTableContainer.getPrevious();
+                //     if(pre){
+                //        pre.destroy();
+                //     }
+                // }
                 this.newProjectDesContainer.setStyles({"border":"1px solid #4A90E2"});
             }.bind(this),
             blur:function(){
-                var v = this.newProjectDesIn.get("value");
-                if(v.trim()==""){
-                    this.newProjectDesIn.setStyle("line-height","32px");
-                    var _h = 36;
-                    this.newProjectDesContainer.setStyles({"height":(this.newProjectDesContainer.getHeight()-_h)+"px"});
-                    this.newProjectDesIn.setStyles({"height":(this.newProjectDesIn.getHeight()-_h-2)+"px"});
-                    this.formAreaNode.setStyles({"height":(this.formAreaNode.getHeight()-_h)+"px"});
-                    this.formNode.setStyles({"height":(this.formNode.getHeight()-_h)+"px"});
-                    this.formTableContainer.setStyles({"height":(this.formTableContainer.getHeight()-_h)+"px"});
-                    this.formTableArea.setStyles({"height":(this.formTableArea.getHeight()-_h)+"px"});
-                    this.formContentNode.setStyles({"height":(this.formContentNode.getHeight()-_h)+"px"});
-
-                    var pre = this.formTableContainer.getPrevious();
-                    if(pre){
-                        pre.destroy();
-                    }
-                }
+                // var v = this.newProjectDesIn.get("value");
+                // if(v.trim()==""){ return;
+                //     //this.newProjectDesIn.setStyle("line-height","32px");
+                //     var _h = 36;
+                //     this.newProjectDesContainer.setStyles({"height":(this.newProjectDesContainer.getHeight()-_h-2)+"px"});
+                //     this.newProjectDesIn.setStyles({"height":(this.newProjectDesIn.getHeight()-_h-2)+"px"});
+                //     this.formAreaNode.setStyles({"height":(this.formAreaNode.getHeight()-_h)+"px"});
+                //     this.formNode.setStyles({"height":(this.formNode.getHeight()-_h)+"px"});
+                //     this.formTableContainer.setStyles({"height":(this.formTableContainer.getHeight()-_h)+"px"});
+                //     this.formTableArea.setStyles({"height":(this.formTableArea.getHeight()-_h)+"px"});
+                //     this.formContentNode.setStyles({"height":(this.formContentNode.getHeight()-_h)+"px"});
+                //
+                //     var pre = this.formTableContainer.getPrevious();
+                //     if(pre){
+                //        pre.destroy();
+                //     }
+                // }
                 this.newProjectDesContainer.setStyles({"border":"1px solid #A6A6A6"});
             }.bind(this)
         });
@@ -166,7 +167,8 @@ MWF.xApplication.TeamWork.NewProject = new Class({
                         "padding":"2px",
                         "border-radius":"5px",
                         "box-shadow":"0px 0px 4px 0px #999999",
-                        "z-index" : "201"
+                        "z-index" : "201",
+                        "min-height":"250px"
                     },
                     onPostLoad:function(){
                         tm.node.setStyles({"opacity":"0","top":(tm.node.getStyle("top").toInt()+4)+"px"});
@@ -237,7 +239,6 @@ MWF.xApplication.TeamWork.NewProject = new Class({
             if(callback)callback();
         }.bind(this))
     }
-
 
 });
 

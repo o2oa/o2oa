@@ -124,7 +124,8 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.control.isDelete = this.taskData.control.delete;
             this.control.isFounder = this.taskData.control.founder;
             this.control.isCreate = true;
-
+            //this.control.comment = this.projectData.comment; 目前没启用
+            this.control.comment = true;
 
 
             if(this.openType == "window"){
@@ -146,46 +147,50 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.topIconContainer = new Element("div.topIconContainer",{styles:this.css.topIconContainer}).inject(this.topLayout);
 
             //更多
-            this.topIconMore = new Element("div.topIconMore",{styles:this.css.topIconMore,title:this.lp.more}).inject(this.topIconContainer);
-            this.topIconMore.addEvents({
-                click:function(){
-                    var tm = new MWF.xApplication.TeamWork.Task.TaskMore(this.container, this.topIconMore, this.app, {data:this.taskData}, {
-                        css:this.css, lp:this.lp, axis : "y",
-                        position : { //node 固定的位置
-                            x : "auto",
-                            y : "middle"
-                        },
-                        nodeStyles : {
-                            "min-width":"200px",
-                            "padding":"2px",
-                            "border-radius":"5px",
-                            "box-shadow":"0px 0px 4px 0px #999999",
-                            "z-index" : "201"
-                        },
-                        onPostLoad:function(){
-                            tm.node.setStyles({"opacity":"0","top":(tm.node.getStyle("top").toInt()+4)+"px"});
-                            var fx = new Fx.Tween(tm.node,{duration:400});
-                            fx.start(["opacity"] ,"0", "1");
-                        },
-                        onClose:function(rd){
-                            if(!rd) return;
-                            if(rd.act == "remove"){
-                                this.close(rd);
-                                if(this.data.projectObj){ //reload project
-                                    this.data.projectObj.createTaskGroup()
+            //权限
+            if(!this.projectData.deleted && !this.projectData.completed){
+                this.topIconMore = new Element("div.topIconMore",{styles:this.css.topIconMore,title:this.lp.more}).inject(this.topIconContainer);
+                this.topIconMore.addEvents({
+                    click:function(){
+                        var tm = new MWF.xApplication.TeamWork.Task.TaskMore(this.container, this.topIconMore, this.app, {data:this.taskData}, {
+                            css:this.css, lp:this.lp, axis : "y",
+                            position : { //node 固定的位置
+                                x : "auto",
+                                y : "middle"
+                            },
+                            nodeStyles : {
+                                "min-width":"200px",
+                                "padding":"2px",
+                                "border-radius":"5px",
+                                "box-shadow":"0px 0px 4px 0px #999999",
+                                "z-index" : "201"
+                            },
+                            onPostLoad:function(){
+                                tm.node.setStyles({"opacity":"0","top":(tm.node.getStyle("top").toInt()+4)+"px"});
+                                var fx = new Fx.Tween(tm.node,{duration:400});
+                                fx.start(["opacity"] ,"0", "1");
+                            },
+                            onClose:function(rd){
+                                if(!rd) return;
+                                if(rd.act == "remove"){
+                                    this.close(rd);
+                                    if(this.data.projectObj){ //reload project
+                                        this.data.projectObj.createTaskGroup()
+                                    }
                                 }
-                            }
-                        }.bind(this)
-                    },null,this);
-                    tm.load();
-                }.bind(this),
-                mouseover:function(){
-                    this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_more_click.png)"});
-                },
-                mouseout:function(){
-                    this.setStyles(_self.css.topIconMore)
-                }
-            });
+                            }.bind(this)
+                        },null,this);
+                        tm.load();
+                    }.bind(this),
+                    mouseover:function(){
+                        this.setStyles({"background-image":"url(../x_component_TeamWork/$Task/default/icon/icon_more_click.png)"});
+                    },
+                    mouseout:function(){
+                        this.setStyles(_self.css.topIconMore)
+                    }
+                });
+            }
+
             //关闭
             this.topIconClose = new Element("div.topIconClose",{styles:this.css.topIconClose,title:this.lp.close}).inject(this.topIconContainer);
             this.topIconClose.addEvents({
@@ -574,14 +579,19 @@ MWF.xApplication.TeamWork.Task = new Class({
         var node = this.taskChatContainer;
         this.chatContent = new Element("div.chatContent",{styles:this.css.chatContent}).inject(node);
         this.chatTextarea = new Element("textarea.chatTextarea",{styles:this.css.chatTextarea,placeholder:this.lp.chatPlaceholder}).inject(this.chatContent);
-        this.chatTextarea.addEvents({
-            keypress:function(e){
-                var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
-                if (e.event.ctrlKey && (keycode == 13 || keycode == 10)) {
-                    this.chatBarSend.click();
-                }
-            }.bind(this)
-        });
+        if(this.control.comment){
+            this.chatTextarea.addEvents({
+                keypress:function(e){
+                    var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
+                    if (e.event.ctrlKey && (keycode == 13 || keycode == 10)) {
+                        this.chatBarSend.click();
+                    }
+                }.bind(this)
+            });
+        }else{
+            this.chatTextarea.erase("placeholder");
+        }
+
 
         this.chatBarContent = new Element("div.chatBarContent",{styles:this.css.chatBarContent}).inject(node);
         this.chatBarTool = new Element("div.chatBarTool",{styles:this.css.chatBarTool}).inject(this.chatBarContent);
@@ -624,46 +634,52 @@ MWF.xApplication.TeamWork.Task = new Class({
             }.bind(this)
         });
         this.chatBarSend = new Element("div.chatBarSend",{styles:this.css.chatBarSend,text:this.lp.chatSend}).inject(this.chatBarContent);
-        this.chatBarSend.addEvents({
-            click:function(){
-                if(this.chatTextarea.get("value").trim()=="") return;
-                var data = {
-                    taskId : this.taskData.id,
-                    content : this.chatTextarea.get("value").trim()
-                };
+        if(this.control.comment) {
+            this.chatBarSend.addEvents({
+                click:function(){
+                    if(this.chatTextarea.get("value").trim()=="") return;
+                    var data = {
+                        taskId : this.taskData.id,
+                        content : this.chatTextarea.get("value").trim()
+                    };
 
-                //this.actions.chatCreate(data,function(json){
-                this.rootActions.ChatAction.create(data,function(json){
-                    if(json.data.id){
-                        this.rootActions.ChatAction.get(json.data.id,function(json){
-                            var person = json.data.sender;
-                            var content = json.data.content;
+                    //this.actions.chatCreate(data,function(json){
+                    this.rootActions.ChatAction.create(data,function(json){
+                        if(json.data.id){
+                            this.rootActions.ChatAction.get(json.data.id,function(json){
+                                var person = json.data.sender;
+                                var content = json.data.content;
 
-                            var dynamicItem = new Element("div.dynamicItem",{styles:this.css.dynamicItem}).inject(this.dynamicContent);
-                            var dynamicItemIcon = new Element("div.dynamicItemIcon",{styles:this.css.dynamicItemIcon}).inject(dynamicItem);
-                            dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_chat.png)")
-                            var dynamicItemText = new Element("div.dynamicItemText",{styles:this.css.dynamicItemText}).inject(dynamicItem);
-                            new Element("div.dynamicItemUser",{styles:this.css.dynamicItemUser,text:person.split("@")[0]}).inject(dynamicItemText);
+                                var dynamicItem = new Element("div.dynamicItem",{styles:this.css.dynamicItem}).inject(this.dynamicContent);
+                                var dynamicItemIcon = new Element("div.dynamicItemIcon",{styles:this.css.dynamicItemIcon}).inject(dynamicItem);
+                                dynamicItemIcon.setStyle("background-image","url(../x_component_TeamWork/$Task/default/icon/icon_chat.png)")
+                                var dynamicItemText = new Element("div.dynamicItemText",{styles:this.css.dynamicItemText}).inject(dynamicItem);
+                                new Element("div.dynamicItemUser",{styles:this.css.dynamicItemUser,text:person.split("@")[0]}).inject(dynamicItemText);
 
-                            var chattext = content.split("\n").join("<br/>");
-                            for(var item in this.app.lp.emoji){
-                                var val = this.app.lp.emoji[item];
-                                chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px; width:30px;height:30px;" src="../x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
-                            }
+                                var chattext = content.split("\n").join("<br/>");
+                                for(var item in this.app.lp.emoji){
+                                    var val = this.app.lp.emoji[item];
+                                    chattext = chattext.split("["+val+"]").join('<img style="margin:0 2px; width:30px;height:30px;" src="../x_component_TeamWork/$Emoji/default/icon/'+item+'.png" />');
+                                }
 
-                            new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
+                                new Element("div.dynamicItemUserChat",{styles:{"margin-top":"5px"},html:chattext}).inject(dynamicItemText);
 
-                            var dynamicItemTime = new Element("div.dynamicItemTime",{styles:this.css.dynamicItemTime}).inject(dynamicItem);
-                            dynamicItemTime.set("text","刚刚");
-                            new Element("div.dynamicItemTime",{styles:{"clear":"both"}}).inject(dynamicItem);
+                                var dynamicItemTime = new Element("div.dynamicItemTime",{styles:this.css.dynamicItemTime}).inject(dynamicItem);
+                                dynamicItemTime.set("text","刚刚");
+                                new Element("div.dynamicItemTime",{styles:{"clear":"both"}}).inject(dynamicItem);
 
-                            this.dynamicContent.scrollTo(0,this.dynamicContent.getScrollSize().y);
-                        }.bind(this))
-                    }
-                    this.createChatContainer()
-                }.bind(this))
-            }.bind(this)
-        })
+                                this.dynamicContent.scrollTo(0,this.dynamicContent.getScrollSize().y);
+                            }.bind(this))
+                        }
+                        this.createChatContainer()
+                    }.bind(this))
+                }.bind(this)
+            })
+        }else{
+
+            this.chatBarSend.setStyles({"cursor":"not-allowed"});
+        }
+
     },
     addDynamicItem:function(){
 
@@ -674,7 +690,9 @@ MWF.xApplication.TeamWork.Task = new Class({
             this.actions.get(this.data.taskId,function(json){
                 if(json.data) {
                     this.taskData = json.data;
-                    if(callback)callback()
+                    this.getProject(this.taskData.project,function(){
+                        if(callback)callback()
+                    }.bind(this))
                 }
             }.bind(this))
         }
@@ -1724,7 +1742,12 @@ MWF.xApplication.TeamWork.Task = new Class({
         return result;
 
     },
-
+    getProject:function(id,callback){
+        this.rootActions.ProjectAction.get(id,function(json){
+            this.projectData = json.data;
+            if(callback)callback(json);
+        }.bind(this))
+    }
 
 });
 
@@ -1954,7 +1977,7 @@ MWF.xApplication.TeamWork.Task.PriorityCheck = new Class({
             "margin-top":"6px","margin-right":"8px",
             "background":"url(../x_component_TeamWork/$Task/default/icon/icon_dagou.png) no-repeat center"
         };
-
+        if(!this.data.data.priority) return;
         var arr = this.data.data.priority.split("||");
         var priorityName = arr[0];
         var priorityColor = arr[1];
