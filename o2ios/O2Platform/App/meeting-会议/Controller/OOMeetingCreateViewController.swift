@@ -45,7 +45,7 @@ class OOMeetingCreateViewController: UIViewController {
     @objc func createMeetingAction(_ sender:Any){
         let mForm = ooFormView.getFormDataFormBean()
         self.viewModel.selectedPersons.forEach { (p) in
-            mForm.invitePersonList.append(p.id!)
+            mForm.invitePersonList.append(p.distinguishedName!)
         }
         let mBean = OOMeetingFormBean(meetingForm: mForm)
         if mBean.checkFormValues() {
@@ -148,12 +148,19 @@ extension OOMeetingCreateViewController:UICollectionViewDelegateFlowLayout {
 extension OOMeetingCreateViewController:OOMeetingPersonActionCellDelegate{
     
     func addPersonActionClick(_ sender: UIButton) {
-        //执行segue
-//        self.performSegue(withIdentifier: "showPersonSelectedSegue", sender: nil)
-    
+        //已经选择的人员
+        var alreadyChoosePersons: [String] = []
+        if !self.viewModel.selectedPersons.isEmpty {
+            self.viewModel.selectedPersons.forEach { (model) in
+                if let dn = model.distinguishedName {
+                    alreadyChoosePersons.append(dn)
+                }
+            }
+        }
         if let v = ContactPickerViewController.providePickerVC(
             pickerModes: [ContactPickerType.person],
             multiple: true,
+            initUserPickedArray: alreadyChoosePersons,
             pickedDelegate: { (result: O2BizContactPickerResult) in
                 if let users = result.users {
                     var persons :[OOPersonModel] = []

@@ -126,7 +126,11 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         super.viewWillAppear(animated)
         //监控进度
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
-       
+       if #available(iOS 13.0, *) {
+           DispatchQueue.main.async {
+               self.navigationController?.navigationBar.setNeedsLayout()
+           }
+       }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -849,14 +853,22 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
                     options.resizeMode = .none
                     PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: { (imageData, result, imageOrientation, dict) in
                         //DDLogDebug("result = \(result) imageOrientation = \(imageOrientation) \(dict)")
-                        let fileURL = dict?["PHImageFileURLKey"] as! URL
+                        var fileName = ""
+                        
+                        if dict?["PHImageFileURLKey"] != nil {
+                            let fileURL = dict?["PHImageFileURLKey"] as! URL
+                            fileName = fileURL.lastPathComponent
+                        }else {
+                            fileName = result ?? "untitle.png"
+                        }
+                        
                         DispatchQueue.main.async {
                             self.showLoading(title: "上传中...")
                         }
                         DispatchQueue.global(qos: .userInitiated).async {
                             Alamofire.upload(multipartFormData: { (mData) in
                                 //mData.append(fileURL, withName: "file")
-                                mData.append(imageData!, withName: "file", fileName: fileURL.lastPathComponent, mimeType: "application/octet-stream")
+                                mData.append(imageData!, withName: "file", fileName: fileName, mimeType: "application/octet-stream")
                                 let siteData = site.data(using: String.Encoding.utf8, allowLossyConversion: false)
                                 mData.append(siteData!, withName: "site")
                             }, to: url, encodingCompletion: { (encodingResult) in

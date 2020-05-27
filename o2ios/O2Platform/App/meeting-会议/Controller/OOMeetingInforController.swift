@@ -64,6 +64,13 @@ class OOMeetingInforController: UIViewController {
     func loadMeetConfig() {
         viewModel.loadMeetingConfig().then { (config) in
             self.config = config
+            if let c = self.config {
+                if c.mobileCreateEnable == true {
+                    DispatchQueue.main.async {
+                        UIApplication.shared.windows.first?.addSubview(self.createView)
+                    }
+                }
+            }
         }.catch { (error) in
             DDLogError("会议配置获取异常, \(error)")
         }
@@ -138,7 +145,7 @@ class OOMeetingInforController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        UIApplication.shared.windows.first?.addSubview(createView)
+        
     }
 
     override func viewWillDisappear(_ animated: Bool) {
