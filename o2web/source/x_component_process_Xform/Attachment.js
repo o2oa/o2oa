@@ -1104,6 +1104,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         }.bind(this));
 
     },
+    isEmpty : function(){
+        var data = this.getData();
+        if( typeOf(data) === "array" ){
+            return data.length !== 0
+        }else{
+            return !!data;
+        }
+    },
     getData: function () {
         return (this.attachmentController) ? this.attachmentController.getAttachmentNames() : null;
     },
