@@ -51,13 +51,13 @@ class ZoneMenuViewController: UIViewController {
         self.automaticallyAdjustsScrollViewInsets = false
         //mainMenu
         if let mainVC = self.storyboard?.instantiateViewController(withIdentifier: "mainMenu") {
-            self.mainVC = mainVC as! ZoneMainCategoryViewController
+            self.mainVC = mainVC as? ZoneMainCategoryViewController
             self.addChild(mainVC)
             mainVC.view.frame = CGRect(x: 0, y: 0, width: view.bounds.width * 0.4, height: view.bounds.height)
             self.view.addSubview(mainVC.view)
         }
         if let subVC = self.storyboard?.instantiateViewController(withIdentifier: "subMenu") {
-            self.subVC = subVC as! ZoneSubCategoryViewController
+            self.subVC = subVC as? ZoneSubCategoryViewController
             self.addChild(subVC)
             subVC.view.frame = CGRect(x: view.bounds.width * 0.4, y: 0, width: view.bounds.width * 0.6, height: view.bounds.height)
             //let tView = subVC.view as! UITableView
@@ -73,7 +73,7 @@ class ZoneMenuViewController: UIViewController {
     
     @objc private func reveiveCategoryNotification(_ notification:NSNotification){
         let obj = notification.object
-        self.subVC.app = obj as! Application
+        self.subVC.app = obj as? Application
     }
     
     @objc private func receiveSubNotification(_ notification:NSNotification){

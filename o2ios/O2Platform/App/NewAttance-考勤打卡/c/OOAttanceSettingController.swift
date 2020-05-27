@@ -153,11 +153,9 @@ class OOAttanceSettingController: UIViewController {
     }
     
     func commonDataView() {
-        let window = UIApplication.shared.windows[0]
-        //let barHeight = self.cyl_tabBarController.tabBarHeight
+        let window = UIApplication.shared.windows.last
         dataView.frame = CGRect(x: 0, y: SCREEN_HEIGHT - 125 - 50, width: SCREEN_WIDTH, height: 125)
-        //view.insertSubview(dataView, aboveSubview: mapView)
-        window.addSubview(dataView)
+        window?.addSubview(dataView)
     }
     
     

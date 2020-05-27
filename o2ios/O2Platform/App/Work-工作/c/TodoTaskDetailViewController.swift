@@ -105,10 +105,12 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         //toolbar
         self.toolbarView = UIToolbar(frame: CGRect(x: 0, y: self.view.height - 44, width: self.view.width, height: 44))
        
-        self.automaticallyAdjustsScrollViewInsets = false
+        
         myTitle = todoTask?.title
-        if myTitle != nil {
+        if myTitle?.isBlank == false  {
             title = myTitle
+        }else if todoTask?.processName?.isBlank == false {
+            title = todoTask?.processName
         }
         
         //添加工作页面特殊的js处理

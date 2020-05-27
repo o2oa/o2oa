@@ -29,17 +29,17 @@ class OOAttanceHeaderView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //commonInit()
+        commonInit()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        //commonInit()
+        commonInit()
     }
     
-    func startBMKMapViewService(){
+    func commonInit() {
         mapView = BMKMapView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 280))
-        mapView.delegate = self
+        
         mapView.showsUserLocation = true
         mapView.isSelectedAnnotationViewFront = true
         mapView.showMapScaleBar = true
@@ -52,6 +52,11 @@ class OOAttanceHeaderView: UIView {
         self.backgroundColor = UIColor.white
         self.addSubview(mapView)
         
+    }
+    
+    func startBMKMapViewService(){
+        
+        mapView.delegate = self
         
         locService =  BMKLocationManager()
         locService.desiredAccuracy = kCLLocationAccuracyBest

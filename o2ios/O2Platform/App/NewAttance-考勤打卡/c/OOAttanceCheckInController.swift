@@ -35,6 +35,7 @@ class OOAttanceCheckInController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        headerView.startBMKMapViewService()
         NotificationCenter.default.addObserver(self, selector: #selector(locationReceive(_:)), name: OONotification.location.notificationName, object: nil)
         if myButton != nil {
             myButton.isHidden = false
@@ -43,6 +44,7 @@ class OOAttanceCheckInController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        headerView.stopBMKMapViewService()
         NotificationCenter.default.removeObserver(self)
         if myButton != nil {
             myButton.isHidden = true
@@ -54,12 +56,13 @@ class OOAttanceCheckInController: UITableViewController {
         super.viewDidAppear(animated)
         getWorkPlace()
     }
+    
 
    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        title = "打卡"
-        headerView.startBMKMapViewService()
+        
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
         //tableView.tableHeaderView = headerView
         //tableView.contentInset = UIEdgeInsets(top: 230, left: 0, bottom: 0, right: 0)
@@ -69,6 +72,7 @@ class OOAttanceCheckInController: UITableViewController {
         getCurrentCheckinList()
         self.perform(#selector(createButton), with: nil, afterDelay: 0)
     }
+    
     
     @objc func closeWindow() {
         self.tabBarController?.navigationController?.dismiss(animated: true, completion: nil)
@@ -248,7 +252,7 @@ class OOAttanceCheckInController: UITableViewController {
     }
     
     
-    deinit {
-         headerView.stopBMKMapViewService()
-    }
+//    deinit {
+//         headerView.stopBMKMapViewService()
+//    }
 }
