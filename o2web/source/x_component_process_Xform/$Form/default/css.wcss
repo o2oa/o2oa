@@ -482,6 +482,22 @@
         "float": "right",
         "cursor": "pointer"
     },
+    "mobileDatagridCancelActionNode": {
+      "width": "34px",
+      "margin-left": "10px",
+      "height": "28px",
+      "line-height": "28px",
+      "color": "#666",
+      "font-size": "16px",
+      "padding-left": "26px",
+      "padding-right": "5px",
+      "border": "1px solid #CCCCCC",
+      "border-radius": "3px",
+      "background": "url("+"../x_component_process_Xform/$Form/default/icon/del.png) 5px center no-repeat",
+      "float": "right",
+      "cursor": "pointer",
+      "display": "none"
+    },
     "mobileDatagridCompleteActionNode": {
         "width": "34px",
         "margin-left": "10px",
