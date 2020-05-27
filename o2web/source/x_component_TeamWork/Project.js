@@ -30,15 +30,19 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.data = data;
     },
     load: function () {
-        this.actions.get(this.data.id,function(json){ debugger ;})
-
 
         this.container.setStyles({display:"flex"});
         this.container.empty();
         this.createTopBarLayout();
         this.createContentLayout();
 
-        this.topBarTabItemTask.click();
+
+        this.actions.get(this.data.id,function(json){
+            //debugger;
+            this.data = json.data;
+            this.topBarTabItemTask.click();
+        }.bind(this))
+        // this.topBarTabItemTask.click();
     },
     createTopBarLayout:function(){
         var _self = this;
@@ -258,6 +262,7 @@ MWF.xApplication.TeamWork.Project = new Class({
 
         this.naviTopTaskContainer = new Element("div.naviTopTaskContainer",{styles:this.css.naviTopTaskContainer}).inject(this.naviTop);
         this.naviTopTaskText = new Element("div.naviTopTaskText",{styles:this.css.naviTopTaskText,text:this.lp.task}).inject(this.naviTopTaskContainer);
+
         this.naviTopTaskAdd = new Element("div.naviTopTaskAdd",{styles:this.css.naviTopTaskAdd}).inject(this.naviTopTaskContainer);
         this.naviTopTaskAdd.addEvents({
             click:function(){
@@ -289,6 +294,11 @@ MWF.xApplication.TeamWork.Project = new Class({
                 });
             }.bind(this)
         });
+
+        if(this.data.control && this.data.control.taskCreate == false){
+            this.naviTopTaskAdd.destroy();
+            delete  this.naviTopTaskAdd;
+        }
 
         this.naviTopMyTaskLayout = new Element("div.naviTopMyTaskLayout",{styles:this.css.naviTopMyTaskLayout}).inject(this.naviTop);
         this.naviTopMyTaskLayout.addEvents({
@@ -541,33 +551,38 @@ MWF.xApplication.TeamWork.Project = new Class({
                     this.createTaskGroupItemLayout(taskGroupLayout,data);
                 }.bind(this));
                 //新建任务列表按钮
-                this.newTaskGroupContainer = new Element("div.newTaskGroupContainer",{styles:this.css.newTaskGroupContainer}).inject(this.taskContentLayout);
-                this.newTaskGroupContainer.addEvents({
-                    click:function(){
-                        var data = {
-                            isNew:true,
-                            taskGroupId:this.currentProjectGroupData.id,
-                            projectId:this.data.id
-                        };
-                        var opt = {
-                            onCreateTask:function(){
-                                this.createTaskGroup();
-                            }.bind(this)
-                        };
-                        var newTaskGroup = new MWF.xApplication.TeamWork.Project.NewTaskGroup(this,data,opt,{});
-                        newTaskGroup.open();
-                    }.bind(this),
-                    mouseover:function(){
-                        this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia_20_click.png)"});
-                        this.newTaskGroupText.setStyles({"color":"#4A90E2","font-size":"16px"});
-                    }.bind(this),
-                    mouseout:function(){
-                        this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"});
-                        this.newTaskGroupText.setStyles({"color":"#999999","font-size":"12px"});
-                    }.bind(this)
-                });
-                this.newTaskGroupIcon = new Element("div.newTaskGroupIcon",{styles:this.css.newTaskGroupIcon}).inject(this.newTaskGroupContainer);
-                this.newTaskGroupText = new Element("div.newTaskGroupText",{styles:this.css.newTaskGroupText,text:this.lp.taskGroupAdd}).inject(this.newTaskGroupContainer);
+
+                if(!this.data.deleted && !this.data.completed){
+                    //权限 已完成已删除不能新建
+                    this.newTaskGroupContainer = new Element("div.newTaskGroupContainer",{styles:this.css.newTaskGroupContainer}).inject(this.taskContentLayout);
+                    this.newTaskGroupContainer.addEvents({
+                        click:function(){
+                            var data = {
+                                isNew:true,
+                                taskGroupId:this.currentProjectGroupData.id,
+                                projectId:this.data.id
+                            };
+                            var opt = {
+                                onCreateTask:function(){
+                                    this.createTaskGroup();
+                                }.bind(this)
+                            };
+                            var newTaskGroup = new MWF.xApplication.TeamWork.Project.NewTaskGroup(this,data,opt,{});
+                            newTaskGroup.open();
+                        }.bind(this),
+                        mouseover:function(){
+                            this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia_20_click.png)"});
+                            this.newTaskGroupText.setStyles({"color":"#4A90E2","font-size":"16px"});
+                        }.bind(this),
+                        mouseout:function(){
+                            this.newTaskGroupIcon.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"});
+                            this.newTaskGroupText.setStyles({"color":"#999999","font-size":"12px"});
+                        }.bind(this)
+                    });
+                    this.newTaskGroupIcon = new Element("div.newTaskGroupIcon",{styles:this.css.newTaskGroupIcon}).inject(this.newTaskGroupContainer);
+                    this.newTaskGroupText = new Element("div.newTaskGroupText",{styles:this.css.newTaskGroupText,text:this.lp.taskGroupAdd}).inject(this.newTaskGroupContainer);
+                }
+
             }.bind(this))
         }
     },
@@ -632,6 +647,10 @@ MWF.xApplication.TeamWork.Project = new Class({
             mouseover:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_zengjia_blue2_click.png)"})},
             mouseout:function(){this.setStyles({"background-image":"url(../x_component_TeamWork/$Project/default/icon/icon_jia.png)"})}
         });
+        if(this.data.control && this.data.control.taskCreate == false){
+            taskGroupItemTitleAdd.destroy();
+            delete taskGroupItemTitleAdd
+        }
 
         var taskGroupItemTitleReload = new Element("div.taskGroupItemTitleReload",{styles:this.css.taskGroupItemTitleReload, title:this.lp.reload}).inject(taskGroupItemTitleContainer);
         //if(!data.control.sortable) taskGroupItemTitleAdd.setStyle("margin-right","20px");
@@ -824,7 +843,7 @@ MWF.xApplication.TeamWork.Project = new Class({
                             //alert("taskid="+taskId+",taskInId="+taskInId+",taskgroupFromid="+taskGroupFromId+",taskGroupInId="+taskGroupInId);
                             if(taskGroupInSortable == "false"){
                                 //未分类视图不允许移入，还原并删除el对象
-                                _self.app.notice("未分类列表不允许移入","error");
+                                //_self.app.notice("未分类列表不允许移入","error");
                                 taskItemContainer.setStyles({"border":"1px solid #e6e6e6","opacity":"1"});
                                 if(pre && pre.get("class")=="taskItemInsertLine"){
                                     pre.destroy();
@@ -915,10 +934,12 @@ MWF.xApplication.TeamWork.Project = new Class({
 
     loadTaskNode:function(taskItemContainer,d){
         taskItemContainer.empty();
-
+        var color = d.priority ? d.priority.split("||")[1] || "#DEDEDE" : "#DEDEDE";
+        //var color = d.priority.split("||")[1] || "#DEDEDE";
         var taskItemHover = new Element("div.taskItemHover",{styles:this.css.taskItemHover}).inject(taskItemContainer);
-        if(d.priority == this.lp.urgency)taskItemHover.setStyle("background-color","#ffaf38");
-        else if(d.priority == this.lp.emergency)taskItemHover.setStyle("background-color","#ff0000");
+        taskItemHover.setStyles({"background-color":color});
+        // if(d.priority == this.lp.urgency)taskItemHover.setStyle("background-color","#ffaf38");
+        // else if(d.priority == this.lp.emergency)taskItemHover.setStyle("background-color","#ff0000");
         var taskItemContent = new Element("div.taskItemContent",{styles:this.css.taskItemContent}).inject(taskItemContainer);
         var taskItemTitle = new Element("div.taskItemTitle",{styles:this.css.taskItemTitle}).inject(taskItemContent);
         var taskItemName = new Element("div.taskItemName",{styles:this.css.taskItemName,text:d.name}).inject(taskItemTitle);
@@ -1196,7 +1217,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         }
 
         var viewName = new Element("div.viewName",{styles:this.css.viewName,text:data.name}).inject(viewItem);
-        var viewStatus = new Element("div.viewStatus",{styles:this.css.viewStatus,text:data.priority}).inject(viewItem);
+        var viewStatus = new Element("div.viewStatus",{styles:this.css.viewStatus,text:data.priority?data.priority.split("||")[0]:""}).inject(viewItem);
         var viewDuty = new Element("div.viewDuty",{styles:this.css.viewDuty}).inject(viewItem);
         var viewDutyIcon = new Element("div.viewDutyIcon",{styles:this.css.viewDutyIcon}).inject(viewDuty);
         if(data.executor && data.executor!=""){

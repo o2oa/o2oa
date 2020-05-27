@@ -555,6 +555,9 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
         var authTaskTitle = new Element("div.authTaskTitle",{styles:this.css.authTitle,text:this.lp.auth.task}).inject(this.projectSettingLayout);
         authTaskTitle.setStyle("margin-top","20px");
         var authTaskContainer = new Element("div.authTaskContainer",{styles:this.css.authContainer}).inject(this.projectSettingLayout);
+        //var authCommentTitle = new Element("div.authCommentTitle",{styles:this.css.authTitle,text:this.lp.auth.comment}).inject(this.projectSettingLayout);
+        //authCommentTitle.setStyle("margin-top","20px");
+        //var authCommentContainer = new Element("div.authCommentContainer",{styles:this.css.authContainer}).inject(this.projectSettingLayout);
 
 
         this.getProjectAuth(this.projectData.id,function(){
@@ -605,6 +608,51 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 }.bind(this)
             });
 
+            /*
+            //允许评论
+            commentFlag=this.projectAuthData.hasOwnProperty("comment") ? this.projectAuthData.comment:true;
+
+            var newTaskContainer = new Element("div.authItemContainer",{styles:this.css.authItemContainer}).inject(authTaskContainer);
+            var newTaskIcon = new Element("div.authItemIcon",{styles:this.css.authItemIcon}).inject(newTaskContainer);
+            var newTaskTitle = new Element("div.authItemTitle",{styles:this.css.authItemTitle,text:this.lp.auth.taskCreate}).inject(newTaskContainer);
+
+            if(!taskCreateFlag) newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+            else newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+
+            var isChanged = false;
+            newTaskContainer.addEvents({
+                mouseenter:function(){
+                    if(isChanged) return;
+                    if(taskCreateFlag){
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected_click.png)"});
+                    }else{
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected_click.png)"});
+                    }
+                },
+                mouseleave:function(){
+                    if(isChanged) { isChanged = false ; return;}
+                    if(taskCreateFlag){
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+                    }else{
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+                    }
+                },
+                click:function(){
+                    if(taskCreateFlag){
+                        this.projectAuthData.taskCreate = false;
+                        taskCreateFlag = false;
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_unselected.png)"});
+                    }else{
+                        this.projectAuthData.taskCreate = true;
+                        taskCreateFlag = true;
+                        newTaskIcon.setStyles({"background-image":"url(/x_component_TeamWork/$ProjectSetting/default/icon/icon_selected.png)"});
+                    }
+
+                    this.saveProjectAuth();
+                    isChanged = true;
+                }.bind(this)
+            });
+            */
         }.bind(this));
 
     },
@@ -614,6 +662,7 @@ MWF.xApplication.TeamWork.ProjectSetting = new Class({
                 this.projectAuthData = {};
             }else{
                 this.projectAuthData = json.data||{};
+                //alert(JSON.stringify(json.data))
             }
             if(callback)callback(json)
         }.bind(this),function(json){
