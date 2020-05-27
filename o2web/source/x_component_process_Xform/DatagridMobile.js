@@ -399,7 +399,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "text": MWF.xApplication.process.Xform.LP.item+n
         }).inject(titleDiv);
         //if (idx==0){
-        if( this.editable !== false ){
+        if( this.editable != false ){
             this._loadActions(titleDiv);
         }
 
