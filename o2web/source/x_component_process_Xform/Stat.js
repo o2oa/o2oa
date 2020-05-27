@@ -37,6 +37,13 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class({
             });
         }.bind(this));
     },
+    isEmpty: function(){
+        var data = this.getData();
+        debugger;
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
+    },
     getData: function(){
         if (!this.stat) return null;
         if (!this.stat.stat) return null;

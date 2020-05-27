@@ -323,6 +323,12 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //this.setData((v) ? v.join(", ") : "");
         this.setData(v);
     },
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
+    },
     getInputData: function(){
         if (this.json.isInput){
             if (this.combox)return this.combox.getData();
