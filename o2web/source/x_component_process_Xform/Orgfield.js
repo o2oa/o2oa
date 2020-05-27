@@ -277,6 +277,12 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         }
         return value || "";
     },
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
+    },
 	getData: function(when){
 		if (this.json.compute == "save") this._setValue(this._computeValue());
 		return this._getBusinessData();

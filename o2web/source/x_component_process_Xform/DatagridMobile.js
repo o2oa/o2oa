@@ -1134,6 +1134,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this._loadTotal();
         return this.totalResaults;
     },
+    isEmpty: function(){
+	    var data = this.getData();
+	    if( !data )return true;
+	    if( typeOf( data ) === "object" ){
+	        if( typeOf( data.data ) !== "array" )return true;
+	        if( data.data.length === 0 )return true;
+        }
+	    return false;
+    },
 	getData: function(){
         if (this.editable!=false){
             if (this.isEdit) this._completeLineEdit();

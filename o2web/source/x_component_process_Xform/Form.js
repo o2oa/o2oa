@@ -1082,7 +1082,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             //        this.setModifedData(data[i], pathList.push(i));
             //    }
             //}
-        } else if (typeOf(data) !== "null") {
+        } else if (typeOf(data) !== "null") { //后台对null是忽略处理的，认为值没有变化
             var od = this.getOrigianlPathData(pathList);
             if (typeOf(data) !== typeOf(od) || data !== od) {
                 this.setModifedDataByPathList(data, pathList);
