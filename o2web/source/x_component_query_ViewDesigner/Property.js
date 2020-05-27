@@ -605,6 +605,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
             select.addEvent("change", function(e){
                 debugger;
+                var sortList = this.view.data.data.orderList;
                 var v = select.options[select.selectedIndex].value;
                 if (v!="none"){
                     var flag = false;
@@ -615,7 +616,18 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                         }
                     }.bind(this));
                     if (!flag) sortList.push({"column": this.data.column, "orderType": select.options[select.selectedIndex].value});
+
+                    var oldOrderList = Array.clone(this.view.data.data.orderList);
+                    this.view.data.data.orderList = [];
+                    this.view.json.data.selectList.each( function ( sel ) {
+                        oldOrderList.each(function(order){
+                            if (order.column == sel.column){
+                                this.view.data.data.orderList.push( order );
+                            }
+                        }.bind(this));
+                    }.bind(this));
                 }else{
+                    var sortList = this.view.data.data.orderList;
                     var deleteItem = null;
                     sortList.each(function(order){
                         if (order.column==this.data.column){
@@ -624,7 +636,6 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     }.bind(this));
                     if (deleteItem) sortList.erase(deleteItem);
                 }
-
             }.bind(this));
 
             var radios = node.getElements("input");
