@@ -178,7 +178,16 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
         if (this.gridData.data){
             this.gridData.data.each(function(data, idx){
-                var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
+                var dataDiv = new Element("div.dataDiv", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}); //.inject(this.node);
+
+                if (this.totalDiv){
+                    dataDiv.inject(this.totalDiv, "before");
+                }else{
+                    dataDiv.inject(this.node);
+                }
+
+                this._createItemTitleNode(dataDiv, idx);
+
                 var tableDiv = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(dataDiv);
                 var table = new Element("table").inject(tableDiv);
                 table.set(this.json.properties);
@@ -249,8 +258,16 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         var _self = this;
 
         if (this.gridData.data.length){
+            if( this.addAction )this.addAction.setStyle("display","none");
             this.gridData.data.each(function(data, idx){
-                var dataDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
+                var dataDiv = new Element("div.dataDiv", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}); //.inject(this.node);
+
+                if (this.totalDiv){
+                    dataDiv.inject(this.totalDiv, "before");
+                }else{
+                    dataDiv.inject(this.node);
+                }
+
                 this._createItemTitleNode(dataDiv, idx);
 
                 var tableDiv = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(dataDiv);
@@ -311,7 +328,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 //this.showEndMoveAction(dataDiv);
             }.bind(this));
         }else{
-            this._loadAddAction();
+            if (this.addAction){
+                this.addAction.setStyle("display", "block");
+            }else{
+                this._loadAddAction();
+            }
+            // this._loadAddAction();
         }
         //this._loadTotal();
     },
@@ -332,7 +354,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "text": MWF.xApplication.process.Xform.LP.add
         }).inject(actionNode);
         var cancelAction = new Element("div", {
-            "styles": this.form.css.mobileDatagridDelActionNode,
+            "styles": this.form.css.mobileDatagridCancelActionNode,
             "text": MWF.xApplication.process.Xform.LP.cancelEdit
         }).inject(actionNode);
         var completeAction = new Element("div", {
@@ -377,7 +399,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "text": MWF.xApplication.process.Xform.LP.item+n
         }).inject(titleDiv);
         //if (idx==0){
+        if( this.editable != false ){
             this._loadActions(titleDiv);
+        }
+
         //}
     },
     _createHelpNode: function(){
@@ -456,11 +481,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.validationMode();
     },
     _loadAddAction: function(){
-        this.addAction = new Element("div", {"styles": this.form.css.gridMobileActionNode}).inject(this.node);
-        this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
-        this.addAction.addEvent("click", function(){
-            this._addLine();
-        }.bind(this));
+	    if( !this.addAction ){
+            this.addAction = new Element("div", {"styles": this.form.css.gridMobileActionNode}).inject(this.node, "top");
+            this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
+            this.addAction.addEvent("click", function(){
+                this._addLine();
+            }.bind(this));
+        }
     },
     _addLine: function(){
         if (this.isEdit){
@@ -941,7 +968,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     },
 
     createTotalDiv: function(){
-        this.totalDiv = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
+        this.totalDiv = new Element("div.totalDiv", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.node);
         var titleNode = new Element("div", {"styles": this.json.itemTitleStyles}).inject(this.totalDiv);
         titleNode.set("text", MWF.xApplication.process.Xform.LP.amount);
         var tableNode = new Element("div", {"styles": this.form.css.gridMobileTableNode }).inject(this.totalDiv);
@@ -1082,6 +1109,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.setData(this._getValue());
     },
     setData: function(data){
+	    debugger;
         if (data){
             this._setBusinessData(data);
             this.gridData = data;
@@ -1089,12 +1117,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) this._completeLineEdit();
+        if (this.isEdit) {
+            this._completeLineEdit();
+        }
+
         if (this.gridData){
 
-            var tables = this.node.getElements("table");
-            for (var i=1; i<tables.length-1; i++){
-                var table = tables[i];
+            var divs = this.node.getElements(".dataDiv");
+            for (var i=0; i<divs.length; i++){
+                var table = divs[i].getElement("table");
                 var tds = table.getElements("td");
                 for (var j=0; j<tds.length; j++){
                     var td = tds[j];
@@ -1114,11 +1145,37 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     }
                 }
             }
-
-            while (tables.length>2){
-                tables[1].destroy();
-                tables = this.node.getElements("table");
+            for( var i=0; i<divs.length; i++ ){
+                divs[i].destroy();
             }
+
+            // var tables = this.node.getElements("table");
+            // for (var i=1; i<tables.length-1; i++){
+            //     var table = tables[i];
+            //     var tds = table.getElements("td");
+            //     for (var j=0; j<tds.length; j++){
+            //         var td = tds[j];
+            //         var moduleTd = td.retrieve("module");
+            //         if (moduleTd){
+            //             this.form.modules.erase(moduleTd);
+            //             delete moduleTd;
+            //         }
+            //     }
+            //     var ths = table.getElements("th");
+            //     for (var k=0; k<ths.length; k++){
+            //         var th = ths[k];
+            //         var moduleTh = th.retrieve("module");
+            //         if (moduleTh){
+            //             this.form.modules.erase(moduleTh);
+            //             delete moduleTh;
+            //         }
+            //     }
+            // }
+            //
+            // while (tables.length>2){
+            //     tables[1].destroy();
+            //     tables = this.node.getElements("table");
+            // }
             if (this.editable!=false){
                 this._loadEditDatagrid();
                 //this._loadReadDatagrid();
