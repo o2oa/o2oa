@@ -107,7 +107,7 @@ class OOAttanceHeaderView: UIView {
         let annotation = BMKPointAnnotation()
         let longitude  = Double((workPlace.longitude)!)
         let latitude  = Double((workPlace.latitude)!)
-        DDLogDebug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(longitude),latitude=\(latitude)")
+        DDLogDebug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(String(describing: longitude)),latitude=\(latitude)")
         annotation.coordinate = CLLocationCoordinate2DMake(latitude!,longitude!);
         annotation.title = workPlace.placeAlias ?? ""
         annotation.subtitle = workPlace.placeName ?? ""

@@ -25,10 +25,10 @@ class OOAttanceTotalController: UITableViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "统计"
+//        title = "统计"
         NotificationCenter.default.addObserver(self, selector: #selector(showDatePicker(_:)), name: OONotification.staticsTotal.notificationName, object: nil)
         tableView.register(UINib.init(nibName: "OOAttandanceTotalItemCell", bundle: nil), forCellReuseIdentifier: "OOAttandanceTotalItemCell")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
         let currentDate = Date()
         let year = String(currentDate.year)
         let month = currentDate.month > 9 ? "\(currentDate.month)" : "0\(currentDate.month)"

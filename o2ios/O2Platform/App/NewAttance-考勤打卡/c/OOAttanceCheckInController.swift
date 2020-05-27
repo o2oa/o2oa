@@ -58,9 +58,9 @@ class OOAttanceCheckInController: UITableViewController {
    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "打卡"
+//        title = "打卡"
         headerView.startBMKMapViewService()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
         //tableView.tableHeaderView = headerView
         //tableView.contentInset = UIEdgeInsets(top: 230, left: 0, bottom: 0, right: 0)
         //register Cell

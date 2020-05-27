@@ -37,13 +37,13 @@ class OOAttanceSettingController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "设置"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "地点管理", style: .plain, target: self, action: #selector(navWorkPlaceManager(_:)))
+//        title = "设置"
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "地点管理", style: .plain, target: self, action: #selector(navWorkPlaceManager(_:)))
         loadAdmin()
         //增加mapView
-        commonDataView()
         commonMapView()
+        commonDataView()
         
     }
     
@@ -204,7 +204,7 @@ extension OOAttanceSettingController:BMKMapViewDelegate {
         let re = BMKReverseGeoCodeSearchOption()
         re.location = coordinate
         let flag = searchAddress.reverseGeoCode(re)
-        DDLogDebug("searchAddress \(flag)")
+        DDLogDebug("coordinate searchAddress \(flag)")
     }
     
     
@@ -213,7 +213,7 @@ extension OOAttanceSettingController:BMKMapViewDelegate {
         let coordinate = mapPoi.pt
         re.location = coordinate
         let flag = searchAddress.reverseGeoCode(re)
-        DDLogDebug("searchAddress \(flag)")
+        DDLogDebug("mapPoi searchAddress \(flag)")
         
     }
     
@@ -224,23 +224,35 @@ extension OOAttanceSettingController:BMKMapViewDelegate {
 
 extension OOAttanceSettingController:BMKLocationManagerDelegate {
     
-    func willStartLocatingUser() {
-        DDLogDebug("willStartLocatingUser")
-        MBProgressHUD_JChat.showMessage(message:"正在定位中，请稍候", toView: self.mapView)
+//    func willStartLocatingUser() {
+//        DDLogDebug("willStartLocatingUser")
+//        MBProgressHUD_JChat.showMessage(message:"正在定位中，请稍候", toView: self.mapView)
+//    }
+    func bmkLocationManager(_ manager: BMKLocationManager, didUpdate location: BMKLocation?, orError error: Error?) {
+        if let loc = location?.location {
+           DDLogDebug("设置 当前位置,\(loc.coordinate.latitude),\(loc.coordinate.longitude)")
+           let user = BMKUserLocation()
+           user.location = loc
+           mapView.updateLocationData(user)
+           mapView.centerCoordinate = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
+            
+           //定位完成停止定位
+           locService.stopUpdatingLocation()
+        }
     }
     
-    func didUpdate(_ userLocation: BMKUserLocation!) {
-        DDLogDebug("当前位置,\(userLocation.location.coordinate.latitude),\(userLocation.location.coordinate.longitude)")
-        mapView.updateLocationData(userLocation)
-        mapView.centerCoordinate = userLocation.location.coordinate
-        //定位完成停止定位
-        locService.stopUpdatingLocation()
-    }
-    
-    func didStopLocatingUser() {
-        
-        MBProgressHUD_JChat.hide(forView: self.mapView, animated: true)
-    }
+//    func didUpdate(_ userLocation: BMKUserLocation!) {
+//        DDLogDebug("当前位置,\(userLocation.location.coordinate.latitude),\(userLocation.location.coordinate.longitude)")
+//        mapView.updateLocationData(userLocation)
+//        mapView.centerCoordinate = userLocation.location.coordinate
+//        //定位完成停止定位
+//        locService.stopUpdatingLocation()
+//    }
+//
+//    func didStopLocatingUser() {
+//
+//        MBProgressHUD_JChat.hide(forView: self.mapView, animated: true)
+//    }
 }
 
 extension OOAttanceSettingController:BMKGeoCodeSearchDelegate {

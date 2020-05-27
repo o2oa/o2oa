@@ -44,17 +44,17 @@ public class OONewAttanceController: UITabBarController, UITabBarControllerDeleg
    private static let myViewControllers: [UIViewController] = {
         //打卡
         let vc1 = OOAttanceCheckInController(nibName: "OOAttanceCheckInController", bundle: nil)
-        let nav1 = ZLNavigationController(rootViewController: vc1)
-        nav1.tabBarItem = UITabBarItem(title: "打卡", image: UIImage(named: "icon_daka_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_daka")!)
+//        let nav1 = ZLNavigationController(rootViewController: vc1)
+        vc1.tabBarItem = UITabBarItem(title: "打卡", image: UIImage(named: "icon_daka_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_daka")!)
         //统计
         let vc2 = OOAttanceTotalController(nibName: "OOAttanceTotalController", bundle: nil)
-        let nav2 = ZLNavigationController(rootViewController: vc2)
-        nav2.tabBarItem = UITabBarItem(title: "统计", image: UIImage(named: "icon_tongji_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_tongji")!)
+//        let nav2 = ZLNavigationController(rootViewController: vc2)
+        vc2.tabBarItem = UITabBarItem(title: "统计", image: UIImage(named: "icon_tongji_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_tongji")!)
         //设置
         let vc3 = OOAttanceSettingController(nibName: "OOAttanceSettingController", bundle: nil)
-        let nav3 = ZLNavigationController(rootViewController: vc3)
-        nav3.tabBarItem = UITabBarItem(title: "设置", image: UIImage(named: "icon_setup_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_setting")!)
-        return [nav1,nav2,nav3]
+//        let nav3 = ZLNavigationController(rootViewController: vc3)
+        vc3.tabBarItem = UITabBarItem(title: "设置", image: UIImage(named: "icon_setup_nor"), selectedImage: O2ThemeManager.image(for: "Icon.at_setting")!)
+        return [vc1,vc2,vc3]
     }()
 
     
