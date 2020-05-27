@@ -105,6 +105,7 @@ MWF.xApplication.TeamWork.Bam = new Class({
         new Element("div.priorityIcon",{ styles: this.css.priorityIcon }).inject(this.priorityDiv);
         new Element("div.priorityText",{styles: this.css.priorityText, text: this.lp.navi.priority}).inject(this.priorityDiv);
 
+    /*
         //自定义字段
         this.fieldDiv = new Element("div.fieldDiv",{styles:this.css.naviItem}).inject(this.naviLayout);
         this.fieldDiv.addEvents({
@@ -146,7 +147,7 @@ MWF.xApplication.TeamWork.Bam = new Class({
         });
         new Element("div.accessIcon",{ styles: this.css.accessIcon }).inject(this.accessDiv);
         new Element("div.accessText",{styles: this.css.accessText, text: this.lp.navi.access}).inject(this.accessDiv);
-
+    */
     },
     createContentLayout:function(){
         this.contentLayout = new Element("div.contentLayout",{styles:this.css.contentLayout}).inject(this.containerLayout);
