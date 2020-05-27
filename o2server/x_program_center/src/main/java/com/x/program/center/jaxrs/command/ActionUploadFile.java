@@ -54,7 +54,7 @@ public class ActionUploadFile  extends BaseAction {
 				}
 			}else {
 				
-			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  fileInputStream, disposition);
+			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  byteArrayInputStream, disposition);
 			}
 			
 			result.setData(wo);
