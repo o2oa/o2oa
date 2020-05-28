@@ -1107,9 +1107,9 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
     isEmpty : function(){
         var data = this.getData();
         if( typeOf(data) === "array" ){
-            return data.length !== 0
+            return data.length == 0
         }else{
-            return !!data;
+            return !data;
         }
     },
     getData: function () {
