@@ -582,11 +582,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.close();
         }, null, null, this.form.json.confirmStyle);
     },
-    _completeLineEdit: function( ev, ignoreValidation ){
-	    if( !ignoreValidation ){
-            if (!this.editValidation()){
-                return false;
-            }
+    _completeLineEdit: function( ev ){
+
+	    debugger;
+
+        if (!this.editValidation()){
+            return false;
         }
 
         this.isEdit = false;
@@ -611,6 +612,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }else{
             //dataNode = new Element("div", {"styles": {"overflow": "hidden", "margin-bottom": "10px"}}).inject(this.table, "before");
             //var tableDiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(dataNode);
+
+            var dataDiv = this.table.getParent(".datagridDataDiv");
+            if(dataDiv){
+                dataDiv.removeClass("datagridDataDiv").addClass("dataDiv");
+            }
+
             var actions = this.table.getParent().getPrevious("div").getLast("div").getElements("div");
             if (actions[0]) actions[0].setStyle("display", "block");
             if (actions[1]) actions[1].setStyle("display", "block");
@@ -1120,7 +1127,20 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) this._completeLineEdit( null,true );
+        // if (this.isEdit) this._completeLineEdit();
+        if( this.isEdit ){
+            this.isEdit = false;
+            if (this.currentEditLine) {
+                this._editorTrGoBack();
+                this.currentEditLine.destroy()
+            }else{
+                var datagridDataDiv = this.node.getElement(".datagridDataDiv");
+                this._editorTrGoBack();
+                if(datagridDataDiv)datagridDataDiv.destroy();
+            }
+            this.currentEditLine = null;
+        }
+
         if (this.gridData){
 
             var divs = this.node.getElements(".dataDiv");

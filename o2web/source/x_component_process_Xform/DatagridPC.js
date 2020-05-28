@@ -405,12 +405,10 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}, null, null, this.form.json.confirmStyle);
 
 	},
-	_completeLineEdit: function( ev, ignoreValidation ){
+	_completeLineEdit: function( ev ){
 		//this.currentEditLine.getElemets(td);
-		if( !ignoreValidation ){
-			if (!this.editValidation()){
-				return false;
-			}
+		if (!this.editValidation()){
+			return false;
 		}
 
 		this.isEdit = false;
@@ -948,7 +946,18 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) this._completeLineEdit(  null,true );
+		debugger;
+
+        // if (this.isEdit) this._completeLineEdit();
+		if( this.isEdit ){ //如果有在编辑的，取消编辑行
+			if (this.currentEditLine) {
+				this.currentEditLine.setStyle("display", "table-row");
+			}
+			this.isEdit = false;
+			this.currentEditLine = null;
+			this._editorTrGoBack();
+		}
+
         if (this.gridData){
             var trs = this.table.getElements("tr");
             for (var i=1; i<trs.length-1; i++){
