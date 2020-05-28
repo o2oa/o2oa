@@ -42,6 +42,8 @@ public class WebServerTools extends JettySeverTools {
 	private static int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
 	private static int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
 
+	private static final String MAP_LOGINPAGE = "loginPage";
+
 	public static Server start(WebServer webServer) throws Exception {
 
 		/**
@@ -175,9 +177,18 @@ public class WebServerTools extends JettySeverTools {
 			}
 			/* 上面的无效 */
 			map.put("app_protocol", "auto");
-			map.put("loginPage", Config.person().getLoginPage());
+			if ((null != Config.portal().getLoginPage())
+					&& (BooleanUtils.isTrue(Config.portal().getLoginPage().getEnable()))) {
+				map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
+			} else if ((null != Config.person().getLoginPage())
+					&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
+				map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
+			} else {
+				map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
+			}
 			map.put("indexPage", Config.portal().getIndexPage());
 			map.put("webSocketEnable", Config.communicate().wsEnable());
+			map.put("urlMapping", Config.portal().getUrlMapping());
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
