@@ -13,6 +13,7 @@ var gulp = require('gulp'),
     changed = require('gulp-changed'),
     gulpif = require('gulp-if'),
     http = require('http');
+    concat = require('gulp-concat');
 var fg = require('fast-glob');
 var logger = require('gulp-logger');
 var assetRev = require('gulp-tm-asset-rev');
@@ -359,7 +360,7 @@ function build_web_minimize(cb) {
 ---------------------------------------------------------------------`);
 
     var dest = 'target/o2server/servers/webServer/';
-    var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
     var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
@@ -382,7 +383,7 @@ function build_web_minimize(cb) {
 
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
-    var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
+    var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
 
     var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
@@ -401,6 +402,76 @@ function build_web_move() {
 }
 exports.build_web_move = build_web_move;
 
+function build_concat_o2(){
+    var src = [
+        'o2web/source/o2_lib/mootools/mootools-1.6.0_all.js',
+        'o2web/source/o2_lib/mootools/plugin/mBox.js',
+        'o2web/source/o2_core/o2.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/o2_core/';
+    return gulp.src(src)
+        .pipe(concat('o2.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+}
+function build_concat_desktop(){
+    let path = "o2_core";
+    var src = [
+        'o2web/source/'+path+'/o2/widget/Common.js',
+        'o2web/source/'+path+'/o2/widget/Dialog.js',
+        'o2web/source/'+path+'/o2/widget/UUID.js',
+        'o2web/source/'+path+'/o2/xDesktop/Common.js',
+        'o2web/source/'+path+'/o2/xDesktop/Actions/RestActions.js',
+        'o2web/source/'+path+'/o2/xAction/RestActions.js',
+        'o2web/source/'+path+'/o2/xDesktop/Access.js',
+        'o2web/source/'+path+'/o2/xDesktop/Dialog.js',
+        'o2web/source/'+path+'/o2/xDesktop/Menu.js',
+        'o2web/source/'+path+'/o2/xDesktop/UserData.js',
+        'o2web/source/x_component_Template/MPopupForm.js',
+        'o2web/source/'+path+'/o2/xDesktop/Authentication.js',
+        'o2web/source/'+path+'/o2/xDesktop/Dialog.js',
+        'o2web/source/'+path+'/o2/xDesktop/Window.js',
+        'o2web/source/x_component_Common/Main.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/o2_core/o2/xDesktop/';
+    return gulp.src(src)
+        .pipe(concat('$all.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+}
+function build_concat_xform(){
+    let path = "x_component_process_Xform";
+    var src = [
+        'o2web/source/' + path + '/Form.js',
+        'o2web/source/' + path + '/$Module.js',
+        'o2web/source/' + path + '/$Input.js',
+        'o2web/source/' + path + '/Div.js',
+        'o2web/source/' + path + '/Combox.js',
+        'o2web/source/' + path + '/DatagridMobile.js',
+        'o2web/source/' + path + '/DatagridPC.js',
+        'o2web/source/' + path + '/Textfield.js',
+        'o2web/source/' + path + '/Personfield.js',
+        'o2web/source/' + path + '/*.js',
+        '!o2web/source/' + path + '/Office.js'
+    ];
+    var dest = 'target/o2server/servers/webServer/'+path+'/';
+    return gulp.src(src)
+        .pipe(concat('$all.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+}
+// function build_concat(){
+//     return gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
+// }
+exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
+
+
 function build_web_v_html() {
     var src = 'o2web/source/x_desktop/*.html';
     var dest = 'target/o2server/servers/webServer/x_desktop/';
@@ -410,7 +481,7 @@ function build_web_v_html() {
         .pipe(gutil.noop());
 }
 function build_web_v_o2() {
-    var src = 'o2web/source/o2_core/o2.js';
+    var src = 'target/o2server/servers/webServer/o2_core//o2.js';
     var dest = 'target/o2server/servers/webServer/o2_core/';
     return gulp.src(src)
         .pipe(assetRev())
@@ -487,7 +558,7 @@ function chmod_commons(){
 function chmod_sh(){
     return (shell.task('chmod 777 target/o2server/*.sh'))();
 }
-exports.build_web = gulp.series(build_web_minimize, build_web_move, build_web_v_html, build_web_v_o2);
+exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform), build_web_v_html, build_web_v_o2);
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh);
 }else{
