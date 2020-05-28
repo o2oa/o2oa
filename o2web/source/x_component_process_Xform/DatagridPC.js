@@ -946,8 +946,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
             this.gridData = this._getValue();
         }
 
-		debugger;
-
         // if (this.isEdit) this._completeLineEdit();
 		if( this.isEdit ){ //如果有在编辑的，取消编辑行
 			if (this.currentEditLine) {
