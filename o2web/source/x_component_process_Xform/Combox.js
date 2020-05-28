@@ -182,9 +182,9 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
     isEmpty : function(){
         var data = this.getData();
         if( typeOf(data) === "array" ){
-            return data.length !== 0;
+            return data.length === 0;
         }else{
-            return !!data;
+            return !data;
         }
     },
     getInputData: function(){

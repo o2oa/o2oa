@@ -3,7 +3,9 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     Implements: [Events],
     Extends: MWF.APPTextfield,
     iconStyle: "numberIcon",
-
+    isEmpty : function(){
+        return !this.getData();
+    },
     getInputData: function(){
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");

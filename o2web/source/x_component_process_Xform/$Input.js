@@ -217,7 +217,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
 		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
     isEmpty : function(){
-	    return !!this.getData();
+	    var data = this.getData();
+	    return !data || !data.trim();
     },
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
