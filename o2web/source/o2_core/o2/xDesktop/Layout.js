@@ -1335,7 +1335,7 @@ MWF.xDesktop.Layout.Top = new Class({
         this.showApplicationMenu();
 
         window.setTimeout(function(){
-
+            o2.require("o2.widget.PinYin", null, false);
             this.getApplicationsCatalogue(function(catalog){
                 //var currentName = this.layout.session.user.name;
                 var user = this.layout.session.user;
