@@ -118,7 +118,7 @@ public abstract class Plan extends GsonPropertyObject {
 							}else{
 								try {
 									c1 = Integer.parseInt(o1.toString());
-								} catch (NumberFormatException e) {
+								} catch (Exception e) {
 									c1 = new Integer(999999999);
 								}
 							}
@@ -127,7 +127,7 @@ public abstract class Plan extends GsonPropertyObject {
 							}else{
 								try {
 									c2 = Integer.parseInt(o2.toString());
-								} catch (NumberFormatException e) {
+								} catch (Exception e) {
 									c2 = new Integer(999999999);
 								}
 							}
@@ -425,14 +425,12 @@ public abstract class Plan extends GsonPropertyObject {
 		List<SelectEntry> list = new TreeList<>();
 		SelectEntry _g = this.findGroupSelectEntry();
 		if (null != _g) {
-			if (StringUtils.equals(SelectEntry.ORDER_ASC, _g.orderType)
-					|| StringUtils.equals(SelectEntry.ORDER_DESC, _g.orderType)) {
+			if (_g.isOrderType()) {
 				list.add(_g);
 			}
 		}
 		for (SelectEntry _o : this.selectList) {
-			if (StringUtils.equals(SelectEntry.ORDER_ASC, _o.orderType)
-					|| StringUtils.equals(SelectEntry.ORDER_DESC, _o.orderType)) {
+			if (_o.isOrderType()) {
 				list.add(_o);
 			}
 		}
