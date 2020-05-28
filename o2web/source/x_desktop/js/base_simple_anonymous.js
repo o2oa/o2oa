@@ -48,15 +48,26 @@ o2.addReady(function () {
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
     o2.load(lp, function () {
         lpLoaded = true;
-        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+
+        var modules = ["o2.xDesktop.$all"];
+        o2.require(modules, {
+            "onSuccess": function () {
+                commonLoaded = true;
+                if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+            },
+            "onEvery": function () {
+                _loadProgressBar();
+            }
+        });
+        //if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
-    var modules = ["o2.xDesktop.Common", "o2.xDesktop.Actions.RestActions", "o2.xAction.RestActions"];
-    o2.require(modules, {
-        "onSuccess": function () {
-            commonLoaded = true;
-            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
-        }
-    });
+    // var modules = ["o2.xDesktop.Common", "o2.xDesktop.Actions.RestActions", "o2.xAction.RestActions"];
+    // o2.require(modules, {
+    //     "onSuccess": function () {
+    //         commonLoaded = true;
+    //         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+    //     }
+    // });
     o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         layout.config = config;
         configLoaded = true
@@ -80,48 +91,48 @@ o2.addReady(function () {
             // layout.user = json.data;
             // layout.session = {};
             // layout.session.user = json.data;
-            (function (layout) {
-                var _loadResource = function (callback) {
-                    var isLoadedA = false;
-                    var isLoadedB = false;
-                    //var isLoadedC = false;
-
-                    var modules = [
-                        "o2.xDesktop.Dialog",
-                        "o2.xDesktop.UserData",
-                        "o2.xDesktop.Access",
-                        "o2.widget.UUID",
-                        "o2.xDesktop.Menu",
-                        "o2.xDesktop.Authentication",
-                        // "o2.xDesktop.shortcut",
-                        "o2.widget.PinYin",
-                        "o2.xDesktop.Access"
-                        // "o2.xDesktop.MessageMobile"
-                    ];
-                    //o2.xDesktop.requireApp("Common", "", null, false);
-                    var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
-
-                    o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { isLoadedA = true; _check(); });
-                    o2.require("o2.widget.Common", function () {
-                        o2.require(modules, {
-                            "onSuccess": function () {
-                                o2.requireApp("Common", "", function () { isLoadedB = true; _check(); })
-                            }
-                        });
-                    });
-                };
-
-                var _loadContent = function () {
-                    //_loadResource(function () {
+            // (function (layout) {
+            //     var _loadResource = function (callback) {
+            //         var isLoadedA = false;
+            //         var isLoadedB = false;
+            //         //var isLoadedC = false;
+            //
+            //         var modules = [
+            //             "o2.xDesktop.Dialog",
+            //             "o2.xDesktop.UserData",
+            //             "o2.xDesktop.Access",
+            //             "o2.widget.UUID",
+            //             "o2.xDesktop.Menu",
+            //             "o2.xDesktop.Authentication",
+            //             // "o2.xDesktop.shortcut",
+            //             "o2.widget.PinYin",
+            //             "o2.xDesktop.Access"
+            //             // "o2.xDesktop.MessageMobile"
+            //         ];
+            //         //o2.xDesktop.requireApp("Common", "", null, false);
+            //         var _check = function () { if (isLoadedA && isLoadedB) if (callback) callback(); };
+            //
+            //         o2.load(["../o2_lib/mootools/plugin/mBox.min.js"], function () { isLoadedA = true; _check(); });
+            //         o2.require("o2.widget.Common", function () {
+            //             o2.require(modules, {
+            //                 "onSuccess": function () {
+            //                     o2.requireApp("Common", "", function () { isLoadedB = true; _check(); })
+            //                 }
+            //             });
+            //         });
+            //     };
+            //
+            //     var _loadContent = function () {
+            //         //_loadResource(function () {
                         while (layout.readys && layout.readys.length) {
                             layout.readys.shift().apply(window);
                         }
-
-                    //});
-                };
-
-                _loadContent();
-            })(layout);
+            //
+            //         //});
+            //     };
+            //
+            //     _loadContent();
+            // })(layout);
         };
         // var json = {
         //     user: "anonymous",
