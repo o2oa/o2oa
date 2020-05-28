@@ -2,7 +2,7 @@ MWF.require(["MWF.widget.Common", "MWF.widget.Identity", "MWF.widget.O2Identity"
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
-MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
+//MWF.xDesktop.requireApp("process.Xform", "Package", null, false);
 
 MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     Implements: [Options, Events],

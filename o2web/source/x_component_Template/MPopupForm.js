@@ -1,4 +1,5 @@
-var MPopupForm = new Class({
+MWF.xApplication.Template = MWF.xApplication.Template || {};
+MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {

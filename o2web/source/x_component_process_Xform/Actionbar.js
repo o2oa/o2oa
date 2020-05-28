@@ -1,4 +1,4 @@
-//MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
+MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 //MWF.require("MWF.widget.Tree", null, false);
 //MWF.require("MWF.widget.Toolbar", null, false);
 MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
