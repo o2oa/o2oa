@@ -64,6 +64,7 @@
                 "gulp-tm-asset-rev": "0.0.16",
                 "gulp-tm-uglify": "3.0.1",
                 "gulp-util": "^3.0.8",
+                "gulp-concat": "^2.6.1",
                 "minimist": "^1.2.0",
                 "progress-stream": "^2.0.0",
                 "request": "^2.88.2",
