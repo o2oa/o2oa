@@ -101,11 +101,26 @@
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">排序:</td>
-                        <td class="editTableValue"><select name="orderType">
+                        <td class="editTableValue"><select name="orderType" onchange="
+                            var node = $(this).getParent('table').getElement('.MWFColumnExportNumberOrder');
+                            if(this.options[this.selectedIndex].value==='none'){
+                                node.hide();
+                                node.getElements('input')[1].click();
+                            }else{
+                                node.setStyle('display','table-row');
+                            }
+                        ">
                             <option value="none" text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'selected':''}>无</option>
                             <option value="asc" text{($.orderType)=='asc' ?'selected':''}>升序</option>
                             <option value="desc" text{($.orderType)=='desc' ?'selected':''}>降序</option>
                         </select></td>
+                    </tr>
+                    <tr class="MWFColumnExportNumberOrder" style="display: text{(($.orderType)!='asc' && ($.orderType)!='desc') ?'none':'table-row'}">
+                        <td class="editTableTitle">转换成数字排序:</td>
+                        <td class="editTableValue">
+                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="true" text{($.numberOrder)===true?'checked':''}/>是
+                            <input class="MWFWorkDataCheck" name="numberOrder" type="radio" value="false" text{($.numberOrder)!==true?'checked':''}/>否
+                        </td>
                     </tr>
                     <tr class="MWFColumnExportGroup">
                         <td class="editTableTitle">分类:</td>
