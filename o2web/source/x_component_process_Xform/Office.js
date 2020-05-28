@@ -1203,6 +1203,10 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         this.fileUploadNode = this.uploadFileAreaNode.getFirst();
         this.uploadFileAreaNode.inject(this.officeForm);
     },
+    isEmpty : function(){
+        var data = this.getData();
+        return !data.trim();
+    },
     getData: function(){
         if (this.officeOCX && (this.officeOCX.DocType==1 || this.officeOCX.DocType==6)){
             this.officeOCX.ActiveDocument.Application.Selection.WholeStory();

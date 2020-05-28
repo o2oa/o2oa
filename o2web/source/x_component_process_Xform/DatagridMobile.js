@@ -582,10 +582,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.close();
         }, null, null, this.form.json.confirmStyle);
     },
-    _completeLineEdit: function(){
-        if (!this.editValidation()){
-            return false;
+    _completeLineEdit: function( ev, ignoreValidation ){
+	    if( !ignoreValidation ){
+            if (!this.editValidation()){
+                return false;
+            }
         }
+
         this.isEdit = false;
         //var flag = true;
 
@@ -1109,7 +1112,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.setData(this._getValue());
     },
     setData: function(data){
-	    debugger;
+        // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
         if (data){
             this._setBusinessData(data);
             this.gridData = data;
@@ -1117,10 +1120,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) {
-            this._completeLineEdit();
-        }
-
+        if (this.isEdit) this._completeLineEdit( null,true );
         if (this.gridData){
 
             var divs = this.node.getElements(".dataDiv");
@@ -1190,6 +1190,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
     getTotal: function(){
         this._loadTotal();
         return this.totalResaults;
+    },
+    isEmpty: function(){
+	    var data = this.getData();
+	    if( !data )return true;
+	    if( typeOf( data ) === "object" ){
+	        if( typeOf( data.data ) !== "array" )return true;
+	        if( data.data.length === 0 )return true;
+        }
+	    return false;
     },
 	getData: function(){
         if (this.editable!=false){
