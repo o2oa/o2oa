@@ -105,33 +105,38 @@ public abstract class Plan extends GsonPropertyObject {
 				for (SelectEntry en : orderList) {
 					o1 = r1.find(en.column);
 					o2 = r2.find(en.column);
-					if (null == o1 && null == o2) {
+					if(BooleanUtils.isTrue(en.numberOrder)){
+						if(StringUtils.isEmpty(o1.toString())){
+							c1 = Double.MAX_VALUE;
+						}else{
+							try {
+								c1 = Double.parseDouble(o1.toString());
+							} catch (Exception e) {
+								c1 = Double.MAX_VALUE;
+							}
+						}
+						if(StringUtils.isEmpty(o2.toString())){
+							c2 = Double.MAX_VALUE;
+						}else{
+							try {
+								c2 = Double.parseDouble(o2.toString());
+							} catch (Exception e) {
+								c2 = Double.MAX_VALUE;
+							}
+						}
+						if (StringUtils.equals(SelectEntry.ORDER_ASC, en.orderType)) {
+							comp = c1.compareTo(c2);
+						} else {
+							comp = c2.compareTo(c1);
+						}
+					}else if (null == o1 && null == o2) {
 						comp = 0;
 					} else if (null == o1) {
 						comp = -1;
 					} else if (null == o2) {
 						comp = 1;
 					} else {
-						if(BooleanUtils.isTrue(en.numberOrder)){
-							if(StringUtils.isEmpty(o1.toString())){
-								c1 = new Integer(999999999);
-							}else{
-								try {
-									c1 = Integer.parseInt(o1.toString());
-								} catch (Exception e) {
-									c1 = new Integer(999999999);
-								}
-							}
-							if(StringUtils.isEmpty(o1.toString())){
-								c2 = new Integer(999999999);
-							}else{
-								try {
-									c2 = Integer.parseInt(o2.toString());
-								} catch (Exception e) {
-									c2 = new Integer(999999999);
-								}
-							}
-						}else if (o1.getClass() == o2.getClass()) {
+						if (o1.getClass() == o2.getClass()) {
 							c1 = (Comparable) o1;
 							c2 = (Comparable) o2;
 						} else {
