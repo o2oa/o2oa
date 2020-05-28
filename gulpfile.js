@@ -405,6 +405,7 @@ exports.build_web_move = build_web_move;
 function build_concat_o2(){
     var src = [
         'o2web/source/o2_lib/mootools/mootools-1.6.0_all.js',
+        'o2web/source/o2_lib/mootools/plugin/mBox.js',
         'o2web/source/o2_core/o2.js'
     ];
     var dest = 'target/o2server/servers/webServer/o2_core/';
