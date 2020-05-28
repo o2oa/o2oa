@@ -583,9 +583,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }, null, null, this.form.json.confirmStyle);
     },
     _completeLineEdit: function( ev ){
-
-	    debugger;
-
         if (!this.editValidation()){
             return false;
         }
@@ -851,8 +848,6 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 datagrid._loadSequence();
                 datagrid._loadTotal();
                 datagrid.getData();
-
-                debugger;
 
                 if (!_self.gridData.data.length){
                     if (_self.addAction){
