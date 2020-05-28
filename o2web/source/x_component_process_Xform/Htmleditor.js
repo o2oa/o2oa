@@ -372,6 +372,9 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
     resetData: function(){
         this.setData(this._getBusinessData());
     },
+    isEmpty : function(){
+        return !this.getData().trim();
+    },
     getData: function(){
         this.clearEcnetNodes();
         return this.editor.getData();

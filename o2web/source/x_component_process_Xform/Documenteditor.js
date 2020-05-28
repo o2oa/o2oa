@@ -1796,6 +1796,11 @@ debugger;
             this._repage();
         }.bind(this));
     },
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "object" )return true;
+        return !data.filetext || data.filetext===this.json.defaultValue.filetext;
+    },
     getData: function(){
         //if (this.editMode){
         if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
