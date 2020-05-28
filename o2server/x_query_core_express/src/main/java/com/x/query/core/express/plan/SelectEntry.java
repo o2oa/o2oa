@@ -55,4 +55,12 @@ public class SelectEntry extends GsonPropertyObject {
 		return this.getColumn();
 	}
 
+	public boolean isOrderType(){
+		if (StringUtils.equals(SelectEntry.ORDER_ASC, this.orderType)
+				|| StringUtils.equals(SelectEntry.ORDER_DESC, this.orderType)) {
+			return true;
+		}
+		return false;
+	}
+
 }
