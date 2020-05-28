@@ -1205,7 +1205,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     isEmpty : function(){
         var data = this.getData();
-        return !!data;
+        return !data.trim();
     },
     getData: function(){
         if (this.officeOCX && (this.officeOCX.DocType==1 || this.officeOCX.DocType==6)){
