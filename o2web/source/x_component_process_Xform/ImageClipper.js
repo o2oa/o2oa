@@ -86,6 +86,9 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class({
         var value = this._getBusinessData() || "";
         return {"value": [value], "text": [value]};
     },
+    isEmpty : function(){
+        return !!this.getData();
+    },
     getData: function( data ){
         return this._getBusinessData() || "";
     },

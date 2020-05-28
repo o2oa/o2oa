@@ -180,6 +180,12 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		//}
 		//return (value.length==1) ? value[0] : value;
     //},
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
+    },
     getInputData: function(){
         if (this.readonly || this.json.isReadonly ){
             return this._getBusinessData();
