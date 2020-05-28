@@ -1,12 +1,13 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
-
-import org.apache.commons.io.FileUtils;
+import java.util.LinkedHashMap;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
+
+import org.apache.commons.io.FileUtils;
 
 public class Portal extends ConfigObject {
 
@@ -16,7 +17,12 @@ public class Portal extends ConfigObject {
 
 	public Portal() {
 		this.indexPage = new IndexPage();
+		this.loginPage = new LoginPage();
+		this.urlMapping = null;
 	}
+
+	@FieldDescribe("url转换配置.")
+	private LinkedHashMap<String, String> urlMapping;
 
 	@FieldDescribe("定制首页面设置.")
 	private IndexPage indexPage;
@@ -28,8 +34,63 @@ public class Portal extends ConfigObject {
 		return this.indexPage;
 	}
 
+	@FieldDescribe("定制登录页面设置.")
+	private LoginPage loginPage;
+
+	public LoginPage getLoginPage() {
+		if (null == loginPage) {
+			this.loginPage = new LoginPage();
+		}
+		return this.loginPage;
+	}
+
 	public void setIndexPage(IndexPage indexPage) {
 		this.indexPage = indexPage;
+	}
+
+	public static class LoginPage extends ConfigObject {
+
+		public static LoginPage defaultInstance() {
+			return new LoginPage();
+		}
+
+		public LoginPage() {
+			this.enable = false;
+			this.portal = "";
+			this.page = "";
+		}
+
+		@FieldDescribe("是否启用定制登录页面.")
+		private Boolean enable;
+		@FieldDescribe("指定登录页面所属的portal,可以用id,name,alias.")
+		private String portal;
+		@FieldDescribe("指定的登录页面,可以使用name,alias,id")
+		private String page;
+
+		public Boolean getEnable() {
+			return enable;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+
+		public String getPortal() {
+			return portal;
+		}
+
+		public void setPortal(String portal) {
+			this.portal = portal;
+		}
+
+		public String getPage() {
+			return page;
+		}
+
+		public void setPage(String page) {
+			this.page = page;
+		}
+
 	}
 
 	public static class IndexPage extends ConfigObject {
@@ -81,4 +142,9 @@ public class Portal extends ConfigObject {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PORTAL);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 	}
+
+	public LinkedHashMap<String, String> getUrlMapping() {
+		return urlMapping;
+	}
+
 }
