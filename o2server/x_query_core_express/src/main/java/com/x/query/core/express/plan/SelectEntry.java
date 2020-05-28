@@ -19,6 +19,7 @@ public class SelectEntry extends GsonPropertyObject {
 		this.code = "";
 		this.allowOpen = false;
 		this.groupEntry = false;
+		this.numberOrder = false;
 	}
 
 	public Boolean available() {
@@ -38,6 +39,7 @@ public class SelectEntry extends GsonPropertyObject {
 	public Boolean allowOpen;
 	public Boolean isName;
 	public Boolean groupEntry;
+	public Boolean numberOrder;
 
 	public String getColumn() {
 		if (StringUtils.isNotEmpty(this.column)) {
