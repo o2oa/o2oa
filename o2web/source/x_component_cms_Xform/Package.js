@@ -17,10 +17,12 @@ MWF.xDesktop.requireApp("cms.Xform", "ModuleImplements", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "Checkbox", null, false);
 //MWF.xDesktop.requireApp("cms.Xform", "Button", null, false);
 
+MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
 MWF.xApplication.cms.Xform.Div = MWF.CMSDiv = new Class({
 	Extends: MWF.APPDiv
 });
 
+MWF.xDesktop.requireApp("process.Xform", "Common", null, false);
 MWF.xApplication.cms.Xform.Common = MWF.CMSCommon =  new Class({
     Extends: MWF.APPCommon
 });
@@ -29,6 +31,7 @@ MWF.xApplication.cms.Xform.Common = MWF.CMSCommon =  new Class({
 //	Extends: MWF.APPImage
 //});
 
+MWF.xDesktop.requireApp("process.Xform", "Image", null, false);
 MWF.xApplication.cms.Xform.Image = MWF.CMSImage =  new Class({
     Extends: MWF.APP$Module,
     _loadUserInterface: function(){
