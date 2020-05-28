@@ -1,3 +1,4 @@
+MWF.xDesktop.requireApp("process.Xform", "Div", null, false);
 MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
 	Extends: MWF.APPDiv,
     options: {
