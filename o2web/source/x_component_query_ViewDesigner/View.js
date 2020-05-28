@@ -177,8 +177,9 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }
 
                             json.data.groupGrid.each(function(line, idx){
-                                var groupTr = new Element("tr", {"styles":
-                                    this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                                var groupTr = new Element("tr", {
+                                    "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode,
+                                    "data-is-group" : "yes"
                                 }).inject(this.viewContentTableNode);
                                 var colSpan = this.items.length ;
                                 var td = new Element("td", {
@@ -1334,6 +1335,18 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
             this.close();
         }, null);
     },
+    isOrderColumn : function(){
+        var sortList = this.view.json.data.orderList || [];
+        var flag = false;
+        sortList.each(function(order){
+            if (order.column==this.json.column)flag = true;
+        }.bind(this));
+        return flag;
+    },
+    isGroupColumn : function() {
+        if (!this.view.json || !this.view.json.data || !this.view.json.data.group) return false;
+        return this.view.json.data.group.column === this.json.column;
+    },
     destroy: function(){
         if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
         if (this.actionArea) this.actionArea.destroy();
@@ -1344,8 +1357,17 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
 
         if (this.view.viewContentTableNode){
             var trs = this.view.viewContentTableNode.getElements("tr");
+            var isGroup = this.isGroupColumn();
             trs.each(function(tr){
-                tr.deleteCell(idx);
+                if( isGroup ){
+                    if( tr.get("data-is-group") === "yes" ){
+                        tr.destroy()
+                    }
+                }else{
+                    if( tr.get("data-is-group") !== "yes" ){
+                        tr.deleteCell(idx);
+                    }
+                }
             }.bind(this));
         }
 
