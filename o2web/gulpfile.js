@@ -198,6 +198,7 @@ function createO2ConcatTask(path, isMin, thisOptions) {
         var option = thisOptions || options;
         var src = [
             'source/o2_lib/mootools/mootools-1.6.0_all.js',
+            'source/o2_lib/mootools/plugin/mBox.js',
             'source/' + path + '/o2.js'
         ];
         var dest = option.dest+'/' + path + '/';
