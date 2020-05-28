@@ -29,6 +29,7 @@
   "devDependencies": {
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
+    "gulp-concat": "^2.6.1",
     "gulp-deleted": "^1.0.0",
     "gulp-ftp": "^1.1.0",
     "gulp-if": "^2.0.2",
@@ -38,7 +39,7 @@
     "gulp-tm-uglify": "3.0.1",
     "gulp-uglify-es": "^2.0.0",
     "merge-stream": "^1.0.1",
-    "readline-sync": "^1.4.10",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "readline-sync": "^1.4.10"
   }
 }

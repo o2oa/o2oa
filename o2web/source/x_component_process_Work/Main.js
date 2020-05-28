@@ -527,7 +527,11 @@ MWF.xApplication.process.Work.Main = new Class({
 
             this.formNode.empty();
             this.formNode.setStyles(this.css.formNode);
-            MWF.xDesktop.requireApp("process.Xform", "Form", function(){
+            var uri = window.location.href;
+            //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
+            var cl = "$all";
+            MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
                     "data": this.data,
