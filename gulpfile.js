@@ -360,7 +360,7 @@ function build_web_minimize(cb) {
 ---------------------------------------------------------------------`);
 
     var dest = 'target/o2server/servers/webServer/';
-    var src_min = ['o2web/source/**/*.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
+    var src_min = ['o2web/source/**/*.js', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**', '!o2web/source/o2_lib/**/*'];
 
     var entries = fg.sync(src_min, { dot: false});
     var size = entries.length;
@@ -383,7 +383,7 @@ function build_web_minimize(cb) {
 
 function build_web_move() {
     var dest = 'target/o2server/servers/webServer/';
-    var src_move = ['o2web/source/**/*', '!**/*.spec.js', '!**/test/**'];
+    var src_move = ['o2web/source/**/*', '!o2web/source/o2_core/o2.js', '!**/*.spec.js', '!**/test/**'];
 
     var entries = fg.sync(src_move, { dot: false});
     var size = entries.length;
@@ -480,7 +480,7 @@ function build_web_v_html() {
         .pipe(gutil.noop());
 }
 function build_web_v_o2() {
-    var src = 'o2web/source/o2_core/o2.js';
+    var src = 'target/o2server/servers/webServer/o2_core//o2.js';
     var dest = 'target/o2server/servers/webServer/o2_core/';
     return gulp.src(src)
         .pipe(assetRev())
