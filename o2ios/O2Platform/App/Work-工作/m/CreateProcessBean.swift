@@ -25,6 +25,45 @@ class CreateProcessBean:Mappable {
         identity <- map["identity"]
     }
 }
+//草稿对象
+class ProcessDraftBean: Mappable {
+    var id: String?
+    var title: String?
+    var creatorPerson: String?
+    var creatorIdentity: String?
+    var creatorUnit: String?
+    var application: String?
+    var applicationName: String?
+    var applicationAlias: String?
+    var process: String?
+    var processName: String?
+    var processAlias: String?
+    var workCreateType: String?
+    var form: String?
+    init(){
+           
+   }
+   
+   required init?(map: Map) {
+       
+   }
+    func mapping(map: Map) {
+        id <- map["id"]
+        title <- map["title"]
+        creatorPerson <- map["creatorPerson"]
+        creatorIdentity <- map["creatorIdentity"]
+        creatorUnit <- map["creatorUnit"]
+        application <- map["application"]
+        applicationName <- map["applicationName"]
+        applicationAlias <- map["applicationAlias"]
+        process <- map["process"]
+        processName <- map["processName"]
+        processAlias <- map["processAlias"]
+        workCreateType <- map["workCreateType"]
+        form <- map["form"]
+    }
+   
+}
 
 class CmsDocData:Mappable {
     var isNewDocument:Bool? = true

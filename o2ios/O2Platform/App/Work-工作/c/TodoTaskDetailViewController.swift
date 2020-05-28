@@ -28,6 +28,7 @@ struct TodoTaskJS {
     static let DATA_WORK = "JSON.encode(layout.appForm.businessData.work);"
     static let DATA_BUSINESS = "JSON.encode(layout.appForm.getData());"
     static let CHECK_FORM = "layout.appForm.formValidation(null, null)"
+    static let CLOSE_WORK = "layout.app.appForm.finishOnMobile()"
 
     static func getDataWithJS(_ webView:UIWebView,jscode:String) -> [String:AnyObject] {
         let str = webView.stringByEvaluatingJavaScript(from: jscode)
@@ -68,6 +69,7 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
     
     var hasToolbar:Bool = false
     
+    //任务模式
     var todoTask:TodoTask? {
         didSet {
             var url:String?
@@ -83,6 +85,15 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
             self.loadUrl = url
         }
     }
+    //草稿模式
+    var draft: ProcessDraftBean? {
+        didSet {
+            if let json = draft?.toJSONString() {
+                self.loadUrl =  AppDelegate.o2Collect.genrateURLWithWebContextKey(DesktopContext.DesktopContextKey, query: DesktopContext.todoDraftQuery, parameter: ["##draft##":json as AnyObject])
+            }
+            
+        }
+    }
     
     var myTask: [String : AnyObject]?
     var myRead: [String : AnyObject]?
@@ -95,7 +106,7 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         super.viewDidLoad()
         // 返回按钮重新定义
         self.navigationItem.hidesBackButton = true
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "icon_fanhui"), style: .plain, target: self, action: #selector(goBack))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "icon_fanhui"), style: .plain, target: self, action: #selector(closeForBackBtn))
         self.navigationItem.leftItemsSupplementBackButton = true
         // 文档查看器
         self.qlController.dataSource = qlController
@@ -145,15 +156,23 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         super.theWebView()
         self.webViewContainer.addSubview(self.webView)
         self.webView.translatesAutoresizingMaskIntoConstraints = false
-        let top = NSLayoutConstraint(item: self.webView, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
-        let bottom = NSLayoutConstraint(item: self.webView, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
-        let trailing = NSLayoutConstraint(item: self.webView, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 0)
-        let leading = NSLayoutConstraint(item: self.webView, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.leading, multiplier: 1, constant: 0)
+        let top = NSLayoutConstraint(item: self.webView!, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
+        
+        let bottom = NSLayoutConstraint(item: self.webView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
+        
+        let trailing = NSLayoutConstraint(item: self.webView!, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 0)
+        
+        let leading = NSLayoutConstraint(item: self.webView!, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.leading, multiplier: 1, constant: 0)
+        
         self.webViewContainer.addConstraints([top, bottom, trailing, leading])
         webView.navigationDelegate = self
         webView.uiDelegate = self
         DDLogDebug("url:\(String(describing: loadUrl))")
-        webView.load(Alamofire.request(loadUrl!).request!)
+        if let url = loadUrl {
+            webView.load(Alamofire.request(url).request!)
+        }else {
+            webView.loadHTMLString("<h2>没有获取到正确的URL！</h2>", baseURL: nil)
+        }
         webView.allowsBackForwardNavigationGestures = true
     }
     
@@ -191,6 +210,18 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
     
 
 //MARK: - private func
+    
+    @objc func closeForBackBtn() {
+        DDLogDebug("点击关闭按钮了。。。。。。。。。")
+        //调用 js的 关闭当前工作的 函数 js会做新建检查工作
+        self.webView.evaluateJavaScript(TodoTaskJS.CLOSE_WORK, completionHandler: { (data, err) in
+            DDLogDebug("执行关闭js了。。 data:\(String(describing: data)) err:\(String(describing: err))")
+            guard err == nil else {
+                self.goBack()
+                return
+            }
+        })
+    }
     
     @objc func goBack() {
         DDLogDebug("backFlag = \(backFlag)")
@@ -630,18 +661,23 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
             self.hasToolbar = true
             self.view.addSubview(self.toolbarView)
             self.toolbarView.translatesAutoresizingMaskIntoConstraints = false
-            let heightC = NSLayoutConstraint(item: self.toolbarView, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 0.0, constant: 44)
+            let heightC = NSLayoutConstraint(item: self.toolbarView!, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 0.0, constant: 44)
+            
             self.toolbarView.addConstraint(heightC)
-            let bottom = NSLayoutConstraint(item: self.toolbarView, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
-            let trailing = NSLayoutConstraint(item: self.toolbarView, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 0)
-            let leading = NSLayoutConstraint(item: self.toolbarView, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.leading, multiplier: 1, constant: 0)
+            
+            let bottom = NSLayoutConstraint(item: self.toolbarView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
+            
+            let trailing = NSLayoutConstraint(item: self.toolbarView!, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 0)
+            
+            let leading = NSLayoutConstraint(item: self.toolbarView!, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.leading, multiplier: 1, constant: 0)
+            
             self.view.addConstraints([bottom, leading, trailing])
             self.view.constraints.forEach { (constraint) in
                 if constraint.identifier == "webViewBottomConstraint" {
                     self.view.removeConstraint(constraint)
                 }
             }
-            let webcTop = NSLayoutConstraint(item: self.webViewContainer, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.toolbarView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
+            let webcTop = NSLayoutConstraint(item: self.webViewContainer!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.toolbarView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
             self.view.addConstraint(webcTop)
             self.view.layoutIfNeeded()
         }
@@ -913,6 +949,8 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
                 case .unknown:
                     DDLogDebug("Unknown")
                     
+                @unknown default:
+                    DDLogDebug("Unknown")
                 }
             }
         }, completion: nil)
@@ -1089,6 +1127,8 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
                 case .unknown:
                     DDLogDebug("Unknown")
                     
+                @unknown default:
+                    DDLogDebug("Unknown")
                 }
             }
         }, completion: nil)

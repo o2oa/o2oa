@@ -71,6 +71,10 @@ extension String {
         return self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
     }
     
+    var urlEncoded: String {
+        return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+    }
+    
     
     // MARK:- 获取字符串的CGSize
     func getSize(with fontSize: CGFloat) -> CGSize {
