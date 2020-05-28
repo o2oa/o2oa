@@ -555,10 +555,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.close();
         }, null, null, this.form.json.confirmStyle);
     },
-    _completeLineEdit: function(){
-        if (!this.editValidation()){
-            return false;
+    _completeLineEdit: function( ev, ignoreValidation ){
+	    if( !ignoreValidation ){
+            if (!this.editValidation()){
+                return false;
+            }
         }
+
         this.isEdit = false;
         //var flag = true;
 
@@ -1082,6 +1085,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.setData(this._getValue());
     },
     setData: function(data){
+        // if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
         if (data){
             this._setBusinessData(data);
             this.gridData = data;
@@ -1089,7 +1093,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) this._completeLineEdit();
+        if (this.isEdit) this._completeLineEdit( null,true );
         if (this.gridData){
 
             var tables = this.node.getElements("table");
