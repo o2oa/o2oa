@@ -293,38 +293,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         layout.openApplication(null, appName, option || {}, m_status);
     };
 
-    // layout.getAppUrlMapping = function(url){
-    //     return this.getUrlMapping(url, "app");
-    // };
-    // layout.getCenterUrlMapping = function(url){
-    //     return this.getUrlMapping(url,"center");
-    // };
-    // layout.getWebUrlMapping = function(url){
-    //     return this.getUrlMapping(url, "web");
-    // };
-    // layout.getUrlMapping = function(url, type){
-    //     var urlContextMapping = layout.config.urlMapping;
-    //     if (urlContextMapping && urlContextMapping.app){
-    //         var href = url || window.location.href.toString();
-    //
-    //         for (var k in urlContextMapping[type]){
-    //             var regex = new RegExp(k);
-    //             if (regex.test(href)){
-    //                 return urlContextMapping[type][k];
-    //             }
-    //         }
-    //     }
-    //     return "";
-    // };
-
 })(layout);
 
 o2.addReady(function () {
-    // layout.desktop = new (new Class({Implements: [Options, Events]}))();
-    // layout.desktop.openApplication = layout.openApplication;
-    // layout.desktop.refreshApp = layout.refreshApp;
-    // layout.desktop.load = layout.load;
-
     //兼容方法
     Element.implement({
         "makeLnk": function (options) { }
@@ -367,27 +338,28 @@ o2.addReady(function () {
     layout.config = null;
     var configLoaded = false;
     var lpLoaded = false;
+    var commonLoaded = false;
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
     o2.load(lp, function () {
         _loadProgressBar();
         lpLoaded = true;
-        if (configLoaded && lpLoaded) _getDistribute(function () { _load(); });
+        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
-    // var modules = ["o2.xDesktop.Common", "o2.xDesktop.Actions.RestActions", "o2.xAction.RestActions"];
-    // o2.require(modules, {
-    //     "onSuccess": function () {
-    //         commonLoaded = true;
-    //         if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
-    //     },
-    //     "onEvery": function () {
-    //         _loadProgressBar();
-    //     }
-    // });
+    var modules = ["o2.xDesktop.Common", "o2.xDesktop.Actions.RestActions", "o2.xAction.RestActions"];
+    o2.require(modules, {
+        "onSuccess": function () {
+            commonLoaded = true;
+            if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
+        },
+        "onEvery": function () {
+            _loadProgressBar();
+        }
+    });
     o2.getJSON("../x_desktop/res/config/config.json", function (config) {
         _loadProgressBar();
         layout.config = config;
-        configLoaded = true;
-        if (configLoaded && lpLoaded) _getDistribute(function () { _load(); });
+        configLoaded = true
+        if (configLoaded && commonLoaded && lpLoaded) _getDistribute(function () { _load(); });
     });
 
     var _getDistribute = function (callback) {
@@ -427,7 +399,7 @@ o2.addReady(function () {
                         "o2.xDesktop.Authentication",
                         // "o2.xDesktop.shortcut",
                         "o2.widget.PinYin",
-                        "o2.xDesktop.Access"
+                        //"o2.xDesktop.Access"
                         // "o2.xDesktop.MessageMobile"
                     ];
                     //o2.xDesktop.requireApp("Common", "", null, false);

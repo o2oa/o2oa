@@ -19,5 +19,11 @@
     "enable": false,
     "portal": "b82d7669-85d6-4c10-8151-c4d1f18ba6ef",
     "page": ""
+  },
+  "urlMapping": {
+    "172.16.96.134:20030": "172.16.96.134/tzgsoa/center",
+    "172.16.96.134:20020": "172.16.96.134/tzgsoa/app",
+    "ng.o2oa.net:20030": "ng.o2oa.net/tzgsoa/center",
+    "ng.o2oa.net:20020": "ng.o2oa.net/tzgsoa/app"
   }
 }
