@@ -26,7 +26,7 @@ public class Attachment2Factory extends AbstractFactory {
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), person);
 		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
-		p = cb.and(p, cb.equal(root.get(Attachment2_.folder), ""));
+		p = cb.and(p, cb.or(cb.isNull(root.get(Attachment2_.folder)), cb.equal(root.get(Attachment2_.folder), "")));
 		cq.select(root.get(Attachment2_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -37,7 +37,7 @@ public class Attachment2Factory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.folder), folder);
-		if(StringUtils.isNotEmpty(status)){
+		if (StringUtils.isNotEmpty(status)) {
 			p = cb.and(p, cb.equal(root.get(Attachment2_.status), status));
 		}
 		cq.select(root.get(Attachment2_.id)).where(p);
@@ -65,7 +65,7 @@ public class Attachment2Factory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
 		cq.select(cb.sum(root.get(Attachment2_.length))).where(p);
 		Long sum = em.createQuery(cq).getSingleResult();
-		return sum==null ? 0 : sum;
+		return sum == null ? 0 : sum;
 	}
 
 	public List<Attachment2> listWithFolder2(String folder, String status) throws Exception {
@@ -74,7 +74,7 @@ public class Attachment2Factory extends AbstractFactory {
 		CriteriaQuery<Attachment2> cq = cb.createQuery(Attachment2.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.folder), folder);
-		if(StringUtils.isNotEmpty(status)){
+		if (StringUtils.isNotEmpty(status)) {
 			p = cb.and(p, cb.equal(root.get(Attachment2_.status), status));
 		}
 		return em.createQuery(cq.where(p)).getResultList();
