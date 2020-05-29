@@ -1123,7 +1123,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         var draft = {
             "data": data,
             "work": this.businessData.work,
-            "identity": this.businessData.work.creatorIdentity
+            "identity": this.businessData.work.creatorIdentityDn
         }
         this.workAction.saveDraft(draft, function (json) {
             this.workAction.getDraft(json.data.id, function (json) {
