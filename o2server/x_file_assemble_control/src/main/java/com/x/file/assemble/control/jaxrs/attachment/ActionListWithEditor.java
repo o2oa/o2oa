@@ -22,7 +22,7 @@ class ActionListWithEditor extends BaseAction {
 			Business business = new Business(emc);
 			List<String> ids = business.attachment().listWithPersonWithEditor(owner,
 					effectivePerson.getDistinguishedName());
-			List<Wo> wos = Wo.copier.copy(emc.list(Attachment.class, ids));
+					List<Wo> wos = Wo.copier.copy(emc.list(Attachment.class, ids));
 			for (Wo o : wos) {
 				o.setContentType(this.contentType(false, o.getName()));
 			}
