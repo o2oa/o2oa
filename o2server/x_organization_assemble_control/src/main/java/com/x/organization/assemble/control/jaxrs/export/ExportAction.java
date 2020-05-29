@@ -62,4 +62,22 @@ public class ExportAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	@JaxrsMethodDescribe(value = "导出人员组织信息", action = ActionExportAll.class)
+	@GET
+	@Path("export/all")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void exportAllPerson(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request, 
+			@JaxrsParameterDescribe("用.APPLICATION_OCTET_STREAM头输出") @PathParam("stream") Boolean stream) {
+		ActionResult<ActionExportAll.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionExportAll().execute(request, effectivePerson, stream);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

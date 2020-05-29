@@ -16,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class UnitSheetConfigurator extends GsonPropertyObject {
+public class GroupSheetConfigurator extends GsonPropertyObject {
 
 	private static final Pattern attributePattern = Pattern.compile("^\\((.+?)\\)$");
 
@@ -26,16 +26,15 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 	private Integer lastRow;
 
 	private Integer nameColumn;
-	private Integer shortNameColumn;
 	private Integer uniqueColumn;
-	private Integer unitTypeColumn;
-	private Integer superiorColumn;
-	private Integer orderNumberColumn;
+	private Integer personCodeColumn;
+	private Integer unitCodeColumn;
+	private Integer groupCodeColumn;
 	private Integer descriptionColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
-	public UnitSheetConfigurator(XSSFWorkbook workbook, Sheet sheet) {
+	public GroupSheetConfigurator(XSSFWorkbook workbook, Sheet sheet) {
 		this.sheetIndex = workbook.getSheetIndex(sheet);
 		Row row = sheet.getRow(sheet.getFirstRowNum());
 		this.firstRow = sheet.getFirstRowNum() + 1;
@@ -45,21 +44,20 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
+				//System.out.println("str="+str+"----i="+i);
 				if (StringUtils.isNotEmpty(str)) {
-					if (nameItems.contains(str)) {
-						this.nameColumn = i;
-					} else if (shortNameItems.contains(str)) {
-						this.shortNameColumn = i;
-					} else if (uniqueItems.contains(str)) {
+					if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
-					} else if (unitTypeItems.contains(str)) {
-						this.unitTypeColumn = i;
-					} else if (superiorItems.contains(str)) {
-						this.superiorColumn = i;
-					} else if (orderNumberItems.contains(str)) {
-						this.orderNumberColumn = i;
-					} else if (descriptionItems.contains(str)) {
-							this.descriptionColumn = i;
+					} else if (nameItems.contains(str)) {
+						this.nameColumn = i;
+					}else if (personCodeItems.contains(str)) {
+						this.personCodeColumn = i;
+					}else if (unitCodeItems.contains(str)) {
+						this.unitCodeColumn = i;
+					}else if (groupCodeItems.contains(str)) {
+						this.groupCodeColumn = i;
+					}else if (descriptionItems.contains(str)) {
+						this.descriptionColumn = i;
 					}else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
@@ -72,13 +70,12 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 		}
 	}
 
-	private static List<String> nameItems = Arrays.asList(new String[] { "组织名称 *", "name" });
-	private static List<String> shortNameItems = Arrays.asList(new String[] { "组织代字", "代字", "shortName" });
-	private static List<String> uniqueItems = Arrays.asList(new String[] { "编号", "组织编号 *", "unique" });
-	private static List<String> unitTypeItems = Arrays.asList(new String[] { "组织级别编号 *", "组织级别名称 *", "unitType" });
-	private static List<String> superiorItems = Arrays.asList(new String[] { "上级组织", "上级组织编号", "superior"});
-	private static List<String> orderNumberItems = Arrays.asList(new String[] { "排序", "排序号", "orderNumber" });
-	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述", "备注", "description" });
+	private static List<String> uniqueItems = Arrays.asList(new String[] { "群组编号 *",  "unique" });
+	private static List<String> nameItems = Arrays.asList(new String[] { "群组名称 *", "name" });
+	private static List<String> personCodeItems = Arrays.asList(new String[] { "人员编号", "personCode" });
+	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号", "unitCode" });
+	private static List<String> groupCodeItems = Arrays.asList(new String[] { "群组编号", "groupCode" });
+	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述","群组描述", "description" });
 
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
@@ -110,20 +107,28 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 		return memoColumn;
 	}
 
-	public Integer getNameColumn() {
-		return nameColumn;
-	}
-
-	public Integer getShortNameColumn() {
-		return shortNameColumn;
-	}
-
 	public Integer getUniqueColumn() {
 		return uniqueColumn;
 	}
 
-	public Integer getUnitTypeColumn() {
-		return unitTypeColumn;
+	public Integer getNameColumn() {
+		return nameColumn;
+	}
+	
+	public Integer getPersonCodeColumn() {
+		return personCodeColumn;
+	}
+	
+	public Integer getUnitCodeColumn() {
+		return unitCodeColumn;
+	}
+	
+	public Integer getGroupCodeColumn() {
+		return groupCodeColumn;
+	}
+	
+	public Integer getDescriptionColumn() {
+		return descriptionColumn;
 	}
 
 	public Map<String, Integer> getAttributes() {
@@ -136,18 +141,6 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 
 	public Integer getLastRow() {
 		return lastRow;
-	}
-
-	public Integer getOrderNumberColumn() {
-		return orderNumberColumn;
-	}
-	
-	public Integer getDescriptionColumn() {
-		return descriptionColumn;
-	}
-	
-	public Integer getSuperiorColumn() {
-		return superiorColumn;
 	}
 
 	public Integer getSheetIndex() {
