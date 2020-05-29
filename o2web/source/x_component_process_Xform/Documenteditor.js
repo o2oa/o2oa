@@ -655,16 +655,19 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             o2.load("../o2_lib/diff-match-patch/diff_match_patch.js");
 
-            var id = this.form.businessData.data["$work"].job;
-            o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
-                this.historyDocumentList = json.data;
-                if (this.historyDocumentList.length){
-                    o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(this.historyDocumentList[this.historyDocumentList.length-1].id, function(json){
-                        var data = JSON.parse(json.data.data);
-                        this.originaHistoryData = data.data;
-                    }.bind(this));
-                }
-            }.bind(this));
+            if (this.form.businessData.data["$work"]){
+                var id = this.form.businessData.data["$work"].job;
+                o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.listWithJobCategory(id, this.json.id, function(json){
+                    this.historyDocumentList = json.data;
+                    if (this.historyDocumentList.length){
+                        o2.Actions.load("x_processplatform_assemble_surface").DocumentVersionAction.get(this.historyDocumentList[this.historyDocumentList.length-1].id, function(json){
+                            var data = JSON.parse(json.data.data);
+                            this.originaHistoryData = data.data;
+                        }.bind(this));
+                    }
+                }.bind(this));
+            }
+
 
             if (callback) callback();
         }.bind(this));
