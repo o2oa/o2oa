@@ -6711,6 +6711,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9ebefd7c-6117-4bee-a96c-7ddb06ad4c6f";
 				PROVISIONING_PROFILE_SPECIFIER = ZheJiangOfficeWorkMngDevProfile;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = none;
 				SWIFT_OBJC_BRIDGING_HEADER = "O2Platform/O2Platform-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
@@ -6825,6 +6826,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b23067fd-fb08-4b85-8255-d8f3d25abc8a";
 				PROVISIONING_PROFILE_SPECIFIER = ZheJiangOfficeWorkMngDisProfile;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = none;
 				SWIFT_OBJC_BRIDGING_HEADER = "O2Platform/O2Platform-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";

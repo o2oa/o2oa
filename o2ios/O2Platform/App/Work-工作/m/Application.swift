@@ -16,6 +16,7 @@ class Application:Mappable{
     var icon:String?
     var processList:[AppProcess]?
     
+    
     required init?(map: Map) {
         
     }
@@ -27,6 +28,7 @@ class Application:Mappable{
         applicationCategory <- map["applicationCategory"]
         icon <- map["icon"]
         processList <- map["processList"]
+        
     }
 
 }

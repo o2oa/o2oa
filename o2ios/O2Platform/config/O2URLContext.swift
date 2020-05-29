@@ -171,6 +171,7 @@ struct ReadedContext {
 struct WorkContext {
     static let workContextKey = "x_processplatform_assemble_surface"
     static let workCreateQuery = "jaxrs/work/process/##id##"
+    static let draftWorkCreateQuery = "jaxrs/draft/process/##processId##"
     
 }
 
@@ -265,6 +266,7 @@ struct DesktopContext {
     static let DesktopContextKey = "x_desktop"
     static let todoDesktopQuery = "workmobilewithaction.html?workid=##workid##"
     static let todoedDestopQuery = "workmobilewithaction.html?workcompletedid=##workCompletedId##"
+    static let todoDraftQuery = "workmobilewithaction.html?draft=##draft##" //draft 对象 ProcessDraftBean
     static let bbsItemDetailQuery  = "forumdocMobile.html?id=##subjectId##"
     static let cmsItemDetailQuery = "cmsdocMobile.html?id=##documentId##"
     static let appDetailQuery = "appMobile.html?app=portal.Portal&status=##status##"

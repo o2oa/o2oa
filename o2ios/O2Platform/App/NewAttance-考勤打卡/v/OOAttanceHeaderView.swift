@@ -29,17 +29,17 @@ class OOAttanceHeaderView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //commonInit()
+        commonInit()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        //commonInit()
+        commonInit()
     }
     
-    func startBMKMapViewService(){
+    func commonInit() {
         mapView = BMKMapView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: 280))
-        mapView.delegate = self
+        
         mapView.showsUserLocation = true
         mapView.isSelectedAnnotationViewFront = true
         mapView.showMapScaleBar = true
@@ -52,6 +52,11 @@ class OOAttanceHeaderView: UIView {
         self.backgroundColor = UIColor.white
         self.addSubview(mapView)
         
+    }
+    
+    func startBMKMapViewService(){
+        
+        mapView.delegate = self
         
         locService =  BMKLocationManager()
         locService.desiredAccuracy = kCLLocationAccuracyBest
@@ -107,7 +112,7 @@ class OOAttanceHeaderView: UIView {
         let annotation = BMKPointAnnotation()
         let longitude  = Double((workPlace.longitude)!)
         let latitude  = Double((workPlace.latitude)!)
-        DDLogDebug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(longitude),latitude=\(latitude)")
+        DDLogDebug("placeAlias=\(workPlace.placeAlias ?? ""),longitude=\(String(describing: longitude)),latitude=\(latitude)")
         annotation.coordinate = CLLocationCoordinate2DMake(latitude!,longitude!);
         annotation.title = workPlace.placeAlias ?? ""
         annotation.subtitle = workPlace.placeName ?? ""

@@ -10,6 +10,7 @@ import Foundation
 
 
 struct O2 {
+    public static let O2_Word_draft_mode = "draft"
     public static let O2_First_ID = "(0)"
     /// EZSE: Returns app's name
     public static var appDisplayName: String? {

@@ -135,15 +135,21 @@ class TaskCreateViewController: FormViewController {
                     self.showError(title: "请选择身份")
                     return
                 }
-                self.createProcess(identity: id.distinguishedName!)
+                
+                if let mode = self.process?.defaultStartMode, mode == O2.O2_Word_draft_mode {
+                    self.createDraft(processId: self.process!.id!, identity: id.distinguishedName!)
+                }else {
+                    self.createProcess(processId: self.process!.id!, identity: id.distinguishedName!)
+                }
             })
     }
     
-    func createProcess(identity:String){
+    //开启流程 创建工作
+    func createProcess(processId: String, identity:String){
         let bean = CreateProcessBean()
         bean.title = ""//不需要标题
         bean.identity = identity
-        let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":(process?.id)! as AnyObject])
+        let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":processId as AnyObject])
         self.showLoading(title: "创建中，请稍候...")
         Alamofire.request(createURL!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
             debugPrint(response.result)
@@ -171,6 +177,37 @@ class TaskCreateViewController: FormViewController {
         }
     }
        
+    //创建草稿
+   private func createDraft(processId: String, identity: String) {
+       let bean = CreateProcessBean()
+              bean.title = ""
+              bean.identity = identity
+       let draftCreateUrl = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.draftWorkCreateQuery, parameter: ["##processId##":processId as AnyObject])
+       self.showLoading(title: "创建中，请稍候...")
+       Alamofire.request(draftCreateUrl!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
+           
+           switch response.result {
+           case .success(let val):
+               let draftData = JSON(val)["data"]
+               DDLogDebug(draftData.description)
+               if let draft = Mapper<ProcessDraftBean>().map(JSONString:draftData["work"].debugDescription) {
+                   let taskStoryboard = UIStoryboard(name: "task", bundle: Bundle.main)
+                   let todoTaskDetailVC = taskStoryboard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
+                   todoTaskDetailVC.draft = draft
+                   todoTaskDetailVC.backFlag = 1
+                   self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
+                   DispatchQueue.main.async {
+                       self.hideLoading()
+                   }
+               } else {
+                   self.showError(title: "创建失败")
+               }
+           case .failure(let err):
+               DDLogError(err.localizedDescription)
+               self.showError(title: "创建失败")
+           }
+       }
+   }
 
     
 }
