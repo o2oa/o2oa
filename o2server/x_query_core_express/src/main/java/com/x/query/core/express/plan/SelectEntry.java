@@ -19,6 +19,7 @@ public class SelectEntry extends GsonPropertyObject {
 		this.code = "";
 		this.allowOpen = false;
 		this.groupEntry = false;
+		this.numberOrder = false;
 	}
 
 	public Boolean available() {
@@ -38,6 +39,7 @@ public class SelectEntry extends GsonPropertyObject {
 	public Boolean allowOpen;
 	public Boolean isName;
 	public Boolean groupEntry;
+	public Boolean numberOrder;
 
 	public String getColumn() {
 		if (StringUtils.isNotEmpty(this.column)) {
@@ -51,6 +53,14 @@ public class SelectEntry extends GsonPropertyObject {
 			return this.displayName;
 		}
 		return this.getColumn();
+	}
+
+	public boolean isOrderType(){
+		if (StringUtils.equals(SelectEntry.ORDER_ASC, this.orderType)
+				|| StringUtils.equals(SelectEntry.ORDER_DESC, this.orderType)) {
+			return true;
+		}
+		return false;
 	}
 
 }
