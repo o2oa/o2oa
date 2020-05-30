@@ -54,33 +54,39 @@ public class AttendanceWorkDayConfig extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String configName_FIELDNAME = "configName";
 	@FieldDescribe("配置项名称")
-	@Column(name = "xconfigName", length = JpaObject.length_96B)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + configName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configName = "";
 
+	public static final String configYear_FIELDNAME = "configYear";
 	@FieldDescribe("配置年份")
-	@Column(name = "xconfigYear", length = JpaObject.length_16B)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + configYear_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configYear = "2016";
 
+	public static final String configMonth_FIELDNAME = "configMonth";
 	@FieldDescribe("配置月份")
-	@Column(name = "xconfigMonth", length = JpaObject.length_16B)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + configMonth_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configMonth = "";
 
+	public static final String configDate_FIELDNAME = "configDate";
 	@FieldDescribe("配置日期")
-	@Column(name = "xconfigDate", length = JpaObject.length_32B)
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + configDate_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configDate = "";
 
+	public static final String configType_FIELDNAME = "configType";
 	@FieldDescribe("配置类型：Holiday|Workday")
-	@Column(name = "xconfigType", length = JpaObject.length_16B)
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + configType_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String configType = "Holiday";
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("配置说明")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String description = "";
 

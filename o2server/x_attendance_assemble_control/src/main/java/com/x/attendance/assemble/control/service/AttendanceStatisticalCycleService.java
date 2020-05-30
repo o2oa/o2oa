@@ -15,15 +15,37 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 public class AttendanceStatisticalCycleService {
-	
+
+	private Ehcache cache_AttendanceStatisticalCycle = ApplicationCache.instance().getCache( AttendanceStatisticalCycle.class);
+
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceStatisticalCycleService.class );
 	private UserManagerService userManagerService = new UserManagerService();
 	private DateOperation dateOperation = new DateOperation();
-	
+
+	/**
+	 * 从缓存中获取所有的考勤周期配置
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getAllStatisticalCycleMapWithCache(Boolean debugger) throws Exception {
+		String cacheKey = ApplicationCache.concreteCacheKey( "map#all" );
+		Element element = cache_AttendanceStatisticalCycle.get(cacheKey);
+		Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap = null;
+
+		if ((null != element) && (null != element.getObjectValue())) {
+			return (Map<String, Map<String, List<AttendanceStatisticalCycle>>>) element.getObjectValue();
+		}else{
+			return getCycleMapFormAllCycles( false );
+		}
+	}
+
 	public List<AttendanceStatisticalCycle> listAll(EntityManagerContainer emc) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceStatisticalCycleFactory().listAll();
@@ -41,7 +63,9 @@ public class AttendanceStatisticalCycleService {
 			throw e;
 		}
 	}
-	
+
+
+
 	/**
 	 * TODO 将所有的统计周期配置信息组织成一个大的Map
 	 * @param emc

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.attendance.entity.AttendanceSelfHoliday;
@@ -26,17 +27,16 @@ public class ActionReciveAttendance extends BaseAction {
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		Wi wrapIn = null;
-		Date datetime = null;
-		List<String> ids_temp = null;
 		DateOperation dateOperation = new DateOperation();
 		AttendanceDetail attendanceDetail = new AttendanceDetail();
-		AttendanceScheduleSetting attendanceScheduleSetting = null;
-		List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = null;
-		List<AttendanceSelfHoliday> selfHolidays = null;
-		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
+//		List<String> ids_temp = null;
+//		AttendanceScheduleSetting attendanceScheduleSetting = null;
+//		List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = null;
+//		List<AttendanceSelfHoliday> selfHolidays = null;
+//		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
 		Boolean check = true;
 
+		Wi wrapIn = null;
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
@@ -59,6 +59,9 @@ public class ActionReciveAttendance extends BaseAction {
 				result.error(exception);
 			}
 		}
+
+		Date datetime = null;
+
 		if (check) {
 			try {
 				datetime = dateOperation.getDateFromString(wrapIn.getRecordDateString());
@@ -86,6 +89,7 @@ public class ActionReciveAttendance extends BaseAction {
 				}
 			}
 		}
+
 		if (check) {
 			if (wrapIn.getOffDutyTime() != null && wrapIn.getOffDutyTime().trim().length() > 0) {
 				try {
@@ -110,63 +114,73 @@ public class ActionReciveAttendance extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+
 		if (check) {
+			//分析保存好的考勤数据
 			try {
-				attendanceWorkDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionAttendanceDetailProcess( e, "系统在根据ID列表查询工作节假日配置信息列表时发生异常！" );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				ThisApplication.detailAnalyseQueue.send( attendanceDetail.getId() );
+			} catch ( Exception e1 ) {
+				e1.printStackTrace();
 			}
 		}
-		if (check) {
-			try {
-				topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionAttendanceDetailProcess( e, "系统在查询并且组织所有的统计周期时发生异常." );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try{
-				ids_temp = attendanceSelfHolidayServiceAdv.getByPersonName( attendanceDetail.getEmpName() );
-				if( ids_temp != null && !ids_temp.isEmpty() ) {
-					selfHolidays = attendanceSelfHolidayServiceAdv.list( ids_temp );
-				}
-			}catch( Exception e ){
-				check = false;
-				Exception exception = new ExceptionAttendanceDetailProcess( e, "system list attendance self holiday info ids with employee name got an exception.empname:" + attendanceDetail.getEmpName() );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try{
-				attendanceScheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( attendanceDetail.getEmpName(), effectivePerson.getDebugger() );
-			}catch( Exception e ){
-				check = false;
-				Exception exception = new ExceptionAttendanceDetailProcess( e, "system get unit schedule setting for employee with unit names got an exception." + attendanceDetail.getEmpName() );
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		
-		if (check) {
-			try {
-				attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( attendanceDetail, attendanceScheduleSetting, selfHolidays, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, effectivePerson.getDebugger());
-				logger.info("打卡信息保存并且分析完成。");
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionAttendanceDetailProcess(e, "系统分析员工打卡信息时发生异常！ID:" + attendanceDetail.getId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
+
+//		if (check) {
+//			try {
+//				attendanceWorkDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionAttendanceDetailProcess( e, "系统在根据ID列表查询工作节假日配置信息列表时发生异常！" );
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
+//		if (check) {
+//			try {
+//				topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionAttendanceDetailProcess( e, "系统在查询并且组织所有的统计周期时发生异常." );
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
+//
+//		if (check) {
+//			try{
+//				ids_temp = attendanceSelfHolidayServiceAdv.getByPersonName( attendanceDetail.getEmpName() );
+//				if( ids_temp != null && !ids_temp.isEmpty() ) {
+//					selfHolidays = attendanceSelfHolidayServiceAdv.list( ids_temp );
+//				}
+//			}catch( Exception e ){
+//				check = false;
+//				Exception exception = new ExceptionAttendanceDetailProcess( e, "system list attendance self holiday info ids with employee name got an exception.empname:" + attendanceDetail.getEmpName() );
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
+//
+//		if (check) {
+//			try{
+//				attendanceScheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( attendanceDetail.getEmpName(), effectivePerson.getDebugger() );
+//			}catch( Exception e ){
+//				check = false;
+//				Exception exception = new ExceptionAttendanceDetailProcess( e, "system get unit schedule setting for employee with unit names got an exception." + attendanceDetail.getEmpName() );
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
+//
+//		if (check) {
+//			try {
+//				attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( attendanceDetail, attendanceScheduleSetting, selfHolidays, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, effectivePerson.getDebugger());
+//				logger.info("打卡信息保存并且分析完成。");
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionAttendanceDetailProcess(e, "系统分析员工打卡信息时发生异常！ID:" + attendanceDetail.getId());
+//				result.error(exception);
+//				logger.error(e, effectivePerson, request, null);
+//			}
+//		}
 		return result;
 	}
 	

@@ -138,7 +138,7 @@ public class AttendanceSettingService {
 			logger.error(e);
 		}
 
-		value = "";
+		value = "无";
 		type = "text";
 		selectContent = null;
 		isMultiple = false;
