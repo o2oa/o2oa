@@ -20,21 +20,25 @@ public class ThisApplication {
 	public static QywxAttendanceSyncQueue qywxQueue = new QywxAttendanceSyncQueue();
 	public static QywxUnitStatisticQueue unitQywxStatisticQueue = new QywxUnitStatisticQueue();
 	public static QywxPersonStatisticQueue personQywxStatisticQueue = new QywxPersonStatisticQueue();
-
 	public static DingdingPersonStatisticQueue personStatisticQueue = new DingdingPersonStatisticQueue();
 	public static DingdingUnitStatisticQueue unitStatisticQueue = new DingdingUnitStatisticQueue();
+
+	public static PersonAttendanceDetailAnalyseQueue detailAnalyseQueue = new PersonAttendanceDetailAnalyseQueue();
+	public static AttendanceDetailStatisticQueue detailStatisticQueue = new AttendanceDetailStatisticQueue();
 
 
 	public static void init() throws Exception {
 		try {
+
 			new AttendanceSettingService().initAllSystemConfig();
-			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
-			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
+
+			detailAnalyseQueue.start();
+			detailStatisticQueue.start();
 			if (BooleanUtils.isTrue(Config.dingding().getAttendanceSyncEnable())) {
 				dingdingQueue.start();
 				personStatisticQueue.start();
 				unitStatisticQueue.start();
-				context.schedule(DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
+				context.schedule( DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?" );
 				//已经将任务 放到了同步结束后执行 暂时不需要开定时任务了
 //				context.schedule(DingdingAttendanceStatisticScheduleTask.class, "0 0 3 * * ?");
 //				context.schedule(DingdingAttendanceStatisticPersonScheduleTask.class, "0 0 3 * * ?");
@@ -45,6 +49,10 @@ public class ThisApplication {
 				personQywxStatisticQueue.start();
 				context.schedule(QywxAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
 			}
+
+			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
+			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
