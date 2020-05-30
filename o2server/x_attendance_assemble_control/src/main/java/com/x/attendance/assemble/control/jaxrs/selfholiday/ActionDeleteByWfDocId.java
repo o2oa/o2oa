@@ -1,13 +1,11 @@
 package com.x.attendance.assemble.control.jaxrs.selfholiday;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
@@ -26,7 +24,6 @@ public class ActionDeleteByWfDocId extends BaseAction {
 		logger.debug( effectivePerson, ">>>>>>>>>>method delete has been called, try to delete attendanceSelfHoliday{'wfDocId':'" + wfDocId + "'}......");
 		ActionResult<Wo> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
-		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
 		
 		logger.debug( effectivePerson, ">>>>>>>>>>user " + currentPerson.getDistinguishedName() + "try to delete AttendanceSelfHoliday......");
 		List<String> ids = null;
@@ -48,18 +45,11 @@ public class ActionDeleteByWfDocId extends BaseAction {
 						logger.debug( effectivePerson, ">>>>>>>>>>System delete attendanceSelfHoliday success......");
 
 						// 应该只需要重新分析该用户在请假期间已经存在的打卡数据即可
-						ids = attendanceDetailAnalyseServiceAdv.getAnalyseAttendanceDetailIds(
+						ids = attendanceDetailAnalyseServiceAdv.listAnalyseAttendanceDetailIds(
 								attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(),
-								attendanceSelfHoliday.getEndTime());
+								attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger() );
 						if ( ListTools.isNotEmpty( ids ) ) {
-							try {// 查询所有的周期配置，组织成Map
-								topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
-							} catch (Exception e) {
-								Exception exception = new ExceptionSelfHolidayProcess( e, "系统在查询并且组织所有的统计周期时发生异常." );
-								result.error(exception);
-								logger.error(e, currentPerson, request, null);
-							}
-							attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), topUnitAttendanceStatisticalCycleMap, effectivePerson.getDebugger() );
+							attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger() );
 						}
 					}
 				}

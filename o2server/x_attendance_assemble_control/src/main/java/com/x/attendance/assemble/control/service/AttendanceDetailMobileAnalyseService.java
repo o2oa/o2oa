@@ -54,7 +54,7 @@ public class AttendanceDetailMobileAnalyseService {
 					attendanceDetail = emc.find( detailId, AttendanceDetail.class );
 					if( attendanceDetail != null ){
 						emc.beginTransaction( AttendanceDetail.class );
-						attendanceDetail.setRecordStatus( 0 );
+						attendanceDetail.setRecordStatus( 0 );//设置未分析
 						if( "上班打卡".equals( attendanceDetailMobile.getSignDescription() )){
 							if( attendanceDetail.getOnDutyTime() == null ){
 								onDutyTime = dateOperation.getDateFromString( attendanceDetailMobile.getSignTime() );
