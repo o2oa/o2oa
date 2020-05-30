@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.x.attendance.assemble.control.ThisApplication;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
@@ -25,9 +26,9 @@ public class AttendanceDetailServiceAdv {
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceDetailServiceAdv.class );
 	private AttendanceDetailService attendanceDetailService = new AttendanceDetailService();
 	private AttendanceDetailMobileService attendanceDetailMobileService = new AttendanceDetailMobileService();
-	protected AttendanceDetailAnalyseServiceAdv attendanceDetailAnalyseServiceAdv = new AttendanceDetailAnalyseServiceAdv();
-	protected AttendanceWorkDayConfigServiceAdv attendanceWorkDayConfigServiceAdv = new AttendanceWorkDayConfigServiceAdv();
-	protected AttendanceStatisticalCycleServiceAdv attendanceStatisticCycleServiceAdv = new AttendanceStatisticalCycleServiceAdv();
+//	protected AttendanceDetailAnalyseServiceAdv attendanceDetailAnalyseServiceAdv = new AttendanceDetailAnalyseServiceAdv();
+//	protected AttendanceWorkDayConfigServiceAdv attendanceWorkDayConfigServiceAdv = new AttendanceWorkDayConfigServiceAdv();
+//	protected AttendanceStatisticalCycleServiceAdv attendanceStatisticCycleServiceAdv = new AttendanceStatisticalCycleServiceAdv();
 	
 	public AttendanceDetail get( String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
@@ -274,19 +275,26 @@ public class AttendanceDetailServiceAdv {
 					emc.check( detailMobile , CheckPersistType.all );
 				}
 				emc.commit();
-				
-				List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = null;
-				Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
+
+				//分析保存好的考勤数据
 				try {
-					attendanceWorkDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
-					topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( false );
-					
-					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( detail, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, false );
-					logger.info( ">>>>>>>>>>attendance detail analyse completed.person:" + detail.getEmpName() + ", date:" + detail.getRecordDateString());
-					
-				} catch (Exception e) {
-					e.printStackTrace();
+					ThisApplication.detailAnalyseQueue.send( detail.getId() );
+				} catch ( Exception e1 ) {
+					e1.printStackTrace();
 				}
+
+//				List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = null;
+//				Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
+//				try {
+//					attendanceWorkDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
+//					topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( false );
+//
+//					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( detail, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, false );
+//					logger.info( ">>>>>>>>>>attendance detail analyse completed.person:" + detail.getEmpName() + ", date:" + detail.getRecordDateString());
+//
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 			}
 		} catch ( Exception e ) {
 			throw e;

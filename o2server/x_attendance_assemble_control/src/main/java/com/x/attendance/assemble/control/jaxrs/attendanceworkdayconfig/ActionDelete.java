@@ -1,10 +1,13 @@
 package com.x.attendance.assemble.control.jaxrs.attendanceworkdayconfig;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,6 +32,9 @@ public class ActionDelete extends BaseAction {
 				emc.beginTransaction(AttendanceWorkDayConfig.class);
 				emc.remove(attendanceWorkDayConfig, CheckRemoveType.all);
 				emc.commit();
+
+				ApplicationCache.notify( AttendanceWorkDayConfig.class );
+
 				result.setData(new Wo(id));
 			}
 		} catch (Exception e) {
