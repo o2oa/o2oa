@@ -41,7 +41,7 @@ public class AttendanceDetailAnalyseService {
 	private AttendanceScheduleSettingService attendanceScheduleSettingService = new AttendanceScheduleSettingService();
 	private AttendanceStatisticalCycleService statisticalCycleService = new AttendanceStatisticalCycleService();
 	private AttendanceWorkDayConfigService workDayConfigService = new AttendanceWorkDayConfigService();
-	private AttendanceDetailAnalyseCoreService attendanceDetailAnalyseCoreService = new AttendanceDetailAnalyseCoreService();
+//	private AttendanceDetailAnalyseCoreService attendanceDetailAnalyseCoreService = new AttendanceDetailAnalyseCoreService();
 	private DateOperation dateOperation = new DateOperation();
 	private UserManagerService userManagerService = new UserManagerService();
 
@@ -390,7 +390,7 @@ public class AttendanceDetailAnalyseService {
 			if( check ){
 				try{
 					//使用分析核心算法进行考勤状态分析
-					detail = attendanceDetailAnalyseCoreService.analyseCore( detail, scheduleSetting, dateOperation, debugger );
+//					detail = attendanceDetailAnalyseCoreService.analyseCore( detail, scheduleSetting, dateOperation, debugger );
 				}catch( Exception e ){
 					check = false;
 					logger.warn( "system analyse detail by on and off work time for advance analyse got an exception." + detail.getEmpName() );

@@ -65,22 +65,22 @@ public class AttendanceStatisticalCycleService {
 	}
 
 
-
 	/**
-	 * TODO 将所有的统计周期配置信息组织成一个大的Map
+	 * 将所有的统计周期配置信息组织成一个大的Map
 	 * @param emc
-	 * @param cycles
+	 * @param debugger
 	 * @return
 	 * @throws Exception
 	 */
 	public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getCycleMapFormAllCycles( EntityManagerContainer emc, Boolean debugger ) throws Exception{
 		return getCycleMapFormAllCycles( emc, listAll(emc), debugger );
 	}
-	
+
 	/**
-	 * TODO 将指定的统计周期配置信息列表组织成一个大的Map
+	 * 将指定的统计周期配置信息列表组织成一个大的Map
 	 * @param emc
 	 * @param cycles
+	 * @param debugger
 	 * @return
 	 * @throws Exception
 	 */
@@ -111,14 +111,12 @@ public class AttendanceStatisticalCycleService {
 	}
 
 	/**
-	 * TODO 根据顶层组织，组织，年月获取一个统计周期配置
-	 * 如果不存在，则新建一个周期配置
-	 * 
+	 * 根据顶层组织，组织，年月获取一个统计周期配置 如果不存在，则新建一个周期配置
 	 * @param q_topUnitName
 	 * @param q_unitName
-	 * @param startDate
-	 * @param endDate
+	 * @param recordDate
 	 * @param topUnitAttendanceStatisticalCycleMap
+	 * @param debugger
 	 * @return
 	 * @throws Exception
 	 */
@@ -137,7 +135,7 @@ public class AttendanceStatisticalCycleService {
 		if( topUnitAttendanceStatisticalCycleMap != null ){
 			unitCycleInfoEntity = analyseStatisticCycleWithUnitName( q_topUnitName, q_unitName, topUnitAttendanceStatisticalCycleMap, debugger );
 		}else{
-			logger.debug( debugger, ">>>>>>>>>>统计周期配置为空，顶层组织为*组织为*，系统中没有任何配置");
+			logger.debug( debugger, "统计周期配置为空，顶层组织为*组织为*，系统中没有任何配置");
 			unitCycleInfoEntity = new UnitCycleInfoEntity();
 			unitCycleInfoEntity.setTopUnitName( "*" );
 			unitCycleInfoEntity.setUnitName( "*" );
@@ -149,13 +147,13 @@ public class AttendanceStatisticalCycleService {
 				cycleStartDate = temp.getCycleStartDate();
 				cycleEndDate = temp.getCycleEndDate();
 				if( recordDate.getTime() >= cycleStartDate.getTime() && recordDate.getTime() <= cycleEndDate.getTime() ){
-					logger.debug( debugger, ">>>>>>>>>>根据时间对比获取到合适的周期：" + recordDate + "," + cycleStartDate + " ~ " + cycleEndDate);
+					logger.debug( debugger, "根据时间对比获取到合适的周期：" + recordDate + "," + cycleStartDate + " ~ " + cycleEndDate);
 					return temp;
 				}
 			}
 		}
 		if( !hasConfig ){
-			logger.debug( debugger, ">>>>>>>>>>未查询到合适的周期，根据打卡信息创建一条自然月的周期");
+			logger.debug( debugger, "未查询到合适的周期，根据打卡信息创建一条自然月的周期");
 			//说明没有找到任何相关的配置，那么新创建一条配置
 			//创建并且持久化一条统计周期配置
 			attendanceStatisticalCycle = createNewCycleInfo( recordDate, q_topUnitName, q_unitName );			
@@ -191,7 +189,7 @@ public class AttendanceStatisticalCycleService {
 		if( topUnitAttendanceStatisticalCycleMap != null ){
 			unitCycleInfoEntity = analyseStatisticCycleWithUnitName( q_topUnitName, q_unitName, topUnitAttendanceStatisticalCycleMap, debugger );
 		}else{
-			logger.debug( debugger, ">>>>>>>>>>统计周期配置为空，顶层组织为*组织为*，系统中没有任何配置");
+			logger.debug( debugger, "统计周期配置为空，顶层组织为*组织为*，系统中没有任何配置");
 			unitCycleInfoEntity = new UnitCycleInfoEntity();
 			unitCycleInfoEntity.setTopUnitName( "*" );
 			unitCycleInfoEntity.setUnitName( "*" );
@@ -206,11 +204,11 @@ public class AttendanceStatisticalCycleService {
 				}
 			}
 		}else{
-			logger.debug( debugger, ">>>>>>>>>>根据顶层组织[" +topUnitName+ "]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
+			logger.debug( debugger, "根据顶层组织[" +topUnitName+ "]和组织["+unitName+"]未获取到任何周期数据，需要创建新的统计周期数据......");
 		}
 		
 		if( !hasConfig ){
-			logger.debug( debugger, ">>>>>>>>>>未查询到合适的周期，根据打卡信息创建一条自然月的周期");
+			logger.debug( debugger, "未查询到合适的周期，根据打卡信息创建一条自然月的周期");
 			//说明没有找到任何相关的配置，那么新创建一条配置
 			Date day = dateOperation.getDateFromString( cycleYear + "-" + cycleMonth + "-01");
 			//创建并且持久化一条统计周期配置
@@ -220,16 +218,12 @@ public class AttendanceStatisticalCycleService {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * 根据顶层组织，组织，年月获取一个统计周期配置
-	 * 如果不存在，则新建一个周期配置
-	 * 
-	 * @param q_topUnitName
-	 * @param q_unitName
-	 * @param cycleYear
-	 * @param cycleMonth
+	 * 根据顶层组织，组织，年月获取一个统计周期配置 如果不存在，则新建一个周期配置
+	 * @param attendanceStatisticRequireLog
 	 * @param topUnitAttendanceStatisticalCycleMap
+	 * @param debugger
 	 * @return
 	 * @throws Exception
 	 */
