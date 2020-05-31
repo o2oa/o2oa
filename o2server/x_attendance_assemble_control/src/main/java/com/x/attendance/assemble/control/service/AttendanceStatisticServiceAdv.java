@@ -453,5 +453,24 @@ public class AttendanceStatisticServiceAdv {
 			throw e;
 		}
 	}
-	
+
+    public void statisticEmployeeAttendanceForMonth(AttendanceStatisticRequireLog log, AttendanceStatisticalCycle attendanceStatisticalCycle, List<AttendanceWorkDayConfig> workDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap) throws Exception {
+		attendanceStatisticService.statisticEmployeeAttendanceForMonth( log, attendanceStatisticalCycle, workDayConfigList, statisticalCycleMap);
+	}
+
+	public void statisticUnitAttendanceForMonth(AttendanceStatisticRequireLog log, List<AttendanceWorkDayConfig> workDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap) throws Exception {
+		attendanceStatisticService.statisticUnitAttendanceForMonth( log, workDayConfigList, statisticalCycleMap );
+	}
+
+	public void statisticTopUnitAttendanceForMonth(AttendanceStatisticRequireLog log, List<AttendanceWorkDayConfig> workDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap) throws Exception {
+		attendanceStatisticService.statisticTopUnitAttendanceForMonth( log, workDayConfigList, statisticalCycleMap);
+	}
+
+	public void statisticUnitAttendanceForDay(AttendanceStatisticRequireLog log, List<AttendanceWorkDayConfig> workDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap, boolean b) throws Exception {
+		attendanceStatisticService.statisticUnitAttendanceForDay( log, workDayConfigList, statisticalCycleMap, false );
+	}
+
+	public void statisticTopUnitAttendanceForDay(AttendanceStatisticRequireLog log, List<AttendanceWorkDayConfig> workDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap) throws Exception {
+		attendanceStatisticService.statisticTopUnitAttendanceForDay( log, workDayConfigList, statisticalCycleMap );
+	}
 }
