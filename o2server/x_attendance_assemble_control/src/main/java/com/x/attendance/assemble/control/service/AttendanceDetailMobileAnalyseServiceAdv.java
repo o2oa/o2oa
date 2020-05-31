@@ -20,7 +20,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
  */
 public class AttendanceDetailMobileAnalyseServiceAdv {
 	private AttendanceDetailAnalyseService attendanceDetailAnalyseService = new AttendanceDetailAnalyseService();
-	private AttendanceStatisticalCycleService statisticalCycleService = new AttendanceStatisticalCycleService();
 	private AttendanceDetailMobileAnalyseService attendanceDetailMobileAnalyseService = new AttendanceDetailMobileAnalyseService();
 	
 	/**
@@ -45,7 +44,7 @@ public class AttendanceDetailMobileAnalyseServiceAdv {
 				attendanceDetail = attendanceDetailMobileAnalyseService.composeAttendanceDetailMobile( emc, id );
 				if( attendanceDetail != null ){
 					if( StringUtils.isNotEmpty( attendanceDetail.getOffDutyTime() ) ){
-						attendanceDetailAnalyseService.analyseAttendanceDetail(emc, attendanceDetail, debugger );
+//						attendanceDetailAnalyseService.analyseAttendanceDetail(emc, attendanceDetail, debugger );
 					}
 				}
 				
