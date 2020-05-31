@@ -81,52 +81,64 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 	private String unitOu;
 
 	public static final String onDutyTime_FIELDNAME = "onDutyTime";
-	@FieldDescribe("上班时间")
+	@FieldDescribe("上午上班时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String onDutyTime;
 
 	public static final String middayRestStartTime_FIELDNAME = "middayRestStartTime";
-	@FieldDescribe("午休开始时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME )
+	@FieldDescribe("午休开始时间|上午下班时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + middayRestStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String middayRestStartTime;
 
 	public static final String middayRestEndTime_FIELDNAME = "middayRestEndTime";
-	@FieldDescribe("午休结束时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
+	@FieldDescribe("午休结束时间|下午上班时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + middayRestEndTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String middayRestEndTime;
 
 	public static final String offDutyTime_FIELDNAME = "offDutyTime";
-	@FieldDescribe("下班时间")
+	@FieldDescribe("下午下班时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String offDutyTime;
 
-	public static final String middayRestOpen_FIELDNAME = "middayRestOpen";
-	@FieldDescribe("是否启用午休：0-不启用 1-启用")
+	public static final String signProxy_FIELDNAME = "signProxy";
+	@FieldDescribe("打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
 	@Column( name = ColumnNamePrefix + lateStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
-	private Integer middayRestOpen = 0;
+	private Integer signProxy = 0;
 
 	public static final String lateStartTime_FIELDNAME = "lateStartTime";
-	@FieldDescribe("迟到起算时间")
+	@FieldDescribe("上午上班迟到起算时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + lateStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String lateStartTime;
 
+	public static final String lateStartTimeAfternoon_FIELDNAME = "lateStartTimeAfternoon";
+	@FieldDescribe("下午上班迟到起算时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + lateStartTimeAfternoon_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String lateStartTimeAfternoon;
+
 	public static final String absenceStartTime_FIELDNAME = "absenceStartTime";
-	@FieldDescribe("缺勤起算时间")
+	@FieldDescribe("缺勤起算时间：第一次打卡在什么时间算是当天缺勤")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + absenceStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String absenceStartTime;
 
 	public static final String leaveEarlyStartTime_FIELDNAME = "leaveEarlyStartTime";
-	@FieldDescribe("早退起算时间")
+	@FieldDescribe("下午早退起算时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveEarlyStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String leaveEarlyStartTime;
+
+	public static final String leaveEarlyStartTimeMorning_FIELDNAME = "leaveEarlyStartTimeMorning";
+	@FieldDescribe("上午早退起算时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveEarlyStartTime_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String leaveEarlyStartTimeMorning;
 
 	public String getUnitName() {
 		return unitName;
@@ -156,9 +168,9 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 
 	public void setMiddayRestEndTime(String middayRestEndTime) { this.middayRestEndTime = middayRestEndTime; }
 
-	public Integer getMiddayRestOpen() { return middayRestOpen; }
+	public Integer getSignProxy() { return signProxy; }
 
-	public void setMiddayRestOpen(Integer middayRestOpen) { this.middayRestOpen = middayRestOpen; }
+	public void setSignProxy(Integer signProxy) { this.signProxy = signProxy; }
 
 	public String getOffDutyTime() { return offDutyTime; }
 
@@ -195,4 +207,12 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 	public void setTopUnitName(String topUnitName) {
 		this.topUnitName = topUnitName;
 	}
+
+	public String getLateStartTimeAfternoon() { return lateStartTimeAfternoon; }
+
+	public void setLateStartTimeAfternoon(String lateStartTimeAfternoon) { this.lateStartTimeAfternoon = lateStartTimeAfternoon; }
+
+	public String getLeaveEarlyStartTimeMorning() { return leaveEarlyStartTimeMorning; }
+
+	public void setLeaveEarlyStartTimeMorning(String leaveEarlyStartTimeMorning) { this.leaveEarlyStartTimeMorning = leaveEarlyStartTimeMorning; }
 }
