@@ -16,9 +16,9 @@ import java.util.Map;
 /**
  * 对单个员工的打卡信息进行分析的队列
  */
-public class AttendanceDetailStatisticQueue extends AbstractQueue<String> {
+public class QueueAttendanceDetailStatistic extends AbstractQueue<String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AttendanceDetailStatisticQueue.class);
+    private static final Logger logger = LoggerFactory.getLogger(QueueAttendanceDetailStatistic.class);
 
     @Override
     protected void execute( String logId ) throws Exception {

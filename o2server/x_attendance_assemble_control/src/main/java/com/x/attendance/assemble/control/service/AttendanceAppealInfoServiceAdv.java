@@ -2,10 +2,7 @@ package com.x.attendance.assemble.control.service;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.AppealConfig;
-import com.x.attendance.entity.AttendanceAppealInfo;
-import com.x.attendance.entity.AttendanceDetail;
-import com.x.attendance.entity.AttendanceSetting;
+import com.x.attendance.entity.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -47,9 +44,9 @@ public class AttendanceAppealInfoServiceAdv {
 		}
 	}
 
-	public AttendanceAppealInfo saveNewAppeal( AttendanceAppealInfo attendanceAppealInfo ) throws Exception {
+	public AttendanceAppealInfo saveNewAppeal( AttendanceAppealInfo attendanceAppealInfo, AttendanceAppealAuditInfo attendanceAppealAuditInfo ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return attendanceAppealInfoService.save( emc, attendanceAppealInfo );	
+			return attendanceAppealInfoService.save( emc, attendanceAppealInfo, attendanceAppealAuditInfo );
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -233,23 +230,28 @@ public class AttendanceAppealInfoServiceAdv {
 	 * @throws Exception
 	 */
 	public AttendanceAppealInfo firstProcessAttendanceAppeal( String id, String unitName, String topUnitName, String processor, Date processTime, String opinion, Integer status ) throws Exception {
+		AttendanceAppealAuditInfo attendanceAppealAuditInfo = null;
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//修改申诉信息状态和处理过程信息
+			emc.beginTransaction( AttendanceAppealAuditInfo.class );
 			emc.beginTransaction( AttendanceAppealInfo.class );
 			emc.beginTransaction( AttendanceDetail.class );
 			attendanceAppealInfo = attendanceAppealInfoService.updateAppealProcessInfoForFirstProcess( emc, id, unitName, topUnitName, processor, processTime, opinion, status, false );
 			if( attendanceAppealInfo != null ){
+				attendanceAppealAuditInfo = emc.find( id, AttendanceAppealAuditInfo.class );
 				if ( status == 1 ) {
 					attendanceAppealInfo.setCurrentProcessor( null );
 					attendanceDetailService.updateAppealProcessStatus( emc, id, 9, false );
 					attendanceNoticeService.notifyAttendanceAppealAcceptMessage( attendanceAppealInfo, attendanceAppealInfo.getEmpName() );
 				} else if ( status == 2 ) {// 如果需要继续第二级审批
 					//判断是否存在用户的复核人信息
-					if( attendanceAppealInfo.getProcessPerson2() == null || attendanceAppealInfo.getProcessPerson2().isEmpty() ) {
+					if( attendanceAppealAuditInfo.getProcessPerson2() == null || attendanceAppealAuditInfo.getProcessPerson2().isEmpty() ) {
 						attendanceDetailService.updateAppealProcessStatus( emc, id, 1, false );
-						attendanceAppealInfo.setCurrentProcessor( attendanceAppealInfo.getProcessPerson2() );
+						attendanceAppealAuditInfo.setCurrentProcessor( attendanceAppealAuditInfo.getProcessPerson2() );
+						attendanceAppealInfo.setCurrentProcessor( attendanceAppealAuditInfo.getProcessPerson2() );
 						emc.check( attendanceAppealInfo, CheckPersistType.all );
+						emc.check( attendanceAppealAuditInfo, CheckPersistType.all );
 						attendanceNoticeService.notifyAttendanceAppealProcessness2Message( attendanceAppealInfo );
 					}
 				} else {// 如果审批不通过
@@ -265,15 +267,30 @@ public class AttendanceAppealInfoServiceAdv {
 		return attendanceAppealInfo;
 	}
 
+	/**
+	 *
+	 * @param id
+	 * @param unitName
+	 * @param topUnitName
+	 * @param processor
+	 * @param processTime
+	 * @param opinion
+	 * @param status //申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过
+	 * @return
+	 * @throws Exception
+	 */
 	public AttendanceAppealInfo secondProcessAttendanceAppeal( String id, String unitName, String topUnitName,
 			String processor, Date processTime, String opinion, Integer status ) throws Exception {
+		AttendanceAppealAuditInfo attendanceAppealAuditInfo = null;
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			//修改申诉信息状态和处理过程信息
+			emc.beginTransaction( AttendanceAppealAuditInfo.class );
 			emc.beginTransaction( AttendanceAppealInfo.class );
 			emc.beginTransaction( AttendanceDetail.class );
 			attendanceAppealInfo = attendanceAppealInfoService.updateAppealProcessInfoForSecondProcess( emc, id, unitName, topUnitName, processor, processTime, opinion, status, false );
 			if( attendanceAppealInfo != null ){
+				attendanceAppealAuditInfo = emc.find( id, AttendanceAppealAuditInfo.class );
 				if ( status == 1 ) {
 					attendanceDetailService.updateAppealProcessStatus( emc, id, 9, false );
 					attendanceNoticeService.notifyAttendanceAppealAcceptMessage( attendanceAppealInfo, attendanceAppealInfo.getEmpName() );
@@ -282,6 +299,7 @@ public class AttendanceAppealInfoServiceAdv {
 					attendanceNoticeService.notifyAttendanceAppealRejectMessage( attendanceAppealInfo, attendanceAppealInfo.getEmpName());
 				}
 				attendanceAppealInfo.setCurrentProcessor( null );
+				attendanceAppealAuditInfo.setCurrentProcessor( null );
 			}
 			emc.commit();
 		} catch ( Exception e ) {
@@ -347,5 +365,49 @@ public class AttendanceAppealInfoServiceAdv {
 		}
 	}
 
-	
+
+	public AttendanceAppealAuditInfo getAppealAuditInfo(String id) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			emc.find( id, AttendanceAppealAuditInfo.class );
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return null;
+	}
+
+
+	/**
+	 * 申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过
+	 * @param attendanceAppealInfo
+	 * @param activityType
+	 * @param currentProcessor
+	 * @param status
+	 * @throws Exception
+	 */
+	public void syncAppealStatus( AttendanceAppealInfo attendanceAppealInfo, String activityType, String currentProcessor, Integer status ) throws Exception {
+
+		AttendanceAppealAuditInfo attendanceAppealAuditInfo = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			attendanceAppealInfo = emc.find( attendanceAppealInfo.getId(), AttendanceAppealInfo.class );
+			attendanceAppealAuditInfo = emc.find( attendanceAppealInfo.getId(), AttendanceAppealAuditInfo.class );
+
+			emc.beginTransaction( AttendanceAppealInfo.class );
+			emc.beginTransaction( AttendanceAppealAuditInfo.class );
+
+			attendanceAppealInfo.setStatus(status);
+			if( StringUtils.equalsAnyIgnoreCase( "end", activityType )){//审核结束了
+				attendanceAppealInfo.setCurrentProcessor( null );
+				attendanceAppealAuditInfo.setCurrentProcessor( null );
+			}else{
+				attendanceAppealInfo.setCurrentProcessor( currentProcessor );
+				attendanceAppealAuditInfo.setCurrentProcessor( currentProcessor );
+			}
+			emc.commit();
+		} catch ( Exception e ) {
+			throw e;
+		}
+
+
+
+	}
 }

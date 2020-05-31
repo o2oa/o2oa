@@ -71,7 +71,6 @@ public class AttendanceSetting extends SliceJpaObject {
 	public static final String configValue_FIELDNAME = "configValue";
 	@FieldDescribe("配置内容")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + configValue_FIELDNAME )
-	@CheckPersist(allowEmpty = false)
 	private String configValue;
 
 	public static final String valueType_FIELDNAME = "valueType";

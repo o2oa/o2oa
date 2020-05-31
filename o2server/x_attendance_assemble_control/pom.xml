@@ -24,7 +24,11 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_organization_core_express</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>o2oa</groupId>
+            <artifactId>x_processplatform_core_entity</artifactId>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
