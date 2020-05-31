@@ -123,7 +123,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		
 		if( check ){
 			//对该员工的所有移动考勤数据进行一个整合
-			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString() );
+			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString(), effectivePerson.getDebugger() );
 
 		}
 		return result;

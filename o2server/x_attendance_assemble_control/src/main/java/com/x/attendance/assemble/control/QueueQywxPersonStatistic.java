@@ -1,6 +1,5 @@
 package com.x.attendance.assemble.control;
 
-import com.x.attendance.entity.AttendanceDingtalkDetail;
 import com.x.attendance.entity.AttendanceQywxDetail;
 import com.x.attendance.entity.StatisticQywxPersonForMonth;
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,8 +24,8 @@ import java.util.stream.Collectors;
  * Created by fancyLou on 2020-04-05.
  * Copyright © 2020 O2. All rights reserved.
  */
-public class QywxPersonStatisticQueue extends AbstractQueue<Date> {
-    private static final Logger logger = LoggerFactory.getLogger(QywxPersonStatisticQueue.class);
+public class QueueQywxPersonStatistic extends AbstractQueue<Date> {
+    private static final Logger logger = LoggerFactory.getLogger(QueueQywxPersonStatistic.class);
 
     @Override
     protected void execute(Date date) throws Exception {

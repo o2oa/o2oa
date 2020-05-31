@@ -2,8 +2,6 @@ package com.x.attendance.assemble.control;
 
 import com.x.attendance.entity.AttendanceDingtalkDetail;
 import com.x.attendance.entity.StatisticDingdingPersonForMonth;
-import com.x.attendance.entity.StatisticDingdingUnitForDay;
-import com.x.attendance.entity.StatisticDingdingUnitForMonth;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
@@ -25,8 +23,8 @@ import java.util.List;
  * Created by fancyLou on 2020-04-05.
  * Copyright © 2020 O2. All rights reserved.
  */
-public class DingdingPersonStatisticQueue extends AbstractQueue<Date> {
-    private static final Logger logger = LoggerFactory.getLogger(DingdingPersonStatisticQueue.class);
+public class QueueDingdingPersonStatistic extends AbstractQueue<Date> {
+    private static final Logger logger = LoggerFactory.getLogger(QueueDingdingPersonStatistic.class);
 
     @Override
     protected void execute(Date date) throws Exception {
