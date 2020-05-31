@@ -59,9 +59,19 @@ public class AttendanceAppealAuditInfo extends SliceJpaObject {
 	private String detailId;
 
 	public static final String auditFlowType_FIELDNAME = "auditFlowType";
-	@FieldDescribe("审批方式:WORKFLOW|BUILTIN")
+	@FieldDescribe("审批方式:WORKFLOW|BUILTIN，使用自定义流程或者使用内置流程")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + auditFlowType_FIELDNAME)
 	private String auditFlowType = AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN;
+
+	public static final String workId_FIELDNAME = "workId";
+	@FieldDescribe("自定义审批流程WorkID")
+	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	private String workId;
+
+	public static final String lastFlowSyncTime_FIELDNAME = "lastFlowSyncTime";
+	@FieldDescribe("上次进行状态同步时间")
+	@Column( name = ColumnNamePrefix + lastFlowSyncTime_FIELDNAME)
+	private Date lastFlowSyncTime;
 
 	public static final String currentProcessor_FIELDNAME = "currentProcessor";
 	@FieldDescribe("当前审核人")
@@ -120,23 +130,16 @@ public class AttendanceAppealAuditInfo extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix + processTime2_FIELDNAME )
 	private Date processTime2;
 
-	public static final String auditFlowId_FIELDNAME = "auditFlowId";
-	@FieldDescribe("自定义审批流程ID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + auditFlowType_FIELDNAME)
-	private String auditFlowId;
 
-	public static final String lastFlowSyncTime_FIELDNAME = "lastFlowSyncTime";
-	@FieldDescribe("上次进行状态同步时间")
-	@Column( name = ColumnNamePrefix + lastFlowSyncTime_FIELDNAME)
-	private Date lastFlowSyncTime;
+	public void setCurrentProcessor(String currentProcessor) { this.currentProcessor = currentProcessor; }
 
 	public String getAuditFlowType() { return auditFlowType; }
 
 	public void setAuditFlowType(String auditFlowType) { this.auditFlowType = auditFlowType; }
 
-	public String getAuditFlowId() { return auditFlowId; }
+	public String getWorkId() { return workId; }
 
-	public void setAuditFlowId(String auditFlowId) { this.auditFlowId = auditFlowId; }
+	public void setWorkId(String workId) { this.workId = workId; }
 
 	public Date getLastFlowSyncTime() { return lastFlowSyncTime; }
 

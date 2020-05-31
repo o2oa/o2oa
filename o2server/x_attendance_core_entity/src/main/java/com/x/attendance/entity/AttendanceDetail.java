@@ -164,26 +164,38 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String offWorkTime;
 
-	public static final String onDutyTime_FIELDNAME = "onDutyTime";
-	@FieldDescribe("上班打卡时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String onDutyTime;
-
 	public static final String middayRestStartTime_FIELDNAME = "middayRestStartTime";
 	@FieldDescribe("午休开始时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME )
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + middayRestStartTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String middayRestStartTime;
 
 	public static final String middayRestEndTime_FIELDNAME = "middayRestEndTime";
 	@FieldDescribe("午休结束时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + middayRestEndTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String middayRestEndTime;
 
+	public static final String onDutyTime_FIELDNAME = "onDutyTime";
+	@FieldDescribe("上班打卡签到时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + onDutyTime_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String onDutyTime;
+
+	public static final String morningOffdutyTime_FIELDNAME = "morningOffdutyTime";
+	@FieldDescribe("上班下午打卡签退时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + morningOffdutyTime_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String morningOffdutyTime;
+
+	public static final String afternoonOnDutyTime_FIELDNAME = "afternoonOnDutyTime";
+	@FieldDescribe("下午上班打卡签到时间")
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + afternoonOnDutyTime_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String afternoonOnDutyTime;
+
 	public static final String offDutyTime_FIELDNAME = "offDutyTime";
-	@FieldDescribe("下班打卡时间")
+	@FieldDescribe("下班打卡签退时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + offDutyTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String offDutyTime;
@@ -320,6 +332,14 @@ public class AttendanceDetail extends SliceJpaObject {
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + archiveTime_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String archiveTime;
+
+	public String getMorningOffdutyTime() { return morningOffdutyTime; }
+
+	public void setMorningOffdutyTime(String morningOffdutyTime) { this.morningOffdutyTime = morningOffdutyTime; }
+
+	public String getAfternoonOnDutyTime() { return afternoonOnDutyTime; }
+
+	public void setAfternoonOnDutyTime(String afternoonOnDutyTime) { this.afternoonOnDutyTime = afternoonOnDutyTime; }
 
 	/**
 	 * 获取是否工时不足
