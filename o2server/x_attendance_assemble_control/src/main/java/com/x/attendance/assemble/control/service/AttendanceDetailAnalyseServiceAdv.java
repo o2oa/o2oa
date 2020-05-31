@@ -1,18 +1,8 @@
 package com.x.attendance.assemble.control.service;
 
-import com.x.attendance.assemble.common.date.DateOperation;
-import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
 import com.x.attendance.entity.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.tools.ListTools;
-import net.sf.ehcache.Ehcache;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +13,6 @@ import java.util.Map;
  *
  */
 public class AttendanceDetailAnalyseServiceAdv {
-	private AttendanceWorkDayConfigServiceAdv attendanceWorkDayConfigServiceAdv = new AttendanceWorkDayConfigServiceAdv();
-	private AttendanceStatisticalCycleServiceAdv statisticalCycleServiceAdv = new AttendanceStatisticalCycleServiceAdv();
-	private AttendanceDetailServiceAdv detailServiceAdv = new AttendanceDetailServiceAdv();
 	private AttendanceDetailAnalyseService detailAnalyseService = new AttendanceDetailAnalyseService();
 
 	/**
