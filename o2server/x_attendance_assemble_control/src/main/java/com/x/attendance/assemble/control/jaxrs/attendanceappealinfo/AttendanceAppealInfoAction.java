@@ -83,13 +83,12 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 
 	/**
 	 * 对某条打卡记录进行申诉
-	 * 
+	 * @param asyncResponse
 	 * @param request
 	 * @param id
-	 * @param wrapIn
-	 * @return
+	 * @param jsonElement
 	 */
-	@JaxrsMethodDescribe(value = "根据ID对考勤结果申诉信息提起申诉", action = ActionAppealCreate.class)
+	@JaxrsMethodDescribe(value = "根据ID对考勤结果申诉信息提起申诉", action = ActionAppealCreate.class )
 	@PUT
 	@Path("appeal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -102,6 +101,36 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		if (check) {
 			try {
 				result = new ActionAppealCreate().execute(request, effectivePerson, id, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行申诉时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	/**
+	 * 对某条打卡记录进行申诉
+	 * @param asyncResponse
+	 * @param request
+	 * @param id
+	 * @param jsonElement
+	 */
+	@JaxrsMethodDescribe(value = "根据ID对考勤结果申诉信息提起申诉", action = ActionAppealCreateWithWorkFlow.class )
+	@PUT
+	@Path("workflow/appeal/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createWithWorkFlow(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   @JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionAppealCreateWithWorkFlow.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+		if (check) {
+			try {
+				result = new ActionAppealCreateWithWorkFlow().execute(request, effectivePerson, id, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行申诉时发生异常！");
@@ -219,6 +248,29 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		if (check) {
 			try {
 				result = new ActionAppealArchive().execute(request, effectivePerson, id);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行归档时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据考勤申诉ID，更新流程的审批信息", action = ActionWorkFlowSync.class)
+	@GET
+	@Path("workflow/sync/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void archive(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionWorkFlowSync.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+		if (check) {
+			try {
+				result = new ActionWorkFlowSync().execute(request, effectivePerson, id, jsonElement);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				Exception exception = new ExceptionAttendanceAppealProcess(e, "根据ID对打卡结果进行归档时发生异常！");
