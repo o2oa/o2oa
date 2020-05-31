@@ -1,10 +1,8 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -120,7 +118,25 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				logger.error( e, currentPerson, request, null);
 			}
 		}
-		
+
+//		AttendanceScheduleSetting scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
+//		if( scheduleSetting == null ){
+//			throw new Exception("scheduleSetting is null, empName:" + detail.getEmpName() );
+//		}
+
+//		//获取打卡策略：两次，三次还是四次
+//		//根据考勤打卡规则来判断启用何种规则来进行考勤结果分析
+//		if ( 1 == scheduleSetting.getSignProxy() ){
+//			//1、一天只打上下班两次卡
+//
+//		}else if( 2 == scheduleSetting.getSignProxy() ){
+//			//2、一天三次打卡：打上班，下班两次卡外，中午休息时间也需要打一次卡，以确保员工在公司活动
+//
+//		}else if( 3 == scheduleSetting.getSignProxy() ){
+//			//3、一天四次打卡：打上午上班，上午下班，下午上班，下午下班四次卡
+//
+//		}
+
 		if( check ){
 			//对该员工的所有移动考勤数据进行一个整合
 			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString(), effectivePerson.getDebugger() );
