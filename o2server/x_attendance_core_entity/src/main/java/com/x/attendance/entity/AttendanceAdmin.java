@@ -79,7 +79,7 @@ public class AttendanceAdmin extends SliceJpaObject {
 
 	public static final String admin_FIELDNAME = "admin";
 	@FieldDescribe("管理员标识")
-	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + adminName_FIELDNAME)
+	@Column(length = JpaObject.length_96B, name = ColumnNamePrefix + admin_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + adminName_FIELDNAME)
 	private String admin = "";
 

@@ -16,15 +16,15 @@ public class ThisApplication {
 		return context;
 	}
 
-	public static DingdingAttendanceQueue dingdingQueue = new DingdingAttendanceQueue();
-	public static QywxAttendanceSyncQueue qywxQueue = new QywxAttendanceSyncQueue();
-	public static QywxUnitStatisticQueue unitQywxStatisticQueue = new QywxUnitStatisticQueue();
-	public static QywxPersonStatisticQueue personQywxStatisticQueue = new QywxPersonStatisticQueue();
-	public static DingdingPersonStatisticQueue personStatisticQueue = new DingdingPersonStatisticQueue();
-	public static DingdingUnitStatisticQueue unitStatisticQueue = new DingdingUnitStatisticQueue();
+	public static QueueDingdingAttendance dingdingQueue = new QueueDingdingAttendance();
+	public static QueueQywxAttendanceSync qywxQueue = new QueueQywxAttendanceSync();
+	public static QueueQywxUnitStatistic unitQywxStatisticQueue = new QueueQywxUnitStatistic();
+	public static QueueQywxPersonStatistic personQywxStatisticQueue = new QueueQywxPersonStatistic();
+	public static QueueDingdingPersonStatistic personStatisticQueue = new QueueDingdingPersonStatistic();
+	public static QueueDingdingUnitStatistic unitStatisticQueue = new QueueDingdingUnitStatistic();
 
-	public static PersonAttendanceDetailAnalyseQueue detailAnalyseQueue = new PersonAttendanceDetailAnalyseQueue();
-	public static AttendanceDetailStatisticQueue detailStatisticQueue = new AttendanceDetailStatisticQueue();
+	public static QueuePersonAttendanceDetailAnalyse detailAnalyseQueue = new QueuePersonAttendanceDetailAnalyse();
+	public static QueueAttendanceDetailStatistic detailStatisticQueue = new QueueAttendanceDetailStatistic();
 
 
 	public static void init() throws Exception {

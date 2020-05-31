@@ -20,9 +20,9 @@ import java.util.Map;
 /**
  * 对单个员工的打卡信息进行分析的队列
  */
-public class PersonAttendanceDetailAnalyseQueue extends AbstractQueue<String> {
+public class QueuePersonAttendanceDetailAnalyse extends AbstractQueue<String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersonAttendanceDetailAnalyseQueue.class);
+    private static final Logger logger = LoggerFactory.getLogger(QueuePersonAttendanceDetailAnalyse.class);
 
     @Override
     protected void execute( String detailId ) throws Exception {

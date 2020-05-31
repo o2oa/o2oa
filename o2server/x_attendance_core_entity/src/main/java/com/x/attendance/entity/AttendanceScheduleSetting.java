@@ -106,7 +106,7 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 
 	public static final String signProxy_FIELDNAME = "signProxy";
 	@FieldDescribe("打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
-	@Column( name = ColumnNamePrefix + lateStartTime_FIELDNAME )
+	@Column( name = ColumnNamePrefix + signProxy_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Integer signProxy = 0;
 
@@ -136,7 +136,7 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 
 	public static final String leaveEarlyStartTimeMorning_FIELDNAME = "leaveEarlyStartTimeMorning";
 	@FieldDescribe("上午早退起算时间")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveEarlyStartTime_FIELDNAME )
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + leaveEarlyStartTimeMorning_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String leaveEarlyStartTimeMorning;
 
