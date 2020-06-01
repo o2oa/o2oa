@@ -1090,8 +1090,8 @@ MWF.xApplication.Profile.emPowerPopupForm = new Class({
         var identityTextList = [];
         var identityList =[];
         this.userIdentityList.each(function(it){
-            identityTextList.include(it.name+"("+it.unitName+")");
-            identityList.include((it.distinguishedName));
+            identityTextList.push(it.name+"("+it.unitName+")");
+            identityList.push((it.distinguishedName));
         });
 
         //this.formTableContainer.setStyle("width","80%");
