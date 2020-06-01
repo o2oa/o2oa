@@ -186,8 +186,6 @@ class ActionInputAll extends BaseAction {
 			if(!dutyFlag){
 				wholeFlag = this.checkIdentity(business, workbook, configuratorIdentity, sheet,persons,units); 
 				if(wholeFlag){
-						//校验群组
-						wholeFlag = this.checkGroup(business,workbook,person,unit);
 						
 						if(wholeFlag){
 							//保存组织，人员
@@ -201,6 +199,8 @@ class ActionInputAll extends BaseAction {
 							this.persistDuty(workbook, configuratorDuty, duty);
 							
 							//保存群组
+							//校验群组
+							wholeFlag = this.checkGroup(business,workbook,person,unit);
 							this.scanGroup(business,workbook,person,unit);
 							this.persistGroup(business,workbook, configuratorGroup, group);
 						}
@@ -351,25 +351,26 @@ class ActionInputAll extends BaseAction {
 					personItem.setName(name);
 					personItem.setGenderType(genderType);
 					personItem.setMobile(mobile);
-					if (null != configurator.getUniqueColumn()) {
-						String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
-						unique = StringUtils.trimToEmpty(unique);
-						personItem.setUnique(unique);
-					}
+			
 					if (null != configurator.getEmployeeColumn()) {
 						String employee = configurator
 								.getCellStringValue(row.getCell(configurator.getEmployeeColumn()));
 						employee = StringUtils.trimToEmpty(employee);
 						personItem.setEmployee(employee);
-						if(null == configurator.getUniqueColumn()){
-							personItem.setUnique(employee);
+					}
+					if (null != configurator.getUniqueColumn()) {
+						String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+						unique = StringUtils.trimToEmpty(unique);
+						personItem.setUnique(unique);
+						
+						if(null == configurator.getEmployeeColumn()){
+							personItem.setEmployee(unique);
 						}
 					}
-					
 					if (null != configurator.getOfficePhoneColumn()) {
 						String officePhone = configurator.getCellStringValue(row.getCell(configurator.getOfficePhoneColumn()));
 						officePhone = StringUtils.trimToEmpty(officePhone);
-						personItem.setUnique(officePhone);
+						personItem.setOfficePhone(officePhone);
 					}
 					if (null != configurator.getMailColumn()) {
 						String mail = configurator.getCellStringValue(row.getCell(configurator.getMailColumn()));
@@ -627,8 +628,8 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}*/
-			if (StringUtils.isEmpty(o.getEmployee())) {
-				this.setPersonMemo(workbook, configurator, o, "登录账号不能为空.");
+			if (StringUtils.isEmpty(o.getUnique())) {
+				this.setPersonMemo(workbook, configurator, o, "员工账号不能为空.");
 				validate = false;
 				continue;
 			}
@@ -647,7 +648,7 @@ class ActionInputAll extends BaseAction {
 			for (PersonItem o : person) {
 				for (PersonItem item : person) {
 					if (o != item) {
-						if (StringUtils.isNotEmpty(o.getEmployee()) && StringUtils.equals(o.getEmployee(), item.getEmployee())) {
+						if (StringUtils.isNotEmpty(o.getUnique()) && StringUtils.equals(o.getUnique(), item.getUnique())) {
 							this.setPersonMemo(workbook, configurator, o, "员工账号冲突,本次导入中不唯一.");
 							validate = false;
 							continue;
@@ -658,7 +659,7 @@ class ActionInputAll extends BaseAction {
 				Person p = null;
 				p = emc.flag(o.getUnique(), Person.class);
 				if (null != p) {
-					this.setPersonMemo(workbook, configurator, o, "人员: " + o.getName() + " 与已经存在人员: " + p.getName() + " 冲突.");
+					this.setPersonMemo(workbook, configurator, o, "员工账号: " + o.getUnique() + " 与已经存在人员: " + p.getName() + " 冲突.");
 					validate = false;
 					continue;
 				}
@@ -718,7 +719,7 @@ class ActionInputAll extends BaseAction {
 					personcheck = true;
 				}else{
 					for (PersonItem personItem : persons) {
-						if (StringUtils.isNotEmpty(personItem.getEmployee()) && StringUtils.equals(personItem.getEmployee(), unique)) {
+						if (StringUtils.isNotEmpty(personItem.getUnique()) && StringUtils.equals(personItem.getUnique(), unique)) {
 							personcheck = true;
 						}
 					}
