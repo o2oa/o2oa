@@ -14,6 +14,7 @@ public class PersonItem extends GsonPropertyObject {
 	private String unique;
 	private String employee;
 	private String mobile;
+	private String officePhone;
 	private String password;
 
 	private Integer row;
@@ -66,6 +67,14 @@ public class PersonItem extends GsonPropertyObject {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+	
+	public String getOfficePhone() {
+		return officePhone;
+	}
+
+	public void setOfficePhone(String officePhone) {
+		this.officePhone = officePhone;
 	}
 
 	public Map<String, String> getAttributes() {
