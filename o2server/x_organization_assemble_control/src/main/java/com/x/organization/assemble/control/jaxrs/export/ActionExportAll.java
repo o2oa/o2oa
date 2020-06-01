@@ -66,6 +66,8 @@ public class ActionExportAll extends BaseAction {
 			this.listUnit(business);
 			this.listPerson(business);
 			this.listIdentity(business);
+			this.listDuty(business);
+			this.listGroup(business);
 		} catch (Exception e) {
 			logger.info("系统在查询所有组织人员信息时发生异常。" );
 			e.printStackTrace();
@@ -87,7 +89,17 @@ public class ActionExportAll extends BaseAction {
 
 		// 将人员身份信息结果组织成EXCEL		
 		if( ListTools.isNotEmpty(allPersonList) ) {
-			this.composePerson( business, "人员身份信息", allPersonList );
+			this.composeIdentity( business, "人员身份信息", allIdentityList );
+		}
+		
+		// 将职务信息结果组织成EXCEL		
+		if( ListTools.isNotEmpty(allDutyList) ) {
+			this.composeDuty( business, "职务信息", allDutyList );
+		}
+		
+		// 将群组信息结果组织成EXCEL		
+		if( ListTools.isNotEmpty(allGroupList) ) {
+			this.composeGroup( business, "群组信息", allGroupList );
 		}
 		
 		if( wb != null ) {
@@ -137,6 +149,22 @@ public class ActionExportAll extends BaseAction {
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		allIdentityList = em.createQuery(cq.select(root)).getResultList();
+	}
+	
+	private void listDuty(Business business) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(UnitDuty.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<UnitDuty> cq = cb.createQuery(UnitDuty.class);
+		Root<UnitDuty> root = cq.from(UnitDuty.class);
+		allDutyList = em.createQuery(cq.select(root)).getResultList();
+	}
+	
+	private void listGroup(Business business) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Group.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
+		Root<Group> root = cq.from(Group.class);
+		allGroupList = em.createQuery(cq.select(root)).getResultList();
 	}
 
 	private List<Unit> listTopUnit(Business business) throws Exception {
@@ -243,10 +271,10 @@ public class ActionExportAll extends BaseAction {
 			// 先创建表头
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("人员行姓名 *");
-			row.createCell(1).setCellValue("人员编号 *");
-			row.createCell(2).setCellValue("登录账号 *");
-			row.createCell(3).setCellValue("手机号码 *");
-			row.createCell(4).setCellValue("身份证号 *");
+			row.createCell(1).setCellValue("员工账号 *");
+			row.createCell(2).setCellValue("手机号码 *");
+			row.createCell(3).setCellValue("人员编号");
+			row.createCell(4).setCellValue("办公电话");
 			row.createCell(5).setCellValue("性别");
 			row.createCell(6).setCellValue("邮件");
 
@@ -255,19 +283,9 @@ public class ActionExportAll extends BaseAction {
 				row = sheet.createRow(i + 1);
 				row.createCell(0).setCellValue(person.getName());
 				row.createCell(1).setCellValue(person.getUnique());
-				row.createCell(2).setCellValue(person.getEmployee());
-				row.createCell(3).setCellValue(person.getMobile());
-				
-				if(StringUtils.isNotEmpty(person.getId())){
-					List<PersonAttribute> personAttributeList = this.listAttributeWithPerson(business,person.getId());
-					if(ListTools.isNotEmpty(personAttributeList)){
-						for(PersonAttribute o : personAttributeList){
-							if("idNumber".equals(o.getName())){
-								row.createCell(4).setCellValue(o.getAttributeList().get(0));
-							}
-						}
-					}
-				}
+				row.createCell(2).setCellValue(person.getMobile());
+				row.createCell(3).setCellValue(person.getEmployee());
+				row.createCell(4).setCellValue(person.getOfficePhone());
 				row.createCell(5).setCellValue(person.getGenderType().toString());
 				row.createCell(6).setCellValue(person.getMail());
 				
@@ -285,11 +303,10 @@ public class ActionExportAll extends BaseAction {
 			
 			// 先创建表头
 			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("人员编号 *");
+			row.createCell(0).setCellValue("员工账号 *");
 			row.createCell(1).setCellValue("组织编号 *");
-			row.createCell(2).setCellValue("登录账号 *");
-			row.createCell(3).setCellValue("职务编号");
-			row.createCell(4).setCellValue("主兼职");
+			row.createCell(2).setCellValue("职务编号");
+			row.createCell(3).setCellValue("主兼职");
 
 			for (int i = 0; i < identityList.size(); i++) {
 				identity = identityList.get(i);
@@ -299,15 +316,158 @@ public class ActionExportAll extends BaseAction {
 				if(person != null){
 					row.createCell(0).setCellValue(person.getUnique());
 					if(unit != null){
+						String iduty = "";
+						String unitId = "";
+						unitId = unit.getId();
 						row.createCell(1).setCellValue(unit.getUnique());
 						List<UnitDuty> unitDutyList =  this.listDutyWithIdentity(business,identity.getId());
+						
 						if(ListTools.isNotEmpty(unitDutyList)){
-							row.createCell(2).setCellValue("");
+							for(UnitDuty duty :unitDutyList){
+								if(unitId.equals(duty.getUnit())){
+									iduty = duty.getUnique();
+								}
+							}
+							
 						}
-						row.createCell(3).setCellValue("");
+						row.createCell(2).setCellValue(iduty);
+						row.createCell(3).setCellValue(String.valueOf(identity.getMajor()));
 					}
 				}	
 				
+			}
+		}
+	}
+	
+	private void composeDuty(Business business, String sheetName, List<UnitDuty> dutyList) throws Exception {
+		UnitDuty duty = null;
+		
+		Row row = null;
+		if (ListTools.isNotEmpty(dutyList) ) {
+			// 创建新的表格
+			Sheet sheet = wb.createSheet(sheetName);
+			
+			// 先创建表头
+			row = sheet.createRow(0);
+			row.createCell(0).setCellValue("职务编号 *");
+			row.createCell(1).setCellValue("职务名称 *");
+			row.createCell(2).setCellValue("职务描述");
+
+			for (int i = 0; i < dutyList.size(); i++) {
+				duty = dutyList.get(i);
+				row = sheet.createRow(i + 1);
+				row.createCell(0).setCellValue(duty.getUnique());
+				row.createCell(1).setCellValue(duty.getName());
+				row.createCell(2).setCellValue(duty.getDescription());
+			}
+		}
+	}
+	
+	private void composeGroup(Business business, String sheetName, List<Group> groupList) throws Exception {
+		Group group = null;
+		
+		Row row = null;
+		if (ListTools.isNotEmpty(groupList) ) {
+			EntityManagerContainer emc = business.entityManagerContainer();
+			// 创建新的表格
+			Sheet sheet = wb.createSheet(sheetName);
+			
+			// 先创建表头
+			row = sheet.createRow(0);
+			row.createCell(0).setCellValue("群组名称 *");
+			row.createCell(1).setCellValue("群组编号 *");
+			row.createCell(2).setCellValue("人员编号");
+			row.createCell(3).setCellValue("组织编号");
+			row.createCell(4).setCellValue("群组编号");
+			row.createCell(5).setCellValue("描述");
+
+			for (int i = 0; i < groupList.size(); i++) {
+				group = groupList.get(i);
+				row = sheet.createRow(i + 1);
+				List<String> personList = group.getPersonList();
+				List<String> unitList = group.getUnitList();
+				List<String> groupsList = group.getGroupList();
+				System.out.println("personList="+personList.size());
+				System.out.println("unitList="+unitList.size());
+				System.out.println("groupsList="+groupsList.size());
+				if(ListTools.isNotEmpty(personList)){
+					for(String personId : personList){
+						Person person = emc.flag(personId, Person.class);
+						if(person != null){
+							row.createCell(0).setCellValue(group.getName());
+							row.createCell(1).setCellValue(group.getUnique());
+							row.createCell(2).setCellValue(person.getUnique());
+							row.createCell(3).setCellValue("");
+							row.createCell(4).setCellValue("");
+						}else{
+							row.createCell(0).setCellValue(group.getName());
+							row.createCell(1).setCellValue(group.getUnique());
+							row.createCell(2).setCellValue("");
+							row.createCell(3).setCellValue("");
+							row.createCell(4).setCellValue("");
+						}
+					} 
+					
+					/*if(ListTools.isNotEmpty(unitList)){
+						for(String unitId : unitList){
+							Unit unit = emc.flag(unitId, Unit.class);
+							if(unit != null){
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue(unit.getUnique());
+								row.createCell(4).setCellValue("");
+							}else{
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue("");
+							}
+						} 
+					}else{
+						row.createCell(0).setCellValue(group.getName());
+						row.createCell(1).setCellValue(group.getUnique());
+						row.createCell(2).setCellValue("");
+						row.createCell(3).setCellValue("");
+						row.createCell(4).setCellValue("");
+					}
+					
+					if(ListTools.isNotEmpty(groupsList)){
+						for(String groupId : groupsList){
+							Group grouptemp = emc.flag(groupId, Group.class);
+							if(grouptemp != null){
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue(grouptemp.getUnique());
+							}else{
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue("");
+							}
+						} 
+					}else{
+						row.createCell(0).setCellValue(group.getName());
+						row.createCell(1).setCellValue(group.getUnique());
+						row.createCell(2).setCellValue("");
+						row.createCell(3).setCellValue("");
+						row.createCell(4).setCellValue("");
+					}*/
+					
+				}else{
+					row.createCell(0).setCellValue(group.getName());
+					row.createCell(1).setCellValue(group.getUnique());
+					row.createCell(2).setCellValue("");
+					row.createCell(3).setCellValue("");
+					row.createCell(4).setCellValue("");
+				}
+				
+				
+				row.createCell(5).setCellValue(group.getDescription());
 			}
 		}
 	}
