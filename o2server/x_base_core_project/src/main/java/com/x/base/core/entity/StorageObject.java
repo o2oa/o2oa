@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.cache.NullFilesCache;
@@ -159,13 +160,44 @@ public abstract class StorageObject extends SliceJpaObject {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			/* 由于可以在传输过程中取消传输,先拷贝到内存 */
 			IOUtils.copyLarge(input, baos);
-			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-					OutputStream output = fo.getContent().getOutputStream()) {
+			FileObject fo = null;
+			OutputStream output = null;
+			try {
+				/*
+				*需要进行两次判断，在前端使用nginx分发的情况下，可能同时触发多个文件的上传，多个文件同时上传可能会同时创建文件的存储目录，会在后台导致错误
+				*org.apache.commons.vfs2.FileSystemException: Could not create folder "ftp://processPlatform:***@o2.server01.com:20040/20200601/1beb018a-5009-4baa-a9ef-7e903f9d48ef".
+				*这种情况下再次发起请求尝试获取文件可以解决这个问题。
+				*/
+				try {
+					fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
+					output = fo.getContent().getOutputStream();
+				} catch (FileSystemException fse) {
+					//此段代码全部关闭对象，并要进行webdav判断进行关闭。
+					if (null != output) {
+						output.close();
+					}
+					if (null != fo) {
+						if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+							/* webdav关闭会试图去关闭commons.httpClient */
+							manager.closeFileSystem(fo.getFileSystem());
+						}
+						fo.close();
+					}
+					fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
+					output = fo.getContent().getOutputStream();
+				}
 				length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()), output);
 				this.setLength(length);
 				if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
 					/* webdav关闭会试图去关闭commons.httpClient */
 					manager.closeFileSystem(fo.getFileSystem());
+				}
+			} finally {
+				if (null != output) {
+					output.close();
+				}
+				if (null != fo) {
+					fo.close();
 				}
 			}
 		}
@@ -245,38 +277,38 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new Exception("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-		// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
-		// tar, temp, webdav, zip, cifs, mime;
-		case ftp:
-			// ftp://[ username[: password]@] hostname[: port][ relative-path]
-			prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case ftps:
-			// ftps://[ username[: password]@] hostname[: port][ relative-path]
-			prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case cifs:
-			// smb://[ username[: password]@] hostname[: port][ absolute-path]
-			prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case webdav:
-			// webdav://[ username[: password]@] hostname[: port][ absolute-path]
-			prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
-					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
-					+ mapping.getPort();
-			break;
-		case file:
-			// [file://] absolute-path
-			prefix = "file://";
-			break;
-		default:
-			break;
+			// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
+			// tar, temp, webdav, zip, cifs, mime;
+			case ftp:
+				// ftp://[ username[: password]@] hostname[: port][ relative-path]
+				prefix = "ftp://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case ftps:
+				// ftps://[ username[: password]@] hostname[: port][ relative-path]
+				prefix = "ftps://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case cifs:
+				// smb://[ username[: password]@] hostname[: port][ absolute-path]
+				prefix = "smb://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case webdav:
+				// webdav://[ username[: password]@] hostname[: port][ absolute-path]
+				prefix = "webdav://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+						+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
+						+ mapping.getPort();
+				break;
+			case file:
+				// [file://] absolute-path
+				prefix = "file://";
+				break;
+			default:
+				break;
 		}
 		return prefix + (StringUtils.isEmpty(mapping.getPrefix()) ? "" : ("/" + mapping.getPrefix()));
 	}
@@ -287,57 +319,57 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new Exception("storage protocol is null.");
 		}
 		switch (mapping.getProtocol()) {
-		// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
-		// tar, temp, webdav, zip, cifs, mime;
-		case ftp:
-			FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-			/*
-			 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
-			 * Connection timed out (Connection timed out) at
-			 * java.net.PlainSocketImpl.socketConnect(Native Method) at
-			 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-			 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
-			 * java:206) at
-			 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
-			 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
-			 * java.net.Socket.connect(Socket.java:589)
-			 */
-			ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-			// builder.setPassiveMode(opts, false);
-			// builder.setPassiveMode(opts, true);
-			/** 强制不校验IP */
-			ftpBuilder.setRemoteVerification(opts, false);
-			// FtpFileType.BINARY is the default
-			ftpBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpBuilder.setConnectTimeout(opts, 10000);
-			ftpBuilder.setSoTimeout(opts, 10000);
-			ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
-			break;
-		case ftps:
-			FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
-			ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
-			/** 强制不校验IP */
-			ftpsBuilder.setRemoteVerification(opts, false);
-			// FtpFileType.BINARY is the default
-			ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
-			ftpsBuilder.setConnectTimeout(opts, 10000);
-			ftpsBuilder.setSoTimeout(opts, 10000);
-			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
-			break;
-		case cifs:
-			break;
-		case webdav:
-			WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder) WebdavFileSystemConfigBuilder
-					.getInstance();
-			webdavBuilder.setConnectionTimeout(opts, 10000);
-			webdavBuilder.setSoTimeout(opts, 10000);
-			webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
-			// webdavBuilder.setVersioning(opts, true);
-			break;
-		case file:
-			break;
-		default:
-			break;
+			// bzip2,file, ftp, ftps, gzip, hdfs, http, https, jar, ram, res, sftp,
+			// tar, temp, webdav, zip, cifs, mime;
+			case ftp:
+				FtpFileSystemConfigBuilder ftpBuilder = FtpFileSystemConfigBuilder.getInstance();
+				/*
+				 * 如果使用被动模式在阿里云centos7下会经常性出现无法连接 Caused by: java.net.ConnectException:
+				 * Connection timed out (Connection timed out) at
+				 * java.net.PlainSocketImpl.socketConnect(Native Method) at
+				 * java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+				 * at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.
+				 * java:206) at
+				 * java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) at
+				 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
+				 * java.net.Socket.connect(Socket.java:589)
+				 */
+				ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+				// builder.setPassiveMode(opts, false);
+				// builder.setPassiveMode(opts, true);
+				/** 强制不校验IP */
+				ftpBuilder.setRemoteVerification(opts, false);
+				// FtpFileType.BINARY is the default
+				ftpBuilder.setFileType(opts, FtpFileType.BINARY);
+				ftpBuilder.setConnectTimeout(opts, 10000);
+				ftpBuilder.setSoTimeout(opts, 10000);
+				ftpBuilder.setControlEncoding(opts, DefaultCharset.name);
+				break;
+			case ftps:
+				FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
+				ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+				/** 强制不校验IP */
+				ftpsBuilder.setRemoteVerification(opts, false);
+				// FtpFileType.BINARY is the default
+				ftpsBuilder.setFileType(opts, FtpFileType.BINARY);
+				ftpsBuilder.setConnectTimeout(opts, 10000);
+				ftpsBuilder.setSoTimeout(opts, 10000);
+				ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
+				break;
+			case cifs:
+				break;
+			case webdav:
+				WebdavFileSystemConfigBuilder webdavBuilder = (WebdavFileSystemConfigBuilder) WebdavFileSystemConfigBuilder
+						.getInstance();
+				webdavBuilder.setConnectionTimeout(opts, 10000);
+				webdavBuilder.setSoTimeout(opts, 10000);
+				webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
+				// webdavBuilder.setVersioning(opts, true);
+				break;
+			case file:
+				break;
+			default:
+				break;
 		}
 		return opts;
 	}
