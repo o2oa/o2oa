@@ -7,6 +7,6 @@ class ExceptionEmployeeColumnEmpty extends PromptException {
 	private static final long serialVersionUID = -2139584911736169462L;
 
 	ExceptionEmployeeColumnEmpty() {
-		super("登录账号列不能为空.");
+		super("员工账号列不能为空.");
 	}
 }
