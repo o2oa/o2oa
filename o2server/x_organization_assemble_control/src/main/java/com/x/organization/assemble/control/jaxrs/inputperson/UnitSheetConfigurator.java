@@ -26,7 +26,6 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 	private Integer lastRow;
 
 	private Integer nameColumn;
-	private Integer shortNameColumn;
 	private Integer uniqueColumn;
 	private Integer unitTypeColumn;
 	private Integer superiorColumn;
@@ -48,8 +47,6 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 				if (StringUtils.isNotEmpty(str)) {
 					if (nameItems.contains(str)) {
 						this.nameColumn = i;
-					} else if (shortNameItems.contains(str)) {
-						this.shortNameColumn = i;
 					} else if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
 					} else if (unitTypeItems.contains(str)) {
@@ -73,7 +70,6 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 	}
 
 	private static List<String> nameItems = Arrays.asList(new String[] { "组织名称 *", "name" });
-	private static List<String> shortNameItems = Arrays.asList(new String[] { "组织代字", "代字", "shortName" });
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "编号", "组织编号 *", "unique" });
 	private static List<String> unitTypeItems = Arrays.asList(new String[] { "组织级别编号 *", "组织级别名称 *", "unitType" });
 	private static List<String> superiorItems = Arrays.asList(new String[] { "上级组织", "上级组织编号", "superior"});
@@ -112,10 +108,6 @@ public class UnitSheetConfigurator extends GsonPropertyObject {
 
 	public Integer getNameColumn() {
 		return nameColumn;
-	}
-
-	public Integer getShortNameColumn() {
-		return shortNameColumn;
 	}
 
 	public Integer getUniqueColumn() {
