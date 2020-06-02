@@ -168,7 +168,7 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 
 	public void setMiddayRestEndTime(String middayRestEndTime) { this.middayRestEndTime = middayRestEndTime; }
 
-	public Integer getSignProxy() { return signProxy; }
+	public Integer getSignProxy() { return signProxy == null? 1:signProxy; }
 
 	public void setSignProxy(Integer signProxy) { this.signProxy = signProxy; }
 

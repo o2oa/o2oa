@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,6 +26,7 @@ public class ActionDelete extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		EffectivePerson currentPerson = this.effectivePerson(request);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
 			//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 			AttendanceSelfHoliday attendanceSelfHoliday = emc.find(id, AttendanceSelfHoliday.class);
 			if (null == attendanceSelfHoliday) {
@@ -37,8 +40,17 @@ public class ActionDelete extends BaseAction {
 
 				//根据员工休假数据来记录与这条数据相关的统计需求记录
 				List<String> ids = attendanceDetailAnalyseServiceAdv.listAnalyseAttendanceDetailIds( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger() );
+//				if( ListTools.isNotEmpty( ids ) ){
+//					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger()  );
+//				}
 				if( ListTools.isNotEmpty( ids ) ){
-					attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger()  );
+					for( String _id : ids ){
+						try { //分析保存好的考勤数据
+							ThisApplication.detailAnalyseQueue.send( _id );
+						} catch ( Exception e1 ) {
+							e1.printStackTrace();
+						}
+					}
 				}
 			}			
 		} catch ( Exception e ) {

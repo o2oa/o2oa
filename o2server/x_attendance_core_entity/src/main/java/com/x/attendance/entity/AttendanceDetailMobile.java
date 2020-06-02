@@ -93,8 +93,8 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	public static final String CHECKIN_TYPE_MORNING_OFFDUTY = "上午下班打卡";
 	public static final String CHECKIN_TYPE_AFTERNOON_ONDUTY = "下午上班打卡";
 	public static final String CHECKIN_TYPE_OFFDUTY = "下午下班打卡";
-//	public static final String CHECKIN_TYPE_OUTSIDE = "外出打卡";
 	public static final String CHECKIN_TYPE_AFTERNOON = "午间打卡";
+	//	public static final String CHECKIN_TYPE_OUTSIDE = "外出打卡";
 
 	public static final String checkin_type_FIELDNAME = "checkin_type";
 	@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
