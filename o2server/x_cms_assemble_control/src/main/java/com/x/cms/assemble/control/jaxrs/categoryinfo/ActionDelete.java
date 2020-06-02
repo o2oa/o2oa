@@ -51,6 +51,7 @@ public class ActionDelete extends BaseAction {
 		if (check) {
 			Long count = documentServiceAdv.countByCategoryId( id );
 			if ( count > 0 ) {
+				check = false;
 				Exception exception = new ExceptionEditNotAllowed( "该分类中仍有" + count + "个文档，请删除所有文档后再删除分类信息！");
 				result.error(exception);
 			}
@@ -75,7 +76,6 @@ public class ActionDelete extends BaseAction {
 				ApplicationCache.notify( CategoryInfo.class );
 				ApplicationCache.notify( ViewCategory.class );
 			} catch (Exception e) {
-				check = false;
 				Exception exception = new ExceptionCategoryInfoProcess(e, "分类信息在删除时发生异常。ID:" + id);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
