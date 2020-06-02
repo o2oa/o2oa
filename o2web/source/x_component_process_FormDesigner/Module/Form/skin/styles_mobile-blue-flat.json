@@ -324,16 +324,16 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
       "height": "auto",
       "min-height" : "39px",
       "line-height": "39px",
       "color": "#000",
       "font-size": "15px",
       "float": "none",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "combox": {
@@ -343,14 +343,14 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
-      "height": "40px",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "textfield": {
@@ -360,14 +360,15 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
-      "height": "40px",
+      "padding-left" : "0px",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "opinion": {
@@ -377,13 +378,13 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "calendar": {
@@ -393,14 +394,14 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
-      "height": "40px",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "number": {
@@ -410,60 +411,60 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
-      "height": "40px",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "personfield": {
     "styles": {
       "border": "1px solid #979797",
-      "border-radius": "4px",
+      "border-radius": "0px",
       "color": "#000",
       "min-height": "40px",
       "line-height": "normal"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "0px solid #979797",
+      "border-radius": "0px",
+      "border-bottom": "0px",
       "border": "0px solid #979797",
       "min-height": "40px",
       "height" : "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "orgfield": {
     "styles": {
       "border": "1px solid #979797",
-      "border-radius": "4px",
+      "border-radius": "0px",
       "color": "#000",
       "min-height": "40px",
       "line-height": "normal"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "0px solid #979797",
+      "border-radius": "0px",
+      "border-bottom": "0px",
       "border": "0px solid #979797",
       "min-height": "40px",
       "height" : "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "org": {
     "styles": {
       "border": "1px solid #979797",
-      "border-radius": "4px",
+      "border-radius": "0px",
       "color": "#000",
       "min-height": "30px",
       "padding" : "0px",
@@ -471,7 +472,7 @@
     },
     "inputStyles": {
       "border-radius": "0px",
-      "border-bottom": "0px solid #979797",
+      "border-bottom": "0px",
       "border": "0px solid #979797",
       "min-height": "30px",
       "margin" : "5px 0px",
@@ -479,7 +480,7 @@
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "select": {
@@ -506,13 +507,13 @@
       "color": "#000"
     },
     "inputStyles": {
-      "border-radius": "4px",
-      "border-bottom": "1px solid #979797",
-      "border": "1px solid #979797",
+      "border-radius": "0px",
+      "border-bottom": "0px",
+      "border": "0px solid #979797",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
-      "text-align": "left"
+      "text-align": "right"
     }
   },
   "actionbar": {
