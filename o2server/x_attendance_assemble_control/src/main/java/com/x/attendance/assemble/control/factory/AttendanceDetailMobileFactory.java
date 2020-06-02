@@ -24,13 +24,13 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 	}
 
 	public List<String> listByEmployeeNameDateAndTime( String empName, String recordDateString, String signTime ) throws Exception {
-		if( empName == null || empName.isEmpty() ){
+		if( StringUtils.isEmpty( empName ) ){
 			throw new Exception("empName is null!");
 		}
-		if( recordDateString == null || recordDateString.isEmpty() ){
+		if( StringUtils.isEmpty( recordDateString ) ){
 			throw new Exception("recordDateString is null!");
 		}
-		if( signTime == null || signTime.isEmpty() ){
+		if( StringUtils.isEmpty( signTime ) ){
 			throw new Exception("signTime is null!");
 		}
 		EntityManager em = this.entityManagerContainer().get(AttendanceDetailMobile.class);
@@ -52,10 +52,10 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public List<AttendanceDetailMobile> listAttendanceDetailMobileWithEmployee( String empName, String recordDateString) throws Exception {
-		if( empName == null || empName.isEmpty() ){
+		if( StringUtils.isEmpty( empName ) ){
 			throw new Exception("empName is null!");
 		}
-		if( recordDateString == null || recordDateString.isEmpty() ){
+		if( StringUtils.isEmpty( recordDateString ) ){
 			throw new Exception("recordDateString is null!");
 		}
 		EntityManager em = this.entityManagerContainer().get(AttendanceDetailMobile.class);
@@ -138,6 +138,27 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 			}
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( selectTotal ).getResultList();
+	}
+
+	public List<AttendanceDetailMobile> listAttendanceDetailMobile( String distinguishedName, String signDate ) throws Exception {
+		if( StringUtils.isEmpty( distinguishedName ) ){
+			throw new Exception("distinguishedName is null!");
+		}
+		if( StringUtils.isEmpty( signDate ) ){
+			throw new Exception("signDate is null!");
+		}
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetailMobile.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceDetailMobile> cq = cb.createQuery(AttendanceDetailMobile.class);
+		Root<AttendanceDetailMobile> root = cq.from(AttendanceDetailMobile.class);
+		Predicate p = cb.isNotNull( root.get( AttendanceDetailMobile_.id ) );
+		if( StringUtils.isNotEmpty( distinguishedName ) ){
+			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empNo ), distinguishedName ) );
+		}
+		if( StringUtils.isNotEmpty( signDate ) ){
+			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), signDate ) );
+		}
+		return em.createQuery(cq.where(p)).setMaxResults( 100 ).getResultList();
 	}
 
 	public AttendanceDetailMobile get(String id) throws Exception {

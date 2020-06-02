@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -70,8 +71,8 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	private String empNo;
 
 	public static final String empName_FIELDNAME = "empName";
-	@FieldDescribe("员工姓名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empName_FIELDNAME )
+	@FieldDescribe("员工姓名distinguishedName")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + empName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String empName;
 
@@ -87,6 +88,23 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix + recordDate_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Date recordDate;
+
+	public static final String CHECKIN_TYPE_ONDUTY = "上午上班打卡";
+	public static final String CHECKIN_TYPE_MORNING_OFFDUTY = "上午下班打卡";
+	public static final String CHECKIN_TYPE_AFTERNOON_ONDUTY = "下午上班打卡";
+	public static final String CHECKIN_TYPE_OFFDUTY = "下午下班打卡";
+//	public static final String CHECKIN_TYPE_OUTSIDE = "外出打卡";
+	public static final String CHECKIN_TYPE_AFTERNOON = "午间打卡";
+
+	public static final String checkin_type_FIELDNAME = "checkin_type";
+	@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
+	@Column(name = ColumnNamePrefix + checkin_type_FIELDNAME, length = length_32B)
+	private String checkin_type;
+
+	public static final String checkin_time_FIELDNAME = "checkin_time";
+	@FieldDescribe("打卡时间。Unix时间戳")
+	@Column(name = ColumnNamePrefix + checkin_time_FIELDNAME )
+	private long checkin_time;
 
 	public static final String signTime_FIELDNAME = "signTime";
 	@FieldDescribe("打卡时间")
@@ -245,4 +263,11 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 		this.recordStatus = recordStatus;
 	}
 
+	public String getCheckin_type() { return checkin_type; }
+
+	public void setCheckin_type(String checkin_type) { this.checkin_type = checkin_type; }
+
+	public long getCheckin_time() { return checkin_time; }
+
+	public void setCheckin_time(long checkin_time) { this.checkin_time = checkin_time; }
 }
