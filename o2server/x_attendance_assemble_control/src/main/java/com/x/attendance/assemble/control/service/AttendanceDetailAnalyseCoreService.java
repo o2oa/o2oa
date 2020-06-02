@@ -49,15 +49,15 @@ class AttendanceDetailAnalyseCoreService {
 			throw new Exception("scheduleSetting is null, empName:" + detail.getEmpName() );
 		}
 		//根据考勤打卡规则来判断启用何种规则来进行考勤结果分析
-		if ( 1 == scheduleSetting.getSignProxy() ){
-			//1、一天只打上下班两次卡
-			detail = new AttendanceDetailAnalyseSignProxy1().analyse(detail, scheduleSetting, debugger);
-		}else if( 2 == scheduleSetting.getSignProxy() ){
+		if( 2 == scheduleSetting.getSignProxy() ){
 			//2、一天三次打卡：打上班，下班两次卡外，中午休息时间也需要打一次卡，以确保员工在公司活动
 			detail = new AttendanceDetailAnalyseSignProxy2().analyse(detail, scheduleSetting, debugger);
 		}else if( 3 == scheduleSetting.getSignProxy() ){
 			//3、一天四次打卡：打上午上班，上午下班，下午上班，下午下班四次卡
 			detail = new AttendanceDetailAnalyseSignProxy3().analyse(detail, scheduleSetting, debugger);
+		}else{
+			//1、一天只打上下班两次卡
+			detail = new AttendanceDetailAnalyseSignProxy1().analyse(detail, scheduleSetting, debugger);
 		}
 		return detail;
 	}
@@ -154,8 +154,10 @@ class AttendanceDetailAnalyseCoreService {
 			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
 				logger.debug( debugger, "middleRestEndTime " );
 			}else{
-				logger.debug(debugger, "middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime());
-				return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestStartTime());
+				if( scheduleSetting.getMiddayRestStartTime() != null ){
+					logger.debug(debugger, "middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime());
+					return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestStartTime());
+				}
 			}
 		} catch (Exception e) {
 			detail.setDescription(detail.getDescription() + "; 系统进行时间转换时发生异常,middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime() + " - " + scheduleSetting.getMiddayRestEndTime());
@@ -177,8 +179,10 @@ class AttendanceDetailAnalyseCoreService {
 			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
 				logger.debug( debugger, "middleRestEndTime " );
 			}else{
-				logger.debug(debugger, "middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestEndTime());
-				return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestEndTime());
+				if( scheduleSetting.getMiddayRestEndTime() != null ){
+					logger.debug(debugger, "middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestEndTime());
+					return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestEndTime());
+				}
 			}
 		} catch (Exception e) {
 			detail.setDescription(detail.getDescription() + "; 系统进行时间转换时发生异常,middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime() + " - " + scheduleSetting.getMiddayRestEndTime());

@@ -149,19 +149,6 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setIsLeaveEarlier( true );
 						}
 					}
-//					else if ((leaveEarlyStartTime != null && offDutyTime.after(leaveEarlyStartTime)) && offDutyTime.before(offWorkTime)) {
-//						//打卡在早退起算之后，并在下班时间之前
-//						logger.debug(debugger, "下午打卡时间晚于早退计时时间早于下班时间......");
-//						if ( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ) {
-//							logger.debug(debugger, ">>>>>>>>>>请幸运，请假不计考勤，出勤只算半天，但请过假了不算早退");
-//							detail.setLeaveEarlierTimeDuration(0L);
-//							detail.setIsLeaveEarlier(false);
-//						} else {
-//							minutes = dateOperation.getMinutes(offDutyTime, offWorkTime);//计算早退时长
-//							detail.setLeaveEarlierTimeDuration(minutes); //早退时长
-//							detail.setIsLeaveEarlier(true);
-//						}
-//					}
 					//下午已经签退了，现在计算全天的工作时长
 					if( afternoonStartTime != null ){ //已经配置过了下午上班时间
 						minutes = dateOperation.getMinutes( afternoonStartTime, offDutyTime);
