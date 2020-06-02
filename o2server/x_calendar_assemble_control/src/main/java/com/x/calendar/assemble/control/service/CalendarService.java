@@ -167,9 +167,9 @@ public class CalendarService {
 	public List<String> listWithCondition( EntityManagerContainer emc,  String name, String type, String source, String createor,
 			 List<String> inFilterCalendarIds, String personName, List<String> unitNames, List<String> groupNames ) throws Exception {
 		Business business =  new Business( emc );
-		//如果用户没有自己可管理的日历，则创建一个新的日历
+
+		//同步，避免前端的连续调用导致多条个人日历
 		List<String> ids = business.calendarFactory().listMyCalender( personName );
-		
 		if( ListTools.isEmpty( ids ) ) {
 			//创建一个自己的默认日历
 			Calendar calendar = new Calendar();
@@ -186,16 +186,32 @@ public class CalendarService {
 			calendar.setManageablePersonList( new ArrayList<>() );
 			calendar.setPublishablePersonList( new ArrayList<>() );
 			calendar.setViewablePersonList( new ArrayList<>() );
-			
+
 			addStringToList( personName, calendar.getManageablePersonList() );
 			addStringToList( personName, calendar.getPublishablePersonList() );
 			addStringToList( personName, calendar.getViewablePersonList() );
-			
+
+			queryForAddNewPersonalDefaultCalendar(emc, personName,calendar );
+
+		}
+		return business.calendarFactory().listWithCondition( name, type, source, createor, inFilterCalendarIds, personName, unitNames, groupNames );
+	}
+
+	/**
+	 * 同步方法，避免前端的连续调用导致多条个人日历信息
+	 * @param emc
+	 * @param personName
+	 * @param calendar
+	 * @throws Exception
+	 */
+	private synchronized void queryForAddNewPersonalDefaultCalendar(EntityManagerContainer emc, String personName, Calendar calendar) throws Exception {
+		Business business =  new Business( emc );
+		List<String> ids = business.calendarFactory().listMyCalender( personName );
+		if( ListTools.isEmpty( ids )){
 			emc.beginTransaction( Calendar.class );
 			emc.persist( calendar, CheckPersistType.all );
 			emc.commit();
 		}
-		return business.calendarFactory().listWithCondition( name, type, source, createor, inFilterCalendarIds, personName, unitNames, groupNames );
 	}
 
 	/**
