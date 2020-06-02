@@ -35,7 +35,7 @@ class ActionUpdate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson.getName());
 			}
 			wi.setSuperior(StringUtils.trimToEmpty(wi.getSuperior()));
-			if(StringUtils.isNotBlank(wi.getSuperior())) {
+			if(StringUtils.isNotBlank(wi.getSuperior()) && !Business.TOP_FOLD.equals(wi.getSuperior())) {
 				Folder2 supFolder = emc.find(wi.getSuperior(), Folder2.class);
 				if (null == supFolder) {
 					throw new ExceptionFolderNotExist(wi.getSuperior());
@@ -49,6 +49,8 @@ class ActionUpdate extends BaseAction {
 				if(ids.contains(folder.getSuperior())){
 					throw new Exception("superior can not be sub folder.");
 				}
+			}else{
+				wi.setSuperior(Business.TOP_FOLD);
 			}
 
 			this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), folder.getId());

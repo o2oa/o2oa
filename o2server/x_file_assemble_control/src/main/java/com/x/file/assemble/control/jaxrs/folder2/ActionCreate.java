@@ -27,10 +27,19 @@ public class ActionCreate extends BaseAction {
 			if (this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), null)) {
 				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
 			}
+			if(StringUtils.isEmpty(wi.getSuperior())){
+				wi.setSuperior(Business.TOP_FOLD);
+			}else{
+				Folder2 superior = emc.find(wi.getSuperior(), Folder2.class);
+				if(superior==null){
+					throw new ExceptionFolderNotExist(wi.getSuperior());
+				}
+			}
 			emc.beginTransaction(Folder2.class);
 			Folder2 folder = Wi.copier.copy(wi);
 			folder.setPerson(effectivePerson.getDistinguishedName());
 			folder.setStatus("正常");
+
 			emc.persist(folder, CheckPersistType.all);
 			emc.commit();
 			Wo wo = new Wo();
