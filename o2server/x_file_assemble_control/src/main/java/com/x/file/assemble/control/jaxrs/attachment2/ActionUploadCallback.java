@@ -36,7 +36,8 @@ class ActionUploadCallback extends StandardJaxrsAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo<WoObject>> result = new ActionResult<>();
-			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))) {
+			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))
+					&& !Business.TOP_FOLD.equals(folderId)) {
 				Folder2 folder = emc.find(folderId, Folder2.class);
 				if (null == folder) {
 					throw new ExceptionFolderNotExistCallback(callback, folderId);
@@ -47,7 +48,7 @@ class ActionUploadCallback extends StandardJaxrsAction {
 				}
 				folderId = folder.getId();
 			} else {
-				folderId = null;
+				folderId = Business.TOP_FOLD;
 			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(OriginFile.class);
 			if (null == mapping) {
