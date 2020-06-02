@@ -169,6 +169,28 @@
         {
           "name": "delete",
           "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
+          "description": "根据ID删除指定的热图信息",
+          "type": "DELETE",
+          "path": "jaxrs/user/hotpic/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": ""
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "delete",
+          "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
           "description": "根据应用类型以及信息ID删除热图信息",
           "type": "DELETE",
           "path": "jaxrs/user/hotpic/{application}/{infoId}",
@@ -184,28 +206,6 @@
             },
             {
               "name": "infoId",
-              "type": "String",
-              "description": ""
-            }
-          ],
-          "formParameters": [],
-          "queryParameters": [],
-          "ins": [],
-          "outs": []
-        },
-        {
-          "name": "delete",
-          "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
-          "description": "根据ID删除指定的热图信息",
-          "type": "DELETE",
-          "path": "jaxrs/user/hotpic/{id}",
-          "contentType": "application/json",
-          "resultContentType": "application/json; charset\u003dUTF-8",
-          "useJsonElementParameter": false,
-          "useStringParameter": false,
-          "pathParameters": [
-            {
-              "name": "id",
               "type": "String",
               "description": ""
             }
@@ -330,6 +330,50 @@
       "className": "com.x.hotpic.assemble.control.jaxrs.hotpic.HotPictureInfoCipherAction",
       "description": "热点信息管理（服务器间调用）",
       "methods": [
+        {
+          "name": "deleteBBS",
+          "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
+          "description": "根据BBS主贴ID删除热点信息",
+          "type": "DELETE",
+          "path": "jaxrs/cipher/hotpic/bbs/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": ""
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
+        {
+          "name": "deleteCms",
+          "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
+          "description": "根据CMS文档ID删除热点信息",
+          "type": "DELETE",
+          "path": "jaxrs/cipher/hotpic/cms/{id}",
+          "contentType": "application/json",
+          "resultContentType": "application/json; charset\u003dUTF-8",
+          "useJsonElementParameter": false,
+          "useStringParameter": false,
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": ""
+            }
+          ],
+          "formParameters": [],
+          "queryParameters": [],
+          "ins": [],
+          "outs": []
+        },
         {
           "name": "get",
           "className": "com.x.base.core.project.jaxrs.StandardJaxrsAction",
