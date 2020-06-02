@@ -651,21 +651,15 @@
         },
         {
           "name": "save",
-          "className": "com.x.jpush.assemble.control.jaxrs.sample.ActionUpdate",
-          "description": "更新新示例-信息",
-          "type": "PUT",
+          "className": "com.x.jpush.assemble.control.jaxrs.sample.ActionSave",
+          "description": "创建新示例-信息",
+          "type": "POST",
           "path": "jaxrs/sample",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
-          "pathParameters": [
-            {
-              "name": "id",
-              "type": "String",
-              "description": "需要更新的-信息ID"
-            }
-          ],
+          "pathParameters": [],
           "formParameters": [],
           "queryParameters": [],
           "ins": [
@@ -709,15 +703,21 @@
         },
         {
           "name": "save",
-          "className": "com.x.jpush.assemble.control.jaxrs.sample.ActionSave",
-          "description": "创建新示例-信息",
-          "type": "POST",
+          "className": "com.x.jpush.assemble.control.jaxrs.sample.ActionUpdate",
+          "description": "更新新示例-信息",
+          "type": "PUT",
           "path": "jaxrs/sample",
           "contentType": "application/json",
           "resultContentType": "application/json; charset\u003dUTF-8",
           "useJsonElementParameter": false,
           "useStringParameter": false,
-          "pathParameters": [],
+          "pathParameters": [
+            {
+              "name": "id",
+              "type": "String",
+              "description": "需要更新的-信息ID"
+            }
+          ],
           "formParameters": [],
           "queryParameters": [],
           "ins": [

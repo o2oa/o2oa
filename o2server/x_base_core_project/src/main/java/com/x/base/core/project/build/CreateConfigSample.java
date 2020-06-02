@@ -11,28 +11,26 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.AppStyle;
 import com.x.base.core.project.config.CenterServer;
+import com.x.base.core.project.config.ClientInit;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Communicate;
+import com.x.base.core.project.config.Components;
 import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.DumpRestoreStorage;
 import com.x.base.core.project.config.Exmail;
-import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.Meeting;
 import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Person;
+import com.x.base.core.project.config.Portal;
 import com.x.base.core.project.config.ProcessPlatform;
+import com.x.base.core.project.config.PushConfig;
 import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Query;
 import com.x.base.core.project.config.Token;
@@ -44,6 +42,11 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
+
 public class CreateConfigSample {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateConfigSample.class);
@@ -54,25 +57,28 @@ public class CreateConfigSample {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		classes.add(AppStyle.class);
 		classes.add(CenterServer.class);
+		classes.add(ClientInit.class);
 		classes.add(Collect.class);
+		classes.add(Communicate.class);
+		classes.add(Components.class);
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
 		classes.add(DumpRestoreStorage.class);
+		classes.add(Exmail.class);
 		classes.add(LogLevel.class);
 		classes.add(Meeting.class);
 		classes.add(Messages.class);
 		classes.add(Node.class);
 		classes.add(Person.class);
+		classes.add(Portal.class);
 		classes.add(ProcessPlatform.class);
+		classes.add(PushConfig.class);
 		classes.add(Qiyeweixin.class);
 		classes.add(Query.class);
 		classes.add(Token.class);
 		classes.add(Vfs.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
-		//classes.add(ExternalDataSource.class);
-		classes.add(Exmail.class);
-		classes.add(Communicate.class);
 
 		Collections.sort(classes, new Comparator<Class<?>>() {
 			public int compare(Class<?> c1, Class<?> c2) {
@@ -90,20 +96,8 @@ public class CreateConfigSample {
 			logger.print("create file:{}.", file.getAbsoluteFile());
 			FileUtils.write(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
 		}
-		//convertExternalDataSource2ExternalDataSources(dir);
 		renameNode(dir);
 	}
-
-//	private static void convertExternalDataSource2ExternalDataSources(File dir) throws Exception, IOException {
-//		File file_externalDataSource = new File(dir, "externalDataSources.json");
-//		File file_externalDataSources = new File(dir, "externalDataSources.json");
-//		JsonElement jsonElement = XGsonBuilder.instance().fromJson(
-//				FileUtils.readFileToString(file_externalDataSource, DefaultCharset.charset), JsonElement.class);
-//		List<JsonElement> list = new ArrayList<>();
-//		list.add(jsonElement);
-//		FileUtils.writeStringToFile(file_externalDataSources, XGsonBuilder.toJson(list), DefaultCharset.charset);
-//		file_externalDataSource.delete();
-//	}
 
 	private static void renameNode(File dir) throws Exception, IOException {
 		File file_node = new File(dir, "node.json");
