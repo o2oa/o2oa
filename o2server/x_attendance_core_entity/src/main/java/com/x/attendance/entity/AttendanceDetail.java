@@ -74,19 +74,19 @@ public class AttendanceDetail extends SliceJpaObject {
 	private String empNo;
 
 	public static final String empName_FIELDNAME = "empName";
-	@FieldDescribe("员工姓名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + empName_FIELDNAME)
+	@FieldDescribe("员工姓名distinguishedName")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + empName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empName;
 
 	public static final String topUnitName_FIELDNAME = "topUnitName";
-	@FieldDescribe("顶层组织名称")
+	@FieldDescribe("顶层组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName;
 
 	public static final String unitName_FIELDNAME = "unitName";
-	@FieldDescribe("组织名称")
+	@FieldDescribe("组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName;
