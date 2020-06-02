@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,40 +40,29 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		}
 
 		if( check ){
-			if( wrapIn.getRecordAddress() == null || wrapIn.getRecordAddress().isEmpty() ){
-				check = false;
-				Exception exception = new ExceptionAddressEmpty();
-				result.error( exception );
-				//logger.error( e, currentPerson, request, null);
-			}else{
+			if( StringUtils.isNotEmpty(wrapIn.getRecordAddress()) ){
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}
 		}
 		if( check ){
-			if( wrapIn.getLatitude() == null || wrapIn.getLatitude().isEmpty() ){
-				check = false;
-				Exception exception = new ExceptionLatitudeEmpty();
-				result.error( exception );
-				//logger.error( e, currentPerson, request, null);
-			}else{
+			if( StringUtils.isNotEmpty(wrapIn.getLatitude())){
 				attendanceDetailMobile.setLatitude( wrapIn.getLatitude() );
 			}
 		}
 		if( check ){
-			if( wrapIn.getLongitude() == null || wrapIn.getLongitude().isEmpty() ){
-				check = false;
-				Exception exception = new ExceptionLongitudeEmpty();
-				result.error( exception );
-				//logger.error( e, currentPerson, request, null);
-			}else{
+			if( StringUtils.isNotEmpty(wrapIn.getLongitude())){
 				attendanceDetailMobile.setLongitude( wrapIn.getLongitude() );
 			}
 		}
+
 		if( check ){
 			attendanceDetailMobile.setEmpName( currentPerson.getDistinguishedName() );
+			attendanceDetailMobile.setCheckin_time(wrapIn.getCheckin_time());
+			attendanceDetailMobile.setCheckin_type(wrapIn.getCheckin_type());
 		}
+
 		if( check ){
-			if( wrapIn.getSignTime() != null && wrapIn.getSignTime().trim().length() > 0 ){
+			if( StringUtils.isNotEmpty(wrapIn.getSignTime()) ){
 				try{
 					datetime = dateOperation.getDateFromString( wrapIn.getSignTime() );
 					attendanceDetailMobile.setSignTime( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //打卡时间
@@ -84,6 +74,12 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				}
 			}else{//打卡时间没有填写就填写为当前时间
 				attendanceDetailMobile.setSignTime( dateOperation.getNowTime() ); //打卡时间
+			}
+
+			if( wrapIn.checkin_time < 1500000000000L ){ //无效
+				attendanceDetailMobile.setCheckin_time( new Date().getTime() ); //打卡时间
+			}else{//打卡时间没有填写就填写为当前时间
+				attendanceDetailMobile.setCheckin_time( wrapIn.checkin_time ); //打卡时间
 			}
 		}
 		if( check ){
@@ -106,7 +102,6 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isNotEmpty( wrapIn.getId() )){
 				attendanceDetailMobile.setId( wrapIn.getId() );
 			}
-			
 			attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );
 			try {
 				attendanceDetailMobile = attendanceDetailServiceAdv.save( attendanceDetailMobile );
@@ -119,28 +114,9 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			}
 		}
 
-//		AttendanceScheduleSetting scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
-//		if( scheduleSetting == null ){
-//			throw new Exception("scheduleSetting is null, empName:" + detail.getEmpName() );
-//		}
-
-//		//获取打卡策略：两次，三次还是四次
-//		//根据考勤打卡规则来判断启用何种规则来进行考勤结果分析
-//		if ( 1 == scheduleSetting.getSignProxy() ){
-//			//1、一天只打上下班两次卡
-//
-//		}else if( 2 == scheduleSetting.getSignProxy() ){
-//			//2、一天三次打卡：打上班，下班两次卡外，中午休息时间也需要打一次卡，以确保员工在公司活动
-//
-//		}else if( 3 == scheduleSetting.getSignProxy() ){
-//			//3、一天四次打卡：打上午上班，上午下班，下午上班，下午下班四次卡
-//
-//		}
-
 		if( check ){
-			//对该员工的所有移动考勤数据进行一个整合
+			//对该员工的所有移动考勤数据进行一个整合，并且立即send到分析队列
 			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString(), effectivePerson.getDebugger() );
-
 		}
 		return result;
 	}
@@ -157,7 +133,13 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		private String empName;
 
 		@FieldDescribe( "打卡记录日期字符串：yyyy-mm-dd, 必须填写." )
-		private String recordDateString;	
+		private String recordDateString;
+
+		@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
+		private String checkin_type;
+
+		@FieldDescribe("打卡时间。Unix时间戳")
+		private long checkin_time;
 
 		@FieldDescribe( "打卡时间: hh24:mi:ss, 必须填写." )
 		private String signTime;
@@ -231,7 +213,6 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		public void setOptSystemName(String optSystemName) {
 			this.optSystemName = optSystemName;
 		}
-		
 		public String getEmpNo() {
 			return empNo;
 		}
@@ -256,7 +237,10 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		public void setId(String id) {
 			this.id = id;
 		}
-		
+		public String getCheckin_type() { return checkin_type; }
+		public void setCheckin_type(String checkin_type) { this.checkin_type = checkin_type; }
+		public long getCheckin_time() { return checkin_time; }
+		public void setCheckin_time(long checkin_time) { this.checkin_time = checkin_time; }
 	}
 	
 	public static class Wo extends WoId {

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.*;
+import com.x.base.core.entity.JpaObject;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
@@ -243,22 +244,22 @@ public class AttendanceDetailServiceAdv {
 				AttendanceDetail detail_old = attendanceDetailService.listDetailWithEmployee( emc, distinguishedName, recordDateString );
 				AttendanceDetail detail = null;
 
-				AttendanceScheduleSetting scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
+				AttendanceScheduleSetting scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( distinguishedName, debugger );
 				if( scheduleSetting == null ){
-					throw new Exception("scheduleSetting is null, empName:" + detail.getEmpName() );
+					throw new Exception("scheduleSetting is null, empName:" + distinguishedName );
 				}
 
 				//获取打卡策略：两次，三次还是四次
 				//根据考勤打卡规则来判断启用何种规则来进行考勤结果分析
-				if ( 1 == scheduleSetting.getSignProxy() ){
-					//1、一天只打上下班两次卡
-					detail = new ComposeDetailWithMobileInSignProxy1().compose( mobileDetails, scheduleSetting, debugger);
-				}else if( 2 == scheduleSetting.getSignProxy() ){
+				if( 2 == scheduleSetting.getSignProxy() ){
 					//2、一天三次打卡：打上班，下班两次卡外，中午休息时间也需要打一次卡，以确保员工在公司活动
 					detail = new ComposeDetailWithMobileInSignProxy2().compose( mobileDetails, scheduleSetting, debugger);
 				}else if( 3 == scheduleSetting.getSignProxy() ){
 					//3、一天四次打卡：打上午上班，上午下班，下午上班，下午下班四次卡
 					detail = new ComposeDetailWithMobileInSignProxy3().compose( mobileDetails, scheduleSetting, debugger);
+				}else{
+					//1、一天只打上下班两次卡
+					detail = new ComposeDetailWithMobileInSignProxy1().compose( mobileDetails, scheduleSetting, debugger);
 				}
 
 				if( detail_old == null ) {
@@ -266,9 +267,10 @@ public class AttendanceDetailServiceAdv {
 					emc.beginTransaction( AttendanceDetail.class );
 					emc.persist( detail , CheckPersistType.all );
 					emc.commit();
+					detail_old = detail;
 				}else {
 					emc.beginTransaction( AttendanceDetail.class );
-					detail.copyTo( detail_old );
+					detail.copyTo( detail_old, JpaObject.FieldsUnmodify);
 					emc.check( detail_old , CheckPersistType.all );
 					emc.commit();
 				}
@@ -282,7 +284,7 @@ public class AttendanceDetailServiceAdv {
 
 				//分析保存好的考勤数据
 				try {
-					ThisApplication.detailAnalyseQueue.send( detail.getId() );
+					ThisApplication.detailAnalyseQueue.send( detail_old.getId() );
 				} catch ( Exception e1 ) {
 					e1.printStackTrace();
 				}
