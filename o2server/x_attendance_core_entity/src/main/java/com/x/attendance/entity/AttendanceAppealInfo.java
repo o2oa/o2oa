@@ -70,18 +70,18 @@ public class AttendanceAppealInfo extends SliceJpaObject {
 	private String detailId;
 
 	public static final String empName_FIELDNAME = "empName";
-	@FieldDescribe("申诉员工标识")
+	@FieldDescribe("申诉员工标识:distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + empName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String empName;
 
 	public static final String topUnitName_FIELDNAME = "topUnitName";
-	@FieldDescribe("员工所属顶层组织")
+	@FieldDescribe("员工所属顶层组织distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME)
 	private String topUnitName;
 
 	public static final String unitName_FIELDNAME = "unitName";
-	@FieldDescribe("员工所属组织名称")
+	@FieldDescribe("员工所属组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String unitName;

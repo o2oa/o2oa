@@ -69,6 +69,9 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.equalsAnyIgnoreCase( "xadmin", identity ) || StringUtils.equalsAnyIgnoreCase( "cipher", identity ) ){
+				return null;
+			}
 			return business.organization().unit().getWithIdentity( identity );
 		} catch ( Exception e ) {
 			throw e;
