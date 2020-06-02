@@ -87,12 +87,10 @@ public class Folder2 extends SliceJpaObject {
 	private String name;
 
 	public static final String superior_FIELDNAME = "superior";
-	@FieldDescribe("上级分类ID,为空代表顶级分类。")
+	@FieldDescribe("上级目录ID。")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + superior_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + superior_FIELDNAME)
-	@CheckPersist(allowEmpty = true, citationExists =
-	/* 上级目录必须存在,且不能为自己 */
-	@CitationExist(type = Folder2.class, equals = @Equal(property = "person", field = "person")))
+	@CheckPersist(allowEmpty = false)
 	private String superior;
 
 	public static final String status_FIELDNAME = "status";

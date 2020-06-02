@@ -26,7 +26,8 @@ class ActionSaveToFolder extends BaseAction {
 			if (null == share) {
 				throw new ExceptionAttachmentNotExist(shareId);
 			}
-			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))) {
+			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))
+					&& !Business.TOP_FOLD.equals(folderId)) {
 				Folder2 folder = emc.find(folderId, Folder2.class);
 				if (folder == null) {
 					throw new ExceptionFolderNotExist(folderId);
@@ -36,7 +37,7 @@ class ActionSaveToFolder extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), folderId);
 				}
 			}else{
-				folderId = null;
+				folderId = Business.TOP_FOLD;
 			}
 			/* 判断文件的分享用户是否包含当前用户 */
 			if(!"password".equals(share.getShareType())) {

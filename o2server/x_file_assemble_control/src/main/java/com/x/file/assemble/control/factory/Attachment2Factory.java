@@ -26,7 +26,7 @@ public class Attachment2Factory extends AbstractFactory {
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), person);
 		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
-		p = cb.and(p, cb.or(cb.isNull(root.get(Attachment2_.folder)), cb.equal(root.get(Attachment2_.folder), "")));
+		p = cb.and(p, cb.equal(root.get(Attachment2_.folder), Business.TOP_FOLD));
 		cq.select(root.get(Attachment2_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}

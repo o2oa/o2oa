@@ -6,6 +6,8 @@ import com.x.organization.core.express.Organization;
 
 public class Business {
 
+	public final static String TOP_FOLD = "$$TOP_FOLD";
+
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) throws Exception {
