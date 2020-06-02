@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.selfholiday;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,8 +26,6 @@ public class ActionSave extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger( ActionSave.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
-		logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" );
-		logger.info("++++++++++++++++++++++调用接口：com.x.attendance.assemble.control.jaxrs.selfholiday.ActionSave......" );
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wrapIn = null;
 		List<AttendanceSelfHoliday> holidayList = null;
@@ -105,7 +104,13 @@ public class ActionSave extends BaseAction {
 					//休假数据有更新，对该员工的该请假时间内的所有打卡记录进行分析
 					List<String> ids = attendanceDetailAnalyseServiceAdv.listAnalyseAttendanceDetailIds(attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger() );
 					if( ListTools.isNotEmpty( ids ) ){
-						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetailWithIds(ids, effectivePerson.getDebugger() );
+						for( String id : ids ){
+							try { //分析保存好的考勤数据
+								ThisApplication.detailAnalyseQueue.send( id );
+							} catch ( Exception e1 ) {
+								e1.printStackTrace();
+							}
+						}
 					}
 				}else{
 					if( jsonElement == null ){

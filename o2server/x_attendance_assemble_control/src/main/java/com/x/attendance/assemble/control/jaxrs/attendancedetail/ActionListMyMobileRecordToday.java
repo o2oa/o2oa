@@ -75,15 +75,15 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 			if( scheduleSetting != null ){
 				woScheduleSetting = WoScheduleSetting.copier.copy(scheduleSetting);
 
-				if( scheduleSetting.getSignProxy() == 3 ){
+				if( woScheduleSetting.getSignProxy() == 3 ){
 					//3-四次打卡（上午下午都打上班下班卡）
-					woSignFeature = getWoSignFeatureWithProxy3(wraps, scheduleSetting);
-				}else if( scheduleSetting.getSignProxy() == 2 ){
+					woSignFeature = getWoSignFeatureWithProxy3(wraps, woScheduleSetting);
+				}else if( woScheduleSetting.getSignProxy() == 2 ){
 					//2-三次打卡（上午上班，下午下班加中午一次共三次）
-					woSignFeature = getWoSignFeatureWithProxy2(wraps, scheduleSetting);
+					woSignFeature = getWoSignFeatureWithProxy2(wraps, woScheduleSetting);
 				}else{
 					//1-两次打卡（上午上班，下午下班）
-					woSignFeature = getWoSignFeatureWithProxy1(wraps, scheduleSetting);
+					woSignFeature = getWoSignFeatureWithProxy1(wraps, woScheduleSetting);
 				}
 			}
 			if( woSignFeature != null ){
@@ -138,11 +138,11 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 			if( now.after(afternoonOndutyTime)){
 				//在下午下班时间之后了，下午上班签到打卡
 				woSignFeature.setSignSeq(1);
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getOnDutyTime());
 			}else{
 				woSignFeature.setSignSeq(1);
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getOnDutyTime());
 			}
 		}else{
@@ -150,41 +150,41 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 			//当前是什么区间
 			if( onDutyTime.after(now)){
 				//上午上班之前，无论几次，都只可能是上午的下班卡
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getMiddayRestStartTime());
 				woSignFeature.setSignSeq(2);
 			}else if( now.after(onDutyTime) && morningOffdutyTime.after(now)){
 				//上午上班时段: 上午签退
 				woSignFeature.setSignSeq(2);
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getMiddayRestStartTime());
 			}else if( now.after(morningOffdutyTime) && afternoonOndutyTime.after( now )){
 				//午休时段：前一次打卡有可能上午签到卡，可能下午签到卡
 				if( signRecordStatus.alreadyOnduty ){ //已经上午签到过了，只有一次卡，应该就是签到
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
 					woSignFeature.setSignTime(scheduleSetting.getMiddayRestStartTime());
 				}else if( signRecordStatus.alreadyAfternoonOnDuty){
 					//如果上午没有签到，是下午的签到的话，第二次就应该是下午签退打卡了
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 					woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 				}
 			}else if( now.after(afternoonOndutyTime) && offDutyTime.after(now)){
 				//下午上班时段，如果前一次是下午签到，那么下一次就应该是下午签退了，否则，就是下午签到
 				if( signRecordStatus.alreadyAfternoonOnDuty){
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
 					woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 				}else{
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
 					woSignFeature.setSignTime(scheduleSetting.getMiddayRestEndTime());
 				}
 			}else{
 				//下午下班之后，只可能是下午的签到签退卡了
 				if( signRecordStatus.alreadyAfternoonOnDuty){
 					woSignFeature.setSignSeq(-1);
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY  );
 					woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 				}else{
-					woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
+					woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY  );
 					woSignFeature.setSignTime(scheduleSetting.getMiddayRestEndTime());
 				}
 			}
@@ -221,7 +221,7 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 		if( ListTools.isEmpty( wraps )){
 			//一次都没有打过，不管几点，都是上班打卡
 			woSignFeature.setSignSeq(1);
-			woSignFeature.setSignName( "上班签到" );
+			woSignFeature.setCheckinType( "上班签到" );
 			woSignFeature.setSignTime(scheduleSetting.getOnDutyTime());
 		}else{
 			//打了一次，之后，有可能是中午签到打卡，有可能是下午下班签退打卡
@@ -233,11 +233,11 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 					//看当前时间，有没有过中午签到时间
 					if( middayRestEndTime !=null && middayRestEndTime.before( now )){
 						//在午休结束之后了，就是下班打卡了，上班和午休都缺卡了
-						woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 						woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 					}else{
 						//午休卡
-						woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON );
+						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON );
 						woSignFeature.setSignTime(scheduleSetting.getMiddayRestEndTime());
 					}
 				}
@@ -257,17 +257,17 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 					}
 					if( exists_offDuty ){
 						woSignFeature.setSignSeq(-1);
-						woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 						woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 					}else{
 						woSignFeature.setSignSeq(3);
-						woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+						woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 						woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 					}
 				}
 			}else{
 				woSignFeature.setSignSeq(-1);
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 			}
 		}
@@ -287,17 +287,17 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 		if( ListTools.isEmpty( wraps )){
 			//一次都没有打过，不管几点，都是上班打卡
 			woSignFeature.setSignSeq(1);
-			woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+			woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
 			woSignFeature.setSignTime(scheduleSetting.getOnDutyTime());
 		}else{
 			//打了一次，就是下班打卡，打了两次，就没有了
 			if( wraps.size() == 1 ){
 				woSignFeature.setSignSeq(2);
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 			}else{
 				woSignFeature.setSignSeq(-1); //没有需要的打卡了
-				woSignFeature.setSignName( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+				woSignFeature.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
 				woSignFeature.setSignTime(scheduleSetting.getOffDutyTime());
 			}
 		}
@@ -418,7 +418,7 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 		private String signTime = null;
 
 		@FieldDescribe("打卡操作名称：上班打卡|下班打卡|午休打卡|上午下班打卡|下午上班打卡(根据不同的打卡策略稍有不同)....")
-		private String signName = "上班打卡";
+		private String checkinType = "上班打卡";
 
 		@FieldDescribe("最晚打卡时间")
 		private Date latestSignTime;
@@ -435,9 +435,9 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 
 		public void setSignDate(String signDate) { this.signDate = signDate; }
 
-		public String getSignName() { return signName; }
+		public String getCheckinType() { return checkinType; }
 
-		public void setSignName(String signName) { this.signName = signName; }
+		public void setCheckinType(String checkinType) { this.checkinType = checkinType; }
 
 		public Date getLatestSignTime() { return latestSignTime; }
 
