@@ -35,17 +35,14 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	private static FileSystemManager FILESYSTEMANAGERINSTANCE;
 
-	private FileSystemManager getFileSystemManager() throws Exception {
+	private synchronized FileSystemManager getFileSystemManager() throws Exception {
 		if (FILESYSTEMANAGERINSTANCE == null) {
-			synchronized (StorageObject.class) {
-				if (FILESYSTEMANAGERINSTANCE == null) {
-					StandardFileSystemManager fs = new StandardFileSystemManager();
-					fs.setFilesCache(new NullFilesCache());
-					fs.setCacheStrategy(CacheStrategy.ON_RESOLVE);
-					fs.init();
-					FILESYSTEMANAGERINSTANCE = fs;
-				}
-			}
+			StandardFileSystemManager fs = new StandardFileSystemManager();
+			fs.setFilesCache(new NullFilesCache());
+			fs.setCacheStrategy(CacheStrategy.ON_RESOLVE);
+			fs.init();
+			FILESYSTEMANAGERINSTANCE = fs;
+
 		}
 		return FILESYSTEMANAGERINSTANCE;
 	}
@@ -120,12 +117,13 @@ public abstract class StorageObject extends SliceJpaObject {
 		return this.updateContent(mapping, input);
 	}
 
-	/** 更新Content内容 */
-	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
-			return updateContent(mapping, bais);
-		}
-	}
+	// /** 更新Content内容 */
+	// public Long updateContent(StorageMapping mapping, byte[] bytes) throws
+	// Exception {
+	// try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+	// return updateContent(mapping, bais);
+	// }
+	// }
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, byte[] bytes, String name) throws Exception {
@@ -149,6 +147,69 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/** 更新Content内容 */
 	public Long updateContent(StorageMapping mapping, InputStream input) throws Exception {
+		return updateContent(mapping, IOUtils.toByteArray(input));
+		// long length = -1L;
+		// FileSystemManager manager = this.getFileSystemManager();
+		// String prefix = this.getPrefix(mapping);
+		// String path = this.path();
+		// if (StringUtils.isEmpty(path)) {
+		// throw new Exception("path can not be empty.");
+		// }
+		// FileSystemOptions options = this.getOptions(mapping);
+		// try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		// /* 由于可以在传输过程中取消传输,先拷贝到内存 */
+		// IOUtils.copyLarge(input, baos);
+		// FileObject fo = null;
+		// OutputStream output = null;
+		// try {
+		// /*
+		// * 需要进行两次判断，在前端使用nginx分发的情况下，可能同时触发多个文件的上传，多个文件同时上传可能会同时创建文件的存储目录，会在后台导致错误
+		// * org.apache.commons.vfs2.FileSystemException: Could not create folder
+		// *
+		// "ftp://processPlatform:***@o2.server01.com:20040/20200601/1beb018a-5009-4baa-a9ef-7e903f9d48ef".
+		// * 这种情况下再次发起请求尝试获取文件可以解决这个问题.
+		// */
+		// try {
+		// fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
+		// output = fo.getContent().getOutputStream();
+		// } catch (FileSystemException fse) {
+		// // 此段代码全部关闭对象，并要进行webdav判断进行关闭。
+		// if (null != output) {
+		// output.close();
+		// }
+		// if (null != fo) {
+		// if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+		// /* webdav关闭会试图去关闭commons.httpClient */
+		// manager.closeFileSystem(fo.getFileSystem());
+		// }
+		// fo.close();
+		// }
+		// fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
+		// output = fo.getContent().getOutputStream();
+		// }
+		// length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()),
+		// output);
+		// this.setLength(length);
+		// if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+		// /* webdav关闭会试图去关闭commons.httpClient */
+		// manager.closeFileSystem(fo.getFileSystem());
+		// }
+		// } finally {
+		// if (null != output) {
+		// output.close();
+		// }
+		// if (null != fo) {
+		// fo.close();
+		// }
+		// }
+		// }
+		// this.setStorage(mapping.getName());
+		// this.setLastUpdateTime(new Date());
+		// return length;
+	}
+
+	/** 更新Content内容 */
+	public Long updateContent(StorageMapping mapping, byte[] bytes) throws Exception {
 		long length = -1L;
 		FileSystemManager manager = this.getFileSystemManager();
 		String prefix = this.getPrefix(mapping);
@@ -157,52 +218,31 @@ public abstract class StorageObject extends SliceJpaObject {
 			throw new Exception("path can not be empty.");
 		}
 		FileSystemOptions options = this.getOptions(mapping);
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			/* 由于可以在传输过程中取消传输,先拷贝到内存 */
-			IOUtils.copyLarge(input, baos);
-			FileObject fo = null;
-			OutputStream output = null;
-			try {
-				/*
-				*需要进行两次判断，在前端使用nginx分发的情况下，可能同时触发多个文件的上传，多个文件同时上传可能会同时创建文件的存储目录，会在后台导致错误
-				*org.apache.commons.vfs2.FileSystemException: Could not create folder "ftp://processPlatform:***@o2.server01.com:20040/20200601/1beb018a-5009-4baa-a9ef-7e903f9d48ef".
-				*这种情况下再次发起请求尝试获取文件可以解决这个问题。
-				*/
-				try {
-					fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-					output = fo.getContent().getOutputStream();
-				} catch (FileSystemException fse) {
-					//此段代码全部关闭对象，并要进行webdav判断进行关闭。
-					if (null != output) {
-						output.close();
-					}
-					if (null != fo) {
-						if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
-							/* webdav关闭会试图去关闭commons.httpClient */
-							manager.closeFileSystem(fo.getFileSystem());
-						}
-						fo.close();
-					}
-					fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
-					output = fo.getContent().getOutputStream();
-				}
-				length = IOUtils.copyLarge(new ByteArrayInputStream(baos.toByteArray()), output);
+		/*
+		 * 需要进行两次判断，在前端使用nginx分发的情况下，可能同时触发多个文件的上传，多个文件同时上传可能会同时创建文件的存储目录，会在后台导致错误
+		 * org.apache.commons.vfs2.FileSystemException: Could not create folder
+		 * "ftp://processPlatform:***@o2.server01.com:20040/20200601/1beb018a-5009-4baa-a9ef-7e903f9d48ef".
+		 * 这种情况下再次发起请求尝试获取文件可以解决这个问题.
+		 */
+		for (int i = 0; i < 2; i++) {
+			try (FileObject fo = manager.resolveFile(prefix + PATHSEPARATOR + path, options);
+					OutputStream output = fo.getContent().getOutputStream()) {
+				length = IOUtils.copyLarge(new ByteArrayInputStream(bytes), output);
 				this.setLength(length);
 				if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
 					/* webdav关闭会试图去关闭commons.httpClient */
 					manager.closeFileSystem(fo.getFileSystem());
 				}
-			} finally {
-				if (null != output) {
-					output.close();
-				}
-				if (null != fo) {
-					fo.close();
+				this.setStorage(mapping.getName());
+				this.setLastUpdateTime(new Date());
+				break;
+			} catch (FileSystemException fse) {
+				if (i != 0) {
+					// 第一次错误先跳过,直接执行第二次.如果第二次错误那么报错.
+					throw fse;
 				}
 			}
 		}
-		this.setStorage(mapping.getName());
-		this.setLastUpdateTime(new Date());
 		return length;
 	}
 
