@@ -209,7 +209,7 @@
 	  "margin-left" : "5px"
 	},
 	"searchInputDiv": {
-	  	"padding" : "0px 15px",
+	  	"padding" : "0px 15px 5px 15px",
 		"height": "50px",
 		"color": "#999",
         "background": "#fff",
@@ -443,7 +443,7 @@
 
 	"selectorItemTextNode": {
 		"height": "44px",
-	  	"margin-left": "23px",
+	  	"margin-left": "30px",
 	  	"margin-right" : "23px",
 		"word-wrap": "break-word",
 		"color": "#333"
@@ -530,23 +530,30 @@
   },
   "flatCategoryItemNode" : {
 	"border-left" : "4px solid #F5F5F5",
-	"background-color" : "#F5F5F5"
+	"background-color" : "#F5F5F5",
+	  "overflow" : "hidden"
   },
   "flatCategoryItemNode_selected" : {
 	"border-left" : "4px solid #32AAFF",
 	"background-color" : "#fff"
   },
   "flatCategoryItemTextNode" : {
-	"padding-left" : "11px",
-	"width" : "115px",
-	"height" : "44px",
-	"line-height" : "44px",
+	"margin-left" : "11px",
+	  "margin-right" : "11px",
+	  "margin-top" : "10px",
+	  "margin-bottom" : "10px",
+	  "width" : "104px",
+//	"min-height" : "44px",
+//	"line-height" : "24px",
 	"font-size" : "16px",
 	"color" : "#333",
-	"white-space" : "nowrap",
-	"word-break" : "break-all",
-	"text-overflow" : "ellipsis",
-	"overflow" : "hidden"
+	  //	"white-space" : "nowrap",
+	  //	"word-break" : "break-all",
+	  //	"text-overflow" : "ellipsis",
+	  "display": "-webkit-box",
+	  "-webkit-box-orient": "vertical",
+	  "-webkit-line-clamp" : "2",
+		"overflow" : "hidden"
   },
   "flatCategory_selectAllWrap" : {
 	"overflow" : "hidden",
