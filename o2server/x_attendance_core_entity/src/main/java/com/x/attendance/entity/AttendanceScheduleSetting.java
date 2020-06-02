@@ -60,21 +60,21 @@ public class AttendanceScheduleSetting extends SliceJpaObject {
 	 * =====
 	 */
 	public static final String topUnitName_FIELDNAME = "topUnitName";
-	@FieldDescribe("顶层组织名称")
+	@FieldDescribe("顶层组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
 	@Index(name = TABLE + IndexNameMiddle + topUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName;
 
 	public static final String unitName_FIELDNAME = "unitName";
-	@FieldDescribe("组织名称")
+	@FieldDescribe("组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
 	@Index(name = TABLE + IndexNameMiddle + unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName;
 
 	public static final String unitOu_FIELDNAME = "unitOu";
-	@FieldDescribe("组织编号")
+	@FieldDescribe("组织编号distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitOu_FIELDNAME )
 	@Index(name = TABLE + IndexNameMiddle + unitOu_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

@@ -211,6 +211,14 @@ public class AttendanceDetailServiceAdv {
 		}
 	}
 
+	public List<AttendanceDetailMobile> listAttendanceDetailMobile(String distinguishedName, String signDate) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailMobileService.listAttendanceDetailMobile( emc, distinguishedName, signDate );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	public AttendanceDetailMobile getMobile(String id) throws Exception {
 		if( id == null || id.isEmpty() ){
 			return null;
@@ -283,4 +291,6 @@ public class AttendanceDetailServiceAdv {
 			throw e;
 		}
 	}
+
+
 }
