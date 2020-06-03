@@ -12,8 +12,6 @@ MWF.xDesktop.WebSocket = new Class({
         var wsScheme = (scheme.toString().toLowerCase()==="https") ? "wss" : "ws";
         this.ws = wsScheme+"://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
 
-
-
         this.reConnect = true;
         this.checking = false;
         this.heartTimeout = 60000;
@@ -21,7 +19,6 @@ MWF.xDesktop.WebSocket = new Class({
         this.heartMsg = "heartbeat";
         this.maxErrorCount = 10;
         this.errorCount = 0;
-
 
         // var addressObj = layout.desktop.serviceAddressList["x_collaboration_assemble_websocket"];
         // this.ws = "ws://"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context+"/ws/collaboration";
@@ -42,9 +39,11 @@ MWF.xDesktop.WebSocket = new Class({
 
         this.connect();
     },
+
     connect: function(){
         if (layout.config.webSocketEnable){
             var ws = this.ws+"?x-token="+encodeURIComponent(Cookie.read("x-token"));
+            ws = o2.filterUrl(ws);
 
             try{
                 this.webSocket = new WebSocket(ws);
