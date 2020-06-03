@@ -11,6 +11,7 @@ import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -36,6 +37,10 @@ public class ActionDelete extends BaseAction {
 				emc.beginTransaction( AttendanceSelfHoliday.class );
 				emc.remove( attendanceSelfHoliday, CheckRemoveType.all );
 				emc.commit();
+
+				//清除缓存
+				ApplicationCache.notify( AttendanceSelfHoliday.class );
+
 				result.setData( new Wo(id) );
 
 				//根据员工休假数据来记录与这条数据相关的统计需求记录

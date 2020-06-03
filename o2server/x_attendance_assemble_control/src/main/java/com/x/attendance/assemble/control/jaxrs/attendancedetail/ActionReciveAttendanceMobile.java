@@ -2,8 +2,9 @@ package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
+
+import com.x.base.core.project.organization.Person;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -56,6 +57,18 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		}
 
 		if( check ){
+			if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
+				Person person = userManagerService.getPersonObjByName( currentPerson.getDistinguishedName() );
+				if( person != null ){
+					if( StringUtils.isNotEmpty( person.getEmployee() )){
+						attendanceDetailMobile.setEmpNo(person.getEmployee());
+					}else{
+						attendanceDetailMobile.setEmpNo(currentPerson.getDistinguishedName());
+					}
+				}
+			}else{
+				attendanceDetailMobile.setEmpNo( wrapIn.getEmpNo() );
+			}
 			attendanceDetailMobile.setEmpName( currentPerson.getDistinguishedName() );
 			attendanceDetailMobile.setCheckin_time(wrapIn.getCheckin_time());
 			attendanceDetailMobile.setCheckin_type(wrapIn.getCheckin_type());
