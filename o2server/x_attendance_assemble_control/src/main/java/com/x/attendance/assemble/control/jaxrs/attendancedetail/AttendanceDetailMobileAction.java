@@ -58,6 +58,29 @@ public class AttendanceDetailMobileAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "查询登录者当天的所有移动打卡信息记录", action = ActionListMyMobileRecordToday.class)
+	@Path("my")
+	@GET
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMyRecords(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
+		ActionResult<ActionListMyMobileRecordToday.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionListMyMobileRecordToday().execute( request, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceDetailProcess(e, "查询登录者当天的所有移动打卡信息记录时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "移动打卡信息记录明细查询", action = ActionListMobileWithFilter.class)
 	@Path("filter/list/page/{page}/count/{count}")
 	@PUT

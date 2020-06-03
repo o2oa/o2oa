@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * Created by fancyLou on 2020-04-05.
  * Copyright © 2020 O2. All rights reserved.
  */
-public class QywxUnitStatisticQueue extends AbstractQueue<Date> {
-    private static final Logger logger = LoggerFactory.getLogger(QywxUnitStatisticQueue.class);
+public class QueueQywxUnitStatistic extends AbstractQueue<Date> {
+    private static final Logger logger = LoggerFactory.getLogger(QueueQywxUnitStatistic.class);
 
     @Override
     protected void execute(Date date) throws Exception {

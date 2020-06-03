@@ -7,7 +7,7 @@ MWF.xAction.RestActions.Action["x_file_assemble_control"] = new Class({
     },
     saveFolder: function(data, success, failure){
         if (data.id){
-            this.updateFolder(data, success, failure);
+            this.updateFolder(data.id, data, success, failure);
         }else{
             this.addFolder(data, success, failure);
         }

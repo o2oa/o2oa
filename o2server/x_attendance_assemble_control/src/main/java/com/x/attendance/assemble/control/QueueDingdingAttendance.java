@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DingdingAttendanceQueue extends AbstractQueue<DingdingQywxSyncRecord> {
+public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecord> {
 
-    private static final Logger logger = LoggerFactory.getLogger(DingdingAttendanceQueue.class);
+    private static final Logger logger = LoggerFactory.getLogger(QueueDingdingAttendance.class);
 
     @Override
     protected void execute(DingdingQywxSyncRecord record) throws Exception {
