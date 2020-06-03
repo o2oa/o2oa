@@ -39,7 +39,9 @@ public class ActionListPinyinInitial extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getKey(),
-					StringUtils.join(wi.getUnitList(), ","));
+					StringUtils.join(wi.getUnitList(), ","),
+					StringUtils.join(wi.getUnitDutyList(), ","),
+					StringUtils.join(wi.getGroupList(), ","));
 			Element element = business.cache().get(cacheKey);
 			if (null != element && (null != element.getObjectValue())) {
 				result.setData((List<Wo>) element.getObjectValue());
@@ -60,6 +62,8 @@ public class ActionListPinyinInitial extends BaseAction {
 		private List<String> unitList = new ArrayList<>();
 		@FieldDescribe("搜索职务范围,为空则不限定")
 		private List<String> unitDutyList = new ArrayList<>();
+		@FieldDescribe("搜索群组范围(仅限群组的身份成员),为空则不限定")
+		private List<String> groupList = new ArrayList<>();
 
 		public List<String> getUnitDutyList() {
 			return unitDutyList;
@@ -83,6 +87,14 @@ public class ActionListPinyinInitial extends BaseAction {
 
 		public void setUnitList(List<String> unitList) {
 			this.unitList = unitList;
+		}
+
+		public List<String> getGroupList() {
+			return groupList;
+		}
+
+		public void setGroupList(List<String> groupList) {
+			this.groupList = groupList;
 		}
 
 	}
@@ -118,7 +130,15 @@ public class ActionListPinyinInitial extends BaseAction {
 		}
 		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
-			p = cb.and(p, root.get(Identity_.id).in(identityIds));
+			if(ListTools.isNotEmpty(identityIds)) {
+				p = cb.and(p, root.get(Identity_.id).in(identityIds));
+			}
+		}
+		if (ListTools.isNotEmpty(wi.getGroupList())) {
+			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
+			if(ListTools.isNotEmpty(identityIds)) {
+				p = cb.and(p, root.get(Identity_.id).in(identityIds));
+			}
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
