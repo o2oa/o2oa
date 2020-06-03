@@ -135,7 +135,7 @@ public class Attachment2 extends SliceJpaObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + folder_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + folder_FIELDNAME)
 	/* 上级目录必须存在 */
-	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Folder2.class, equals = @Equal(property = "person", field = "person")))
+	@CheckPersist(allowEmpty = false)
 	private String folder;
 
 	public static final String originFile_FIELDNAME = "originFile";
