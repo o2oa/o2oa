@@ -13,10 +13,9 @@ public class QueueDocumentDelete extends AbstractQueue<String> {
 	//{application}/{infoId}
 	public void execute( String docId ) throws Exception {
 		try {
-			ThisApplication.context().applications().deleteQuery(
-					x_hotpic_assemble_control.class, "cms/" + docId
-			);
+			ThisApplication.context().applications().deleteQuery( x_hotpic_assemble_control.class, "cipher/hotpic/cms/" + docId );
 		}catch( Exception e ) {
+			e.printStackTrace();
 		}		
 	}
 }

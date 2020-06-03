@@ -70,69 +70,84 @@ public class StatisticUnitForDay extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column(name = "xunitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String unitName;
 
+	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
-	@Column(name = "xtopUnitName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String topUnitName;
 
+	public static final String statisticYear_FIELDNAME = "statisticYear";
 	@FieldDescribe("统计年份")
-	@Column(name = "xstatisticYear", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticYear_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String statisticYear;
 
+	public static final String statisticMonth_FIELDNAME = "statisticMonth";
 	@FieldDescribe("统计月份")
-	@Column(name = "xstatisticMonth", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticMonth_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String statisticMonth;
 
+	public static final String statisticDate_FIELDNAME = "statisticDate";
 	@FieldDescribe("统计日期")
-	@Column(name = "xstatisticDate", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticDate_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String statisticDate;
 
+	public static final String employeeCount_FIELDNAME = "employeeCount";
 	@FieldDescribe("应出勤人数")
-	@Column(name = "xemployeeCount")
+	@Column( name = ColumnNamePrefix + employeeCount_FIELDNAME )
 	private Double employeeCount;
 
+	public static final String onDutyEmployeeCount_FIELDNAME = "onDutyEmployeeCount";
 	@FieldDescribe("实际出勤人数")
-	@Column(name = "xonDutyEmployeeCount")
+	@Column( name = ColumnNamePrefix + onDutyEmployeeCount_FIELDNAME )
 	private Double onDutyEmployeeCount;
 
+	public static final String absenceDayCount_FIELDNAME = "absenceDayCount";
 	@FieldDescribe("缺勤人数")
-	@Column(name = "xabsenceDayCount")
+	@Column( name = ColumnNamePrefix + absenceDayCount_FIELDNAME )
 	private Double absenceDayCount;
 
+	public static final String onSelfHolidayEmployeeCount_FIELDNAME = "onSelfHolidayEmployeeCount";
 	@FieldDescribe("休假人数")
-	@Column(name = "xonSelfHolidayEmployeeCount")
+	@Column( name = ColumnNamePrefix + onSelfHolidayEmployeeCount_FIELDNAME )
 	private Double onSelfHolidayEmployeeCount;
 
+	public static final String onDutyCount_FIELDNAME = "onDutyCount";
 	@FieldDescribe("签到人数")
-	@Column(name = "xonDutyCount")
+	@Column( name = ColumnNamePrefix + onDutyCount_FIELDNAME )
 	private Long onDutyCount;
 
+	public static final String offDutyCount_FIELDNAME = "offDutyCount";
 	@FieldDescribe("签退人数")
-	@Column(name = "xoffDutyCount")
+	@Column( name = ColumnNamePrefix + offDutyCount_FIELDNAME )
 	private Long offDutyCount;
 
+	public static final String lateCount_FIELDNAME = "lateCount";
 	@FieldDescribe("迟到人数")
-	@Column(name = "xlateCount")
+	@Column( name = ColumnNamePrefix + lateCount_FIELDNAME )
 	private Long lateCount;
 
+	public static final String leaveEarlyCount_FIELDNAME = "leaveEarlyCount";
 	@FieldDescribe("早退人数")
-	@Column(name = "xleaveEarlyCount")
+	@Column( name = ColumnNamePrefix + leaveEarlyCount_FIELDNAME )
 	private Long leaveEarlyCount;
 
+	public static final String lackOfTimeCount_FIELDNAME = "lackOfTimeCount";
 	@FieldDescribe("工时不足人数")
-	@Column(name = "xlackOfTimeCount")
+	@Column( name = ColumnNamePrefix + lackOfTimeCount_FIELDNAME )
 	private Long lackOfTimeCount;
 
+	public static final String abNormalDutyCount_FIELDNAME = "abNormalDutyCount";
 	@FieldDescribe("异常打卡人数")
-	@Column(name = "xabNormalDutyCount")
+	@Column( name = ColumnNamePrefix + abNormalDutyCount_FIELDNAME )
 	private Long abNormalDutyCount;
 
 	public String getUnitName() {

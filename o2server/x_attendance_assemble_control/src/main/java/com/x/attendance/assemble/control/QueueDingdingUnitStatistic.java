@@ -19,8 +19,8 @@ import java.util.List;
  * Created by fancyLou on 2020-04-05.
  * Copyright © 2020 O2. All rights reserved.
  */
-public class DingdingUnitStatisticQueue extends AbstractQueue<Date> {
-    private static final Logger logger = LoggerFactory.getLogger(DingdingUnitStatisticQueue.class);
+public class QueueDingdingUnitStatistic extends AbstractQueue<Date> {
+    private static final Logger logger = LoggerFactory.getLogger(QueueDingdingUnitStatistic.class);
 
     @Override
     protected void execute(Date date) throws Exception {

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.entity.AttendanceDetail;
+import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,7 +17,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 public class AttendanceStatisticalCycleServiceAdv {
-	
+
 	private AttendanceStatisticalCycleService attendanceStatisticCycleService = new AttendanceStatisticalCycleService();
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceStatisticalCycleServiceAdv.class );
 	private UserManagerService userManagerService = new UserManagerService();
@@ -28,12 +29,12 @@ public class AttendanceStatisticalCycleServiceAdv {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 将所有的周期配置组织成一个Map便于查询操作
-	 * @param cycles
+	 * @param debugger
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getCycleMapFormAllCycles( Boolean debugger ) throws Exception{
 		List<AttendanceStatisticalCycle> cycles = null;
@@ -278,16 +279,14 @@ public class AttendanceStatisticalCycleServiceAdv {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * 根据顶层组织，组织，年月获取一个统计周期配置
-	 * 如果不存在，则新建一个周期配置
-	 * 
-	 * @param q_topUnitName
-	 * @param q_unitName
+	 * 根据顶层组织，组织，年月获取一个统计周期配置 如果不存在，则新建一个周期配置
+	 * @param employeeName
 	 * @param cycleYear
 	 * @param cycleMonth
 	 * @param topUnitAttendanceStatisticalCycleMap
+	 * @param debugger
 	 * @return
 	 * @throws Exception
 	 */
@@ -417,11 +416,12 @@ public class AttendanceStatisticalCycleServiceAdv {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 将单个对象放到一个List里，并且去重复
 	 * @param cycle
-	 * @param topUnitCycles
+	 * @param unitCycles
+	 * @param debugger
 	 * @return
 	 */
 	public List<AttendanceStatisticalCycle> putDistinctCycleInList( AttendanceStatisticalCycle cycle, List<AttendanceStatisticalCycle> unitCycles, Boolean debugger ) {
@@ -446,6 +446,22 @@ public class AttendanceStatisticalCycleServiceAdv {
 		//如果循环完了，证明不存在，要添加一个对象
 		unitCycles.add( cycle );
 		return unitCycles;
-	}	
+	}
+
+    public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getAllStatisticalCycleMapWithCache(boolean debugger) throws Exception {
+		return attendanceStatisticCycleService.getAllStatisticalCycleMapWithCache(debugger);
+    }
+
+	/**
+	 * 根据顶层组织，组织，年月获取一个统计周期配置 如果不存在，则新建一个周期配置
+	 * @param attendanceStatisticRequireLog
+	 * @param topUnitAttendanceStatisticalCycleMap
+	 * @param debugger
+	 * @return
+	 * @throws Exception
+	 */
+	public AttendanceStatisticalCycle getStatisticCycleByEmployee( AttendanceStatisticRequireLog attendanceStatisticRequireLog, Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap, Boolean debugger ) throws Exception{
+		return attendanceStatisticCycleService.getStatisticCycleByEmployee( attendanceStatisticRequireLog, topUnitAttendanceStatisticalCycleMap, debugger);
+	}
 }
 

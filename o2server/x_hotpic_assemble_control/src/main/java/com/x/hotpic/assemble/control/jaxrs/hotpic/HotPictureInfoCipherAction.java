@@ -15,6 +15,7 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
@@ -41,6 +42,89 @@ public class HotPictureInfoCipherAction extends StandardJaxrsAction {
 	private WrapCopier<HotPictureInfo, WrapOutHotPictureInfo> wrapout_copier = WrapCopierFactory
 			.wo(HotPictureInfo.class, WrapOutHotPictureInfo.class, null, WrapOutHotPictureInfo.Excludes);
 	private Ehcache cache = ApplicationCache.instance().getCache(HotPictureInfo.class);
+
+
+	@JaxrsMethodDescribe(value = "根据CMS文档ID删除热点信息", action= StandardJaxrsAction.class )
+	@DELETE
+	@Path("cms/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@PathParam("id") String id) {
+		ActionResult<WrapOutString> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapOutString wrap = null;
+		List<HotPictureInfo> hotPictureInfos = null;
+		Boolean check = true;
+
+		if (check) {
+			if (id == null || id.isEmpty() || "(0)".equals(id)) {
+				check = false;
+				Exception exception = new InfoIdEmptyException();
+				result.error(exception);
+			}
+		}
+		if( check ){
+			try {
+				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(HotPictureInfo.APPLICATION_CMS, id );
+				if(ListTools.isNotEmpty( hotPictureInfos )){
+					for( HotPictureInfo hotPictureInfo : hotPictureInfos ){
+						hotPictureInfoService.delete( hotPictureInfo.getId() );
+					}
+					ApplicationCache.notify(HotPictureInfo.class);
+				}
+			} catch (Exception e) {
+				Exception exception = new InfoQueryByIdException(e, id);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		WrapOutString wrapOutString =  new WrapOutString();
+		wrapOutString.setValue( id );
+		result.setData( wrapOutString );
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据BBS主贴ID删除热点信息", action= StandardJaxrsAction.class )
+	@DELETE
+	@Path("bbs/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void deleteBBS(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  @PathParam("id") String id) {
+		ActionResult<WrapOutString> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		WrapOutString wrap = null;
+		List<HotPictureInfo> hotPictureInfos = null;
+		Boolean check = true;
+
+		if (check) {
+			if (id == null || id.isEmpty() || "(0)".equals(id)) {
+				check = false;
+				Exception exception = new InfoIdEmptyException();
+				result.error(exception);
+			}
+		}
+		if( check ){
+			try {
+				hotPictureInfos = hotPictureInfoService.listByApplicationInfoId(HotPictureInfo.APPLICATION_BBS, id );
+				if(ListTools.isNotEmpty( hotPictureInfos )){
+					for( HotPictureInfo hotPictureInfo : hotPictureInfos ){
+						hotPictureInfoService.delete( hotPictureInfo.getId() );
+					}
+					ApplicationCache.notify(HotPictureInfo.class);
+				}
+			} catch (Exception e) {
+				Exception exception = new InfoQueryByIdException(e, id);
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		WrapOutString wrapOutString =  new WrapOutString();
+		wrapOutString.setValue( id );
+		result.setData( wrapOutString );
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "根据ID获取单个热图信息", action= StandardJaxrsAction.class )
 	@GET

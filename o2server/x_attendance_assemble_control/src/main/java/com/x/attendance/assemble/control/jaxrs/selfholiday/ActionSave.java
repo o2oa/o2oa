@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.selfholiday;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,6 +17,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +26,9 @@ public class ActionSave extends BaseAction {
 	private static  Logger logger = LoggerFactory.getLogger( ActionSave.class );
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
-		logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" );
-		logger.info("++++++++++++++++++++++调用接口：com.x.attendance.assemble.control.jaxrs.selfholiday.ActionSave......" );
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wrapIn = null;
 		List<AttendanceSelfHoliday> holidayList = null;
-		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
 
 		//获取到当前用户信息
 		EffectivePerson currentPerson = this.effectivePerson(request);
@@ -47,7 +46,6 @@ public class ActionSave extends BaseAction {
 		if( check ){
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				AttendanceSelfHoliday attendanceSelfHoliday = null;
-//				AttendanceSelfHoliday attendanceSelfHoliday = new AttendanceSelfHoliday();
 
 				if( wrapIn != null && StringUtils.isNoneEmpty( wrapIn.getEmployeeName() )
 						&& StringUtils.isNoneEmpty( wrapIn.getEmployeeNumber() )
@@ -60,11 +58,11 @@ public class ActionSave extends BaseAction {
 					if(StringUtils.isNotEmpty( wrapIn.getBatchFlag() ) ){
 						holidayList = attendanceSelfHolidayServiceAdv.listWithBatchFlag( wrapIn.getBatchFlag() );
 						if(ListTools.isNotEmpty( holidayList )){
-							logger.info("++++++++先根据batchFlag删除原来的数据，然后再进行新数据的保存+++++++++" );
+							logger.info("先根据batchFlag删除原来的数据，然后再进行新数据的保存" );
 							for( AttendanceSelfHoliday holiday : holidayList ){
 								emc.remove( emc.find(holiday.getId(), AttendanceSelfHoliday.class ), CheckRemoveType.all );
 							}
-							logger.info("++++++++删除" + holidayList.size() + "条旧请假信息数据。" );
+							logger.info("删除" + holidayList.size() + "条旧请假信息数据。" );
 						}
 					}
 
@@ -75,7 +73,7 @@ public class ActionSave extends BaseAction {
 							//更新已经存在的信息
 							wrapIn.copyTo( attendanceSelfHoliday );
 							attendanceSelfHoliday.setBatchFlag(wrapIn.getBatchFlag());
-							logger.info("++++++++更新：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
+							logger.info("更新：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
 							emc.check( attendanceSelfHoliday, CheckPersistType.all);
 						}else{
 							attendanceSelfHoliday = new AttendanceSelfHoliday();
@@ -83,7 +81,7 @@ public class ActionSave extends BaseAction {
 							//使用参数传入的ID作为记录的ID
 							attendanceSelfHoliday.setId( wrapIn.getId() );
 							attendanceSelfHoliday.setBatchFlag(wrapIn.getBatchFlag());
-							logger.info("++++++++新增：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
+							logger.info("新增：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
 							emc.persist( attendanceSelfHoliday, CheckPersistType.all);
 						}
 					}else{
@@ -92,7 +90,7 @@ public class ActionSave extends BaseAction {
 
 						wrapIn.copyTo( attendanceSelfHoliday );
 						attendanceSelfHoliday.setBatchFlag(wrapIn.getBatchFlag());
-						logger.info("++++++++新增,无ID：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
+						logger.debug("新增,无ID：gson.toJson( attendanceSelfHoliday ) = " + gson.toJson( attendanceSelfHoliday ) );
 						emc.persist( attendanceSelfHoliday, CheckPersistType.all);
 						result.setData( new Wo( attendanceSelfHoliday.getId() ) );
 					}
@@ -101,26 +99,26 @@ public class ActionSave extends BaseAction {
 					
 					//根据员工休假数据来记录与这条数据相关的统计需求记录
 					//new AttendanceDetailAnalyseService().recordStatisticRequireLog( attendanceSelfHoliday );
-					logger.info("++++++++休假数据有变动，对该员工的该请假时间内的所有打卡记录进行分析......" );
+					logger.debug("休假数据有变动，对该员工的该请假时间内的所有打卡记录进行分析......" );
+
 					//休假数据有更新，对该员工的该请假时间内的所有打卡记录进行分析
-					List<String> ids = attendanceDetailAnalyseServiceAdv.getAnalyseAttendanceDetailIds( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime() );
+					List<String> ids = attendanceDetailAnalyseServiceAdv.listAnalyseAttendanceDetailIds(attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), effectivePerson.getDebugger() );
 					if( ListTools.isNotEmpty( ids ) ){
-						try {//查询所有的周期配置，组织成Map
-							topUnitAttendanceStatisticalCycleMap = attendanceStatisticCycleServiceAdv.getCycleMapFormAllCycles( effectivePerson.getDebugger() );
-						} catch (Exception e) {
-							Exception exception = new ExceptionSelfHolidayProcess( e, "系统在查询并且组织所有的统计周期时发生异常." );
-							result.error( exception );
-							logger.error( e, currentPerson, request, null);
+						for( String id : ids ){
+							try { //分析保存好的考勤数据
+								ThisApplication.detailAnalyseQueue.send( id );
+							} catch ( Exception e1 ) {
+								e1.printStackTrace();
+							}
 						}
-						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetails( attendanceSelfHoliday.getEmployeeName(), attendanceSelfHoliday.getStartTime(), attendanceSelfHoliday.getEndTime(), topUnitAttendanceStatisticalCycleMap, effectivePerson.getDebugger()  );
 					}
 				}else{
 					if( jsonElement == null ){
-						logger.info("++++++++传入的员工请假信息JSON数据为空......" );
+						logger.debug("传入的员工请假信息JSON数据为空......" );
 						Exception exception = new ExceptionSelfHolidayProcess( "传入的员工请假信息JSON数据为空，无法保存数据信息，请检查数据内容！" );
 						result.error( exception );
 					}else {
-						logger.info("++++++++传入的数据不符合请假数据接口要求......" );
+						logger.debug("传入的数据不符合请假数据接口要求......" );
 						Exception exception = new ExceptionSelfHolidayProcess( "传入的数据不符合请假数据接口要求，请检查数据内容：" + jsonElement.getAsString() );
 						result.error( exception );
 					}
@@ -132,7 +130,6 @@ public class ActionSave extends BaseAction {
 				logger.error( e, currentPerson, request, null);
 			}
 		}
-		logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" );
 		return result;
 	}
 	

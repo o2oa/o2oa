@@ -51,56 +51,67 @@ public class StatisticDingdingUnitForMonth extends SliceJpaObject {
 	 * =====
 	 */
 
+	public static final String o2Unit_FIELDNAME = "o2Unit";
 	@FieldDescribe("O2用户所在的组织")
-	@Column(name = ColumnNamePrefix + "o2Unit", length = length_128B)
+	@Column( length = length_128B, name = ColumnNamePrefix + o2Unit_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String o2Unit;
 
-
+	public static final String statisticYear_FIELDNAME = "statisticYear";
 	@FieldDescribe("统计年份")
-	@Column(name = "xstatisticYear", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticYear_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String statisticYear;
 
+	public static final String statisticMonth_FIELDNAME = "statisticMonth";
 	@FieldDescribe("统计月份")
-	@Column(name = "xstatisticMonth", length = JpaObject.length_16B)
+	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + statisticMonth_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String statisticMonth;
 
+	public static final String workDayCount_FIELDNAME = "workDayCount";
 	@FieldDescribe("出勤天数")
-	@Column(name = "xworkDayCount")
+	@Column( name = ColumnNamePrefix + workDayCount_FIELDNAME )
 	private Long workDayCount;
 
+	public static final String onDutyTimes_FIELDNAME = "onDutyTimes";
 	@FieldDescribe("上班签到人数")
-	@Column(name = "xonDutyTimes")
+	@Column( name = ColumnNamePrefix + onDutyTimes_FIELDNAME )
 	private Long onDutyTimes;
 
+	public static final String offDutyTimes_FIELDNAME = "offDutyTimes";
 	@FieldDescribe("下班签到人数")
-	@Column(name = "xoffDutyTimes")
+	@Column( name = ColumnNamePrefix + offDutyTimes_FIELDNAME )
 	private Long offDutyTimes;
 
+	public static final String resultNormal_FIELDNAME = "resultNormal";
 	@FieldDescribe("正常签到次数")
-	@Column(name = "xresultNormal")
+	@Column( name = ColumnNamePrefix + resultNormal_FIELDNAME )
 	private Long resultNormal;
 
+	public static final String lateTimes_FIELDNAME = "lateTimes";
 	@FieldDescribe("迟到人数")
-	@Column(name = "xlateTimes")
+	@Column( name = ColumnNamePrefix + lateTimes_FIELDNAME )
 	private Long lateTimes;
 
+	public static final String seriousLateTimes_FIELDNAME = "seriousLateTimes";
 	@FieldDescribe("严重迟到人数")
-	@Column(name = "xSeriousLateTimes")
+	@Column( name = ColumnNamePrefix + seriousLateTimes_FIELDNAME )
 	private Long seriousLateTimes;
 
+	public static final String leaveEarlyTimes_FIELDNAME = "leaveEarlyTimes";
 	@FieldDescribe("早退人数")
-	@Column(name = "xleaveEarlyTimes")
+	@Column( name = ColumnNamePrefix + leaveEarlyTimes_FIELDNAME )
 	private Long leaveEarlyTimes;
 
+	public static final String absenteeismTimes_FIELDNAME = "absenteeismTimes";
 	@FieldDescribe("旷工人数")
-	@Column(name = "xAbsenteeismTimes")
+	@Column( name = ColumnNamePrefix + absenteeismTimes_FIELDNAME )
 	private Long absenteeismTimes;
 
+	public static final String notSignedCount_FIELDNAME = "notSignedCount";
 	@FieldDescribe("未打卡人数")
-	@Column(name = "xNotSignedCount")
+	@Column( name = ColumnNamePrefix + notSignedCount_FIELDNAME )
 	private Long notSignedCount;
 
 	public Long getResultNormal() {
