@@ -30,6 +30,7 @@ MWF.xApplication.Calendar.Main = new Class({
         //if (!this.personActions) this.personActions = MWF.Actions.get("x_organization_assemble_express");
     },
     loadApplication: function(callback) {
+        this.canlendarData = null;
         MWF.UD.getDataJson("calendarConfig", function(json){
             this.calendarConfig = json || {};
 
@@ -68,17 +69,22 @@ MWF.xApplication.Calendar.Main = new Class({
         }.bind(this));
     },
     listCalendar : function( callback ){
-        this.actions.listMyCalendar( function( json ){
-            if( ( json.data.myCalendars || [] ).length == 0 ){
-               this.createDefaultCalendar(function(){
-                       if(callback)callback()
-                   });
-            }else{
-                this.calendarDataList = json.data.myCalendars;
-                this.currentCalendarData = json.data.myCalendars[0];
-                if(callback)callback()
-            }
-        }.bind(this))
+        if( this.canlendarData ){
+            if(callback)callback( this.canlendarData )
+        }else{
+            this.actions.listMyCalendar( function( json ){
+                if( ( json.data.myCalendars || [] ).length == 0 ){
+                    this.createDefaultCalendar(function(){
+                        if(callback)callback( json.data )
+                    });
+                }else{
+                    this.canlendarData = json.data;
+                    this.calendarDataList = json.data.myCalendars;
+                    this.currentCalendarData = json.data.myCalendars[0];
+                    if(callback)callback( json.data )
+                }
+            }.bind(this))
+        }
     },
     getSelectedCalendarId : function(){
         if( this.leftNavi ){
@@ -101,6 +107,7 @@ MWF.xApplication.Calendar.Main = new Class({
           this.actions.listMyCalendar( function( json ){
               if( ( json.data.myCalendars || [] ).length == 0 ){
               }else{
+                  this.canlendarData = json.data;
                   this.calendarDataList = json.data.myCalendars;
                   this.currentCalendarData = json.data.myCalendars[0];
                   if(callback)callback()
@@ -652,10 +659,11 @@ MWF.xApplication.Calendar.Navi = new Class({
         this.unitCalendarNaviItem = [];
         this.followCalendarNaviItem = [];
 
-        this.app.actions.listMyCalendar( function( json ){
-            this.myCalendars =json.data.myCalendars;
-            this.unitCalendars =json.data.unitCalendars;
-            this.followCalendars =json.data.followCalendars;
+        this.app.listCalendar( function( data ){
+            this.myCalendars = data.myCalendars;
+            this.unitCalendars = data.unitCalendars;
+            this.followCalendars = data.followCalendars;
+            this.app.canlendarData = null;
             this.loadNode();
         }.bind(this));
 
