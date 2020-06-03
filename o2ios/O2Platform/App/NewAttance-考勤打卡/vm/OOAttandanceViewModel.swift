@@ -39,6 +39,21 @@ final class OOAttandanceViewModel: NSObject {
 }
 
 extension OOAttandanceViewModel{
+    
+    // MARK: -
+    func listMyRecords(_ completedBlock:@escaping CallbackBlockDefine) {
+        ooAttanceAPI.request(.listMyRecord) { response in
+            let myResult = OOResult<BaseModelClass<OOMyAttandanceRecords>>(response)
+            if myResult.isResultSuccess() {
+                let records = myResult.model?.data
+                completedBlock(.ok(records))
+            }else {
+                let errorMessage = myResult.error?.errorDescription ?? ""
+                completedBlock(.fail(errorMessage))
+            }
+        }
+    }
+    
     // MARK:- 读取配置的打卡位置
     func getLocationWorkPlace(_ completedBlock:@escaping CallbackBlockDefine) {
         ooAttanceAPI.request(.myWorkplace) { (responseResult) in

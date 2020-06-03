@@ -9,6 +9,7 @@
 import UIKit
 import CocoaLumberjack
 import O2OA_Auth_SDK
+import Starscream
 
 class O2MainController: UITabBarController, UITabBarControllerDelegate {
     
@@ -46,12 +47,19 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
             //处理内部直连的时候推送的设备绑定
             O2JPushManager.shared.o2JPushBind()
         }
+        //连接websocket
+        self._startWebsocket()
+    }
+    
+    deinit {
+        //关闭websocket
+        self._stopWebsocket()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         // 判断是否 第一次安装 是否是连接的demo服务器
         if let unit = O2AuthSDK.shared.bindUnit() {
-            if "demo.o2oa.net" == unit.centerHost || "demo.o2oa.io" == unit.centerHost || "demo.o2server.io" == unit.centerHost {
+            if "demo.o2oa.net" == unit.centerHost || "demo.o2oa.io" == unit.centerHost || "demo.o2server.io" == unit.centerHost || "sample.o2oa.net" == unit.centerHost {
                 let tag = AppConfigSettings.shared.demoAlertTag
                 if !tag {
                     demoAlertView.showFallDown()
@@ -181,4 +189,93 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         }
     }
     
+   
+    
+    // MARK: - websocket
+    private var timer:Timer?
+    private var isWsOpen = false
+    
+    private func _startWebsocket() {
+        DDLogDebug("启动websocket连接。。。。。。")
+       let url = AppDelegate.o2Collect.generateWebsocketURL()
+       DDLogDebug("这个是wsurl ：\(url)")
+       O2WebsocketManager.instance.startConnect(wsUrl: url, delegate: self)
+   }
+    
+    private func _stopWebsocket() {
+        DDLogDebug("关闭websocket连接。。。。。。")
+        self.stopTiming()
+        O2WebsocketManager.instance.closeConnect()
+    }
+    
+    private func startTiming() {
+        DDLogDebug("开启定时器 。。。。。。")
+        if timer != nil {
+            timer?.invalidate()
+            timer = nil
+        }
+        timer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(sendHeartbeatMsg), userInfo: nil, repeats: true)
+        timer?.fire()
+    }
+    private func stopTiming() {
+        DDLogDebug("关闭定时器 。。。。。。")
+        if timer != nil {
+            timer?.invalidate()
+            timer = nil
+        }
+    }
+    //发送心跳
+    @objc private func sendHeartbeatMsg() {
+        if isWsOpen {
+            O2WebsocketManager.instance.send(msg: "heartbeat")
+        }else {//重新启动
+            _startWebsocket()
+        }
+    }
+    
 }
+
+extension O2MainController: WebSocketDelegate {
+    
+
+    func didReceive(event: WebSocketEvent, client: WebSocket) {
+        switch event {
+        case .text(let text):
+            DDLogDebug("接收的ws消息：\(text)")
+            break
+        case .connected(let headers):
+            DDLogDebug("websocket is connected: \(headers)")
+            isWsOpen = true
+            self.startTiming()
+            break
+        case .disconnected(let reason, let code):
+            DDLogDebug("websocket is disconnected: \(reason) with code: \(code)")
+            isWsOpen = false
+             break
+        case .binary(let data):
+            DDLogDebug("Received binary data: \(data.count)")
+             break
+        case .ping(_):
+            break
+        case .pong(_):
+            break
+        case .viablityChanged(_):
+             DDLogDebug("websocket viablityChanged")
+            break
+        case .reconnectSuggested(_):
+            DDLogDebug("websocket reconnectSuggested")
+            break
+        case .cancelled:
+            DDLogDebug("websocket is canceled")
+            isWsOpen = false
+             break
+        case .error(let error):
+            DDLogError("websocket is error, \(String(describing: error?.localizedDescription))")
+            isWsOpen = false
+            break
+        }
+    }
+    
+    
+}
+

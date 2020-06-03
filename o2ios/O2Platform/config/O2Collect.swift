@@ -83,6 +83,20 @@ class O2Collect{
         return self.generateURLWithAppContextKey(appContextKey, scheme: "http", query: query, parameter: parameter,coverted: coverted,generateTime: generateTime)
     }
     
+    /**
+        生成websocket连接地址
+     */
+    func generateWebsocketURL() -> String {
+        if let webServer = O2AuthSDK.shared.centerServerInfo()?.webServer, let communicateNode = O2AuthSDK.shared.centerServerInfo()?.assembles?["x_message_assemble_communicate"] {
+            var wsProtocol = "ws://"
+            if webServer.httpProtocol == "https" {
+                wsProtocol = "wss://"
+            }
+            return "\(wsProtocol)\(communicateNode.host ?? ""):\(communicateNode.port ?? 20020)\(communicateNode.context ?? "/x_message_assemble_communicate")/ws/collaboration?x-token=\(O2AuthSDK.shared.myInfo()?.token ?? "")"
+        }
+        return ""
+    }
+    
     
     /**
      前台请求H5页面路径生成方法

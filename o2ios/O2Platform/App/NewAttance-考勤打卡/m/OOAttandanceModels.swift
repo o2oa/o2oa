@@ -46,6 +46,7 @@ class OOAttandanceMobileDetail:NSObject,DataModel {
     @objc var optMachineType:String? // 操作设备类别：手机品牌|PAD|PC|其他
     @objc var optSystemName:String?  // 操作设备类别：Mac|Windows|IOS|Android|其他
     var recordStatus:Int?  //记录状态：0-未分析 1-已分析
+    @objc var checkin_type: String? // 打卡类型 上午上班打卡 下午下班打卡
     
     required override init() {
         
@@ -57,6 +58,73 @@ class OOAttandanceMobileDetail:NSObject,DataModel {
 
 }
 
+// MARK: - 打卡班次对象
+class OOAttandanceScheduleSetting: NSObject, DataModel {
+    /**
+     "id": "7c89ddfe-7e69-40ce-9908-d699081aa660",
+                "topUnitName": "浙江兰德纵横网络技术股份有限公司@1@U",
+                "unitName": "移动开发组@320494093@U",
+                "unitOu": "移动开发组@320494093@U",
+                "onDutyTime": "09:00",
+                "offDutyTime": "17:00",
+                "signProxy": 0,
+                "lateStartTime": "9:05",
+                "createTime": "2020-05-27 09:19:16",
+                "updateTime": "2020-05-27 09:19:16"
+     */
+    @objc var id: String?
+    @objc var topUnitName: String?
+    @objc var unitName: String?
+    @objc var unitOu: String?
+    @objc var onDutyTime: String?
+    @objc var offDutyTime: String?
+    var signProxy: Int?
+    @objc var lateStartTime: String?
+    @objc var createTime: String?
+    @objc var updateTime: String?
+    
+    required override init() {
+        
+    }
+    
+}
+
+// MARK: - 当前用户当天打卡功能
+class OOAttandanceFeature: NSObject, DataModel {
+    /**
+     "signSeq": 1,
+     "signDate": "2020-06-02",
+     "signTime": "09:00",
+     "checkinType": "上午上班打卡"
+     */
+    @objc var signDate: String?
+    @objc var signTime: String?
+    @objc var checkinType: String?
+    var signSeq: Int?
+    
+    required override init() {
+        
+    }
+    
+}
+
+// MARK: - istMyRecords 登录者当天的所有移动打卡信息记录 排版情况等
+class OOMyAttandanceRecords: NSObject, DataModel {
+    /**
+     {
+         "records": [],
+         "scheduleSetting": {},
+         "feature": {}
+     },
+     */
+    @objc var records:[OOAttandanceMobileDetail]?
+    @objc var scheduleSetting:OOAttandanceScheduleSetting?
+    @objc var feature: OOAttandanceFeature?
+    
+    required override init() {
+        
+    }
+}
 
 // MARK:- 提交打卡数据FormBean
 class OOAttandanceMobileCheckinForm:NSObject,DataModel {
@@ -82,6 +150,8 @@ class OOAttandanceMobileCheckinForm:NSObject,DataModel {
     @objc var optMachineType:String? //操作设备类别：手机品牌|PAD|PC|其他, 可以为空.
     
     @objc var optSystemName:String? //操作设备类别：Mac|Windows|IOS|Android|其他, 可以为空
+    
+    @objc var checkin_type: String? //上午上班打卡 下午下班打卡 。。。。 对应OOAttandanceFeature里面的checkinType
     
     required override init() {
         

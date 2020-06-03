@@ -118,6 +118,7 @@
 		B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */; };
 		B14E078C230141BE00AE85A0 /* ContactPersonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */; };
 		B14E07C523025C6A00AE85A0 /* OOContactExpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */; };
+		B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */; };
 		B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */; };
 		B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B158E95D215DD3F500AB2727 /* AIConstants.swift */; };
 		B15D26EC235EF7480092F8B8 /* genstrings.sh in Resources */ = {isa = PBXBuildFile; fileRef = B15D26EB235EF7480092F8B8 /* genstrings.sh */; };
@@ -1416,6 +1417,7 @@
 		B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupPickerViewController.swift; sourceTree = "<group>"; };
 		B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPersonPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOContactExpressAPI.swift; sourceTree = "<group>"; };
+		B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebsocketManager.swift; sourceTree = "<group>"; };
 		B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2DemoAlertView.swift; sourceTree = "<group>"; };
 		B158E95D215DD3F500AB2727 /* AIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConstants.swift; sourceTree = "<group>"; };
 		B15D26BF235EF0850092F8B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/CloudFile.storyboard; sourceTree = "<group>"; };
@@ -1540,7 +1542,7 @@
 		B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2FlutterViewController.swift; sourceTree = "<group>"; };
 		B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		B1FFF891223A4DA700C170FD /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
-		C33461DCBCEEAF5B8597D54E /* Pods______.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods______.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C33461DCBCEEAF5B8597D54E /* Pods______.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods______.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40502C220722208009A8D30 /* ImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerController.swift; sourceTree = "<group>"; };
 		E40502C320722208009A8D30 /* ImageRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageRow.swift; sourceTree = "<group>"; };
 		E40502C420722208009A8D30 /* ImageCheckRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCheckRow.swift; sourceTree = "<group>"; };
@@ -2838,6 +2840,7 @@
 				B13A011023692A8B00025F3B /* O2CloudFileManager.swift */,
 				B1E0BAA02378FC01001D741F /* O2JPushManager.swift */,
 				B1ABAA0B237E498C0027EC48 /* O2VersionManager.swift */,
+				B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -5630,6 +5633,7 @@
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTimer/SwiftyTimer.framework",
@@ -5672,6 +5676,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTimer.framework",
@@ -6371,6 +6376,7 @@
 				E4C24B8D20844F3C00E426B0 /* JCMessageLocationContentView.swift in Sources */,
 				E4CDB8851E7CFB9C008E788D /* ZLNormalNavViewController.swift in Sources */,
 				B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */,
+				B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */,
 				E46E6CBC1DD41F5D00AB7561 /* HRCgUtil.m in Sources */,
 				E496E89E207314B100C68EEE /* NavView.swift in Sources */,
 				E4C24BD720844F3C00E426B0 /* JCMyInfoViewController.swift in Sources */,
