@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +39,7 @@ public class ActionCreate extends BaseAction {
 			emc.beginTransaction(Folder2.class);
 			Folder2 folder = Wi.copier.copy(wi);
 			folder.setPerson(effectivePerson.getDistinguishedName());
-			folder.setStatus("正常");
+			folder.setStatus(FileStatus.VALID.getName());
 
 			emc.persist(folder, CheckPersistType.all);
 			emc.commit();

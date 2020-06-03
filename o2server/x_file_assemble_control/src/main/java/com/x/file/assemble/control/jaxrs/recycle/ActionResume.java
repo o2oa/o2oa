@@ -7,6 +7,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Recycle;
@@ -36,7 +37,7 @@ class ActionResume extends BaseAction {
 				Attachment2 att = emc.find(recycle.getFileId(), Attachment2.class);
 				if(att!=null){
 					EntityManager aem = emc.beginTransaction(Attachment2.class);
-					att.setStatus("正常");
+					att.setStatus(FileStatus.VALID.getName());
 					aem.getTransaction().commit();
 				}
 			}else{
@@ -50,12 +51,12 @@ class ActionResume extends BaseAction {
 						if(business.folder2().exist(effectivePerson.getDistinguishedName(), fo.getName(), fo.getSuperior(), fo.getId())){
 							fo.setName(new Date().getTime() + fo.getName());
 						}
-						fo.setStatus("正常");
+						fo.setStatus(FileStatus.VALID.getName());
 						fem.getTransaction().commit();
 						List<Attachment2> attachments = business.attachment2().listWithFolder2(fo.getId(),null);
 						for (Attachment2 att : attachments) {
 							EntityManager aem = emc.beginTransaction(Attachment2.class);
-							att.setStatus("正常");
+							att.setStatus(FileStatus.VALID.getName());
 							aem.getTransaction().commit();
 						}
 					}
