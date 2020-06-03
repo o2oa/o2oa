@@ -6,6 +6,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.service.FileCommonService;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Folder2_;
@@ -31,7 +32,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Predicate p = cb.equal(root.get(Folder2_.person), effectivePerson.getDistinguishedName());
 		p = cb.and(p, cb.equal(root.get(Folder2_.name), name));
 		p = cb.and(p, cb.equal(root.get(Folder2_.superior), StringUtils.trimToEmpty(superior)));
-		p = cb.and(p, cb.equal(root.get(Folder2_.status), "正常"));
+		p = cb.and(p, cb.equal(root.get(Folder2_.status), FileStatus.VALID.getName()));
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(Folder2_.id), excludeId));
 		}
@@ -41,7 +42,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected void setCount(Business business, AbstractWoFolder wo) throws Exception {
-		List<String> ids = business.attachment2().listWithFolder(wo.getId(),"正常");
+		List<String> ids = business.attachment2().listWithFolder(wo.getId(),FileStatus.VALID.getName());
 		long count = 0;
 		long size = 0;
 		for (Attachment2 o : business.entityManagerContainer().fetch(ids, Attachment2.class,

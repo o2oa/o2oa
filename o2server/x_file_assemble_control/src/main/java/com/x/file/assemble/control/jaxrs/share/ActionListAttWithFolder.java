@@ -10,6 +10,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.SortTools;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
@@ -36,7 +37,7 @@ class ActionListAttWithFolder extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}
-			List<String> ids = business.attachment2().listWithFolder(folder.getId(),"正常");
+			List<String> ids = business.attachment2().listWithFolder(folder.getId(), FileStatus.VALID.getName());
 			List<Wo> wos = Wo.copier.copy(emc.list(Attachment2.class, ids));
 			SortTools.asc(wos, false, "name");
 			result.setData(wos);
