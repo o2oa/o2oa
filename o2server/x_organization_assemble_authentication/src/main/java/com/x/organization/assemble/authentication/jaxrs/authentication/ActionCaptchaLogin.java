@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +36,16 @@ class ActionCaptchaLogin extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			String credential = wi.getCredential();
 			String password = wi.getPassword();
+			
+			String isEncrypted = wi.getIsEncrypted();
+			
+			//RSA解秘
+			if (!StringUtils.isEmpty(isEncrypted)) {
+				if(isEncrypted.trim().equalsIgnoreCase("y")) {
+			    	password = decryptRSA(password);
+				}
+			}
+			
 			String captcha = wi.getCaptcha();
 			String captchaAnswer = wi.getCaptchaAnswer();
 			if (StringUtils.isEmpty(credential)) {
@@ -58,12 +69,27 @@ class ActionCaptchaLogin extends BaseAction {
 				}
 				wo = this.manager(request, response, business, Wo.class);
 			} else {
-				/* 普通用户登录,也有可能拥有管理员角色 */
+				/* 普通用户登录,也有可能拥有管理员角色.增加同中文的认证 */
 				String personId = business.person().getWithCredential(credential);
 				if (StringUtils.isEmpty(personId)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				Person o = emc.find(personId, Person.class);
+				
+				Person o = null;
+				//处理同中文问题
+				if(personId.indexOf(",") > -1) {
+					String[] arrPersion = personId.split(",");
+					for(int i =0 ; i<arrPersion.length ; i++) {
+						 personId = arrPersion[i];
+						 o = emc.find(personId, Person.class);
+						 if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())) {
+							 break;
+						 }
+					}
+				}else {
+					 o = emc.find(personId, Person.class);
+				}
+
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
 					logger.warn("user: {} use superPermission.", credential);
@@ -79,6 +105,8 @@ class ActionCaptchaLogin extends BaseAction {
 						}
 					}
 				}
+				
+				
 				wo = this.user(request, response, business, o, Wo.class);
 				audit.log(o.getDistinguishedName(), "登录");
 			}
@@ -87,6 +115,63 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
+	 //加密
+		public String encryptRSA(String strEncrypt) {
+			String encrypt = null;
+			try {
+				 String publicKey = Config.publicKey();
+				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				 
+				encrypt = Crypto.rsaEncrypt(strEncrypt,new String(Base64.encodeBase64(publicKeyB)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			return encrypt;
+		}
+		
+		//解密
+		public String decryptRSA(String strDecrypt) {
+			String privateKey;
+			String decrypt = null;
+			try {
+				privateKey = getPrivateKey();
+			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+			return decrypt;
+		}
+		
+		//获取PublicKey
+		public String  getPublicKey() {
+			String publicKey = "";
+			 try {
+				 publicKey = Config.publicKey();
+				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				 publicKey = new String(Base64.encodeBase64(publicKeyB));
+				 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return publicKey;
+		}
+		
+		
+		//获取privateKey
+		public String  getPrivateKey() {
+			 String privateKey = "";
+			 try {
+				 privateKey = Config.privateKey();
+				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
+				 privateKey = new String(Base64.encodeBase64(privateKeyB));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return privateKey;
+		}
+		
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("凭证")
@@ -101,6 +186,9 @@ class ActionCaptchaLogin extends BaseAction {
 		@FieldDescribe("图片认证码")
 		private String captchaAnswer;
 
+		@FieldDescribe("是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key")
+		private String isEncrypted;
+		
 		public String getPassword() {
 			return password;
 		}
@@ -132,7 +220,13 @@ class ActionCaptchaLogin extends BaseAction {
 		public void setCaptchaAnswer(String captchaAnswer) {
 			this.captchaAnswer = captchaAnswer;
 		}
+		public String getIsEncrypted() {
+			return isEncrypted;
+		}
 
+		public void setIsEncrypted(String isEncrypted) {
+			this.isEncrypted = isEncrypted;
+		}
 	}
 
 	public static class Wo extends AbstractWoAuthentication {
