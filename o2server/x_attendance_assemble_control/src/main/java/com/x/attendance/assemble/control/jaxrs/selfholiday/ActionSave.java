@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -96,7 +97,10 @@ public class ActionSave extends BaseAction {
 					}
 					emc.commit();
 					result.setData( new Wo( attendanceSelfHoliday.getId() ) );
-					
+
+					//清除缓存
+					ApplicationCache.notify( AttendanceSelfHoliday.class );
+
 					//根据员工休假数据来记录与这条数据相关的统计需求记录
 					//new AttendanceDetailAnalyseService().recordStatisticRequireLog( attendanceSelfHoliday );
 					logger.debug("休假数据有变动，对该员工的该请假时间内的所有打卡记录进行分析......" );

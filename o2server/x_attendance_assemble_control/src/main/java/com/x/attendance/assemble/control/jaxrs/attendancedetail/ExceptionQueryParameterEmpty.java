@@ -9,4 +9,7 @@ class ExceptionQueryParameterEmpty extends PromptException {
 	public ExceptionQueryParameterEmpty() {
 		super("员工号，员工姓名和查询日期不能全部为空, 无法继续进行查询操作。" );
 	}
+	public ExceptionQueryParameterEmpty(String message) {
+		super(message );
+	}
 }
