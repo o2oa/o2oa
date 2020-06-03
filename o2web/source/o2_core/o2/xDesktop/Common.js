@@ -358,7 +358,7 @@ MWF.xDesktop.getImageSrc = function( id ){
         var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
     }
     var url = "/jaxrs/file/"+id+"/download/stream";
-    return address+url;
+    return o2.filterUrl(address+url);
 };
 MWF.xDesktop.setImageSrc = function(){
     if( !event )return;
