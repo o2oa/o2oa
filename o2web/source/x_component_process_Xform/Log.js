@@ -232,7 +232,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
-            if (this.json.filterActivity.length){
+            if (this.json.filterActivity && this.json.filterActivity.length){
                 filterActivitys = this.json.filterActivity;
                 flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
             }
@@ -246,7 +246,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                 flag = (this.json.filterPerson.indexOf(log.person)!==-1);
                 if (!flag) flag = (this.json.filterPerson.indexOf(o2.name.cn(log.person))!==-1);
             }
-            if (this.json.filterRoute.length){
+            if (this.json.filterRoute && this.json.filterRoute.length){
                 filterRoutes = this.json.filterRoute;
                 flag = (filterRoutes.indexOf(log.properties.routeName)!==-1);
             }
@@ -613,7 +613,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             if( !this.categoryList.length )return;
             this.expandCount = 0;
             if( this.json.expand && this.json.expand === "enable" ){
-                this.expandCount = parseInt( this.json.expandCount );
+                this.expandCount = parseInt( this.json.expandCount || 0 );
             }
             this.table = new Element("table", this.json.tableProperties).inject( this.node );
             this.categoryList.each( function( key, idx ){
@@ -1282,7 +1282,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             this.form.Macro.environment.list = null;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
-            if (this.json.filterActivity.length){
+            if (this.json.filterActivity && this.json.filterActivity.length){
                 filterActivitys = this.json.filterActivity;
                 flag = (filterActivitys.indexOf(log.fromActivityName)!==-1);
             }
@@ -1292,7 +1292,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                     flag = ((log.fromActivityAlias) && filterActivityAlias.indexOf(log.fromActivityAlias)!==-1);
                 }
             }
-            if (this.json.filterPerson.length){
+            if (this.json.filterPerson && this.json.filterPerson.length){
                 flag = false;
                 filterPersons = this.json.filterPerson;
                 var tmpTaskCompletedList = [];
@@ -1307,7 +1307,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
                     flag = true;
                 }
             }
-            if (this.json.filterRoute.length){
+            if (this.json.filterRoute && this.json.filterRoute.length){
                 filterRoutes = this.json.filterRoute;
                 flag = (filterRoutes.indexOf(log.routeName)!==-1);
             }
@@ -1321,7 +1321,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             this.form.Macro.environment.list = list;
             flag = this.form.Macro.exec(this.json.filterScript.code, this);
         }else{
-            if (this.json.filterPerson.length){
+            if (this.json.filterPerson && this.json.filterPerson.length){
                 flag = ((filterPersons.indexOf(list.person)!==-1)|| (filterPersons.indexOf(list.identity)!==-1));
             }
         }

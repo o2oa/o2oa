@@ -7,7 +7,7 @@ MWF.xApplication.process.Xform.Iframe = MWF.APPIframe =  new Class({
 
         var src = this.json.src;
         if (this.json.valueType=="script"){
-            src = this.form.Macro.exec(this.json.script.code, this);
+            src = this.form.Macro.exec(((this.json.script) ? this.json.script.code : ""), this);
         }
 
 		this.iframe = new Element("iframe", {

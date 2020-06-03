@@ -95,6 +95,4 @@ MWF.xApplication.process.FormDesigner.Module.Button = MWF.FCButton = new Class({
 			}
 		}
 	}
-
-	
 });

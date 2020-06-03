@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.Tree = MWF.APPTree =  new Class({
 
 
         var treeData = this.json.data;
-        if (this.json.dataType == "script") treeData = this.form.Macro.exec(this.json.dataScript.code, this);
+        if (this.json.dataType == "script") treeData = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
 
 		this.tree.load(treeData);
 	},

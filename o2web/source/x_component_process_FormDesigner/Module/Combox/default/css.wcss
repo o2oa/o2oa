@@ -47,7 +47,7 @@
 		"display": "inline-block",
 		"height": "18px"
 	},
-	"selectIcon": {
+	"textfieldIcon": {
 		"background": "url("+"../x_component_process_FormDesigner/Module/Combox/default/icon/pull.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",
