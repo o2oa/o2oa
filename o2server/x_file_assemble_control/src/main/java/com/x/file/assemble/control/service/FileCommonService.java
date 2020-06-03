@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
@@ -78,13 +79,13 @@ public class FileCommonService {
 
         boolean emptyFolder = true;
 
-        List<Folder2> subfolders =  business.folder2().listSubDirect1(folder.getId(),"正常");
+        List<Folder2> subfolders =  business.folder2().listSubDirect1(folder.getId(), FileStatus.VALID.getName());
         for (Folder2 subfolder : subfolders) {
             emptyFolder = false;
             generateFolderPath(emc ,business, emptyFolderList, filePathMap, parentPath, subfolder);
         }
 
-        List<Attachment2> subfiles = business.attachment2().listWithFolder2(folder.getId(),"正常");
+        List<Attachment2> subfiles = business.attachment2().listWithFolder2(folder.getId(),FileStatus.VALID.getName());
         for (Attachment2 subfile : subfiles) {
             emptyFolder = false;
             generateFilePath(emc, filePathMap, parentPath, subfile);
