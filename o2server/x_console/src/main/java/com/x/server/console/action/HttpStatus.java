@@ -13,11 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author
  */
-public class ThreadStatus extends Thread {
+public class HttpStatus extends Thread {
 
 	private Integer repeat;
 
-	public ThreadStatus(Integer repeat) {
+	public HttpStatus(Integer repeat) {
 		this.repeat = repeat;
 	}
 
