@@ -46,39 +46,44 @@ public class DingdingQywxSyncRecord extends SliceJpaObject  {
      * =============================================================================
      * =====
      */
-
+    public static final String startTime_FIELDNAME = "startTime";
     @FieldDescribe("同步开始时间")
-    @Column(name = ColumnNamePrefix + "syncStartTime")
+    @Column( name = ColumnNamePrefix + startTime_FIELDNAME )
     private Date startTime;
 
+    public static final String endTime_FIELDNAME = "endTime";
     @FieldDescribe("同步结束时间")
-    @Column(name = ColumnNamePrefix + "syncEndTime")
+    @Column( name = ColumnNamePrefix + endTime_FIELDNAME )
     private Date endTime;
 
     public static final String syncType_qywx = "qywx";
     public static final String syncType_dingding = "dingding";
+    public static final String type_FIELDNAME = "type";
     @FieldDescribe("同步类型，qywx（企业微信同步） ， dingding(钉钉同步)")
-    @Column(name = ColumnNamePrefix + "type", length = length_32B)
+    @Column( length = length_32B, name = ColumnNamePrefix + type_FIELDNAME )
     private String type;
 
+    public static final String dateFrom_FIELDNAME = "dateFrom";
     @FieldDescribe("同步打卡记录的开始时间")
-    @Column(name = ColumnNamePrefix + "dateFrom")
+    @Column( name = ColumnNamePrefix + dateFrom_FIELDNAME )
     private long dateFrom;
 
+    public static final String dateTo_FIELDNAME = "dateTo";
     @FieldDescribe("同步打卡记录的结束时间， 起始与结束工作日最多相隔7天")
-    @Column(name = ColumnNamePrefix + "dateTo")
+    @Column( name = ColumnNamePrefix + dateTo_FIELDNAME )
     private long dateTo;
 
     public static final String status_loading = "loading";
     public static final String status_end = "end";
     public static final String status_error = "error";
+    public static final String status_FIELDNAME = "status";
     @FieldDescribe("同步状态，loading（正在进行） ， end（结束） , error（执行异常）")
-    @Column(name = ColumnNamePrefix + "status", length = length_32B)
+    @Column( length = length_32B, name = ColumnNamePrefix + status_FIELDNAME )
     private String status;
 
-
+    public static final String exceptionMessage_FIELDNAME = "exceptionMessage";
     @FieldDescribe("异常信息")
-    @Column(name = ColumnNamePrefix + "exceptionMessage", length = length_255B)
+    @Column( length = length_255B, name = ColumnNamePrefix + exceptionMessage_FIELDNAME )
     private String exceptionMessage;
 
 

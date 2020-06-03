@@ -20,9 +20,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class OperatorDataAnalyse implements Runnable{
 
 	private static  Logger logger = LoggerFactory.getLogger( OperatorDataAnalyse.class );
-	private AttendanceSelfHolidayServiceAdv attendanceSelfHolidayServiceAdv = null;
 	private AttendanceDetailServiceAdv attendanceDetailServiceAdv = null;
-	private AttendanceScheduleSettingServiceAdv attendanceScheduleSettingServiceAdv = null;
 	private AttendanceDetailAnalyseServiceAdv attendanceDetailAnalyseServiceAdv = null;
 	private StatusSystemImportOpt statusSystemImportOpt = null;
 	private EntityAnalyseData entityAnalyseData = null;
@@ -30,8 +28,6 @@ public class OperatorDataAnalyse implements Runnable{
 	private Boolean debugger = false;
 	
 	public OperatorDataAnalyse( EntityAnalyseData entityAnalyseData, Boolean debugger ) {
-		attendanceScheduleSettingServiceAdv = new AttendanceScheduleSettingServiceAdv();
-		attendanceSelfHolidayServiceAdv = new AttendanceSelfHolidayServiceAdv();
 		attendanceDetailAnalyseServiceAdv = new AttendanceDetailAnalyseServiceAdv();
 		statusSystemImportOpt = StatusSystemImportOpt.getInstance();
 		attendanceDetailServiceAdv = new AttendanceDetailServiceAdv();
@@ -45,40 +41,19 @@ public class OperatorDataAnalyse implements Runnable{
 	}
 	
 	private void execute( EntityAnalyseData entityAnalyseData ) {
-		List<String> ids_temp = null;
 		List<String> detail_ids = entityAnalyseData.getDetailIds();
-		List<AttendanceSelfHoliday> selfHolidays = null;
-		List<AttendanceWorkDayConfig> attendanceWorkDayConfigList = entityAnalyseData.getAttendanceWorkDayConfigList();
-		AttendanceScheduleSetting attendanceScheduleSetting = null;
-		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = entityAnalyseData.getTopUnitAttendanceStatisticalCycleMap();
 		AttendanceDetail detail = null;
 		
 		statusSystemImportOpt.setProcessing( true );
 		statusSystemImportOpt.setProcessing_analysis( true );
 		
 		if ( detail_ids != null && !detail_ids.isEmpty() ) {
-			try{
-				ids_temp = attendanceSelfHolidayServiceAdv.getByPersonName( entityAnalyseData.getPersonName() );
-				if( ids_temp != null && !ids_temp.isEmpty() ) {
-					selfHolidays = attendanceSelfHolidayServiceAdv.list( ids_temp );
-				}
-			}catch( Exception e ){
-				logger.warn( "system list attendance self holiday info ids with employee name got an exception.empname:" + entityAnalyseData.getPersonName() );
-				logger.error(e);
-			}
-			
-			try{
-				attendanceScheduleSetting =  attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( entityAnalyseData.getPersonName(), debugger );
-			}catch( Exception e ){
-				logger.warn( "system get unit schedule setting for employee with unit names got an exception." + entityAnalyseData.getPersonName() );
-				logger.error(e);
-			}
-			
+
 			for ( String id: detail_ids ) {
 				try {
 					detail = attendanceDetailServiceAdv.get( id );
 					if ( detail != null ) {
-						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( detail, attendanceScheduleSetting, selfHolidays, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap, debugger );
+						attendanceDetailAnalyseServiceAdv.analyseAttendanceDetail( detail, debugger );
 						statusSystemImportOpt.increaseProcess_analysis_count(1);
 					} else {
 						statusSystemImportOpt.increaseProcess_analysis_error(1);

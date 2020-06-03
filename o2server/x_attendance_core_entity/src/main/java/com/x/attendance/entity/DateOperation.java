@@ -8,8 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 
-
-public class DateOperation {
+class DateOperation {
 	/**
 	 * 根据样式得到格式化对象SimpleDateFormat
 	 * @param date
@@ -150,27 +149,26 @@ public class DateOperation {
 		}
 		return dateString;
 	}
-	
-	/**
-	 * 得到某日期加上或减去天数后的日期,day为负数时减去
-	 * 
-	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd"
-	 * @throws Exception 
+
+    /**
+     * 得到某日期加上或减去天数后的日期,day为负数时减去
+	 * @param dateString
+     * @param day
+     * @param style
+     * @return
+     * @throws Exception
 	 */
 	public  String getDayAdd(String dateString, int day, String style) throws Exception {
 		Date date = getDateFromString(dateString, style);
 		return getDayAdd(date, day);
 	}
-	
-	/**
-	 * 得到某日期加上或减去天数后的日期,day为负数时减去
-	 * 
+
+    /**
+     * 得到某日期加上或减去天数后的日期,day为负数时减去
 	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd"
-	 */
+     * @param day
+     * @return
+     */
 	public  String getDayAdd(Date date, int day) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -191,27 +189,25 @@ public class DateOperation {
 		calendar.add(Calendar.MONTH, month);
 		return format1.format(calendar.getTime());
 	}
-	
-	/**
-	 * 得到某日期加上或减去分钟后的日期,min为负数时减去
-	 * 
+
+    /**
+     * 得到某日期加上或减去分钟后的日期,min为负数时减去
 	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd HH:mi:ss"
-	 */
+     * @param min
+     * @return
+     */
 	public  String getMinutesAdd(Date date, int min) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(Calendar.MINUTE, min);
 		return format3.format(calendar.getTime());
 	}
-	/**
-	 * 得到某日期的日
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+
+    /**
+     * 得到某日期的日
+	 * @param date
+     * @return
+     */
 	public  String getDay(Date date) {
 		try{
 			return format10.format(date);
@@ -228,13 +224,12 @@ public class DateOperation {
 		}
 		return Integer.parseInt(result);
 	}
-	/**
-	 * 得到某日期的月份
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+
+    /**
+     * 得到某日期的月份
+	 * @param date
+     * @return
+     */
 	public  String getMonth(Date date) {
 		try{
 			return format9.format(date);
@@ -253,12 +248,10 @@ public class DateOperation {
 	}
 
 	/**
-	 * 得到某日期的年份
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+     * 得到某日期的年份
+	 * @param date
+     * @return
+     */
 	public  String getYear(Date date) {
 		try{
 			return format8.format(date);
@@ -275,13 +268,12 @@ public class DateOperation {
 		}
 		return Integer.parseInt(result);
 	}
-	/**
-	 * 得到某日期的小时
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+
+    /**
+     * 得到某日期的小时
+	 * @param date
+     * @return
+     */
 	public  String getHour(Date date) {
 		try{
 			return format11.format(date);
@@ -289,48 +281,43 @@ public class DateOperation {
 			return "0";
 		}
 	}
-	/**
-	 * 得到某日期的分钟
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+
+    /**
+     * 得到某日期的分钟
+	 * @param date
+     * @return
+     */
 	public  String getMinites(Date date) {
 		return format12.format(date);
 	}
-	/**
-	 * 得到某日期的秒
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 */
+
+    /**
+     * 得到某日期的秒
+	 * @param date
+     * @return
+     */
 	public  String getSeconds(Date date) {
 		return format13.format(date);
 	}
-	/**
-	 * 得到某年有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM-dd"
-	 * @return
-	 * @throws ParseException
+
+    /**
+     * 得到某年有多少天
+	 * @param date
+     * @return
+     * @throws ParseException
 	 */
 	@SuppressWarnings("static-access")
-	public int getDaysForYear(String date) throws ParseException {
+	public  int getDaysForYear(String date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime( format1.parse(date) );
+		calendar.setTime(format1.parse(date));
 		return calendar.get(calendar.DAY_OF_YEAR);
 	}
 
 	/**
-	 * 得到某年有多少天
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 * @throws ParseException
+     * 得到某年有多少天
+	 * @param date
+     * @return
+     * @throws ParseException
 	 */
 	@SuppressWarnings("static-access")
 	public  int getDaysForYear(Date date) throws ParseException {
@@ -340,12 +327,10 @@ public class DateOperation {
 	}
 
 	/**
-	 * 得到某年有多少天
-	 * 
-	 * @param String
-	 *            year "yyyy"
-	 * @return
-	 * @throws ParseException
+     * 得到某年有多少天
+	 * @param year
+     * @return
+     * @throws ParseException
 	 */
 	@SuppressWarnings("static-access")
 	public  int getDaysForYear_YYYY(String year) throws ParseException {
@@ -355,12 +340,10 @@ public class DateOperation {
 	}
 
 	/**
-	 * 得到某月有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM-dd"
-	 * @return
-	 * @throws ParseException
+     * 得到某月有多少天
+	 * @param date
+     * @return
+     * @throws ParseException
 	 */
 	public  int getDaysForMonth(String date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
@@ -369,12 +352,10 @@ public class DateOperation {
 	}
 
 	/**
-	 * 得到某月有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM"
-	 * @return
-	 * @throws ParseException
+     * 得到某月有多少天
+	 * @param date
+     * @return
+     * @throws ParseException
 	 */
 	@SuppressWarnings("static-access")
 	public  int getDaysForMonth_MM(String date) throws ParseException {
@@ -384,12 +365,10 @@ public class DateOperation {
 	}
 
 	/**
-	 * 得到某月有多少天
-	 * 
-	 * @param Date
-	 *            date
-	 * @return
-	 * @throws ParseException
+     * 得到某月有多少天
+	 * @param date
+     * @return
+     * @throws ParseException
 	 */
 	public  int getDaysForMonth(Date date) throws ParseException {
 		Calendar calendar = Calendar.getInstance();
@@ -435,8 +414,9 @@ public class DateOperation {
 	 * @param date1 yyyy-MM-dd HH:mm:ss
 	 * @param date2 yyyy-MM-dd HH:mm:ss
 	 * @return
+	 * @throws ParseException 
 	 */
-	public  long getDeff(String date1,String date2) {
+	public  long getDeff(String date1,String date2) throws ParseException {
 		long dayNumber = 0;
 		// 1小时=60分钟=3600秒=3600000
 		long mins = 60L * 1000L;
@@ -451,13 +431,9 @@ public class DateOperation {
 		}else{
 			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		}
-		try {
-			java.util.Date d1 = df.parse(date1);
-			java.util.Date d2 = df.parse(date2);
-			dayNumber = (d2.getTime() - d1.getTime()) / mins;
-		} catch (Exception e) {
-			//logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
-		}
+		Date d1 = df.parse(date1);
+		Date d2 = df.parse(date2);
+		dayNumber = (d2.getTime() - d1.getTime()) / mins;
 		return dayNumber;
 	}
 	/**
@@ -468,24 +444,18 @@ public class DateOperation {
 	 */
 	public long getDeff(Date date1,Date date2) {
 		long dayNumber = 0;
-		// 1小时=60分钟=3600秒=3600000
 		long mins = 60L * 1000L;
-		// long day= 24L * 60L * 60L * 1000L;计算天数之差
-		try {
-			dayNumber = (date2.getTime() - date1.getTime()) / mins;
-		} catch (Exception e) {
-			//logger.error( "系统获取得到两个时间之前的分差发生异常",  e);
-		}
+		dayNumber = (date2.getTime() - date1.getTime()) / mins;
 		return dayNumber;
 	}
-	/**
-	 * 
-	 * 日期格式转换
-	 * 从YYYY-MM-DD转换到YYYYMMDD
-	 * @param date
-	 * @throws ParseException 
+
+    /**
+     * 日期格式转换 从YYYY-MM-DD转换到YYYYMMDD
+	 * @param dateString
+     * @return
+     * @throws ParseException
 	 */
-	public  String changeDateFormat(String dateString){
+	public  String changeDateFormat(String dateString) throws ParseException{
 		Date date;
 		String reslut = null;
 		try {
@@ -495,14 +465,8 @@ public class DateOperation {
 			date = format1.parse(dateString);
 			reslut = format5.format(date);
 		} catch (ParseException e) {
-			try {
-				date = format1.parse("0000-00-00");
-			} catch (ParseException e1) {
-				//logger.error( "系统日期格式转换发生异常",  e1);
-			}
-			//logger.error( "系统日期格式转换发生异常",  e);
+			date = format1.parse("0000-00-00");
 		}
-		
 		return reslut;
 	}
 	
@@ -539,41 +503,27 @@ public class DateOperation {
 	public  final SimpleDateFormat format14 = new SimpleDateFormat("yyyy-MM");
 	
 	
-	public  String getStartOfWeek(String dateString){
+	public  String getStartOfWeek(String dateString) throws Exception{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			Date date = format.parse(dateString);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			cal.setFirstDayOfWeek(Calendar.MONDAY);
-			int tmp = cal.get(Calendar.DAY_OF_WEEK) - 1;
-			if (0 == tmp) {
-				tmp = 7;
-			}
-			cal.add(Calendar.DATE, -(tmp-1));
-			return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd") + " 00:00:00";
-		} catch (ParseException e) {
-			//logger.error( "系统getStartOfWeek日期格式转换发生异常",  e);
-		} catch (Exception e) {
-			//logger.error( "系统getStartOfWeek发生异常",  e);
+		Date date = format.parse(dateString);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setFirstDayOfWeek(Calendar.MONDAY);
+		int tmp = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if (0 == tmp) {
+			tmp = 7;
 		}
-		return null;
+		cal.add(Calendar.DATE, -(tmp-1));
+		return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd") + " 00:00:00";
 	}
 	
-	public  String getEndOfWeek(String dateString){
-		try {
-			Date date = getDateFromString(getStartOfWeek(dateString), "yyyy-MM-dd HH:mm:ss");
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			cal.setFirstDayOfWeek(Calendar.MONDAY);
-			cal.add(Calendar.DATE, 6);
-			return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd") + " 23:59:59";
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public  String getEndOfWeek(String dateString) throws Exception{
+		Date date = getDateFromString(getStartOfWeek(dateString), "yyyy-MM-dd HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setFirstDayOfWeek(Calendar.MONDAY);
+		cal.add(Calendar.DATE, 6);
+		return getDateStringFromDate(cal.getTime(), "yyyy-MM-dd") + " 23:59:59";
 	}
 	
 	
@@ -588,11 +538,7 @@ public class DateOperation {
 	public String getDateCNString( String dateString, String style ) throws Exception{
 		StringBuffer ch_date_string = new StringBuffer();
 		Date _date = null;
-		try{
-			_date = getDateFromString( dateString, style );
-		}catch(Exception e){
-			//logger.error( "系统getDateCNString日期格式转换发生异常",  e);
-		}
+		_date = getDateFromString( dateString, style );
 		if(_date == null ){
 			_date = new Date();
 		}
@@ -624,11 +570,7 @@ public class DateOperation {
 	public String getDateCNString2( String dateString, String style ) throws Exception{
 		StringBuffer ch_date_string = new StringBuffer();
 		Date _date = null;
-		try{
-			_date = getDateFromString( dateString, style );
-		}catch(Exception e){
-		//	logger.error( "系统getDateCNString2日期格式转换发生异常",  e);
-		}
+		_date = getDateFromString( dateString, style );
 		if(_date == null ){
 			_date = new Date();
 		}
@@ -658,28 +600,14 @@ public class DateOperation {
 	 * 结果从1开始
 	 * @param dateString yyyy-mm-dd
 	 * @return
+	 * @throws Exception 
 	 */
-	public  int getWeekNumOfYear( String dateString ){
-		try {
-			Date date = getDateFromString( dateString , "yyyy-MM-dd");
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date);
-			cal.setFirstDayOfWeek(2);//设置每周的第一天是星期一
-	        //月份有问题(这里的月份开始计数为0)
-	        //本年的第几天,在计算时间间隔的时候有用
-	        //System.out.println("一年中的天数:" + cal.get(Calendar.DAY_OF_YEAR));
-	        //System.out.println("一年中的周数:" + cal.get(Calendar.WEEK_OF_YEAR));
-	        //即本月的第几周
-	        //System.out.println("一月中的周数:" + cal.get(Calendar.WEEK_OF_MONTH));
-	        //即一周中的第几天(这里是以周日为第一天的)
-	        //System.out.println("一周中的天数:" + cal.get(Calendar.DAY_OF_WEEK));
-			return cal.get(Calendar.WEEK_OF_YEAR);
-		} catch (ParseException e) {
-			//logger.error( "系统getWeekNumOfYear日期格式转换发生异常",  e);
-		} catch (Exception e) {
-			//logger.error( "系统getWeekNumOfYear发生异常",  e);
-		}
-		return -1;
+	public  int getWeekNumOfYear( String dateString ) throws Exception{
+		Date date = getDateFromString( dateString , "yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setFirstDayOfWeek(2); //设置每周的第一天是星期一
+		return cal.get(Calendar.WEEK_OF_YEAR);
 	}
 	
 	/**
@@ -687,7 +615,7 @@ public class DateOperation {
 	 * @param recordDate
 	 * @return
 	 */
-	public boolean isWeekend(Date recordDate) {
+	public boolean isWeekend( Date recordDate ) {
 		Calendar cal = Calendar.getInstance();
 	    cal.setTime( recordDate );
 	    if(cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY||cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY){
@@ -751,7 +679,7 @@ public class DateOperation {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * 获取日期所在月份的第一天
 	 * @param recordDate
@@ -803,7 +731,7 @@ public class DateOperation {
 	 * @throws Exception 
 	 */
 	public Date getLastDateInMonth(Date recordDate) throws Exception {
-		Date lastDate = getLastDayOfMonth(recordDate);
+		Date lastDate = getLastDayOfMonth( recordDate );
 		return getDateFromString( getDateStringFromDate( lastDate, "yyyy-MM-dd") );
 	}
 	
