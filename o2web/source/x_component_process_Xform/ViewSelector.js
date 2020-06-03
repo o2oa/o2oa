@@ -319,8 +319,8 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                     "width": width,
                     "height": height,
                     "html": "",
-                    "maskNode": this.form.app.content,
-                    "container": this.form.app.content,
+                    "maskNode": layout.mobile?$(document.body) : this.form.app.content,
+                    "container": layout.mobile?$(document.body) : this.form.app.content,
                     "buttonList": [
                         {
                             "text": MWF.LP.process.button.ok,
@@ -336,6 +336,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                         }
                     ],
                     "onPostShow": function(){
+                        if(layout.mobile){
+                            dlg.node.setStyle("z-index",200);
+                        }
                         MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
                             this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"}, this.form.app, this.form.Macro );
                         }.bind(this));
