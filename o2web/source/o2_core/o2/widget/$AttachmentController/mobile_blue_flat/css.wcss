@@ -15,7 +15,7 @@
         "height": "auto"
     },
     "minActionAreaNode": {
-        "margin-top" : "10px"
+//        "margin-top" : "10px"
 //        "float": "right"
 //        "height": "80px",
 //        "margin": "2px",
@@ -60,7 +60,7 @@
 //        "background-image": "url("+o2.session.path+"/widget/$AttachmentController/default/buttonbg.png)"
     },
     "actionsGroupNode": {
-        "margin-top" : "10px"
+//        "margin-top" : "10px"
 //        "height": "26px",
 //        "border": "1px solid #979797",
 //        "border-radius": "3px",

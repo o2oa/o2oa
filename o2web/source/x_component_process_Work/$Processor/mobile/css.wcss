@@ -77,7 +77,7 @@
     },
     "routeOpinionArea": {
         "height": "129px",
-        "border-bottom": "0px solid #6681a5",
+        "border-bottom": "0px solid #6681a5"
     },
 
     "inputOpinionNode": {
@@ -130,7 +130,7 @@
         "height": "3em",
         "width": "3em",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center"
     },
     "okTextNode": {
         "font-size": "1em",
@@ -153,7 +153,7 @@
         "height": "3em",
         "width": "3em",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "1em",
@@ -190,7 +190,7 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -219,7 +219,7 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",
@@ -244,34 +244,11 @@
         "border-left": "5px solid #ffffff"
     },
 
-    //    "selectIdeaNode": {
-    //        "background-color": "#eee",
-    //        "max-height": "200px",
-    //        "clear": "both",
-    //        "overflow": "hidden"
-    //    },
-    //    "selectIdeaScrollNode": {
-    //        "max-height": "200px",
-    //        "overflow": "auto"
-    //    },
-    //    "selectIdeaItemNode": {
-    //        "line-height": "18px",
-    //        "font-size": "14px",
-    //        "cursor": "pointer",
-    //        "background-color": "#FFF",
-    //        "padding": "4px 4px 4px 4px",
-    //        "overflow": "hidden"
-    //    },
-    //    "selectIdeaItemNode_over": {
-    //        "background-color": "#e6ecf8"
-    //    },
-
     "selectorTitle": {
         "padding": "0px 4px",
         "height": "30px",
         "line-height": "30px",
         "font-size": "14px",
-        //        "font-weight": "bold",
         "color": "#000",
         "cursor" : "pointer",
         "background": "url(../x_component_process_Work/$Processor/mobile/arrow_right2.png) no-repeat right 10px center",
@@ -281,10 +258,8 @@
         "background-color": "#e6ecf8"
     },
     "selectorTitleText": {
-//        "float": "left"
     },
     "selectorErrorNode" : {
-        //"float" : "right",
         "background-color" : "#fff",
         "margin-right" : "5px",
         "font-weight" : "normal"
