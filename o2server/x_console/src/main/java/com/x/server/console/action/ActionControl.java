@@ -27,7 +27,7 @@ public class ActionControl extends ActionBase {
 
 	private static final String CMD_PPE = "ppe";
 	private static final String CMD_OS = "os";
-	private static final String CMD_TS = "ts";
+	private static final String CMD_HS = "hs";
 	private static final String CMD_HD = "hd";
 	private static final String CMD_TD = "td";
 	private static final String CMD_EC = "ec";
@@ -51,8 +51,8 @@ public class ActionControl extends ActionBase {
 				ppe(cmd);
 			} else if (cmd.hasOption(CMD_OS)) {
 				os(cmd);
-			} else if (cmd.hasOption(CMD_TS)) {
-				ts(cmd);
+			} else if (cmd.hasOption(CMD_HS)) {
+				hs(cmd);
 			} else if (cmd.hasOption(CMD_HD)) {
 				hd(cmd);
 			} else if (cmd.hasOption(CMD_TD)) {
@@ -87,7 +87,7 @@ public class ActionControl extends ActionBase {
 	private static Options options() {
 		options.addOption(ppeOption());
 		options.addOption(osOption());
-		options.addOption(tsOption());
+		options.addOption(hsOption());
 		options.addOption(hdOption());
 		options.addOption(tdOption());
 		options.addOption(ecOption());
@@ -112,9 +112,9 @@ public class ActionControl extends ActionBase {
 
 	}
 
-	private static Option tsOption() {
-		return Option.builder("ts").longOpt("threadStatus").argName("repeat").optionalArg(true).hasArgs()
-				.desc("服务器线程状态,间隔2秒.合并多次执行线程信息到最后一份日志.").build();
+	private static Option hsOption() {
+		return Option.builder("ts").longOpt("httpStatus").argName("repeat").optionalArg(true).hasArgs()
+				.desc("Http服务线程状态,间隔5秒.").build();
 	}
 
 	private static Option hdOption() {
@@ -123,12 +123,12 @@ public class ActionControl extends ActionBase {
 
 	private static Option tdOption() {
 		return Option.builder("td").longOpt("threadDump").argName("count").optionalArg(true).hasArg()
-				.desc("导出对比线程状态,间隔5秒.").build();
+				.desc("服务器线程状态,间隔2秒.合并多次执行线程信息到最后一份日志.").build();
 	}
 
 	private static Option ecOption() {
 		return Option.builder("ec").longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
-				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform.").build();
+				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message.").build();
 	}
 
 	private static Option clh2Option() {
@@ -156,8 +156,7 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option ufOption() {
-		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg()
-				.desc("升级服务器,升级前请注意备份.").build();
+		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
 	}
 
 	private static Option ddlOption() {
@@ -166,8 +165,8 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option rstOption() {
-		return Option.builder("rst").longOpt("restartApp").argName("name").hasArg()
-				.desc("重启指定应用: 应用名称:name, 不带.war").build();
+		return Option.builder("rst").longOpt("restartApp").argName("name").hasArg().desc("重启指定应用: 应用名称:name, 不带.war")
+				.build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -188,8 +187,11 @@ public class ActionControl extends ActionBase {
 			case "log":
 				new EraseContentLog().execute();
 				break;
+			case "message":
+				new EraseContentMessage().execute();
+				break;
 			default:
-				logger.print("type may be processPlatform bbs cms log.");
+				logger.print("type may be processPlatform bbs cms log message.");
 		}
 	}
 
@@ -228,10 +230,10 @@ public class ActionControl extends ActionBase {
 		restoreStorage.execute(path);
 	}
 
-	private void ts(CommandLine cmd) {
-		final Integer repeat = this.getArgInteger(cmd, CMD_TS, 1);
-		ThreadStatus threadStatus = new ThreadStatus(repeat);
-		threadStatus.start();
+	private void hs(CommandLine cmd) {
+		final Integer repeat = this.getArgInteger(cmd, CMD_HS, 1);
+		HttpStatus httpStatus = new HttpStatus(repeat);
+		httpStatus.start();
 	}
 
 	private void ppe(CommandLine cmd) throws Exception {
@@ -252,18 +254,18 @@ public class ActionControl extends ActionBase {
 
 	private void uf(CommandLine cmd) throws Exception {
 		String path = Objects.toString(cmd.getOptionValue(CMD_UF), "");
-		UpdateFile updateFile= new UpdateFile();
+		UpdateFile updateFile = new UpdateFile();
 		updateFile.execute(path);
 	}
 
 	private void ddl(CommandLine cmd) throws Exception {
 		String type = Objects.toString(cmd.getOptionValue(CMD_DDL), "");
-		Ddl ddl= new Ddl();
+		Ddl ddl = new Ddl();
 		ddl.execute(type);
 	}
 
 	private void rst(CommandLine cmd) throws Exception {
-		String name = Objects.toString( cmd.getOptionValue(CMD_RST), "");
+		String name = Objects.toString(cmd.getOptionValue(CMD_RST), "");
 		RestatWar rst = new RestatWar();
 		rst.execute(name);
 	}

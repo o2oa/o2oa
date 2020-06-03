@@ -36,6 +36,10 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_query_core_entity</artifactId>
 		</dependency>
+			<dependency>
+			<groupId>o2oa</groupId>
+			<artifactId>x_message_core_entity</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
