@@ -136,7 +136,8 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
         return true;
     },
-    _loadNodeEdit: function(){
+
+    _resetNodeEdit: function(){
         var input = new Element("input", {
             "styles": {
                 "background": "transparent",
@@ -144,18 +145,24 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
                 "border": "0px"
             }
         });
-        input.set(this.json.properties);
 
         var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            "position": "relative",
-            "margin-right": "20px",
-            "padding-right": "4px"
-        }}).inject(this.node, "after");
+                "overflow": "hidden",
+                "position": "relative",
+                "margin-right": "20px",
+                "padding-right": "4px"
+            }}).inject(this.node, "after");
         input.inject(node);
 
         this.node.destroy();
         this.node = node;
+    },
+
+    _loadNodeEdit: function(){
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
+
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type,
@@ -184,7 +191,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }.bind(this));
     },
     _computeValue: function(value){
-        return (this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "0");
+        return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "0");
     },
     getValue: function(){
         var value = this._getBusinessData();

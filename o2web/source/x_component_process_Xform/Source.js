@@ -106,6 +106,7 @@ MWF.xApplication.process.Xform.Source = MWF.APPSource =  new Class({
         this._getO2Uri();
     },
     reload: function(notInit, callback){
+	    this._getO2Uri();
         this._invoke(function(){
             this._loadSub(this.node, notInit);
             this.fireEvent("loadData");

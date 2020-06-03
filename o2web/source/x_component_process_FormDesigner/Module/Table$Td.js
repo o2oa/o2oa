@@ -196,20 +196,55 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
         }
 		
 	},
+
+	_preprocessingSetNodeStyles: function(styles){
+		Object.each(styles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")==-1 && value.indexOf("x_portal_assemble_surface")==-1)){
+				this.node.setStyle(key, value);
+			}
+		}.bind(this));
+	},
+	_preprocessingModuleData: function(){
+		this.node.clearStyles();
+		var addStyles = {};
+		if (this.json.cellType==="title") addStyles = this.table.json.titleTdStyles;
+		if (this.json.cellType==="content") addStyles = this.table.json.contentTdStyles;
+		if (this.json.cellType==="layout") addStyles = this.table.json.layoutTdStyles;
+		this._preprocessingSetNodeStyles(addStyles);
+
+		if (this.json.styles){
+			this.json.recoveryStyles = Object.clone(this.json.styles);
+			if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+				if ((value.indexOf("x_processplatform_assemble_surface")==-1 && value.indexOf("x_portal_assemble_surface")==-1)){
+					this.node.setStyle(key, value);
+					delete this.json.styles[key];
+				}
+			}.bind(this));
+		}
+
+		this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+	},
+
     setCustomStyles: function(){
+		this._recoveryModuleData();
+
         var border = this.node.getStyle("border");
         this.node.clearStyles();
         this.node.setStyles(this.css.moduleNode);
 
         var addStyles = {};
         if (this.json.cellType=="title"){
-            addStyles = this.table.json.titleTdStyles
+            addStyles = this.table.json.titleTdStyles;
         }
         if (this.json.cellType=="content"){
-            addStyles = this.table.json.contentTdStyles
+            addStyles = this.table.json.contentTdStyles;
         }
         if (this.json.cellType=="layout"){
-            addStyles = this.table.json.layoutTdStyles
+            addStyles = this.table.json.layoutTdStyles;
         }
 
         if (this.initialStyles) this.node.setStyles(this.initialStyles);

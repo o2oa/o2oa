@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
 		// }.bind(this));
 	},
     _loadBorderStyle: function(){
-        if (this.json.styles.border){
+        if (this.json.styles && this.json.styles.border){
             if (!this.table) this.table = this.node.getElement("table");
             if( this.json.styles["table-layout"] ){
                 this.table.setStyle("table-layout",this.json.styles["table-layout"]);
@@ -89,18 +89,55 @@ MWF.xApplication.process.Xform.Table$Td = MWF.APPTable$Td =  new Class({
         //this.form._loadModules(this.node);
     },
     _loadStyles: function(){
+
         var addStyles = {};
         if (this.json.cellType=="title"){
-            addStyles = this.table.json.titleTdStyles
+            addStyles = this.table.json.titleTdStyles;
         }
         if (this.json.cellType=="content"){
-            addStyles = this.table.json.contentTdStyles
+            addStyles = this.table.json.contentTdStyles;
         }
         if (this.json.cellType=="layout"){
-            addStyles = this.table.json.layoutTdStyles
+            addStyles = this.table.json.layoutTdStyles;
         }
-        this.node.setStyles(addStyles);
-        this.node.setStyles(this.json.styles);
+        Object.each(addStyles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!==-1 || value.indexOf("x_portal_assemble_surface")!==-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+                this.node.setStyle(key, value);
+            }else{
+                if (!this.json.preprocessing) this.node.setStyle(key, value);
+            }
+
+        }.bind(this));
+
+        Object.each(this.json.styles, function(value, key){
+            if ((value.indexOf("x_processplatform_assemble_surface")!==-1 || value.indexOf("x_portal_assemble_surface")!==-1)){
+                var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+                var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+                    value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+                }
+                if (value.indexOf("/x_portal_assemble_surface")!==-1){
+                    value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+                    value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+            }
+            this.node.setStyle(key, value);
+        }.bind(this));
 
         if (this.json.cellType=="content"){
             this.form.addEvent("postLoad", function(){
