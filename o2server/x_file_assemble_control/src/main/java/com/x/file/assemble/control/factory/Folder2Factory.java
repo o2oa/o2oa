@@ -28,7 +28,7 @@ public class Folder2Factory extends AbstractFactory {
 		Root<Folder2> root = cq.from(Folder2.class);
 		Predicate p = cb.equal(root.get(Folder2_.person), person);
 		p = cb.and(p, cb.equal(root.get(Folder2_.status), "正常"));
-		p = cb.and(p, cb.or(cb.isNull(root.get(Folder2_.superior)), cb.equal(root.get(Folder2_.superior), "")));
+		p = cb.and(p, cb.equal(root.get(Folder2_.superior), Business.TOP_FOLD));
 		cq.select(root.get(Folder2_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
