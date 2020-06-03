@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +46,7 @@ class ActionUpdate extends BaseAction {
 				}
 				List<String> ids = new ArrayList<>();
 				ids.add(folder.getId());
-				ids.addAll(business.folder2().listSubNested(folder.getId(),"正常"));
+				ids.addAll(business.folder2().listSubNested(folder.getId(), FileStatus.VALID.getName()));
 				if(ids.contains(folder.getSuperior())){
 					throw new Exception("superior can not be sub folder.");
 				}
