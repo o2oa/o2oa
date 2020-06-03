@@ -676,7 +676,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
         tdContents[4].setStyles(this.style.baseInforContentNode_edit).empty();
         var html = "<input name=\"personGenderRadioNode\" value=\"m\" type=\"radio\" "+((this.data.genderType==="m") ? "checked" : "")+"/>"+this.explorer.app.lp.man;
         html += "<input name=\"personGenderRadioNode\" value=\"f\" type=\"radio\" "+((this.data.genderType==="f") ? "checked" : "")+"/>"+this.explorer.app.lp.female;
-        html += "<input name=\"personGenderRadioNode\" value=\"o\" type=\"radio\" "+((this.data.genderType==="d") ? "checked" : "")+"/>"+this.explorer.app.lp.other;
+        html += "<input name=\"personGenderRadioNode\" value=\"d\" type=\"radio\" "+((this.data.genderType==="d") ? "checked" : "")+"/>"+this.explorer.app.lp.other;
         tdContents[4].set("html", html);
 
         tdContents[5].setStyles(this.style.baseInforContentNode_edit).empty();
