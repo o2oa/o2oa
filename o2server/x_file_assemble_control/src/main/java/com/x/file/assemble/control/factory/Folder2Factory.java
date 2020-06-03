@@ -2,6 +2,7 @@ package com.x.file.assemble.control.factory;
 
 import com.x.file.assemble.control.AbstractFactory;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Folder2_;
 import org.apache.commons.collections4.set.ListOrderedSet;
@@ -27,7 +28,7 @@ public class Folder2Factory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Folder2> root = cq.from(Folder2.class);
 		Predicate p = cb.equal(root.get(Folder2_.person), person);
-		p = cb.and(p, cb.equal(root.get(Folder2_.status), "正常"));
+		p = cb.and(p, cb.equal(root.get(Folder2_.status), FileStatus.VALID.getName()));
 		p = cb.and(p, cb.equal(root.get(Folder2_.superior), Business.TOP_FOLD));
 		cq.select(root.get(Folder2_.id)).where(p);
 		return em.createQuery(cq).getResultList();
@@ -112,7 +113,7 @@ public class Folder2Factory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Folder2_.person), person);
 		p = cb.and(p, cb.equal(root.get(Folder2_.name), name));
 		p = cb.and(p, cb.equal(root.get(Folder2_.superior), StringUtils.trimToEmpty(superior)));
-		p = cb.and(p, cb.equal(root.get(Folder2_.status), "正常"));
+		p = cb.and(p, cb.equal(root.get(Folder2_.status), FileStatus.VALID.getName()));
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(Folder2_.id), excludeId));
 		}

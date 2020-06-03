@@ -8,6 +8,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.x.file.core.entity.open.FileStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -97,7 +98,7 @@ public class Folder2 extends SliceJpaObject {
 	@FieldDescribe("文件状态：正常|已删除")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String status = "正常";
+	private String status = FileStatus.VALID.getName();
 
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")
