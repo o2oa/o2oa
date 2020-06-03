@@ -78,7 +78,8 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
     _loadNodeRead: function(){
         this.node.empty();
     },
-    _loadNodeEdit: function(){
+
+    _resetNodeEdit: function(){
         var input = new Element("input", {
             "styles": {
                 "background": "transparent",
@@ -87,18 +88,23 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                 "border": "0px"
             }
         });
-        input.set(this.json.properties);
 
         var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            "position": "relative",
-            "margin-right": "20px",
-            "padding-right": "4px"
-        }}).inject(this.node, "after");
+                "overflow": "hidden",
+                "position": "relative",
+                "margin-right": "20px",
+                "padding-right": "4px"
+            }}).inject(this.node, "after");
         input.inject(node);
 
         this.node.destroy();
         this.node = node;
+    },
+
+    _loadNodeEdit: function(){
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type,
@@ -111,7 +117,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
                 "styles": this.form.css[this.iconStyle]
             }).inject(this.node, "before");
         }else if( this.form.json.nodeStyleWithhideModuleIcon ){
-            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon)
+            this.node.setStyles(this.form.json.nodeStyleWithhideModuleIcon);
         }
 
         this.node.getFirst().addEvent("change", function(){

@@ -70,8 +70,8 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
 					"value": value,
 					"callback": callback
 				};
-                this.form.Macro.fire(this.json.itemDynamic.code, this, event);
-			}.bind(this)
+                this.form.Macro.fire(((this.json.itemDynamic) ? this.json.itemDynamic.code : ""), this, event);
+			}.bind(this);
 		}else{
         	return null;
 		}
@@ -81,7 +81,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class({
         if (this.json.itemType === "values"){
             list = this.json.itemValues;
         }else if (this.json.itemType === "script"){
-            list = this.form.Macro.exec(this.json.itemScript.code, this);
+            list = this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
         }
 
         if (list.length){

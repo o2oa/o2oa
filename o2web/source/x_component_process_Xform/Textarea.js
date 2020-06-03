@@ -31,24 +31,28 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             this.node.set("html", text);
         }
     },
-    _loadNodeEdit: function(){
-		var input = new Element("textarea", {"styles": {
-            "background": "transparent",
-            "width": "100%",
-            "border": "0px"
-        }});
-		input.set(this.json.properties);
-        if( this.form.json.textareaDisableResize )input.setStyle("resize","none");
-
+    _resetNodeEdit: function(){
+        var input = new Element("textarea", {"styles": {
+                "background": "transparent",
+                "width": "100%",
+                "border": "0px"
+            }});
         var node = new Element("div", {"styles": {
-            "ovwrflow": "hidden",
-            "position": "relative",
-            "padding-right": "2px"
-        }}).inject(this.node, "after");
+                "ovwrflow": "hidden",
+                "position": "relative",
+                "padding-right": "2px"
+            }}).inject(this.node, "after");
         input.inject(node);
         this.node.destroy();
         this.node = node;
-		//this.node = input;
+    },
+    _loadNodeEdit: function(){
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
+
+        if( this.form.json.textareaDisableResize )input.setStyle("resize","none");
+
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type

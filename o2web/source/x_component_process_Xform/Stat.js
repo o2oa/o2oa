@@ -20,22 +20,24 @@ MWF.xApplication.process.Xform.Stat = MWF.APPStat =  new Class({
 	    this.active();
     },
     loadStat: function(){
-        var viewJson = {
-            "application": this.json.queryStat.appName,
-            "statName": this.json.queryStat.name,
-            "isChart": (this.json.isChart!="no"),
-            "isLegend": (this.json.isLegend!="no"),
-            "isTable": (this.json.isTable!="no")
-        };
+	    if (this.json.queryStat){
+            var viewJson = {
+                "application": this.json.queryStat.appName,
+                "statName": this.json.queryStat.name,
+                "isChart": (this.json.isChart!="no"),
+                "isLegend": (this.json.isLegend!="no"),
+                "isTable": (this.json.isTable!="no")
+            };
 
-        MWF.xDesktop.requireApp("query.Query", "Statistician", function(){
-            this.stat = new MWF.xApplication.query.Query.Statistician(this.form.app, this.node, viewJson, {
-                "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
-                "onLoaded": function(){
-                    this.fireEvent("loadStat");
-                }.bind(this)
-            });
-        }.bind(this));
+            MWF.xDesktop.requireApp("query.Query", "Statistician", function(){
+                this.stat = new MWF.xApplication.query.Query.Statistician(this.form.app, this.node, viewJson, {
+                    "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
+                    "onLoaded": function(){
+                        this.fireEvent("loadStat");
+                    }.bind(this)
+                });
+            }.bind(this));
+        }
     },
     getData: function(){
         if (!this.stat) return null;

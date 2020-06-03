@@ -50,7 +50,7 @@
 		"display": "inline-block",
 		"background": "#FFF"
 	},
-	"textareaIcon": {
+	"textfieldIcon": {
 		"background": "url("+"../x_component_process_FormDesigner/Module/Opinion/default/icon/opinion.png) center center no-repeat",
 		"width": "18px",
 		"height": "18px",

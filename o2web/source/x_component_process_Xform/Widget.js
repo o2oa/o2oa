@@ -125,7 +125,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
     getWidget: function(callback){
         var method = (this.form.options.mode !== "Mobile" && !layout.mobile) ? "getWidgetByName" : "getWidgetByNameMobile";
         if (this.json.widgetType==="script"){
-            if (this.json.widgetScript.code){
+            if (this.json.widgetScript && this.json.widgetScript.code){
                 var formNome = this.form.Macro.exec(this.json.widgetScript.code, this);
                 if (formNome){
                     var app = this.form.businessData.pageInfor.portal;
@@ -168,7 +168,7 @@ MWF.xApplication.process.Xform.Widget = MWF.APPWidget =  new Class({
         if( this.json.parameterType === "map" ){
             params = this.json.parametersMapList;
         }else if( this.json.parameterType === "script" ){
-            var code = this.json.parametersScript.code;
+            var code = (this.json.parametersScript) ? this.json.parametersScript.code : "";
             if (code){
                 params = this.form.Macro.exec(code, this);
             }
