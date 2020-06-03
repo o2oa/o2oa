@@ -10,7 +10,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-        "template": "template.json",
+        "template": "form_classical.json",
         "templateId": "",
         "name": "process.FormDesigner",
         "icon": "icon.png",
