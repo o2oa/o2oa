@@ -151,7 +151,7 @@
       "margin-top": "10px",
       "margin-left": "15px",
       "margin-right": "15px",
-      "border" : "1px solid #999999",
+      "border" : "0px",
       "table-layout" : "fixed"
     },
     "titleStyles":{
@@ -159,8 +159,8 @@
       "color": "#333",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
       "height": "23px",
       "font-size": "16px",
       "width": "65px",
@@ -174,9 +174,9 @@
       "font-size": "16px",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
-      "text-align": "left"
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "text-align": "right"
     },
     "layoutStyles": {},
     "properties": {
@@ -193,7 +193,7 @@
       "margin-top": "0px",
       "margin-left": "0px",
       "margin-right": "0px",
-      "border" : "1px solid #999999",
+//      "border" : "0px",
       "table-layout" : "fixed"
     },
     "titleStyles":{
@@ -201,8 +201,8 @@
       "color": "#333",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
       "height": "23px",
       "font-size": "16px",
       "width": "65px",
@@ -216,9 +216,9 @@
       "font-size": "16px",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
-      "text-align": "left"
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "text-align": "right"
     },
     "properties": {
       "width": "100%",
@@ -238,8 +238,8 @@
       "position" : "static"
     },
     "tableStyles": {
-      "border-top": "1px solid #999999",
-      "border-left": "1px solid #999999",
+      "border-top": "1px solid #cfd9df",
+      "border-left": "0px",
       "border-right" : "0px",
       "border-bottom" : "0px",
       "table-layout" : "fixed"
@@ -249,8 +249,8 @@
       "color": "#333",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
       "height": "23px",
       "font-size": "16px",
       "width": "65px",
@@ -264,9 +264,9 @@
       "font-size": "16px",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
-      "text-align": "left"
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
+      "text-align": "right"
     },
     "actionStyles": {
       "background-color": "#F1F4F9"
@@ -277,8 +277,8 @@
       "height": "auto",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999"
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df"
     },
     "amountStyles": {
       "background-color": "#FFFFFF",
@@ -286,8 +286,8 @@
       "font-size": "16px",
       "border-top": "0px",
       "border-left": "0px",
-      "border-right" : "1px solid #999999",
-      "border-bottom" : "1px solid #999999",
+      "border-right" : "0px",
+      "border-bottom" : "1px solid #cfd9df",
       "text-align": "left"
     },
     "itemTitleStyles": {
@@ -346,7 +346,7 @@
       "border-radius": "0px",
       "border-bottom": "0px",
       "border": "0px solid #979797",
-      "height": "40px",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
@@ -360,10 +360,11 @@
       "color": "#000"
     },
     "inputStyles": {
+      "padding-left" : "0px",
       "border-radius": "0px",
       "border-bottom": "0px",
       "border": "0px solid #979797",
-      "height": "40px",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
@@ -396,7 +397,7 @@
       "border-radius": "0px",
       "border-bottom": "0px",
       "border": "0px solid #979797",
-      "height": "40px",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
@@ -413,7 +414,7 @@
       "border-radius": "0px",
       "border-bottom": "0px",
       "border": "0px solid #979797",
-      "height": "40px",
+      "height": "auto",
       "color": "#000",
       "font-size": "15px",
       "float": "left",
