@@ -123,7 +123,17 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq.where(p).distinct(true)).getResultList();
 		if (list.size() == 1) {
 			return list.get(0);
-		} else {
+		}else if(list.size() > 1){
+			String temp = "";
+			for (int i = 0; i < list.size(); i++) {
+				if(temp.equalsIgnoreCase("")) {
+					temp = list.get(i);
+				}else{
+					temp = temp + "," + list.get(i);
+				}
+			}
+		    return temp;
+		}else {
 			return null;
 		}
 	}
