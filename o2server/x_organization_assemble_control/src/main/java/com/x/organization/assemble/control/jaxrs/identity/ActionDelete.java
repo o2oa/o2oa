@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,10 +25,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
 
 public class ActionDelete extends BaseAction {
 
@@ -52,6 +49,10 @@ public class ActionDelete extends BaseAction {
 				this.removeMemberOfUnitDuty(business, identity);
 				emc.commit();
 			}
+			/** group的身份成员删除。*/
+			emc.beginTransaction(Group.class);
+			this.removeMemberOfGroup(business, identity);
+			emc.commit();
 			/** 由于前面pick出来的需要重新取出 */
 			identity = emc.find(identity.getId(), Identity.class);
 			// /** 删除下属身份 */
@@ -116,6 +117,13 @@ public class ActionDelete extends BaseAction {
 		List<UnitDuty> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
 		for (UnitDuty o : os) {
 			o.getIdentityList().remove(identity.getId());
+		}
+	}
+
+	private void removeMemberOfGroup(Business business, Identity identity) throws Exception {
+		List<Group> groups = business.group().listSupDirectWithIdentityObject(identity.getId());
+		for(Group g : groups){
+			g.getIdentityList().remove(identity.getId());
 		}
 	}
 }
