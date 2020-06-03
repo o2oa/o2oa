@@ -45,6 +45,7 @@ import com.x.organization.core.entity.UnitDuty;
 import org.apache.commons.collections4.CollectionUtils;
 
 import net.sf.ehcache.Ehcache;
+import org.apache.commons.collections4.set.ListOrderedSet;
 
 public class Business {
 
@@ -462,6 +463,33 @@ public class Business {
 		List<String> os = em.createQuery(cq.select(root.get(Identity_.id)).where(p)).getResultList();
 		os = ListTools.trim(os, true, true);
 		return os;
+	}
+
+	public List<String> expendGroupToIdentity(List<String> groupList) throws Exception {
+		List<Group> groups = new ArrayList<>();
+		List<Group> expendGroups = new ArrayList<>();
+		if (ListTools.isNotEmpty(groupList)) {
+			groupList = ListTools.trim(groupList, true, true);
+			for (String s : groupList) {
+				Group g = this.group().pick(s);
+				if (null != g) {
+					groups.add(g);
+				}
+			}
+		}
+		if (ListTools.isNotEmpty(groups)) {
+			for (Group g : groups) {
+				expendGroups.add(g);
+				expendGroups.addAll(this.group().listSubNestedObject(g));
+			}
+		}
+		ListOrderedSet<String> set = new ListOrderedSet<String>();
+		for (Group g : groups) {
+			if (ListTools.isNotEmpty(g.getIdentityList())) {
+				set.addAll(g.getIdentityList());
+			}
+		}
+		return set.asList();
 	}
 
 	public Ehcache cache() {
