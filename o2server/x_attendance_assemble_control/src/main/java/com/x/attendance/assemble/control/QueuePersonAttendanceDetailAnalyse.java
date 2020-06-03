@@ -34,19 +34,9 @@ public class QueuePersonAttendanceDetailAnalyse extends AbstractQueue<String> {
         if( record != null ){
             logger.debug("system try to analyse attendance detail for person, Id:" + record.getId() );
 
-            Ehcache cache = ApplicationCache.instance().getCache( AttendanceStatisticalCycle.class);
-            String cacheKey = ApplicationCache.concreteCacheKey( "map#all" );
-            Element element = cache.get(cacheKey);
             try {
-
-                Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap = null;
-                if ((null != element) && (null != element.getObjectValue())) {
-                    statisticalCycleMap = (Map<String, Map<String, List<AttendanceStatisticalCycle>>>) element.getObjectValue();
-                }else{
-                    statisticalCycleMap = statisticalCycleServiceAdv.getCycleMapFormAllCycles( false );
-                }
-
-                List<AttendanceWorkDayConfig> workDayConfigList = attendanceWorkDayConfigServiceAdv.listAll();
+                List<AttendanceWorkDayConfig> workDayConfigList = attendanceWorkDayConfigServiceAdv.getAllWorkDayConfigWithCache( false );
+                Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap = statisticalCycleServiceAdv.getAllStatisticalCycleMapWithCache( false );
 
                 detailAnalyseServiceAdv.analyseAttendanceDetail( record, workDayConfigList, statisticalCycleMap, false );
                 logger.debug( "attendance detail analyse completed.person:" + record.getEmpName() + ", date:" + record.getRecordDateString());
