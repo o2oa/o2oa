@@ -41,6 +41,15 @@ public class AttendanceSelfHolidayServiceAdv {
 		}
 	}
 
+	public List<AttendanceSelfHoliday> listAllFromCache( String person, boolean debugger) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceSelfHolidayService.listWithPersonFromCache(emc, person, debugger);
+		} catch ( Exception e ) {
+			throw e;
+		}
+
+	}
+
 	public List<AttendanceSelfHoliday> listWithBatchFlag( String batchFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return attendanceSelfHolidayService.listWithBatchFlag( emc, batchFlag );

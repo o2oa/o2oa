@@ -10,6 +10,7 @@ import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -43,6 +44,10 @@ public class ActionDeleteByWfDocId extends BaseAction {
 						emc.beginTransaction(AttendanceSelfHoliday.class);
 						emc.remove(attendanceSelfHoliday, CheckRemoveType.all);
 						emc.commit();
+
+						//清除缓存
+						ApplicationCache.notify( AttendanceSelfHoliday.class );
+
 						logger.debug( effectivePerson, ">>>>>>>>>>System delete attendanceSelfHoliday success......");
 
 						// 应该只需要重新分析该用户在请假期间已经存在的打卡数据即可

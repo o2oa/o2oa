@@ -51,7 +51,7 @@ public class ThisApplication {
 			}
 
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
-			context.schedule(MobileRecordAnalyseTask.class, "0 0/10 * * * ?");
+			context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
 
 		} catch (Exception e) {
 			e.printStackTrace();

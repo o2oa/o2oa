@@ -233,20 +233,9 @@ public class AttendanceDetailAnalyseService {
 		AttendanceScheduleSetting scheduleSetting = null;
 		List<AttendanceSelfHoliday> selfHolidayList = null;
 		if( detail != null ){
-			try{
-				//查询员工休假记录
-				ids_temp = attendanceSelfHolidayService.getByPersonName( emc, detail.getEmpName() );
-				if( ids_temp != null && !ids_temp.isEmpty() ) {
-					selfHolidayList = attendanceSelfHolidayService.list( emc, ids_temp );
-				}
-			}catch( Exception e ){
-				logger.warn( "system list attendance self holiday info ids with employee name got an exception.empname:" + detail.getEmpName() );
-				logger.error(e);
-			}
-
+			selfHolidayList = attendanceSelfHolidayService.listWithPersonFromCache(emc, detail.getEmpName(), false );
 			//查询用户匹配的排班配置
 			scheduleSetting = attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( detail.getEmpName(), debugger );
-			
 			return analyseAttendanceDetail( emc, detail, scheduleSetting, selfHolidayList, workDayConfigList, statisticalCycleMap, debugger );
 
 		}else{
