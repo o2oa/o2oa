@@ -259,19 +259,30 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //});
         var node;
         if( this.form.json.errorStyle ){
-            node = new Element("div",{
-                "styles" : this.form.json.errorStyle.node,
-                "text": text
-            });
-            if( this.form.json.errorStyle.close ){
-                var closeNode = new Element("div",{
-                    "styles" : this.form.json.errorStyle.close ,
-                    "events": {
-                        "click" : function(){
-                            this.destroy();
-                        }.bind(node)
-                    }
-                }).inject(node);
+            if( this.form.json.errorStyle.type === "notice" ){
+                if( !this.form.errorNoticing ){ //如果是弹出
+                    this.form.errorNoticing = true;
+                    this.form.notice(text, "error", this.node, null, null, {
+                        onClose : function () {
+                            this.form.errorNoticing = false;
+                        }.bind(this)
+                    });
+                }
+            }else{
+                node = new Element("div",{
+                    "styles" : this.form.json.errorStyle.node,
+                    "text": text
+                });
+                if( this.form.json.errorStyle.close ){
+                    var closeNode = new Element("div",{
+                        "styles" : this.form.json.errorStyle.close ,
+                        "events": {
+                            "click" : function(){
+                                this.destroy();
+                            }.bind(node)
+                        }
+                    }).inject(node);
+                }
             }
         }else{
             node = new Element("div");
