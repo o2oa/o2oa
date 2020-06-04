@@ -58,9 +58,15 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 	private WoWorkForm work(Business business, Work work) throws Exception {
 		WoWorkForm wo = new WoWorkForm();
 		String id = work.getForm();
+		System.out.println("!!!!!!!!!!!!!!!!!!");
+		System.out.println(id);
+		System.out.println("!!!!!!!!!!!!!!!!!!");
 		if (StringUtils.isEmpty(id)) {
 			Activity activity = business.getActivity(work);
 			id = PropertyTools.getOrElse(activity, Activity.form_FIELDNAME, String.class, "");
+			System.out.println("!!!!!!!!!!!!!!!!!!22");
+			System.out.println(id);
+			System.out.println("!!!!!!!!!!!!!!!!!!22");
 		}
 		if (StringUtils.isNotEmpty(id)) {
 			Form form = business.form().pick(id);
