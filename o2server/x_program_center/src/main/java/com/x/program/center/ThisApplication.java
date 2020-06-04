@@ -1,15 +1,30 @@
 package com.x.program.center;
 
-import com.google.gson.internal.LinkedTreeMap;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.program.center.schedule.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.google.gson.internal.LinkedTreeMap;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.program.center.schedule.Area;
+import com.x.program.center.schedule.CleanupCode;
+import com.x.program.center.schedule.CleanupPromptErrorLog;
+import com.x.program.center.schedule.CleanupScheduleLog;
+import com.x.program.center.schedule.CleanupUnexpectedErrorLog;
+import com.x.program.center.schedule.CleanupWarnLog;
+import com.x.program.center.schedule.CollectLog;
+import com.x.program.center.schedule.CollectPerson;
+import com.x.program.center.schedule.DingdingSyncOrganization;
+import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
+import com.x.program.center.schedule.FireSchedule;
+import com.x.program.center.schedule.QiyeweixinSyncOrganization;
+import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
+import com.x.program.center.schedule.RefreshApplications;
+import com.x.program.center.schedule.TriggerAgent;
+import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
+import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
 
 public class ThisApplication {
 
@@ -22,8 +37,6 @@ public class ThisApplication {
 	public static CenterQueue centerQueue = new CenterQueue();
 
 	public static LogQueue logQueue;
-
-	// public static CodeTransferQueue codeTransferQueue;
 
 	public static List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
@@ -66,7 +79,8 @@ public class ThisApplication {
 			}
 			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
 					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
-			context().scheduleLocal(FireSchedule.class, 180, 300);
+			// 运行间隔由300秒缩减到120秒
+			context().scheduleLocal(FireSchedule.class, 180, 120);
 			context().scheduleLocal(CleanupScheduleLog.class, 10, 80);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
 			context().scheduleLocal(CleanupPromptErrorLog.class, 10, 60 * 30);
@@ -74,9 +88,10 @@ public class ThisApplication {
 			context().scheduleLocal(CleanupWarnLog.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
 			context().scheduleLocal(CollectLog.class, 10, 60 * 30);
-			context().scheduleLocal(TriggerAgent.class, 150, 60);
+			// 运行间隔由60秒缩减到30秒
+			context().scheduleLocal(TriggerAgent.class, 150, 30);
 			/* 行政区域每周更新一次 */
-			context().scheduleLocal(Area.class, 300, 60 * 60 * 24);
+			context().scheduleLocal(Area.class, 300, 60 * 60 * 24 * 7);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -13,9 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.HttpConnection;
@@ -24,6 +22,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
@@ -112,7 +112,11 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
-			application = this.randomWithWeight(name);
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
 		} else {
 			application = this.randomWithSeed(name, seed);
 		}
@@ -161,7 +165,11 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
-			application = this.randomWithWeight(name);
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
 		} else {
 			application = this.randomWithSeed(name, seed);
 		}
@@ -213,7 +221,11 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
-			application = this.randomWithWeight(name);
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
 		} else {
 			application = this.randomWithSeed(name, seed);
 		}
@@ -265,7 +277,11 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
-			application = this.randomWithWeight(name);
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
 		} else {
 			application = this.randomWithSeed(name, seed);
 		}
@@ -282,12 +298,10 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
-	public Application findOneAppByNode(String node) throws Exception {
-		for(List<Application> apps : this.values()){
-			for (Application app : apps){
-				if(app.getNode().equals(node)){
-					return app;
-				}
+	public Application findApplicationWithNode(String className, String node) throws Exception {
+		for (Application o : this.get(className)) {
+			if (o.getNode().equals(node)) {
+				return o;
 			}
 		}
 		return null;
