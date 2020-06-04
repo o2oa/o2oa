@@ -88,11 +88,11 @@ public class ActionWipeAll extends BaseAction {
 			ApplicationCache.notify(Person.class);
 			ApplicationCache.notify(Unit.class);
 			
-			wo.setFlag("success");
+			wo.setFlag("导入人员数据成功");
 			System.out.println("开始删除人员组织所有数据--------end");
 		} catch (Exception e) {
 			logger.info("系统在查询所有组织人员信息时发生异常。" );
-			wo.setFlag("fail");
+			wo.setFlag("导入人员数据失败");
 			e.printStackTrace();
 		}
 		
