@@ -369,6 +369,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
     },
 
 	invokeFormData: function(method, uri, data, file, callback, async, progress){
+        uri = o2.filterUrl(uri);
 		var xhr = new COMMON.Browser.Request();
 		if(file){
             data.append('fileName', file.name);

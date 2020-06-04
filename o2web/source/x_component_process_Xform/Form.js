@@ -2660,7 +2660,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }.bind(this), null, false);
         htmlFormId = htmlFormId.replace("#", "%23");
         var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
-        window.open(o2.Actions.getHost("x_processplatform_assemble_surface") + url + "?fileName=&flag=" + htmlFormId);
+        url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
+        window.open( url + "?fileName=&flag=" + htmlFormId);
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {

@@ -1590,7 +1590,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             url = url.replace("{workid}", this.form.businessData.work.id);
         }
         url = action.action.address+url;
-        return url;
+        return o2.filterUrl(url);
     },
     loadMediaOpinion_image_tooltip : function(att, node){
         var iconNode = new Element("div", {"styles": this.form.css.logMediaIcon}).inject(node.getParent());
