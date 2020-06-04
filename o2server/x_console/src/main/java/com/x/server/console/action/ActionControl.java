@@ -113,7 +113,7 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option hsOption() {
-		return Option.builder("ts").longOpt("httpStatus").argName("repeat").optionalArg(true).hasArgs()
+		return Option.builder("hs").longOpt("httpStatus").argName("repeat").optionalArg(true).hasArgs()
 				.desc("Http服务线程状态,间隔5秒.").build();
 	}
 

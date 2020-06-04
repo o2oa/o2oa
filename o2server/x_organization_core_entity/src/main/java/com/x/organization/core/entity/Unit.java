@@ -92,7 +92,7 @@ public class Unit extends SliceJpaObject {
 	@FieldDescribe("名称,可以重名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true)
+	@CheckPersist(allowEmpty = false)
 	private String name;
 
 	public static final String unique_FIELDNAME = "unique";
