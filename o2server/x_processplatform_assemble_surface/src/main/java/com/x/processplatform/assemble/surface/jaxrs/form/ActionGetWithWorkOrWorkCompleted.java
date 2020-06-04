@@ -64,12 +64,14 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		}
 		if (StringUtils.isNotEmpty(id)) {
 			Form form = business.form().pick(id);
-			wo = WoWorkForm.copier.copy(form);
-			if (StringUtils.isEmpty(wo.getData())) {
-				wo.setData(wo.getMobileData());
+			if (null != form) {
+				wo = WoWorkForm.copier.copy(form);
+				if (StringUtils.isEmpty(wo.getData()) && StringUtils.isNotEmpty(wo.getMobileData())) {
+					wo.setData(wo.getMobileData());
+				}
+				/* 清空移动端表单,减少传输量 */
+				wo.setMobileData("");
 			}
-			/* 清空移动端表单,减少传输量 */
-			wo.setMobileData("");
 		}
 		return wo;
 	}
@@ -91,21 +93,21 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
 			wo.setData(workCompleted.getFormMobileData());
 		}
-//		WoWorkCompletedForm wo = new WoWorkCompletedForm();
-//		if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
-//			wo.setData(workCompleted.getFormData());
-//		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
-//			wo.setData(workCompleted.getFormMobileData());
-//		} else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
-//			Form form = business.form().pick(workCompleted.getForm());
-//			if (null != form) {
-//				if (StringUtils.isNotEmpty(form.getData())) {
-//					wo.setData(form.getData());
-//				} else if (StringUtils.isNotEmpty(form.getMobileData())) {
-//					wo.setData(workCompleted.getFormMobileData());
-//				}
-//			}
-//		}
+		// WoWorkCompletedForm wo = new WoWorkCompletedForm();
+		// if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
+		// wo.setData(workCompleted.getFormData());
+		// } else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
+		// wo.setData(workCompleted.getFormMobileData());
+		// } else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
+		// Form form = business.form().pick(workCompleted.getForm());
+		// if (null != form) {
+		// if (StringUtils.isNotEmpty(form.getData())) {
+		// wo.setData(form.getData());
+		// } else if (StringUtils.isNotEmpty(form.getMobileData())) {
+		// wo.setData(workCompleted.getFormMobileData());
+		// }
+		// }
+		// }
 		return wo;
 	}
 

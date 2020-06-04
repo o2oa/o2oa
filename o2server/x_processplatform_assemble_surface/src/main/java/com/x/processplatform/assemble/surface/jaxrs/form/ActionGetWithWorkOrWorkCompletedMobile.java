@@ -65,12 +65,14 @@ class ActionGetWithWorkOrWorkCompletedMobile extends BaseAction {
 		}
 		if (StringUtils.isNotEmpty(id)) {
 			Form form = business.form().pick(id);
-			wo = WoWorkForm.copier.copy(form);
-			if (StringUtils.isNotEmpty(wo.getMobileData())) {
-				wo.setData(wo.getMobileData());
+			if (null != form) {
+				wo = WoWorkForm.copier.copy(form);
+				if (StringUtils.isNotEmpty(wo.getMobileData())) {
+					wo.setData(wo.getMobileData());
+				}
+				/* 清空移动端表单,减少传输量 */
+				wo.setMobileData("");
 			}
-			/* 清空移动端表单,减少传输量 */
-			wo.setMobileData("");
 		}
 		return wo;
 	}
