@@ -53,6 +53,9 @@
         "margin-left": "0px"
       }
     },
+    "errorStyle" : {
+      "type" : "notice"
+    },
     "selectorStyle" : {
       "style" : "blue_flat_mobile",
       "width" : "700",
