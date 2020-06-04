@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -122,6 +123,7 @@ class ActionListLikePinyin extends BaseAction {
 		Predicate p = cb.conjunction();
 		p = cb.and(p, cb.or(cb.like(cb.lower(root.get(Identity_.pinyin)), str + "%", StringTools.SQL_ESCAPE_CHAR),
 				cb.like(cb.lower(root.get(Identity_.pinyinInitial)), str + "%", StringTools.SQL_ESCAPE_CHAR)));
+		ListOrderedSet<String> set = new ListOrderedSet<>();
 		if (ListTools.isNotEmpty(wi.getUnitDutyList())) {
 			List<UnitDuty> unitDuties = business.unitDuty().pick(wi.getUnitDutyList());
 			List<String> unitDutyIdentities = new ArrayList<>();
@@ -129,19 +131,18 @@ class ActionListLikePinyin extends BaseAction {
 				unitDutyIdentities.addAll(o.getIdentityList());
 			}
 			unitDutyIdentities = ListTools.trim(unitDutyIdentities, true, true);
-			p = cb.and(p, root.get(Identity_.id).in(unitDutyIdentities));
+			set.addAll(unitDutyIdentities);
 		}
 		if (ListTools.isNotEmpty(wi.getUnitList())) {
 			List<String> identityIds = business.expendUnitToIdentity(wi.getUnitList());
-			if(ListTools.isNotEmpty(identityIds)) {
-				p = cb.and(p, root.get(Identity_.id).in(identityIds));
-			}
+			set.addAll(identityIds);
 		}
 		if (ListTools.isNotEmpty(wi.getGroupList())) {
 			List<String> identityIds = business.expendGroupToIdentity(wi.getGroupList());
-			if(ListTools.isNotEmpty(identityIds)) {
-				p = cb.and(p, root.get(Identity_.id).in(identityIds));
-			}
+			set.addAll(identityIds);
+		}
+		if(!set.isEmpty()){
+			p = cb.and(p, root.get(Identity_.id).in(set.asList()));
 		}
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		wos = Wo.copier.copy(os);
