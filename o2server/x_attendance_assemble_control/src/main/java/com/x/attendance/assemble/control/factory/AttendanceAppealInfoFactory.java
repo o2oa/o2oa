@@ -261,16 +261,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		
 		//添加OR条件
 		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
@@ -372,16 +372,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		//添加OR
 		if( wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0){
 			sql_stringBuffer.append(" and (" );
@@ -470,16 +470,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		//添加OR
 		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
 			sql_stringBuffer.append(" and (");
