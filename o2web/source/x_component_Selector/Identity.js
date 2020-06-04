@@ -1157,7 +1157,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
 
     listByFilter : function( type, key, callback ){
         var arr1 = this.listByFilterPerson(key) || [];
-        this.listByFilterUnit( type, key, function(arr2){
+        this.listByFilterUnitAndGroup( type, key, function(arr2){
             this.listByFilterGroup( type, key, function(arr3){
                 if (callback) callback( arr1.concat( arr2 || [] ).concat( arr3 || [] ) );
             }.bind(this))
@@ -1180,6 +1180,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         return identitys.concat( persons);
     },
     listByFilterGroup : function( type, key, callback ){
+        //根据关键字获取群组内的人员，再转成身份
         var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
         if( this.includeGroup && this.includeGroup.length ){
             var keyObject = { "key" : keyString, "groupList" : this.includeGroup };
@@ -1203,11 +1204,12 @@ MWF.xApplication.Selector.Identity.Include = new Class({
             if (callback) callback();
         }
     },
-    listByFilterUnit : function( type, key, callback ){
+    listByFilterUnitAndGroup : function( type, key, callback ){
+        //根据关键字获取组织和群组内的身份
         var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
 
         if ( this.includeUnit && this.includeUnit.length ){
-            key = this.getUnitFilterKey( key, this.includeUnit );
+            key = this.getUnitFilterKey( key, this.includeUnit, this.includeGroup );
 
             this.orgAction.listIdentityByKey(function(json){
                 if (callback) callback(json.data);
@@ -1218,8 +1220,8 @@ MWF.xApplication.Selector.Identity.Include = new Class({
             if (callback) callback();
         }
     },
-    getUnitFilterKey : function( key, unitObjects ){
-        var unitObjects = unitObjects || [];
+    getUnitFilterKey : function( key, unitObject, groupObject ){
+        var unitObjects = unitObject || [];
         var units = [];
         unitObjects.each(function(u){
             if (typeOf(u)==="string"){
@@ -1229,7 +1231,26 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 units.push(u.distinguishedName);
             }
         });
-        return units.length ? {"key": key, "unitList": units} : key;
+
+        var groupObjects = groupObject || [];
+        var groups = [];
+        groupObjects.each(function(g){
+            if (typeOf(g)==="string"){
+                groups.push(g);
+            }
+            if (typeOf(g)==="object"){
+                groups.push(g.distinguishedName);
+            }
+        });
+        if( !units.length && !groups.length ){
+            return key;
+        }else{
+            var result = { "key": key };
+            if( units.length )result.unitList = units;
+            if( groups.length )result.groupList = groups;
+            return result;
+        }
+        // return units.length ? {"key": key, "unitList": units, "groupList" : groups} : key;
     }
 });
 
