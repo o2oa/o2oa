@@ -315,7 +315,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				case 1:
 					t = list.get(0);
 					break out;
-				case 2:
+				default:
 					throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
 							+ ", attribute:" + field.getName() + ", restrict attrubte:" + singularAttribute
 							+ ", restrict value:" + restrictValue + ".");
