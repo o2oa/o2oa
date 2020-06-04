@@ -200,7 +200,7 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getOnWorkTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
 		try {
-			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
+			if( StringUtils.isEmpty( detail.getOnWorkTime() ) ){
 				logger.debug( debugger, "onWorkTime " );
 			}else{
 				logger.debug( debugger, "onWorkTime=" +  detail.getRecordDateString() + " " + detail.getOnWorkTime() );
@@ -222,7 +222,7 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getOffWorkTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
 		try {
-			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
+			if( StringUtils.isEmpty( detail.getOffWorkTime() ) ){
 				logger.debug( debugger, "offWorkTime为空 " );
 			}else{
 				logger.debug( debugger, "offWorkTime=" +  detail.getRecordDateString() + " " + detail.getOffWorkTime() );

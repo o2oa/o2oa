@@ -97,6 +97,14 @@ public class AttendanceDetailServiceAdv {
 		}
 	}
 
+	public List<String> listDetailByCycleYearAndMonthWithOutStatus( String q_empName, String q_year, String q_month )  throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.listDetailByCycleYearAndMonthWithOutStatus( emc, q_empName, q_year, q_month );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	public List<String> listUserAttendanceDetailByCycleYearAndMonth( String q_empName, String cycleYear, String cycleMonth ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return attendanceDetailService.listUserAttendanceDetailByCycleYearAndMonth( emc, q_empName, cycleYear, cycleMonth );

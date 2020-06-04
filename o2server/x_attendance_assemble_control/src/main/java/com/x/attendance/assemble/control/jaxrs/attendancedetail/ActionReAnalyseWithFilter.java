@@ -10,7 +10,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class ActionReAnalyseWithFilter extends BaseAction {
 
 		if (check) {
 			try {
-				ids = attendanceDetailServiceAdv.listUserAttendanceDetailByYearAndMonth( q_empName, q_year, q_month );
+				ids = attendanceDetailServiceAdv.listDetailByCycleYearAndMonthWithOutStatus( q_empName, q_year, q_month );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAttendanceDetailProcess(e,
@@ -80,6 +81,7 @@ public class ActionReAnalyseWithFilter extends BaseAction {
 				logger.error(e, currentPerson, request, null);
 			}
 		}
+
 		if (check) {
 			if (ListTools.isNotEmpty( ids )) {
 
