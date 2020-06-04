@@ -86,6 +86,7 @@ public class InputPersonAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "清空人员组织数据.", action = ActionWipeAll.class)
 	@GET
 	@Path("wipe")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void wipeAll(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		ActionResult<ActionWipeAll.Wo> result = new ActionResult<>();
