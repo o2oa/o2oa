@@ -107,8 +107,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
                 }
-                this.fireEvent("loadPage");
                 if (callback) callback(control);
+                this.fireEvent("loadPage");
             }.bind(this));
         }.bind(this));
     },
@@ -1404,7 +1404,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             // format_tags: '标题一;标题二;标题三;标题四;正文', // entries is displayed in "Paragraph format"
             format_tags: '标题一;标题二;正文(标题三,四)', // entries is displayed in "Paragraph format"
             'format_标题一': {
-                name: '标题一',
+                name: '标题一(三号黑体)',
                 element: 'div',
                 styles: {
                     'font-family': '黑体',
@@ -1412,7 +1412,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 }
             },
             'format_标题二': {
-                name: '标题二',
+                name: '标题二(三号楷体)',
                 element: 'div',
                 styles: {
                     'font-family': '楷体',
