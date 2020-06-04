@@ -77,24 +77,24 @@ public class TriggerAgent extends BaseAction {
 			if (date.before(new Date())) {
 				if (LOCK.contains(pair.getId())) {
 					throw new ExceptionAgentLastNotEnd(pair);
-				} else {
-					Agent agent = null;
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						agent = emc.find(pair.getId(), Agent.class);
-						if (null != agent) {
-							emc.beginTransaction(Agent.class);
-							agent.setLastStartTime(new Date());
-							emc.commit();
-						}
-					}
-					if (null != agent && agent.getEnable()) {
-						logger.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
-								pair.getName(), pair.getCron(),
-								(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
-						ExecuteThread thread = new ExecuteThread(agent);
-						thread.start();
+				}
+				Agent agent = null;
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					agent = emc.find(pair.getId(), Agent.class);
+					if (null != agent) {
+						emc.beginTransaction(Agent.class);
+						agent.setLastStartTime(new Date());
+						emc.commit();
 					}
 				}
+				if (null != agent && agent.getEnable()) {
+					logger.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
+							pair.getName(), pair.getCron(),
+							(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
+					ExecuteThread thread = new ExecuteThread(agent);
+					thread.start();
+				}
+
 			}
 		} catch (Exception e) {
 			logger.error(e);
