@@ -53,6 +53,15 @@
         "margin-left": "0px"
       }
     },
+    "errorStyle" : {
+      "node" : {
+        "height": "20px",
+        "line-height": "20px",
+        "margin-left": "20px",
+        "color": "red",
+        "word-break": "keep-all"
+      }
+    },
     "selectorStyle" : {
       "style" : "blue_flat_mobile",
       "width" : "700",
