@@ -107,8 +107,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
                 }
-                this.fireEvent("loadPage");
                 if (callback) callback(control);
+                this.fireEvent("loadPage");
             }.bind(this));
         }.bind(this));
     },
