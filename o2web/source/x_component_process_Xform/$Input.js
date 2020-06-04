@@ -264,7 +264,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
                     this.form.errorNoticing = true;
                     this.form.notice(text, "error", this.node, null, null, {
                         onClose : function () {
-                            alert(1);
                             this.form.errorNoticing = false;
                         }.bind(this)
                     });
