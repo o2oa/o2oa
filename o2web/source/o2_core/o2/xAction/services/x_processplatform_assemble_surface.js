@@ -40,7 +40,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workid}", encodeURIComponent(workid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getWorkcompletedAttachmentData: function(id, workid){
@@ -48,7 +48,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getWorkcompletedAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workCompletedId}", encodeURIComponent(workid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getAttachmentStream: function(id, workid){
@@ -56,7 +56,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workid}", encodeURIComponent(workid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getWorkcompletedAttachmentStream: function(id, workid){
@@ -64,7 +64,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getWorkcompletedAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workCompletedId}", encodeURIComponent(workid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
 
@@ -73,7 +73,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workid}", encodeURIComponent(workid));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getAttachmentWorkcompletedUrl: function(id, workid, callback){
@@ -81,7 +81,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions.getWorkcompletedAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workCompletedId}", encodeURIComponent(workid));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getWorkDataByPath: function(id, path, success, failure, async){

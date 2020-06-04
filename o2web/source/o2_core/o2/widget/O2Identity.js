@@ -138,6 +138,8 @@ o2.widget.O2Identity = new Class({
             this.action.getAddress();
             uri = this.action.address+uri;
 
+            uri = o2.filterUrl(uri);
+
             img = "<img width='50' height='50' border='0' src='"+uri+"' style='border-radius:25px'/>";
 
             var picNode = new Element("div", {
