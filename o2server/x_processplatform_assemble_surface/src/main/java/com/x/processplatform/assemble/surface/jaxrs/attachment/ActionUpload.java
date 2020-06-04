@@ -73,6 +73,7 @@ class ActionUpload extends BaseAction {
 				logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 						attachment.getText());
 			}
+			
 			emc.beginTransaction(Attachment.class);
 			emc.persist(attachment, CheckPersistType.all);
 			emc.commit();
