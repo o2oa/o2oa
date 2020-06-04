@@ -191,7 +191,57 @@ data class MobileCheckInJson(
         var latitude: String = "", //纬度, 可以为空.
         var optMachineType: String = "", //操作设备类别：手机品牌|PAD|PC|其他, 可以为空.
         var optSystemName: String = O2.DEVICE_TYPE, //操作设备类别：Mac|Windows|IOS|Android|其他, 可以为空.
-        var recordStatus: Int = 0//记录状态：0-未分析 1-已分析
+        var recordStatus: Int = 0, //记录状态：0-未分析 1-已分析
+//        "checkin_type": "上午上班打卡",
+////        "checkin_time": 1591166591469,
+        var checkin_type: String? = ""
+)
+/**
+ * 班次设置情况
+ * "id": "0859ffe7-e85a-4c1a-91ac-2697069fba42",
+"topUnitName": "浙江兰德纵横网络技术股份有限公司@1@U",
+"unitName": "应用支撑组@319131979@U",
+"unitOu": "应用支撑组@319131979@U",
+"onDutyTime": "09:00",
+"offDutyTime": "17:00",
+"signProxy": 0,
+"lateStartTime": "9:05",
+"createTime": "2020-06-03 14:02:20",
+"updateTime": "2020-06-03 14:02:20"
+ */
+data class MobileScheduleSetting(
+        var id: String = "",
+        var createTime: String = "",
+        var updateTime: String = "",
+        var topUnitName: String = "",
+        var unitName: String = "",
+        var unitOu: String = "",
+        var onDutyTime: String = "",
+        var offDutyTime: String = "",
+        var signProxy: Int = 0, // 打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）
+        var lateStartTime: String = ""
+)
+/**
+ * 移动端打卡功能
+ *  "signSeq": -1,
+"signDate": "2020-06-03",
+"signTime": "17:00",
+"checkinType": "下午下班打卡"
+ */
+data class MobileFeature(
+        var signSeq: Int = -1, //当天第几次打卡 -1不能打了
+        var signDate: String = "",
+        var signTime: String = "",
+        var checkinType: String = ""
+)
+
+/**
+ * listMyRecords 返回对象
+ */
+data class MobileMyRecords(
+        var records:List<MobileCheckInJson> = ArrayList(),
+        var scheduleSetting: MobileScheduleSetting?,
+        var feature : MobileFeature?
 )
 
 /**

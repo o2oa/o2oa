@@ -19,6 +19,19 @@ import rx.schedulers.Schedulers
 
 class AttendanceCheckInPresenter : BasePresenterImpl<AttendanceCheckInContract.View>(), AttendanceCheckInContract.Presenter {
 
+    override fun listMyRecords() {
+        getAttendanceAssembleControlService(mView?.getContext())?.let { service ->
+            service.listMyRecords().subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .o2Subscribe {
+                        onNext { mView?.myRecords(it.data) }
+                        onError { e, _ ->
+                            XLog.error("", e)
+                            mView?.myRecords(null)
+                        }
+                    }
+        }
+    }
 
     override fun findTodayCheckInRecord(person: String) {
         val queryBean = MobileCheckInQueryFilterJson()
@@ -64,7 +77,7 @@ class AttendanceCheckInPresenter : BasePresenterImpl<AttendanceCheckInContract.V
         }
     }
 
-    override fun checkIn(latitude: String, longitude: String, addrStr: String?, signDesc: String, signDate: String, signTime: String, id: String) {
+    override fun checkIn(latitude: String, longitude: String, addrStr: String?, signDesc: String, signDate: String, signTime: String, id: String, checkType: String?) {
         val form = MobileCheckInJson()
         if (!TextUtils.isEmpty(id)) {
             form.id = id
@@ -77,6 +90,7 @@ class AttendanceCheckInPresenter : BasePresenterImpl<AttendanceCheckInContract.V
         form.optMachineType = AndroidUtils.getDeviceBrand() + "-" + AndroidUtils.getDeviceModelNumber()
         form.optSystemName = O2.DEVICE_TYPE
         form.recordAddress = addrStr ?: ""
+        form.checkin_type = checkType
         val json = O2SDKManager.instance().gson.toJson(form)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getAttendanceAssembleControlService(mView?.getContext())?.let { service ->

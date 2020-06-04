@@ -64,7 +64,8 @@
         android:layout_marginEnd="@dimen/spacing_small"
         android:background="@drawable/attendance_check_in_background"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_attendance_check_in_button_label"
