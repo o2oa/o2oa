@@ -35,7 +35,12 @@ MWF.xApplication.Attendance.ScheduleExplorer.View = new Class({
     },
 
     _getCurrentPageData: function(callback, count){
+
         this.actions.listSchedule(function(json){
+            json.data=json.data.map(function (v) {
+                v.signProxy = !v.signProxy?1:v.signProxy;
+                return v;
+            });
             if (callback) callback(json);
         });
     },
@@ -50,7 +55,9 @@ MWF.xApplication.Attendance.ScheduleExplorer.View = new Class({
         schedule.create();
     },
     _openDocument: function( documentData ){
+
         var schedule = new MWF.xApplication.Attendance.ScheduleExplorer.Schedule(this.explorer, documentData );
+
         schedule.edit();
     }
 
@@ -76,13 +83,20 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     },
     _createTableContent: function(){
         var lp = this.app.lp.schedule;
+        var signProxy = this.data.signProxy;
 
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
             "    <td styles='formTableValue' item='unitName'></td></tr>" +
+            "<tr><td styles='formTabelTitle' lable='signProxy'></td>"+
+            "    <td styles='formTableValue' item='signProxy'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td></tr>" +
+            "<tr style='"+(!signProxy||signProxy=="0"||signProxy=="1"?"display: none":"")+"'><td styles='formTabelTitle' lable='middayRestStartTime'></td>"+
+            "    <td styles='formTableValue' item='middayRestStartTime'></td></tr>" +
+            "<tr style='"+(!signProxy||signProxy=="0"||signProxy=="1"?"display: none":"")+"'><td styles='formTabelTitle' lable='middayRestEndTime'></td>"+
+            "    <td styles='formTableValue' item='middayRestEndTime'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='offDutyTime'></td>"+
             "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='lateStartTime'></td>"+
@@ -93,23 +107,81 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
             "    <td styles='formTableValue' item='absenceStartTime'></td></tr>" +
             "</table>";
         this.formTableArea.set("html",html);
-
         MWF.xDesktop.requireApp("Template", "MForm", function(){
+
+            var ob = Object;
             this.form = new MForm( this.formTableArea, this.data, {
+                onPostLoad: function(){
+                    if(signProxy!=0&&signProxy!=1){
+                        this.options.height=570;
+                    }
+                }.bind(this),
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     unitName : { text: lp.unit,  type : "org", orgType : "unit" },
+                    signProxy : { text: lp.signProxy.name,  type : "select" ,selectText:ob.values(lp.signProxy.select),selectValue:ob.keys(lp.signProxy.select),style:{
+                            "width": "99%",
+                            "border": "1px solid rgb(153, 153, 153)",
+                            "border-radius": "3px",
+                            "box-shadow": "rgb(204, 204, 204) 0px 0px 6px",
+                           "min-height": "26px",
+                            "overflow": "hidden"
+                        },event :{
+                            "change":function(){
+                                var signProxy = this.form.getItem("signProxy").getValue();
+                                if(signProxy!="1"&&signProxy!="0"){
+                                    this.formTableArea.getElement("[lable=middayRestStartTime]").getParent().setStyle("display","table-row");
+                                    this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","table-row");
+                                    this.formNode.setStyle("height","570px");
+
+                                    this.form.options.itemTemplate.middayRestStartTime.text=lp.signProxy[signProxy].middayRestStartTime;
+                                    this.form.options.itemTemplate.middayRestEndTime.text=lp.signProxy[signProxy].middayRestEndTime;
+                                    this.form.options.itemTemplate.middayRestStartTime.notEmpty=true;
+                                    this.form.options.itemTemplate.middayRestEndTime.notEmpty=true;
+                                }else{
+                                    this.formTableArea.getElement("[lable=middayRestStartTime]").getParent().setStyle("display","none");
+                                    this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","none");
+                                    this.formNode.setStyle("height","450px");
+
+                                    this.form.options.itemTemplate.middayRestStartTime.notEmpty=false;
+                                    this.form.options.itemTemplate.middayRestEndTime.notEmpty=false;
+                                }
+                                this.form.data[0].signProxy = signProxy;
+                                this.form.load();
+
+                            }.bind(this)
+                        }},
                     onDutyTime : { text: lp.workTime, tType : "time",notEmpty:true },
+                    middayRestStartTime:{ text: lp.signProxy["2"].middayRestStartTime, tType : "time",notEmpty:(signProxy!=0&&signProxy!=1)?true:false },
+                    middayRestEndTime:{ text: lp.signProxy["2"].middayRestEndTime, tType : "time",notEmpty:(signProxy!=0&&signProxy!=1)?true:false },
                     offDutyTime : { text: lp.offTime,  tType : "time",notEmpty:true },
                     lateStartTime : { text: lp.lateTime, tType : "time",notEmpty:true},
                     leaveEarlyTime : {  text:lp.leaveEarlyTime, tType : "time" },
                     absenceStartTime : { text:lp.absenteeismTime, tType : "time" }
                 }
             }, this.app);
+
             this.form.load();
+
         }.bind(this), true);
     },
     _ok: function( data, callback ){
+        //checkDate
+        var dateList = [];
+
+        var signProxy = data.signProxy;
+        if(signProxy!=1){
+            dateList= [data.onDutyTime,data.middayRestStartTime,data.middayRestEndTime,data.offDutyTime];
+        }else{
+            dateList= [data.onDutyTime,data.offDutyTime];
+        }
+        var D = Date.parse;
+        for(var i=0;i<dateList.length;i++){
+            if(i!=0&&D(dateList[i])-D(dateList[i-1])<0){
+                this.app.notice( this.app.lp.schedule.illegal[signProxy][i-1],"error",this.formNode,{x:"center",y:"center"});
+                return;
+            }
+        }
         this.app.restActions.saveSchedule(data, function(json){
             if( callback )callback(json);
         }.bind(this));
