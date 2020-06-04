@@ -25,9 +25,6 @@ public class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionFolderNameEmpty();
 			}
-			if (this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), null)) {
-				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
-			}
 			if(StringUtils.isEmpty(wi.getSuperior())){
 				wi.setSuperior(Business.TOP_FOLD);
 			}else{
@@ -35,6 +32,9 @@ public class ActionCreate extends BaseAction {
 				if(superior==null){
 					throw new ExceptionFolderNotExist(wi.getSuperior());
 				}
+			}
+			if (this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), null)) {
+				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
 			}
 			emc.beginTransaction(Folder2.class);
 			Folder2 folder = Wi.copier.copy(wi);
