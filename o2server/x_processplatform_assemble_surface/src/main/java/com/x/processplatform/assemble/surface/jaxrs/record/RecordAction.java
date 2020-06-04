@@ -71,4 +71,45 @@ public class RecordAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据(已完成)工作的job获取记录.", action = ActionListWithJob.class)
+	@GET
+	@Path("list/job/{job}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithJob(@Suspended final AsyncResponse asyncResponse,
+											@Context HttpServletRequest request,
+											@JaxrsParameterDescribe("工作的job") @PathParam("job") String job) {
+		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithJob().execute(effectivePerson, job);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据(已完成)工作的job获取记录分页.", action = ActionListWithJobPaging.class)
+	@GET
+	@Path("list/job/{job}/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithJobPaging(@Suspended final AsyncResponse asyncResponse,
+												  @Context HttpServletRequest request,
+												  @JaxrsParameterDescribe("工作的job") @PathParam("job") String job,
+												  @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+												  @JaxrsParameterDescribe("数量") @PathParam("size") Integer size) {
+		ActionResult<List<ActionListWithJobPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithJobPaging().execute(effectivePerson, job, page,
+					size);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
