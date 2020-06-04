@@ -26,7 +26,7 @@ import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -50,7 +50,8 @@ public class ActionExportAll extends BaseAction {
 	List<Identity> allIdentityList = new ArrayList<>();
 	List<UnitDuty> allDutyList = new ArrayList<>();
 	List<Group> allGroupList = new ArrayList<>();
-	Workbook wb = new HSSFWorkbook();
+	//Workbook wb = new HSSFWorkbook();
+	Workbook wb = new XSSFWorkbook();
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, Boolean stream ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -73,7 +74,7 @@ public class ActionExportAll extends BaseAction {
 			e.printStackTrace();
 		}
 		
-		fileName = "person_export_" + DateTools.formatDate(new Date()) + ".xls";
+		fileName = "person_export_" + DateTools.formatDate(new Date()) + ".xlsx";
 		//创建说明sheet
 		this.createNoticeSheet();
 		
@@ -270,7 +271,7 @@ public class ActionExportAll extends BaseAction {
 			
 			// 先创建表头
 			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("人员行姓名 *");
+			row.createCell(0).setCellValue("人员姓名 *");
 			row.createCell(1).setCellValue("员工账号 *");
 			row.createCell(2).setCellValue("手机号码 *");
 			row.createCell(3).setCellValue("人员编号");
@@ -384,32 +385,45 @@ public class ActionExportAll extends BaseAction {
 			for (int i = 0; i < groupList.size(); i++) {
 				group = groupList.get(i);
 				row = sheet.createRow(i + 1);
+				int forNumber = i+1;
 				List<String> personList = group.getPersonList();
 				List<String> unitList = group.getUnitList();
 				List<String> groupsList = group.getGroupList();
-				System.out.println("personList="+personList.size());
+				/*System.out.println("personList="+personList.size());
 				System.out.println("unitList="+unitList.size());
-				System.out.println("groupsList="+groupsList.size());
-				if(ListTools.isNotEmpty(personList)){
-					for(String personId : personList){
-						Person person = emc.flag(personId, Person.class);
-						if(person != null){
-							row.createCell(0).setCellValue(group.getName());
-							row.createCell(1).setCellValue(group.getUnique());
-							row.createCell(2).setCellValue(person.getUnique());
-							row.createCell(3).setCellValue("");
-							row.createCell(4).setCellValue("");
-						}else{
-							row.createCell(0).setCellValue(group.getName());
-							row.createCell(1).setCellValue(group.getUnique());
-							row.createCell(2).setCellValue("");
-							row.createCell(3).setCellValue("");
-							row.createCell(4).setCellValue("");
-						}
-					} 
-					
-					/*if(ListTools.isNotEmpty(unitList)){
+				System.out.println("groupsList="+groupsList.size());*/
+				if(ListTools.isEmpty(personList) && ListTools.isEmpty(unitList) && ListTools.isEmpty(groupsList)){
+					row.createCell(0).setCellValue(group.getName());
+					row.createCell(1).setCellValue(group.getUnique());
+					row.createCell(2).setCellValue("");
+					row.createCell(3).setCellValue("");
+					row.createCell(4).setCellValue("");
+					row.createCell(5).setCellValue(group.getDescription());
+				}else{
+					if(ListTools.isNotEmpty(personList)){
+						for(String personId : personList){
+							Person person = emc.flag(personId, Person.class);
+							if(person != null){
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue(person.getUnique());
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue("");
+							}else{
+								row.createCell(0).setCellValue(group.getName());
+								row.createCell(1).setCellValue(group.getUnique());
+								row.createCell(2).setCellValue("");
+								row.createCell(3).setCellValue("");
+								row.createCell(4).setCellValue("");
+							}
+							row.createCell(5).setCellValue(group.getDescription());
+						} 
+						
+					}
+					if(ListTools.isNotEmpty(unitList)){
 						for(String unitId : unitList){
+							forNumber++;
+							row = sheet.createRow(forNumber);
 							Unit unit = emc.flag(unitId, Unit.class);
 							if(unit != null){
 								row.createCell(0).setCellValue(group.getName());
@@ -424,17 +438,13 @@ public class ActionExportAll extends BaseAction {
 								row.createCell(3).setCellValue("");
 								row.createCell(4).setCellValue("");
 							}
+							row.createCell(5).setCellValue(group.getDescription());
 						} 
-					}else{
-						row.createCell(0).setCellValue(group.getName());
-						row.createCell(1).setCellValue(group.getUnique());
-						row.createCell(2).setCellValue("");
-						row.createCell(3).setCellValue("");
-						row.createCell(4).setCellValue("");
 					}
-					
 					if(ListTools.isNotEmpty(groupsList)){
 						for(String groupId : groupsList){
+							forNumber++;
+							row = sheet.createRow(forNumber);
 							Group grouptemp = emc.flag(groupId, Group.class);
 							if(grouptemp != null){
 								row.createCell(0).setCellValue(group.getName());
@@ -449,25 +459,11 @@ public class ActionExportAll extends BaseAction {
 								row.createCell(3).setCellValue("");
 								row.createCell(4).setCellValue("");
 							}
+							row.createCell(5).setCellValue(group.getDescription());
 						} 
-					}else{
-						row.createCell(0).setCellValue(group.getName());
-						row.createCell(1).setCellValue(group.getUnique());
-						row.createCell(2).setCellValue("");
-						row.createCell(3).setCellValue("");
-						row.createCell(4).setCellValue("");
-					}*/
-					
-				}else{
-					row.createCell(0).setCellValue(group.getName());
-					row.createCell(1).setCellValue(group.getUnique());
-					row.createCell(2).setCellValue("");
-					row.createCell(3).setCellValue("");
-					row.createCell(4).setCellValue("");
+					}
 				}
 				
-				
-				row.createCell(5).setCellValue(group.getDescription());
 			}
 		}
 	}
