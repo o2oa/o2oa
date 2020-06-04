@@ -765,7 +765,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var imgNode = new Element("img", { "styles": css.attachmentOCRImageNode }).inject(previewNode);
 
             o2.Actions.get("x_processplatform_assemble_surface").getAttachmentUrl(att.data.id, this.module.form.businessData.work.id, function (url) {
-                imgNode.set("src", url);
+                imgNode.set("src", o2.filterUrl(url));
             });
 
             var areaNode = new Element("div", { "styles": css.attachmentOCRInputAreaNode }).inject(node);

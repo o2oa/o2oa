@@ -28,7 +28,7 @@ MWF.xAction.RestActions.Action["x_organization_assemble_control"] = new Class({
         var uri = "/jaxrs/person/{flag}/icon";
         uri = uri.replace("{flag}", id);
         this.action.getAddress();
-        return this.action.address+uri+"?"+(new Date()).getTime();
+        return o2.filterUrl(this.action.address+uri+"?"+(new Date()).getTime());
     },
 
 
