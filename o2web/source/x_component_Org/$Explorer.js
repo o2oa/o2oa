@@ -244,9 +244,9 @@ MWF.xApplication.Org.$Explorer = new Class({
     },
     searchOrg: function(){
         var key = this.searchInputNode.get("value");
+        var isSearchElement = true;
         if (key){
             if (key!==this.options.lp.searchText){
-                var isSearchElement = true;
                 if (this.currentItem) isSearchElement = this.currentItem.unSelected();
                 if (isSearchElement){
                     this._listElementByKey(function(json){
