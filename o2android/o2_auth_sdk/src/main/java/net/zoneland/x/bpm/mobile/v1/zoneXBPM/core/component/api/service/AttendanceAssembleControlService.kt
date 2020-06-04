@@ -162,4 +162,11 @@ interface AttendanceAssembleControlService {
      */
     @GET("jaxrs/attendanceadmin/list/all")
     fun attendanceAdmin(): Observable<ApiResponse<List<AdministratorInfoJson>>>
+
+    /**
+     *
+     * @return
+     */
+    @GET("jaxrs/attendancedetail/mobile/my")
+    fun listMyRecords(): Observable<ApiResponse<MobileMyRecords>>
 }

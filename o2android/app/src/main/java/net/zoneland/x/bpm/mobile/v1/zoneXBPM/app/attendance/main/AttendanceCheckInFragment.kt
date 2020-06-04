@@ -4,6 +4,7 @@ import android.os.Handler
 import android.os.Message
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.text.TextUtils
 import com.baidu.location.BDLocation
 import com.baidu.location.BDLocationListener
 import com.baidu.location.LocationClient
@@ -29,8 +30,8 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.MapStatus
-
-
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.attendance.MobileFeature
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.attendance.MobileMyRecords
 
 
 class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInContract.View, AttendanceCheckInContract.Presenter>(),
@@ -45,7 +46,17 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
     private val recordAdapter: CommonRecycleViewAdapter<MobileCheckInJson> by lazy {
         object : CommonRecycleViewAdapter<MobileCheckInJson>(activity, recordList, R.layout.item_attendance_check_in_record_list) {
             override fun convert(holder: CommonRecyclerViewHolder?, t: MobileCheckInJson?) {
-                holder?.setText(R.id.tv_item_attendance_check_in_time, t?.signTime)
+                if (!TextUtils.isEmpty(t?.checkin_type)) {
+                    holder?.setText(R.id.tv_item_attendance_check_in_type, t?.checkin_type)
+                }else {
+                    holder?.setText(R.id.tv_item_attendance_check_in_type, getString(R.string.attendance_check_in_time_label))
+                }
+                var time = if(!TextUtils.isEmpty(t?.signTime) && t?.signTime?.length ?: 0 > 5) {
+                     t?.signTime?.substring(0, 5) ?: ""
+                }else {
+                    ""
+                }
+                holder?.setText(R.id.tv_item_attendance_check_in_time, time)
                         ?.setText(R.id.tv_item_attendance_check_in_location, t?.recordAddress)
             }
         }
@@ -57,6 +68,7 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
     private var myLocation: BDLocation? = null //当前我的位置
     private var checkInPosition: MobileCheckInWorkplaceInfoJson? = null//离的最近的工作地点位置
     private var isInCheckInPositionRange = false
+    private var feature : MobileFeature? = null
 
 
     val handler = Handler { msg ->
@@ -105,12 +117,14 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
             tv_attendance_check_in_time.gone()
             val signDate = DateHelper.nowByFormate("yyyy-MM-dd")
             val signTime = DateHelper.nowByFormate("HH:mm:ss")
-            mPresenter.checkIn(myLocation!!.latitude.toString(), myLocation!!.longitude.toString(), myLocation!!.addrStr, "", signDate, signTime, "")
+            mPresenter.checkIn(myLocation!!.latitude.toString(), myLocation!!.longitude.toString(),
+                    myLocation!!.addrStr, "", signDate, signTime, "", this.feature?.checkinType)
         }
     }
 
     override fun lazyLoad() {
         mPresenter.findTodayCheckInRecord(O2SDKManager.instance().distinguishedName)
+        mPresenter.listMyRecords()
         mPresenter.loadAllWorkplace()
     }
 
@@ -179,6 +193,20 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
         drawCheckInWorkplaceCircle()
     }
 
+    override fun myRecords(records: MobileMyRecords?) {
+         if (records != null) {
+             this.feature = records.feature
+             if (this.feature?.signSeq ?: -1 > 0) {
+                 ll_attendance_check_in_button.visible()
+             }else {
+                 ll_attendance_check_in_button.gone()
+             }
+         }else {//兼容老版本 没有这个接口就开放打卡功能
+             this.feature = null
+             ll_attendance_check_in_button.visible()
+         }
+
+    }
 
     override fun todayCheckInRecord(list: List<MobileCheckInJson>) {
         XLog.debug("todayCheckInRecord  size:${list.size}")
@@ -196,6 +224,7 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
             XToast.toastShort(activity, "打卡失败！")
         }
         mPresenter.findTodayCheckInRecord(O2SDKManager.instance().distinguishedName)
+        mPresenter.listMyRecords()
     }
 
     /**
@@ -249,7 +278,7 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
      * 找到最近的打卡地点
      */
     private fun calNearestWorkplace() {
-        if (!workplaceList.isEmpty() && myLocation!=null) {
+        if (workplaceList.isNotEmpty() && myLocation!=null) {
             var minDistance: Double = -1.0
             XLog.debug("calNearestWorkplace...................")
             workplaceList.map {
