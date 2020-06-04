@@ -22,6 +22,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
+import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
@@ -65,7 +66,7 @@ class V2Reroute extends BaseAction {
 					emc.beginTransaction(Task.class);
 					emc.beginTransaction(WorkLog.class);
 					/** 重新设置表单 */
-					setForm(work, activity);
+					setForm(business, work, activity);
 					work.setDestinationActivity(activity.getId());
 					work.setDestinationActivityType(activity.getActivityType());
 					work.setDestinationRoute("");
@@ -98,9 +99,13 @@ class V2Reroute extends BaseAction {
 
 	}
 
-	private void setForm(Work work, Activity activity) {
+	private void setForm(Business business, Work work, Activity activity) throws Exception {
 		if (StringUtils.isNotEmpty(activity.getForm())) {
-			work.setForm(activity.getForm());
+			//表单需要重新判断,如果是从模板或者复制过来的流程可能发生表单不存在的情况.
+			Form form = business.entityManagerContainer().find(activity.getForm(), Form.class);
+			if (null!= form){
+				work.setForm(form.getId());
+			}
 		}
 	}
 
