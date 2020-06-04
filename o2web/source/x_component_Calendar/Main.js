@@ -95,15 +95,15 @@ MWF.xApplication.Calendar.Main = new Class({
 
     },
     createDefaultCalendar : function( callback ){
-      this.actions.saveCalendar({
-          name : "我的日历",
-          type : "person",
-          color : "",
-          description : "",
-          source : "PERSON",
-          isPublic : false//,
-          //manageablePersonList : [this.userName]
-      }, function(){
+      // this.actions.saveCalendar({
+      //     name : "我的日历",
+      //     type : "person",
+      //     color : "",
+      //     description : "",
+      //     source : "PERSON",
+      //     isPublic : false//,
+      //     //manageablePersonList : [this.userName]
+      // }, function(){
           this.actions.listMyCalendar( function( json ){
               if( ( json.data.myCalendars || [] ).length == 0 ){
               }else{
@@ -113,7 +113,7 @@ MWF.xApplication.Calendar.Main = new Class({
                   if(callback)callback()
               }
           }.bind(this))
-      }.bind(this))
+      // }.bind(this))
     },
     createNode: function(){
         this.content.setStyle("overflow", "hidden");
