@@ -18,7 +18,7 @@ MWF.xAction.RestActions.Action["x_teamwork_assemble_control"] = new Class({
             var url = this.action.actions.attachmentDownload.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            window.open(this.actionAttachment.address+url);
+            window.open(o2.filterUrl(this.actionAttachment.address+url));
         }.bind(this));
     },
     attachmentDownloadStream: function(id,documentid,callback){
@@ -26,7 +26,7 @@ MWF.xAction.RestActions.Action["x_teamwork_assemble_control"] = new Class({
             var url = this.action.actions.attachmentDownloadStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
 
         }.bind(this));
     },
@@ -36,7 +36,7 @@ MWF.xAction.RestActions.Action["x_teamwork_assemble_control"] = new Class({
             var url = this.action.actions.attachmentDownload.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
 
