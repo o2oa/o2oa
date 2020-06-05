@@ -253,7 +253,7 @@ MWF.xApplication.process.ProcessManager.FileExplorer.File = new Class({
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.application);
         url = "/x_processplatform_assemble_surface"+url;
-        return MWF.Actions.getHost("x_processplatform_assemble_surface")+url;
+        return  o2.filterUrl(MWF.Actions.getHost("x_processplatform_assemble_surface")+url);
     },
 	_getLnkPar: function(){
 		return {
@@ -374,7 +374,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
 
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom");
         }
     },
@@ -393,7 +393,7 @@ MWF.xApplication.process.ProcessManager.FileDesigner = new Class({
             this.fileUrlNode.set("text", url);
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom");
         }
 
