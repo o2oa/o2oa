@@ -210,7 +210,7 @@ MWF.xApplication.AppCenter.Module = new Class({
 
             var uri = this.app.actions.action.actions["download"].uri;
             uri = uri.replace("{flag}", this.json.structure);
-            window.open(this.app.actions.action.address+uri);
+            window.open(o2.filterUrl(this.app.actions.action.address+uri));
 
         }.bind(this));
 
