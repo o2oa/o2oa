@@ -58,6 +58,32 @@ public class UserManagerService {
 		}
 		return result;
 	}
+
+	public Unit getUnitWithPersonName( String personName ) throws Exception{
+		List<String> unitNames = null;
+		Business business = null;
+		Integer level = 0;
+		Unit result = null;
+		Unit unit = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			unitNames = business.organization().unit().listWithPerson( personName );
+			if( ListTools.isNotEmpty( unitNames ) ) {
+				for( String unitName : unitNames ) {
+					if( StringUtils.isNotEmpty( unitName ) && !"null".equals( unitName ) ) {
+						unit = business.organization().unit().getObject( unitName );
+						if( level < unit.getLevel() ) {
+							level = unit.getLevel();
+							result = unit;
+						}
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return unit;
+	}
 	
 	/**
 	 * 根据身份名称获取组织名称
@@ -100,7 +126,7 @@ public class UserManagerService {
 	
 	/**
 	 * 检查组织名称是否有效
-	 * @param name
+	 * @param unitName
 	 * @return
 	 * @throws Exception 
 	 */
@@ -213,7 +239,7 @@ public class UserManagerService {
 	
 	/**
 	 * 根据组织名称获取顶层组织名称(递归)
-	 * @param organizationName
+	 * @param unitName
 	 * @return
 	 * @throws Exception 
 	 */
@@ -237,6 +263,35 @@ public class UserManagerService {
 					return currentUnit.getDistinguishedName();
 				}else {
 					return getTopUnitNameWithUnitName( parentUnit.getDistinguishedName() );
+				}
+			}else {
+				throw new Exception("unit is not exists:" + unitName);
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public Unit getTopUnitWithUnitName( String unitName ) throws Exception{
+		Unit currentUnit = null;
+		Unit parentUnit = null;
+		String parentUnitName = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			currentUnit = business.organization().unit().getObject( unitName );
+			if( currentUnit != null ) {
+				parentUnitName = currentUnit.getSuperior();
+				if( StringUtils.isNotEmpty( parentUnitName ) && !"0".equals( parentUnitName ) ) {
+					try {
+						parentUnit = business.organization().unit().getObject( parentUnitName );
+					}catch( NullPointerException e ) {
+					}
+				}
+				if( parentUnit == null ) {
+					return currentUnit;
+				}else {
+					return getTopUnitWithUnitName( parentUnit.getDistinguishedName() );
 				}
 			}else {
 				throw new Exception("unit is not exists:" + unitName);

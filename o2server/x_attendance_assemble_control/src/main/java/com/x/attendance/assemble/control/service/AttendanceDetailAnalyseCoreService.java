@@ -265,7 +265,7 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getOffDutyTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
 		try {
-			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
+			if( StringUtils.isEmpty( detail.getOffDutyTime() ) ){
 				logger.debug( debugger, "offDutyTime " );
 			}else{
 				logger.debug( debugger, "offDutyTime=" + detail.getRecordDateString() + " " + detail.getOffDutyTime() );
