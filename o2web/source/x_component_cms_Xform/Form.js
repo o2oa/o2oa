@@ -465,8 +465,8 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
         }
         this.documentAction.publishDocumentComplex(documentData, function (json) {
             this.businessData.data.isNew = false;
-            this.fireEvent("afterPublish");
-            if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish");
+            this.fireEvent("afterPublish", [this, json.data]);
+            if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterPublish",[this, json.data]);
             if (callback) callback();
             if (this.app.mobile) {
                 this.app.content.unmask();
