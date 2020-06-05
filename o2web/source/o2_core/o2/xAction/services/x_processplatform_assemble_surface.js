@@ -6,7 +6,7 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_surface"] = new Class
             var url = this.action.actions["exportViewResult"].uri;
             //url = url.replace("{applicationFlag}", app);
             url = url.replace("{flag}", json.data.id);
-            window.open(this.action.address+url, "_blank");
+            window.open(o2.filterUrl(this.action.address+url, "_blank"));
         }.bind(this)});
     },
     saveDictionary: function(data, success, failure){
