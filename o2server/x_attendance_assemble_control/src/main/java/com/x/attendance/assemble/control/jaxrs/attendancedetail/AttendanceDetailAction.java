@@ -349,12 +349,10 @@ public class AttendanceDetailAction extends StandardJaxrsAction {
 	}
 
 	/**
-	 * 打卡信息接入 1-员工姓名 EmployeeName 2-员工号 EmployeeNo 3-日期 RecordDateString 4-签到时间
-	 * OnDutyTime 5-签退时间 OffDutyTime
-	 * 
+	 * 打卡信息接入
 	 * @author liyi_
 	 */
-	@JaxrsMethodDescribe(value = "接入完成的上下班打卡信息记录，接入完成后直接分析", action = ActionReciveAttendance.class)
+	@JaxrsMethodDescribe(value = "接入完整的打卡信息记录，接入完成后直接分析", action = ActionReciveAttendance.class)
 	@Path("recive")
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
