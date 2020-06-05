@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
@@ -97,11 +98,18 @@ public class IdentityFactory extends AbstractFactory {
 		return list;
 	}
 
-	public <T extends Identity> List<T> sort(List<T> list) {
-		list = list.stream().sorted(
-				Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
-						Comparator.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
-				.collect(Collectors.toList());
+	public <T extends Identity> List<T> sort(List<T> list) throws Exception {
+		if(Config.person().getPersonUnitOrderByAsc()) {
+			list = list.stream().sorted(
+					Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
+							Comparator.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+					.collect(Collectors.toList());
+		}else{
+			list = list.stream().sorted(
+					Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).reversed().thenComparing(
+							Comparator.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+					.collect(Collectors.toList());
+		}
 		return list;
 	}
 
