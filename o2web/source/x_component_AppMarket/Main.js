@@ -432,7 +432,7 @@ MWF.xApplication.AppMarket.Module.SetupLocal = new Class({
     loadCompare: function(){
         var formData = new FormData();
         formData.append('file', this.file);
-
+        debugger;
         this.app.actions.compareUpload(formData, this.file, function(json){
             this.clearLoading();
             this.setupData.flag = json.data.flag;

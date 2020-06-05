@@ -180,7 +180,7 @@ MWF.xApplication.Org.Main = new Class({
 	},
     loadPersonImport: function(){
     	var action = o2.Actions.get("x_organization_assemble_control");
-        var url = action.action.address + action.action.actions.getImportPersonTemplate.uri;
+        var url = o2.filterUrl(action.action.address + action.action.actions.getImportPersonTemplate.uri);
         var infor = this.lp.importPersonInfor.replace("{url}", url);
 
         this.importPersonTitleNode.set("text", this.lp.importPersonTitle);
@@ -196,7 +196,7 @@ MWF.xApplication.Org.Main = new Class({
                     "method": "importPerson",
                     "multiple": false,
                     "onCompleted": function(json){
-                        var url = action.action.address + action.action.actions.getImportPersonResault.uri;
+                        var url = o2.filterUrl(action.action.address + action.action.actions.getImportPersonResault.uri);
                         url = url.replace("{flag}", json.data.flag);
                         var result = this.lp.importPersonResult.replace("{url}", url);
                         this.importPersonResultNode.set("html", result);
