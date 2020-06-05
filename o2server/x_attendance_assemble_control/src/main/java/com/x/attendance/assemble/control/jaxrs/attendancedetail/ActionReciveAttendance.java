@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
@@ -15,6 +16,9 @@ import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.attendance.entity.AttendanceSelfHoliday;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersist;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -186,16 +190,31 @@ public class ActionReciveAttendance extends BaseAction {
 	
 	public static class Wi {
 
+		@FieldDescribe( "员工标识，<font color='red'>必填</font>，员工的distinguishedName." )
 		private String empName = null;
-		
+
+		@FieldDescribe( "员工号, 可以为空，默认为员工标识相同值." )
 		private String empNo = null;
-		
+
+		@FieldDescribe( "打卡日期，格式yyyy-mm-dd，可以为空." )
 		private String recordDateString = null;
-		
+
+		@FieldDescribe( "上午上班打卡时间，格式hh24:mi:ss，可以为空，为空就是未打卡." )
 		private String onDutyTime = null;
-		
+
+		@FieldDescribe("上班下午打卡签退时间，打卡策略2和3时使用，格式hh24:mi:ss，可以为空，为空就是未打卡.")
+		private String morningOffdutyTime;
+
+		@FieldDescribe("下午上班打卡签到时间，打卡策略2和3时使用，格式hh24:mi:ss，可以为空，为空就是未打卡.")
+		private String afternoonOnDutyTime;
+
+		@FieldDescribe( "下午下班打卡时间，hh24:mi:ss，可以为空，为空就是未打卡." )
 		private String offDutyTime = null;
-		
+
+		public String getMorningOffdutyTime() { return morningOffdutyTime; }
+		public void setMorningOffdutyTime(String morningOffdutyTime) { this.morningOffdutyTime = morningOffdutyTime; }
+		public String getAfternoonOnDutyTime() { return afternoonOnDutyTime; }
+		public void setAfternoonOnDutyTime(String afternoonOnDutyTime) { this.afternoonOnDutyTime = afternoonOnDutyTime; }
 		public String getEmpName() {
 			return empName;
 		}
