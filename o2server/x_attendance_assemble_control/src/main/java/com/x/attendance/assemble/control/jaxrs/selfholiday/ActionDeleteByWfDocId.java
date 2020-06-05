@@ -35,7 +35,7 @@ public class ActionDeleteByWfDocId extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
-			ids = business.getAttendanceSelfHolidayFactory().getByWorkFlowDocId(wfDocId);
+			ids = business.getAttendanceSelfHolidayFactory().listIdsWithBatchFlag(wfDocId);
 			if ( ListTools.isNotEmpty( ids ) ) {
 				attendanceSelfHolidays = business.getAttendanceSelfHolidayFactory().list(ids);
 				if (attendanceSelfHolidays != null && attendanceSelfHolidays.size() > 0) {
