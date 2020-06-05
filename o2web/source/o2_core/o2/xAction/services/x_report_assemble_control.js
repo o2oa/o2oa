@@ -7,14 +7,14 @@ MWF.xAction.RestActions.Action["x_report_assemble_control"] = new Class({
         this.action.getActions(function(){
             var url = this.action.actions.statByKeyWork.uri;
             url = url.replace("{year}", encodeURIComponent(year));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getExportFileStream: function(id){
         this.action.getActions(function(){
             var url = this.action.actions.exportStatResult.uri;
             url = url.replace("{id}", encodeURIComponent(id));
-            window.open(this.action.address+url, "_blank");
+            window.open(o2.filterUrl(this.action.address+url), "_blank");
         }.bind(this));
     }
     //statByUnit : function( year, success,failure, async){

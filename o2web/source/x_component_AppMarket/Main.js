@@ -95,8 +95,8 @@ MWF.xApplication.AppMarket.Main = new Class({
                     "width": width,
                     "height": height,
                     "html": "",
-                    "maskNode": this.node,
-                    "container": this.node,
+                    "maskNode": this.content,
+                    "container": this.content,
                     "buttonList": [
                         {
                             "text": appCenter.lp.ok,

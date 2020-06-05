@@ -13,7 +13,7 @@ MWF.xAction.RestActions.Action["x_attendance_assemble_control"] = new Class({
             var url = this.action.actions.exportSelfHoliday.uri;
             url = url.replace("{startdate}", startdate);
             url = url.replace("{enddate}", enddate);
-            window.open(this.action.address+url , "_blank");
+            window.open(o2.filterUrl(this.action.address+url , "_blank"));
         }.bind(this));
     },
     uploadAttachment: function(success, failure, formData, file){
@@ -23,7 +23,7 @@ MWF.xAction.RestActions.Action["x_attendance_assemble_control"] = new Class({
         this.action.getActions(function(){
             var url = this.action.actions.getAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     exportAbnormalAttachment: function(year, month, success, failure){
@@ -31,7 +31,7 @@ MWF.xAction.RestActions.Action["x_attendance_assemble_control"] = new Class({
             var url = this.action.actions.exportAbnormalAttachment.uri;
             url = url.replace("{year}", year);
             url = url.replace("{month}", month);
-            window.open(this.action.address+url , "_blank");
+            window.open(o2.filterUrl(this.action.address+url , "_blank"));
         }.bind(this));
         //this.action.invoke({"name": "exportAbnormalAttachment", "parameter": {"year": year, "month": month },"success": success,"failure": failure});
     },
