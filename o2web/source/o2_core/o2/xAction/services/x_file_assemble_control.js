@@ -16,17 +16,16 @@ MWF.xAction.RestActions.Action["x_file_assemble_control"] = new Class({
         this.action.getActions(function(){
             var url = this.action.actions.getAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getFileDownloadUrl: function(id, callback){
         this.action.getActions(function(){
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
-
     getBase64Code: function(success, failure, id, width, height, async){
         width = width || 0;
         height = height ||0;
