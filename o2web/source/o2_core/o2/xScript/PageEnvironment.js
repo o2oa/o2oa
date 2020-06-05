@@ -1062,6 +1062,7 @@ MWF.xScript.PageEnvironment = function (ev) {
         },
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
+            var onAfterPublish, onPostPublish;
             if (typeOf(columnOrOptions) == "object") {
                 column = columnOrOptions.column;
                 category = columnOrOptions.category;
@@ -1072,6 +1073,8 @@ MWF.xScript.PageEnvironment = function (ev) {
                 latest = columnOrOptions.latest;
                 selectColumnEnable = columnOrOptions.selectColumnEnable;
                 ignoreTitle = columnOrOptions.ignoreTitle;
+                onAfterPublish = columnOrOptions.onAfterPublish;
+                onPostPublish = columnOrOptions.onPostPublish;
             }
             if (target) {
                 if (layout.app && layout.app.inBrowser) {
@@ -1095,9 +1098,11 @@ MWF.xScript.PageEnvironment = function (ev) {
                     "onStarted": function (documentId, data) {
                         if (callback) callback();
                     },
-                    "onPostLoad": function () {
-                    },
                     "onPostPublish": function () {
+                        if(onPostPublish)onPostPublish();
+                    },
+                    "onAfterPublish": function () {
+                        if(onAfterPublish)onAfterPublish();
                     }
                 });
                 starter.load();
