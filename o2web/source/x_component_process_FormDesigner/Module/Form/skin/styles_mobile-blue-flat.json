@@ -74,7 +74,6 @@
         "color": "#000000",
         "font-size": "16px",
         "font-weight": "bold",
-        "border": "0px",
         "border-left": "4px solid #32AAFF"
       }
     }
