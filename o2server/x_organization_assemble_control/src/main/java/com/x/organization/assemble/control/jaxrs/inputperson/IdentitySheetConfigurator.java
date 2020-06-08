@@ -42,7 +42,7 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
-				System.out.println("personStr = "+str);
+				System.out.println("identityStr = "+str);
 				if (StringUtils.isNotEmpty(str)) {
 					if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
