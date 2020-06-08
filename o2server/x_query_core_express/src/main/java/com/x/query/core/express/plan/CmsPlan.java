@@ -1,6 +1,5 @@
 package com.x.query.core.express.plan;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -34,8 +33,6 @@ import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
 public class CmsPlan extends Plan {
-
-	public final static String CMS_DOCUMENT_ACCESS_FLAG = "cmsDocumentAccessFlag";
 
 	public CmsPlan() {
 	}
@@ -92,7 +89,7 @@ public class CmsPlan extends Plan {
 		//根据where条件查询符合条件的所有文档ID列表
 		docIds = listBundle_document(emc);
 		
-		if (BooleanUtils.isTrue(this.where.accessible) && !this.runtime.parameter.containsKey(CMS_DOCUMENT_ACCESS_FLAG)) {
+		if (BooleanUtils.isTrue(this.where.accessible)) {
 			if (StringUtils.isNotEmpty(runtime.person)) {
 				//过滤可见范围
 				docIds = this.listBundle_accessible(emc, docIds, runtime.person );
@@ -133,7 +130,7 @@ public class CmsPlan extends Plan {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Document> root = cq.from(Document.class);
-		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root, this.runtime));
+		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root, this.runtime, this.filterList));
 		//System.out.println(">>>>>1-listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
 		List<String> docIds = em.createQuery(cq).getResultList();
 		return docIds;
@@ -267,12 +264,12 @@ public class CmsPlan extends Plan {
 		 * @return
 		 * @throws Exception
 		 */
-		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime) throws Exception {
+		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime, List<FilterEntry> filterList) throws Exception {
 			List<Predicate> ps = new TreeList<>();
 			ps.add(this.documentPredicate_creator(cb, root));
 			ps.add(this.documentPredicate_appInfo(cb, root));
 			ps.add(this.documentPredicate_date(cb, root));
-			ps.add(this.documentPredicate_accessible(cb, root, runtime));
+			ps.add(this.documentPredicate_Filter(cb, root, runtime, filterList));
 			
 			Predicate predicate = this.documentPredicate_typeScope(cb, root);
 			if( predicate != null  ) {
@@ -375,26 +372,38 @@ public class CmsPlan extends Plan {
 			return null;
 		}
 
-		private Predicate documentPredicate_accessible(CriteriaBuilder cb, Root<Document> root, Runtime runtime) throws Exception {
-			if (!BooleanUtils.isTrue(this.accessible) || !runtime.parameter.containsKey(CmsPlan.CMS_DOCUMENT_ACCESS_FLAG)) {
+		private Predicate documentPredicate_Filter(CriteriaBuilder cb, Root<Document> root, Runtime runtime, List<FilterEntry> filterList) throws Exception {
+			boolean flag = true;
+			Predicate p = cb.disjunction();
+			for(FilterEntry filterEntry : filterList){
+				if(filterEntry.path.indexOf("(")>-1 && filterEntry.path.indexOf(")")>-1){
+					flag = false;
+					String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
+					if("readPersonList".equals(path)){
+						p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
+						p = cb.or(p, cb.isMember(runtime.person, root.get(Document_.readPersonList)));
+					}else if("readUnitList".equals(path)){
+						if(ListTools.isNotEmpty(runtime.unitAllList)){
+							p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
+						}
+					}else if("readGroupList".equals(path)){
+						if(ListTools.isNotEmpty(runtime.groupList)){
+							p = cb.or(p, root.get(Document_.readGroupList).in(runtime.groupList));
+						}
+					}else{
+						Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
+						if (StringUtils.equals("and", filterEntry.logic)) {
+							p = cb.and(p, fp);
+						}else{
+							p = cb.or(p, fp);
+						}
+					}
+				}
+			}
+			if(flag){
 				return null;
 			}
-			List<Predicate> matchEach = new ArrayList<>();
-			matchEach.add(cb.isMember("所有人", root.get(Document_.readPersonList)));
-			if(StringUtils.isNotEmpty(runtime.person)){
-				matchEach.add(cb.isMember(runtime.person, root.get(Document_.readPersonList)));
-			}
-			if(ListTools.isNotEmpty(runtime.unitAllList)){
-				for (String unit : runtime.unitAllList){
-					matchEach.add(cb.isMember(unit, root.get(Document_.readUnitList)));
-				}
-			}
-			if(ListTools.isNotEmpty(runtime.groupList)){
-				for (String group : runtime.groupList){
-					matchEach.add(cb.isMember(group, root.get(Document_.readGroupList)));
-				}
-			}
-			return cb.or(matchEach.toArray(new Predicate[] {}));
+			return p;
 
 		}
 	}
