@@ -44,8 +44,10 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.initLog();
         this.loadLog();
     },
-    initLog: function(){
-        this.screenInforAreaNode.empty();
+    initLog: function(appendFlag){
+        if(!appendFlag){
+            this.screenInforAreaNode.empty();
+        }
         this.date = this.dateSelect.options[this.dateSelect.selectedIndex];
         this.method = "listPromptErrorLog";
         this.count = 20;
@@ -134,7 +136,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.clearBtn = new Element("button",{"text":"clear","style":"margin:10px;float:right"}).inject(this.toolbarNode);
         this.clearBtn.addEvent("click",function () {
             this.screenInforAreaNode.empty();
-            this.tagId = o2.uuid();
+            //this.tagId = o2.uuid();
         }.bind(this));
         this.stopBtn = new Element("button",{"text":"stop","style":"margin:10px;float:right"}).inject(this.toolbarNode);
         this.startBtn = new Element("button",{"text":"start","style":"margin:10px;display:none;;float:right"}).inject(this.toolbarNode);
@@ -155,7 +157,7 @@ MWF.xApplication.LogViewer.Main = new Class({
         this.startBtn.addEvent("click",function () {
             this.startBtn.hide();
             this.stopBtn.show();
-            this.initLog();
+            this.initLog(true);
             this.loadLog();
         }.bind(this));
     },
@@ -418,6 +420,7 @@ MWF.xApplication.LogViewer.Log = new Class({
     load: function(){
         this.node = new Element("div", {"styles": this.css.logItemNode}).inject(this.app.screenInforAreaNode);
 
+        if(!this.log) return;
         var m = this.log.message.substr(0, this.log.message.indexOf("\n"));
         var message = m + ((this.log.person) ? "&nbsp;("+this.log.person+")": "");
         var html = "<pre><span  class='MWFLogCheckbox' style='cursor: pointer;float: left; height: 20px; width: 30px; background: url(../x_component_LogViewer/$Main/default/check.png) no-repeat center center'></span>" +
