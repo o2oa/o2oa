@@ -264,7 +264,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                 if (this.currentItem) isSearchElement = this.currentItem.unSelected();
                 if (isSearchElement){
                     this.clear();
-                    this.loadElements();
+                    this.reloadElements();
                 }else{
                     this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
                 }
@@ -273,7 +273,7 @@ MWF.xApplication.Org.$Explorer = new Class({
             if (this.currentItem) isSearchElement = this.currentItem.unSelected();
             if (isSearchElement){
                 this.clear();
-                this.loadElements();
+                this.reloadElements();
             }else{
                 this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
             }
@@ -369,6 +369,11 @@ MWF.xApplication.Org.$Explorer = new Class({
         if (this.elements.length<this.getPageNodeCount()){
             this.loadElements(true);
         }
+    },
+    reloadElements : function(){
+        this.elements = [];
+        this.clear();
+        this.loadElements();
     },
     loadElements: function(addToNext){
         if (!this.isElementLoaded){
