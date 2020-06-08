@@ -169,7 +169,6 @@ MWF.xApplication.Org.Main = new Class({
             "styles": this.css.rightContentNode
         }).inject(this.node);
         this.importConfiguratorContentNode.set("load", {"onSuccess": function(){
-        	this.importPersonCleanNode = this.importConfiguratorContentNode.getElement(".importPersonCleanNode");
         	this.importPersonTitleNode = this.importConfiguratorContentNode.getElement(".importPersonTitleNode");
             this.importPersonTemplateNode = this.importConfiguratorContentNode.getElement(".importPersonTemplateNode");
             this.importPersonNode = this.importConfiguratorContentNode.getElement(".importPersonNode");
@@ -184,20 +183,10 @@ MWF.xApplication.Org.Main = new Class({
         var url = action.action.address + action.action.actions.getImportPersonTemplate.uri;
         var infor = this.lp.importPersonInfor.replace("{url}", url);
 
-		this.importPersonCleanNode.set("text", this.lp.importPersonCleanNode);
         this.importPersonTitleNode.set("text", this.lp.importPersonTitle);
         this.importPersonTemplateNode.set("html", infor);
         this.importPersonNode.set("text", this.lp.importPersonAction);
-
-		this.importPersonCleanNode.addEvent("click", function(){
-			this.importPersonResultNode.hide();
-			this.restActions.wipeAll(function( json ){
-				if (json.type && json.type=="success"){
-					this.importPersonResultNode.set("html", json.data.flag);
-					this.importPersonResultNode.show();
-				}
-			}.bind(this),null,false);
-		}.bind(this));
+		
 
         this.importPersonNode.addEvent("click", function(){
             this.importPersonResultNode.hide();

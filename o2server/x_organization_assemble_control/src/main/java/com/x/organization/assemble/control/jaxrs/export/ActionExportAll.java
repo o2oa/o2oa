@@ -225,9 +225,8 @@ public class ActionExportAll extends BaseAction {
 			row.createCell(1).setCellValue("组织编号 *");
 			row.createCell(2).setCellValue("组织级别名称 *");
 			row.createCell(3).setCellValue("上级组织编号");
-			row.createCell(4).setCellValue("组织代字");
-			row.createCell(5).setCellValue("描述");
-			row.createCell(6).setCellValue("排序号");
+			row.createCell(4).setCellValue("描述");
+			row.createCell(5).setCellValue("排序号");
 
 			for (int i = 0; i < unitList.size(); i++) {
 				unit = unitList.get(i);
@@ -253,9 +252,8 @@ public class ActionExportAll extends BaseAction {
 					}
 					
 				}
-				row.createCell(4).setCellValue(unit.getShortName());
-				row.createCell(5).setCellValue(unit.getDescription());
-				row.createCell(6).setCellValue(unit.getOrderNumber()+"");
+				row.createCell(4).setCellValue(unit.getDescription());
+				row.createCell(5).setCellValue(unit.getOrderNumber()+"");
 				
 			}
 		}
