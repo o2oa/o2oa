@@ -119,6 +119,10 @@
 		B13A0120236935BC00025F3B /* O2CloudFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */; };
 		B142B081230FB56400E7D127 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B080230FB56400E7D127 /* MimeType.swift */; };
 		B142B083230FB58B00E7D127 /* Swime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B082230FB58B00E7D127 /* Swime.swift */; };
+		B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */; };
+		B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */; };
+		B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */; };
+		B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -1433,6 +1437,10 @@
 		B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2CloudFileInfo.swift; sourceTree = "<group>"; };
 		B142B080230FB56400E7D127 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B142B082230FB58B00E7D127 /* Swime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swime.swift; sourceTree = "<group>"; };
+		B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatViewController.swift; sourceTree = "<group>"; };
+		B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatViewController.xib; sourceTree = "<group>"; };
+		B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageViewCell.swift; sourceTree = "<group>"; };
+		B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageViewCell.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -2558,6 +2566,8 @@
 				B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */,
 				B1173A5F2488C82F005075F0 /* IMViewModel.swift */,
 				B1173A692488D4AD005075F0 /* O2IM.swift */,
+				B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */,
+				B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */,
 			);
 			path = "IM-聊天";
 			sourceTree = "<group>";
@@ -2583,6 +2593,8 @@
 			children = (
 				B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */,
 				B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */,
+				B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */,
+				B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5458,6 +5470,7 @@
 				E4C24B4920844F3C00E426B0 /* JCMessageImageCollectionViewCell.xib in Resources */,
 				E4C24C1820844F5200E426B0 /* yh_image_picked@2x.png in Resources */,
 				E45755A61E0BA72E00EC44F4 /* qrcode_scan_part_net.png in Resources */,
+				B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */,
 				E46E6C721DD41F5D00AB7561 /* ZSSfonts@2x.png in Resources */,
 				E46E6C6E1DD41F5D00AB7561 /* ZSScenterjustify@2x.png in Resources */,
 				B1298E822366B2E7006E9236 /* CFImageViewCell.xib in Resources */,
@@ -5479,6 +5492,7 @@
 				E4C24B6120844F3C00E426B0 /* addressCode in Resources */,
 				E4B697D920764A2D0062F6E8 /* myshareEditorByPerson.json in Resources */,
 				E457559D1E0BA72E00EC44F4 /* qrcode_scan_btn_flash_down@2x.png in Resources */,
+				B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */,
 				E4C24C1A20844F5200E426B0 /* emoticons.bundle in Resources */,
 				E4B888E11D9D48F1002E1A46 /* contacts.storyboard in Resources */,
 				E45755A51E0BA72E00EC44F4 /* qrcode_scan_light_green@2x.png in Resources */,
@@ -5985,6 +5999,7 @@
 				E4C24B5320844F3C00E426B0 /* SAIInputView.swift in Sources */,
 				E40E24CF20B7DA3C009F8BE7 /* OOFormDateItemView.swift in Sources */,
 				B1FBA01D230A3AB500A90722 /* O2JsApiBizUtil.swift in Sources */,
+				B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */,
 				E4B69776207630240062F6E8 /* UIView+Extension.swift in Sources */,
 				E4C24BB420844F3C00E426B0 /* JCMessageContentViewType.swift in Sources */,
 				E4C24B9420844F3C00E426B0 /* JCGroupSettingCell.swift in Sources */,
@@ -6365,6 +6380,7 @@
 				E4B888A41D9D48F1002E1A46 /* MJRefreshBackNormalFooter.m in Sources */,
 				E4B2320F20B2A9F60082F30A /* OOAttandanceWorkPlaceController.swift in Sources */,
 				E46E6CB91DD41F5D00AB7561 /* CYRTextView.m in Sources */,
+				B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */,
 				B175007C233C6908003DA7B9 /* BlockTap.swift in Sources */,
 				E4C24B5020844F3C00E426B0 /* SAIInputAccessoryViewLayout.swift in Sources */,
 				E4AA17151EE158E70030D9AB /* LogListViewController.swift in Sources */,

@@ -19,11 +19,28 @@ class IMViewModel: NSObject {
 }
 
 extension IMViewModel {
-    
+    //查询会话列表
     func myConversationList() -> Promise<[IMConversationInfo]> {
         return Promise { fulfill, reject in
             self.communicateAPI.request(.myConversationList, completion: { result in
                 let response = OOResult<BaseModelClass<[IMConversationInfo]>>(result)
+                if response.isResultSuccess() {
+                    if let list = response.model?.data {
+                        fulfill(list)
+                    }else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                }else {
+                    reject(response.error!)
+                }
+            })
+        }
+    }
+    //查询消息列表
+    func myMsgPageList(page: Int, conversationId: String) -> Promise<[IMMessageInfo]> {
+        return Promise { fulfill, reject in
+            self.communicateAPI.request(.msgListByPaging(page, 40, conversationId), completion: { result in
+                let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
                 if response.isResultSuccess() {
                     if let list = response.model?.data {
                         fulfill(list)

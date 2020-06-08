@@ -124,6 +124,9 @@ extension IMConversationListViewController: UITableViewDelegate, UITableViewData
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         DDLogDebug("点击了 row \(indexPath.row)")
+        let chatView = IMChatViewController()
+        chatView.conversation = self.conversationList[indexPath.row]
+        self.navigationController?.pushViewController(chatView, animated: true)
     }
     //todo can edit
 

@@ -13,6 +13,7 @@ import O2OA_Auth_SDK
 
 enum CommunicateAPI {
     case myConversationList
+    case msgListByPaging(Int, Int, String)
     
     
 }
@@ -42,7 +43,8 @@ extension CommunicateAPI: TargetType {
         switch self {
         case .myConversationList:
             return "/jaxrs/im/conversation/list/my"
-        
+        case .msgListByPaging(let page, let size, _):
+            return "/jaxrs/im/msg/list/\(page)/size/\(size)"
         }
     }
     
@@ -50,7 +52,8 @@ extension CommunicateAPI: TargetType {
         switch self {
         case .myConversationList:
             return .get
-         
+        case .msgListByPaging(_, _, _):
+            return .post
         }
     }
     
@@ -62,6 +65,10 @@ extension CommunicateAPI: TargetType {
         switch self {
         case .myConversationList:
             return .requestPlain
+        case .msgListByPaging(_, _, let conversationId):
+            let form = IMMessageRequestForm()
+            form.conversationId = conversationId
+            return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
         }
     }
     

@@ -15,22 +15,33 @@ class IMConversationInfo: NSObject, DataModel {
     @objc var personList: [String]?
     @objc var adminPerson: String?
     @objc var note: String?
-    
+
     @objc var lastMessageTime: String?
     @objc var createTime: String?
     @objc var updateTime: String?
     var unreadNumber: Int?
     var isTop: Bool?
-    
+
     @objc var lastMessage: IMMessageInfo?
-    
-    required override init(){}
-    
+
+    required override init() { }
+
     func mapping(mapper: HelpingMapper) {
-        
+
     }
 }
 
+
+class IMMessageRequestForm: NSObject, DataModel {
+
+    @objc var conversationId: String?
+
+    required override init() { }
+
+    func mapping(mapper: HelpingMapper) {
+
+    }
+}
 
 class IMMessageInfo: NSObject, DataModel {
     @objc var id: String?
@@ -39,24 +50,24 @@ class IMMessageInfo: NSObject, DataModel {
     @objc var createPerson: String?
     @objc var createTime: String?
     @objc var updateTime: String?
-    
-     required override init(){}
-       
-       func mapping(mapper: HelpingMapper) {
-           
-       }
+
+    required override init() { }
+
+    func mapping(mapper: HelpingMapper) {
+
+    }
 }
 
 class IMMessageBodyInfo: NSObject, DataModel {
     @objc var id: String?
-   @objc var type: String?
-   @objc var body: String?
-    
-    
-    required override init(){}
-    
+    @objc var type: String?
+    @objc var body: String?
+
+
+    required override init() { }
+
     func mapping(mapper: HelpingMapper) {
-        
+
     }
 }
 
@@ -64,9 +75,9 @@ class IMMessageBodyInfo: NSObject, DataModel {
 class WsMessage: NSObject, DataModel {
     @objc var type: String? //im_create
     @objc var body: IMMessageInfo? //这个对象只有 type=im_create的时候才是这个对象
-    required override init(){}
-    
+    required override init() { }
+
     func mapping(mapper: HelpingMapper) {
-        
+
     }
 }

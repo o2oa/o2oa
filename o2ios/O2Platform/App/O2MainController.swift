@@ -254,7 +254,7 @@ extension O2MainController: WebSocketDelegate {
                             }
                         }
                     }
-                } catch { }
+                } catch {  }
             }
             break
         case .connected(let headers):
