@@ -18,7 +18,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
             this.descriptionNode.addEvents({
                 "mousedown": function(){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect();
+                    //this.clickSelect();
                 }.bind(this)
             });
         }
