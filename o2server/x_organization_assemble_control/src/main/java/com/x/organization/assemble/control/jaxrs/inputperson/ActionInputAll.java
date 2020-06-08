@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,11 +31,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -73,11 +68,9 @@ class ActionInputAll extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionInputAll.class);
 	
 	private  boolean dutyFlag = false;
-	private  boolean unitTypeFlag = false;
 	
 	private  boolean wholeFlag = false;
 	
-	private static Map<String, String> typeMap = new HashMap<String,String>();
 	private static Map<String, String> dutyMap = new HashMap<String,String>();
 	
 	List<UnitItem> unit = new ArrayList<>();
@@ -122,36 +115,7 @@ class ActionInputAll extends BaseAction {
 		}
 	}
 
-	private void scan(Business business, XSSFWorkbook workbook) throws Exception {
-	//导入组织级别
-		Sheet sheet = workbook.getSheetAt(1);
-		System.out.println("sheet="+sheet.getSheetName());
-		UnitTypeSheetConfigurator configurator = new UnitTypeSheetConfigurator(workbook, sheet);
-		if (null == configurator.getTypeCodeColumn()) {
-			throw new ExceptionTypeCodeColumnEmpty();
-		}
-		if (null == configurator.getTypeNameColumn()) {
-			throw new ExceptionTypeNameColumnEmpty();
-		}
 	
-		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
-			Row row = sheet.getRow(i);
-			if (null != row) {
-				String name = configurator.getCellStringValue(row.getCell(configurator.getTypeCodeColumn()));
-				String value = configurator.getCellStringValue(row.getCell(configurator.getTypeNameColumn()));
-				System.out.println("name="+name+"_value="+value);
-				if(StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)){
-					typeMap.put(name, value);
-					
-				}else{
-					unitTypeFlag = true;
-				}
-			}
-		}
-		if(!unitTypeFlag){
-			this.scanUnit(business,workbook);
-		}
-	}
 	
 	private void scanUnit(Business business, XSSFWorkbook workbook) throws Exception {
 	//导入组织信息
@@ -171,6 +135,7 @@ class ActionInputAll extends BaseAction {
 		Sheet sheet = workbook.getSheetAt(2);
 		configuratorPerson = new PersonSheetConfigurator(workbook, sheet);
 		person = this.scanPersonList(configuratorPerson, sheet);
+		System.out.println("person="+person.size());
 		wholeFlag = this.checkPerson(business, workbook, configuratorPerson, person); 
 		if(wholeFlag){
 			this.scanIdentity(business, workbook,person,unit);
@@ -199,8 +164,9 @@ class ActionInputAll extends BaseAction {
 							this.persistIdentity(workbook, configuratorIdentity, identity);
 							System.out.println("开始导入职务信息--------");
 							//保存职务
-							duty = this.scanDutyList(business,configuratorIdentity, sheet);
-							this.persistDuty(workbook, configuratorDuty, duty);
+							duty = this.scanDutyList(business,identity, sheet);
+							//this.persistDuty(workbook, configuratorDuty, duty);
+							this.persistDuty(workbook, configuratorDuty, duty,business);
 							
 							//保存群组
 							//校验群组
@@ -341,7 +307,7 @@ class ActionInputAll extends BaseAction {
 					PersonItem personItem = new PersonItem();
 					personItem.setRow(i);
 					name = StringUtils.trimToEmpty(name);
-					mobile = StringUtils.trimToEmpty(mobile);
+					//mobile = StringUtils.trimToEmpty(mobile);
 					GenderType genderType = GenderType.d;
 					if (null != configurator.getGenderTypeColumn()) {
 						String gender = configurator
@@ -356,7 +322,13 @@ class ActionInputAll extends BaseAction {
 					}
 					personItem.setName(name);
 					personItem.setGenderType(genderType);
-					personItem.setMobile(mobile);
+					
+					if(StringUtils.isNotEmpty(mobile)){
+						personItem.setMobile(mobile);
+					}else{
+						personItem.setMobile("139"+this.getCard());
+					}
+					
 			
 					if (null != configurator.getEmployeeColumn()) {
 						String employee = configurator
@@ -413,6 +385,7 @@ class ActionInputAll extends BaseAction {
 			if (null != row) {
 				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
 				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
+				String dutyCode = configurator.getCellStringValue(row.getCell(configurator.getDutyCodeColumn()));
 				String majorStr = configurator.getCellStringValue(row.getCell(configurator.getMajorColumn()));
 				Boolean major = false;
 				if(majorStr.equals("true")){
@@ -424,6 +397,10 @@ class ActionInputAll extends BaseAction {
 					identityItem.setPersonCode(unique);
 					identityItem.setUnitCode(unitCode);
 					identityItem.setMajor(major);
+					
+					if(StringUtils.isNotEmpty(dutyCode)){
+						identityItem.setDutyCode(dutyCode);
+					}
 					
 					EntityManagerContainer emc = business.entityManagerContainer();
 					Person personobj = null;
@@ -441,8 +418,17 @@ class ActionInputAll extends BaseAction {
 						identityItem.setUnitLevelName(u.getLevelName());
 						identityItem.setUnitName(u.getName());					
 					}
-					
 					identitys.add(identityItem);
+					
+					int idcount = 0;
+					for(IdentityItem idItem : identitys){
+						if(unique.equals(idItem.getPersonCode()) && unitCode.equals(idItem.getUnitCode())){
+							idcount = idcount+1;
+						}
+					}
+					if(idcount>1){
+						identitys.remove(identityItem);
+					}
 					logger.debug("scan identity:{}.", identityItem);
 				//}
 			}
@@ -507,24 +493,20 @@ class ActionInputAll extends BaseAction {
 		return groups;
 	}
 	
-	private List<DutyItem> scanDutyList(Business business,IdentitySheetConfigurator configurator, Sheet sheet) throws Exception {
-		if (null == configurator.getDutyCodeColumn()) {
-			throw new ExceptionDutyCodeColumnEmpty();
-		}
+	private List<DutyItem> scanDutyList(Business business,List<IdentityItem> identityItems, Sheet sheet) throws Exception {
 		
 		List<DutyItem> dutys = new ArrayList<>();
-		for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
-			Row row = sheet.getRow(i);
-			if (null != row) {
-				String dutyCode = configurator.getCellStringValue(row.getCell(configurator.getDutyCodeColumn()));
-				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
-				String personCode = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+		for (int i = 0; i < identityItems.size(); i++) {
+			IdentityItem identutyIt = identityItems.get(i);
+			if (null != identutyIt) {
+				String dutyCode = identutyIt.getDutyCode();
+				String unitCode = identutyIt.getUnitCode();
+				String personCode = identutyIt.getPersonCode();
 				List<Identity> identitys = new ArrayList<>();
 				
 				if(StringUtils.isNotEmpty(dutyCode)){
 					DutyItem dutyItem = new DutyItem();
-					dutyItem.setRow(i);
-					dutyItem.setUnique(dutyCode);
+					dutyItem.setRow(i+1);
 					dutyItem.setName(dutyMap.get(dutyCode));
 					EntityManagerContainer emc = business.entityManagerContainer();
 					
@@ -534,6 +516,7 @@ class ActionInputAll extends BaseAction {
 					if(u != null){
 						dutyItem.setUnit(u.getId());
 						unitId = u.getId();
+						dutyItem.setUnique(dutyCode+unitId);
 					}
 					
 					Person personObj = null;
@@ -544,19 +527,25 @@ class ActionInputAll extends BaseAction {
 						CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 						Root<Identity> root = cq.from(Identity.class);
 						//System.out.println("personid="+personObj.getId());
-						Predicate p = cb.equal(root.get(Identity_.person), personObj.getId());		
+						Predicate p = cb.equal(root.get(Identity_.person), personObj.getId());	
+						p = cb.and(p,cb.equal(root.get(Identity_.unit), u.getId()));
 						identitys = em.createQuery(cq.select(root).where(p)).getResultList();
+						
+						if(personCode.equals("zhengping2")){
+							System.out.println("identitys="+identitys.size());
+						}
 					}
-					//System.out.println("identitys="+identitys.size());
+					
 					
 					if(ListTools.isNotEmpty(identitys)){
 						List<String> didylist = new ArrayList<>();
-						for (Identity identity : identitys) {
+						/*for (Identity identity : identitys) {
 							if(unitId.equals(identity.getUnit())){
 								//System.out.println("unitCode="+unitCode);
 								didylist.add(identity.getDistinguishedName());
 							}
-						}
+						}*/
+						didylist.add(identitys.get(0).getId());
 						dutyItem.setIdentityList(didylist);
 					}
 					
@@ -593,6 +582,7 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
+			this.setUnitMemo(workbook, configurator, o, "校验通过.");
 		}
 		if (validate) {
 			for (UnitItem o : unit) {
@@ -646,6 +636,7 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
+			this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			/*if(o.getAttributes().isEmpty()|| StringUtils.isEmpty(o.getAttributes().get("idNumber"))){
 				this.setPersonMemo(workbook, configurator, o, "身份证号不能为空.");
 				validate = false;
@@ -663,7 +654,6 @@ class ActionInputAll extends BaseAction {
 						}
 					}
 				}
-				
 				Person p = null;
 				p = emc.flag(o.getUnique(), Person.class);
 				if (null != p) {
@@ -756,14 +746,18 @@ class ActionInputAll extends BaseAction {
 					continue;
 				}
 				
+				//if (validate) {
+					this.setIdentityMemo(workbook, configurator, identityItem, "校验通过.");
+				//}
+				
 			}
 		}
 		
-		if (validate) {
+		/*if (validate) {
 			for (IdentityItem o : identitys) {
 				this.setIdentityMemo(workbook, configurator, o, "校验通过.");
 			}
-		}
+		}*/
 		return validate;
 	}
 	
@@ -848,14 +842,18 @@ class ActionInputAll extends BaseAction {
 					continue;
 				}
 				
+				//if (validate) {
+					this.setGroupMemo(workbook, configurator, groupItem, "校验通过.");
+				//}
+				
 			}
 		}
 		
-		if (validate) {
+		/*if (validate) {
 			for (GroupItem o : groups){
 				this.setGroupMemo(workbook, configurator, o, "校验通过.");
 			}
-		}
+		}*/
 		return validate;
 	}
 	
@@ -890,21 +888,6 @@ class ActionInputAll extends BaseAction {
 				String resp = this.savePerson("person", personObject);
 				
 				if("".equals(resp)){
-					/*if((!o.getAttributes().isEmpty()) && o.getAttributes().containsKey("idNumber") && StringUtils.isNotEmpty(o.getAttributes().get("idNumber"))){
-						
-						Person person = null;
-						person = emc.flag(o.getUnique(), Person.class);
-						if(person != null){
-							PersonAttribute personAttribute = new PersonAttribute();
-							personAttribute.setName("idNumber");
-							List<String> attributeList = new ArrayList<>();
-							attributeList.add(o.getAttributes().get("idNumber"));
-							personAttribute.setAttributeList(attributeList);
-							personAttribute.setPerson(person.getId());
-							String respAttribute = this.savePersonAttribute("personattribute",personAttribute);
-							System.out.println("respAttribute="+respAttribute);
-						}
-					}*/
 					this.setPersonMemo(workbook, configurator, o, "已导入.");
 				}else{
 					System.out.println("respMass="+resp);
@@ -935,26 +918,26 @@ class ActionInputAll extends BaseAction {
 		}
 	}
 	
-	private void persistDuty(XSSFWorkbook workbook, DutySheetConfigurator configurator, List<DutyItem> dutyItems) throws Exception {
+	private void persistDuty(XSSFWorkbook workbook, DutySheetConfigurator configurator, List<DutyItem> dutyItems,Business business) throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
 		for (List<DutyItem> list : ListTools.batch(dutyItems, 200)) {
 			for (DutyItem o : list) {
-				if(StringUtils.isNotEmpty(o.getUnique()) && this.getDuty("unitduty/list/unit/"+o.getUnit(),o.getUnique(),o.getIdentityList())){
+				if(StringUtils.isNotEmpty(o.getUnique()) && this.getDuty(emc,o)){
 				}else{
 					logger.debug("正在保存职务:{}.", o.getName());
 					UnitDuty dutyObject = new UnitDuty();
 					o.copyTo(dutyObject);
-					
 					String resp = this.saveDuty("unitduty", dutyObject);
-					System.out.println("respMass="+resp);
+					if("".equals(resp)){
+					}else{
+						System.out.println("respMassduty="+resp);
+					}
+					
 				}
 				
 			}
 		}
-		for(List<UnitDuty> unitlist : ListTools.batch(editduty, 200)){
-			for (UnitDuty uo : unitlist) {
-				this.editDuty("unitduty/"+uo.getId(),uo);
-			}
-		}
+		
 	}
 	
 	private void persistGroup(Business business,XSSFWorkbook workbook, GroupSheetConfigurator configurator, List<GroupItem> groupItems) throws Exception {
@@ -1107,34 +1090,34 @@ class ActionInputAll extends BaseAction {
 		return resp.getMessage();
 	}
 	
-	private boolean getDuty(String path, String dutyCode,List<String> identityLists) throws Exception{
+	private boolean getDuty(EntityManagerContainer emc, DutyItem dutyItem) throws Exception{
 		boolean checkduty = false;
-		ActionResponse resp =  ThisApplication.context().applications()
-				.getQuery(x_organization_assemble_control.class, path);
-		JsonObject jsonObject = new JsonParser().parse(resp.toString()).getAsJsonObject();
-		JsonArray jsonArray = null;
-		//jsonArray = new JsonParser().parse(jsonObject.getAsJsonObject().get("data").getAsString()).getAsJsonArray();
-		jsonArray = jsonObject.getAsJsonArray("data");
-		if(jsonArray.size()>0){
-			Iterator it = jsonArray.iterator();
-		    while(it.hasNext()){
-		        JsonElement e = (JsonElement)it.next();
-		        //JsonElement转换为JavaBean对象
-		        UnitDuty unitduty= gson.fromJson(e, UnitDuty.class);
-		        if(dutyCode.equals(unitduty.getUnique())){
-		        	checkduty = true;
-		        	UnitDuty dutyObject = new UnitDuty();
-		        	unitduty.copyTo(dutyObject);
-		        	List<String> identityList = dutyObject.getIdentityList();
-		        	identityList.add(identityLists.get(0));
-		        	dutyObject.setIdentityList(identityList);
-		        	editduty.add(dutyObject);
-		        }
-		    }
+		UnitDuty unitDuty = null;
+		unitDuty= emc.flag(dutyItem.getUnique(), UnitDuty.class);
+		if(unitDuty != null){
+			checkduty = true;
+			List<String> identityList = new ArrayList<>();
+			identityList = unitDuty.getIdentityList();
+			identityList.addAll(dutyItem.getIdentityList());
+			unitDuty.setIdentityList(identityList);
+			//editduty.add(unitDuty);
+			this.editDuty("unitduty/"+unitDuty.getId(),unitDuty);
 		}
 		
 		return checkduty;
 	}
+	
+	   //生成随机数
+	private String getCard(){
+	       Random rand=new Random();//生成随机数
+	        String cardNnumer="";
+	        for(int a=0;a<8;a++){
+	        cardNnumer+=rand.nextInt(10);//生成6位数字
+	        }
+	       return cardNnumer;
+
+
+	  }
 	
 	private void concretePassword(List<PersonItem> people) throws Exception {
 		Pattern pattern = Pattern.compile(com.x.base.core.project.config.Person.REGULAREXPRESSION_SCRIPT);
