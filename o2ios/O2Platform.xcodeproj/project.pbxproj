@@ -56,6 +56,14 @@
 		B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FB229E34D300778050 /* LBXScanViewController.swift */; };
 		B10A2F56233DDA990011CE3D /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F55233DDA990011CE3D /* AdSupport.framework */; };
 		B10A2F58233DDAE10011CE3D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F57233DDAE10011CE3D /* Security.framework */; };
+		B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */; };
+		B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */; };
+		B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5F2488C82F005075F0 /* IMViewModel.swift */; };
+		B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A622488C8EA005075F0 /* IMConversationInfo.swift */; };
+		B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */; };
+		B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */; };
+		B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A692488D4AD005075F0 /* O2IM.swift */; };
+		B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B1173B2C2489F48C005075F0 /* O2Emoji.bundle */; };
 		B1298E50236692AB006E9236 /* CloudFileListBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */; };
 		B1298E7C23669BA2006E9236 /* CloudFileTypeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */; };
 		B1298E7E2366AE4C006E9236 /* CloudFileImageCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */; };
@@ -1212,6 +1220,13 @@
 			remoteGlobalIDString = 183276F1FBCA05D9F840C64172C84A44;
 			remoteInfo = YHPopupView;
 		};
+		B1173A582488C3DD005075F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 891B2270823847ED23F2ECFC28F935EC;
+			remoteInfo = Starscream;
+		};
 		B14A2292224CBC2E00745E0A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1359,6 +1374,14 @@
 		B108F3FB229E34D300778050 /* LBXScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewController.swift; sourceTree = "<group>"; };
 		B10A2F55233DDA990011CE3D /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		B10A2F57233DDAE10011CE3D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationListViewController.swift; sourceTree = "<group>"; };
+		B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicateAPI.swift; sourceTree = "<group>"; };
+		B1173A5F2488C82F005075F0 /* IMViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMViewModel.swift; sourceTree = "<group>"; };
+		B1173A622488C8EA005075F0 /* IMConversationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationInfo.swift; sourceTree = "<group>"; };
+		B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationItemCell.swift; sourceTree = "<group>"; };
+		B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMConversationItemCell.xib; sourceTree = "<group>"; };
+		B1173A692488D4AD005075F0 /* O2IM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2IM.swift; sourceTree = "<group>"; };
+		B1173B2C2489F48C005075F0 /* O2Emoji.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = O2Emoji.bundle; sourceTree = "<group>"; };
 		B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileListBaseController.swift; sourceTree = "<group>"; };
 		B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileTypeListController.swift; sourceTree = "<group>"; };
 		B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileImageCollectionController.swift; sourceTree = "<group>"; };
@@ -1542,7 +1565,7 @@
 		B1FFF885223A23B200C170FD /* O2FlutterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2FlutterViewController.swift; sourceTree = "<group>"; };
 		B1FFF890223A4DA700C170FD /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		B1FFF891223A4DA700C170FD /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
-		C33461DCBCEEAF5B8597D54E /* Pods______.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods______.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C33461DCBCEEAF5B8597D54E /* Pods______.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Pods______.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40502C220722208009A8D30 /* ImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerController.swift; sourceTree = "<group>"; };
 		E40502C320722208009A8D30 /* ImageRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageRow.swift; sourceTree = "<group>"; };
 		E40502C420722208009A8D30 /* ImageCheckRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCheckRow.swift; sourceTree = "<group>"; };
@@ -2516,6 +2539,7 @@
 				B10AC5D721058DAE00179587 /* RxSwift.framework */,
 				B10AC5D921058DAE00179587 /* SDWebImage.framework */,
 				B10AC5DF21058DAE00179587 /* SnapKit.framework */,
+				B1173A592488C3DD005075F0 /* Starscream.framework */,
 				B10AC5E321058DAE00179587 /* SwiftValidator.framework */,
 				B10AC5E521058DAE00179587 /* SwiftyJSON.framework */,
 				B10AC5E721058DAE00179587 /* SwiftyTimer.framework */,
@@ -2524,6 +2548,43 @@
 				B10AC5F121058DAE00179587 /* YHPopupView.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B1173A262488C3DD005075F0 /* IM-聊天 */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A642488CD37005075F0 /* View */,
+				B1173A612488C8D3005075F0 /* Model */,
+				B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */,
+				B1173A5F2488C82F005075F0 /* IMViewModel.swift */,
+				B1173A692488D4AD005075F0 /* O2IM.swift */,
+			);
+			path = "IM-聊天";
+			sourceTree = "<group>";
+		};
+		B1173A5C2488C568005075F0 /* Communicate */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */,
+			);
+			path = Communicate;
+			sourceTree = "<group>";
+		};
+		B1173A612488C8D3005075F0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A622488C8EA005075F0 /* IMConversationInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B1173A642488CD37005075F0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */,
+				B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		B12FD1502283CDF400E636BA /* theme */ = {
@@ -2787,6 +2848,7 @@
 		B1F79C44233B5F9B004D0AEE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B1173B2C2489F48C005075F0 /* O2Emoji.bundle */,
 				B19776E7217D9D810019F3A8 /* beep.wav */,
 				E4B888231D9D48F1002E1A46 /* images */,
 				E4B888291D9D48F1002E1A46 /* 隶变体.ttf */,
@@ -2872,6 +2934,7 @@
 				E45CD4211DFE503C008F99AD /* Scan-二维码扫码 */,
 				E4C24C22208D7EDE00E426B0 /* Contact-通讯录 */,
 				E4B8875E1D9D48F1002E1A46 /* contacts */,
+				B1173A262488C3DD005075F0 /* IM-聊天 */,
 				E428AF3720A95D3800D964B9 /* NewAttance-考勤打卡 */,
 				E40E246E20B7DA3C009F8BE7 /* meeting-会议 */,
 				B19091FD2107145F009A7906 /* Calendar-日程管理 */,
@@ -3408,6 +3471,7 @@
 		E4B69721207602840062F6E8 /* O2API */ = {
 			isa = PBXGroup;
 			children = (
+				B1173A5C2488C568005075F0 /* Communicate */,
 				B18FFF3323756B24001B2887 /* JpushAPI */,
 				B107453721A52B9A0015F1B2 /* PersonalAPI */,
 				B1B6A8F7217710A400C10F3C /* FaceRecognizeAPI */,
@@ -5297,6 +5361,13 @@
 			remoteRef = B10AC5F021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		B1173A592488C3DD005075F0 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = B1173A582488C3DD005075F0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		B14A2293224CBC2E00745E0A /* IQKeyboardManagerSwift.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5401,6 +5472,7 @@
 				E4B8871E1D9D477A002E1A46 /* Assets.xcassets in Resources */,
 				E46E6CA51DD41F5D00AB7561 /* ZSSsuperscript.png in Resources */,
 				E4C24BC020844F3C00E426B0 /* 定位2.png in Resources */,
+				B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */,
 				B197771D217D9D810019F3A8 /* beep.wav in Resources */,
 				E40E24C920B7DA3C009F8BE7 /* OOMeetingPersonTableViewCell.xib in Resources */,
 				E4B2321C20B3E94E0082F30A /* OOAttanceCheckinPromptView.xib in Resources */,
@@ -5507,6 +5579,7 @@
 				E46E6CAF1DD41F5D00AB7561 /* ZSSunlink.png in Resources */,
 				E40E24C320B7DA3C009F8BE7 /* OOMeetingInforItemCell.xib in Resources */,
 				E46E6C811DD41F5D00AB7561 /* ZSShorizontalrule.png in Resources */,
+				B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */,
 				E46E6C7F1DD41F5D00AB7561 /* ZSSh6.png in Resources */,
 				E46E6C9C1DD41F5D00AB7561 /* ZSSquicklink@2x.png in Resources */,
 				E46E6C901DD41F5D00AB7561 /* ZSSleftjustify@2x.png in Resources */,
@@ -5854,6 +5927,7 @@
 				E4B888711D9D48F1002E1A46 /* ContactSearchViewController.swift in Sources */,
 				B130A7852281597000282AD1 /* DeviceManagerViewModel.swift in Sources */,
 				E40E24BF20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.swift in Sources */,
+				B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */,
 				E4A748D51EC15EF100163F58 /* TaskAttachmentPreviewController.swift in Sources */,
 				E4B888A51D9D48F1002E1A46 /* MJRefreshBackStateFooter.m in Sources */,
 				E4B8885E1D9D48F1002E1A46 /* O2CollectionView.swift in Sources */,
@@ -5863,9 +5937,11 @@
 				E4D2310F209C40F600837868 /* OOPersonCollectionViewCell.swift in Sources */,
 				E4C24B4A20844F3C00E426B0 /* JCMessageImageCollectionViewCell.swift in Sources */,
 				E4C24B6920844F3C00E426B0 /* DLSlideView.m in Sources */,
+				B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */,
 				B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */,
 				E4C24B7F20844F3C00E426B0 /* ImageFileCell.swift in Sources */,
 				B165CD602242093500373B66 /* AlertViewController.swift in Sources */,
+				B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */,
 				E441994A206C8A100050AE0C /* OORegisterTableView.swift in Sources */,
 				E40E24A920B7DA3C009F8BE7 /* OOMeetingCreateViewModel.swift in Sources */,
 				E40C41ED1E7F7C0D00568805 /* ZoneSubCategoryViewController.swift in Sources */,
@@ -5901,6 +5977,7 @@
 				B1DE856623603408003C36E2 /* DispatchQueue+Extension.swift in Sources */,
 				E4B69772207630240062F6E8 /* String+Extenstion.swift in Sources */,
 				B175007A233C6908003DA7B9 /* BlockLongPress.swift in Sources */,
+				B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */,
 				E4B69734207602A40062F6E8 /* OOAPIContext.swift in Sources */,
 				09E02E881F16319600579887 /* DiskFetcher.swift in Sources */,
 				E4C24B5520844F3C00E426B0 /* SAIToolboxInputView.swift in Sources */,
@@ -6009,6 +6086,7 @@
 				B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */,
 				E4B6975C20762EA00062F6E8 /* OOUIDownButtonTextField.swift in Sources */,
 				E4C24C0720844F4400E426B0 /* JCSearchFriendViewController.swift in Sources */,
+				B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */,
 				E46E6CBB1DD41F5D00AB7561 /* HRBrightnessCursor.m in Sources */,
 				E4B697E920764A2D0062F6E8 /* OOWorkAPI.swift in Sources */,
 				E40E24C720B7DA3C009F8BE7 /* OOFormSegueItemView.swift in Sources */,
@@ -6423,6 +6501,7 @@
 				E4C24B8C20844F3C00E426B0 /* JCMessageNoticeContentView.swift in Sources */,
 				E4C24C3E208D7EDE00E426B0 /* OOContactViewModel.swift in Sources */,
 				E4D2312E20A29E7500837868 /* OOAppMainCollectionHeaderView.swift in Sources */,
+				B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */,
 				E4C24B5220844F3C00E426B0 /* SAIToolboxItemView.swift in Sources */,
 				E4C24B3C20844F3C00E426B0 /* Date+JChat.swift in Sources */,
 				E4C24C0120844F4400E426B0 /* JCUserInfoCell.swift in Sources */,
