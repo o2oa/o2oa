@@ -47,14 +47,16 @@ class ActionUpdate extends BaseAction {
 				List<String> ids = new ArrayList<>();
 				ids.add(folder.getId());
 				ids.addAll(business.folder2().listSubNested(folder.getId(), FileStatus.VALID.getName()));
-				if(ids.contains(folder.getSuperior())){
-					throw new Exception("superior can not be sub folder.");
+				if(ids.contains(wi.getSuperior())){
+					throw new Exception("无效父目录："+wi.getSuperior()+"，父目录不能为本目录及子目录.");
 				}
 			}else{
 				wi.setSuperior(Business.TOP_FOLD);
 			}
 
-			this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), folder.getId());
+			if(this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), folder.getId())){
+				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
+			}
 			emc.beginTransaction(Folder2.class);
 			folder.setName(wi.getName());
 			folder.setSuperior(wi.getSuperior());
