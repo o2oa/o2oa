@@ -186,7 +186,7 @@ MWF.xApplication.Org.Main = new Class({
         this.importPersonTitleNode.set("text", this.lp.importPersonTitle);
         this.importPersonTemplateNode.set("html", infor);
         this.importPersonNode.set("text", this.lp.importPersonAction);
-
+		
 
         this.importPersonNode.addEvent("click", function(){
             this.importPersonResultNode.hide();
