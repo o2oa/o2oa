@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.review;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -33,8 +35,11 @@ class ActionManageDelete extends BaseAction {
 			if (!StringUtils.equals(review.getApplication(), application.getId())) {
 				throw new ExceptionNotMatchApplication(id, applicationFlag);
 			}
+			Process process = business.process().pick(review.getProcess());
 			// 需要对这个应用的管理权限
-			business.application().allowControl(effectivePerson, application);
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 		}
 		ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("review", review.getId()), review.getJob());
