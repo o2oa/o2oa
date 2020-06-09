@@ -78,7 +78,7 @@
                     var redirect = uri.getData("redirect");
                     if (xtoken){
                         var res = new Request.JSON({
-                            url: address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime(),
+                            url: o2.filterUrl(address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime()),
                             secure: false,
                             method: "GET",
                             noCache: true,
