@@ -1089,7 +1089,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
     },
 
     validationConfigItem: function(routeName, data){
-		debugger;
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getData();
