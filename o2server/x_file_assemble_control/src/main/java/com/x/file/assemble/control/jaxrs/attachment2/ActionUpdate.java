@@ -33,6 +33,9 @@ class ActionUpdate extends BaseAction {
 			}
 			emc.beginTransaction(Attachment2.class);
 			Wi.copier.copy(wi, attachment);
+			if (StringUtils.isEmpty(attachment.getFolder())) {
+				attachment.setFolder(Business.TOP_FOLD);
+			}
 			emc.check(attachment, CheckPersistType.all);
 			emc.commit();
 			Wo wo = new Wo();

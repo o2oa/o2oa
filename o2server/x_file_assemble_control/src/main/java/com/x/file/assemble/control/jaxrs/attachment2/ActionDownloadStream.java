@@ -8,6 +8,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
@@ -18,6 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.ByteArrayOutputStream;
 
 class ActionDownloadStream extends StandardJaxrsAction {
+
+	private static Logger logger = LoggerFactory.getLogger( ActionDownloadStream.class );
 
 	private Ehcache cache = ApplicationCache.instance().getCache(Attachment2.class);
 
@@ -58,6 +62,14 @@ class ActionDownloadStream extends StandardJaxrsAction {
 					if (bs.length < (1024 * 1024 * 10)) {
 						cache.put(new Element(cacheKey, wo));
 					}
+				}catch (Exception e){
+					if(e.getMessage().indexOf("existed") > -1){
+						logger.warn("原始附件{}-{}不存在，删除记录！", originFile.getId(), originFile.getName());
+						emc.beginTransaction(OriginFile.class);
+						emc.delete(OriginFile.class, originFile.getId());
+						emc.commit();
+					}
+					throw e;
 				}
 			}
 			result.setData(wo);
