@@ -242,6 +242,12 @@ public class ActionUpdateSingleProperty extends BaseAction {
 		if(Task.priority_FIELDNAME.equalsIgnoreCase( property )){
 			mainValue = mainValue.split("\\|\\|")[0];
 		}
+		if(mainValue.equals("completed")){
+			mainValue = "已完成";
+		}
+		if(mainValue.equals("processing")){
+			mainValue = "执行中";
+		}
 		String dynamicDescription =  personName + "将工作任务的[" + dynamicTitle + "]变更为：[" + mainValue + "]。";
 		if(  StringUtils.isEmpty( mainValue ) && nullable ) {
 			Exception exception = new TaskPersistException( "工作任务属性["+ dynamicTitle +"]不允许为空，请检查您的输入。");
