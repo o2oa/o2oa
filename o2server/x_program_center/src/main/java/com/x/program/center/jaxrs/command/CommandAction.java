@@ -45,7 +45,7 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionCommand.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionCommand().execute(effectivePerson, jsonElement);
+			result = new ActionCommand().execute(effectivePerson,request, jsonElement);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
