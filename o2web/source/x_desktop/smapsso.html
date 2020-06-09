@@ -68,9 +68,11 @@
                 if (callback) callback(address);
             }.bind(this));
         }
-        
+
         o2.addReady(function(){
             o2.JSON.get("res/config/config.json", function(config){
+                window.layout = {};
+                window.layout.config = config;
                 getServiceAddress(config, function(address){
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("SMAP_SESSION_DATA");
