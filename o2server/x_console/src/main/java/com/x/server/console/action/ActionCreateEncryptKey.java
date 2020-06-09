@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.SecureRandom;
 import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
@@ -33,12 +34,15 @@ public class ActionCreateEncryptKey extends ActionBase {
 
 	public boolean execute(String password) throws Exception {
 		this.init();
+		/*
 		if (!StringUtils.equals(Config.token().getPassword(), password)) {
 			logger.print("password not match.");
 			return false;
-		}
+		}*/
+		
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-		generator.initialize(1024);
+		SecureRandom random= new SecureRandom(password.getBytes());
+		generator.initialize(1024, random);
 		KeyPair pair = generator.generateKeyPair();
 		File publicKeyFile = new File(Config.base(), "config/public.key");
 		File privateKeyFile = new File(Config.base(), "config/private.key");
@@ -50,6 +54,8 @@ public class ActionCreateEncryptKey extends ActionBase {
 		
 		//为前端提供publicKey,为密码加密
 		this.writeConfigFile(new String(Base64.encodeBase64(pair.getPublic().getEncoded())));
+		
+		System.out.println("public key: config/public.key, private key: config/private.key, create key success!");
 		
 		return true;
 	}

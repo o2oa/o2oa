@@ -38,22 +38,29 @@ public class ActionUploadFile  extends BaseAction {
 			fileInputStream.close();
 			if(nodeName.equalsIgnoreCase("*")) {
 				Nodes nodes = Config.nodes();
+				logger.info("先其他服务器");
 				for (String node : nodes.keySet()){
 					//先其他服务器
 					if(!node.equalsIgnoreCase(curServer)) {
 						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
 							 byteArrayInputStream = new ByteArrayInputStream(byteArray);
+								logger.info("node="+node);
 					      wo = executeCommand( ctl,  node ,  nodes.get(node).nodeAgentPort(),  byteArrayInputStream, disposition);
 						}
 					}
-				   //后当前服务器
-				    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+				}
+				logger.info("后当前服务器");
+				for(String node : nodes.keySet()) {
+					   //后当前服务器
+					if(node.equalsIgnoreCase(curServer)) {
+				       if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
 				        	 byteArrayInputStream = new ByteArrayInputStream(byteArray);
-					      wo = executeCommand( ctl,  curServer ,  nodes.get(curServer).nodeAgentPort(),  byteArrayInputStream, disposition);
-			        }
+				        		logger.info("node="+node);
+					       wo = executeCommand( ctl,  node ,  nodes.get(curServer).nodeAgentPort(),  byteArrayInputStream, disposition);
+			          }
+					}
 				}
 			}else {
-				
 			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  byteArrayInputStream, disposition);
 			}
 			
