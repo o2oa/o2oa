@@ -54,7 +54,7 @@ public class ActionRecovery extends BaseAction {
 				result.setData( wo );
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ProjectPersistException(e, "项目图标信息更新时发生异常。");
+				Exception exception = new ProjectPersistException(e, "项目恢复时发生异常。");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
