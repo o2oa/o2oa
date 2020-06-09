@@ -96,7 +96,7 @@
                             }
                             var r = protocol + "//" + location.host + location.pathname;
                             r = r + "?oauth=" + oauth + "&qywx=true";
-                            url += "&redirect_uri=" + encodeURIComponent(r);
+                            url += "&redirect_uri=" + encodeURIComponent(o2.filterUrl(r));
 
                             window.location = url;
                         }.bind(this));
@@ -110,7 +110,7 @@
                             }
                             var r = protocol + "//" + location.host + location.pathname;
                             r = r + "?oauth=" + oauth + "&dingding=true";
-                            url += "&redirect_uri=" + encodeURIComponent(r);
+                            url += "&redirect_uri=" + encodeURIComponent(o2.filterUrl(r));
                             window.location = url;
                         }.bind(this));
                     } else {
@@ -121,7 +121,7 @@
                             r = r + "?oauth=" + oauth;
                             if (method) r = r + "&method=" + method;
                             if (redirect) r = r + "&redirect=" + redirect;
-                            p = (p) ? p + "&redirect_uri=" + encodeURIComponent(r) : "&redirect_uri=" + encodeURIComponent(r);
+                            p = (p) ? p + "&redirect_uri=" + encodeURIComponent(o2.filterUrl(r)) : "&redirect_uri=" + encodeURIComponent(o2.filterUrl(r));
                             url = (url.indexOf("?" === -1)) ? url + "?" + p : url + "&" + p;
                             window.location = url;
                         }.bind(this));
