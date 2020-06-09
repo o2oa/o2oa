@@ -273,10 +273,19 @@
             }
         }
 
-        if (!window.layout) window.layout = {};
-        if (!window.layout.config) o2.JSON.get("../x_desktop/res/config/config.json", function(config){
-            window.layout.config = config;
-        }, null, false);
+        // if (!window.layout) window.layout = {};
+        // if (!window.layout.config){
+        //     new Request.JSON({
+        //         url: "../x_desktop/res/config/config.json",
+        //         secure: false,
+        //         method: "get",
+        //         noCache: true,
+        //         async: false,
+        //         onSuccess: function(responseJSON, responseText){
+        //             window.layout.config = responseJSON;
+        //         }.bind(this),
+        //     }).send();
+        // }
 
         if (window.layout && layout.config && layout.config.urlMapping){
             for (var k in layout.config.urlMapping){
