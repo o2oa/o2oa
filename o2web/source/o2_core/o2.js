@@ -273,6 +273,11 @@
             }
         }
 
+        if (!window.layout) window.layout = {};
+        if (!window.layout.config) o2.JSON.get("../x_desktop/res/config/config.json", function(config){
+            window.layout.config = config;
+        }, null, false);
+
         if (window.layout && layout.config && layout.config.urlMapping){
             for (var k in layout.config.urlMapping){
                 var regex = new RegExp(k);
