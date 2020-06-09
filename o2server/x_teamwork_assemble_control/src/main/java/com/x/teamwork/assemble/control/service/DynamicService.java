@@ -419,9 +419,9 @@ class DynamicService {
 	private Dynamic composeNewDynamic( String objectType, String title, String description, String viewUrl, String optType, Chat object,  EffectivePerson effectivePerson, Boolean personal) {
 		Dynamic dynamic = composeNewSimpleDynamic(objectType, title, description, viewUrl, optType, effectivePerson, personal );
 		dynamic.setProjectId( object.getId() );
-		dynamic.setProjectTitle( "" );
+		dynamic.setProjectTitle( object.getProjectTitle() );
 		dynamic.setTaskId( object.getTaskId()  );
-		dynamic.setTaskTitle( "" );
+		dynamic.setTaskTitle( object.getTaskTitle() );
 		dynamic.setBundle( object.getId() );
 		dynamic.setTarget( object.getTarget() );
 		return dynamic;
