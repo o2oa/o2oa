@@ -212,12 +212,9 @@ class ActionEdit extends BaseAction {
 	
 	private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
 		List<String> oldUnitType = oldUnit.getTypeList();
-		String oldName = oldUnit.getName();
-		String oldSuperior = oldUnit.getSuperior();
 		List<String> unitType = unit.getTypeList();
-		String Name = unit.getName();
 		//判断两个list是否相同
-		if (oldUnitType.retainAll(unitType) || (!oldName.equals(Name)) || (!oldSuperior.equals(unit.getSuperior()))) {
+		if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName())) || (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
 			return true;
 		}
 		return false;
