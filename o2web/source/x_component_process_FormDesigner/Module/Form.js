@@ -161,7 +161,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         }.bind(this));
     },
     clearTemplateStyles: function(styles){
-		debugger;
         if (styles){
             if (styles.styles) this.removeStyles(styles.styles, "styles");
             if (styles.properties) this.removeStyles(styles.properties, "properties");
@@ -183,7 +182,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if( this.json.noticeNoticeStyle )delete this.json.noticeNoticeStyle;
     },
     setTemplateStyles: function(styles){
-		debugger;
         if (styles.styles) this.copyStyles(styles.styles, "styles");
         if (styles.properties) this.copyStyles(styles.properties, "properties");
 		//if( styles.confirmStyle )this.json.confirmStyle = styles.confirmStyle;
@@ -939,7 +937,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		}
 	},
 	setCustomStyles: function(){
-		debugger;
 		var border = this.node.getStyle("border");
 		this.node.clearStyles();
 		this.node.setStyles((this.options.mode==="Mobile") ? this.css.formMobileNode : this.css.formNode);
@@ -958,7 +955,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		}.bind(this));
 	},
 	_setEditStyle: function(name, obj, oldValue){
-		debugger;
 		if (name=="name"){
 			var title = this.json.name || this.json.id;
 			this.treeNode.setText("<"+this.json.type+"> "+title+" ["+this.options.mode+"] ");
