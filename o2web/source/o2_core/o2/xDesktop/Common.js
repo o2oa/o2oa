@@ -452,6 +452,7 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
             contentNode.setStyle("background-color", "#666666");
         }
     };
+
     if (typeOf(config.center)==="object"){
         MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
     }else if (typeOf(config.center)==="array"){
@@ -514,7 +515,9 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
     }else{
         uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
     }
-    var currenthost = window.location.hostname;
+
+    var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
+    //var currenthost = window.location.hostname;
     uri = uri.replace(/{source}/g, currenthost);
     //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
 
