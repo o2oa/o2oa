@@ -11,6 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.ThisApplication;
 import com.x.calendar.core.entity.Calendar;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public class ActionListWhatICanView extends BaseAction {
 			if( ListTools.isNotEmpty( calendarList )) {
 				result.setCount( Long.parseLong( calendarList.size() + "" ));
 				WoCalendar woCalendar = null;
+				Boolean existsSystemDefaultCalendar = false;
 				for( Calendar calendar : calendarList ) {
 					woCalendar = WoCalendar.copier.copy( calendar ) ;
 					woCalendar.setManageable( ThisApplication.isCalendarManager( effectivePerson, calendar ) );
@@ -79,8 +81,20 @@ public class ActionListWhatICanView extends BaseAction {
 					if( "UNIT".equalsIgnoreCase( calendar.getType() ) ) {
 						wo.addUnitCalendar( woCalendar );
 					}else {
-						if( calendar.getCreateor().equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-							wo.addMyCalendar( woCalendar );
+						if( calendar.getCreateor().equalsIgnoreCase( effectivePerson.getDistinguishedName() )
+								|| StringUtils.equalsAnyIgnoreCase("SYSTEM", calendar.getCreateor() )) {
+							if( StringUtils.equalsAnyIgnoreCase("SYSTEM", calendar.getCreateor() )) {
+								if( !existsSystemDefaultCalendar ){
+									wo.addMyCalendar( woCalendar );
+									existsSystemDefaultCalendar = true;
+								}else{
+									//多了一个系统日历，删除当前这个日历
+									calendarServiceAdv.destory( calendar.getId() );
+								}
+							}else{
+								wo.addMyCalendar( woCalendar );
+							}
+
 						}else {
 							wo.addFollowCalendar( woCalendar );
 						}
