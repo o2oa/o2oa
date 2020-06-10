@@ -367,6 +367,9 @@ o2.addReady(function () {
     var lpLoaded = false;
     var commonLoaded = false;
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
+
+    if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
+
     o2.load(lp, function () {
         _loadProgressBar();
         lpLoaded = true;
