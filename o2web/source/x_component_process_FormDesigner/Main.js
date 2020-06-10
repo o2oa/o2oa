@@ -94,6 +94,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
 
+                        debugger;
+
                         this.form.fireEvent("queryGetFormData", [module.node]);
                         var html = module.getHtml();
                         var json = module.getJson();
