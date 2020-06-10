@@ -18,6 +18,8 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -37,8 +39,11 @@ class ActionManageUpload extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (!effectivePerson.isManager()) {
-				throw new ExceptionAccessDenied(effectivePerson, work);
+			Process process = business.process().pick(work.getProcess());
+			Application application = business.application().pick(work.getApplication());
+			// 需要对这个应用的管理权限
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
