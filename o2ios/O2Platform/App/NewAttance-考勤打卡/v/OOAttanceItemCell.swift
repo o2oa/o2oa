@@ -35,7 +35,19 @@ class OOAttanceItemCell: UITableViewCell,Configurable {
         guard let model = item as? OOAttandanceMobileDetail else {
             return
         }
-        checkTimeLabel.text = "打卡时间:\(model.recordDateString ?? "") \(model.signTime ?? "")"
+        var showTime = ""
+        if let time = model.signTime {
+            if time.length > 5 {
+                showTime = time.subString(from: 0, to: 5)
+            }else {
+                showTime = time
+            }
+        }
+        if let type = model.checkin_type {
+            checkTimeLabel.text = "\(type): \(showTime)"
+        }else {
+            checkTimeLabel.text = "打开时间: \(showTime)"
+        }
         checkLocationLabel.text = "\(model.recordAddress ?? "")"
     }
     

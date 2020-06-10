@@ -56,6 +56,14 @@
 		B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FB229E34D300778050 /* LBXScanViewController.swift */; };
 		B10A2F56233DDA990011CE3D /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F55233DDA990011CE3D /* AdSupport.framework */; };
 		B10A2F58233DDAE10011CE3D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F57233DDAE10011CE3D /* Security.framework */; };
+		B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */; };
+		B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */; };
+		B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5F2488C82F005075F0 /* IMViewModel.swift */; };
+		B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A622488C8EA005075F0 /* IMConversationInfo.swift */; };
+		B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */; };
+		B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */; };
+		B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A692488D4AD005075F0 /* O2IM.swift */; };
+		B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B1173B2C2489F48C005075F0 /* O2Emoji.bundle */; };
 		B1298E50236692AB006E9236 /* CloudFileListBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */; };
 		B1298E7C23669BA2006E9236 /* CloudFileTypeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */; };
 		B1298E7E2366AE4C006E9236 /* CloudFileImageCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */; };
@@ -111,6 +119,12 @@
 		B13A0120236935BC00025F3B /* O2CloudFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */; };
 		B142B081230FB56400E7D127 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B080230FB56400E7D127 /* MimeType.swift */; };
 		B142B083230FB58B00E7D127 /* Swime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B082230FB58B00E7D127 /* Swime.swift */; };
+		B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */; };
+		B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */; };
+		B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */; };
+		B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */; };
+		B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */; };
+		B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -118,6 +132,7 @@
 		B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */; };
 		B14E078C230141BE00AE85A0 /* ContactPersonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */; };
 		B14E07C523025C6A00AE85A0 /* OOContactExpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */; };
+		B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */; };
 		B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */; };
 		B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B158E95D215DD3F500AB2727 /* AIConstants.swift */; };
 		B15D26EC235EF7480092F8B8 /* genstrings.sh in Resources */ = {isa = PBXBuildFile; fileRef = B15D26EB235EF7480092F8B8 /* genstrings.sh */; };
@@ -1211,6 +1226,13 @@
 			remoteGlobalIDString = 183276F1FBCA05D9F840C64172C84A44;
 			remoteInfo = YHPopupView;
 		};
+		B1173A582488C3DD005075F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 891B2270823847ED23F2ECFC28F935EC;
+			remoteInfo = Starscream;
+		};
 		B14A2292224CBC2E00745E0A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1358,6 +1380,14 @@
 		B108F3FB229E34D300778050 /* LBXScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewController.swift; sourceTree = "<group>"; };
 		B10A2F55233DDA990011CE3D /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		B10A2F57233DDAE10011CE3D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationListViewController.swift; sourceTree = "<group>"; };
+		B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicateAPI.swift; sourceTree = "<group>"; };
+		B1173A5F2488C82F005075F0 /* IMViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMViewModel.swift; sourceTree = "<group>"; };
+		B1173A622488C8EA005075F0 /* IMConversationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationInfo.swift; sourceTree = "<group>"; };
+		B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationItemCell.swift; sourceTree = "<group>"; };
+		B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMConversationItemCell.xib; sourceTree = "<group>"; };
+		B1173A692488D4AD005075F0 /* O2IM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2IM.swift; sourceTree = "<group>"; };
+		B1173B2C2489F48C005075F0 /* O2Emoji.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = O2Emoji.bundle; sourceTree = "<group>"; };
 		B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileListBaseController.swift; sourceTree = "<group>"; };
 		B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileTypeListController.swift; sourceTree = "<group>"; };
 		B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileImageCollectionController.swift; sourceTree = "<group>"; };
@@ -1409,6 +1439,12 @@
 		B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2CloudFileInfo.swift; sourceTree = "<group>"; };
 		B142B080230FB56400E7D127 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B142B082230FB58B00E7D127 /* Swime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swime.swift; sourceTree = "<group>"; };
+		B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatViewController.swift; sourceTree = "<group>"; };
+		B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatViewController.xib; sourceTree = "<group>"; };
+		B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageViewCell.swift; sourceTree = "<group>"; };
+		B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageViewCell.xib; sourceTree = "<group>"; };
+		B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageSendViewCell.swift; sourceTree = "<group>"; };
+		B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageSendViewCell.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -1416,6 +1452,7 @@
 		B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupPickerViewController.swift; sourceTree = "<group>"; };
 		B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPersonPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOContactExpressAPI.swift; sourceTree = "<group>"; };
+		B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebsocketManager.swift; sourceTree = "<group>"; };
 		B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2DemoAlertView.swift; sourceTree = "<group>"; };
 		B158E95D215DD3F500AB2727 /* AIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConstants.swift; sourceTree = "<group>"; };
 		B15D26BF235EF0850092F8B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/CloudFile.storyboard; sourceTree = "<group>"; };
@@ -2514,6 +2551,7 @@
 				B10AC5D721058DAE00179587 /* RxSwift.framework */,
 				B10AC5D921058DAE00179587 /* SDWebImage.framework */,
 				B10AC5DF21058DAE00179587 /* SnapKit.framework */,
+				B1173A592488C3DD005075F0 /* Starscream.framework */,
 				B10AC5E321058DAE00179587 /* SwiftValidator.framework */,
 				B10AC5E521058DAE00179587 /* SwiftyJSON.framework */,
 				B10AC5E721058DAE00179587 /* SwiftyTimer.framework */,
@@ -2522,6 +2560,49 @@
 				B10AC5F121058DAE00179587 /* YHPopupView.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B1173A262488C3DD005075F0 /* IM-聊天 */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A642488CD37005075F0 /* View */,
+				B1173A612488C8D3005075F0 /* Model */,
+				B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */,
+				B1173A5F2488C82F005075F0 /* IMViewModel.swift */,
+				B1173A692488D4AD005075F0 /* O2IM.swift */,
+				B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */,
+				B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */,
+			);
+			path = "IM-聊天";
+			sourceTree = "<group>";
+		};
+		B1173A5C2488C568005075F0 /* Communicate */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */,
+			);
+			path = Communicate;
+			sourceTree = "<group>";
+		};
+		B1173A612488C8D3005075F0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A622488C8EA005075F0 /* IMConversationInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B1173A642488CD37005075F0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */,
+				B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */,
+				B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */,
+				B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */,
+				B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */,
+				B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		B12FD1502283CDF400E636BA /* theme */ = {
@@ -2785,6 +2866,7 @@
 		B1F79C44233B5F9B004D0AEE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B1173B2C2489F48C005075F0 /* O2Emoji.bundle */,
 				B19776E7217D9D810019F3A8 /* beep.wav */,
 				E4B888231D9D48F1002E1A46 /* images */,
 				E4B888291D9D48F1002E1A46 /* 隶变体.ttf */,
@@ -2838,6 +2920,7 @@
 				B13A011023692A8B00025F3B /* O2CloudFileManager.swift */,
 				B1E0BAA02378FC01001D741F /* O2JPushManager.swift */,
 				B1ABAA0B237E498C0027EC48 /* O2VersionManager.swift */,
+				B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -2869,6 +2952,7 @@
 				E45CD4211DFE503C008F99AD /* Scan-二维码扫码 */,
 				E4C24C22208D7EDE00E426B0 /* Contact-通讯录 */,
 				E4B8875E1D9D48F1002E1A46 /* contacts */,
+				B1173A262488C3DD005075F0 /* IM-聊天 */,
 				E428AF3720A95D3800D964B9 /* NewAttance-考勤打卡 */,
 				E40E246E20B7DA3C009F8BE7 /* meeting-会议 */,
 				B19091FD2107145F009A7906 /* Calendar-日程管理 */,
@@ -3405,6 +3489,7 @@
 		E4B69721207602840062F6E8 /* O2API */ = {
 			isa = PBXGroup;
 			children = (
+				B1173A5C2488C568005075F0 /* Communicate */,
 				B18FFF3323756B24001B2887 /* JpushAPI */,
 				B107453721A52B9A0015F1B2 /* PersonalAPI */,
 				B1B6A8F7217710A400C10F3C /* FaceRecognizeAPI */,
@@ -5294,6 +5379,13 @@
 			remoteRef = B10AC5F021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		B1173A592488C3DD005075F0 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = B1173A582488C3DD005075F0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		B14A2293224CBC2E00745E0A /* IQKeyboardManagerSwift.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5384,6 +5476,7 @@
 				E4C24B4920844F3C00E426B0 /* JCMessageImageCollectionViewCell.xib in Resources */,
 				E4C24C1820844F5200E426B0 /* yh_image_picked@2x.png in Resources */,
 				E45755A61E0BA72E00EC44F4 /* qrcode_scan_part_net.png in Resources */,
+				B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */,
 				E46E6C721DD41F5D00AB7561 /* ZSSfonts@2x.png in Resources */,
 				E46E6C6E1DD41F5D00AB7561 /* ZSScenterjustify@2x.png in Resources */,
 				B1298E822366B2E7006E9236 /* CFImageViewCell.xib in Resources */,
@@ -5398,12 +5491,14 @@
 				E4B8871E1D9D477A002E1A46 /* Assets.xcassets in Resources */,
 				E46E6CA51DD41F5D00AB7561 /* ZSSsuperscript.png in Resources */,
 				E4C24BC020844F3C00E426B0 /* 定位2.png in Resources */,
+				B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */,
 				B197771D217D9D810019F3A8 /* beep.wav in Resources */,
 				E40E24C920B7DA3C009F8BE7 /* OOMeetingPersonTableViewCell.xib in Resources */,
 				E4B2321C20B3E94E0082F30A /* OOAttanceCheckinPromptView.xib in Resources */,
 				E4C24B6120844F3C00E426B0 /* addressCode in Resources */,
 				E4B697D920764A2D0062F6E8 /* myshareEditorByPerson.json in Resources */,
 				E457559D1E0BA72E00EC44F4 /* qrcode_scan_btn_flash_down@2x.png in Resources */,
+				B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */,
 				E4C24C1A20844F5200E426B0 /* emoticons.bundle in Resources */,
 				E4B888E11D9D48F1002E1A46 /* contacts.storyboard in Resources */,
 				E45755A51E0BA72E00EC44F4 /* qrcode_scan_light_green@2x.png in Resources */,
@@ -5504,6 +5599,7 @@
 				E46E6CAF1DD41F5D00AB7561 /* ZSSunlink.png in Resources */,
 				E40E24C320B7DA3C009F8BE7 /* OOMeetingInforItemCell.xib in Resources */,
 				E46E6C811DD41F5D00AB7561 /* ZSShorizontalrule.png in Resources */,
+				B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */,
 				E46E6C7F1DD41F5D00AB7561 /* ZSSh6.png in Resources */,
 				E46E6C9C1DD41F5D00AB7561 /* ZSSquicklink@2x.png in Resources */,
 				E46E6C901DD41F5D00AB7561 /* ZSSleftjustify@2x.png in Resources */,
@@ -5519,6 +5615,7 @@
 				E4B889071D9D4C7E002E1A46 /* podfile in Resources */,
 				E46E6C841DD41F5D00AB7561 /* ZSSimage@2x.png in Resources */,
 				E4B697012075DE5F0062F6E8 /* OOGuidePageController.xib in Resources */,
+				B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */,
 				E4D23110209C40F600837868 /* OOPersonCollectionViewCell.xib in Resources */,
 				B167F7672362C60200F182B8 /* CloudFileMoveFolderCell.xib in Resources */,
 				E46E6CAD1DD41F5D00AB7561 /* ZSSundo.png in Resources */,
@@ -5630,6 +5727,7 @@
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTimer/SwiftyTimer.framework",
@@ -5672,6 +5770,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTimer.framework",
@@ -5849,6 +5948,7 @@
 				E4B888711D9D48F1002E1A46 /* ContactSearchViewController.swift in Sources */,
 				B130A7852281597000282AD1 /* DeviceManagerViewModel.swift in Sources */,
 				E40E24BF20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.swift in Sources */,
+				B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */,
 				E4A748D51EC15EF100163F58 /* TaskAttachmentPreviewController.swift in Sources */,
 				E4B888A51D9D48F1002E1A46 /* MJRefreshBackStateFooter.m in Sources */,
 				E4B8885E1D9D48F1002E1A46 /* O2CollectionView.swift in Sources */,
@@ -5858,9 +5958,11 @@
 				E4D2310F209C40F600837868 /* OOPersonCollectionViewCell.swift in Sources */,
 				E4C24B4A20844F3C00E426B0 /* JCMessageImageCollectionViewCell.swift in Sources */,
 				E4C24B6920844F3C00E426B0 /* DLSlideView.m in Sources */,
+				B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */,
 				B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */,
 				E4C24B7F20844F3C00E426B0 /* ImageFileCell.swift in Sources */,
 				B165CD602242093500373B66 /* AlertViewController.swift in Sources */,
+				B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */,
 				E441994A206C8A100050AE0C /* OORegisterTableView.swift in Sources */,
 				E40E24A920B7DA3C009F8BE7 /* OOMeetingCreateViewModel.swift in Sources */,
 				E40C41ED1E7F7C0D00568805 /* ZoneSubCategoryViewController.swift in Sources */,
@@ -5896,6 +5998,7 @@
 				B1DE856623603408003C36E2 /* DispatchQueue+Extension.swift in Sources */,
 				E4B69772207630240062F6E8 /* String+Extenstion.swift in Sources */,
 				B175007A233C6908003DA7B9 /* BlockLongPress.swift in Sources */,
+				B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */,
 				E4B69734207602A40062F6E8 /* OOAPIContext.swift in Sources */,
 				09E02E881F16319600579887 /* DiskFetcher.swift in Sources */,
 				E4C24B5520844F3C00E426B0 /* SAIToolboxInputView.swift in Sources */,
@@ -5903,6 +6006,7 @@
 				E4C24B5320844F3C00E426B0 /* SAIInputView.swift in Sources */,
 				E40E24CF20B7DA3C009F8BE7 /* OOFormDateItemView.swift in Sources */,
 				B1FBA01D230A3AB500A90722 /* O2JsApiBizUtil.swift in Sources */,
+				B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */,
 				E4B69776207630240062F6E8 /* UIView+Extension.swift in Sources */,
 				E4C24BB420844F3C00E426B0 /* JCMessageContentViewType.swift in Sources */,
 				E4C24B9420844F3C00E426B0 /* JCGroupSettingCell.swift in Sources */,
@@ -6004,6 +6108,7 @@
 				B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */,
 				E4B6975C20762EA00062F6E8 /* OOUIDownButtonTextField.swift in Sources */,
 				E4C24C0720844F4400E426B0 /* JCSearchFriendViewController.swift in Sources */,
+				B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */,
 				E46E6CBB1DD41F5D00AB7561 /* HRBrightnessCursor.m in Sources */,
 				E4B697E920764A2D0062F6E8 /* OOWorkAPI.swift in Sources */,
 				E40E24C720B7DA3C009F8BE7 /* OOFormSegueItemView.swift in Sources */,
@@ -6282,6 +6387,7 @@
 				E4B888A41D9D48F1002E1A46 /* MJRefreshBackNormalFooter.m in Sources */,
 				E4B2320F20B2A9F60082F30A /* OOAttandanceWorkPlaceController.swift in Sources */,
 				E46E6CB91DD41F5D00AB7561 /* CYRTextView.m in Sources */,
+				B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */,
 				B175007C233C6908003DA7B9 /* BlockTap.swift in Sources */,
 				E4C24B5020844F3C00E426B0 /* SAIInputAccessoryViewLayout.swift in Sources */,
 				E4AA17151EE158E70030D9AB /* LogListViewController.swift in Sources */,
@@ -6371,6 +6477,7 @@
 				E4C24B8D20844F3C00E426B0 /* JCMessageLocationContentView.swift in Sources */,
 				E4CDB8851E7CFB9C008E788D /* ZLNormalNavViewController.swift in Sources */,
 				B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */,
+				B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */,
 				E46E6CBC1DD41F5D00AB7561 /* HRCgUtil.m in Sources */,
 				E496E89E207314B100C68EEE /* NavView.swift in Sources */,
 				E4C24BD720844F3C00E426B0 /* JCMyInfoViewController.swift in Sources */,
@@ -6395,6 +6502,7 @@
 				E4C24BD920844F3C00E426B0 /* JCFeedbackViewController.swift in Sources */,
 				E4C24C4C208D7EDE00E426B0 /* OOCDLCell.swift in Sources */,
 				B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */,
+				B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */,
 				E4BF45D71E74FB0C008B52F0 /* ImageSlidesShowView.swift in Sources */,
 				E4C24B5820844F3C00E426B0 /* SAIInputItem.swift in Sources */,
 				E40E24DF20B7E66E009F8BE7 /* O2BBSCreatorView.swift in Sources */,
@@ -6417,6 +6525,7 @@
 				E4C24B8C20844F3C00E426B0 /* JCMessageNoticeContentView.swift in Sources */,
 				E4C24C3E208D7EDE00E426B0 /* OOContactViewModel.swift in Sources */,
 				E4D2312E20A29E7500837868 /* OOAppMainCollectionHeaderView.swift in Sources */,
+				B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */,
 				E4C24B5220844F3C00E426B0 /* SAIToolboxItemView.swift in Sources */,
 				E4C24B3C20844F3C00E426B0 /* Date+JChat.swift in Sources */,
 				E4C24C0120844F4400E426B0 /* JCUserInfoCell.swift in Sources */,

@@ -211,6 +211,13 @@ extension Date {
         return self.year == date.year
     }
     
+    /**间隔天数
+     */
+    func betweenDays(_ date: Date) -> Int {
+        let components = Calendar.current.dateComponents([.day], from: self, to: date)
+        return abs(components.day ?? 0)
+    }
+    
     func haveSameYearAndMonth(_ date: Date) -> Bool {
         return self.haveSameYear(date) && self.month == date.month
     }
@@ -285,11 +292,16 @@ extension Date {
                 returnTimeString = "\(gap)天前"
             }
         }else if now.haveSameYear(self) {
-            let gap = now.month - self.month
-            if gap < 4 {
-                returnTimeString = "\(gap)个月前"
+            let days = now.betweenDays(self)
+            if days > 30 {
+                let gap = now.month - self.month
+                if gap < 4 {
+                    returnTimeString = "\(gap)个月前"
+                }else {
+                    returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
+                }
             }else {
-                returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
+               returnTimeString = "\(days)天前"
             }
         }else {
             returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
