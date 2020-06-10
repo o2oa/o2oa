@@ -2034,3 +2034,672 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         this.close();
     }
 });
+
+MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "popupStyle": "o2platform",
+        "width": "650",
+        "height": "480",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon": true,
+        "hasTopContent": true,
+        "hasBottom": false,
+        "hasScroll": false,
+        "hasMark": false,
+        "title": MWF.LP.authentication.ChangePasswordFormTitle,
+        "draggable": true,
+        "closeAction": true
+    },
+    _createTableContent: function () {
+
+        // "<tr><td styles='formTableTitle' lable='password'></td>" +
+        // "   <td styles='formTableValue' item='password'></td>" +
+        // "   <td styles='formTableValue'><div item='passwordStrengthArea'></div></div><div item='passwordTip'></div></td></tr>" +
+        // "<tr><td styles='formTableTitle' lable='confirmPassword'></td>" +
+        // "   <td styles='formTableValue' item='confirmPassword'></td>" +
+        // "   <td styles='formTableValue' item='confirmPasswordTip'></td></tr>" +
+
+        var html =
+            "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
+            "<tr><div><div item='passwordAction'>";
+        if (this.codeLogin) {
+            html += "</div><div styles='titleSep'></div><div item='codeAction'></div></tr>";
+        }
+        html += "</table>";
+
+        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
+            "<tr item='credentialTr'><td styles='formTableValueTop20' item='credential'></td></tr>" +
+            "<tr item='passwordTr'><td styles='formTableValueTop20' item='password'></td></tr>";
+        if (this.captchaLogin) {
+            html += "<tr item='captchaTr'><td styles='formTableValueTop20'>" +
+                "<div item='captchaAnswer' style='float:left;'></div><div item='captchaPic' style='float:left;'></div><div item='changeCaptchaAction' style='float:left;'></div>" +
+                "</td></tr>";
+        }
+        if (this.codeLogin) {
+            html += "<tr item='codeTr' style='display: none'><td styles='formTableValueTop20'>" +
+                "   <div item='codeAnswer' style='float:left;'></div>" +
+                "   <div item='verificationAction' style='float:left;'></div>" +
+                "   <div item='resendVerificationAction' style='float:left;display:none;'></div>" +
+                "</td></tr>";
+        }
+        html += "<tr><td styles='formTableValueTop20' item='loginAction'></td></tr>" +
+            "</table>" +
+            "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>";
+        if (this.signUpMode && this.signUpMode !== "disable") {
+            html += "<tr><td><div item='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+        } else {
+            html += "<tr><td><div styles='signUpAction'></div><div item='forgetPassword'></div></td></tr>";
+        }
+        html += "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
+            "<tr><td  styles='formTableValue' item='oauthArea'></td></tr>" +
+            "</table>";
+
+        this.formTableArea.set("html", html);
+        new Element("div", {
+            "styles": this.css.formFooter,
+            // "styles": {
+            //     "text-align": "center",
+            //     "height": "40px",
+            //     "line-height": "40px"
+            // },
+            "text": layout.config.footer || layout.config.systemName
+        }).inject(this.formTableArea, "after");
+
+
+        if (this.captchaLogin) this.setCaptchaPic();
+        this.errorArea = this.formTableArea.getElement("[item=errorArea]");
+
+        this.oauthArea = this.formTableArea.getElement("[item=oauthArea]");
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: this.options.popupStyle,
+                verifyType: "single",	//batch一起校验，或alert弹出
+                isEdited: this.isEdited || this.isNew,
+                itemTemplate: {
+                    credential: {
+                        text: this.lp.userName,
+                        defaultValue: this.lp.userName,
+                        className: "inputUser",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputYourUserName,
+                        event: {
+                            focus: function (it) {
+                                if (this.lp.userName === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                if ("" === it.getValue()) it.setValue(this.lp.userName);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputUser);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputUser);
+                        }.bind(this)
+                    },
+                    password: {
+                        text: this.lp.password,
+                        type: "password",
+                        defaultValue: "password",
+                        className: "inputPassword",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputYourPassword,
+                        event: {
+                            focus: function (it) {
+                                if ("password" === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputPassword);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputPassword);
+                        }.bind(this)
+                    },
+                    captchaAnswer: {
+                        tType: "number",
+                        text: this.lp.verificationCode,
+                        defaultValue: this.lp.verificationCode,
+                        className: "inputVerificationCode",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputPicVerificationCode,
+                        event: {
+                            focus: function (it) {
+                                if (this.lp.verificationCode === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                if ("" === it.getValue()) it.setValue(this.lp.verificationCode);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputVerificationCode);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputVerificationCode);
+                        }.bind(this)
+                    },
+                    changeCaptchaAction: {
+                        value: this.lp.changeVerification,
+                        type: "innerText",
+                        className: "verificationChange",
+                        event: {
+                            click: function () {
+                                this.setCaptchaPic();
+                            }.bind(this)
+                        }
+                    },
+                    codeAnswer: {
+                        text: this.lp.verificationCode,
+                        defaultValue: this.lp.inputVerificationCode,
+                        className: "inputVerificationCode2",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputVerificationCode,
+                        event: {
+                            focus: function (it) {
+                                if (this.lp.inputVerificationCode === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                if ("" === it.getValue()) it.setValue(this.lp.inputVerificationCode);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputVerificationCode2);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputVerificationCode2);
+                        }.bind(this)
+                    },
+                    verificationAction: {
+                        value: this.lp.sendVerification,
+                        type: "button",
+                        className: "inputSendVerification",
+                        event: {
+                            click: function () {
+                                this.sendVerificationAction();
+                            }.bind(this)
+                        }
+                    },
+                    resendVerificationAction: {
+                        value: this.lp.resendVerification,
+                        type: "button",
+                        className: "inputResendVerification"
+                    },
+                    loginAction: {
+                        value: this.lp.loginAction,
+                        type: "button",
+                        className: "inputLogin",
+                        event: {
+                            click: function () {
+                                this.ok();
+                            }.bind(this)
+                        }
+                    },
+                    passwordAction: {
+                        value: this.lp.passwordLogin,
+                        type: "innerText",
+                        className: "titleNode_active",
+                        event: {
+                            click: function () {
+                                if (this.codeLogin) this.showPasswordLogin();
+                            }.bind(this)
+                        }
+                    },
+                    codeAction: {
+                        value: this.lp.codeLogin,
+                        type: "innerText",
+                        className: "titleNode_normal",
+                        event: {
+                            click: function () {
+                                this.showCodeLogin();
+                            }.bind(this)
+                        }
+                    },
+                    signUpAction: {
+                        value: this.lp.signUp,
+                        type: "innerText",
+                        className: "signUpAction",
+                        event: {
+                            click: function () {
+                                this.gotoSignup();
+                            }.bind(this)
+                        }
+                    },
+                    forgetPassword: {
+                        value: this.lp.forgetPassword,
+                        type: "innerText",
+                        className: "forgetPassword",
+                        event: {
+                            click: function () {
+                                this.gotoResetPassword();
+                            }.bind(this)
+                        }
+                    }
+                }
+            }, this.app, this.css);
+            this.form.load();
+        }.bind(this), true);
+
+        if (this.bindLogin) {
+            this.bindLoginContainer = new Element("div", {
+                styles: this.css.bindLoginContainer
+            }).inject(this.formContentNode);
+
+            var html2 = "<div item='bindLoginTitle' styles='bindTitleNode'></div>" +
+                "<div styles='bindBodyArea'>" +
+                "<div item='bindPicArea' styles='bindPicArea'></div>" +
+                "<div styles='bindSepArea'></div>" +
+                "<div styles='bindExampleArea'></div>" +
+                "</div>" +
+                "<div styles='bindTipArea'>" +
+                "   <div styles='bindTipIconArea'></div>" +
+                "   <div styles='bindTipTextArea'>" +
+                "       <div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>" +
+                "       <div>登录网页版</div>" +
+                "</div>";
+
+            this.bindLoginContainer.set("html", html2);
+
+            this.isShowEnable = true;
+            this.bindBodyArea = this.bindLoginContainer.getElement("[styles='bindBodyArea']");
+            this.bindLoginContainer.addEvent("mousemove", function (ev) {
+                if (this.bindBodyArea.isOutside(ev)) {
+                    this.hideExampleArea(ev);
+                } else {
+                    this.showExampleArea(ev);
+                }
+            }.bind(this));
+
+            this.bindPicArea = this.bindLoginContainer.getElement("[item='bindPicArea']");
+            this.setBindPic();
+            this.bindExampleArea = this.bindLoginContainer.getElement("[styles='bindExampleArea']");
+            this.bindSepArea = this.bindLoginContainer.getElement("[styles='bindSepArea']");
+            var link = this.bindLoginContainer.getElement("[styles='bindTipLinkArea']");
+            link.addEvent("click", function () {
+                if( layout.config.appUrl ){
+                    window.open(layout.config.appUrl, "_blank");
+                }else{
+                    window.open(this.lp.o2downloadLink, "_blank");
+                }
+            }.bind(this));
+
+            MWF.xDesktop.requireApp("Template", "MForm", function () {
+                this.bindform = new MForm(this.bindLoginContainer, {}, {
+                    style: "o2platform",
+                    verifyType: "single",	//batch一起校验，或alert弹出
+                    isEdited: this.isEdited || this.isNew,
+                    itemTemplate: {
+                        bindLoginTitle: { value: this.lp.bingLoginTitle, type: "innerText" }
+                    }
+                }, this.app, this.css);
+                this.bindform.load();
+            }.bind(this), true);
+        }
+
+        this.loadOauthContent()
+
+    },
+    _beforeFormNodeSize: function () {
+        if (!this.isPlusOauthSize && this.oauthListNode) {
+            this.options.height = parseInt(this.options.height) + this.oauthArea.getSize().y;
+            this.isPlusOauthSize = true;
+        }
+        if (this.oauthListNode || (!this.captchaLogin && !this.bindLogin)) { //留高度给二维码
+            this.options.height = this.options.height - 60;
+        }
+        if (this.oauthListNode && this.captchaLogin) {
+            this.options.height = this.options.height + 60;
+        }
+    },
+    loadOauthContent: function () {
+        this.actions.listOauthServer(function (json) {
+            this.oauthList = json.data || [];
+            if (this.oauthList.length > 0) {
+                if (!this.oauthArea.getChildren().length) {
+                    this.oauthListNode = new Element("div", { styles: this.css.oauthListNode }).inject(this.oauthArea);
+                }
+                this.oauthList.each(function (d) {
+                    if (d.displayName === "@O2企业微信") {
+                        d.qywx = true;
+                    } else if (d.displayName === "@O2钉钉") {
+                        d.dingding = true;
+                    }
+                    this.loadOauthItem(d);
+                }.bind(this));
+            }
+        }.bind(this), null, false);
+
+    },
+    loadOauthItem: function (data) {
+        var url = data.icon.indexOf("http") == 0 ? data.icon : ("data:image/png;base64," + data.icon);
+
+        var itemNode = new Element("div", {
+            styles: this.css.oauthItemNode,
+            events: {
+                click: function () {
+                    var url = "../x_desktop/oauth.html?oauth=" + encodeURIComponent(this.name);
+                    if (this.qywx) {
+                        url += "&qywx=" + this.qywx;
+                    }
+                    if (this.dingding) {
+                        url += "&dingding=" + this.dingding;
+                    }
+                    window.location = url;
+                }.bind(data)
+            }
+        }).inject(this.oauthListNode);
+        var iconNode = new Element("img", {
+            styles: this.css.oauthItemIconNode,
+            src: url
+        }).inject(itemNode);
+        var textNode = new Element("div", {
+            styles: this.css.oauthItemTextNode,
+            text: data.name
+        }).inject(itemNode);
+    },
+    showExampleArea: function () {
+        if (this.isHiddingExample || this.isShowingExample) return;
+        if (!this.isShowEnable) return;
+        this.isShowingExample = true;
+        var left = this.bindBodyArea.getPosition(this.bindBodyArea.getParent()).x;
+        var hideLeft = ((this.bindBodyArea.getParent().getSize().x) - 400) / 2;
+        debugger;
+        this.intervalId = setInterval(function () {
+            if (left > hideLeft) {
+                this.bindBodyArea.setStyle("margin-left", (left - 5) + "px");
+                left = left - 5;
+            } else {
+                clearInterval(this.intervalId);
+                this.bindBodyArea.setStyle("width", "400px");
+                this.bindSepArea.setStyle("display", "");
+                this.bindExampleArea.setStyle("display", "");
+                this.isHidEnable = true;
+                this.isShowEnable = false;
+                this.isShowingExample = false;
+            }
+        }.bind(this), 10)
+    },
+    hideExampleArea: function () {
+        if (this.isShowingExample || this.isHiddingExample) return;
+        if (!this.isHidEnable) return;
+        this.isHiddingExample = true;
+        var left = this.bindBodyArea.getPosition(this.bindBodyArea.getParent()).x;
+        this.bindSepArea.setStyle("display", "none");
+        this.bindExampleArea.setStyle("display", "none");
+        var hideLeft = ((this.bindBodyArea.getParent().getSize().x) - 200) / 2;
+        this.intervalId2 = setInterval(function () {
+            if (left < hideLeft) {
+                this.bindBodyArea.setStyle("margin-left", (left + 5) + "px");
+                left = left + 5;
+            } else {
+                clearInterval(this.intervalId2);
+                this.bindBodyArea.setStyle("width", "204px");
+                this.isHidEnable = false;
+                this.isShowEnable = true;
+                this.isHiddingExample = false;
+            }
+        }.bind(this), 10)
+    },
+    showPasswordLogin: function () {
+        this.errorArea.empty();
+        this.loginType = "captcha";
+        this.form.getItem("passwordAction").setStyles(this.css.titleNode_active);
+        this.form.getItem("codeAction").setStyles(this.css.titleNode_normal);
+        this.formTableArea.getElement("[item='passwordTr']").setStyle("display", "");
+        var captchaTr = this.formTableArea.getElement("[item='captchaTr']");
+        if (captchaTr) captchaTr.setStyle("display", "");
+        this.formTableArea.getElement("[item='codeTr']").setStyle("display", "none");
+    },
+    showCodeLogin: function () {
+        this.errorArea.empty();
+        this.loginType = "code";
+        this.form.getItem("passwordAction").setStyles(this.css.titleNode_normal);
+        this.form.getItem("codeAction").setStyles(this.css.titleNode_active);
+        this.formTableArea.getElement("[item='passwordTr']").setStyle("display", "none");
+        var captchaTr = this.formTableArea.getElement("[item='captchaTr']");
+        if (captchaTr) captchaTr.setStyle("display", "none");
+        this.formTableArea.getElement("[item='codeTr']").setStyle("display", "");
+
+    },
+    showBindCodeLogin: function () {
+        this.errorArea.empty();
+        this.formTableContainer.setStyle("display", "none");
+        this.bindLoginContainer.setStyle("display", "");
+        this.bindLoginTipPic.setStyle("display", "none");
+        this.bindLoginAction.setStyle("display", "none");
+        this.backtoPasswordLoginTipPic.setStyle("display", "");
+        this.backtoPasswordLoginAction.setStyle("display", "");
+        this.checkBindStatus();
+    },
+    backtoPasswordLogin: function () {
+        this.errorArea.empty();
+        if (this.bindStatusInterval) clearInterval(this.bindStatusInterval);
+        this.formTableContainer.setStyle("display", "");
+        this.bindLoginContainer.setStyle("display", "none");
+        this.bindLoginTipPic.setStyle("display", "");
+        this.bindLoginAction.setStyle("display", "");
+        this.backtoPasswordLoginTipPic.setStyle("display", "none");
+        this.backtoPasswordLoginAction.setStyle("display", "none");
+    },
+    setBindPic: function () {
+        this.bindPicArea.empty();
+        this.actions.getLoginBind(function (json) {
+            this.bindMeta = json.data.meta;
+            new Element("img", {
+                src: "data:image/png;base64," + json.data.image
+            }).inject(this.bindPicArea);
+        }.bind(this))
+    },
+    setCaptchaPic: function () {
+        if (!this.captchaLogin) return;
+        var captchaPic = this.formTableArea.getElement("[item='captchaPic']");
+        captchaPic.empty();
+        this.actions.getLoginCaptcha(120, 50, function (json) {
+            this.captcha = json.data.id;
+            new Element("img", {
+                src: "data:image/png;base64," + json.data.image,
+                styles: this.css.verificationImage
+            }).inject(captchaPic);
+        }.bind(this))
+    },
+    sendVerificationAction: function () {
+        var flag = true;
+        var credentialItem = this.form.getItem("credential");
+        var credential = credentialItem.getValue();
+        if (!credential || credential.trim() === "") {
+            credentialItem.setWarning(this.lp.inputYourUserName, "empty");
+            return;
+        } else {
+            this.actions.checkCredential(credential, function (json) {
+                if (!json.data.value) {
+                    flag = false;
+                    credentialItem.setWarning(this.lp.userNotExist, "invalid");
+                }
+            }.bind(this), function (errorObj) {
+                flag = false;
+                var error = JSON.parse(errorObj.responseText);
+                credentialItem.setWarning(error.message, "invalid");
+            }.bind(this), false)
+        }
+        if (!flag) {
+            return;
+        } else {
+            credentialItem.clearWarning("invalid");
+        }
+        this.actions.createCredentialCode(credential, function (json) {
+        }, function (errorObj) {
+            var error = JSON.parse(errorObj.responseText);
+            this.setWarning(error.message);
+            flag = false
+        }.bind(this));
+        if (!flag) {
+            return;
+        } else {
+            this.errorArea.empty();
+        }
+        this.form.getItem("verificationAction").container.setStyle("display", "none");
+        this.setResendVerification();
+    },
+    setResendVerification: function () {
+        var resendItem = this.form.getItem("resendVerificationAction");
+        resendItem.container.setStyle("display", "");
+        this.resendElement = resendItem.getElements()[0];
+        this.resendElement.set("text", this.lp.resendVerification + "(60)");
+
+        var i = 60;
+        this.timer = setInterval(function () {
+            if (i > 0) {
+                this.resendElement.set("text", this.lp.resendVerification + "(" + --i + ")")
+            } else {
+                this.form.getItem("verificationAction").container.setStyle("display", "");
+                resendItem.container.setStyle("display", "none");
+                clearInterval(this.timer)
+            }
+        }.bind(this), 1000)
+    },
+    gotoSignup: function () {
+        this.explorer.openSignUpForm();
+        //this.explorer.openResetPasswordForm();
+        this.close();
+    },
+    gotoResetPassword: function () {
+        this.explorer.openResetPasswordForm();
+        this.close();
+    },
+    checkBindStatus: function () {
+        this.bindStatusInterval = setInterval(function () {
+            this.actions.checkBindStatus(this.bindMeta, function (json) {
+                if (json.data) {
+                    if (json.data.name && json.data.name !== "anonymous") {
+                        this.fireEvent("queryOk");
+                        this._close();
+                        if (this.formMaskNode) this.formMaskNode.destroy();
+                        this.formAreaNode.destroy();
+                        if (this.explorer && this.explorer.view) this.explorer.view.reload();
+                        if (this.app) this.app.notice(this.lp.loginSuccess, "success");
+                        this.fireEvent("postOk", json);
+                    }
+                }
+            }.bind(this), function (errorObj) {
+                //var error = JSON.parse( errorObj.responseText );
+                //this.setWarning( error.message );
+            }.bind(this))
+        }.bind(this), 3000);
+
+    },
+    _close: function () {
+        if (this.bindStatusInterval) clearInterval(this.bindStatusInterval);
+        if (this.timer) clearInterval(this.timer);
+    },
+    ok: function () {
+        this.fireEvent("queryOk");
+        this.errorArea.empty();
+        var captchaItem = null;
+        var codeItem = null;
+        if (this.loginType === "captcha") {
+            this.form.getItem("password").options.notEmpty = true;
+
+            if (this.captchaLogin) {
+                captchaItem = this.form.getItem("captchaAnswer");
+                if (captchaItem) captchaItem.options.notEmpty = true;
+            }
+
+            codeItem = this.form.getItem("codeAnswer");
+            if (codeItem) codeItem.options.notEmpty = false;
+        } else if (this.loginType === "code") {
+            this.form.getItem("password").options.notEmpty = false;
+            if (this.captchaLogin) {
+                captchaItem = this.form.getItem("captchaAnswer");
+                if (captchaItem) captchaItem.options.notEmpty = false;
+            }
+            codeItem = this.form.getItem("codeAnswer");
+            if (codeItem) codeItem.options.notEmpty = true;
+        }
+        var data = this.form.getResult(true, ",", true, false, true);
+        if (data) {
+            this._ok(data, function (json) {
+                if (json.type === "error") {
+                    if (this.app) this.app.notice(json.message, "error");
+                } else {
+                    this._close();
+                    if (this.formMaskNode) this.formMaskNode.destroy();
+                    this.formAreaNode.destroy();
+                    if (this.explorer && this.explorer.view) this.explorer.view.reload();
+                    if (this.app) this.app.notice(this.lp.loginSuccess, "success");
+                    this.fireEvent("postOk", json);
+                }
+            }.bind(this));
+        }
+    },
+    setWarning: function (text) {
+        this.errorArea.empty();
+        new Element("div", {
+            "text": text,
+            "styles": this.css.warningMessageNode
+        }).inject(this.errorArea);
+    },
+    _ok: function (data, callback) {
+        var d = null;
+        if (this.loginType === "captcha") {
+            d = {
+                credential: data.credential,
+                password: data.password
+            };
+            if (this.captchaLogin) {
+                d.captchaAnswer = data.captchaAnswer;
+                d.captcha = this.captcha;
+            }
+            this.actions.loginByCaptcha(d, function (json) {
+                if (callback) callback(json);
+                //this.fireEvent("postOk")
+            }.bind(this), function (errorObj) {
+                var error = JSON.parse(errorObj.responseText);
+                this.setWarning(error.message);
+                this.setCaptchaPic();
+                if (this.form.getItem("captchaAnswer")) this.form.getItem("captchaAnswer").setValue("");
+            }.bind(this));
+        } else if (this.loginType === "code") {
+            d = {
+                credential: data.credential,
+                codeAnswer: data.codeAnswer
+            };
+            this.actions.loginByCode(d, function (json) {
+                if (callback) callback(json);
+                //this.fireEvent("postOk")
+            }.bind(this), function (errorObj) {
+                var error = JSON.parse(errorObj.responseText);
+                this.setWarning(error.message);
+            }.bind(this));
+        }
+    }
+});
