@@ -189,6 +189,11 @@ public class WebServerTools extends JettySeverTools {
 			map.put("indexPage", Config.portal().getIndexPage());
 			map.put("webSocketEnable", Config.communicate().wsEnable());
 			map.put("urlMapping", Config.portal().getUrlMapping());
+			
+			/* 密码规则 */
+		    map.put("passwordRegex",Config.person().getPasswordRegex() );
+			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
+		
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
