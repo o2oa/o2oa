@@ -1,10 +1,14 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,11 +32,24 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		DateOperation dateOperation = new DateOperation();
 		EffectivePerson currentPerson = this.effectivePerson( request );
 		AttendanceDetailMobile attendanceDetailMobile = new AttendanceDetailMobile();
+		List<AttendanceDetailMobile> attendanceDetailMobileList = null;
+		List<WoMobileRecord> wraps = new ArrayList<>();
 		Wi wrapIn = null;
 		Boolean check = true;
+		Date now = new Date();
+		String signDate = null;
+		String signTime = null;
+
 
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, Wi.class );
+			signDate = dateOperation.getDateStringFromDate( now, "YYYY-MM-DD");
+			signTime = dateOperation.getDateStringFromDate( now, "HH:mm:ss");
+
+			attendanceDetailMobile.setRecordDateString( signDate ); //打卡日期
+			attendanceDetailMobile.setSignTime( signTime ); //打卡时间
+			attendanceDetailMobile.setCheckin_time( now.getTime() );
+			attendanceDetailMobile.setRecordDate( now );
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
@@ -57,65 +74,86 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		}
 
 		if( check ){
+			String distinguishedName = wrapIn.getEmpName();
+			if( StringUtils.isEmpty( distinguishedName )){
+				distinguishedName = currentPerson.getDistinguishedName();
+			}
+			attendanceDetailMobile.setEmpName( distinguishedName );
 			if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
-				Person person = userManagerService.getPersonObjByName( currentPerson.getDistinguishedName() );
+				Person person = userManagerService.getPersonObjByName( distinguishedName );
 				if( person != null ){
 					if( StringUtils.isNotEmpty( person.getEmployee() )){
 						attendanceDetailMobile.setEmpNo(person.getEmployee());
 					}else{
-						attendanceDetailMobile.setEmpNo(currentPerson.getDistinguishedName());
+						attendanceDetailMobile.setEmpNo( distinguishedName );
 					}
 				}
 			}else{
 				attendanceDetailMobile.setEmpNo( wrapIn.getEmpNo() );
 			}
-			attendanceDetailMobile.setEmpName( currentPerson.getDistinguishedName() );
-			attendanceDetailMobile.setCheckin_time(wrapIn.getCheckin_time());
-			attendanceDetailMobile.setCheckin_type(wrapIn.getCheckin_type());
 		}
 
-		if( check ){
-			if( StringUtils.isNotEmpty(wrapIn.getSignTime()) ){
-				try{
-					datetime = dateOperation.getDateFromString( wrapIn.getSignTime() );
-					attendanceDetailMobile.setSignTime( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //打卡时间
-				}catch( Exception e ){
+		//计算当前打卡的checking_type
+		//先查询该员工所有的考勤数据
+		if (check) {
+			try {
+				attendanceDetailMobileList = attendanceDetailServiceAdv.listAttendanceDetailMobile( effectivePerson.getDistinguishedName(), signDate );
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionAttendanceDetailProcess(e,
+						"根据条件查询员工手机打卡信息列表时发生异常.DistinguishedName:" + effectivePerson.getDistinguishedName() + ",Date:" + signDate);
+				result.error(exception);
+				logger.error(e, currentPerson, request, null);
+			}
+		}
+
+		if (check) {
+			if ( ListTools.isNotEmpty(attendanceDetailMobileList)) {
+				try {
+					wraps = WoMobileRecord.copier.copy(attendanceDetailMobileList);
+				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionAttendanceDetailProcess( e, "员工手机打卡信息中打卡时间格式异常，格式:  HH:mm:ss. 时间：" + wrapIn.getSignTime() );
-					result.error( exception );
-					logger.error( e, currentPerson, request, null);
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "系统在转换员工手机打卡信息为输出对象时发生异常.");
+					result.error(exception);
+					logger.error(e, currentPerson, request, null);
 				}
-			}else{//打卡时间没有填写就填写为当前时间
-				attendanceDetailMobile.setSignTime( dateOperation.getNowTime() ); //打卡时间
-			}
-
-			if( wrapIn.checkin_time < 1500000000000L ){ //无效
-				attendanceDetailMobile.setCheckin_time( new Date().getTime() ); //打卡时间
-			}else{//打卡时间没有填写就填写为当前时间
-				attendanceDetailMobile.setCheckin_time( wrapIn.checkin_time ); //打卡时间
 			}
 		}
-		if( check ){
-			if( StringUtils.isNotEmpty( wrapIn.getRecordDateString() ) ){
-				try{
-					datetime = dateOperation.getDateFromString( wrapIn.getRecordDateString() );
-					attendanceDetailMobile.setRecordDate( datetime );
-					attendanceDetailMobile.setRecordDateString( dateOperation.getDateStringFromDate( datetime, "yyyy-MM-dd") ); //打卡时间
-				}catch( Exception e ){
-					check = false;
-					Exception exception = new ExceptionAttendanceDetailProcess( e,  "员工手机打卡信息中打卡日期格式异常，格式: yyyy-mm-dd. 日期：" + wrapIn.getRecordDateString() );
-					result.error( exception );
-					logger.error( e, currentPerson, request, null);
-				}				
+		//根据最后一次打卡信息，计算下一次打卡的信息
+		WoSignFeature woSignFeature = null;
+		if (check
+				&& !StringUtils.equalsAnyIgnoreCase("xadmin", effectivePerson.getName())
+				&& !StringUtils.equalsAnyIgnoreCase("cipher", effectivePerson.getName())) {
+			AttendanceScheduleSetting scheduleSetting = null;
+			//打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）
+			scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( effectivePerson.getDistinguishedName(), effectivePerson.getDebugger() );
+			if( scheduleSetting != null ){
+				if( scheduleSetting.getSignProxy() == 3 ){
+					//3-四次打卡（上午下午都打上班下班卡）
+					woSignFeature = getWoSignFeatureWithProxy3(wraps, scheduleSetting);
+				}else if( scheduleSetting.getSignProxy() == 2 ){
+					//2-三次打卡（上午上班，下午下班加中午一次共三次）
+					woSignFeature = getWoSignFeatureWithProxy2(wraps, scheduleSetting);
+				}else{
+					//1-两次打卡（上午上班，下午下班）
+					woSignFeature = getWoSignFeatureWithProxy1(wraps, scheduleSetting);
+				}
+			}
+			if( woSignFeature != null ){
+				woSignFeature.setSignDate( signDate );
+			}
+			attendanceDetailMobile.setCheckin_type( woSignFeature.getCheckinType() );
+			if( StringUtils.isEmpty( wrapIn.getSignDescription() )){
+				attendanceDetailMobile.setSignDescription( woSignFeature.getCheckinType() );
 			}else{
-				attendanceDetailMobile.setRecordDateString( dateOperation.getNowDate() ); //打卡日期
+				attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );
 			}
 		}
+
 		if( check ){
 			if( StringUtils.isNotEmpty( wrapIn.getId() )){
 				attendanceDetailMobile.setId( wrapIn.getId() );
 			}
-			attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );
 			try {
 				attendanceDetailMobile = attendanceDetailServiceAdv.save( attendanceDetailMobile );
 				result.setData( new Wo( attendanceDetailMobile.getId() ) );
@@ -136,28 +174,28 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 	
 	public static class Wi {
 		
-		@FieldDescribe( "Id, 可以为空." )
+		@FieldDescribe( "Id, 可以为空，如果ID重复，则为更新原有数据." )
 		private String id;
 		
-		@FieldDescribe( "员工号, 可以为空." )
+		@FieldDescribe( "员工号, 可以为空，如果为空则与empName相同." )
 		private String empNo;
 
-		@FieldDescribe( "员工姓名, 必须填写." )
+		@FieldDescribe( "员工姓名, 可以为空，如果为空则取当前登录人员." )
 		private String empName;
 
-		@FieldDescribe( "打卡记录日期字符串：yyyy-mm-dd, 必须填写." )
+//		@FieldDescribe( "打卡记录日期字符串：yyyy-mm-dd, 必须填写." )
 		private String recordDateString;
 
-		@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
+//		@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
 		private String checkin_type;
 
-		@FieldDescribe("打卡时间。Unix时间戳")
+		@FieldDescribe("打卡时间，可以为空，为空则取服务器当前时间。Unix时间戳")
 		private long checkin_time;
 
-		@FieldDescribe( "打卡时间: hh24:mi:ss, 必须填写." )
+//		@FieldDescribe( "打卡时间: hh24:mi:ss, 必须填写." )
 		private String signTime;
 
-		@FieldDescribe( "打卡说明:上班打卡，下班打卡, 可以为空." )
+//		@FieldDescribe( "打卡说明:上班打卡，下班打卡, 可以为空." )
 		private String signDescription;
 
 		@FieldDescribe( "其他说明备注, 可以为空." )
