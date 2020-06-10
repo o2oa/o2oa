@@ -1249,12 +1249,4 @@ public class Business {
 		}
 	}
 
-	public boolean isProcessManager(EffectivePerson effectivePerson) throws Exception {
-		if (organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-				OrganizationDefinition.ProcessPlatformManager)) {
-			return true;
-		}
-		return false;
-	}
-
 }

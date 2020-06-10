@@ -34,7 +34,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (effectivePerson.isManager() || business.isProcessManager(effectivePerson)) {
+			if (business.canManageApplication(effectivePerson, null)) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 				if (wi == null) {
 					wi = new Wi();
