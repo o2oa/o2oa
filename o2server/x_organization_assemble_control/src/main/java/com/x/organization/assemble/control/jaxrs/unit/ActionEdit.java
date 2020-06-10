@@ -77,7 +77,7 @@ class ActionEdit extends BaseAction {
 			if (this.duplicateName(business, unit)) {
 				throw new ExceptionDuplicateName(unit.getName());
 			}
-			/** 判断是否修改了组织类别,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
+			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
 			checkFlag = this.checkUnitTypeName(oldUnit,unit);
 			if(checkFlag){
 				business.unit().adjustInherit(unit);
@@ -86,7 +86,7 @@ class ActionEdit extends BaseAction {
 			emc.commit();
 			ApplicationCache.notify(Unit.class);
 			
-			/** 判断是否修改了组织类别,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
+			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
 			if(checkFlag){
 				this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
 			}
@@ -213,10 +213,11 @@ class ActionEdit extends BaseAction {
 	private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
 		List<String> oldUnitType = oldUnit.getTypeList();
 		String oldName = oldUnit.getName();
+		String oldSuperior = oldUnit.getSuperior();
 		List<String> unitType = unit.getTypeList();
 		String Name = unit.getName();
 		//判断两个list是否相同
-		if (oldUnitType.retainAll(unitType) || !oldName.equals(Name)) {
+		if (oldUnitType.retainAll(unitType) || (!oldName.equals(Name)) || (!oldSuperior.equals(unit.getSuperior()))) {
 			return true;
 		}
 		return false;
