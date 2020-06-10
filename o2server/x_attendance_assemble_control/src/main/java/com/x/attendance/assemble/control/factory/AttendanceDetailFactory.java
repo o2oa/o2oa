@@ -979,4 +979,27 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
 		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
+
+	public List<String> listRecordWithDateAndNoOffDuty( String recordDate ) throws Exception {
+		List<Integer> statusArray = new ArrayList<Integer>();
+		statusArray.add( 0 ); //未分析的
+		statusArray.add( -1 ); //有错误的
+
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		cq.select(root.get(AttendanceDetail_.id));
+		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDate ), recordDate );
+
+		Predicate offDutyTime_1 = cb.isNull(root.get( AttendanceDetail_.offDutyTime ));
+		Predicate offDutyTime_2 = cb.equal( root.get( AttendanceDetail_.offDutyTime ), "" );
+		Predicate status0 = root.get( AttendanceDetail_.recordStatus).in( statusArray );
+
+		p = cb.and( p, cb.or( offDutyTime_1, offDutyTime_2 ));
+
+		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
+	}
+
+
 }
