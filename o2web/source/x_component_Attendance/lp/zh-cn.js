@@ -81,16 +81,18 @@ MWF.xApplication.Attendance.LP = {
 		"workTime" : "上班时间",
 		"offTime" : "下班时间",
 		"lateTime":"迟到起算时间",
+
 		"leaveEarlyTime":"早退起算时间",
-		"absenteeismTime":"旷工起算时间",
+		"absenteeismTime":"缺勤起算时间",
 		"illegal":{
 			"1":["下班时间不得早于上班时间"],
 			"2":["午休开始时间不得早于上班时间","午休结束时间不得早于午休开始时间","下班时间不得早于午休结束时间"],
 			"3":["上午下班时间不得早于上班时间","下午上班时间不得早于上午下班时间","下班时间不得早于下午上班时间"]
 		},
-		"absenceStartTime":"缺勤起算时间",
+		"lateStartTime":"上午迟到起算时间",
+		"leaveEarlyStartTime":"下午早退起算时间",
 		"leaveEarlyStartTimeMorning":"上午早退起算时间",
-		"lateStartTimeAfternoon":"下午上班迟到起算时间",
+		"lateStartTimeAfternoon":"下午迟到起算时间",
 		"signProxy":{
 			"name":"打卡策略",
 			"select":{
