@@ -313,5 +313,10 @@ public class AttendanceDetailService {
 		}else {
 			return null;
 		}
-	}	
+	}
+
+    public List<String> listRecordWithDateAndNoOffDuty(EntityManagerContainer emc, String dateString) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().listRecordWithDateAndNoOffDuty( dateString );
+    }
 }
