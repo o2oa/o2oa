@@ -85,7 +85,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
     options : {
         "width": 600,
-        "height": 450,
+        "height": 500,
         "hasTop" : true,
         "hasBottom" : true,
         "title" : "",
@@ -95,7 +95,6 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     _createTableContent: function(){
         var lp = this.app.lp.schedule;
         var signProxy = this.data.signProxy;
-console.log(signProxy)
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
@@ -112,11 +111,17 @@ console.log(signProxy)
             "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='lateStartTime'></td>"+
             "    <td styles='formTableValue' item='lateStartTime'></td></tr>" +
+            "<tr style='"+(signProxy!="3"?"display: none":"")+"'><td styles='formTabelTitle' lable='leaveEarlyStartTimeMorning'></td>"+
+            "    <td styles='formTableValue' item='leaveEarlyStartTimeMorning'></td></tr>" +
+            "<tr style='"+(signProxy!="3"?"display: none":"")+"'><td styles='formTabelTitle' lable='lateStartTimeAfternoon'></td>"+
+            "    <td styles='formTableValue' item='lateStartTimeAfternoon'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='leaveEarlyStartTime'></td>"+
             "    <td styles='formTableValue' item='leaveEarlyStartTime'></td></tr>" +
             "<tr><td styles='formTabelTitle' lable='absenceStartTime'></td>"+
             "    <td styles='formTableValue' item='absenceStartTime'></td></tr>" +
             "</table>";
+
+
         this.formTableArea.set("html",html);
         MWF.xDesktop.requireApp("Template", "MForm", function(){
 
@@ -124,7 +129,10 @@ console.log(signProxy)
             this.form = new MForm( this.formTableArea, this.data, {
                 onPostLoad: function(){
                     if(signProxy!=0&&signProxy!=1){
-                        this.options.height=570;
+                        if(signProxy==3)
+                            this.options.height=650;
+                        else
+                            this.options.height=570;
                     }
                 }.bind(this),
                 isEdited : this.isEdited || this.isNew,
@@ -143,19 +151,35 @@ console.log(signProxy)
                                 if(signProxy!="1"&&signProxy!="0"){
                                     this.formTableArea.getElement("[lable=middayRestStartTime]").getParent().setStyle("display","table-row");
                                     this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","table-row");
-                                    this.formNode.setStyle("height","570px");
+                                    var tempH = "570px";
+                                    if(signProxy=="3"){
+                                        this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","table-row");
+                                        this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","table-row");
+                                        tempH = "650px";
+                                        this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=true;
+                                    }else{
+                                        this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","none");
+                                        this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","none");
+                                        this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=false;
+                                    }
+
+                                    this.formNode.setStyle("height",tempH);
 
                                     this.form.options.itemTemplate.middayRestStartTime.text=lp.signProxy[signProxy].middayRestStartTime;
                                     this.form.options.itemTemplate.middayRestEndTime.text=lp.signProxy[signProxy].middayRestEndTime;
                                     this.form.options.itemTemplate.middayRestStartTime.notEmpty=true;
                                     this.form.options.itemTemplate.middayRestEndTime.notEmpty=true;
+
                                 }else{
                                     this.formTableArea.getElement("[lable=middayRestStartTime]").getParent().setStyle("display","none");
                                     this.formTableArea.getElement("[lable=middayRestEndTime]").getParent().setStyle("display","none");
-                                    this.formNode.setStyle("height","450px");
+                                    this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","none");
+                                    this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","none");
+                                    this.formNode.setStyle("height","500px");
 
                                     this.form.options.itemTemplate.middayRestStartTime.notEmpty=false;
                                     this.form.options.itemTemplate.middayRestEndTime.notEmpty=false;
+                                    this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=false;
                                 }
                                 this.form.data[0].signProxy = signProxy;
                                 this.form.load();
@@ -166,8 +190,12 @@ console.log(signProxy)
                     middayRestStartTime:{ text: lp.signProxy["2"].middayRestStartTime, tType : "time",notEmpty:(signProxy!=0&&signProxy!=1)?true:false },
                     middayRestEndTime:{ text: lp.signProxy["2"].middayRestEndTime, tType : "time",notEmpty:(signProxy!=0&&signProxy!=1)?true:false },
                     offDutyTime : { text: lp.offTime,  tType : "time",notEmpty:true },
-                    lateStartTime : { text: lp.lateTime, tType : "time",notEmpty:true},
-                    leaveEarlyTime : {  text:lp.leaveEarlyTime, tType : "time" },
+                    lateStartTime : { text: lp.lateStartTime, tType : "time",notEmpty:true},
+                    leaveEarlyStartTimeMorning : { text: lp.leaveEarlyStartTimeMorning, tType : "time"},
+                    lateStartTimeAfternoon : { text: lp.lateStartTimeAfternoon, tType : "time",notEmpty:(signProxy!=0&&signProxy!=1)?true:false},
+                    //leaveEarlyTime : {  text:lp.leaveEarlyTime, tType : "time" },
+                    leaveEarlyStartTime : {  text:lp.leaveEarlyStartTime, tType : "time" },
+
                     absenceStartTime : { text:lp.absenteeismTime, tType : "time" }
                 }
             }, this.app);
