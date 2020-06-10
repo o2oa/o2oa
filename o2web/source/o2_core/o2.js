@@ -99,6 +99,18 @@
     // };
 
     this.wrdp = this.o2;
+
+    var debug = function(reload){
+        if (reload){
+            window.location.assign(_href + ((_href.indexOf("?")==-1) ? "?" : "&")+"debugger");
+        }else{
+            if (!o2.session.isDebugger){
+                o2.session.isDebugger = true;
+                if (o2.session.isMobile || layout.mobile) o2.load("../o2_lib/eruda/eruda.js");
+            }
+        }
+    };
+    this.o2.debug = debug;
     
     var _attempt = function(){
         for (var i = 0, l = arguments.length; i < l; i++){
