@@ -89,8 +89,8 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
 
     private func _initControllers() {
         //消息
-//        let conversationVC = JCConversationListViewController()
-        let conversationVC = IMConversationListViewController()
+        let conversationVC = JCConversationListViewController()
+//        let conversationVC = IMConversationListViewController()
         conversationVC.title = "消息"
         let messages = ZLNavigationController(rootViewController: conversationVC)
 

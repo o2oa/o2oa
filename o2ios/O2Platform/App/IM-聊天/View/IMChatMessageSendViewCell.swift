@@ -1,32 +1,31 @@
 //
-//  IMChatMessageViewCell.swift
+//  IMChatMessageSendViewCell.swift
 //  O2Platform
 //
-//  Created by FancyLou on 2020/6/8.
+//  Created by FancyLou on 2020/6/10.
 //  Copyright © 2020 zoneland. All rights reserved.
 //
 
 import UIKit
-import CocoaLumberjack
 
-class IMChatMessageViewCell: UITableViewCell {
-
-    @IBOutlet weak var avatarImage: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
+class IMChatMessageSendViewCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var avatarImageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+     
     @IBOutlet weak var messageBackgroundView: UIView!
-    @IBOutlet weak var messageBackgroundWidth: NSLayoutConstraint!
-    @IBOutlet weak var messageBackgroundHeight: NSLayoutConstraint!
-    private let messageWidth = 176
+    
+    @IBOutlet weak var messageBgWidth: NSLayoutConstraint!
+    @IBOutlet weak var messageBgHeight: NSLayoutConstraint!
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        // Configure the view for the selected state
     }
     
     func setContent(item: IMMessageInfo) {
@@ -39,15 +38,15 @@ class IMChatMessageViewCell: UITableViewCell {
         if let person = item.createPerson {
             let urlstr = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.personIconByNameQueryV2, parameter: ["##name##":person as AnyObject], generateTime: false)
             if let u = URL(string: urlstr!) {
-                self.avatarImage.hnk_setImageFromURL(u)
+                self.avatarImageView.hnk_setImageFromURL(u)
             }else {
-                self.avatarImage.image = UIImage(named: "icon_men")
+                self.avatarImageView.image = UIImage(named: "icon_men")
             }
             //姓名
-            self.titleLabel.text = person.split("@").first ?? ""
+            self.nameLabel.text = person.split("@").first ?? ""
         }else {
-            self.avatarImage.image = UIImage(named: "icon_men")
-            self.titleLabel.text = ""
+            self.avatarImageView.image = UIImage(named: "icon_men")
+            self.nameLabel.text = ""
         }
         self.messageBackgroundView.removeSubviews()
         if let jsonBody = item.body, let body = parseJson(msg: jsonBody) {
@@ -59,22 +58,23 @@ class IMChatMessageViewCell: UITableViewCell {
         }
     }
     
+    
     private func emojiMsgRender(emoji: String) {
         let emojiSize = 36
         let width = CGFloat(emojiSize + 20)
         let height = CGFloat(emojiSize + 20)
-        self.messageBackgroundWidth.constant = width
-        self.messageBackgroundHeight.constant = height
+        self.messageBgWidth.constant = width
+        self.messageBgHeight.constant = height
         //背景图片
         let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-        let insets = UIEdgeInsets(top: 28, left: 10, bottom: 5, right: 5); // 上、左、下、右
-        var bubble = UIImage(named: "chat_bubble_incomming")
+        let insets = UIEdgeInsets(top: 28, left: 5, bottom: 5, right: 10); // 上、左、下、右
+        var bubble = UIImage(named: "chat_bubble_outgoing")
         bubble = bubble?.resizableImage(withCapInsets: insets, resizingMode: .stretch)
         bgImg.image = bubble
         self.messageBackgroundView.addSubview(bgImg)
         //表情图
         let emojiImage = UIImageView(frame: CGRect(x: 0, y: 0, width: emojiSize, height: emojiSize))
-        let bundle = Bundle().o2EmojiBundle(anyClass: IMChatMessageViewCell.self)
+        let bundle = Bundle().o2EmojiBundle(anyClass: IMChatMessageSendViewCell.self)
         let path = o2ImEmojiPath(emojiBody: emoji)
         emojiImage.image = UIImage(named: path, in: bundle, compatibleWith: nil)
         emojiImage.translatesAutoresizingMaskIntoConstraints = false
@@ -88,12 +88,12 @@ class IMChatMessageViewCell: UITableViewCell {
     
     private func textMsgRender(msg: String) {
         let size = calTextSize(str: msg)
-        self.messageBackgroundWidth.constant = size.width + 20
-        self.messageBackgroundHeight.constant = size.height + 20
+        self.messageBgWidth.constant = size.width + 20
+        self.messageBgHeight.constant = size.height + 20
         //背景图片
         let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: size.width + 20, height: size.height + 20))
-        let insets = UIEdgeInsets(top: 28, left: 10, bottom: 5, right: 5); // 上、左、下、右
-        var bubble = UIImage(named: "chat_bubble_incomming")
+        let insets = UIEdgeInsets(top: 28, left: 5, bottom: 5, right: 10); // 上、左、下、右
+        var bubble = UIImage(named: "chat_bubble_outgoing")
         bubble = bubble?.resizableImage(withCapInsets: insets, resizingMode: .stretch)
         bgImg.image = bubble
         self.messageBackgroundView.addSubview(bgImg)
@@ -115,12 +115,13 @@ class IMChatMessageViewCell: UITableViewCell {
         label.numberOfLines = 0
         label.lineBreakMode = .byCharWrapping
         label.preferredMaxLayoutWidth = size.width
+        
         return label
     }
     
     
     private func calTextSize(str: String) -> CGSize {
-        let size = CGSize(width: messageWidth.toCGFloat, height: CGFloat(MAXFLOAT))
+        let size = CGSize(width: 176, height: CGFloat(MAXFLOAT))
         return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil).size
     }
     
@@ -128,4 +129,5 @@ class IMChatMessageViewCell: UITableViewCell {
     private func parseJson(msg: String) -> IMMessageBodyInfo? {
         return IMMessageBodyInfo.deserialize(from: msg)
     }
+    
 }

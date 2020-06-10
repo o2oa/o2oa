@@ -100,7 +100,7 @@ class OOAttandanceFeature: NSObject, DataModel {
     @objc var signDate: String?
     @objc var signTime: String?
     @objc var checkinType: String?
-    var signSeq: Int?
+    var signSeq: Int? //第几次打卡 -1就不能打卡了
     
     required override init() {
         

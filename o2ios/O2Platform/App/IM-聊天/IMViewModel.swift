@@ -43,7 +43,14 @@ extension IMViewModel {
                 let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
                 if response.isResultSuccess() {
                     if let list = response.model?.data {
-                        fulfill(list)
+                        //列表翻转
+                        let rList = list.sorted { (f, s) -> Bool in
+                            if let ft = f.createTime, let st = s.createTime {
+                                return ft.toDate(formatter: "yyyy-MM-dd HH:mm:ss") < st.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+                            }
+                            return true
+                        }
+                        fulfill(rList)
                     }else {
                         reject(OOAppError.apiEmptyResultError)
                     }

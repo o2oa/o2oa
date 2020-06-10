@@ -123,6 +123,8 @@
 		B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */; };
 		B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */; };
 		B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */; };
+		B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */; };
+		B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -1441,6 +1443,8 @@
 		B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatViewController.xib; sourceTree = "<group>"; };
 		B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageViewCell.swift; sourceTree = "<group>"; };
 		B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageViewCell.xib; sourceTree = "<group>"; };
+		B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageSendViewCell.swift; sourceTree = "<group>"; };
+		B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageSendViewCell.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -2595,6 +2599,8 @@
 				B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */,
 				B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */,
 				B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */,
+				B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */,
+				B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5609,6 +5615,7 @@
 				E4B889071D9D4C7E002E1A46 /* podfile in Resources */,
 				E46E6C841DD41F5D00AB7561 /* ZSSimage@2x.png in Resources */,
 				E4B697012075DE5F0062F6E8 /* OOGuidePageController.xib in Resources */,
+				B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */,
 				E4D23110209C40F600837868 /* OOPersonCollectionViewCell.xib in Resources */,
 				B167F7672362C60200F182B8 /* CloudFileMoveFolderCell.xib in Resources */,
 				E46E6CAD1DD41F5D00AB7561 /* ZSSundo.png in Resources */,
@@ -6495,6 +6502,7 @@
 				E4C24BD920844F3C00E426B0 /* JCFeedbackViewController.swift in Sources */,
 				E4C24C4C208D7EDE00E426B0 /* OOCDLCell.swift in Sources */,
 				B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */,
+				B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */,
 				E4BF45D71E74FB0C008B52F0 /* ImageSlidesShowView.swift in Sources */,
 				E4C24B5820844F3C00E426B0 /* SAIInputItem.swift in Sources */,
 				E40E24DF20B7E66E009F8BE7 /* O2BBSCreatorView.swift in Sources */,

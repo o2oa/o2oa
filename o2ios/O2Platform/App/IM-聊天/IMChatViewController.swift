@@ -8,6 +8,7 @@
 
 import UIKit
 import CocoaLumberjack
+import O2OA_Auth_SDK
 
 class IMChatViewController: UIViewController {
 
@@ -39,7 +40,10 @@ class IMChatViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(UINib(nibName: "IMChatMessageViewCell", bundle: nil), forCellReuseIdentifier: "IMChatMessageViewCell")
+        self.tableView.register(UINib(nibName: "IMChatMessageSendViewCell", bundle: nil), forCellReuseIdentifier: "IMChatMessageSendViewCell")
         self.tableView.separatorStyle = .none
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 144
         self.messageInputView.delegate = self
 
         //底部安全距离 老机型没有
@@ -48,7 +52,19 @@ class IMChatViewController: UIViewController {
         self.bottomBar.topBorder(width: 1, borderColor: base_gray_color.alpha(0.5))
         self.messageInputView.backgroundColor = base_gray_color
 
-
+        //标题
+        if let c = self.conversation {
+            var person = ""
+            c.personList?.forEach({ (p) in
+                if  p != O2AuthSDK.shared.myInfo()?.distinguishedName {
+                    person = p
+                }
+            })
+            if !person.isEmpty {
+                self.title = person.split("@").first ?? ""
+            }
+        }
+        //获取聊天数据
         self.loadMsgList(page: page)
     }
 
@@ -59,6 +75,9 @@ class IMChatViewController: UIViewController {
                 self.chatMessageList = list
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                    if self.chatMessageList.count > 0 {
+                        self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count-1, section: 0), at: .bottom, animated: true)
+                    }
                 }
             }
         } else {
@@ -92,15 +111,32 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: "IMChatMessageViewCell", for: indexPath)
-    }
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let c = cell as? IMChatMessageViewCell else {
-            return
+        let msg = self.chatMessageList[indexPath.row]
+        if msg.createPerson == O2AuthSDK.shared.myInfo()?.distinguishedName { //发送者
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "IMChatMessageSendViewCell", for: indexPath) as? IMChatMessageSendViewCell {
+                cell.setContent(item: self.chatMessageList[indexPath.row])
+                return cell
+            }
+        }else {
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "IMChatMessageViewCell", for: indexPath) as? IMChatMessageViewCell {
+                cell.setContent(item: self.chatMessageList[indexPath.row])
+                return cell
+            }
         }
-        //todo
-        c.setContent(item: self.chatMessageList[indexPath.row])
+        return UITableViewCell()
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath, animated: false)
+    }
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        guard let c = cell as? IMChatMessageViewCell else {
+//            return
+//        }
+//        //todo
+//        c.setContent(item: self.chatMessageList[indexPath.row])
+//    }
 
 
 }
