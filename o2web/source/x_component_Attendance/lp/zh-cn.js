@@ -88,6 +88,9 @@ MWF.xApplication.Attendance.LP = {
 			"2":["午休开始时间不得早于上班时间","午休结束时间不得早于午休开始时间","下班时间不得早于午休结束时间"],
 			"3":["上午下班时间不得早于上班时间","下午上班时间不得早于上午下班时间","下班时间不得早于下午上班时间"]
 		},
+		"absenceStartTime":"缺勤起算时间",
+		"leaveEarlyStartTimeMorning":"上午早退起算时间",
+		"lateStartTimeAfternoon":"下午上班迟到起算时间",
 		"signProxy":{
 			"name":"打卡策略",
 			"select":{
