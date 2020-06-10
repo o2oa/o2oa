@@ -78,9 +78,9 @@ class ActionCreate extends BaseAction {
 
 			/** 不设置默认头像,可以通过为空直接显示默认头像 */
 			if (StringUtils.isNotEmpty(wi.getPassword())) {
-				business.person().setPassword(person, wi.getPassword());
+				business.person().setPassword(person, wi.getPassword(),true);
 			} else {
-				business.person().setPassword(person, this.initPassword(business, person));
+				business.person().setPassword(person, this.initPassword(business, person),true);
 			}
 			/** 设置默认管理员 */
 			this.convertControllerList(effectivePerson, business, person);

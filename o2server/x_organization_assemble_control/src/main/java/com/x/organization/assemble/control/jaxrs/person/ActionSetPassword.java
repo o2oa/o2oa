@@ -38,7 +38,7 @@ class ActionSetPassword extends BaseAction {
 					throw new ExceptionPasswordEmpty();
 				}
 				emc.beginTransaction(Person.class);
-				business.person().setPassword(o, wi.getValue());
+				business.person().setPassword(o, wi.getValue(),false);
 				emc.check(o, CheckPersistType.all);
 				emc.commit();
 				ApplicationCache.notify(Person.class);
