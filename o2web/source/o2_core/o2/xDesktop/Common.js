@@ -167,7 +167,9 @@ MWF.xDesktop.getUserLayout = function(callback){
 },
 
 MWF.xDesktop.notice = function(type, where, content, target, offset, option){
-    var noticeTarget = target || layout.desktop.desktopNode;
+    if (!where) where = { "x": "right", "y": "top" };
+    if (!type) type = "ok";
+    var noticeTarget = target || layout.desktop.desktopNode || document.body;
 
     var off = offset;
     if (!off){

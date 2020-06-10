@@ -508,7 +508,7 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
 		MWF.require("MWF.xDesktop.Dialog", function () {
-			var content = layout.mobile ? $(document.body) : this.content;
+			var content = layout.mobile ? $(document.body) : this.content || $(document.body);
 			var size = content.getSize();
 			var x = 0;
 			var y = 0;
