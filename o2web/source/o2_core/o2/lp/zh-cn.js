@@ -359,6 +359,7 @@ o2.LP.authentication = {
     "LoginFormTitle": "欢迎登录",
     "SignUpFormTitle": "欢迎注册",
     "ResetPasswordFormTitle": "找回密码",
+    "ChangePasswordFormTitle" : "密码已过期",
     "userName": "用户名",
     "password": "密码",
     "verificationCode": "验证码",
