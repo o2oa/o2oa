@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.command;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -7,9 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -23,13 +28,37 @@ public class ActionCommand extends BaseAction {
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ActionCommand.class);
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName() ;
 		int nodePort =Integer.parseInt(wi.getNodePort());
-		Wo wo = executeCommand(ctl, nodeName, nodePort);
+		String curServer = request.getLocalAddr();
+		Wo wo = null;
+		if(nodeName.equalsIgnoreCase("*")) {
+			Nodes nodes = Config.nodes();
+			for (String node : nodes.keySet()){
+				//先其他服务器
+				if(!node.equalsIgnoreCase(curServer)) {
+					if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+						 wo = executeCommand(ctl, node, nodePort);
+					}
+				}
+			}
+			
+			for (String node : nodes.keySet()){
+				 //后当前服务器
+				if(node.equalsIgnoreCase(curServer)) {
+				    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+				    	  wo = executeCommand(ctl, node, nodePort);
+			        }
+				}
+			}
+		}else {
+		   wo = executeCommand(ctl, nodeName, nodePort);
+		}
+		
 		result.setData(wo);
 		return result;
 	}
@@ -63,7 +92,7 @@ public class ActionCommand extends BaseAction {
 	public static class Wi  extends GsonPropertyObject{
 		@FieldDescribe("命令名称")
 		private String ctl;
-		@FieldDescribe("服务器地址")
+		@FieldDescribe("服务器地址(*代表多台应用服务器)")
 		private String nodeName;
 		@FieldDescribe("服务端口")
 		private String nodePort;
