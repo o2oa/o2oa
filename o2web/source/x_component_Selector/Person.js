@@ -1611,6 +1611,7 @@ MWF.xApplication.Selector.Person = new Class({
 
 MWF.xApplication.Selector.Person.Item = new Class({
     initialize: function(data, selector, container, level, category, delay){
+        this.clazz = "Item";
         this.data = data;
         this.selector = selector;
         this.container = container;
@@ -1632,7 +1633,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/personicon.png)");
     },
     load: function(){
-        this.selector.fireEvent("queryLoadItem",[this]);
+        if( this.clazz === "Item" ){
+            this.selector.fireEvent("queryLoadItem",[this]);
+        }
 
         if( !this.node )this.node = new Element("div", {
             "styles": this.selector.css.selectorItem
@@ -1673,7 +1676,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
         this.check();
 
-        this.selector.fireEvent("postLoadItem",[this]);
+        if( this.clazz === "Item" ) {
+            this.selector.fireEvent("postLoadItem", [this]);
+        }
     },
     loadSubItem: function(){},
     check: function(){
@@ -1823,11 +1828,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
     },
     selected: function(){
         var count = this.selector.options.maxCount || this.selector.options.count;
+        count = count.toInt();
         if (!count) count = 0;
         if( count == 1 && this.selector.emptySelectedItems){
             this.selector.emptySelectedItems();
         }
-        if ((count.toInt()===0) || (this.selector.selectedItems.length+1)<=count) {
+        if ((count===0) || (this.selector.selectedItems.length+1)<=count) {
             this.isSelected = true;
             if( this.node ){
                 this.node.setStyles(this.selector.css.selectorItem_selected);
@@ -1932,6 +1938,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         this.selector = selector;
         this.container = this.selector.selectedNode;
         this.isSelected = false;
+        this.clazz = "ItemSelected";
         this.items = [];
         if (item) this.items.push(item);
         this.level = 0;
