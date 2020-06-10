@@ -29,7 +29,7 @@ import com.x.base.core.project.tools.Crypto;
 public class ActionUploadFile  extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(CommandAction.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson,HttpServletRequest request, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request ,EffectivePerson effectivePerson, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();	
 			Wo wo  = null;
 			String curServer = request.getLocalAddr();
@@ -49,6 +49,7 @@ public class ActionUploadFile  extends BaseAction {
 						}
 					}
 				}
+				
 				logger.info("后当前服务器");
 				for(String node : nodes.keySet()) {
 					   //后当前服务器
@@ -107,7 +108,6 @@ public class ActionUploadFile  extends BaseAction {
 			}
 		} catch (Exception ex) {
 			wo.setStatus("fail");
-			//logger.warn("socket dispatch executeCommand to {}:{} error={}", nodeName, nodePort, ex.getMessage());
 		}
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		wo.setTime(df.format(new Date()));
