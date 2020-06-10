@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -187,7 +188,7 @@ public class PersonFactory extends AbstractFactory {
 		throw new Exception("find duplicate value{" + StringUtils.join(list, ",") + "}");
 	}
 
-	public void setPassword(Person person, String password) throws Exception {
+	public void setPassword(Person person, String password, boolean isInitialization ) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		person.setChangePasswordTime(cal.getTime());
 		person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
@@ -195,8 +196,12 @@ public class PersonFactory extends AbstractFactory {
 		if (passwordPeriod == null || passwordPeriod <= 0) {
 			person.setPasswordExpiredTime(null);
 		} else {
-			cal.add(Calendar.DATE, passwordPeriod);
-			person.setPasswordExpiredTime(cal.getTime());
+			if(isInitialization) {
+				 person.setPasswordExpiredTime(new Date());
+			}else {
+			     cal.add(Calendar.DATE, passwordPeriod);
+			     person.setPasswordExpiredTime(cal.getTime());
+			}
 		}
 	}
 
