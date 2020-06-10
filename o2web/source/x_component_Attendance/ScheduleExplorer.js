@@ -2,8 +2,8 @@ MWF.xDesktop.requireApp("Template", "Explorer", null, false);
 MWF.xDesktop.requireApp("Attendance", "Explorer", null, false);
 MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xApplication.Attendance.ScheduleExplorer = new Class({
-	Extends: MWF.xApplication.Attendance.Explorer,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Attendance.Explorer,
+    Implements: [Options, Events],
 
     initialize: function(node, app, actions, options){
         this.setOptions(options);
@@ -54,9 +54,20 @@ MWF.xApplication.Attendance.ScheduleExplorer.View = new Class({
         var schedule = new MWF.xApplication.Attendance.ScheduleExplorer.Schedule(this.explorer);
         schedule.create();
     },
+    copyObject: function(obj){
+        if(typeof obj != 'object'){
+            return obj;
+        }
+        var newobj = new Object(null);
+        for ( var attr in obj) {
+            newobj[attr] = this.copyObject(obj[attr]);
+        }
+        return newobj;
+    },
     _openDocument: function( documentData ){
+        var data =this.copyObject(documentData);
 
-        var schedule = new MWF.xApplication.Attendance.ScheduleExplorer.Schedule(this.explorer, documentData );
+        var schedule = new MWF.xApplication.Attendance.ScheduleExplorer.Schedule(this.explorer, data );
 
         schedule.edit();
     }
@@ -84,7 +95,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     _createTableContent: function(){
         var lp = this.app.lp.schedule;
         var signProxy = this.data.signProxy;
-
+console.log(signProxy)
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
@@ -124,7 +135,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                             "border": "1px solid rgb(153, 153, 153)",
                             "border-radius": "3px",
                             "box-shadow": "rgb(204, 204, 204) 0px 0px 6px",
-                           "min-height": "26px",
+                            "min-height": "26px",
                             "overflow": "hidden"
                         },event :{
                             "change":function(){
