@@ -45,7 +45,8 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionCommand.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionCommand().execute(effectivePerson,request, jsonElement);
+			
+			result = new ActionCommand().execute(request,effectivePerson, jsonElement);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -85,7 +86,7 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadFile().execute(effectivePerson, request ,ctl, nodeName, nodePort, fileInputStream, disposition);
+			result = new ActionUploadFile().execute(request , effectivePerson, ctl, nodeName, nodePort, fileInputStream, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

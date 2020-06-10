@@ -28,14 +28,13 @@ public class ActionCommand extends BaseAction {
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ActionCommand.class);
-	ActionResult<Wo> execute(EffectivePerson effectivePerson,HttpServletRequest request, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName() ;
 		int nodePort =Integer.parseInt(wi.getNodePort());
 		String curServer = request.getLocalAddr();
-		
 		Wo wo = null;
 		if(nodeName.equalsIgnoreCase("*")) {
 			Nodes nodes = Config.nodes();
