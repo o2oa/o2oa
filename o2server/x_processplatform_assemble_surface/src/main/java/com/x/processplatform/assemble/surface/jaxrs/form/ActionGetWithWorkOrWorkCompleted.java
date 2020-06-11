@@ -58,15 +58,9 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 	private WoWorkForm work(Business business, Work work) throws Exception {
 		WoWorkForm wo = new WoWorkForm();
 		String id = work.getForm();
-		System.out.println("!!!!!!!!!!!!!!!!!!");
-		System.out.println(id);
-		System.out.println("!!!!!!!!!!!!!!!!!!");
 		if (StringUtils.isEmpty(id)) {
 			Activity activity = business.getActivity(work);
 			id = PropertyTools.getOrElse(activity, Activity.form_FIELDNAME, String.class, "");
-			System.out.println("!!!!!!!!!!!!!!!!!!22");
-			System.out.println(id);
-			System.out.println("!!!!!!!!!!!!!!!!!!22");
 		}
 		if (StringUtils.isNotEmpty(id)) {
 			Form form = business.form().pick(id);
@@ -99,21 +93,6 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		} else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
 			wo.setData(workCompleted.getFormMobileData());
 		}
-		// WoWorkCompletedForm wo = new WoWorkCompletedForm();
-		// if (StringUtils.isNotEmpty(workCompleted.getFormData())) {
-		// wo.setData(workCompleted.getFormData());
-		// } else if (StringUtils.isNotEmpty(workCompleted.getFormMobileData())) {
-		// wo.setData(workCompleted.getFormMobileData());
-		// } else if (StringUtils.isNotEmpty(workCompleted.getForm())) {
-		// Form form = business.form().pick(workCompleted.getForm());
-		// if (null != form) {
-		// if (StringUtils.isNotEmpty(form.getData())) {
-		// wo.setData(form.getData());
-		// } else if (StringUtils.isNotEmpty(form.getMobileData())) {
-		// wo.setData(workCompleted.getFormMobileData());
-		// }
-		// }
-		// }
 		return wo;
 	}
 
