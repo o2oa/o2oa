@@ -2,8 +2,6 @@ package com.x.attendance.assemble.control.schedule;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ThisApplication;
-import com.x.attendance.assemble.control.service.AttendanceDetailMobileAnalyseServiceAdv;
-import com.x.attendance.assemble.control.service.AttendanceDetailMobileService;
 import com.x.attendance.assemble.control.service.AttendanceDetailServiceAdv;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -44,7 +42,7 @@ public class DetailLastDayRecordAnalyseTask extends AbstractJob {
 			}
 		}
 
-		logger.info("Timertask MobileRecordAnalyseTask completed and excute success.");
+		logger.info("Timertask DetailLastDayRecordAnalyseTask completed and excute success.");
 	}
 
 }
