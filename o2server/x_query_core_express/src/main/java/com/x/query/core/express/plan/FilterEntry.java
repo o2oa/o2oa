@@ -136,44 +136,36 @@ public class FilterEntry extends GsonPropertyObject {
 		String[] paths = StringUtils.split(this.path, ".");
 		if ((paths.length > 0) && StringUtils.isNotEmpty(paths[0])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path0), paths[0]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path0)), cb.equal(root.get(Item_.path0), "")));
 		}
+
 		if ((paths.length > 1) && StringUtils.isNotEmpty(paths[1])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path1), paths[1]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path1)), cb.equal(root.get(Item_.path1), "")));
 		}
+
 		if ((paths.length > 2) && StringUtils.isNotEmpty(paths[2])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path2), paths[2]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path2)), cb.equal(root.get(Item_.path2), "")));
 		}
+
 		if ((paths.length > 3) && StringUtils.isNotEmpty(paths[3])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path3), paths[3]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path3)), cb.equal(root.get(Item_.path3), "")));
 		}
+
 		if ((paths.length > 4) && StringUtils.isNotEmpty(paths[4])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path4), paths[4]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path4)), cb.equal(root.get(Item_.path4), "")));
 		}
+
 		if ((paths.length > 5) && StringUtils.isNotEmpty(paths[5])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path5), paths[5]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path5)), cb.equal(root.get(Item_.path5), "")));
 		}
+
 		if ((paths.length > 6) && StringUtils.isNotEmpty(paths[6])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path6), paths[6]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path6)), cb.equal(root.get(Item_.path6), "")));
 		}
+
 		if ((paths.length > 7) && StringUtils.isNotEmpty(paths[7])) {
 			p = cb.and(p, cb.equal(root.get(Item_.path7), paths[7]));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Item_.path7)), cb.equal(root.get(Item_.path7), "")));
 		}
+
 		String compareValue = this.compareValue(runtime);
 		String compareOtherValue = this.compareOtherValue(runtime);
 		if (StringUtils.equals(this.formatType, FORMAT_BOOLEANVALUE)) {
@@ -479,7 +471,12 @@ public class FilterEntry extends GsonPropertyObject {
 			} else if (StringUtils.equals(compareValue, DEFINE_UNITLIST)) {
 				if (Comparison.isNotEquals(this.comparison)) {
 					/** 不等于返回等于值,在外部运算 */
-					p = cb.and(p, root.get(Item_.stringShortValue).in(runtime.unitList));
+					if(runtime.unitList.size()==1){
+						p = cb.and(p, cb.or(cb.isNull(root.get(Item_.stringShortValue)),
+								cb.equal(root.get(Item_.stringShortValue), runtime.unitList.get(0))));
+					}else {
+						p = cb.and(p, root.get(Item_.stringShortValue).in(runtime.unitList));
+					}
 				} else if (Comparison.isGreaterThan(this.comparison)) {
 					throw new Exception("unkown comparison:" + this.comparison);
 				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
@@ -495,7 +492,11 @@ public class FilterEntry extends GsonPropertyObject {
 				} else if (Comparison.isBetween(this.comparison)) {
 					throw new Exception("unkown comparison:" + this.comparison);
 				} else {
-					p = cb.and(p, root.get(Item_.stringShortValue).in(runtime.unitList));
+					if(runtime.unitList.size()==1){
+						p = cb.and(p, cb.equal(root.get(Item_.stringShortValue), runtime.unitList.get(0)));
+					}else {
+						p = cb.and(p, root.get(Item_.stringShortValue).in(runtime.unitList));
+					}
 				}
 			} else if (StringUtils.equals(compareValue, DEFINE_UNITALLLIST)) {
 				if (Comparison.isNotEquals(this.comparison)) {
