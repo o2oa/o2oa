@@ -1077,6 +1077,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         var data = this.form.getResult(true, ",", true, false, true);
         if (data) {
             this._ok(data, function (json) {
+                debugger;
                 if (json.type === "error") {
                     if (this.app) this.app.notice(json.message, "error");
                 } else if( json.data.passwordExpired ){ //密码过期
@@ -2076,7 +2077,7 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
     _createTableContent: function () {
 
 
-        html += "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
+        var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableValue' item='password'></td></tr>" +
             "<tr><td styles='formTableValue' item='newPassword'></td>" +
             "<tr><td styles='formTableValue'><div item='passwordStrengthArea'></div></div><div item='passwordTip'></div></td></tr>" +
@@ -2098,11 +2099,11 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                     password: {
                         text: this.lp.oldPassword,
                         type: "password",
-                        defaultValue: "password",
                         className: "inputPassword",
                         notEmpty: true,
                         defaultValueAsEmpty: true,
                         emptyTip: this.lp.inputYourOldPassword,
+                        attr : { "placeholder" : this.lp.oldPassword },
                         event: {
                             focus: function (it) {
                                 if ("password" === it.getValue()) it.setValue("");
@@ -2125,7 +2126,7 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                     newPassword: {
                         text: this.lp.newPassword,
                         type: "password",
-                        defaultValue: "password",
+                        attr : { "placeholder" : this.lp.newPassword },
                         className: "inputPassword",
                         notEmpty: true,
                         defaultValueAsEmpty: true,
@@ -2152,7 +2153,7 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                     confirmPassword: {
                         text: this.lp.confirmPassword,
                         type: "password",
-                        defaultValue: "password",
+                        attr : { "placeholder" : this.lp.confirmPassword },
                         className: "inputPassword",
                         notEmpty: true,
                         defaultValueAsEmpty: true,
