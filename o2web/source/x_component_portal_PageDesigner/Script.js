@@ -857,7 +857,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
                     this.change();
                 }.bind(this));
                 this.jsEditor.addEditorEvent("blur", function() {
-                    this.fireEvent("blur");
+                    this.change();
                 }.bind(this));
 
                 // this.editor.on("change", function() {
