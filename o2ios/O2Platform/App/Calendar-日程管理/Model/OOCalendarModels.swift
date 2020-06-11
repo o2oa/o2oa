@@ -23,6 +23,18 @@ class OOCalendarInfo: NSObject, DataModel {
     @objc var status: String?
     @objc var createor: String?
     
+    // @objc var publishable:Bool?
+    @objc var source:String?
+    @objc var manageablePersonList:[String]?
+    @objc var followers:[String]?
+    @objc var viewablePersonList:[String]?
+    @objc var viewableUnitList:[String]?
+    @objc var viewableGroupList:[String]?
+    @objc var publishablePersonList:[String]?
+    @objc var publishableUnitList:[String]?
+    @objc var publishableGroupList:[String]?
+
+    
     required override init(){}
     
     func mapping(mapper: HelpingMapper) {
