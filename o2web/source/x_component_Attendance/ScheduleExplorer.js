@@ -130,7 +130,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                 onPostLoad: function(){
                     if(signProxy!=0&&signProxy!=1){
                         if(signProxy==3)
-                            this.options.height=650;
+                            this.options.height=670;
                         else
                             this.options.height=570;
                     }
@@ -155,7 +155,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                                     if(signProxy=="3"){
                                         this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","table-row");
                                         this.formTableArea.getElement("[lable=lateStartTimeAfternoon]").getParent().setStyle("display","table-row");
-                                        tempH = "650px";
+                                        tempH = "670px";
                                         this.form.options.itemTemplate.lateStartTimeAfternoon.notEmpty=true;
                                     }else{
                                         this.formTableArea.getElement("[lable=leaveEarlyStartTimeMorning]").getParent().setStyle("display","none");
