@@ -373,7 +373,7 @@ o2.widget.JavascriptEditor = new Class({
                     var ev = name;
                     switch (ev) {
                         case "change": ev = "onDidChangeModelContent"; break;
-                        case "blue": ev = "onDidBlurEditorText"; break;
+                        case "blur": ev = "onDidBlurEditorText"; break;
 
                     }
                     if (this.editor[ev]) this.editor[ev](fun);
