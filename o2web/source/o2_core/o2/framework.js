@@ -27,6 +27,7 @@ layout.addReady(function(){
             o2.xDesktop.notice(type, where, content, target, offset, option);
         },
         "app": {
+            "desktop": layout,
             "content": document.body,
             "toPortal": function(portal, page, par, nohis){
                 var url = "../x_desktop/portal.html?id="+portal;
@@ -46,7 +47,8 @@ layout.addReady(function(){
                 if (a.remove) a.remove();
             },
             "toPage": function(){}
-        }
+        },
+        addEvent: function(){}
     };
     var environment = {
         "form": page,
