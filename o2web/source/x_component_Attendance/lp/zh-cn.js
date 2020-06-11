@@ -72,8 +72,12 @@ MWF.xApplication.Attendance.LP = {
 	"index" : {
 		"attendanceCalendar":"考勤日历",
 		"pieChart" : "考勤汇总",
-		"lineChart" : "上下班走势"
+		"lineChart" : "上下班走势",
+		"absent":"缺勤",
+		"offDutyTime":"出勤，打卡时间：",
+		"levelAsked":"请假或外出报备"
 	},
+
 	"schedule" : {
 		"inputVaild" : "单位、上班时间、下班时间、迟到起算时间、旷工起算时间均不能为空",
 		"setSchedule" : "排班设置",
@@ -81,8 +85,34 @@ MWF.xApplication.Attendance.LP = {
 		"workTime" : "上班时间",
 		"offTime" : "下班时间",
 		"lateTime":"迟到起算时间",
+
 		"leaveEarlyTime":"早退起算时间",
-		"absenteeismTime":"旷工起算时间"
+		"absenteeismTime":"缺勤起算时间",
+		"illegal":{
+			"1":["下班时间不得早于上班时间"],
+			"2":["午休开始时间不得早于上班时间","午休结束时间不得早于午休开始时间","下班时间不得早于午休结束时间"],
+			"3":["上午下班时间不得早于上班时间","下午上班时间不得早于上午下班时间","下班时间不得早于下午上班时间"]
+		},
+		"lateStartTime":"上午迟到起算时间",
+		"leaveEarlyStartTime":"下午早退起算时间",
+		"leaveEarlyStartTimeMorning":"上午早退起算时间",
+		"lateStartTimeAfternoon":"下午迟到起算时间",
+		"signProxy":{
+			"name":"打卡策略",
+			"select":{
+				"1":"两次打卡（上午上班，下午下班）",
+				"2":"三次打卡（上午上班，下午下班加中午一次共三次）",
+				"3":"四次打卡（上午下午都打上班下班卡）"
+			},
+			"2":{
+				"middayRestStartTime":"午休开始时间",
+				"middayRestEndTime":"午休结束时间",
+			},
+			"3":{
+				"middayRestStartTime":"上午下班时间",
+				"middayRestEndTime":"下午上班时间",
+			}
+		}
 		//"" : "打卡有效时间",
 		//"" : "从",
 		//"" : "到",
