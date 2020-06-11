@@ -83,8 +83,8 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
             this.setPropertyContent();
             this.setIncludeNode();
 
-            if (this.editor.editor){
-                this.editor.editor.focus();
+            if (this.editor){
+                this.editor.focus();
                 //this.editor.editor.navigateFileStart();
             }
         }.bind(this));
@@ -100,7 +100,7 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
         this.editor = new MWF.widget.JavascriptEditor(this.areaNode);
         this.editor.load(function(){
             if (this.data.text){
-                this.editor.editor.setValue(this.data.text);
+                this.editor.setValue(this.data.text);
             }
             this.editor.addEditorEvent("change", function(){
                 if (!this.isChanged){
@@ -117,20 +117,20 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
             this.editor.addEvent("save", function(){
                 this.save();
             }.bind(this));
-            this.editor.addEvent("reference", function(editor, e, e1){
-                if (!this.scriptReferenceMenu){
-                    MWF.require("MWF.widget.ScriptHelp", function(){
-                        this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
-                            "onPostLoad": function(){
-                                this.showReferenceMenu();
-                            }.bind(this)
-                        });
-                        this.scriptReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
-                    }.bind(this));
-                }else{
-                    this.showReferenceMenu();
-                }
-            }.bind(this));
+            // this.editor.addEvent("reference", function(editor, e, e1){
+            //     if (!this.scriptReferenceMenu){
+            //         MWF.require("MWF.widget.ScriptHelp", function(){
+            //             this.scriptReferenceMenu = new MWF.widget.ScriptHelp(null, this.editor.editor, {
+            //                 "onPostLoad": function(){
+            //                     this.showReferenceMenu();
+            //                 }.bind(this)
+            //             });
+            //             this.scriptReferenceMenu.getEditor = function(){return this.editor.editor;}.bind(this)
+            //         }.bind(this));
+            //     }else{
+            //         this.showReferenceMenu();
+            //     }
+            // }.bind(this));
 
             var options = this.designer.styleSelectNode.options;
             for (var i=0; i<options.length; i++){
@@ -202,7 +202,7 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize();
     },
 
     addInclude: function(){
@@ -234,7 +234,7 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
             this.data.alias = alias;
             this.data.description = description;
             this.data.validated = validated;
-            this.data.text = this.editor.editor.getValue();
+            this.data.text = this.editor.getValue();
 
             this.isSave = true;
             this.designer.actions.saveScript(this.data, function(json){
@@ -262,17 +262,17 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
     },
     saveSilence: function(callback){
         if (!this.isSave){
-            var session = this.editor.editor.getSession();
-            var annotations = session.getAnnotations();
-            var validated = true;
-            for (var i=0; i<annotations.length; i++){
-                if (annotations[i].type=="error"){
-                    validated = false;
-                    break;
-                }
-            }
+            // var session = this.editor.editor.getSession();
+            // var annotations = session.getAnnotations();
+            // var validated = true;
+            // for (var i=0; i<annotations.length; i++){
+            //     if (annotations[i].type=="error"){
+            //         validated = false;
+            //         break;
+            //     }
+            // }
 
-
+            var validated = this.editor.validated();
             if( this.designer.currentScript == this ){
                 var name = this.designer.propertyNameNode.get("value");
                 var alias = this.designer.propertyAliasNode.get("value");
@@ -286,7 +286,7 @@ MWF.xApplication.portal.ScriptDesigner.Script = new Class({
                 this.data.description = description;
                 this.data.validated = validated;
             }
-            this.data.text = this.editor.editor.getValue();
+            this.data.text = this.editor.getValue();
 
             this.isSave = true;
             this.designer.actions.saveScript(this.data, function(json){
