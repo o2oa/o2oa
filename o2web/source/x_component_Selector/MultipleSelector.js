@@ -40,7 +40,6 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.selectors = {};
     },
     load: function(){
-        debugger;
         if( this.options.contentUrl ){
             this.loadWithUrl()
         }else {
@@ -480,8 +479,6 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
             var pageNode = new Element( "div" ).inject( this.contentNode );
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
-
-            debugger;
 
             if( index === 0 && this.contentHeight && !this.tabContainer ){
                 //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabContainer ) - tab.tabContainer.getStyle("height").toInt();
