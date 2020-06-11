@@ -37,6 +37,7 @@
 		09E02E981F16319600579887 /* UIView+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E02E821F16319600579887 /* UIView+Haneke.swift */; };
 		09E02E9A1F1745E700579887 /* ZLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E02E991F1745E700579887 /* ZLTextView.swift */; };
 		37D63E73FDC49F690C780FD1 /* Pods_O2Platform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10069E72107080DCAD68970B /* Pods_O2Platform.framework */; };
+		8840A992248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */; };
 		A043051B1F99CFD500740423 /* MailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043051A1F99CFD500740423 /* MailViewController.swift */; };
 		B1015DDB2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */; };
 		B104303721464C690011B08E /* ai.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B104303621464C690011B08E /* ai.storyboard */; };
@@ -1361,6 +1362,7 @@
 		10069E72107080DCAD68970B /* Pods_O2Platform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_O2Platform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A96D30743BECAB12B424CE /* Pods-O2Platform.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O2Platform.release.xcconfig"; path = "Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform.release.xcconfig"; sourceTree = "<group>"; };
 		4F1BA982094EC6172ACF8F99 /* Pods-O2Platform.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O2Platform.debug.xcconfig"; path = "Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform.debug.xcconfig"; sourceTree = "<group>"; };
+		8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarEditRemarkViewController.swift; sourceTree = "<group>"; };
 		A043051A1F99CFD500740423 /* MailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailViewController.swift; sourceTree = "<group>"; };
 		B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2BaseJsMessageHandler.swift; sourceTree = "<group>"; };
 		B104303621464C690011B08E /* ai.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ai.storyboard; sourceTree = "<group>"; };
@@ -2764,6 +2766,7 @@
 				B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */,
 				B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */,
 				B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */,
+				8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -6320,6 +6323,7 @@
 				E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */,
 				E4C24B7320844F3C00E426B0 /* JCCEmoticonGroup.swift in Sources */,
 				E4C24BB720844F3C00E426B0 /* JCEmoticonPreviewer.swift in Sources */,
+				8840A992248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift in Sources */,
 				B12FD1DC2283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift in Sources */,
 				B12FD1DD2283D5B700E636BA /* UITextField+PlaceholderAttributes.swift in Sources */,
 				E4C24B3920844F3C00E426B0 /* Array+JChat.swift in Sources */,

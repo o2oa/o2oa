@@ -201,6 +201,22 @@ extension Array where Element: Equatable {
     public func unique() -> Array {
         return reduce([]) { $0.contains($1) ? $0 : $0 + [$1] }
     }
+    
+    // MARK:- 获取帐号中的中文名称
+     func getChinaName() ->[String]{
+         let result = self
+         var arrTemp = [String]()
+         for userName  in result{
+              if let strUserName = userName as? String {
+                 if !strUserName.isBlank{
+                  let userNameSplit =  strUserName.split("@");
+                     arrTemp.append(userNameSplit[0])
+                 }
+             }
+         }
+         return arrTemp;
+    }
+
 }
 
 extension Array where Element: Hashable {
