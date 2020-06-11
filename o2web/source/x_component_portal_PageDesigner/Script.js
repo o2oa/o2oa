@@ -24,6 +24,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         //this.categorys = {};
         this.moduleCategorys = {};
         this.pathCategorys = {};
+
         this.loadView();
     },
     loadView: function(){
