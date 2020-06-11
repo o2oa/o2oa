@@ -45,6 +45,7 @@ public class OperatorDataSaver implements Runnable {
 		attendanceDetail.setEmpName(cacheImportRowDetail.getEmployeeName());
 		attendanceDetail.setYearString(cacheImportRowDetail.getRecordYearString());
 		attendanceDetail.setMonthString(cacheImportRowDetail.getRecordMonthString());
+		attendanceDetail.setRecordDate( cacheImportRowDetail.getRecordDate() );
 		attendanceDetail.setRecordDateString(cacheImportRowDetail.getRecordDateStringFormated());
 		attendanceDetail.setOnDutyTime(cacheImportRowDetail.getOnDutyTimeFormated());
 		attendanceDetail.setOffDutyTime(cacheImportRowDetail.getOffDutyTimeFormated());
