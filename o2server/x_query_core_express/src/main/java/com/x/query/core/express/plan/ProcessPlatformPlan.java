@@ -206,7 +206,7 @@ public class ProcessPlatformPlan extends Plan {
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.pp);
 						logger.debug("predicate:{}.", p);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
-						cq.select(root.get(Item_.bundle)).where(p);
+						cq.select(root.get(Item_.bundle)).distinct(true).where(p);
 						return em.createQuery(cq).getResultList();
 					} catch (Exception e) {
 						e.printStackTrace();
