@@ -75,6 +75,7 @@ public class AttendanceDetailService {
 						attendanceDetail.setEmpName( attendanceEmployeeConfig.getEmployeeName() );
 						attendanceDetail.setYearString( dateOperation.getYear( dateOperation.getDateFromString(day)) );
 						attendanceDetail.setMonthString( dateOperation.getMonth( dateOperation.getDateFromString(day)));
+						attendanceDetail.setRecordDate( dateOperation.getDateFromString( day ) );
 						attendanceDetail.setRecordDateString( day );
 						attendanceDetail.setRecordStatus( 0 );
 						attendanceDetail.setBatchName( "系统补充" );

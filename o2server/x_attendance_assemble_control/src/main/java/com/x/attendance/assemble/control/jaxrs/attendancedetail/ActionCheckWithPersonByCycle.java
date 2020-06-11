@@ -1,5 +1,6 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Person;
+import com.x.base.core.project.organization.Unit;
+import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionCheckWithPersonByCycle extends BaseAction {
 	
@@ -63,10 +68,41 @@ public class ActionCheckWithPersonByCycle extends BaseAction {
 		if ( check ) {
 			try {
 				attendanceEmployeeConfigList = attendanceEmployeeConfigServiceAdv.listByConfigType( "REQUIRED" );
-				if( attendanceEmployeeConfigList == null || attendanceEmployeeConfigList.isEmpty() ) {
-					check = false;
-					Exception exception = new ExceptionAttendanceDetailProcess( "系统未获取到需要考勤的人员配置，尚不需要补录任何信息." );
-					result.error( exception );
+				if( ListTools.isEmpty( attendanceEmployeeConfigList ) ) {
+					attendanceEmployeeConfigList = new ArrayList<>();
+//					check = false;
+//					Exception exception = new ExceptionAttendanceDetailProcess( "系统未获取到需要考勤的人员配置，尚不需要补录任何信息." );
+//					result.error( exception );
+					//如果没有配置任何需要考勤的人员，那么就是全员需要考勤
+					AttendanceEmployeeConfig config = null;
+					String identity = null;
+					Unit unit = null;
+					Unit topUnit = null;
+					List<Person> allPersonObjs = userManagerService.listAllPersons();
+					if(ListTools.isNotEmpty( allPersonObjs )){
+						for( Person person : allPersonObjs ){
+							identity = userManagerService.getMajorIdentityWithPerson( person.getDistinguishedName() );
+							if(StringUtils.isNotEmpty(identity)){
+								unit = userManagerService.getUnitWithIdentity(identity);
+							}
+							if( unit != null ){
+								topUnit = userManagerService.getTopUnitWithUnitName( unit.getDistinguishedName() );
+							}
+							if( topUnit != null ){
+								config = new AttendanceEmployeeConfig();
+								config.setId( AttendanceEmployeeConfig.createId() );
+								config.setConfigType( "REQUIRED" );
+								config.setEmpInTopUnitTime("1900-01-01");
+								config.setEmployeeName( person.getDistinguishedName() );
+								config.setEmployeeNumber( person.getEmployee() );
+								config.setUnitOu( unit.getDistinguishedName() );
+								config.setUnitName( unit.getUnique() );
+								config.setTopUnitName( topUnit.getName() );
+								config.setTopUnitOu( topUnit.getUnique() );
+								attendanceEmployeeConfigList.add( config );
+							}
+						}
+					}
 				}
 			} catch ( Exception e ) {
 				check = false;
