@@ -278,17 +278,17 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
     },
     saveSilence: function(callback){
         if (!this.isSave){
-            var session = this.editor.editor.getSession();
-            var annotations = session.getAnnotations();
-            var validated = true;
-            for (var i=0; i<annotations.length; i++){
-                if (annotations[i].type=="error"){
-                    validated = false;
-                    break;
-                }
-            }
+            // var session = this.editor.editor.getSession();
+            // var annotations = session.getAnnotations();
+            // var validated = true;
+            // for (var i=0; i<annotations.length; i++){
+            //     if (annotations[i].type=="error"){
+            //         validated = false;
+            //         break;
+            //     }
+            // }
 
-
+            var validated = this.editor.validated();
             if( this.designer.currentScript == this ) {
                 var name = this.designer.propertyNameNode.get("value");
                 var alias = this.designer.propertyAliasNode.get("value");
@@ -302,7 +302,7 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
                 this.data.description = description;
                 this.data.validated = validated;
             }
-            this.data.text = this.editor.editor.getValue();
+            this.data.text = this.editor.getValue();
 
             this.isSave = true;
             this.designer.actions.saveScript(this.data, function(json){
