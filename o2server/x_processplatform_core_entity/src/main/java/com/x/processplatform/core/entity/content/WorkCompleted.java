@@ -339,13 +339,33 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private Boolean allowRollback;
 
-	// public static final String data_FIELDNAME = "data";
-	// @FieldDescribe("业务数据.")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
-	// @CheckPersist(allowEmpty = true)
-	// private String data;
+	public static final String activity_FIELDNAME = "activity";
+	@FieldDescribe("结束节点的活动id.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activity_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + activity_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activity;
+
+	public static final String activityName_FIELDNAME = "activityName";
+	@FieldDescribe("结束节点的活动名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + activityName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + activityName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityName;
+
+	public static final String activityAlias_FIELDNAME = "activityAlias";
+	@FieldDescribe("结束节点的活动别名.")
+	@Column(length = length_255B, name = ColumnNamePrefix + activityAlias_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + activityAlias_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityAlias;
+
+	public static final String activityDescription_FIELDNAME = "activityDescription";
+	@FieldDescribe("结束节点的活动说明.")
+	@Column(length = length_255B, name = ColumnNamePrefix + activityDescription_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + activityDescription_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String activityDescription;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -1051,5 +1071,39 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setProperties(WorkCompletedProperties properties) {
 		this.properties = properties;
 	}
+
+	public String getActivity() {
+		return activity;
+	}
+
+	public void setActivity(String activity) {
+		this.activity = activity;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
+
+	public String getActivityAlias() {
+		return activityAlias;
+	}
+
+	public void setActivityAlias(String activityAlias) {
+		this.activityAlias = activityAlias;
+	}
+
+	public String getActivityDescription() {
+		return activityDescription;
+	}
+
+	public void setActivityDescription(String activityDescription) {
+		this.activityDescription = activityDescription;
+	}
+
+	
 
 }
