@@ -743,7 +743,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
             if( this.isAskForLevel(d,"pm") ){
                 totals.levelAsked = totals.levelAsked + 0.5;
-                events.push( {  text: '请假或外出报备', start: d.recordDateString,  backgroundColor :this.statusColor.levelAsked } )
+                events.push( {  text: this.lp.index.levelAsked, start: d.recordDateString,  backgroundColor :this.statusColor.levelAsked } )
             }else if( this.isAppealSuccess(d,"pm")){
                 events.push( {  text: this.lp.appealSuccess, start: d.recordDateString,  backgroundColor :this.statusColor.appealSuccess } );
                 totals.appealSuccess = totals.appealSuccess + 0.5;
@@ -756,7 +756,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             //    totals.leaveEarly = totals.leaveEarly + 0.5
             }else if( this.isAbsent(d,"pm")){
                     totals.noSign = totals.noSign + 0.5;
-                    events.push( {  text: '缺勤', start: d.recordDateString,  backgroundColor :this.statusColor.noSign } )
+                    events.push( {  text: this.lp.index.absent, start: d.recordDateString,  backgroundColor :this.statusColor.noSign } )
            /* }else if( this.isLackOfTime(d,"pm")){
                 events.push( {  text: this.lp.lackOfTime + '，' + this.lp.signTime + '：' + d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.lackOfTime } );
                 totals.lackOfTime = totals.lackOfTime + 0.5*/
@@ -768,10 +768,9 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             }else if( this.isWeekend(d, "pm") ){
                 return;
             }else{
-                console.log("============")
                 if(!!d.offDutyTime){
                     totals.normal = totals.normal + 0.5;
-                    events.push( {  text: '出勤，打卡时间：'+ d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.normal } )
+                    events.push( {  text: this.lp.index.offDutyTime+ d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.normal } )
                 }
 
             }

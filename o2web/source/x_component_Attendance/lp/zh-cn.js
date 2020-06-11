@@ -72,8 +72,12 @@ MWF.xApplication.Attendance.LP = {
 	"index" : {
 		"attendanceCalendar":"考勤日历",
 		"pieChart" : "考勤汇总",
-		"lineChart" : "上下班走势"
+		"lineChart" : "上下班走势",
+		"absent":"缺勤",
+		"offDutyTime":"出勤，打卡时间：",
+		"levelAsked":"请假或外出报备"
 	},
+
 	"schedule" : {
 		"inputVaild" : "单位、上班时间、下班时间、迟到起算时间、旷工起算时间均不能为空",
 		"setSchedule" : "排班设置",
