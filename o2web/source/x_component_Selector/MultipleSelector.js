@@ -40,6 +40,7 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
         this.selectors = {};
     },
     load: function(){
+        debugger;
         if( this.options.contentUrl ){
             this.loadWithUrl()
         }else {
@@ -480,6 +481,8 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
 
             var tab = this.tab.addTab( pageNode, this.lp[type], false );
 
+            debugger;
+
             if( index === 0 && this.contentHeight && !this.tabContainer ){
                 //this.contentHeight = this.contentHeight - this.getOffsetY( tab.tabContainer ) - tab.tabContainer.getStyle("height").toInt();
                 this.contentHeight = this.contentHeight - this.getOffsetY( tab.tab.tabNodeContainer ) - tab.tab.tabNodeContainer.getStyle("height").toInt();
@@ -570,8 +573,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                         })
                     }
                 }else{
-                    if( this.contentWidth )options.width = this.contentWidth;
-                    if( this.contentHeight )options.height = this.contentHeight;
+                    // if( this.contentWidth )options.width = this.contentWidth;
+                    // if( this.contentHeight )options.height = this.contentHeight;
+
+                    if( this.contentWidth )this.selectors[t].options.width = this.contentWidth;
+                    if( this.contentHeight )this.selectors[t].options.height = this.contentHeight;
+
                     this.selectors[t].loadContent( pageNode );
                     this.selectors[t].setSize();
 
