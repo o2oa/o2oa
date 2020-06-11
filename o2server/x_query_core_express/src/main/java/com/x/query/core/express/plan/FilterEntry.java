@@ -16,6 +16,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.DateTools;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
+import com.x.cms.core.entity.Document;
 
 public class FilterEntry extends GsonPropertyObject {
 
@@ -66,6 +67,9 @@ public class FilterEntry extends GsonPropertyObject {
 
 	public Boolean available() {
 		if (StringUtils.isEmpty(path)) {
+			return false;
+		}
+		if(path.indexOf("(")>-1 && path.indexOf(")")>-1){
 			return false;
 		}
 		if (StringUtils.isEmpty(logic)) {
@@ -595,6 +599,386 @@ public class FilterEntry extends GsonPropertyObject {
 			}
 		}
 		return this.otherValue;
+	}
+
+	public Predicate toCmsDocumentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime, String paramName)
+			throws Exception {
+		Predicate p = cb.disjunction();
+		String compareValue = this.compareValue(runtime);
+		String compareOtherValue = this.compareOtherValue(runtime);
+		if (StringUtils.equals(this.formatType, FORMAT_BOOLEANVALUE)) {
+			Boolean booleanValue = BooleanUtils.toBoolean(compareValue);
+			if (null != booleanValue) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.equal(root.get(paramName), !booleanValue)));
+				} else {
+					p = cb.and(p, cb.equal(root.get(paramName), booleanValue));
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_NUMBERVALUE)) {
+			Double doubleValue = NumberUtils.toDouble(compareValue);
+			if (null != doubleValue) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.equal(root.get(paramName), doubleValue))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), doubleValue));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), doubleValue));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), doubleValue));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), doubleValue));
+				} else if (Comparison.isBetween(this.comparison)) {
+					Double doubleOtherValue = NumberUtils.toDouble(compareOtherValue);
+					if (null != doubleOtherValue) {
+						p = cb.and(p, cb.between(root.get(paramName), doubleValue, doubleOtherValue));
+					}
+				} else {
+					p = cb.and(p, cb.equal(root.get(paramName), doubleValue));
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_DATEVALUE)) {
+			/* 日期值比较 */
+			if (StringUtils.isNotEmpty(compareValue)) {
+				Date value = null;
+				Date otherValue = null;
+				if (DateTools.isDateTime(compareValue)) {
+					value = DateTools.parseDateTime(compareValue);
+				} else if (DateTools.isDate(compareValue)) {
+					value = DateTools.parseDate(compareValue);
+				}
+				if (DateTools.isDateTime(compareOtherValue)) {
+					otherValue = DateTools.parseDateTime(compareOtherValue);
+				} else if (DateTools.isDate(compareOtherValue)) {
+					otherValue = DateTools.parseDate(compareOtherValue);
+				}
+				if (null != otherValue) {
+					otherValue = DateTools.ceilDate(otherValue, 0);
+				}
+				if (null != value) {
+					value = DateTools.ceilDate(value, 0);
+					if (Comparison.isNotEquals(this.comparison)) {
+						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+								cb.not(cb.equal(root.get(paramName), value))));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(paramName), value));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), value));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(paramName), value));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), value));
+					} else if (Comparison.isBetween(this.comparison)) {
+						if (null != otherValue) {
+							p = cb.and(p, cb.between(root.get(paramName), value, otherValue));
+						} else {
+							throw new Exception("unkown comparison:" + this.comparison);
+						}
+					} else {
+						p = cb.and(p, cb.equal(root.get(paramName), value));
+					}
+				} else if (StringUtils.equals(compareValue, DEFINE_DATE)
+						|| StringUtils.equals(compareValue, DEFINE_MONTH)
+						|| StringUtils.equals(compareValue, DEFINE_SEASON)
+						|| StringUtils.equals(compareValue, DEFINE_YEAR)) {
+					Date floor = null;
+					Date ceil = null;
+					if (StringUtils.equals(compareValue, DEFINE_DATE)) {
+						floor = DateTools.floorDate(new Date(), 0);
+						ceil = DateTools.ceilDate(new Date(), 0);
+					} else if (StringUtils.equals(compareValue, DEFINE_MONTH)) {
+						floor = DateTools.floorMonth(new Date(), 0);
+						ceil = DateTools.ceilMonth(new Date(), 0);
+					} else if (StringUtils.equals(compareValue, DEFINE_SEASON)) {
+						floor = DateTools.floorSeason(new Date(), 0);
+						ceil = DateTools.ceilSeason(new Date(), 0);
+					} else {
+						floor = DateTools.floorYear(new Date(), 0);
+						ceil = DateTools.ceilYear(new Date(), 0);
+					}
+					if (Comparison.isNotEquals(this.comparison)) {
+						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+								cb.not(cb.between(root.get(paramName), floor, ceil))));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(paramName), ceil));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), floor));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(paramName), floor));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), ceil));
+					} else if (Comparison.isBetween(this.comparison)) {
+						// throw new Exception("unkown comparison:" + this.comparison);
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
+					if (Comparison.isNotEquals(this.comparison)) {
+						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+								cb.not(cb.equal(root.get(paramName), new Date()))));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(paramName), new Date()));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), new Date()));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(paramName), new Date()));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), new Date()));
+					} else if (Comparison.isBetween(this.comparison)) {
+						// throw new Exception("unkown comparison:" + this.comparison);
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_TIMEVALUE)) {
+			/* 时间值比较 */
+			if (StringUtils.isNotEmpty(compareValue)) {
+				Date value = null;
+				Date otherValue = null;
+				if (DateTools.isDateTime(compareValue)) {
+					value = DateTools.parseDateTime(compareValue);
+				} else if (DateTools.isTime(compareValue)) {
+					value = DateTools.parseTime(compareValue);
+				}
+				if (DateTools.isDateTime(compareOtherValue)) {
+					otherValue = DateTools.parseDateTime(compareOtherValue);
+				} else if (DateTools.isTime(compareOtherValue)) {
+					otherValue = DateTools.parseTime(compareOtherValue);
+				}
+				if (null != value) {
+					if (Comparison.isNotEquals(this.comparison)) {
+						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+								cb.not(cb.equal(root.get(paramName), value))));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(paramName), value));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), value));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(paramName), value));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), value));
+					} else if (Comparison.isBetween(this.comparison)) {
+						if (null != otherValue) {
+							p = cb.and(p, cb.between(root.get(paramName), value, otherValue));
+						}
+					} else {
+						p = cb.and(p, cb.equal(root.get(paramName), value));
+					}
+				} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
+					if (Comparison.isNotEquals(this.comparison)) {
+						p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+								cb.not(cb.equal(root.get(paramName), new Date()))));
+					} else if (Comparison.isGreaterThan(this.comparison)) {
+						p = cb.and(p, cb.greaterThan(root.get(paramName), new Date()));
+					} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), new Date()));
+					} else if (Comparison.isLessThan(this.comparison)) {
+						p = cb.and(p, cb.lessThan(root.get(paramName), new Date()));
+					} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+						p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), new Date()));
+					} else if (Comparison.isBetween(this.comparison)) {
+						throw new Exception("unkown comparison:" + this.comparison);
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				}
+			}
+		} else if (StringUtils.equals(this.formatType, FORMAT_DATETIMEVALUE)) {
+			Date value = null;
+			Date otherValue = null;
+			if (DateTools.isDateTime(compareValue)) {
+				value = DateTools.parseDateTime(compareValue);
+			} else if (DateTools.isDate(compareValue)) {
+				value = DateTools.parseDate(compareValue);
+			}
+			if (DateTools.isDateTime(compareOtherValue)) {
+				otherValue = DateTools.parseDateTime(compareOtherValue);
+			} else if (DateTools.isDate(compareOtherValue)) {
+				otherValue = DateTools.parseDate(compareOtherValue);
+			}
+			if (null != value) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.equal(root.get(paramName), value))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), value));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), value));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), value));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), value));
+				} else if (Comparison.isBetween(this.comparison)) {
+					if (null != otherValue) {
+						p = cb.and(p, cb.between(root.get(paramName), value, otherValue));
+					} else {
+						throw new Exception("unkown comparison:" + this.comparison);
+					}
+				} else {
+					p = cb.and(p, cb.equal(root.get(paramName), value));
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_DATE) || StringUtils.equals(compareValue, DEFINE_MONTH)
+					|| StringUtils.equals(compareValue, DEFINE_SEASON)
+					|| StringUtils.equals(compareValue, DEFINE_YEAR)) {
+				Date floor = null;
+				Date ceil = null;
+				if (StringUtils.equals(compareValue, DEFINE_DATE)) {
+					floor = DateTools.floorDate(new Date(), 0);
+					ceil = DateTools.ceilDate(new Date(), 0);
+				} else if (StringUtils.equals(compareValue, DEFINE_MONTH)) {
+					floor = DateTools.floorMonth(new Date(), 0);
+					ceil = DateTools.ceilMonth(new Date(), 0);
+				} else if (StringUtils.equals(compareValue, DEFINE_SEASON)) {
+					floor = DateTools.floorSeason(new Date(), 0);
+					ceil = DateTools.ceilSeason(new Date(), 0);
+				} else {
+					floor = DateTools.floorYear(new Date(), 0);
+					ceil = DateTools.ceilYear(new Date(), 0);
+				}
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.between(root.get(paramName), floor, ceil))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), ceil));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), floor));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), floor));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), ceil));
+				} else if (Comparison.isBetween(this.comparison)) {
+					// p = cb.and(p, cb.between(root.get(Item_.dateTimeValue), floor, ceil));
+				} else {
+					throw new Exception("unkown comparison:" + this.comparison);
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_TIME)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.equal(root.get(paramName), new Date()))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), new Date()));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), new Date()));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), new Date()));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), new Date()));
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					throw new Exception("unkown comparison:" + this.comparison);
+				}
+			}
+		} else {
+			/* TEXT 内容值 */
+			if (StringUtils.equals(compareValue, DEFINE_PERSON)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.equal(root.get(paramName), runtime.person))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), runtime.person));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), runtime.person));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), runtime.person));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), runtime.person));
+				} else if (Comparison.isLike(this.comparison)) {
+					p = cb.and(p, cb.like(root.get(paramName), "%" + runtime.person + "%"));
+				} else if (Comparison.isNotLike(this.comparison)) {
+					p = cb.and(p, cb.notLike(root.get(paramName), "%" + runtime.person + "%"));
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					p = cb.and(p, cb.equal(root.get(paramName), runtime.person));
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_UNITLIST)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.not(root.get(paramName).in(runtime.unitList)));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isNotLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					p = cb.and(p, root.get(paramName).in(runtime.unitList));
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_UNITALLLIST)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.not(root.get(paramName).in(runtime.unitAllList)));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isNotLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					p = cb.and(p, root.get(paramName).in(runtime.unitAllList));
+				}
+			} else if (StringUtils.equals(compareValue, DEFINE_IDENTITYLIST)) {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.not(root.get(paramName).in(runtime.identityList)));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThan(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isNotLike(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else if (Comparison.isBetween(this.comparison)) {
+					throw new Exception("unkown comparison:" + this.comparison);
+				} else {
+					p = cb.and(p, root.get(paramName).in(runtime.identityList));
+				}
+			} else {
+				if (Comparison.isNotEquals(this.comparison)) {
+					p = cb.and(p, cb.or(cb.isNull(root.get(paramName)),
+							cb.not(cb.equal(root.get(paramName), compareValue))));
+				} else if (Comparison.isGreaterThan(this.comparison)) {
+					p = cb.and(p, cb.greaterThan(root.get(paramName), compareValue));
+				} else if (Comparison.isGreaterThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.greaterThanOrEqualTo(root.get(paramName), compareValue));
+				} else if (Comparison.isLessThan(this.comparison)) {
+					p = cb.and(p, cb.lessThan(root.get(paramName), compareValue));
+				} else if (Comparison.isLessThanOrEqualTo(this.comparison)) {
+					p = cb.and(p, cb.lessThanOrEqualTo(root.get(paramName), compareValue));
+				} else if (Comparison.isLike(this.comparison)) {
+					p = cb.and(p, cb.like(root.get(paramName), "%" + compareValue + "%"));
+				} else if (Comparison.isNotLike(this.comparison)) {
+					p = cb.and(p, cb.notLike(root.get(paramName), "%" + compareValue + "%"));
+				} else if (Comparison.isBetween(this.comparison)) {
+					p = cb.and(p, cb.between(root.get(paramName), compareValue, compareOtherValue));
+				} else {
+					p = cb.and(p, cb.equal(root.get(paramName), compareValue));
+				}
+			}
+		}
+		return p;
 	}
 
 }
