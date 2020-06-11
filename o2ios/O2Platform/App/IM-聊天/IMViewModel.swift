@@ -13,12 +13,31 @@ class IMViewModel: NSObject {
     override init() {
         super.init()
     }
-    
-    
+
+
     let communicateAPI = OOMoyaProvider<CommunicateAPI>()
 }
 
 extension IMViewModel {
+
+    //发送消息
+    func sendMsg(msg: IMMessageInfo) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            self.communicateAPI.request(.sendMsg(msg), completion: { result in
+                    let response = OOResult<BaseModelClass<OOCommonIdModel>>(result)
+                    if response.isResultSuccess() {
+                        if let _ = response.model?.data {
+                            fulfill(true)
+                        } else {
+                            reject(OOAppError.apiEmptyResultError)
+                        }
+                    } else {
+                        reject(response.error!)
+                    }
+                })
+        }
+    }
+
     //查询会话列表
     func myConversationList() -> Promise<[IMConversationInfo]> {
         return Promise { fulfill, reject in
@@ -27,10 +46,10 @@ extension IMViewModel {
                 if response.isResultSuccess() {
                     if let list = response.model?.data {
                         fulfill(list)
-                    }else {
+                    } else {
                         reject(OOAppError.apiEmptyResultError)
                     }
-                }else {
+                } else {
                     reject(response.error!)
                 }
             })
@@ -40,24 +59,24 @@ extension IMViewModel {
     func myMsgPageList(page: Int, conversationId: String) -> Promise<[IMMessageInfo]> {
         return Promise { fulfill, reject in
             self.communicateAPI.request(.msgListByPaging(page, 40, conversationId), completion: { result in
-                let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
-                if response.isResultSuccess() {
-                    if let list = response.model?.data {
-                        //列表翻转
-                        let rList = list.sorted { (f, s) -> Bool in
-                            if let ft = f.createTime, let st = s.createTime {
-                                return ft.toDate(formatter: "yyyy-MM-dd HH:mm:ss") < st.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+                    let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
+                    if response.isResultSuccess() {
+                        if let list = response.model?.data {
+                            //列表翻转
+                            let rList = list.sorted { (f, s) -> Bool in
+                                if let ft = f.createTime, let st = s.createTime {
+                                    return ft.toDate(formatter: "yyyy-MM-dd HH:mm:ss") < st.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+                                }
+                                return true
                             }
-                            return true
+                            fulfill(rList)
+                        } else {
+                            reject(OOAppError.apiEmptyResultError)
                         }
-                        fulfill(rList)
-                    }else {
-                        reject(OOAppError.apiEmptyResultError)
+                    } else {
+                        reject(response.error!)
                     }
-                }else {
-                    reject(response.error!)
-                }
-            })
+                })
         }
     }
 }

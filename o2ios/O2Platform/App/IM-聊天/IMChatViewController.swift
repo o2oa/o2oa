@@ -21,6 +21,14 @@ class IMChatViewController: UIViewController {
     @IBOutlet weak var bottomBarHeightConstraint: NSLayoutConstraint!
     //底部工具栏
     @IBOutlet weak var bottomBar: UIView!
+    
+    private let emojiBarHeight = 256
+    //表情窗口
+    private lazy var emojiBar: IMChatEmojiBarView = {
+       let view = Bundle.main.loadNibNamed("IMChatEmojiBarView", owner: self, options: nil)?.first as! IMChatEmojiBarView
+        view.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: emojiBarHeight.toCGFloat)
+       return view
+    }()
 
     private lazy var viewModel: IMViewModel = {
         return IMViewModel()
@@ -73,15 +81,59 @@ class IMChatViewController: UIViewController {
         if let c = self.conversation, let id = c.id {
             self.viewModel.myMsgPageList(page: page, conversationId: id).then { (list) in
                 self.chatMessageList = list
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    if self.chatMessageList.count > 0 {
-                        self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count-1, section: 0), at: .bottom, animated: true)
-                    }
-                }
+                self.scrollMessageToBottom()
             }
         } else {
             self.showError(title: "参数错误！！！")
+        }
+    }
+    //刷新tableview 滚动到底部
+    private func scrollMessageToBottom() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            if self.chatMessageList.count > 0 {
+                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count-1, section: 0), at: .bottom, animated: true)
+            }
+        }
+    }
+    
+    //发送文本消息
+    private func sendTextMessage() {
+        guard let msg = self.messageInputView.text else {
+            return
+        }
+        self.messageInputView.text = ""
+        let body = IMMessageBodyInfo()
+        body.type = o2_im_msg_type_text
+        body.body = msg
+        sendMessage(body: body)
+    }
+    //发送表情消息
+    private func sendEmojiMessage(emoji: String) {
+        let body = IMMessageBodyInfo()
+        body.type = o2_im_msg_type_emoji
+        body.body = emoji
+        sendMessage(body: body)
+    }
+    
+    //发送消息到服务器
+    private func sendMessage(body: IMMessageBodyInfo) {
+        let message = IMMessageInfo()
+        message.body = body.toJSONString()
+        message.id = UUID().uuidString
+        message.conversationId = self.conversation?.id
+        message.createPerson = O2AuthSDK.shared.myInfo()?.distinguishedName
+        message.createTime = Date().formatterDate(formatter: "yyyy-MM-dd HH:mm:ss")
+        //添加到界面
+        self.chatMessageList.append(message)
+        self.scrollMessageToBottom()
+        //发送消息到服务器
+        self.viewModel.sendMsg(msg: message)
+            .then { (result)  in
+                DDLogDebug("发送消息成功 \(result)")
+        }.catch { (error) in
+            DDLogError(error.localizedDescription)
+            self.showError(title: "发送消息失败!")
         }
     }
 
@@ -92,10 +144,17 @@ class IMChatViewController: UIViewController {
         self.isShowEmoji.toggle()
         self.view.endEditing(true)
         if self.isShowEmoji {
-            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + 128
+            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + self.emojiBarHeight.toCGFloat
+            self.emojiBar.delegate = self
+            self.emojiBar.translatesAutoresizingMaskIntoConstraints = false
+            self.bottomBar.addSubview(self.emojiBar)
+            let top = NSLayoutConstraint(item: self.emojiBar, attribute: .top, relatedBy: .equal, toItem: self.emojiBar.superview!, attribute: .top, multiplier: 1, constant: CGFloat(self.bottomBarHeight))
+            let width = NSLayoutConstraint(item: self.emojiBar, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: SCREEN_WIDTH)
+            let height = NSLayoutConstraint(item: self.emojiBar, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: self.emojiBarHeight.toCGFloat)
+            NSLayoutConstraint.activate([top, width, height])
         } else {
             self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
-
+            self.emojiBar.removeFromSuperview()
         }
         self.view.layoutIfNeeded()
     }
@@ -103,6 +162,15 @@ class IMChatViewController: UIViewController {
 
 
 }
+
+// MARK: - 表情点击 delegate
+extension IMChatViewController: IMChatEmojiBarClickDelegate {
+    func clickEmoji(emoji: String) {
+        DDLogDebug("发送表情消息 \(emoji)")
+        self.sendEmojiMessage(emoji: emoji)
+    }
+}
+
 // MARK: - tableview delegate
 extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
 
@@ -127,17 +195,8 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         tableView.deselectRow(at: indexPath, animated: false)
     }
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        guard let c = cell as? IMChatMessageViewCell else {
-//            return
-//        }
-//        //todo
-//        c.setContent(item: self.chatMessageList[indexPath.row])
-//    }
-
 
 }
 
@@ -151,12 +210,13 @@ extension IMChatViewController: UITextFieldDelegate {
 
     private func closeEmoji() {
         self.isShowEmoji = false
-        self.bottomBarHeightConstraint.constant = 64
+        self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
         self.view.layoutIfNeeded()
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         DDLogDebug("回车。。。。")
+        self.sendTextMessage()
         return true
     }
 }

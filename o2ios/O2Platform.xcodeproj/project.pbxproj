@@ -126,6 +126,10 @@
 		B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */; };
 		B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */; };
 		B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */; };
+		B1489C7B2491FEFE009EE9FD /* IMChatEmojiBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */; };
+		B1489CAE2491FF13009EE9FD /* IMChatEmojiBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */; };
+		B1489CB12492045D009EE9FD /* IMChatEmojiItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */; };
+		B1489CB22492045D009EE9FD /* IMChatEmojiItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -1447,6 +1451,10 @@
 		B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageViewCell.xib; sourceTree = "<group>"; };
 		B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageSendViewCell.swift; sourceTree = "<group>"; };
 		B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageSendViewCell.xib; sourceTree = "<group>"; };
+		B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatEmojiBarView.swift; sourceTree = "<group>"; };
+		B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiBarView.xib; sourceTree = "<group>"; };
+		B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatEmojiItemCell.swift; sourceTree = "<group>"; };
+		B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiItemCell.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -2603,6 +2611,10 @@
 				B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */,
 				B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */,
 				B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */,
+				B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */,
+				B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */,
+				B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */,
+				B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5574,6 +5586,7 @@
 				E46E6CB51DD41F5D00AB7561 /* jQuery.js in Resources */,
 				E46E6C801DD41F5D00AB7561 /* ZSSh6@2x.png in Resources */,
 				E46E6C971DD41F5D00AB7561 /* ZSSparagraph.png in Resources */,
+				B1489CAE2491FF13009EE9FD /* IMChatEmojiBarView.xib in Resources */,
 				E4B888E01D9D48F1002E1A46 /* apps.storyboard in Resources */,
 				E428AF6120AD4DCE00D964B9 /* OOAttanceCheckInController.xib in Resources */,
 				B165CD5D2242093500373B66 /* SourceSansPro-Regular.ttf in Resources */,
@@ -5595,6 +5608,7 @@
 				B165CD682242093500373B66 /* Montserrat-Regular.ttf in Resources */,
 				E41441DB1DCAC5D700E3DDA3 /* bbs.storyboard in Resources */,
 				E46E6C9B1DD41F5D00AB7561 /* ZSSquicklink.png in Resources */,
+				B1489CB22492045D009EE9FD /* IMChatEmojiItemCell.xib in Resources */,
 				E45755A91E0BA72E00EC44F4 /* qrcode_Scan_weixin_Line@2x.png in Resources */,
 				E4B697B920764A2D0062F6E8 /* buildlist.json in Resources */,
 				E4C24B4320844F3C00E426B0 /* defaultTheme.bundle in Resources */,
@@ -6066,6 +6080,7 @@
 				B1FBA01A230533FA00A90722 /* PersonPickerTableViewCell.swift in Sources */,
 				E4B6981A2079A8BB0062F6E8 /* OOBindNodeViewController.swift in Sources */,
 				E4F4544F20902263002FBC32 /* OOConfigInfoModels.swift in Sources */,
+				B1489CB12492045D009EE9FD /* IMChatEmojiItemCell.swift in Sources */,
 				E4B2321A20B3E9440082F30A /* OOAttanceCheckinPromptView.swift in Sources */,
 				E4B69810207652960062F6E8 /* OOTaskModels.swift in Sources */,
 				E4B888761D9D48F1002E1A46 /* DepartmentDuty.swift in Sources */,
@@ -6080,6 +6095,7 @@
 				E4C24BD120844F3C00E426B0 /* JCNoteNameViewController.swift in Sources */,
 				B1B110E2223622C400775BEF /* O2BioLocalAuth.swift in Sources */,
 				E4184B231DB4B29B00FCC907 /* SPasswordChangeViewController.swift in Sources */,
+				B1489C7B2491FEFE009EE9FD /* IMChatEmojiBarView.swift in Sources */,
 				E4B7816C1DF8F2B2007B58A9 /* CMSData.swift in Sources */,
 				B165CD592242093500373B66 /* PresentrController.swift in Sources */,
 				E4B7816D1DF8F2B2007B58A9 /* CMSWrapOutCategoryList.swift in Sources */,
