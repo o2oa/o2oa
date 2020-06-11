@@ -809,9 +809,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	
 	/**
 	 * 查询符合的文档信息总数
-	 * @param id
-	 * @param count
-	 * @param sequence
 	 * @param wrapIn
 	 * @return
 	 * @throws Exception
