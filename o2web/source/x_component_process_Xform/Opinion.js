@@ -429,7 +429,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         if (!v){
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
-                var w = size.x-23;
+                var w = size.x - 3
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    w = size.x - 23;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",
