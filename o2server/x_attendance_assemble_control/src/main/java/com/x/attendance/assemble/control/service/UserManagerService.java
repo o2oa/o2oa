@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.service;
 import com.x.attendance.assemble.control.Business;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
@@ -99,6 +100,26 @@ public class UserManagerService {
 				return null;
 			}
 			return business.organization().unit().getWithIdentity( identity );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据身份名称获取组织名称
+	 * @param identity
+	 * @return
+	 * @throws Exception
+	 */
+	public Unit getUnitWithIdentity( String identity ) throws Exception{
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			if( StringUtils.equalsAnyIgnoreCase( "xadmin", identity ) || StringUtils.equalsAnyIgnoreCase( "cipher", identity ) ){
+				return null;
+			}
+			String name =  business.organization().unit().getWithIdentity( identity );
+			return business.organization().unit().getObject(name);
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -317,6 +338,16 @@ public class UserManagerService {
 		}
 	}
 
+	public List<Person> listAllPersons() throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listAllObject();
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	/**
 	 * 根据人员姓名获取人员姓名
 	 * @param name
@@ -332,6 +363,38 @@ public class UserManagerService {
 			business = new Business(emc);
 			return business.organization().person().getObject(name);
 		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据个人姓名，根据个人姓名获取主身份
+	 *
+	 * @param personName
+	 * @return
+	 * @throws Exception
+	 */
+	public String getMajorIdentityWithPerson(String personName) throws Exception {
+		List<String> identities = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
+			personName = business.organization().person().get(personName);
+			identities = business.organization().identity().listWithPerson(personName);
+			if (ListTools.isNotEmpty( identities )) {
+				if( identities.size() == 1 ) {
+					return identities.get(0);
+				}
+				for (String identity : identities) {
+					Identity obj = business.organization().identity().getObject(identity);
+					if (obj!= null && obj.getMajor() !=null && obj.getMajor() ) {
+						return identity;
+					}
+				}
+			}
+			return null;
+		} catch (Exception e) {
 			throw e;
 		}
 	}
