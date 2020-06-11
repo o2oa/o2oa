@@ -36,6 +36,7 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, End end) throws Exception {
+		//nothing
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class EndProcessor extends AbstractEndProcessor {
 						aeiObjects.getDeleteWorkLogs().add(obj);
 					});
 		} else {
-			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects.getWork());
+			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects.getWork(), end);
 			workCompleted.setAllowRollback(end.getAllowRollback());
 			aeiObjects.getCreateWorkCompleteds().add(workCompleted);
 			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
@@ -150,10 +151,11 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, End end) throws Exception {
+		// nothing
 	}
 
 	/* 根据work和data创建最终保存的workCompleted */
-	private WorkCompleted createWorkCompleted(Work work) throws Exception {
+	private WorkCompleted createWorkCompleted(Work work, End end) throws Exception {
 		Date completedTime = new Date();
 		Long duration = Config.workTime().betweenMinutes(work.getStartTime(), completedTime);
 		String formString = "";
@@ -166,6 +168,11 @@ public class EndProcessor extends AbstractEndProcessor {
 				formMobileString = form.getMobileData();
 			}
 		}
-		return new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		workCompleted.setActivity(end.getId());
+		workCompleted.setActivityAlias(end.getAlias());
+		workCompleted.setActivityDescription(end.getDescription());
+		workCompleted.setActivityName(end.getName());
+		return workCompleted;
 	}
 }
