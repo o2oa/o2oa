@@ -167,7 +167,9 @@ MWF.xDesktop.getUserLayout = function(callback){
 },
 
 MWF.xDesktop.notice = function(type, where, content, target, offset, option){
-    var noticeTarget = target || layout.desktop.desktopNode;
+    if (!where) where = { "x": "right", "y": "top" };
+    if (!type) type = "ok";
+    var noticeTarget = target || layout.desktop.desktopNode || document.body;
 
     var off = offset;
     if (!off){
@@ -452,6 +454,7 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
             contentNode.setStyle("background-color", "#666666");
         }
     };
+
     if (typeOf(config.center)==="object"){
         MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
     }else if (typeOf(config.center)==="array"){
@@ -514,7 +517,9 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
     }else{
         uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
     }
-    var currenthost = window.location.hostname;
+
+    var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
+    //var currenthost = window.location.hostname;
     uri = uri.replace(/{source}/g, currenthost);
     //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
 
