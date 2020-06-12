@@ -1743,10 +1743,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }else{
             if (this.isSelected){
                 this.unSelected();
-                this.selector.fireEvent("unselectItem",[this])
             }else{
                 this.selected();
-                this.selector.fireEvent("selectItem",[this])
             }
         }
     },
@@ -1799,6 +1797,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
+
+                this.selector.fireEvent("selectItem",[this])
+
             }.bind(this));
         }else {
             this.unSelectedSingle();
@@ -1820,6 +1821,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
+        this.selector.fireEvent("unselectItem",[this])
     },
     selected: function(){
         var count = this.selector.options.maxCount || this.selector.options.count;
@@ -1843,6 +1845,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem = this.selector._newItemSelected(this.data, this.selector, this);
             this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
+
+            this.selector.fireEvent("selectItem",[this])
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
@@ -1911,6 +1915,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.destroy();
             this.selectedItem = null;
         }
+        this.selector.fireEvent("unselectItem",[this])
     },
     postLoad : function(){},
     getParentCategoryByLevel : function( level ){

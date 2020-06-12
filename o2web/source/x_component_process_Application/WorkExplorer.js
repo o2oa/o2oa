@@ -1468,10 +1468,11 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
     flow: function(e){
         this.node.setStyles(this.css.taskItemNode_action);
         this.processNode = new Element("div", {"styles": this.css.taskItemFlowNode}).inject(this.explorer.app.content);
+        this.processNode.setStyles({"overflow":"auto"});
 
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var width = 540;
-            var height = 260;
+            var width = 560;
+            var height = 400;
             var size = this.explorer.app.content.getSize();
             var x = size.x/2-width/2;
             var y = size.y/2-height/2;
