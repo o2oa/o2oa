@@ -461,13 +461,30 @@ public class ReviewService {
 			permissionObjs = new ArrayList<>();
 		}
 		if( ListTools.isNotEmpty(objNames)){
+			Person person;
+			String[] array;
 			for( String objName : objNames ) {
 				if(StringUtils.isNotEmpty(objName)){
+					person = null;
+					array = null;
 					if( objName.trim().endsWith( "@P" ) ) {
+						//直接加入人员
+						array = objName.split("@");
+						if( array.length == 2){
+							person = userManagerService.getPerson(array[0]);
+							if( person != null ){
+								objName = person.getDistinguishedName();
+							}
+						}
 						if( !permissionObjs.contains( objName )) {
 							permissionObjs.add( objName );
 						}
 					}else if( objName.trim().endsWith( "@I" ) ) {//将Identity转换为人员
+						//从身份到人员
+						array = objName.split("@");
+						if( array.length == 2){
+							objName = userManagerService.getPersonNameWithIdentity(array[0]);
+						}
 						result = userManagerService.getPersonNameWithIdentity( objName );
 						permissionObjs = addStringToList( permissionObjs, result );
 					}else if( objName.trim().endsWith( "@U" ) ) {//将组织拆解为人员
@@ -552,16 +569,17 @@ public class ReviewService {
 		
 		//先删除原来所有的Review信息
 		if( ListTools.isNotEmpty( oldReviewIds )) {
-			reviews = emc.list( Review.class, oldReviewIds ); //查询该文档所有的Review列表
-			if( ListTools.isNotEmpty( reviews )) {
-				emc.beginTransaction( Review.class );
-				for( Review review_tmp : reviews ) {
-					//System.out.println(">>>>>>>["+ review_tmp.getTitle() +"] delete review: " + review_tmp.getPermissionObj());
-					emc.remove( review_tmp, CheckRemoveType.all );
+			Review oldReview = null;
+			emc.beginTransaction( Review.class );
+			for( String reviewId : oldReviewIds ){
+				oldReview = emc.find( reviewId, Review.class );
+				if( oldReview != null ){
+					emc.remove( oldReview, CheckRemoveType.all );
 				}
-				emc.commit();
 			}
+			emc.commit();
 		}
+
 		//再添加新的Review信息
 		if( ListTools.isNotEmpty( permissionPersons )) {
 			permissionPersons = removeSameValue( permissionPersons );
@@ -569,7 +587,6 @@ public class ReviewService {
 			Person personObj = null;
 			String personName = null;
 			for( String person : permissionPersons ) {
-				
 				if( !person.equalsIgnoreCase( "*" )) {
 					//检查一下个人是否存在，防止姓名或者唯一标识变更过了导致文档权限不正确
 					personObj = userManagerService.getPerson( person );
