@@ -1022,7 +1022,9 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.close();
     },
     gotoChangePassword : function(){ //密码过期
-        this.explorer.openChangePasswordForm();
+        this.explorer.openChangePasswordForm( null, function(){
+            this.explorer.loadLogin();
+        }.bind(this));
         this.close();
     },
     checkBindStatus: function () {

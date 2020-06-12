@@ -669,6 +669,7 @@ MWF.xApplication.process.Work.Processor = new Class({
     setIdeaList: function(ideas){
         var _self = this;
         ideas.each(function(idea){
+            if( !idea )return;
             new Element("div", {
                 "styles": this.css.selectIdeaItemNode,
                 "text": idea,
