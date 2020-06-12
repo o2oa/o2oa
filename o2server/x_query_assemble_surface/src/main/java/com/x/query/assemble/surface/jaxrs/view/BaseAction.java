@@ -205,10 +205,45 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Runtime runtime = new Runtime();
 		runtime.person = effectivePerson.getDistinguishedName();
 		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
+		if(runtime.identityList!=null){
+			for(String identity : runtime.identityList){
+				if(identity.indexOf("@")>-1) {
+					runtime.identityList.add(StringUtils.substringAfter(identity, "@"));
+				}
+			}
+		}
 		runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
+		if(runtime.unitList!=null){
+			for(String item : runtime.unitList){
+				if(item.indexOf("@")>-1) {
+					runtime.unitList.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+		}
 		runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
+		if(runtime.unitAllList!=null){
+			for(String item : runtime.unitAllList){
+				if(item.indexOf("@")>-1) {
+					runtime.unitAllList.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+		}
 		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
+		if(runtime.groupList!=null){
+			for(String item : runtime.groupList){
+				if(item.indexOf("@")>-1) {
+					runtime.groupList.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+		}
 		runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
+		if(runtime.roleList!=null){
+			for(String item : runtime.roleList){
+				if(item.indexOf("@")>-1) {
+					runtime.roleList.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+		}
 		runtime.parameter = parameter;
 		runtime.filterList = filterList;
 		runtime.count = this.getCount(view, count);
