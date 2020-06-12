@@ -28,20 +28,16 @@ public class ActionCreateEncryptKey extends ActionBase {
 
 	private Date start;
 
+	private BufferedReader bufferedReader;
+
 	private void init() throws Exception {
 		this.start = new Date();
 	}
 
-	public boolean execute(String password) throws Exception {
-		this.init();
-		/*
-		if (!StringUtils.equals(Config.token().getPassword(), password)) {
-			logger.print("password not match.");
-			return false;
-		}*/
-		
+	public boolean execute() throws Exception {
+		this.init();		
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-		SecureRandom random= new SecureRandom(password.getBytes());
+		SecureRandom random= new SecureRandom();
 		generator.initialize(1024, random);
 		KeyPair pair = generator.generateKeyPair();
 		File publicKeyFile = new File(Config.base(), "config/public.key");
@@ -62,7 +58,6 @@ public class ActionCreateEncryptKey extends ActionBase {
 	
 	public static void main(String[] args) throws Exception {
 		ActionCreateEncryptKey actionCreateEncryptKey = new ActionCreateEncryptKey();
-		actionCreateEncryptKey.writeConfigFile("ssxx");
 	}
 
 	public  boolean writeConfigFile(String publicKey) {
@@ -72,9 +67,9 @@ public class ActionCreateEncryptKey extends ActionBase {
 			dir = new File(Config.base(), "servers/webServer/x_desktop/res/config");
 			FileUtils.forceMkdir(dir);
 			File fileConfig = new File(dir, "config.json");
-			
-			BufferedReader bufferedReader = 
-					new BufferedReader(new InputStreamReader(new FileInputStream(fileConfig), "UTF-8"));
+			FileInputStream fileInputStream = new FileInputStream(fileConfig);
+			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+			bufferedReader = new BufferedReader(inputStreamReader);
 			String line;
 			while((line=bufferedReader.readLine()) != null) {
 				stringBuffer.append(line);
@@ -84,13 +79,18 @@ public class ActionCreateEncryptKey extends ActionBase {
 			jsonObject.addProperty("publicKey", publicKey);
 
 			 FileUtils.write(fileConfig, jsonObject.toString(),DefaultCharset.charset, false);
-					
-		} catch (FileNotFoundException e) {
+			
+			 bufferedReader.close();
+			 inputStreamReader.close();
+			 fileInputStream.close();
+		}catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			
 		}
 	   return true;
   }
