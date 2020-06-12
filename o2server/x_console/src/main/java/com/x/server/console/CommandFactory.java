@@ -17,9 +17,9 @@ public class CommandFactory {
 
 	public static final Pattern test_pattern = Pattern.compile("^ {0,}test {0,}$", Pattern.CASE_INSENSITIVE);
 
-	//public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key {0,}$",Pattern.CASE_INSENSITIVE);
+	//public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key{0,}$",Pattern.CASE_INSENSITIVE);
 	
-	public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key (.+)$",
+	public static final Pattern create_encrypt_key_pattern = Pattern.compile("^ {0,}create encrypt key {0,}$",
 			Pattern.CASE_INSENSITIVE);
 	
 	public static final Pattern start_pattern = Pattern
