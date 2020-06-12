@@ -22,6 +22,7 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.View_;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,44 +55,55 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Runtime runtime = new Runtime();
 		runtime.person = effectivePerson.getDistinguishedName();
 		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
+		List<String> list = new ArrayList<>();
 		if(runtime.identityList!=null){
 			for(String identity : runtime.identityList){
 				if(identity.indexOf("@")>-1) {
-					runtime.identityList.add(StringUtils.substringAfter(identity, "@"));
+					list.add(StringUtils.substringAfter(identity, "@"));
 				}
 			}
+			runtime.identityList.addAll(list);
+			list.clear();
 		}
 		runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
 		if(runtime.unitList!=null){
 			for(String item : runtime.unitList){
 				if(item.indexOf("@")>-1) {
-					runtime.unitList.add(StringUtils.substringAfter(item, "@"));
+					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
+			runtime.unitList.addAll(list);
+			list.clear();
 		}
 		runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
 		if(runtime.unitAllList!=null){
 			for(String item : runtime.unitAllList){
 				if(item.indexOf("@")>-1) {
-					runtime.unitAllList.add(StringUtils.substringAfter(item, "@"));
+					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
+			runtime.unitAllList.addAll(list);
+			list.clear();
 		}
 		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
 		if(runtime.groupList!=null){
 			for(String item : runtime.groupList){
 				if(item.indexOf("@")>-1) {
-					runtime.groupList.add(StringUtils.substringAfter(item, "@"));
+					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
+			runtime.groupList.addAll(list);
+			list.clear();
 		}
 		runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
 		if(runtime.roleList!=null){
 			for(String item : runtime.roleList){
 				if(item.indexOf("@")>-1) {
-					runtime.roleList.add(StringUtils.substringAfter(item, "@"));
+					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
+			runtime.roleList.addAll(list);
+			list.clear();
 		}
 		runtime.parameter = parameter;
 		runtime.filterList = filterList;
