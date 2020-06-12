@@ -73,9 +73,9 @@
     }
     this.o2 = window.o2 || {};
     this.o2.version = {
-        "v": "2.3.1",
-        "build": "2019.07.31",
-        "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
+        "v": "5.1.1",
+        "build": "2020.06.12",
+        "info": "O2OA 活力办公 创意无限. Copyright © 2020, o2oa.net O2 Team All rights reserved."
     };
     if (!this.o2.session) this.o2.session ={
         "isDebugger": _debug,
