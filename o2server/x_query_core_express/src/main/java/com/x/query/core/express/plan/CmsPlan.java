@@ -382,6 +382,9 @@ public class CmsPlan extends Plan {
 					if("readPersonList".equals(path)){
 						p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
 						p = cb.or(p, cb.isMember(runtime.person, root.get(Document_.readPersonList)));
+						if(runtime.person.indexOf("@")>-1){
+							p = cb.or(p, cb.isMember(StringUtils.substringAfter(runtime.person, "@"), root.get(Document_.readPersonList)));
+						}
 					}else if("readUnitList".equals(path)){
 						if(ListTools.isNotEmpty(runtime.unitAllList)){
 							p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
