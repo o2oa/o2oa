@@ -224,4 +224,22 @@ public class GlobalAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 	
+	@JaxrsMethodDescribe(value = "初始化优先级信息.", action = ActionInitConfig.class)
+	@GET
+	@Path("initConfig")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void initConfig(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request) {
+		ActionResult<ActionInitConfig.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInitConfig().execute(request, effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 }

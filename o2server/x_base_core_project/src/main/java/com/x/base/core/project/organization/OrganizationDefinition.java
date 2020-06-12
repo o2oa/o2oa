@@ -58,6 +58,9 @@ public class OrganizationDefinition {
 
 	public final static String CRMManager = "CRMManager";
 	public final static String CRMManager_discription = "CRM管理员(系统角色)，可以进行CRM系统相关配置，对客户信息，商机等信息进行管理操作。";
+	
+	public final static String TeamWorkManager = "TeamWorkManager";
+	public final static String TeamWorkManager_discription = "TeamWork管理员(系统角色)，可以进行TeamWork系统相关配置，对项目，任务等信息进行管理操作。";
 
 	public final static String QueryManager = "QueryManager";
 	public final static String QueryManager_discription = "数据中心管理员(系统角色)，可以在数据中心进行视图管理，统计管理等操作。";
@@ -94,7 +97,7 @@ public class OrganizationDefinition {
 	public final static List<String> DEFAULTROLES = new UnmodifiableList<String>(ListTools.toList(Manager,
 			AttendanceManager, OrganizationManager, PersonManager, GroupManager, UnitManager, RoleManager,
 			ProcessPlatformManager, ProcessPlatformCreator, MeetingManager, MeetingViewer, PortalManager, BBSManager,
-			CMSManager, OKRManager, CRMManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege));
+			CMSManager, OKRManager, CRMManager,TeamWorkManager, QueryManager, MessageManager, HotPictureManager, SearchPrivilege));
 
 	public static String name(String distinguishedName) {
 		if (StringUtils.contains(distinguishedName, "@")) {

@@ -40,7 +40,7 @@ public class ActionPriorityList extends BaseAction {
 			}
 			result.setData(wos);
 		} catch (Exception e) {
-			Exception exception = new PriorityQueryException(e, "根据用户拥有的优先级信息列表时发生异常。");
+			Exception exception = new PriorityQueryException(e, "查询优先级信息列表时发生异常。");
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
