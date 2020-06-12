@@ -3,11 +3,16 @@ package com.x.program.center.jaxrs.command;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,30 +38,54 @@ public class ActionCommand extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String ctl = wi.getCtl();
 		String nodeName = wi.getNodeName() ;
-		int nodePort =Integer.parseInt(wi.getNodePort());
 		String curServer = request.getLocalAddr();
 		Wo wo = null;
 		if(nodeName.equalsIgnoreCase("*")) {
 			Nodes nodes = Config.nodes();
-			for (String node : nodes.keySet()){
-				//先其他服务器
-				if(!node.equalsIgnoreCase(curServer)) {
-					if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-						 wo = executeCommand(ctl, node, nodePort);
+			if (ctl.indexOf("create encrypt")>-1) {
+				//生成key文件
+				for (String node : nodes.keySet()){
+					 //当前服务器
+					if(node.equalsIgnoreCase(curServer)) {
+					    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+					    	  wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
+				        }
+					}
+				}
+				//同步key文件
+				for (String node : nodes.keySet()){
+					//其他服务器
+					if(!node.equalsIgnoreCase(curServer)) {
+						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+							boolean Syncflag = executeSyncFile("config/public.key" , node ,nodes.get(node).nodeAgentPort());
+							        Syncflag = executeSyncFile("config/private.key" , node ,nodes.get(node).nodeAgentPort());
+							        Syncflag = executeSyncFile("servers/webServer/x_desktop/res/config/config.json" , node ,nodes.get(node).nodeAgentPort());
+						}
+					}
+				}
+				
+			 }else {
+				
+				for (String node : nodes.keySet()){
+					//先其他服务器
+					if(!node.equalsIgnoreCase(curServer)) {
+						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+							 wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
+						}
+					}
+				}
+				
+				for (String node : nodes.keySet()){
+					 //后当前服务器
+					if(node.equalsIgnoreCase(curServer)) {
+					    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+					    	  wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort());
+				        }
 					}
 				}
 			}
-			
-			for (String node : nodes.keySet()){
-				 //后当前服务器
-				if(node.equalsIgnoreCase(curServer)) {
-				    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
-				    	  wo = executeCommand(ctl, node, nodePort);
-			        }
-				}
-			}
 		}else {
-		   wo = executeCommand(ctl, nodeName, nodePort);
+		   wo = executeCommand(ctl, nodeName, Integer.parseInt(wi.getNodePort()));
 		}
 		
 		result.setData(wo);
@@ -77,6 +106,11 @@ public class ActionCommand extends BaseAction {
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 				dos.writeUTF(XGsonBuilder.toJson(commandObject));
 				dos.flush();
+				
+				if (ctl.indexOf("create encrypt")>-1) {
+					String createEncrypt = dis.readUTF();
+					logger.info(createEncrypt);
+				}
 			}
 		} catch (Exception ex) {
 			wo.setStatus("fail");
@@ -88,6 +122,57 @@ public class ActionCommand extends BaseAction {
 	}
    
 	
+	 private boolean executeSyncFile(String syncFilePath , String nodeName ,int nodePort){
+			  boolean syncFileFlag = false;
+			  File syncFile;
+			  InputStream fileInputStream = null;
+			 
+			try (Socket socket = new Socket(nodeName, nodePort)) {
+				
+				syncFile = new File(Config.base(), syncFilePath);
+				fileInputStream= new FileInputStream(syncFile);
+				 
+				socket.setKeepAlive(true);
+				socket.setSoTimeout(5000);
+				DataOutputStream dos = null;
+				DataInputStream dis  = null;
+				try {
+					dos = new DataOutputStream(socket.getOutputStream());
+				    dis = new DataInputStream(socket.getInputStream());
+				    
+					Map<String, Object> commandObject = new HashMap<>();
+					commandObject.put("command", "syncFile:"+ syncFilePath);
+					commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+					dos.writeUTF(XGsonBuilder.toJson(commandObject));
+					dos.flush();
+					
+					dos.writeUTF(syncFilePath);
+					dos.flush();
+					
+			
+					logger.info("同步文件starting.......");
+					byte[] bytes = new byte[1024];
+					int length =0;
+					while((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
+						dos.write(bytes, 0, length);
+						dos.flush();
+					}
+					logger.info("同步文件end.......");
+					
+				}finally {
+					dos.close();
+					dis.close();
+					socket.close();
+					fileInputStream.close();
+				}
+				
+				syncFileFlag = true;
+			} catch (Exception ex) {
+				logger.error(ex);
+				syncFileFlag = false;
+			}
+			return syncFileFlag;
+		}
 	
 	public static class Wi  extends GsonPropertyObject{
 		@FieldDescribe("命令名称")
