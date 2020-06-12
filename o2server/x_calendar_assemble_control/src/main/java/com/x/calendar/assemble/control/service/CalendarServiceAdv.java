@@ -74,23 +74,23 @@ public class CalendarServiceAdv{
 		//管理者应该都有可见权限
 		if( ListTools.isNotEmpty( calendar.getManageablePersonList() )) {
 			for( String managerName : calendar.getManageablePersonList() ) {
-				addStringToList( managerName, calendar.getViewablePersonList() );
+				addStringToList( managerName, effectivePerson, calendar.getViewablePersonList() );
 			}
 		}
 		
 		//对日历信息进行权限设置，至少自己创建的日历自己可以管理 ，可以发布，可以查看
-		addStringToList( calendar.getCreateor(), calendar.getManageablePersonList() );
-		addStringToList( calendar.getCreateor(), calendar.getPublishablePersonList() );
-		addStringToList( calendar.getCreateor(), calendar.getViewablePersonList() );
+		addStringToList( calendar.getCreateor(), effectivePerson, calendar.getManageablePersonList() );
+		addStringToList( calendar.getCreateor(), effectivePerson, calendar.getPublishablePersonList() );
+		addStringToList( calendar.getCreateor(), effectivePerson, calendar.getViewablePersonList() );
 		
 		if( "UNIT".equals( calendar.getType() )) {
 			if( ListTools.isEmpty(calendar.getViewableUnitList() )
 				&& ListTools.isEmpty(calendar.getViewableGroupList() )
 				&& ListTools.isEmpty(calendar.getViewablePersonList() )){
-				addStringToList( calendar.getTarget(), calendar.getViewableUnitList() );
+				addStringToList( calendar.getTarget(), effectivePerson, calendar.getViewableUnitList() );
 			}
 		}else {
-			addStringToList( calendar.getTarget(), calendar.getViewablePersonList() );
+			addStringToList( calendar.getTarget(), effectivePerson, calendar.getViewablePersonList() );
 		}		
 		
 		if( StringUtils.isEmpty( calendar.getColor() )) {
@@ -130,9 +130,12 @@ public class CalendarServiceAdv{
 	 * @param distinguishedName
 	 * @param manageablePersonList
 	 */
-	private void addStringToList(String distinguishedName, List<String> manageablePersonList) {
+	private void addStringToList(String distinguishedName, EffectivePerson effectivePerson, List<String> manageablePersonList) {
 		if( manageablePersonList == null ) {
 			manageablePersonList = new ArrayList<>();
+		}
+		if( StringUtils.equalsAnyIgnoreCase( distinguishedName, "SYSTEM")){
+			distinguishedName = effectivePerson.getDistinguishedName();
 		}
 		if( StringUtils.isNotEmpty( distinguishedName ) ) {
 			if( !manageablePersonList.contains( distinguishedName )) {
