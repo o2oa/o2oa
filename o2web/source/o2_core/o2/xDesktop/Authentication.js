@@ -2075,26 +2075,35 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         "closeAction": true
     },
     _createTableContent: function () {
+        var self = this;
 
+        this.actions = MWF.Actions.get("x_organization_assemble_personal");
 
         var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableValue' item='password'></td></tr>" +
-            "<tr><td styles='formTableValue' item='newPassword'></td>" +
-            "<tr><td styles='formTableValue'><div item='passwordStrengthArea'></div></div><div item='passwordTip'></div></td></tr>" +
-            "<tr><td styles='formTableValue' item='confirmPassword'></td>" +
-            "<tr><td styles='formTableValue' item='confirmPasswordTip'></td></tr>" +
+            "<tr><td styles='formTableValueTop20' item='password'></td></tr>" +
+            "<tr><td styles='formTableValueTop20' item='newPassword'></td>" +
+            "<tr><td styles='formTableValue'><div item='passwordTip'></div></td></tr>" +
+            "<tr><td styles='formTableValueTop20' item='confirmPassword'></td>" +
             "<tr><td styles='formTableValueTop20' item='submitAction'></td></tr>" +
-            "<tr><td><div item='forgetPassword'></div></td></tr>"+
+            "<tr><td><div item='forgetPassword'></div><div item='gotoLoginAction'></div></td></tr>"+
             "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
             "</table>";
 
         this.formTableArea.set("html", html);
+
+        this.errorArea = this.formTableArea.getElement("[item=errorArea]");
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
             this.form = new MForm(this.formTableArea, this.data, {
                 style: this.options.popupStyle,
                 verifyType: "single",	//batch一起校验，或alert弹出
                 isEdited: this.isEdited || this.isNew,
+                onPostLoad: function () {
+                    var form = this.form;
+                    form.getItem("password").tipNode = this.errorArea;
+                    form.getItem("newPassword").tipNode = this.errorArea;
+                    form.getItem("confirmPassword").tipNode = this.errorArea;
+                }.bind(this),
                 itemTemplate: {
                     password: {
                         text: this.lp.oldPassword,
@@ -2103,13 +2112,14 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                         notEmpty: true,
                         defaultValueAsEmpty: true,
                         emptyTip: this.lp.inputYourOldPassword,
-                        attr : { "placeholder" : this.lp.oldPassword },
+                        attr: {"placeholder": this.lp.oldPassword},
                         event: {
                             focus: function (it) {
                                 if ("password" === it.getValue()) it.setValue("");
                                 if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
                             }.bind(this),
                             blur: function (it) {
+                                // it.verify(true);
                                 if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputPassword);
                             }.bind(this),
                             keyup: function (it, ev) {
@@ -2126,56 +2136,95 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                     newPassword: {
                         text: this.lp.newPassword,
                         type: "password",
-                        attr : { "placeholder" : this.lp.newPassword },
                         className: "inputPassword",
                         notEmpty: true,
                         defaultValueAsEmpty: true,
                         emptyTip: this.lp.inputYourNewPassword,
+                        attr: {"placeholder": this.lp.newPassword},
+                        validRule: {
+                            passwordIsWeak: function (value, it) {
+                                return !this.getPasswordRule(it.getValue());
+                            }.bind(this)
+                        },
+                        validMessage: {
+                            passwordIsWeak: function () {
+                                return self.getPasswordRule(this.getValue());
+                            }
+                        },
                         event: {
                             focus: function (it) {
-                                if ("password" === it.getValue()) it.setValue("");
                                 if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
                             }.bind(this),
                             blur: function (it) {
-                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputPassword);
+                                // it.verify(true);
                             }.bind(this),
                             keyup: function (it, ev) {
-                                if (ev.event.keyCode === 13) this.ok();
+                                if (ev.event.keyCode === 13)this.ok();
                             }.bind(this)
                         },
                         onEmpty: function (it) {
                             it.getElements()[0].setStyles(this.css.inputEmpty);
                         }.bind(this),
-                        onUnempty: function (it) {
+                         onUnempty: function (it) {
                             it.getElements()[0].setStyles(this.css.inputPassword);
                         }.bind(this)
                     },
                     confirmPassword: {
-                        text: this.lp.confirmPassword,
+                        text: this.lp.confirmNewPassword,
                         type: "password",
-                        attr : { "placeholder" : this.lp.confirmPassword },
-                        className: "inputPassword",
+                        className: "inputComfirmPassword",
                         notEmpty: true,
                         defaultValueAsEmpty: true,
-                        emptyTip: this.lp.inputYourNewPassword,
+                         emptyTip: this.lp.inputComfirmPassword,
+                        attr: {"placeholder": this.lp.confirmPassword},
+                        validRule: {
+                            passwordNotEqual: function (value, it) {
+                                if (it.getValue() === this.form.getItem("newPassword").getValue()) return true;
+                            }.bind(this)
+                        },
+                        validMessage: {passwordNotEqual: this.lp.passwordNotEqual},
                         event: {
                             focus: function (it) {
-                                if ("password" === it.getValue()) it.setValue("");
                                 if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
                             }.bind(this),
                             blur: function (it) {
-                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputPassword);
+                                // it.verify(true);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputComfirmPassword);
                             }.bind(this),
                             keyup: function (it, ev) {
-                                if (ev.event.keyCode === 13) this.ok();
+                                if (ev.event.keyCode === 13)this.ok();
                             }.bind(this)
                         },
                         onEmpty: function (it) {
                             it.getElements()[0].setStyles(this.css.inputEmpty);
                         }.bind(this),
-                        onUnempty: function (it) {
-                            it.getElements()[0].setStyles(this.css.inputPassword);
+                         onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputComfirmPassword);
                         }.bind(this)
+                    },
+
+                    forgetPassword: {
+                        value: this.lp.forgetPassword,
+                        type: "innerText",
+                        className: "forgetPassword",
+                        event: {
+                            click: function () {
+                                this.gotoResetPassword();
+                            }.bind(this)
+                        }
+                    },
+                    gotoLoginAction: {
+                        value: this.lp.loginAction,
+                        type: "innerText",
+                        className: "signUpAction",
+                        event: {
+                            click: function () { this.gotoLogin() }.bind(this)
+                        }
+                    },
+                    passwordTip: {
+                        type: "innerText",
+                        className: "forgetPassword",
+                        defaultValue: layout.config.passwordRegexHint || ""
                     },
                     submitAction: {
                         value: this.lp.submitAction,
@@ -2186,22 +2235,23 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
                                 this.ok();
                             }.bind(this)
                         }
-                    },
-                    forgetPassword: {
-                        value: this.lp.forgetPassword,
-                        type: "innerText",
-                        className: "forgetPassword",
-                        event: {
-                            click: function () {
-                                this.gotoResetPassword();
-                            }.bind(this)
-                        }
                     }
                 }
             }, this.app, this.css);
             this.form.load();
         }.bind(this), true);
 
+    },
+    gotoLogin: function () {
+        this.explorer.openLoginForm({}, function () { window.location.reload(); });
+        this.close();
+    },
+    getPasswordRule: function (password) {
+        var str = "";
+        this.actions.checkRegisterPassword(password, function (json) {
+            str = json.data.value || "";
+        }.bind(this), null, false);
+        return str;
     },
     gotoResetPassword: function () {
         this.explorer.openResetPasswordForm();
@@ -2210,38 +2260,18 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
     ok: function () {
         this.fireEvent("queryOk");
         this.errorArea.empty();
-        var captchaItem = null;
-        var codeItem = null;
-        if (this.loginType === "captcha") {
-            this.form.getItem("password").options.notEmpty = true;
-
-            if (this.captchaLogin) {
-                captchaItem = this.form.getItem("captchaAnswer");
-                if (captchaItem) captchaItem.options.notEmpty = true;
-            }
-
-            codeItem = this.form.getItem("codeAnswer");
-            if (codeItem) codeItem.options.notEmpty = false;
-        } else if (this.loginType === "code") {
-            this.form.getItem("password").options.notEmpty = false;
-            if (this.captchaLogin) {
-                captchaItem = this.form.getItem("captchaAnswer");
-                if (captchaItem) captchaItem.options.notEmpty = false;
-            }
-            codeItem = this.form.getItem("codeAnswer");
-            if (codeItem) codeItem.options.notEmpty = true;
-        }
         var data = this.form.getResult(true, ",", true, false, true);
         if (data) {
             this._ok(data, function (json) {
                 if (json.type === "error") {
                     if (this.app) this.app.notice(json.message, "error");
                 } else {
+
                     this._close();
                     if (this.formMaskNode) this.formMaskNode.destroy();
                     this.formAreaNode.destroy();
                     if (this.explorer && this.explorer.view) this.explorer.view.reload();
-                    if (this.app) this.app.notice(this.lp.loginSuccess, "success");
+                    if (this.app) this.app.notice(this.lp.changePasswordSuccess, "success");
                     this.fireEvent("postOk", json);
                 }
             }.bind(this));
@@ -2255,37 +2285,18 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         }).inject(this.errorArea);
     },
     _ok: function (data, callback) {
-        var d = null;
-        if (this.loginType === "captcha") {
-            d = {
-                credential: data.credential,
-                password: data.password
-            };
-            if (this.captchaLogin) {
-                d.captchaAnswer = data.captchaAnswer;
-                d.captcha = this.captcha;
-            }
-            this.actions.loginByCaptcha(d, function (json) {
-                if (callback) callback(json);
-                //this.fireEvent("postOk")
-            }.bind(this), function (errorObj) {
-                var error = JSON.parse(errorObj.responseText);
-                this.setWarning(error.message);
-                this.setCaptchaPic();
-                if (this.form.getItem("captchaAnswer")) this.form.getItem("captchaAnswer").setValue("");
-            }.bind(this));
-        } else if (this.loginType === "code") {
-            d = {
-                credential: data.credential,
-                codeAnswer: data.codeAnswer
-            };
-            this.actions.loginByCode(d, function (json) {
-                if (callback) callback(json);
-                //this.fireEvent("postOk")
-            }.bind(this), function (errorObj) {
-                var error = JSON.parse(errorObj.responseText);
-                this.setWarning(error.message);
-            }.bind(this));
+        debugger;
+        var d = {
+            oldPassword : data.password,
+            newPassword : data.newPassword,
+            confirmPassword : data.confirmPassword
         }
+        o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
+            if (callback) callback(json);
+            //this.fireEvent("postOk")
+        }.bind(this), function (errorObj) {
+            var error = JSON.parse(errorObj.responseText);
+            this.setWarning(error.message);
+        }.bind(this) )
     }
 });

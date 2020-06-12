@@ -418,7 +418,8 @@ o2.LP.authentication = {
     "oldPassword" : "原密码",
     "inputYourOldPassword" : "请输入原密码",
     "newPassword" : "新密码",
-    "inputYourNewPassword" : "请输入新密码"
+    "inputYourNewPassword" : "请输入新密码",
+    "changePasswordSuccess" : "修改密码成功"
 
 
 };
