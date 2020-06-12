@@ -30,7 +30,7 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 		String titleFlag = excelReadRuntime.wi.getTitle();
 		
 		//生成一个Document和Data
-		System.out.println(">>>>>>>>>>>>>>>>>>>QueueDataRowImport.execute正在处理第" + curRow + "行数据：" + printData( colmlist ) );
+//		System.out.println(">>>>>>>>>>>>>>>>>>>QueueDataRowImport.execute正在处理第" + curRow + "行数据：" + printData( colmlist ) );
 		if( ListTools.isNotEmpty( colmlist ) ){
 			Data data = null;
 			Document document = null;
@@ -43,8 +43,8 @@ public class QueueDataRowImport extends AbstractQueue<ImportDataRow> {
 				document.setImportBatchName( batchName );
 				document.setDocStatus("checking"); //待校验
 				document.setSummary( null );
-				document.addReadPersonList( "所有人" );
-				document.addAuthorPersonList( excelReadRuntime.operatorName );
+				document.addToReadPersonList( "所有人" );
+				document.addToAuthorPersonList( excelReadRuntime.operatorName );
 						
 				if( StringUtils.isNotEmpty( colmlist.get( titleColIndex )+"" )) {
 					if( StringUtils.isNotEmpty( titleFlag )) {
