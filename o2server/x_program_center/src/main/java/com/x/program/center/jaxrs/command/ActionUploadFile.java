@@ -62,6 +62,8 @@ public class ActionUploadFile  extends BaseAction {
 					}
 				}
 			}else {
+				
+				 byteArrayInputStream = new ByteArrayInputStream(byteArray);
 			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  byteArrayInputStream, disposition);
 			}
 			
@@ -98,7 +100,7 @@ public class ActionUploadFile  extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("发送文件end.......");
+				logger.info("发送文件end.");
 				
 			}finally {
 				dos.close();
