@@ -653,6 +653,13 @@ public class Document extends SliceJpaObject {
 		return this.authorGroupList;
 	}
 
+	public List<String> getManagerList() {
+		if (this.managerList == null) {
+			this.managerList = new ArrayList<>();
+		}
+		return this.managerList;
+	}
+
 	public void setReadPersonList(List<String> readPersonList) {
 		this.readPersonList = readPersonList;
 	}
@@ -677,71 +684,8 @@ public class Document extends SliceJpaObject {
 		this.authorGroupList = authorGroupList;
 	}
 
-	public List<String> getManagerList() {
-		if (this.managerList == null) {
-			this.managerList = new ArrayList<>();
-		}
-		return this.managerList;
-	}
-
 	public void setManagerList(List<String> managerList) {
 		this.managerList = managerList;
-	}
-
-	public void addReadPersonList(String readPerson) {
-		this.readPersonList = addStringToList(this.readPersonList, readPerson);
-	}
-
-	public void addReadUnitList(String readUnit) {
-		this.readUnitList = addStringToList(this.readUnitList, readUnit);
-	}
-
-	public void addReadGroupList(String readGroup) {
-		this.readGroupList = addStringToList(this.readGroupList, readGroup);
-	}
-
-	public void addAuthorPersonList(String authorPerson) {
-		this.authorPersonList = addStringToList(this.authorPersonList, authorPerson);
-	}
-
-	public void addAuthorUnitList(String authorUnit) {
-		this.authorUnitList = addStringToList(this.authorUnitList, authorUnit);
-	}
-
-	public void addAuthorGroupList(String authorGroup) {
-		this.authorGroupList = addStringToList(this.authorGroupList, authorGroup);
-	}
-
-	public void removeReadPersonList(String readPerson) {
-		this.readPersonList = addStringToList(this.readPersonList, readPerson);
-	}
-
-	public void removeReadUnitList(String readUnit) {
-		this.readUnitList = addStringToList(this.readUnitList, readUnit);
-	}
-
-	public void removeReadGroupList(String readGroup) {
-		this.readGroupList = addStringToList(this.readGroupList, readGroup);
-	}
-
-	public void removeAuthorPersonList(String authorPerson) {
-		removeStringFromList(this.authorPersonList, authorPerson);
-	}
-
-	public void removeAuthorUnitList(String authorUnit) {
-		removeStringFromList(this.authorUnitList, authorUnit);
-	}
-
-	public void removeAuthorGroupList(String authorGroup) {
-		removeStringFromList(this.authorGroupList, authorGroup);
-	}
-
-	public void addManagerList(String manager) {
-		addStringToList(this.managerList, manager);
-	}
-
-	public void removeManagerList(String manager) {
-		removeStringFromList(this.managerList, manager);
 	}
 
 	public String getImportBatchName() {
@@ -782,26 +726,6 @@ public class Document extends SliceJpaObject {
 
 	public void setRemindGroupList(List<String> remindGroupList) {
 		this.remindGroupList = remindGroupList;
-	}
-
-	private List<String> addStringToList(List<String> sourceList, String targetString) {
-		if (sourceList == null) {
-			sourceList = new ArrayList<>();
-		}
-		if (!sourceList.contains(targetString)) {
-			sourceList.add(targetString);
-		}
-		return sourceList;
-	}
-
-	private List<String> removeStringFromList(List<String> sourceList, String targetString) {
-		if (sourceList == null) {
-			sourceList = new ArrayList<>();
-		}
-		if (sourceList.contains(targetString)) {
-			sourceList.remove(targetString);
-		}
-		return sourceList;
 	}
 
 	public Boolean getReviewed() {
@@ -916,6 +840,120 @@ public class Document extends SliceJpaObject {
 
 	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
 		this.sequenceCreatorUnitName = sequenceCreatorUnitName;
+	}
+
+	// -------------------Reader-------------------------
+	// -------------------2020-06-12 改为只存储DistinguishedName后两段，第一段可能会在运行过程中修改
+	public void addToReadPersonList(String readPerson) {
+		this.readPersonList = addStringToList(this.readPersonList, getShortTargetFlag( readPerson ));
+	}
+
+	public void addToReadUnitList(String readUnit) {
+		this.readUnitList = addStringToList(this.readUnitList, getShortTargetFlag( readUnit ));
+	}
+
+	public void addToReadGroupList(String readGroup) {
+		this.readGroupList = addStringToList(this.readGroupList, getShortTargetFlag( readGroup ));
+	}
+
+	// --------------------完整的标识要删除，并且也要删除只存储2段的标识
+	public void removeFromReadPersonList(String readPerson) {
+		removeStringFromList(this.readPersonList, readPerson);
+		removeStringFromList(this.readPersonList, getShortTargetFlag( readPerson ));
+	}
+
+	public void removeFromReadUnitList(String readUnit) {
+		removeStringFromList(this.readUnitList, readUnit);
+		removeStringFromList(this.readUnitList, getShortTargetFlag( readUnit ));
+	}
+
+	public void removeFromReadGroupList(String readGroup) {
+		removeStringFromList(this.readGroupList, readGroup);
+		removeStringFromList(this.readGroupList, getShortTargetFlag( readGroup ));
+	}
+
+	// -------------------Author-------------------------
+	// -------------------2020-06-12 改为只存储DistinguishedName后两段，第一段可能会在运行过程中修改
+	public void addToAuthorPersonList(String authorPerson) {
+		this.authorPersonList = addStringToList(this.authorPersonList, getShortTargetFlag( authorPerson ));
+	}
+
+	public void addToAuthorUnitList(String authorUnit) {
+		this.authorUnitList = addStringToList(this.authorUnitList, getShortTargetFlag( authorUnit ));
+	}
+
+	public void addToAuthorGroupList(String authorGroup) {
+		this.authorGroupList = addStringToList(this.authorGroupList, getShortTargetFlag( authorGroup ));
+	}
+
+	// --------------------完整的标识要删除，并且也要删除只存储2段的标识
+	public void removeFromAuthorPersonList(String authorPerson) {
+		removeStringFromList(this.authorPersonList, authorPerson);
+		removeStringFromList(this.authorPersonList, getShortTargetFlag( authorPerson ));
+	}
+
+	public void removeFromAuthorUnitList(String authorUnit) {
+		removeStringFromList(this.authorUnitList, authorUnit);
+		removeStringFromList(this.authorUnitList, getShortTargetFlag( authorUnit ));
+	}
+
+	public void removeFromAuthorGroupList(String authorGroup) {
+		removeStringFromList(this.authorGroupList, authorGroup);
+		removeStringFromList(this.authorGroupList, getShortTargetFlag( authorGroup ));
+	}
+
+	// -------------------Manager-------------------------
+	// -------------------2020-06-12 改为只存储DistinguishedName后两段，第一段可能会在运行过程中修改
+	public void addToManagerList(String manager) {
+		addStringToList(this.managerList, getShortTargetFlag( manager ));
+	}
+
+	// --------------------完整的标识要删除，并且也要删除只存储2段的标识
+	public void removeFromManagerList(String manager) {
+		removeStringFromList(this.managerList, manager);
+		removeStringFromList(this.managerList, getShortTargetFlag( manager ));
+	}
+
+	/**
+	 * 获取只取两段的组织、人员、群组名称distinguishedName标识，默认应该有3段，第一段变动比较频繁，不适合作为权限标识
+	 * @param distinguishedName
+	 * @return
+	 */
+	private String getShortTargetFlag(String distinguishedName) {
+		String target = null;
+		if( StringUtils.isNotEmpty( distinguishedName ) ){
+			String[] array = distinguishedName.split("@");
+			StringBuffer sb = new StringBuffer();
+			if( array.length == 3 ){
+				target = sb.append(array[1]).append("@").append(array[2]).toString();
+			}else if( array.length == 2 ){
+				//2段
+				target = sb.append(array[0]).append("@").append(array[1]).toString();
+			}else{
+				target = array[0];
+			}
+		}
+		return target;
+	}
+
+	private List<String> addStringToList(List<String> sourceList, String targetString) {
+		if (sourceList == null) {
+			sourceList = new ArrayList<>();
+		}
+		if (!sourceList.contains(targetString)) {
+			sourceList.add(targetString);
+		}
+		return sourceList;
+	}
+
+	private List<String> removeStringFromList(List<String> sourceList, String targetString ) {
+		if (sourceList == null) {
+			sourceList = new ArrayList<>();
+		}
+		if (sourceList.contains(targetString)) {
+			sourceList.remove(targetString);
+		}
+		return sourceList;
 	}
 
 	/**
