@@ -16,8 +16,8 @@ containerEntities = {
 		"com.x.teamwork.core.entity.TaskView", "com.x.teamwork.core.entity.SystemConfig",
 		"com.x.teamwork.core.entity.SystemConfigLobValue", "com.x.teamwork.core.entity.Review",
 		"com.x.teamwork.core.entity.BatchOperation", "com.x.teamwork.core.entity.TaskTag", 
-		"com.x.teamwork.core.entity.TaskTagRele", "com.x.teamwork.core.entity.Attachment",
-		"com.x.teamwork.core.entity.Chat", "com.x.teamwork.core.entity.ChatContent",
+		"com.x.teamwork.core.entity.TaskTagRele", "com.x.teamwork.core.entity.Attachment","com.x.teamwork.core.entity.ProjectConfig",
+		"com.x.teamwork.core.entity.Chat", "com.x.teamwork.core.entity.ChatContent","com.x.teamwork.core.entity.Priority",
 		"com.x.teamwork.core.entity.Dynamic", "com.x.teamwork.core.entity.DynamicDetail" }, storeJars = { "x_organization_core_entity",
 		"x_organization_core_express", "x_teamwork_core_entity" })
 public class x_teamwork_assemble_control extends Deployable {
