@@ -158,7 +158,8 @@ class V2AddSplit extends BaseAction {
 			ProcessingAttributes processingAttributes = new ProcessingAttributes();
 			processingAttributes.setType(ProcessingAttributes.TYPE_ADDSPLIT);
 			processingAttributes.setSeries(series);
-			processingAttributes.setForceJoinAtArrive(true);
+			// 不需要从arrived开始,已经设置好全部状态.
+			// processingAttributes.setForceJoinAtArrive(true);
 			WoId processingResp = ThisApplication.context().applications()
 					.putQuery(x_processplatform_service_processing.class,
 							Applications.joinQueryUri("work", id, "processing"), processingAttributes, work.getJob())
