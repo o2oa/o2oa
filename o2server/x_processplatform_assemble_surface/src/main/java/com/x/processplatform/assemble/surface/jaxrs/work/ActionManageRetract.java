@@ -42,10 +42,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class ActionManagerRetract extends BaseAction {
+class ActionManageRetract extends BaseAction {
 
 	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionManagerRetract.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionManageRetract.class);
 
 	private WorkLog workLog;
 	private TaskCompleted taskCompleted;
@@ -135,7 +135,6 @@ class ActionManagerRetract extends BaseAction {
 
 	}
 
-
 	private TaskCompleted findLastTaskCompleted(Business business) throws Exception {
 		List<TaskCompleted> list = business.entityManagerContainer().listEqualAndEqualAndEqual(TaskCompleted.class,
 				TaskCompleted.job_FIELDNAME, workLog.getJob(), TaskCompleted.activityToken_FIELDNAME,
@@ -143,7 +142,7 @@ class ActionManagerRetract extends BaseAction {
 		return list.stream().sorted(Comparator.comparing(TaskCompleted::getStartTime).reversed()).findFirst()
 				.orElse(null);
 	}
-	
+
 	private void retract() throws Exception {
 		Req req = new Req();
 		req.setTaskCompleted(taskCompleted.getId());
@@ -220,8 +219,6 @@ class ActionManagerRetract extends BaseAction {
 			throw new ExceptionRetract(this.work.getId());
 		}
 	}
-
-
 
 	public static class Req extends V2RetractWi {
 
