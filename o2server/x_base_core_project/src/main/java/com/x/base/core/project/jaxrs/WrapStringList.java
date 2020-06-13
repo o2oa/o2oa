@@ -7,6 +7,8 @@ import java.util.List;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 public class WrapStringList extends GsonPropertyObject {
 
 	public WrapStringList() {
@@ -26,19 +28,19 @@ public class WrapStringList extends GsonPropertyObject {
 	public void setValueList(List<String> valueList) {
 		this.valueList = valueList;
 	}
-	
-	public List<String> addValue( String value, Boolean unique ){
-		if( this.valueList == null ) {
+
+	public List<String> addValue(String value, Boolean unique) {
+		if (this.valueList == null) {
 			this.valueList = new ArrayList<>();
 		}
-		if( unique ) {
-			 if( !this.valueList.contains( value )) {
-				 this.valueList.add( value );
-			 }
-		}else {
-			this.valueList.add( value );
+		if (BooleanUtils.isTrue(unique)) {
+			if (!this.valueList.contains(value)) {
+				this.valueList.add(value);
+			}
+		} else {
+			this.valueList.add(value);
 		}
 		return this.valueList;
 	}
-	
+
 }
