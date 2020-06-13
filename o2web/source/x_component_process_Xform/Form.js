@@ -2261,27 +2261,39 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     addSplitWork: function (splitValue, trimExist, success, failure) {
         var data = { "splitValueList": splitValue, "trimExist": trimExist };
         if (this.options.readonly) {
-            this.workAction.addSplit(
-                function (json) {
-                    if (success) success(json);
-                }.bind(this),
-                function (xhr, text, error) {
-                    if (failure) failure(xhr, text, error);
-                },
-                this.businessData.work.id, data
-            );
+            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddSplit(this.businessData.work.id, data,function (json) {
+                if (success) success(json);
+            }.bind(this),
+            function (xhr, text, error) {
+                if (failure) failure(xhr, text, error);
+            });
+            // this.workAction.addSplit(
+            //     function (json) {
+            //         if (success) success(json);
+            //     }.bind(this),
+            //     function (xhr, text, error) {
+            //         if (failure) failure(xhr, text, error);
+            //     },
+            //     this.businessData.work.id, data
+            // );
         } else {
             this.saveFormData(
                 function (json) {
-                    this.workAction.addSplit(
-                        function (json) {
-                            if (success) success(json);
-                        }.bind(this),
-                        function (xhr, text, error) {
-                            if (failure) failure(xhr, text, error);
-                        },
-                        this.businessData.work.id, data
-                    );
+                    o2.Actions.load("x_processplatform_assemble_surface").WorkAction.V2AddSplit(this.businessData.work.id, data,function (json) {
+                        if (success) success(json);
+                    }.bind(this),
+                    function (xhr, text, error) {
+                        if (failure) failure(xhr, text, error);
+                    });
+                    // this.workAction.addSplit(
+                    //     function (json) {
+                    //         if (success) success(json);
+                    //     }.bind(this),
+                    //     function (xhr, text, error) {
+                    //         if (failure) failure(xhr, text, error);
+                    //     },
+                    //     this.businessData.work.id, data
+                    // );
                 }.bind(this),
                 function (xhr, text, error) {
                     if (failure) failure(xhr, text, error);
