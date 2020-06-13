@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -230,7 +231,7 @@ class V2Retract extends BaseAction {
 
 	private void deleteWorks(Business business, String job, List<String> workIds) throws Exception {
 		List<Work> os = business.entityManagerContainer().listEqualAndIn(Work.class, Work.job_FIELDNAME, job,
-				Work.id_FIELDNAME, workIds);
+				JpaObject.id_FIELDNAME, workIds);
 		for (Work o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
 		}
