@@ -137,9 +137,7 @@ class V2AddSplit extends BaseAction {
 						emc.persist(arrivedCopy, CheckPersistType.all);
 						emc.persist(fromCopy, CheckPersistType.all);
 						emc.commit();
-						// Processing processing = new Processing(wi);
-						// processing.processing(workCopy.getId());
-						wo.addValue(work.getId(), true);
+						wo.addValue(workCopy.getId(), true);
 					}
 					result.setData(wo);
 					return result;
@@ -150,21 +148,6 @@ class V2AddSplit extends BaseAction {
 		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
 	}
-
-	// private Wo wo(Business business, Work copy) throws Exception {
-	// Wo wo = business.entityManagerContainer().fetch(copy.getId(), Wo.copier);
-	// if (null != wo) {
-	// wo.setTaskList(this.woTasks(business, copy));
-	// return wo;
-	// }
-	// return null;
-	// }
-
-	// private List<WoTask> woTasks(Business business, Work copy) throws Exception {
-	// return business.entityManagerContainer().fetchEqual(Task.class,
-	// WoTask.copier, Task.work_FIELDNAME,
-	// copy.getId());
-	// }
 
 	public static class Wi extends V2AddSplitWi {
 
