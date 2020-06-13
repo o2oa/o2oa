@@ -14,6 +14,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2ChatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2IM
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2InstantMessageActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main.MainActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
@@ -54,6 +55,9 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                             val name = person.substring(0, person.indexOf("@"))
                             holder.setText(R.id.tv_o2_im_con_title, name)
                         }
+                    }else if(O2IM.conversation_type_group == t.type) {
+                        holder.setText(R.id.tv_o2_im_con_title, t.title )
+                                .setImageViewResource(R.id.image_o2_im_con_avatar, R.mipmap.group_default)
                     }
                     val unread = holder.getView<TextView>(R.id.tv_o2_im_con_unread_number)
                     if (t.unreadNumber > 0) {
@@ -127,6 +131,10 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                 openCreateSingleConversation()
                 return true
             }
+            R.id.menu_tribe_create -> {
+                openCreateTribeConversation()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -135,15 +143,23 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
         if (list.isEmpty()) {
             tv_null_conversation.visible()
             ll_o2_im_message_list.gone()
+            setUnreadNumber(0)
         } else {
             tv_null_conversation.gone()
             ll_o2_im_message_list.visible()
             cList.clear()
             cList.addAll(list)
             adapter.notifyDataSetChanged()
+            var allnumbers = 0
+            list.forEach { con ->
+                val number = con.unreadNumber ?: 0
+                allnumbers += number
+            }
+            setUnreadNumber(allnumbers)
         }
         mPresenter.getMyInstantMessageList()
     }
+
 
     override fun myInstantMessageList(instantList: List<InstantMessage>) {
          if (instantList.isNotEmpty()) {
@@ -183,6 +199,13 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
         }
     }
 
+
+    private fun setUnreadNumber(number: Int) {
+        if (activity is MainActivity) {
+            (activity as MainActivity).refreshUnreadNumber(number)
+        }
+    }
+
     private fun openCreateSingleConversation() {
         ActivityResult.of(activity)
                 .className(ContactPickerActivity::class.java)
@@ -199,5 +222,21 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
 
     private fun createSingleConversation(user: String) {
         mPresenter.createConversation("single", arrayListOf(user))
+    }
+
+    private fun openCreateTribeConversation() {
+        ActivityResult.of(activity)
+                .className(ContactPickerActivity::class.java)
+                .params(ContactPickerActivity.startPickerBundle(pickerModes = arrayListOf(ContactPickerActivity.personPicker), multiple = true))
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null && result.users.isNotEmpty()) {
+                        val a = arrayListOf<String>()
+                        a.addAll(result.users.map { it.distinguishedName })
+                        mPresenter.createConversation("group",  a)
+                    }else {
+                        XLog.debug("没有选择人员！！！！")
+                    }
+                }
     }
 }
