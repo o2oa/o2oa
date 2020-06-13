@@ -174,7 +174,7 @@ public class CalendarService {
 			//创建一个自己的默认日历
 			Calendar calendar = new Calendar();
 			calendar.setSource( "PERSON" );
-			calendar.setCreateor( personName );
+			calendar.setCreateor( "SYSTEM" );
 			calendar.setColor( "#1462be" );
 			calendar.setDescription( "我的默认日历" );
 			calendar.setId( Calendar.createId() );
