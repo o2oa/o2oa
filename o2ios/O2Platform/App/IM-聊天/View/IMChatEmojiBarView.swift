@@ -47,7 +47,7 @@ extension IMChatEmojiBarView: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width:SCREEN_WIDTH / 8, height: 52)
+        return CGSize(width:SCREEN_WIDTH / 10, height: 42)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

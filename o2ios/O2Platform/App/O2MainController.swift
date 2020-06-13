@@ -30,6 +30,10 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
     private let viewModel: OOLoginViewModel = {
         return OOLoginViewModel()
     }()
+    //获取消息数量
+    private lazy var imViewModel: IMViewModel = {
+        return IMViewModel()
+    }()
 
 
     override func viewDidLoad() {
@@ -42,13 +46,15 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         _initControllers()
         selectedIndex = 2
         currentIndex = 2
-        _loginIM()
+//        _loginIM()
         if O2IsConnect2Collect == false {
             //处理内部直连的时候推送的设备绑定
             O2JPushManager.shared.o2JPushBind()
         }
         //连接websocket
         self._startWebsocket()
+        //读取消息
+        self.getConversationList()
     }
 
     deinit {
@@ -71,19 +77,6 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
 
     //MARK: -- delegate
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-//        if currentIndex == 2 && tabBarController.selectedIndex == 2 {
-//            if tabBarController.selectedViewController is ZLNavigationController {
-//                (tabBarController.selectedViewController as! ZLNavigationController).viewControllers.forEach { (vc) in
-//                    if vc is MailViewController {
-//                        DDLogDebug("点击了首页 portal")
-//                        (vc as! MailViewController).loadDetailSubject()
-//                    }
-//                    if vc is MainTaskSecondViewController {
-//                        DDLogDebug("点击了首页index")
-//                    }
-//                }
-//            }
-//        }
         self.currentIndex = tabBarController.selectedIndex
     }
 
@@ -93,7 +86,6 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         let conversationVC = IMConversationListViewController()
         conversationVC.title = "消息"
         let messages = ZLNavigationController(rootViewController: conversationVC)
-
         messages.tabBarItem = UITabBarItem(title: "消息", image: UIImage(named: "icon_news_nor"), selectedImage: O2ThemeManager.image(for: "Icon.icon_news_pre"))
 
         //通讯录
@@ -148,28 +140,82 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         }
     }
 
-    private func _loginIM() {
-        viewModel.registerIM().then { (result) in
-            self.viewModel.loginIM().then({ (result) in
-                Log.debug(message: "IM登陆完成")
-            })
-        }.catch { (imError) in
-            let error = imError as! OOLoginError
-            switch error {
-            case .imRegisterFail(let myErr):
-                Log.debug(message: myErr.errorDescription!)
-                self.viewModel.loginIM().then({ (result) in
-                    Log.debug(message: "IM登陆完成")
-                }).catch({ (loginError) in
-                    Log.error(message: "im Login Error \(loginError)")
-                })
-                break
-            default:
-                break
+    
+    // MARK: - IM message
+    func getConversationList() {
+        imViewModel.myConversationList().then { (list) in
+            var n = 0
+            if !list.isEmpty {
+                for item in list {
+                    if let number = item.unreadNumber {
+                        n += number
+                    }
+                }
+            }
+            DispatchQueue.main.async {
+                DDLogDebug("消息数量: \(n)")
+                if n > 0 && n < 100 {
+                    self.showRedPoint(number: "\(n)")
+                } else if n >= 100 {
+                    self.showRedPoint(number: "99..")
+                }
             }
         }
     }
 
+    private func showRedPoint(number: String) {
+        self.viewControllers?.forEach({ (vc) in
+            if let zl = vc as? ZLNavigationController, zl.tabBarItem?.title == "消息" {
+                zl.tabBarItem.badgeValue = number
+            }
+        })
+    }
+    //消息模块未读消息数量加1
+    private func addUnreadNumber() {
+        self.viewControllers?.forEach({ (vc) in
+            if let zl = vc as? ZLNavigationController, zl.tabBarItem?.title == "消息" {
+                if let badge = zl.tabBarItem.badgeValue {
+                    if badge != "99.." {
+                        if let n = Int(string: badge) {
+                            let number = n + 1
+                            if number > 0 && number < 100 {
+                                self.showRedPoint(number: "\(number)")
+                            } else if number >= 100 {
+                                self.showRedPoint(number: "99..")
+                            }
+                        }
+                    }
+                }else {
+                    self.showRedPoint(number: "1")
+                }
+            }
+        })
+    }
+
+//    private func _loginIM() {
+//        viewModel.registerIM().then { (result) in
+//            self.viewModel.loginIM().then({ (result) in
+//                Log.debug(message: "IM登陆完成")
+//            })
+//        }.catch { (imError) in
+//            let error = imError as! OOLoginError
+//            switch error {
+//            case .imRegisterFail(let myErr):
+//                Log.debug(message: myErr.errorDescription!)
+//                self.viewModel.loginIM().then({ (result) in
+//                    Log.debug(message: "IM登陆完成")
+//                }).catch({ (loginError) in
+//                    Log.error(message: "im Login Error \(loginError)")
+//                })
+//                break
+//            default:
+//                break
+//            }
+//        }
+//    }
+
+    
+    // MARK: - app update 
     private func checkAppVersion() {
         O2VersionManager.shared.checkAppUpdate { (info, error) in
             if let iosInfo = info {
@@ -252,9 +298,10 @@ extension O2MainController: WebSocketDelegate {
                                 DDLogDebug("接收到im消息 发送通知。。")
                                 NotificationCenter.post(customeNotification: OONotification.websocket, object: messageInfo.body)
                             }
+                            self.addUnreadNumber()
                         }
                     }
-                } catch {  }
+                } catch { }
             }
             break
         case .connected(let headers):

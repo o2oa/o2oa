@@ -15,6 +15,8 @@ enum CommunicateAPI {
     case myConversationList
     case msgListByPaging(Int, Int, String)
     case sendMsg(IMMessageInfo)
+    case readConversation(String)
+    case instantMessageList(Int)
     
     
 }
@@ -48,15 +50,21 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/im/msg/list/\(page)/size/\(size)"
         case .sendMsg(_):
             return "/jaxrs/im/msg"
+        case .readConversation(let conversationId):
+            return "/jaxrs/im/conversation/\(conversationId)/read"
+        case .instantMessageList(let count):
+            return "/jaxrs/instant/list/currentperson/noim/count/\(count)/desc"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .myConversationList:
+        case .myConversationList, .instantMessageList(_):
             return .get
         case .msgListByPaging(_, _, _), .sendMsg(_):
             return .post
+        case .readConversation(_):
+            return .put
         }
     }
     
@@ -66,7 +74,7 @@ extension CommunicateAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .myConversationList:
+        case .myConversationList, .instantMessageList(_), .readConversation(_):
             return .requestPlain
         case .msgListByPaging(_, _, let conversationId):
             let form = IMMessageRequestForm()

@@ -7,7 +7,7 @@
 //
 
 import Promises
-
+import CocoaLumberjack
 
 class IMViewModel: NSObject {
     override init() {
@@ -19,6 +19,22 @@ class IMViewModel: NSObject {
 }
 
 extension IMViewModel {
+    
+    //阅读会话
+    func readConversation(conversationId: String?) {
+        guard let id = conversationId else {
+            DDLogError("阅读会话失败, 传入id为空")
+            return
+        }
+        self.communicateAPI.request(.readConversation(id), completion: {result in
+            let response = OOResult<BaseModelClass<OOCommonIdModel>>(result)
+            if response.isResultSuccess() {
+                DDLogDebug("阅读当前会话成功！")
+            }else {
+                DDLogError("阅读会话失败！")
+            }
+        })
+    }
 
     //发送消息
     func sendMsg(msg: IMMessageInfo) -> Promise<Bool> {
@@ -60,6 +76,30 @@ extension IMViewModel {
         return Promise { fulfill, reject in
             self.communicateAPI.request(.msgListByPaging(page, 40, conversationId), completion: { result in
                     let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
+                    if response.isResultSuccess() {
+                        if let list = response.model?.data {
+                            //列表翻转
+                            let rList = list.sorted { (f, s) -> Bool in
+                                if let ft = f.createTime, let st = s.createTime {
+                                    return ft.toDate(formatter: "yyyy-MM-dd HH:mm:ss") < st.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+                                }
+                                return true
+                            }
+                            fulfill(rList)
+                        } else {
+                            reject(OOAppError.apiEmptyResultError)
+                        }
+                    } else {
+                        reject(response.error!)
+                    }
+                })
+        }
+    }
+    
+    func getInstantMsgList() -> Promise<[InstantMessage]> {
+        return Promise { fulfill, reject in
+            self.communicateAPI.request(.instantMessageList(100), completion: { result in
+                    let response = OOResult<BaseModelClass<[InstantMessage]>>(result)
                     if response.isResultSuccess() {
                         if let list = response.model?.data {
                             //列表翻转

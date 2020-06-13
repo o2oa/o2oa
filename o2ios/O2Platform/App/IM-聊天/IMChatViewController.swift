@@ -74,6 +74,27 @@ class IMChatViewController: UIViewController {
         }
         //获取聊天数据
         self.loadMsgList(page: page)
+        //阅读
+        self.viewModel.readConversation(conversationId: self.conversation?.id)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessageFromWs(notice:)), name: OONotification.websocket.notificationName, object: nil)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    @objc private func receiveMessageFromWs(notice: Notification) {
+        DDLogDebug("接收到websocket im 消息")
+        if let message = notice.object as? IMMessageInfo {
+            if message.conversationId == self.conversation?.id {
+                self.chatMessageList.append(message)
+                self.scrollMessageToBottom()
+                self.viewModel.readConversation(conversationId: self.conversation?.id)
+            }
+        }
     }
 
     //获取消息
@@ -131,6 +152,7 @@ class IMChatViewController: UIViewController {
         self.viewModel.sendMsg(msg: message)
             .then { (result)  in
                 DDLogDebug("发送消息成功 \(result)")
+                self.viewModel.readConversation(conversationId: self.conversation?.id)
         }.catch { (error) in
             DDLogError(error.localizedDescription)
             self.showError(title: "发送消息失败!")

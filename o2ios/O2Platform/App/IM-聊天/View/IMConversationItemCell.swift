@@ -16,20 +16,32 @@ class IMConversationItemCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
-    
+    @IBOutlet weak var unreadNumberLabel: UILabel!
     @IBOutlet weak var emojiImg: UIImageView!
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
+    
+    
+    func setInstantContent(item: InstantMessage) {
+        self.avatarImg.image = UIImage(named: "icon_email")
+        self.nameLabel.text = "通知消息"
+        self.messageLabel.isHidden = false
+        self.messageLabel.text = item.title
+        if let time = item.createTime {
+            let date = time.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+            self.timeLabel.text = date.friendlyTime()
+        }
+        self.emojiImg.isHidden = true
+        self.unreadNumberLabel.isHidden = true
+    }
+
     
     func bindConversation(conversation: IMConversationInfo) {
         //avatar name
@@ -75,16 +87,24 @@ class IMConversationItemCell: UITableViewCell {
             }else if body.type == o2_im_msg_type_emoji {
                 self.messageLabel.isHidden = true
                 self.emojiImg.isHidden = false
-//                self.emojiImg.image = UIImage(named: "setting_myCRM")
-                //todo emoji表情导入
                 let bundle = Bundle().o2EmojiBundle(anyClass: IMConversationItemCell.self)
                 let path = o2ImEmojiPath(emojiBody: body.body!)
-                DDLogDebug("path: \(path)")
                 self.emojiImg.image = UIImage(named: path, in: bundle, compatibleWith: nil)
             }else {
                 self.messageLabel.isHidden = true
                 self.emojiImg.isHidden = true
             }
+        }
+        //unread number
+        let number = conversation.unreadNumber ?? 0
+        if number > 0 && number < 100 {
+            self.unreadNumberLabel.text = "\(number)"
+            self.unreadNumberLabel.isHidden = false
+        }else if number >= 100 {
+            self.unreadNumberLabel.text = "99.."
+            self.unreadNumberLabel.isHidden = false
+        }else {
+            self.unreadNumberLabel.isHidden = true
         }
         
     }

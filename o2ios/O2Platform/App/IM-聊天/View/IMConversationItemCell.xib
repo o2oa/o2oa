@@ -42,7 +42,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="这里是消息" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I3j-lM-VtV" customClass="IMCon">
-                        <rect key="frame" x="70" y="37" width="71.5" height="17"/>
+                        <rect key="frame" x="70" y="37" width="245" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
@@ -61,17 +61,36 @@
                             <constraint firstAttribute="height" constant="1" id="szG-5G-RRm"/>
                         </constraints>
                     </view>
+                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="99.." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Ff-Wo-dWM">
+                        <rect key="frame" x="34" y="10" width="20" height="20"/>
+                        <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="XU3-CN-tXR"/>
+                            <constraint firstAttribute="height" constant="20" id="Yfh-b5-N7U"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" weight="thin" pointSize="11"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="I3j-lM-VtV" secondAttribute="bottom" constant="10" id="0mD-L5-TRo"/>
                     <constraint firstAttribute="trailing" secondItem="ckc-YE-j5q" secondAttribute="trailing" id="2LG-5s-Yui"/>
                     <constraint firstItem="pgV-nP-wwV" firstAttribute="leading" secondItem="i51-Sc-dds" secondAttribute="trailing" constant="16" id="4Ao-s1-kAM"/>
                     <constraint firstItem="I3j-lM-VtV" firstAttribute="leading" secondItem="i51-Sc-dds" secondAttribute="trailing" constant="16" id="BFD-a2-hUs"/>
+                    <constraint firstItem="9Ff-Wo-dWM" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Frj-Mc-oGy"/>
                     <constraint firstItem="URQ-HD-MDc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="IES-nF-jpE"/>
                     <constraint firstAttribute="trailing" secondItem="URQ-HD-MDc" secondAttribute="trailing" constant="5" id="Jeh-u4-Tnd"/>
+                    <constraint firstAttribute="trailing" secondItem="I3j-lM-VtV" secondAttribute="trailing" constant="5" id="PJD-Jd-y3N"/>
                     <constraint firstItem="bOp-mm-qCN" firstAttribute="leading" secondItem="i51-Sc-dds" secondAttribute="trailing" constant="12" id="RCn-dh-ggD"/>
                     <constraint firstItem="i51-Sc-dds" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Z9Q-tH-mWi"/>
                     <constraint firstAttribute="bottom" secondItem="i51-Sc-dds" secondAttribute="bottom" constant="10" id="Zew-6c-hWd"/>
+                    <constraint firstItem="9Ff-Wo-dWM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="34" id="cM0-LZ-1iA"/>
                     <constraint firstItem="bOp-mm-qCN" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="iUq-ik-5sX"/>
                     <constraint firstAttribute="bottom" secondItem="ckc-YE-j5q" secondAttribute="bottom" id="nX2-Nw-uiy"/>
                     <constraint firstItem="ckc-YE-j5q" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="66" id="t0M-PG-f03"/>
@@ -86,6 +105,7 @@
                 <outlet property="messageLabel" destination="I3j-lM-VtV" id="6z4-xX-xTv"/>
                 <outlet property="nameLabel" destination="bOp-mm-qCN" id="iqM-q2-qcC"/>
                 <outlet property="timeLabel" destination="URQ-HD-MDc" id="NbV-D2-ATA"/>
+                <outlet property="unreadNumberLabel" destination="9Ff-Wo-dWM" id="z3x-wN-Bfv"/>
             </connections>
             <point key="canvasLocation" x="-65.217391304347828" y="-31.473214285714285"/>
         </tableViewCell>

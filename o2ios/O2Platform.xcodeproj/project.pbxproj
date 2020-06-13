@@ -130,6 +130,8 @@
 		B1489CAE2491FF13009EE9FD /* IMChatEmojiBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */; };
 		B1489CB12492045D009EE9FD /* IMChatEmojiItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */; };
 		B1489CB22492045D009EE9FD /* IMChatEmojiItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */; };
+		B1489CB624935104009EE9FD /* IMInstantMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */; };
+		B1489CB724935104009EE9FD /* IMInstantMessageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -1455,6 +1457,8 @@
 		B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiBarView.xib; sourceTree = "<group>"; };
 		B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatEmojiItemCell.swift; sourceTree = "<group>"; };
 		B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiItemCell.xib; sourceTree = "<group>"; };
+		B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMInstantMessageViewController.swift; sourceTree = "<group>"; };
+		B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMInstantMessageViewController.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -2582,6 +2586,8 @@
 				B1173A692488D4AD005075F0 /* O2IM.swift */,
 				B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */,
 				B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */,
+				B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */,
+				B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */,
 			);
 			path = "IM-聊天";
 			sourceTree = "<group>";
@@ -5643,6 +5649,7 @@
 				E46E6C6F1DD41F5D00AB7561 /* ZSSclearstyle.png in Resources */,
 				E46E6CB11DD41F5D00AB7561 /* ZSSunorderedlist.png in Resources */,
 				E40E246D20B68AF6009F8BE7 /* OOAttandanceTotalHeaderView.xib in Resources */,
+				B1489CB724935104009EE9FD /* IMInstantMessageViewController.xib in Resources */,
 				E4C24C1720844F5200E426B0 /* yh_image_no_picked@3x.png in Resources */,
 				E46E6C7E1DD41F5D00AB7561 /* ZSSh5@2x.png in Resources */,
 				E46E6C871DD41F5D00AB7561 /* ZSSindent.png in Resources */,
@@ -5988,6 +5995,7 @@
 				E4CB27721E78D5B1004A7ACB /* UINavigationBar+Flat.swift in Sources */,
 				E45DA90C1DAF76C800E0735D /* SCommonViewController.swift in Sources */,
 				B108F401229E34D400778050 /* LBXScanWrapper.swift in Sources */,
+				B1489CB624935104009EE9FD /* IMInstantMessageViewController.swift in Sources */,
 				E40C41F21E83715C00568805 /* ZLUISearchBar.swift in Sources */,
 				E4B888791D9D48F1002E1A46 /* Person.swift in Sources */,
 				E4C24BA820844F3C00E426B0 /* JCChatViewController.swift in Sources */,
