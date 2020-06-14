@@ -20,6 +20,28 @@ class IMViewModel: NSObject {
 
 extension IMViewModel {
     
+    //创建会话 @param type: single group
+    func createConversation(type: String, users: [String]) -> Promise<IMConversationInfo> {
+        let conversation = IMConversationInfo()
+        conversation.type = type
+        conversation.personList = users
+        return Promise  { fulfill, reject in
+            self.communicateAPI.request(.createConversation(conversation), completion: { result in
+                let response = OOResult<BaseModelClass<IMConversationInfo>>(result)
+                if response.isResultSuccess() {
+                    if let info = response.model?.data {
+                        fulfill(info)
+                    } else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                } else {
+                    reject(response.error!)
+                }
+            })
+        }
+        
+    }
+    
     //阅读会话
     func readConversation(conversationId: String?) {
         guard let id = conversationId else {

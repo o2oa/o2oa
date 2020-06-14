@@ -70,6 +70,7 @@ class IMConversationItemCell: UITableViewCell {
             }
         }else {//todo 群组头像 ?
             self.nameLabel.text = conversation.title
+            self.avatarImg.image = UIImage(named: "group_default")
         }
         //time
         if let time = conversation.lastMessage?.createTime {

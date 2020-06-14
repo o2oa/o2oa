@@ -17,6 +17,7 @@ enum CommunicateAPI {
     case sendMsg(IMMessageInfo)
     case readConversation(String)
     case instantMessageList(Int)
+    case createConversation(IMConversationInfo)
     
     
 }
@@ -54,6 +55,8 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/im/conversation/\(conversationId)/read"
         case .instantMessageList(let count):
             return "/jaxrs/instant/list/currentperson/noim/count/\(count)/desc"
+        case .createConversation(_):
+            return "/jaxrs/im/conversation"
         }
     }
     
@@ -61,7 +64,7 @@ extension CommunicateAPI: TargetType {
         switch self {
         case .myConversationList, .instantMessageList(_):
             return .get
-        case .msgListByPaging(_, _, _), .sendMsg(_):
+        case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_):
             return .post
         case .readConversation(_):
             return .put
@@ -82,6 +85,8 @@ extension CommunicateAPI: TargetType {
             return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
         case .sendMsg(let msg):
             return .requestParameters(parameters: msg.toJSON()!, encoding: JSONEncoding.default)
+        case .createConversation(let conv):
+            return .requestParameters(parameters: conv.toJSON()!, encoding: JSONEncoding.default)
         }
     }
     

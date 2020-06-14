@@ -29,14 +29,17 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="姓名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOp-mm-qCN">
-                        <rect key="frame" x="66" y="10" width="154" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="姓名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bOp-mm-qCN">
+                        <rect key="frame" x="66" y="10" width="153" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="几分钟前" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="URQ-HD-MDc">
-                        <rect key="frame" x="257" y="10" width="58" height="17"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2020-10-23" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="URQ-HD-MDc">
+                        <rect key="frame" x="231" y="10" width="84" height="17"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="84" id="jM2-ye-nzP"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
@@ -93,6 +96,7 @@
                     <constraint firstItem="9Ff-Wo-dWM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="34" id="cM0-LZ-1iA"/>
                     <constraint firstItem="bOp-mm-qCN" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="iUq-ik-5sX"/>
                     <constraint firstAttribute="bottom" secondItem="ckc-YE-j5q" secondAttribute="bottom" id="nX2-Nw-uiy"/>
+                    <constraint firstItem="URQ-HD-MDc" firstAttribute="leading" secondItem="bOp-mm-qCN" secondAttribute="trailing" constant="12" id="obm-on-urU"/>
                     <constraint firstItem="ckc-YE-j5q" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="66" id="t0M-PG-f03"/>
                     <constraint firstAttribute="bottom" secondItem="pgV-nP-wwV" secondAttribute="bottom" constant="8" id="tXP-Lu-4aH"/>
                     <constraint firstItem="i51-Sc-dds" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="xep-37-rIl"/>

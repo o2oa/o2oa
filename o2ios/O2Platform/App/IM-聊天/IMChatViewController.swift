@@ -61,16 +61,20 @@ class IMChatViewController: UIViewController {
         self.messageInputView.backgroundColor = base_gray_color
 
         //标题
-        if let c = self.conversation {
-            var person = ""
-            c.personList?.forEach({ (p) in
-                if  p != O2AuthSDK.shared.myInfo()?.distinguishedName {
-                    person = p
+        if self.conversation?.type == o2_im_conversation_type_single {
+            if let c = self.conversation {
+                var person = ""
+                c.personList?.forEach({ (p) in
+                    if  p != O2AuthSDK.shared.myInfo()?.distinguishedName {
+                        person = p
+                    }
+                })
+                if !person.isEmpty {
+                    self.title = person.split("@").first ?? ""
                 }
-            })
-            if !person.isEmpty {
-                self.title = person.split("@").first ?? ""
             }
+        }else {
+            self.title = self.conversation?.title
         }
         //获取聊天数据
         self.loadMsgList(page: page)

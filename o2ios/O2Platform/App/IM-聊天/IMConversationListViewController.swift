@@ -12,7 +12,7 @@ import CocoaLumberjack
 class IMConversationListViewController: UIViewController {
 
     fileprivate lazy var tableview: UITableView = {
-        var tableview = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: self.view.height))
+        var tableview = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.width, height: self.view.height - TAB_BAR_HEIGHT))
         tableview.delegate = self
         tableview.dataSource = self
         tableview.backgroundColor = UIColor(netHex: 0xe8edf3)
@@ -43,6 +43,9 @@ class IMConversationListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: UIImage(named: "add"), style: .plain, target: self, action: #selector(addConversation))]
+        
         view.addSubview(tableview)
         view.addSubview(emptyView)
 
@@ -127,7 +130,61 @@ class IMConversationListViewController: UIViewController {
             self.navigationController?.tabBarItem.badgeValue = nil
         }
     }
+    
+    
+    @objc private func addConversation() {
+        self.showSheetAction(title: nil, message: nil, actions: [
+            UIAlertAction(title: "创建单聊", style: .default, handler: { (action) in
+                self.createSingleConversation()
+            }),
+            UIAlertAction(title: "创建群聊", style: .default, handler: { (action) in
+                self.createGroupConversation()
+            })
+        ])
+    }
 
+    private func createSingleConversation() {
+        self.showContactPicker(modes: [.person], callback: { (result) in
+            if let users = result.users, users.count > 0 {
+                self.viewModel.createConversation(type: o2_im_conversation_type_single, users: [users[0].distinguishedName!]).then { (con) in
+                    self.createConversationSuccess(conv: con)
+                }.catch { (err) in
+                    self.showError(title: "创建单聊失败, \(err.localizedDescription)")
+                }
+                
+            }
+        }, multiple: false)
+    }
+    
+    private func createGroupConversation() {
+        self.showContactPicker(modes: [.person], callback: { (result) in
+            if let users = result.users, users.count > 0 {
+                let array = users.map { (item) -> String in
+                    item.distinguishedName!
+                }
+                self.viewModel.createConversation(type: o2_im_conversation_type_group, users: array).then { (conv) in
+                    self.createConversationSuccess(conv: conv)
+                }.catch { (err) in
+                    self.showError(title: "创建群聊失败, \(err.localizedDescription)")
+                }
+            }
+        })
+    }
+    
+    //创建会话成功 打开聊天界面
+    private func createConversationSuccess(conv: IMConversationInfo) {
+        if !self.conversationList.contains(where: { (info) -> Bool in
+            return info.id == conv.id
+        }) {
+            self.conversationList.append(conv)
+            DispatchQueue.main.async {
+                self.tableview.reloadData()
+            }
+        }
+        let chatView = IMChatViewController()
+        chatView.conversation = conv
+        self.navigationController?.pushViewController(chatView, animated: true)
+    }
 
 }
 

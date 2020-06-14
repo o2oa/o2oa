@@ -13,6 +13,7 @@ let o2_im_ws_heartbeat = "heartbeat"
 
 
 let o2_im_conversation_type_single = "single"
+let o2_im_conversation_type_group = "group"
 
 let o2_im_msg_type_text = "text"
 let o2_im_msg_type_emoji = "emoji"

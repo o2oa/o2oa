@@ -36,6 +36,8 @@ let safeAreaTopHeight:CGFloat = (iPhoneX ? 88 : 64)
 let IOS11_TOP_STATUSBAR_HEIGHT = iPhoneX ? 44 : 20
 //底部安全高度
 let IPHONEX_BOTTOM_SAFE_HEIGHT: CGFloat = 34.0
+//uiTabBar 高度
+let TAB_BAR_HEIGHT: CGFloat  = iPhoneX ? (49 + 34) : 49
 
 
 
