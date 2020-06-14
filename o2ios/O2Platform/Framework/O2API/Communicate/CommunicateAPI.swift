@@ -14,6 +14,10 @@ import O2OA_Auth_SDK
 enum CommunicateAPI {
     case myConversationList
     case msgListByPaging(Int, Int, String)
+    case sendMsg(IMMessageInfo)
+    case readConversation(String)
+    case instantMessageList(Int)
+    case createConversation(IMConversationInfo)
     
     
 }
@@ -45,15 +49,25 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/im/conversation/list/my"
         case .msgListByPaging(let page, let size, _):
             return "/jaxrs/im/msg/list/\(page)/size/\(size)"
+        case .sendMsg(_):
+            return "/jaxrs/im/msg"
+        case .readConversation(let conversationId):
+            return "/jaxrs/im/conversation/\(conversationId)/read"
+        case .instantMessageList(let count):
+            return "/jaxrs/instant/list/currentperson/noim/count/\(count)/desc"
+        case .createConversation(_):
+            return "/jaxrs/im/conversation"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .myConversationList:
+        case .myConversationList, .instantMessageList(_):
             return .get
-        case .msgListByPaging(_, _, _):
+        case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_):
             return .post
+        case .readConversation(_):
+            return .put
         }
     }
     
@@ -63,12 +77,16 @@ extension CommunicateAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .myConversationList:
+        case .myConversationList, .instantMessageList(_), .readConversation(_):
             return .requestPlain
         case .msgListByPaging(_, _, let conversationId):
             let form = IMMessageRequestForm()
             form.conversationId = conversationId
             return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
+        case .sendMsg(let msg):
+            return .requestParameters(parameters: msg.toJSON()!, encoding: JSONEncoding.default)
+        case .createConversation(let conv):
+            return .requestParameters(parameters: conv.toJSON()!, encoding: JSONEncoding.default)
         }
     }
     

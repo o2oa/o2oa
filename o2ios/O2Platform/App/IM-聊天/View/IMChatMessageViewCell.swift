@@ -26,9 +26,59 @@ class IMChatMessageViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        // Configure the view for the selected state
+    }
+   
+    //普通通知消息
+    func setInstantContent(item: InstantMessage) {
+        if let time = item.createTime {
+            let date = time.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+            self.timeLabel.text = date.friendlyTime()
+        }
+        if let msg = item.title {
+            textMsgRender(msg: msg)
+        }
+        if let type = item.type {
+            if type.starts(with: "task_") {
+                self.avatarImage.image = UIImage(named: "icon_daiban")
+                self.titleLabel.text = "待办消息"
+            }else if type.starts(with: "taskCompleted_") {
+                self.avatarImage.image = UIImage(named: "icon_taskcompleted")
+                self.titleLabel.text = "已办消息"
+            }else if type.starts(with: "read_") {
+                self.avatarImage.image = UIImage(named: "icon_read")
+                self.titleLabel.text = "待阅消息"
+            }else if type.starts(with: "readCompleted_") {
+                self.avatarImage.image = UIImage(named: "icon_readcompleted")
+                self.titleLabel.text = "已阅消息"
+            }else if type.starts(with: "review_") || type.starts(with: "work_") || type.starts(with: "process_") {
+                self.avatarImage.image = UIImage(named: "icon_daiban")
+                self.titleLabel.text = "工作消息"
+            }else if type.starts(with: "meeting_") {
+                self.avatarImage.image = UIImage(named: "icon_meeting")
+                self.titleLabel.text = "会议消息"
+            }else if type.starts(with: "attachment_") {
+                self.avatarImage.image = UIImage(named: "icon_yunpan")
+                self.titleLabel.text = "云盘消息"
+            }else if type.starts(with: "calendar_") {
+                self.avatarImage.image = UIImage(named: "icon_calendar")
+                self.titleLabel.text = "日历消息"
+            }else if type.starts(with: "cms_") {
+                self.avatarImage.image = UIImage(named: "icon_cms")
+                self.titleLabel.text = "信息中心消息"
+            }else if type.starts(with: "bbs_") {
+                self.avatarImage.image = UIImage(named: "icon_bbs")
+                self.titleLabel.text = "论坛消息"
+            }else if type.starts(with: "mind_") {
+                self.avatarImage.image = UIImage(named: "icon_mindMap")
+                self.titleLabel.text = "脑图消息"
+            }else {
+                self.avatarImage.image = UIImage(named: "icon_email")
+                self.titleLabel.text = "其他消息"
+            }
+        }
     }
     
+    //聊天消息
     func setContent(item: IMMessageInfo) {
         //time
         if let time = item.createTime {
@@ -102,7 +152,6 @@ class IMChatMessageViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(label)
         let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
-//        let bottom = NSLayoutConstraint(item: label.superview! , attribute: .bottom, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 10)
         let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
         let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
         NSLayoutConstraint.activate([top, left, right])

@@ -12,9 +12,7 @@ class IMChatMessageSendViewCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var avatarImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
-     
     @IBOutlet weak var messageBackgroundView: UIView!
-    
     @IBOutlet weak var messageBgWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBgHeight: NSLayoutConstraint!
     
@@ -102,7 +100,6 @@ class IMChatMessageSendViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(label)
         let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
-//        let bottom = NSLayoutConstraint(item: label.superview! , attribute: .bottom, relatedBy: .equal, toItem: label, attribute: .bottom, multiplier: 1, constant: 10)
         let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
         let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
         NSLayoutConstraint.activate([top, left, right])
@@ -115,7 +112,6 @@ class IMChatMessageSendViewCell: UITableViewCell {
         label.numberOfLines = 0
         label.lineBreakMode = .byCharWrapping
         label.preferredMaxLayoutWidth = size.width
-        
         return label
     }
     

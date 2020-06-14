@@ -276,34 +276,36 @@ extension Date {
     func friendlyTime() -> String {
         var returnTimeString = ""
         let now = Date()
-        if now.haveSameYearMonthDayAndHour(self) {
-            let gap = now.minute - self.minute
-            returnTimeString = "\(gap)分钟前"
-        }else if now.haveSameYearMonthAndDay(self) {
-            let gap = now.hour - self.hour
-            returnTimeString = "\(gap)小时前"
-        }else if now.haveSameYearAndMonth(self) {
-            let gap = now.day - self.day
-            if gap == 1 {
-                returnTimeString = "昨天"
-            }else if gap == 2 {
-                returnTimeString = "前天"
-            }else {
-                returnTimeString = "\(gap)天前"
-            }
-        }else if now.haveSameYear(self) {
-            let days = now.betweenDays(self)
-            if days > 30 {
-                let gap = now.month - self.month
-                if gap < 4 {
-                    returnTimeString = "\(gap)个月前"
+        let millisecond = CLongLong(round(self.timeIntervalSince1970*1000))
+        let nowMillisecond = CLongLong(round(now.timeIntervalSince1970*1000))
+        let lt = millisecond / 86400000
+        let ct = nowMillisecond / 86400000
+        let days = Int(ct - lt);
+        if (days == 0) {
+            let hour = Int((nowMillisecond - millisecond) / 3600000)
+            if (hour == 0) {
+                let minuts = Int((nowMillisecond - millisecond) / 60000)
+                if minuts > 1 {
+                    returnTimeString = "\(minuts)分钟前"
                 }else {
-                    returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
+                    returnTimeString = "刚刚"
                 }
             }else {
-               returnTimeString = "\(days)天前"
+                returnTimeString = "\(hour)小时前"
             }
-        }else {
+        }else if (days == 1) {
+            returnTimeString = "昨天";
+        } else if (days == 2) {
+            returnTimeString = "前天 ";
+        } else if (days > 2 && days < 31) {
+            returnTimeString = "\(days)天前";
+        } else if (days >= 31 && days <= 2 * 31) {
+            returnTimeString = "一个月前";
+        } else if (days > 2 * 31 && days <= 3 * 31) {
+            returnTimeString = "2个月前";
+        } else if (days > 3 * 31 && days <= 4 * 31) {
+            returnTimeString = "3个月前";
+        } else {
             returnTimeString = self.formatterDate(formatter: "yyyy-MM-dd")
         }
         return returnTimeString

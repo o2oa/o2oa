@@ -81,3 +81,23 @@ class WsMessage: NSObject, DataModel {
 
     }
 }
+
+//其他消息
+class InstantMessage: NSObject, DataModel {
+    @objc var id: String?
+    @objc var title: String?
+    @objc var type: String?
+    @objc var body: String?
+    @objc var consumerList: [String]?
+    @objc var person: String?
+    var consumed: Bool?
+    @objc var createTime: String?
+    @objc var updateTime: String?
+    
+    required override init() { }
+
+    func mapping(mapper: HelpingMapper) {
+
+    }
+
+}

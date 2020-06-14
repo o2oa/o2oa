@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="IMChatEmojiItemCell" customModule="O2Platform" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="52" height="52"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="52" height="52"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JXV-Hl-6Xb">
+                        <rect key="frame" x="10" y="10" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="32" id="i41-s0-3eR"/>
+                            <constraint firstAttribute="width" constant="32" id="x6M-1W-tyM"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="JXV-Hl-6Xb" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="i60-Uy-DQL"/>
+                <constraint firstItem="JXV-Hl-6Xb" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="ssV-XP-TUi"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="52" height="62"/>
+            <connections>
+                <outlet property="emojiImage" destination="JXV-Hl-6Xb" id="b2g-I1-yjf"/>
+            </connections>
+            <point key="canvasLocation" x="146.37681159420291" y="156.02678571428569"/>
+        </collectionViewCell>
+    </objects>
+</document>
