@@ -111,7 +111,7 @@ MWF.xDesktop.Authentication = new Class({
         });
         delete opt.width;
         delete opt.height;
-        if (this.options.popupStyle_signup) opt.popupStyle = this.options.popupStyle_signup
+        if (this.options.popupStyle_signup) opt.popupStyle = this.options.popupStyle_signup;
         var form = new MWF.xDesktop.Authentication.SignUpForm(this, {}, opt, this.popupPara);
         form.create();
     },
@@ -122,10 +122,21 @@ MWF.xDesktop.Authentication = new Class({
                 this.fireEvent("postOk", json)
             }.bind(this)
         });
-        if (this.options.popupStyle_password) opt.popupStyle = this.options.popupStyle_password
+        if (this.options.popupStyle_password) opt.popupStyle = this.options.popupStyle_password;
         // delete opt.width;
         // delete opt.height;
         var form = new MWF.xDesktop.Authentication.ResetPasswordForm(this, {}, opt, this.popupPara);
+        form.create();
+    },
+    openChangePasswordForm: function (options, callback) {
+        var opt = Object.merge(this.popupOptions || {}, options || {}, {
+            onPostOk: function (json) {
+                if (callback) callback(json);
+                this.fireEvent("postOk", json)
+            }.bind(this)
+        });
+        // if (this.options.popupStyle_password) opt.popupStyle = this.options.popupStyle_password;
+        var form = new MWF.xDesktop.Authentication.ChangePasswordForm(this, {}, opt, this.popupPara);
         form.create();
     }
 
@@ -1010,6 +1021,12 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.explorer.openResetPasswordForm();
         this.close();
     },
+    gotoChangePassword : function(){ //密码过期
+        this.explorer.openChangePasswordForm( null, function(){
+            this.explorer.loadLogin();
+        }.bind(this));
+        this.close();
+    },
     checkBindStatus: function () {
         this.bindStatusInterval = setInterval(function () {
             this.actions.checkBindStatus(this.bindMeta, function (json) {
@@ -1062,8 +1079,11 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         var data = this.form.getResult(true, ",", true, false, true);
         if (data) {
             this._ok(data, function (json) {
+                debugger;
                 if (json.type === "error") {
                     if (this.app) this.app.notice(json.message, "error");
+                } else if( json.data.passwordExpired ){ //密码过期
+                    this.gotoChangePassword();
                 } else {
                     this._close();
                     if (this.formMaskNode) this.formMaskNode.destroy();
@@ -1583,6 +1603,7 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
     }
 });
 
+//忘记密码
 MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
@@ -2032,5 +2053,252 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
     gotoSignup: function () {
         this.explorer.openSignUpForm();
         this.close();
+    }
+});
+
+//密码过期
+MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "popupStyle": "o2platform",
+        "width": "650",
+        "height": "480",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon": true,
+        "hasTopContent": true,
+        "hasBottom": false,
+        "hasScroll": false,
+        "hasMark": false,
+        "title": MWF.LP.authentication.ChangePasswordFormTitle,
+        "draggable": true,
+        "closeAction": true
+    },
+    _createTableContent: function () {
+        var self = this;
+
+        this.actions = MWF.Actions.get("x_organization_assemble_personal");
+
+        var html = "<table width='100%' bordr='0' cellpadding='0' cellspacing='0' styles='formTable'>" +
+            "<tr><td styles='formTableValueTop20' item='password'></td></tr>" +
+            "<tr><td styles='formTableValueTop20' item='newPassword'></td>" +
+            "<tr><td styles='formTableValue'><div item='passwordTip'></div></td></tr>" +
+            "<tr><td styles='formTableValueTop20' item='confirmPassword'></td>" +
+            "<tr><td styles='formTableValueTop20' item='submitAction'></td></tr>" +
+            "<tr><td><div item='forgetPassword'></div><div item='gotoLoginAction'></div></td></tr>"+
+            "<tr><td  styles='formTableValue' item='errorArea'></td></tr>" +
+            "</table>";
+
+        this.formTableArea.set("html", html);
+
+        this.errorArea = this.formTableArea.getElement("[item=errorArea]");
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: this.options.popupStyle,
+                verifyType: "single",	//batch一起校验，或alert弹出
+                isEdited: this.isEdited || this.isNew,
+                onPostLoad: function () {
+                    var form = this.form;
+                    form.getItem("password").tipNode = this.errorArea;
+                    form.getItem("newPassword").tipNode = this.errorArea;
+                    form.getItem("confirmPassword").tipNode = this.errorArea;
+                }.bind(this),
+                itemTemplate: {
+                    password: {
+                        text: this.lp.oldPassword,
+                        type: "password",
+                        className: "inputPassword",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputYourOldPassword,
+                        attr: {"placeholder": this.lp.oldPassword},
+                        event: {
+                            focus: function (it) {
+                                if ("password" === it.getValue()) it.setValue("");
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                // it.verify(true);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputPassword);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13) this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                        onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputPassword);
+                        }.bind(this)
+                    },
+                    newPassword: {
+                        text: this.lp.newPassword,
+                        type: "password",
+                        className: "inputPassword",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                        emptyTip: this.lp.inputYourNewPassword,
+                        attr: {"placeholder": this.lp.newPassword},
+                        validRule: {
+                            passwordIsWeak: function (value, it) {
+                                return !this.getPasswordRule(it.getValue());
+                            }.bind(this)
+                        },
+                        validMessage: {
+                            passwordIsWeak: function () {
+                                return self.getPasswordRule(this.getValue());
+                            }
+                        },
+                        event: {
+                            focus: function (it) {
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                // it.verify(true);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13)this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                         onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputPassword);
+                        }.bind(this)
+                    },
+                    confirmPassword: {
+                        text: this.lp.confirmNewPassword,
+                        type: "password",
+                        className: "inputComfirmPassword",
+                        notEmpty: true,
+                        defaultValueAsEmpty: true,
+                         emptyTip: this.lp.inputComfirmPassword,
+                        attr: {"placeholder": this.lp.confirmPassword},
+                        validRule: {
+                            passwordNotEqual: function (value, it) {
+                                if (it.getValue() === this.form.getItem("newPassword").getValue()) return true;
+                            }.bind(this)
+                        },
+                        validMessage: {passwordNotEqual: this.lp.passwordNotEqual},
+                        event: {
+                            focus: function (it) {
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputActive);
+                            }.bind(this),
+                            blur: function (it) {
+                                // it.verify(true);
+                                if (!it.warningStatus) it.getElements()[0].setStyles(this.css.inputComfirmPassword);
+                            }.bind(this),
+                            keyup: function (it, ev) {
+                                if (ev.event.keyCode === 13)this.ok();
+                            }.bind(this)
+                        },
+                        onEmpty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputEmpty);
+                        }.bind(this),
+                         onUnempty: function (it) {
+                            it.getElements()[0].setStyles(this.css.inputComfirmPassword);
+                        }.bind(this)
+                    },
+
+                    forgetPassword: {
+                        value: this.lp.forgetPassword,
+                        type: "innerText",
+                        className: "forgetPassword",
+                        event: {
+                            click: function () {
+                                this.gotoResetPassword();
+                            }.bind(this)
+                        }
+                    },
+                    gotoLoginAction: {
+                        value: this.lp.loginAction,
+                        type: "innerText",
+                        className: "signUpAction",
+                        event: {
+                            click: function () { this.gotoLogin() }.bind(this)
+                        }
+                    },
+                    passwordTip: {
+                        type: "innerText",
+                        className: "forgetPassword",
+                        defaultValue: layout.config.passwordRegexHint || ""
+                    },
+                    submitAction: {
+                        value: this.lp.submitAction,
+                        type: "button",
+                        className: "inputLogin",
+                        event: {
+                            click: function () {
+                                this.ok();
+                            }.bind(this)
+                        }
+                    }
+                }
+            }, this.app, this.css);
+            this.form.load();
+        }.bind(this), true);
+
+    },
+    gotoLogin: function () {
+        this.explorer.openLoginForm({}, function () { window.location.reload(); });
+        this.close();
+    },
+    getPasswordRule: function (password) {
+        var str = "";
+        this.actions.checkRegisterPassword(password, function (json) {
+            str = json.data.value || "";
+        }.bind(this), null, false);
+        return str;
+    },
+    gotoResetPassword: function () {
+        this.explorer.openResetPasswordForm();
+        this.close();
+    },
+    ok: function () {
+        this.fireEvent("queryOk");
+        this.errorArea.empty();
+        var data = this.form.getResult(true, ",", true, false, true);
+        if (data) {
+            this._ok(data, function (json) {
+                if (json.type === "error") {
+                    if (this.app) this.app.notice(json.message, "error");
+                } else {
+
+                    this._close();
+                    if (this.formMaskNode) this.formMaskNode.destroy();
+                    this.formAreaNode.destroy();
+                    if (this.explorer && this.explorer.view) this.explorer.view.reload();
+                    if (this.app) this.app.notice(this.lp.changePasswordSuccess, "success");
+                    this.fireEvent("postOk", json);
+                }
+            }.bind(this));
+        }
+    },
+    setWarning: function (text) {
+        this.errorArea.empty();
+        new Element("div", {
+            "text": text,
+            "styles": this.css.warningMessageNode
+        }).inject(this.errorArea);
+    },
+    _ok: function (data, callback) {
+        debugger;
+        var d = {
+            oldPassword : data.password,
+            newPassword : data.newPassword,
+            confirmPassword : data.confirmPassword
+        }
+        o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
+            if (callback) callback(json);
+            //this.fireEvent("postOk")
+        }.bind(this), function (errorObj) {
+            var error = JSON.parse(errorObj.responseText);
+            this.setWarning(error.message);
+        }.bind(this) )
     }
 });
