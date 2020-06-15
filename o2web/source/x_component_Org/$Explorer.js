@@ -245,6 +245,7 @@ MWF.xApplication.Org.$Explorer = new Class({
     searchOrg: function(){
         var key = this.searchInputNode.get("value");
         var isSearchElement = true;
+        this.searching = false;
         if (key){
             if (key!==this.options.lp.searchText){
                 if (this.currentItem) isSearchElement = this.currentItem.unSelected();
@@ -256,6 +257,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                             var item = this._newElement(itemData, this);
                             item.load();
                         }.bind(this));
+                        this.searching = true;
                     }.bind(this), null, key);
                 }else{
                     this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
@@ -313,6 +315,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                 "friction": 4,
                 "axis": {"x": false, "y": true},
                 "onScroll": function(y){
+                    if( _self.searching )return;
                     var scrollSize = _self.listScrollNode.getScrollSize();
                     var clientSize = _self.listScrollNode.getSize();
                     var scrollHeight = scrollSize.y-clientSize.y;

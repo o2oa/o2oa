@@ -3,6 +3,7 @@ package com.x.message.assemble.communicate.jaxrs.im;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -35,6 +36,16 @@ public class ActionMyConversationList extends BaseAction {
                 if (ext != null) {
                     wo.setIsTop(ext.getIsTop());
                     wo.setUnreadNumber(business.imConversationFactory().unreadNumber(ext));
+                }else {
+                    IMConversationExt conversationExt = new IMConversationExt();
+                    conversationExt.setConversationId(wo.getId());
+                    conversationExt.setPerson(effectivePerson.getDistinguishedName());
+                    emc.beginTransaction(IMConversationExt.class);
+                    emc.persist(conversationExt, CheckPersistType.all);
+                    emc.commit();
+                    wo.setIsTop(false);
+                    wo.setUnreadNumber(business.imConversationFactory().unreadNumber(conversationExt));
+
                 }
                 wo.setLastMessage(WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId())));
             }

@@ -12,6 +12,7 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public static final String TYPE_TASK = "task";
 	public static final String TYPE_APPENDTASK = "appendTask";
+	public static final String TYPE_ADDSPLIT = "addSplit";
 	public static final String TYPE_REROUTE = "reroute";
 	public static final String TYPE_RESET = "reset";
 	public static final String TYPE_RETRACT = "retract";

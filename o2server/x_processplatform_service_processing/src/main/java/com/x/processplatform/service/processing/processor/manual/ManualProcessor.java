@@ -268,6 +268,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -312,7 +313,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
-
+		// nothing
 	}
 
 	@Override
@@ -428,6 +429,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 							&& StringUtils.equals(t.getRouteName(), soleRoute.getName()))
 					.findFirst().orElse(null);
 			if (null != soleTaskCompleted) {
+				this.parallelSoleTaskCompleted(aeiObjects);
 				return true;
 			}
 		}
@@ -463,6 +465,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 		}
 		return passThrough;
+	}
+
+	/** 并行环节下如果有优先路由,那么直接走优先路由,处理的时候需要晴空所有代办 */
+	private void parallelSoleTaskCompleted(AeiObjects aeiObjects) throws Exception {
+		/* 清空可能的多余的待办 */
+		aeiObjects.getTasks().stream().filter(o -> {
+			return StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getActivityToken());
+		}).forEach(o -> {
+			aeiObjects.deleteTask(o);
+		});
 	}
 
 	private boolean queue(AeiObjects aeiObjects, Manual manual, List<String> identities) throws Exception {
@@ -523,6 +535,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Manual manual) throws Exception {
+		// nothing
 	}
 
 	private void calculateExpire(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {

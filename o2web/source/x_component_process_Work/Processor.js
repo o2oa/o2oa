@@ -388,17 +388,24 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.removeClass("mainColor_bg");
 
                 this.selectedRoute = node;
                 node.setStyles(this.css.routeNode_selected);
+                node.addClass("mainColor_bg");
+                node.removeClass("lightColor_bg");
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.addClass("lightColor_bg");
+                this.selectedRoute.removeClass("mainColor_bg");
                 this.selectedRoute = null;
             }
         }else{
             this.selectedRoute = node;
             node.setStyles(this.css.routeNode_selected);
+            node.addClass("mainColor_bg");
+            node.removeClass("lightColor_bg");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
     },
@@ -669,6 +676,7 @@ MWF.xApplication.process.Work.Processor = new Class({
     setIdeaList: function(ideas){
         var _self = this;
         ideas.each(function(idea){
+            if( !idea )return;
             new Element("div", {
                 "styles": this.css.selectIdeaItemNode,
                 "text": idea,

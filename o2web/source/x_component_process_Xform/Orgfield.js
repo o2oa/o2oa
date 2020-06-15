@@ -11,7 +11,9 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if (COMMON.Browser.safari) w = w-20;
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    if (COMMON.Browser.safari) w = w - 20;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",

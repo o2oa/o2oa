@@ -5,7 +5,15 @@
     "contentStyles" : "normalTdNode",
     "item" : "function(d){ return d.unitName.split('@')[0] }",
     "name" : "unitName",
-    "width" : "15%"
+    "width" : "11%"
+  },
+  {
+    "title" : "打卡策略",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "function(d){return {'1':'两次打卡（上午上班，下午下班）','2':'三次打卡（上午上班，下午下班加中午一次共三次）', '3':'四次打卡（上午下午都打上班下班卡）'}[d.signProxy] }",
+    "name" : "signProxy",
+    "width" : "11%"
   },
   {
     "title" : "上班时间",
@@ -13,7 +21,23 @@
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
     "name" : "onDutyTime",
-    "width" : "15%"
+    "width" : "11%"
+  },
+  {
+    "title" : "午休开始时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "middayRestStartTime",
+    "name" : "middayRestStartTime",
+    "width" : "11%"
+  },
+  {
+    "title" : "午休结束时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "middayRestEndTime",
+    "name" : "middayRestEndTime",
+    "width" : "11%"
   },
   {
     "title" : "下班时间",
@@ -21,7 +45,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
     "name" : "offDutyTime",
-    "width" : "15%"
+    "width" : "11%"
   },
 
   {
@@ -30,7 +54,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "lateStartTime",
     "name" : "lateStartTime",
-    "width" : "15%"
+    "width" : "11%"
   },
 
 //  {
@@ -47,7 +71,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "absenceStartTime",
     "name" : "absenceStartTime",
-    "width" : "15%"
+    "width" : "11%"
   },
   {
     "access" : "admin",
@@ -56,7 +80,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "actions",
     "name" : "actions",
-    "width" : "10%",
+    "width" : "11%",
     "sub" : [{
       "title" : "删除文件",
       "action" : "remove",
