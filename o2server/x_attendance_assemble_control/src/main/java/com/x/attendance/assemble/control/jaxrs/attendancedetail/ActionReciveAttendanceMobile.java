@@ -36,20 +36,18 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		List<WoMobileRecord> wraps = new ArrayList<>();
 		Wi wrapIn = null;
 		Boolean check = true;
-		Date now = new Date();
+		Date now = null;
 		String signDate = null;
 		String signTime = null;
 
-
 		try {
 			wrapIn = this.convertToWrapIn( jsonElement, Wi.class );
-			signDate = dateOperation.getDateStringFromDate( now, "YYYY-MM-DD");
-			signTime = dateOperation.getDateStringFromDate( now, "HH:mm:ss");
-
-			attendanceDetailMobile.setRecordDateString( signDate ); //打卡日期
-			attendanceDetailMobile.setSignTime( signTime ); //打卡时间
-			attendanceDetailMobile.setCheckin_time( now.getTime() );
-			attendanceDetailMobile.setRecordDate( now );
+			//1000000000000L = Sun Sep 09 2001 09:46:40 GMT+0800 (中国标准时间)
+			if( wrapIn.getCheckin_time() > 1000000000000L  ){
+				now = new Date( wrapIn.getCheckin_time() );
+			}else{
+				now = new Date();
+			}
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
@@ -57,6 +55,22 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			logger.error(e, currentPerson, request, null);
 		}
 
+		if( check ){
+			try {
+				signDate = dateOperation.getDateStringFromDate( now, "YYYY-MM-DD");
+				signTime = dateOperation.getDateStringFromDate( now, "HH:mm:ss");
+
+				attendanceDetailMobile.setRecordDateString( signDate ); //打卡日期
+				attendanceDetailMobile.setSignTime( signTime ); //打卡时间
+				attendanceDetailMobile.setCheckin_time( now.getTime() );
+				attendanceDetailMobile.setRecordDate( now );
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionWrapInConvert(e, jsonElement);
+				result.error(exception);
+				logger.error(e, currentPerson, request, null);
+			}
+		}
 		if( check ){
 			if( StringUtils.isNotEmpty(wrapIn.getRecordAddress()) ){
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
