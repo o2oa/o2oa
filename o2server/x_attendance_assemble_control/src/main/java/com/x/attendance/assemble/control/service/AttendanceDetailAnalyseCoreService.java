@@ -63,7 +63,7 @@ class AttendanceDetailAnalyseCoreService {
 	}
 
 	static Date getAfternoonOndutyTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
-		if( StringUtils.isNotEmpty( detail.getMorningOffdutyTime()) ){
+		if( StringUtils.isNotEmpty( detail.getMorningOffDutyTime()) ){
 			try {
 				logger.debug( debugger, "格式化[下午上班签到时间]afternoonOndutyTime=" +  detail.getRecordDateString() + " " + detail.getAfternoonOnDutyTime() );
 				return dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getAfternoonOnDutyTime() );
@@ -79,13 +79,13 @@ class AttendanceDetailAnalyseCoreService {
 	}
 
 	static Date getMorningOffdutyTimeFromDetail(AttendanceDetail detail, Boolean debugger) {
-		if( StringUtils.isNotEmpty( detail.getMorningOffdutyTime()) ){
+		if( StringUtils.isNotEmpty( detail.getMorningOffDutyTime()) ){
 			try {
-				logger.debug( debugger, "格式化[上午下班签退时间]morningOffdutyTime=" +  detail.getRecordDateString() + " " + detail.getMorningOffdutyTime() );
-				return dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getMorningOffdutyTime() );
+				logger.debug( debugger, "格式化[上午下班签退时间]morningOffdutyTime=" +  detail.getRecordDateString() + " " + detail.getMorningOffDutyTime() );
+				return dateOperation.getDateFromString( detail.getRecordDateString() + " " + detail.getMorningOffDutyTime() );
 			} catch (Exception e) {
-				detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,morningOffdutyTime=" + detail.getRecordDateString() + " " + detail.getMorningOffdutyTime() );
-				logger.warn( "系统进行时间转换时发生异常,morningOffdutyTime=" + detail.getRecordDateString() + " " + detail.getMorningOffdutyTime() );
+				detail.setDescription( detail.getDescription() + "; 系统进行时间转换时发生异常,morningOffdutyTime=" + detail.getRecordDateString() + " " + detail.getMorningOffDutyTime() );
+				logger.warn( "系统进行时间转换时发生异常,morningOffdutyTime=" + detail.getRecordDateString() + " " + detail.getMorningOffDutyTime() );
 				logger.error(e);
 			}
 		}else{
