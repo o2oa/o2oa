@@ -401,7 +401,7 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	close: function (hasTaskitem) {
 		if (this.inBrowser) {
-			window.close();
+			window.open("", "_self").close();
 		} else {
 			this.fireAppEvent("queryClose");
 
