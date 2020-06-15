@@ -60,7 +60,7 @@ class ComposeDetailWithMobileInSignProxy3 {
 		}
 		detail.setRecordDateString( mobileDetail.getRecordDateString() );
 		detail.setOnDutyTime( onDutyTime ); //上午上班签到打卡
-		detail.setMorningOffdutyTime( morningOffdutyTime ); //上午下班打卡
+		detail.setMorningOffDutyTime( morningOffdutyTime ); //上午下班打卡
 		detail.setAfternoonOnDutyTime( afternoonOndutyTime ); //下午上班打卡
 		detail.setOffDutyTime( offDutyTime ); //下午下班签退打卡
 		detail.setRecordStatus( 0 );
