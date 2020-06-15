@@ -1232,8 +1232,18 @@ MWFCalendar.CalendarForm = new Class({
             form.load();
         }.bind(this), true);
     },
-    deleteCalendar : function(){
-
+    deleteCalendar : function( e ){
+        var _self = this;
+        _self.app.confirm("warn", e,  "删除确认", "删除后无法恢复，确定要删除“"+ _self.data.name +"”？", 300, 120, function(){
+            _self.app.actions.deleteCalendar( _self.data.id, function( json ){
+                _self.close();
+                _self.app.notice("删除成功");
+                _self.app.leftNavi.reload();
+            }.bind(this));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
     },
     editCalendar : function(){
         this.formTopNode = null;

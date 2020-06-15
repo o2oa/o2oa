@@ -913,6 +913,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             MWF.FormImport.create("office", this);
         }.bind(this));
     },
+	deletePropertiesOrStyles: function(name, key){
+		if (name=="styles"){
+			try{
+				if( key && this.json.styles[key] ){
+					delete this.json.styles[key];
+				}
+				this.setCustomStyles();
+			}catch(e){}
+		}
+		if (name=="properties"){
+			try{
+				this.node.removeProperty(key);
+			}catch(e){}
+		}
+	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			this.setCustomStyles();
@@ -1082,7 +1097,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }
         }
     },
-
     setAllStyles: function(){
         this.setPropertiesOrStyles("styles");
         this.setPropertiesOrStyles("properties");
