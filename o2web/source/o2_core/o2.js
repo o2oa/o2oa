@@ -73,9 +73,9 @@
     }
     this.o2 = window.o2 || {};
     this.o2.version = {
-        "v": "2.3.1",
-        "build": "2019.07.31",
-        "info": "O2OA 活力办公 创意无限. Copyright © 2018, o2oa.net O2 Team All rights reserved."
+        "v": "5.1.1",
+        "build": "2020.06.12",
+        "info": "O2OA 活力办公 创意无限. Copyright © 2020, o2oa.net O2 Team All rights reserved."
     };
     if (!this.o2.session) this.o2.session ={
         "isDebugger": _debug,
@@ -99,7 +99,19 @@
     // };
 
     this.wrdp = this.o2;
-    
+
+    var debug = function(reload){
+        if (reload){
+            window.location.assign(_href + ((_href.indexOf("?")==-1) ? "?" : "&")+"debugger");
+        }else{
+            if (!o2.session.isDebugger){
+                o2.session.isDebugger = true;
+                if (o2.session.isMobile || layout.mobile) o2.load("../o2_lib/eruda/eruda.js");
+            }
+        }
+    };
+    this.o2.debug = debug;
+
     var _attempt = function(){
         for (var i = 0, l = arguments.length; i < l; i++){
             try {
@@ -212,10 +224,12 @@
     var _getAllOptions = function(options){
         var doc = (options && options.doc) || document;
         if (!doc.unid) doc.unid = _uuid();
+        var type = (options && options.type) || "text/javascript";
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": !!(options && options.sequence),
+            "type": type,
             "doc": doc,
             "dom": (options && options.dom) || document.body,
             "module": (options && options.module) || null,
@@ -238,10 +252,12 @@
     var _getJsOptions = function(options){
         var doc = (options && options.doc) || document;
         if (!doc.unid) doc.unid = _uuid();
+        var type = (options && options.type) || "text/javascript";
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": (!(options && options.sequence == false)),
+            "type": type,
             "doc": doc
         }
     };
@@ -272,6 +288,20 @@
                 }
             }
         }
+
+        // if (!window.layout) window.layout = {};
+        // if (!window.layout.config){
+        //     new Request.JSON({
+        //         url: "../x_desktop/res/config/config.json",
+        //         secure: false,
+        //         method: "get",
+        //         noCache: true,
+        //         async: false,
+        //         onSuccess: function(responseJSON, responseText){
+        //             window.layout.config = responseJSON;
+        //         }.bind(this),
+        //     }).send();
+        // }
 
         if (window.layout && layout.config && layout.config.urlMapping){
             for (var k in layout.config.urlMapping){
@@ -306,10 +336,10 @@
             status = (status == 1223) ? 204 : status;
             if ((status >= 200 && status < 300))
                 if (success) success(xhr);
-            else if ((status >= 300 && status < 400))
-                if (failure) failure(xhr);
-            else
-                failure(xhr);
+                else if ((status >= 300 && status < 400))
+                    if (failure) failure(xhr);
+                    else
+                        failure(xhr);
             if (completed) completed(xhr);
         };
         var _checkCssErrorLoaded= function(err){ _checkCssLoaded(err) };
@@ -389,6 +419,7 @@
 
             var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
             var s = op.doc.createElement('script');
+            s.type = op.type || "text/javascript";
             head.appendChild(s);
             s.id = uuid;
             s.src = this.o2.filterUrl(url);
@@ -708,7 +739,7 @@
         //     }
         //     m[name].push(node);
         // }else{
-             m[name] = node;
+        m[name] = node;
         // }
     };
     var _loadHtml = function(modules, options, callback){
