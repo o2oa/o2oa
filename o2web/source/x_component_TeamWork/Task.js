@@ -141,7 +141,7 @@ MWF.xApplication.TeamWork.Task = new Class({
             }
             this.topContent.addEvents({
                 click:function(e){
-                    layout.openApplication(e,"TeamWork.Task",null,{"taskId":this.data.taskId})
+                    //layout.openApplication(e,"TeamWork.Task",null,{"taskId":this.data.taskId})
                 }.bind(this)
             })
             this.topIconContainer = new Element("div.topIconContainer",{styles:this.css.topIconContainer}).inject(this.topLayout);

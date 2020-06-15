@@ -153,7 +153,6 @@ MWF.xApplication.TeamWork.TaskAttachment = new Class({
             this.attachmentController.checkActions();
         }.bind(this));
     },
-
     replaceAttachment: function (e, node, attachment) {
         var _self = this;
         this.form.confirm("warn", e, this.lp.common.confirm.replaceTitle, this.lp.common.confirm.replaceContent + "( " + attachment.data.name + " )", 300, 120, function () {
