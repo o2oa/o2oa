@@ -52,8 +52,6 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
                 });
             }
         }.bind(this))
-
-
     },
     loadAttachmentItem:function(att){
         var attachmentItem = new Element("div.attachmentItem",{styles:this.css.attachmentItem}).inject(this.attachmentListContainer);
@@ -265,7 +263,10 @@ MWF.xApplication.TeamWork.TaskAttachmentList = new Class({
         }.bind(this));
     },
     downloadAttachment: function (attachment) {
-        this.actions.attachmentDownloadStream(attachment.id, this.data.id);
+        var address = this.rootActions.AttachmentAction.action.address;
+        var url = this.rootActions.AttachmentAction.action.actions.downLoad.uri;
+        url = url.replace("{id}", encodeURIComponent(attachment.id));
+        window.open(address+url);
     },
     openAttachment: function (e, node, attachments) {
         attachments.each(function (att) {
@@ -350,10 +351,10 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
 
         if(callback)callback();
     },
-    downloadAttachment: function (attachment) {debugger;
+    downloadAttachment: function (attachment) {
         var address = this.rootActions.AttachmentAction.action.address;
         var url = this.rootActions.AttachmentAction.action.actions.downLoad.uri;
-        url = url.replace("{id}", encodeURIComponent(attachment.id));debugger;
+        url = url.replace("{id}", encodeURIComponent(attachment.id));
         window.open(address+url)
 
     },
