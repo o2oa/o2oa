@@ -98,18 +98,18 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.topBarTabItemTask.addEvents({
             click:function(){
                 this.topBarTabItemTask.setStyles({"color":"#4A90E2","border-bottom":"2px solid #4A90E2"});
-                this.topBarTabItemStat.setStyles({"color":"","border-bottom":"0px"});
+                //this.topBarTabItemStat.setStyles({"color":"","border-bottom":"0px"});
                 this.createTaskLayout();
             }.bind(this)
         });
-        this.topBarTabItemStat = new Element("div.topBarTabItemStat",{styles:this.css.topBarTabItemStat,text:this.lp.stat}).inject(this.topBarTabsContainer);
-        this.topBarTabItemStat.addEvents({
-            click:function(){
-                this.topBarTabItemTask.setStyles({"color":"","border-bottom":"0px"});
-                this.topBarTabItemStat.setStyles({"color":"#4A90E2","border-bottom":"2px solid #4A90E2"});
-                this.createStatLayout();
-            }.bind(this)
-        });
+        // this.topBarTabItemStat = new Element("div.topBarTabItemStat",{styles:this.css.topBarTabItemStat,text:this.lp.stat}).inject(this.topBarTabsContainer);
+        // this.topBarTabItemStat.addEvents({
+        //     click:function(){
+        //         this.topBarTabItemTask.setStyles({"color":"","border-bottom":"0px"});
+        //         this.topBarTabItemStat.setStyles({"color":"#4A90E2","border-bottom":"2px solid #4A90E2"});
+        //         this.createStatLayout();
+        //     }.bind(this)
+        // });
 
 
         //********************************
@@ -327,16 +327,16 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.completeLine = new Element("div.completeLine",{styles:this.css.completeLine}).inject(this.naviTopTaskLine);
         this.completeLine.addEvents({
             mouseover:function(){
-                //this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
-                this.app.tips(this.completeLine,this.lp.taskCompleteText + ": " + this.currentProjectGroupData.completedTotal);
+                this.app.showTips(this.completeLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.completedTotal+"</div>"});
+                //this.app.tips(this.completeLine,this.lp.taskCompleteText + ": " + this.currentProjectGroupData.completedTotal);
             }.bind(this)
         });
         this.overLine = new Element("div.overLine",{styles:this.css.overLine}).inject(this.naviTopTaskLine);
         this.overLine.addEvents({
             mouseover:function(){
-                //this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskCompleteText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
+                this.app.showTips(this.overLine,{_html:"<div style='margin:2px 5px;'>"+this.lp.taskovertimeText+":"+this.currentProjectGroupData.overtimeTotal+"</div>"});
                 ////alert(this.currentProjectGroupData.overtimeTotal)
-                this.app.tips(this.overLine,this.lp.taskovertimeText + ": " + this.currentProjectGroupData.overtimeTotal)
+                //this.app.tips(this.overLine,this.lp.taskovertimeText + ": " + this.currentProjectGroupData.overtimeTotal)
             }.bind(this)
         });
 
@@ -392,7 +392,7 @@ MWF.xApplication.TeamWork.Project = new Class({
         this.viewData.each(function(json){
             if(json.name==this.lp.viewItemAll){//所有任务
                 this.naviItemAllContainer = new Element("div.naviItemContainer",{styles:this.css.naviItemContainer}).inject(this.naviViewContainer);
-                this.naviItemAllIcon = new Element("div.naviItemAllIcon",{styles:this.css.naviItemAllIcon}).inject(this.naviItemAllContainer);
+                this.naviItemAllIcon = new Element("div.naviItemAllIconcompleteLine",{styles:this.css.naviItemAllIcon}).inject(this.naviItemAllContainer);
                 this.naviItemAllText = new Element("div.naviItemText",{styles:this.css.naviItemText,text:this.lp.viewItemAll}).inject(this.naviItemAllContainer);
                 this.naviItemAllContainer.addEvents({
                     click:function(){
