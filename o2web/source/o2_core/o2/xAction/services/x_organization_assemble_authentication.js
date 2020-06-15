@@ -17,6 +17,7 @@ MWF.xAction.RestActions.Action["x_organization_assemble_authentication"] = new C
                 var encrypt = new JSEncrypt();
                 encrypt.setPublicKey("-----BEGIN PUBLIC KEY-----"+layout.config.publicKey+"-----END PUBLIC KEY-----");
                 data.password = encrypt.encrypt(data.password);
+                data.isEncrypted = "y";
                 this.action.invoke({"name": "loginByCaptcha", data : data,
                     "success": function(json, responseText){
                         if (json.data.tokenType!="anonymous"){
