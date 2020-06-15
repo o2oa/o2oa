@@ -46,6 +46,8 @@ MWF.xDesktop.Authentication = new Class({
     },
 
     loadLogin: function (node) {
+        if(node)this.loginNode = node;
+        if( !node && this.loginNode )node = this.loginNode;
         if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
             MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
             this.fireEvent("openLogin");
@@ -858,7 +860,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.isShowingExample = true;
         var left = this.bindBodyArea.getPosition(this.bindBodyArea.getParent()).x;
         var hideLeft = ((this.bindBodyArea.getParent().getSize().x) - 400) / 2;
-        debugger;
         this.intervalId = setInterval(function () {
             if (left > hideLeft) {
                 this.bindBodyArea.setStyle("margin-left", (left - 5) + "px");
@@ -1079,7 +1080,6 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         var data = this.form.getResult(true, ",", true, false, true);
         if (data) {
             this._ok(data, function (json) {
-                debugger;
                 if (json.type === "error") {
                     if (this.app) this.app.notice(json.message, "error");
                 } else if( json.data.passwordExpired ){ //密码过期
@@ -1645,7 +1645,6 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         this.gotoLoginNode.addEvent("click", function () { this.gotoLogin() }.bind(this));
     },
     _createTableContent: function () {
-        debugger;
         this.formTableContainer.setStyles(this.css.formTableContainer2);
         this.loadSteps();
         this.loadStepForm_1();
@@ -2287,7 +2286,6 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         }).inject(this.errorArea);
     },
     _ok: function (data, callback) {
-        debugger;
         var d = {
             oldPassword : data.password,
             newPassword : data.newPassword,
