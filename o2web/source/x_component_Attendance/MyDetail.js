@@ -842,6 +842,12 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             "    <td styles='formTableValue' item='recordDateString'></td></tr>"
             +"<tr><td styles='formTableTitle' lable='onDutyTime'></td>"+
             "    <td styles='formTableValue' item='onDutyTime'></td>" +
+            ((this.data.signProxy=="2"||this.data.signProxy=="3")?
+            "    <td styles='formTableTitle' lable='morningOffDutyTime'></td>"+
+            "    <td styles='formTableValue' item='morningOffDutyTime'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='afternoonOnDutyTime'></td>"+
+            "    <td styles='formTableValue' item='afternoonOnDutyTime'></td>" : ""
+            ) +
             "    <td styles='formTableTitle' lable='offDutyTime'></td>"+
             "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
             ( ( this.isNew && identityList.identities.length > 1 ) ?
@@ -872,14 +878,16 @@ MWF.xApplication.Attendance.MyDetail.Appeal = new Class({
             "    <td styles='formTableValue' item='appealDescription' colspan='3'></td></tr>" +
             "</table>";
         this.createTableArea.set("html",html);
-
-
+        var lp = this.app.lp.schedule;
+        var signProxy = this.data.signProxy||1;
         this.document = new MForm( this.createTableArea, this.data, {
             style : "popup",
             isEdited : this.isEdited || this.isNew,
             itemTemplate : {
                 recordDateString : { text:"考勤日期",  type : "innertext"},
                 onDutyTime : { text:"上班打卡时间",  type : "innertext"},
+                morningOffDutyTime : { text:signProxy==1?"":lp.signProxy[signProxy].middayRestStartTime,  type : "innertext"},
+                afternoonOnDutyTime : { text:signProxy==1?"":lp.signProxy[signProxy].middayRestEndTime,  type : "innertext"},
                 offDutyTime : { text:"下班打卡时间",  type : "innertext"},
                 statusShow : {  text:"考勤状态", type : "innertext" },
                 appealStatusShow : { text:"审批状态",type : "innertext"},
