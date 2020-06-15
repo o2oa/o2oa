@@ -51,7 +51,10 @@ public class ThisApplication {
 			}
 
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
+
 			context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
+			//每天凌晨1点，计算前一天所有的未签退和未分析的打卡数据
+			context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
 
 		} catch (Exception e) {
 			e.printStackTrace();

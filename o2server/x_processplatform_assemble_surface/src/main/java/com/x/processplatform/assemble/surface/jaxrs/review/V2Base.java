@@ -439,7 +439,8 @@ abstract class V2Base extends StandardJaxrsAction {
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Review> root = cq.from(Review.class);
 		Predicate p = cb.conjunction();
-		if(effectivePerson.isManager() && ListTools.isNotEmpty(personList)){
+		if(business.canManageApplication(effectivePerson, null)
+				&& ListTools.isNotEmpty(personList)){
 			List<String> person_ids = business.organization().person().list(personList);
 			p = cb.and(p, root.get(Review_.person).in(person_ids));
 		}else{

@@ -1305,6 +1305,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getData();
+            if( typeOf(n)==="object" && JSON.stringify(n) === JSON.stringify({data:[]}) )n = "";
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":

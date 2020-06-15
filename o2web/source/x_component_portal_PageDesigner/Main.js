@@ -1689,7 +1689,7 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
         }
     }
 });
-
-MWF.APPPD.Script = new Class({
-
-})
+//
+// MWF.APPPD.Script = new Class({
+//
+// })

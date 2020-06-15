@@ -226,7 +226,7 @@ public class Main {
 
 			matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
 			if (matcher.find()) {
-				createEncryptKey(matcher.group(1));
+				createEncryptKey();
 				continue;
 			}
 
@@ -264,9 +264,9 @@ public class Main {
 		return true;
 	}
 
-	private static boolean createEncryptKey(String password) {
+	private static boolean createEncryptKey() {
 		try {
-			return new ActionCreateEncryptKey().execute(password);
+			return new ActionCreateEncryptKey().execute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

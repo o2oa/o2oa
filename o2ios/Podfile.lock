@@ -71,6 +71,7 @@ PODS:
     - SDWebImage/Core (= 4.4.2)
   - SDWebImage/Core (4.4.2)
   - SnapKit (4.0.1)
+  - Starscream (4.0.0)
   - SwiftValidator (4.0.0)
   - SwiftyJSON (3.1.4)
   - SwiftyTimer (2.1.0)
@@ -113,6 +114,7 @@ DEPENDENCIES:
   - RxCocoa (~> 4.0)
   - SDWebImage (~> 4.0)
   - SnapKit (~> 4.0.0)
+  - Starscream (~> 4.0.0)
   - SwiftValidator (from `https://github.com/jpotts18/SwiftValidator.git`, branch `master`)
   - SwiftyJSON (~> 3.1)
   - SwiftyTimer
@@ -161,6 +163,7 @@ SPEC REPOS:
     - RxSwift
     - SDWebImage
     - SnapKit
+    - Starscream
     - SwiftyJSON
     - SwiftyTimer
     - SwiftyUserDefaults
@@ -217,6 +220,7 @@ SPEC CHECKSUMS:
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
   SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  Starscream: 04b26f02727e10a002e6b5d21b188ba0d049910b
   SwiftValidator: 25ded5ca1f10c05adf57f6ac82a72d28ac8d91af
   SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   SwiftyTimer: 02dd6cf10cbc71cbf67cec494f6e5eb782102543
@@ -224,6 +228,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: db8bd463f4a5f9d40d99734694cef3178373900d
+PODFILE CHECKSUM: c9dd30b0987ffddb95ec8f9c0af2a4134a03ae69
 
 COCOAPODS: 1.8.4

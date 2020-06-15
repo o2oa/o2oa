@@ -19,7 +19,8 @@ class OOAttanceCheckInController: UITableViewController {
     
     var checkinForm:OOAttandanceMobileCheckinForm = OOAttandanceMobileCheckinForm()
     
-    var myButton:UIButton!
+    var myButton:UIButton?
+    var feature : OOAttandanceFeature?
     
     private lazy var headerView:OOAttanceHeaderView = {
        let view = Bundle.main.loadNibNamed("OOAttanceHeaderView", owner: self, options: nil)?.first as! OOAttanceHeaderView
@@ -38,7 +39,7 @@ class OOAttanceCheckInController: UITableViewController {
         headerView.startBMKMapViewService()
         NotificationCenter.default.addObserver(self, selector: #selector(locationReceive(_:)), name: OONotification.location.notificationName, object: nil)
         if myButton != nil {
-            myButton.isHidden = false
+            myButton?.isHidden = false
         }
     }
     
@@ -47,7 +48,7 @@ class OOAttanceCheckInController: UITableViewController {
         headerView.stopBMKMapViewService()
         NotificationCenter.default.removeObserver(self)
         if myButton != nil {
-            myButton.isHidden = true
+            myButton?.isHidden = true
         }
     }
     
@@ -70,30 +71,37 @@ class OOAttanceCheckInController: UITableViewController {
         tableView.register(UINib.init(nibName: "OOAttanceItemCell", bundle: nil), forCellReuseIdentifier: "OOAttanceItemCell")
         
         getCurrentCheckinList()
-        self.perform(#selector(createButton), with: nil, afterDelay: 0)
+        getMyRecords()
+//        self.perform(#selector(createButton), with: nil, afterDelay: 0)
     }
     
     
-    @objc func closeWindow() {
-        self.tabBarController?.navigationController?.dismiss(animated: true, completion: nil)
-    }
+//    @objc func closeWindow() {
+//        self.tabBarController?.navigationController?.dismiss(animated: true, completion: nil)
+//    }
     
-    @objc private func createButton() {
+    //创建打卡按钮
+    @objc private func createButton(feature: OOAttandanceFeature) {
         let window = UIApplication.shared.windows[0]
         myButton = UIButton(type: .custom)
-        myButton.frame = CGRect(x: kScreenW - 90, y: kScreenH - 150, width: 70, height: 70)
-        myButton.setTitle("打卡", for: .normal)
-        myButton.setTitle("打卡", for: .disabled)
-        myButton.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 18.0)!
-        myButton.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
-        myButton.setBackgroundColor(UIColor.gray, forState: .disabled)
-        myButton.isEnabled = false
-        myButton.layer.cornerRadius = 35
-        myButton.layer.masksToBounds = true
-        myButton.addTarget(self, action: #selector(postCheckinButton(_:)), for: .touchUpInside)
-        window.addSubview(myButton)
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(changePostion(_:)))
-        myButton.addGestureRecognizer(pan)
+        myButton?.frame = CGRect(x: kScreenW - 90, y: kScreenH - 150, width: 70, height: 70)
+        myButton?.setTitle("打卡", for: .normal)
+        myButton?.setTitle("打卡", for: .disabled)
+        myButton?.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 14.0)!
+        myButton?.theme_backgroundColor = ThemeColorPicker(keyPath: "Base.base_color")
+        myButton?.setBackgroundColor(UIColor.gray, forState: .disabled)
+        myButton?.isEnabled = false
+        myButton?.layer.cornerRadius = 35
+        myButton?.layer.masksToBounds = true
+        myButton?.addTarget(self, action: #selector(postCheckinButton(_:)), for: .touchUpInside)
+        window.addSubview(myButton!)
+    }
+    //删除打卡按钮
+    private func removeButton() {
+        if myButton != nil {
+            myButton?.removeFromSuperview()
+            myButton = nil
+        }
     }
     
     @objc private func locationReceive(_ notification:Notification){
@@ -102,27 +110,27 @@ class OOAttanceCheckInController: UITableViewController {
             checkinForm.desc = result.sematicDescription
             checkinForm.longitude = String(result.location.longitude)
             checkinForm.latitude = String(result.location.latitude)
-            
             checkinForm.empNo = O2AuthSDK.shared.myInfo()?.employee
             checkinForm.empName = O2AuthSDK.shared.myInfo()?.name
             let currenDate = Date()
             checkinForm.recordDateString = currenDate.toString("yyyy-MM-dd")
             checkinForm.signTime = currenDate.toString("HH:mm:ss")
-            
-            checkinForm.optMachineType = UIDevice.deviceModel()
+            checkinForm.optMachineType = UIDevice.deviceModelReadable()
             checkinForm.optSystemName = "\(UIDevice.systemName()) \(UIDevice.systemVersion())"
-            // button enable
-            myButton.isEnabled = true
+            // 打卡按钮启用
+            myButton?.isEnabled = true
             headerView.addSubview(promptView)
             DDLogDebug("checkForm set completed")
         }else{
-            myButton.isEnabled = false
-            promptView.removeSubviews()
+            //打卡按钮禁用
+            myButton?.isEnabled = false
+            promptView.removeFromSuperview()
         }
     }
     
     @objc private func postCheckinButton(_ sender:UIButton){
         MBProgressHUD_JChat.showMessage(message: "打卡中...", toView: self.view)
+        checkinForm.checkin_type = self.feature?.checkinType ?? ""
         viewModel.postMyCheckin(checkinForm) { (result) in
             MBProgressHUD_JChat.hide(forView: self.view, animated: true)
             switch result {
@@ -130,6 +138,7 @@ class OOAttanceCheckInController: UITableViewController {
                 DispatchQueue.main.async {
                     MBProgressHUD_JChat.show(text:"打卡成功", view: self.view)
                     self.getCurrentCheckinList()
+                    self.getMyRecords()
                 }
                 break
             case .fail(let errorMessage):
@@ -143,9 +152,9 @@ class OOAttanceCheckInController: UITableViewController {
         }
     }
     
-    @objc private func changePostion(_ pan:UIPanGestureRecognizer){
-        
-    }
+//    @objc private func changePostion(_ pan:UIPanGestureRecognizer){
+//
+//    }
     
     func getWorkPlace() {
         viewModel.getLocationWorkPlace { (myResult) in
@@ -158,6 +167,27 @@ class OOAttanceCheckInController: UITableViewController {
                 break
             case .fail(let s):
                 MBProgressHUD_JChat.show(text: "错误:\n\(s)", view: self.view, 2)
+                break
+            default:
+                break
+            }
+        }
+    }
+    
+    func getMyRecords() {
+        viewModel.listMyRecords { (result) in
+            switch result {
+            case .ok(let record):
+                let model = record as? OOMyAttandanceRecords
+                if let feature = model?.feature, feature.signSeq ?? -1 > 0 {
+                    self.feature = feature
+                    self.createButton(feature: feature)
+                }else {
+                    self.removeButton()
+                }
+                break
+            case .fail(let err):
+                DDLogError(err)
                 break
             default:
                 break
@@ -194,9 +224,7 @@ class OOAttanceCheckInController: UITableViewController {
         }
     }
     
-    func postCheckIn() {
-        
-    }
+     
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -252,7 +280,7 @@ class OOAttanceCheckInController: UITableViewController {
     }
     
     
-//    deinit {
-//         headerView.stopBMKMapViewService()
-//    }
+    deinit {
+         DDLogDebug("deinit 这里是checkin controller 。。。。。。。。。")
+    }
 }

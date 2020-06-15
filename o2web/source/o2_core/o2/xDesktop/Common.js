@@ -303,7 +303,7 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
         }
         var dlg = new MWF.xDesktop.Dialog({
             "title": title,
-            "style": style || "flat",
+            "style": style || "o2",
             "top": y,
             "left": x-20,
             "fromTop":y,
@@ -316,10 +316,12 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
             "maskNode": mask,
             "buttonList": [
                 {
+                    "type": "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": ok
                 },
                 {
+                    "type": "cancel",
                     "text": MWF.LP.process.button.cancel,
                     "action": cancel
                 }

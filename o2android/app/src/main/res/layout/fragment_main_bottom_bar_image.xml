@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:orientation="vertical"
@@ -39,6 +40,20 @@
                 android:textSize="12sp"
                 android:textColor="@color/z_color_text_primary"
                 android:text="@string/tab_message"/>
+            <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleTextView
+                android:id="@+id/circle_tv_icon_main_bottom_news"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="25dp"
+                app:c_height="16dp"
+                app:c_inColor="@color/z_color_primary"
+                app:c_text="5"
+                android:textAlignment="center"
+                app:c_textColor="@android:color/white"
+                app:c_textSize="@dimen/font_mini"
+                app:c_width="16dp"
+                android:visibility="gone"
+                />
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/icon_main_bottom_contact"

@@ -9,6 +9,7 @@
 import UIKit
 import CocoaLumberjack
 import O2OA_Auth_SDK
+import WebKit
 
 
 struct Options {
@@ -88,10 +89,13 @@ class OOCalendarEventViewController: UITableViewController {
     @IBOutlet weak var evenEndTimeStackView: UIStackView!
     @IBOutlet weak var eventColorStackView: UIStackView!
     @IBOutlet weak var weekDaysStackView: UIStackView!
-    @IBOutlet weak var eventRemark: UITextField!
+//    @IBOutlet weak var eventRemark: UITextField!
+    var eventRemark:String = ""
     @IBOutlet weak var untilDateLabel: UILabel!
     @IBOutlet weak var untilDateStackView: UIStackView!
     @IBOutlet weak var deleteBtn: UIButton!
+    
+    @IBOutlet weak var webRemark: UIWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,8 +128,8 @@ class OOCalendarEventViewController: UITableViewController {
         //隐藏输入法
         eventTitle.delegate = self
         eventTitle.returnKeyType = .done
-        eventRemark.delegate = self
-        eventRemark.returnKeyType = .done
+//        eventRemark.delegate = self
+//        eventRemark.returnKeyType = .done
         
         eventStartTime.text = Date().toString("yyyy-MM-dd HH:mm")
         eventEndTime.text = Date().add(component: .hour, value: 1).toString("yyyy-MM-dd HH:mm")
@@ -181,7 +185,7 @@ class OOCalendarEventViewController: UITableViewController {
             }
         })
         viewModel.getMyCalendarList().then { (calendars) in
-            self.calendarList = calendars.myCalendars ?? []
+            self.calendarList = (calendars.myCalendars ?? []) + (calendars.unitCalendars ?? [])
             self.calendarPickerView.reloadAllComponents()
             //初始化颜色
             if !self.calendarList.isEmpty {
@@ -201,8 +205,21 @@ class OOCalendarEventViewController: UITableViewController {
         }.catch { (error) in
             DDLogError(error.localizedDescription)
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(registerCompletion), name: Notification.Name(rawValue:"RegisterCompletionNotification"),
+                                                             object: nil)
+
     }
 
+    @objc func registerCompletion(notification:Notification){
+        let theData = notification.userInfo!
+        let contentHtml = theData["contentHtml"] as! String
+        print("contentHtml =" , contentHtml)
+        self.eventRemark = contentHtml
+        self.webRemark.loadHTMLString(contentHtml == nil ? "" : contentHtml, baseURL: nil)
+    }
+
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -210,7 +227,10 @@ class OOCalendarEventViewController: UITableViewController {
     }
     
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        let navVC = segue.destination as! ZLNavigationController
+        let destVC = navVC.topViewController as! OOCalendarEditRemarkViewController
+         print(self.eventRemark)
+        destVC.contentHTML = self.eventRemark
     }
     
     
@@ -336,7 +356,8 @@ class OOCalendarEventViewController: UITableViewController {
                 return
             }
             let allday = eventAllDaySwitch.isOn
-            let remark = eventRemark.text ?? ""
+            //let remark = eventRemark.text ?? ""
+            let remark = eventRemark
             let startTime = eventStartTime.text ?? ""
             let endTime = eventEndTime.text ?? ""
            
@@ -384,7 +405,8 @@ class OOCalendarEventViewController: UITableViewController {
             return
         }
         let allday = eventAllDaySwitch.isOn
-        let remark = eventRemark.text ?? ""
+        // remark = eventRemark.text ?? ""
+        let remark = eventRemark
         let startTime = eventStartTime.text ?? ""
         let endTime = eventEndTime.text ?? ""
         let start = allday ? Date.date(startTime, formatter: "yyyy-MM-dd") : Date.date(startTime, formatter: "yyyy-MM-dd HH:mm")
@@ -550,7 +572,10 @@ class OOCalendarEventViewController: UITableViewController {
                 self.repeatPickerView.selectRow(index, inComponent: 0, animated: true)
             }
         }
-        eventRemark.text = eventInfo?.comment
+        // eventRemark.text = eventInfo?.comment
+         eventRemark = eventInfo?.comment as! String
+         self.webRemark.loadHTMLString(eventRemark == nil ? "" : eventRemark, baseURL: nil)
+
     }
     
     private func rruleDecode(rrule: String) {

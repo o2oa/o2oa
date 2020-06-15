@@ -128,5 +128,22 @@ extension String {
         return s
     }
 
+    // MARK:- 获取帐号中的中文名称
+    func getChinaName() -> String{
+        let userName = self
+        var strTemp = ""
+        if !userName.isBlank{
+              let userNameSplit =  userName.split("@");
+              if strTemp == "" {
+                 strTemp = userNameSplit[0]
+              }else{
+                  strTemp = strTemp + "," + userNameSplit[0]
+              }
+              print(strTemp)
+         }
+        return strTemp
+        
+    }
+
     
 }

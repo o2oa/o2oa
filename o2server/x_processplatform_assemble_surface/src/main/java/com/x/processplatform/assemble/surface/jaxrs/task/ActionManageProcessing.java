@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -33,10 +34,10 @@ class ActionManageProcessing extends BaseAction {
 			if (null == application) {
 				throw new ExceptionEntityNotExist(task.getApplication(), Application.class);
 			}
+			Process process = business.process().pick(task.getProcess());
 			// 需要对这个应用的管理权限
-			emc.beginTransaction(Task.class);
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson, task);
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			/* 如果有输入新的路由决策覆盖原有决策 */
 			if (StringUtils.isNotEmpty(wi.getRouteName())) {
