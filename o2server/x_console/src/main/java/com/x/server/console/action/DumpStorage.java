@@ -243,10 +243,10 @@ public class DumpStorage {
 	private List<String> entities() throws Exception {
 		List<String> list = new ArrayList<>();
 		if (StringUtils.equals(Config.dumpRestoreData().getMode(), DumpRestoreData.TYPE_FULL)) {
-			list.addAll((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
+			list.addAll((List<String>) Config.resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES));
 			return list;
 		}
-		for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
+		for (String str : (List<String>) Config.resource(Config.RESOURCE_STORAGECONTAINERENTITYNAMES)) {
 			Class<?> cls = Class.forName(str);
 			ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
 			if (Objects.equals(containerEntity.reference(), Reference.strong)) {
