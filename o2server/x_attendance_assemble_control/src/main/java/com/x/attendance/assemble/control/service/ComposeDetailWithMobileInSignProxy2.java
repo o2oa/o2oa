@@ -59,9 +59,9 @@ class ComposeDetailWithMobileInSignProxy2 {
 		detail.setRecordDateString( mobileDetail.getRecordDateString() );
 		detail.setOnDutyTime( onDutyTime ); //最早的一次打卡作为当天的上班签到打卡
 		if( StringUtils.equals(morningOffdutyTime, onDutyTime )){
-			detail.setMorningOffdutyTime( null );
+			detail.setMorningOffDutyTime( null );
 		}else{
-			detail.setMorningOffdutyTime( morningOffdutyTime ); //午休打卡时间
+			detail.setMorningOffDutyTime( morningOffdutyTime ); //午休打卡时间
 		}
 		if( StringUtils.equals(offDutyTime, onDutyTime ) || StringUtils.equals(morningOffdutyTime, offDutyTime ) ){
 			detail.setOffDutyTime( null );

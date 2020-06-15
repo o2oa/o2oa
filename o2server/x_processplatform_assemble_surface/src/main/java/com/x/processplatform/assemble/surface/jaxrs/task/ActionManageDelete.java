@@ -15,6 +15,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageDelete extends BaseAction {
 
@@ -30,14 +31,15 @@ class ActionManageDelete extends BaseAction {
 			if (null == application) {
 				throw new ExceptionEntityNotExist(task.getApplication(), Application.class);
 			}
+			Process process = business.process().pick(task.getProcess());
 			// if (!StringUtils.equals(task.getApplication(),
 			// application.getId())) {
 			// throw new ApplicationNotMatchException(application.getId(),
 			// task.getApplication());
 			// }
-			/** 需要对这个应用的管理权限 */
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson, application);
+			// 需要对这个应用的管理权限
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
 					"task/" + URLEncoder.encode(task.getId(), DefaultCharset.name));

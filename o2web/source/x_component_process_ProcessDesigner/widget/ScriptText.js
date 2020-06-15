@@ -74,15 +74,15 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
                 //     this.fireEvent("change", [value]);
                 // }.bind(this));
 
-                this.createScriptReferenceMenu();
-
-                this.editor.addEvent("reference", function(editor, e, e1){
-                    if (!this.scriptReferenceMenu){
-                        this.createScriptReferenceMenu(this.showReferenceMenu.bind(this));
-                    }else{
-                        this.showReferenceMenu();
-                    }
-                }.bind(this));
+                // this.createScriptReferenceMenu();
+                //
+                // this.editor.addEvent("reference", function(editor, e, e1){
+                //     if (!this.scriptReferenceMenu){
+                //         this.createScriptReferenceMenu(this.showReferenceMenu.bind(this));
+                //     }else{
+                //         this.showReferenceMenu();
+                //     }
+                // }.bind(this));
 
                 if (callback) callback();
 

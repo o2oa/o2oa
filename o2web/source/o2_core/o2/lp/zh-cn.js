@@ -359,6 +359,7 @@ o2.LP.authentication = {
     "LoginFormTitle": "欢迎登录",
     "SignUpFormTitle": "欢迎注册",
     "ResetPasswordFormTitle": "找回密码",
+    "ChangePasswordFormTitle" : "密码已过期",
     "userName": "用户名",
     "password": "密码",
     "verificationCode": "验证码",
@@ -412,7 +413,15 @@ o2.LP.authentication = {
     "resetPasswordSuccessWord": "请牢记您新设置的密码。",
     "resetPasswordFailWord": "请核对您的用户名和短信验证码。",
     "backtoModify": "返回修改",
-    "pageNotFound": "404错误，未找到服务或服务器已断开"
+    "pageNotFound": "404错误，未找到服务或服务器已断开",
+    "submitAction" : "确定",
+    "oldPassword" : "原密码",
+    "inputYourOldPassword" : "请输入原密码",
+    "newPassword" : "新密码",
+    "inputYourNewPassword" : "请输入新密码",
+    "changePasswordSuccess" : "修改密码成功"
+
+
 };
 o2.LP.script = {
     "error": "脚本运行错误，请查看以下详细信息"

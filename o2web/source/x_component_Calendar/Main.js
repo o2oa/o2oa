@@ -1147,8 +1147,8 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
 
                     new Element("div", {
                         styles : this.css.marketItemDescriptiontInfor,
-                        text : d.description,
-                        title : d.description
+                        text : d.description || "",
+                        title : d.description || ""
                     }).inject( middleNode );
 
                     var followedAction, followAction;

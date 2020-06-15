@@ -246,14 +246,14 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
 		this.iconNode.getFirst("div").setStyles(this.css.iconNodeIcon);
 		this.iconNode.getLast("div").setStyles(this.css.iconNodeText);
 	},
-    _setEditStyle: function(name, input, oldValue){
-		if (name==="subformSelected"){
-			if (this.json.subformSelected!==oldValue){
+    _setEditStyle_custom : function(name, input, oldValue){
+        if (name==="subformSelected"){
+            if (this.json.subformSelected!==oldValue){
                 this.redoSelectedSubform(name, input, oldValue);
-			}
-		}
+            }
+        }
         if (name==="subformType"){
-		    if (this.json.subformType!==oldValue){
+            if (this.json.subformType!==oldValue){
                 if (this.json.subformType !== "script"){
                     this.redoSelectedSubform(name, $(this.property.data.pid+"selectSubform").getElement("select"), "");
                 }
@@ -265,7 +265,7 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
                 }
             }
         }
-	},
+    },
     redoSelectedSubform: function(name, input, oldValue){
         if (this.json.subformSelected==="none") this.json.subformSelected="";
         if (this.json.subformSelected && this.json.subformSelected!=="none"){

@@ -747,7 +747,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this.toolbarNode.setStyles({
                     "position": "absolute",
                     "width": ""+x+"px",
-                    "z-index": 20000,
+                    "z-index": 200,
                     "top": paddingTop+"px",
                     "left": ""+p.x+"px"
                 });

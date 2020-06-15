@@ -225,9 +225,11 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         var node = new Element("div", {"styles": this.css.categoryElementItemAllNode, "text": MWF.xApplication.process.ProcessManager.LP.all}).inject(this.categoryElementNode);
         if (!this.elementCategory) node.setStyles(this.css.categoryElementItemAllNode_current);
         this.categoryList.each(function(category){
-            node = new Element("div", {"styles": this.css.categoryElementItemNode, "text": category}).inject(this.categoryElementNode);
-            if (this.elementCategory===category){
-                node.setStyles(this.css.categoryElementItemNode_current);
+            if( category && category !== "null" ){
+                node = new Element("div", {"styles": this.css.categoryElementItemNode, "text": category}).inject(this.categoryElementNode);
+                if (this.elementCategory===category){
+                    node.setStyles(this.css.categoryElementItemNode_current);
+                }
             }
         }.bind(this));
         var categoryItems = this.categoryElementNode.getChildren();

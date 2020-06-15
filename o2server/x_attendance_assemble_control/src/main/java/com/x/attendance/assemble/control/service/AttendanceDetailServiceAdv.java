@@ -229,7 +229,7 @@ public class AttendanceDetailServiceAdv {
 	}
 
 	public AttendanceDetailMobile getMobile(String id) throws Exception {
-		if( id == null || id.isEmpty() ){
+		if( StringUtils.isEmpty( id )){
 			return null;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -269,7 +269,6 @@ public class AttendanceDetailServiceAdv {
 					//1、一天只打上下班两次卡
 					detail = new ComposeDetailWithMobileInSignProxy1().compose( mobileDetails, scheduleSetting, debugger);
 				}
-
 				if( detail_old == null ) {
 					detail.setBatchName( "FromMobile_" + dateOperation.getNowTimeChar() );
 					emc.beginTransaction( AttendanceDetail.class );
@@ -282,7 +281,6 @@ public class AttendanceDetailServiceAdv {
 					emc.check( detail_old , CheckPersistType.all );
 					emc.commit();
 				}
-
 				emc.beginTransaction( AttendanceDetailMobile.class );
 				for( AttendanceDetailMobile detailMobile : mobileDetails ) {
 					detailMobile.setRecordStatus(1);
@@ -303,4 +301,19 @@ public class AttendanceDetailServiceAdv {
 	}
 
 
+	/**
+	 * 根据日期查询未签退的所有打卡记录ID
+	 * @param dateString yyyy-mm-dd
+	 * @return
+	 */
+	public List<String> listRecordWithDateAndNoOffDuty( String dateString ) throws Exception {
+		if( StringUtils.isEmpty( dateString )){
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.listRecordWithDateAndNoOffDuty( emc, dateString );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 }
