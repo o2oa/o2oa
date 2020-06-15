@@ -186,7 +186,7 @@ public class AttendanceDetail extends SliceJpaObject {
 	@FieldDescribe("上班下午打卡签退时间")
 	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + morningOffdutyTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String morningOffdutyTime;
+	private String morningOffDutyTime;
 
 	public static final String afternoonOnDutyTime_FIELDNAME = "afternoonOnDutyTime";
 	@FieldDescribe("下午上班打卡签到时间")
@@ -333,9 +333,9 @@ public class AttendanceDetail extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String archiveTime;
 
-	public String getMorningOffdutyTime() { return morningOffdutyTime; }
+	public String getMorningOffDutyTime() { return morningOffDutyTime; }
 
-	public void setMorningOffdutyTime(String morningOffdutyTime) { this.morningOffdutyTime = morningOffdutyTime; }
+	public void setMorningOffDutyTime(String morningOffDutyTime) { this.morningOffDutyTime = morningOffDutyTime; }
 
 	public String getAfternoonOnDutyTime() { return afternoonOnDutyTime; }
 
