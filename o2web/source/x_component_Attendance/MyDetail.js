@@ -124,9 +124,22 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
     loadConfig : function(){
         this.config = {};
         var v;
-        this.actions.getSettingCode( "APPEALABLE", function(json){
-            v =  json.data ? json.data.configValue : null
-        },null, false);
+        //需要判断申述类型listSetting2020年6月16日 by gee
+        this.configSetting = new Object(null);
+        this.actions.listSetting(function(json){
+            var data = json.data;
+            if(!!data){
+                json.data.map(function(e){
+                    this.configSetting[e.configCode]=e;
+                }.bind(this));
+                v = this.configSetting.APPEALABLE.configValue;
+            }else{
+                v = null;
+            }
+        }.bind(this),null,false);
+        /*this.actions.getSettingCode( "APPEALABLE", function(json){
+            v =  json.data ? json.data.configValue : null;
+        },null, false);*/
         if( !v ){
             this.config.APPEALABLE = true;
         }else{
@@ -666,8 +679,107 @@ MWF.xApplication.Attendance.MyDetail.SelfHolidayStaticView = new Class({
 MWF.xApplication.Attendance.MyDetail.Document = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.Document,
     appeal :function(){
-        var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
-        form.create();
+
+        if(this.explorer.configSetting.APPEAL_AUDIFLOWTYPE.configValue=="BUILTIN"){
+            var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
+            form.create();
+        }else{
+            this.loadProcess(this.explorer.configSetting.APPEAL_AUDIFLOW_ID.configValue,null,null);
+        }
+
+    },
+    loadProcess: function(id, processData, latest){
+
+        this.getProcess(id, function(process){
+            MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+                var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, this.app, {
+                    "latest" : latest,
+                    "workData" : processData,
+                    "onStarted": function(data, title, processName){
+                        this.afterStartProcess(data, title, processName);
+                    }.bind(this)
+                });
+                starter.load();
+            }.bind(this));
+        }.bind(this));
+    },
+    afterStartProcess: function(data, title, processName){
+        var workInfors = [];
+        var currentTask = [];
+
+        data.each(function(work){
+            if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+            workInfors.push(this.getStartWorkInforObj(work));
+        }.bind(this));
+
+        if (currentTask.length===1){
+            var options = {"workId": currentTask[0], "appId": currentTask[0]};
+            this.app.desktop.openApplication(null, "process.Work", options);
+
+            this.createStartWorkResault(workInfors, title, processName, false);
+        }else{
+            this.createStartWorkResault(workInfors, title, processName, true);
+        }
+    },
+    createStartWorkResault: function(workInfors, title, processName, isopen){
+        var content = "";
+        workInfors.each(function(infor){
+            var users = [];
+            infor.users.each(function(uname){
+                users.push(MWF.name.cn(uname));
+            });
+
+            content += "<div><b>"+this.app.lp.nextActivity+"<font style=\"color: #ea621f\">"+infor.activity+"</font>, "+this.app.lp.nextUser+"<font style=\"color: #ea621f\">"+users.join(", ")+"</font></b>";
+            if (infor.currentTask && isopen){
+                content += "&nbsp;&nbsp;&nbsp;&nbsp;<span value=\""+infor.currentTask+"\">"+this.app.lp.deal+"</span></div>";
+            }else{
+                content += "</div>";
+            }
+        }.bind(this));
+
+        var t = workInfors[0].title || title;
+        var msg = {
+            "subject": this.app.lp.processStarted,
+            "content": "<div>"+this.app.lp.processStartedMessage+"“["+processName+"]"+t+"”</div>"+content
+        };
+
+        var tooltip = layout.desktop.message.addTooltip(msg);
+        var item = layout.desktop.message.addMessage(msg);
+
+        this.setStartWorkResaultAction(tooltip);
+        this.setStartWorkResaultAction(item);
+    },
+    getStartWorkInforObj: function(work){
+        var title = "";
+        var users = [];
+        var currentTask = "";
+        work.taskList.each(function(task, idx){
+            title = task.title;
+            users.push(task.person+"("+task.department + ")");
+            if (work.currentTaskIndex===idx) currentTask = task.id;
+        }.bind(this));
+        return {"activity": work.fromActivityName, "users": users, "currentTask": currentTask, "title" : title };
+    },
+    setStartWorkResaultAction: function(item){
+        var node = item.node.getElements("span");
+        node.setStyles(this.css.dealStartedWorkAction);
+        var _self = this;
+        node.addEvent("click", function(e){
+            var options = {"taskId": this.get("value"), "appId": this.get("value")};
+            _self.app.desktop.openApplication(e, "process.Work", options);
+        });
+    },
+    getProcess: function(id, callback){
+        // MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
+        //     var action = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
+        //     action.getProcess(id, function(json){
+        this.action = new o2.xDesktop.Actions.RestActions("", "x_processplatform_assemble_surface", "");
+        this.action.actions = {"getProces": {"uri": "/jaxrs/process/{id}/complex"}};
+        this.action.invoke({"name": "getProces", "async": false, "parameter": {"id": id}, "success": function(json){
+                if (callback) callback(json.data);
+            }.bind(this)});
+        //     }.bind(this));
+        // }.bind(this));
     },
     seeAppeal : function(){
         var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
