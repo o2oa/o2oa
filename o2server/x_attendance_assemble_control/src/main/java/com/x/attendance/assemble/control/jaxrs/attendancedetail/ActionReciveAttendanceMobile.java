@@ -93,17 +93,24 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				distinguishedName = currentPerson.getDistinguishedName();
 			}
 			attendanceDetailMobile.setEmpName( distinguishedName );
-			if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
-				Person person = userManagerService.getPersonObjByName( distinguishedName );
-				if( person != null ){
-					if( StringUtils.isNotEmpty( person.getEmployee() )){
-						attendanceDetailMobile.setEmpNo(person.getEmployee());
-					}else{
-						attendanceDetailMobile.setEmpNo( distinguishedName );
+			Person person = userManagerService.getPersonObjByName( distinguishedName );
+
+			if( person != null ){
+				if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
+					if( person != null ){
+						if( StringUtils.isNotEmpty( person.getEmployee() )){
+							attendanceDetailMobile.setEmpNo(person.getEmployee());
+						}else{
+							attendanceDetailMobile.setEmpNo( distinguishedName );
+						}
 					}
 				}
 			}else{
-				attendanceDetailMobile.setEmpNo( wrapIn.getEmpNo() );
+				//人员不存在
+				check = false;
+				Exception exception = new ExceptionAttendanceDetailProcess(
+						"考勤人员不存在.DistinguishedName:" + distinguishedName );
+				result.error(exception);
 			}
 		}
 
@@ -191,10 +198,10 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		@FieldDescribe( "Id, 可以为空，如果ID重复，则为更新原有数据." )
 		private String id;
 		
-		@FieldDescribe( "员工号, 可以为空，如果为空则与empName相同." )
+//		@FieldDescribe( "员工号, 可以为空，如果为空则与empName相同." )
 		private String empNo;
 
-		@FieldDescribe( "员工姓名, 可以为空，如果为空则取当前登录人员." )
+		@FieldDescribe( "员工标识, 可以为空但不能错误：DistinguishedName，如果为空则取当前登录人员." )
 		private String empName;
 
 //		@FieldDescribe( "打卡记录日期字符串：yyyy-mm-dd, 必须填写." )
