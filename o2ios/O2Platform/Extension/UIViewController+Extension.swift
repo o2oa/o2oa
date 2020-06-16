@@ -325,10 +325,23 @@ extension UIViewController {
 // MARK: - 业务工具
 extension UIViewController {
     
+    
+    func takePhoto(delegate: (UIImagePickerControllerDelegate & UINavigationControllerDelegate)?) {
+        var sourceType = UIImagePickerController.SourceType.camera
+        if !UIImagePickerController.isSourceTypeAvailable(sourceType) {
+            sourceType = .photoLibrary
+        }
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.sourceType = sourceType
+        picker.delegate = delegate
+        self.present(picker, animated:true, completion:nil)//进入照相界面
+    }
+    
     //照片选择器
     func choosePhotoWithImagePicker(callback: @escaping (String, Data)-> Void) {
-        let chooseImage = FileBSImagePickerViewController()
-        self.bs_presentImagePickerController(chooseImage, animated: true, select: nil, deselect: nil, cancel: nil, finish: {
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        presentImagePicker(vc, select: nil, deselect: nil, cancel: nil, finish: {
             (arr) in
             let count = arr.count
             print("选择了照片数量：\(count)")

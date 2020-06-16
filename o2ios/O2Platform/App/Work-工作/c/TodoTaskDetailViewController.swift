@@ -869,9 +869,8 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
         self.uploadAttachment(site, uploadURL: updloadURL!)
     }
     private func uploadAttachment(_ site:String,uploadURL url:String){
-        let vc = FileBSImagePickerViewController()
-        bs_presentImagePickerController(vc, animated: true,
-                                        select: { (asset: PHAsset) -> Void in
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        presentImagePicker(vc, select: { (asset: PHAsset) -> Void in
                                             // User selected an asset.
                                             // Do something with it, start upload perhaps?
         }, deselect: { (asset: PHAsset) -> Void in
@@ -1056,9 +1055,8 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
     }
     
     private func replaceAttachment(_ site:String,_ attachmentId:String,replaceURL url:String){
-        let vc = FileBSImagePickerViewController()
-        bs_presentImagePickerController(vc, animated: true,
-                                        select: { (asset: PHAsset) -> Void in
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        presentImagePicker(vc, select: { (asset: PHAsset) -> Void in
                                             // User selected an asset.
                                             // Do something with it, start upload perhaps?
         }, deselect: { (asset: PHAsset) -> Void in

@@ -9,6 +9,10 @@
 import UIKit
 import CocoaLumberjack
 
+protocol IMChatMessageDelegate {
+    func clickImageMessage(fileId: String?, tempPath: String?)
+}
+
 class IMChatMessageViewCell: UITableViewCell {
 
     @IBOutlet weak var avatarImage: UIImageView!
@@ -18,6 +22,8 @@ class IMChatMessageViewCell: UITableViewCell {
     @IBOutlet weak var messageBackgroundWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBackgroundHeight: NSLayoutConstraint!
     private let messageWidth = 176
+    
+    var delegate: IMChatMessageDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -140,6 +146,9 @@ class IMChatMessageViewCell: UITableViewCell {
         }
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(imageView)
+        imageView.addTapGesture { (tap) in
+            self.delegate?.clickImageMessage(fileId: info.fileId, tempPath: info.fileTempPath)
+        }
         let top = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: imageView.superview!, attribute: .top, multiplier: 1, constant: 10)
         let bottom = NSLayoutConstraint(item: imageView.superview!, attribute: .bottom, relatedBy: .equal, toItem: imageView, attribute: .bottom, multiplier: 1, constant: 10)
         let left = NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal, toItem: imageView.superview!, attribute: .leading, multiplier: 1, constant: 10)

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import Promises
+import CocoaLumberjack
 
 //心跳消息
 let o2_im_ws_heartbeat = "heartbeat"
@@ -32,4 +34,44 @@ func o2ImEmojiPath(emojiBody: String) -> String {
         return "im_emotion_\(s)"
     }
     return ""
+}
+
+class O2IMFileManager {
+    static let shared: O2IMFileManager = {
+        return O2IMFileManager()
+    }()
+
+    private let communicateAPI = {
+        return OOMoyaProvider<CommunicateAPI>()
+    }()
+
+    private init() { }
+    //根据id下载文件，并返回文件的本地url
+    func getFileLocalUrl(fileId: String) -> Promise<URL> {
+        return Promise { fulfill, reject in
+            let url = self.localFilePath(fileId: fileId)
+            if FileUtil.share.fileExist(filePath: url.path) {
+                fulfill(url)
+            } else {
+                self.communicateAPI.request(.imDownloadFullFile(fileId), completion: { result in
+                        switch result {
+                        case .success(_):
+                            DDLogError("下载成功。。。。。\(fileId)")
+                            fulfill(url)
+                            break
+                        case .failure(let err):
+                            DDLogError(err.localizedDescription)
+                            reject(err)
+                            break
+                        }
+                    })
+            }
+        }
+
+    }
+
+    func localFilePath(fileId: String) -> URL {
+        return FileUtil.share.cacheDir().appendingPathComponent("\(fileId).png")
+    }
+
 }

@@ -17,7 +17,7 @@ class IMChatMessageSendViewCell: UITableViewCell {
     @IBOutlet weak var messageBgWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBgHeight: NSLayoutConstraint!
     
-    
+    var delegate: IMChatMessageDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -88,6 +88,9 @@ class IMChatMessageSendViewCell: UITableViewCell {
         }
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(imageView)
+        imageView.addTapGesture { (tap) in
+            self.delegate?.clickImageMessage(fileId: info.fileId, tempPath: info.fileTempPath)
+        }
         let top = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: imageView.superview!, attribute: .top, multiplier: 1, constant: 10)
         let bottom = NSLayoutConstraint(item: imageView.superview!, attribute: .bottom, relatedBy: .equal, toItem: imageView, attribute: .bottom, multiplier: 1, constant: 10)
         let left = NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal, toItem: imageView.superview!, attribute: .leading, multiplier: 1, constant: 10)

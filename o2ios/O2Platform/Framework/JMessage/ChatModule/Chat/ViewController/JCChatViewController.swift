@@ -677,11 +677,8 @@ extension JCChatViewController: SAIToolboxInputViewDataSource, SAIToolboxInputVi
 //        present(vc, animated: true)
         
         
-        let vc = FileBSImagePickerViewController()
-        vc.defaultmaxNumberOfSelections = 9
-        vc.defaultTakePhotos = false
-        bs_presentImagePickerController(vc, animated: true,
-                                        select: { (asset: PHAsset) -> Void in
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        presentImagePicker(vc, select: { (asset: PHAsset) -> Void in
                                             // User selected an asset.
                                             // Do something with it, start upload perhaps?
         }, deselect: { (asset: PHAsset) -> Void in

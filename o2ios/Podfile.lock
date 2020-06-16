@@ -10,11 +10,7 @@ PODS:
   - BaiduMapKit (5.2.0)
   - BetterSegmentedControl (1.2.1)
   - BMKLocationKit (1.8.5)
-  - BSGridCollectionViewLayout (1.2.2)
-  - BSImagePicker (2.9.0):
-    - BSGridCollectionViewLayout (= 1.2.2)
-    - BSImageView (= 1.0.2)
-  - BSImageView (1.0.2)
+  - BSImagePicker (3.1.1)
   - Bugly (2.5.0)
   - Charts (3.2.1):
     - Charts/Core (= 3.2.1)
@@ -87,7 +83,7 @@ DEPENDENCIES:
   - BaiduMapKit
   - BetterSegmentedControl (~> 1.2)
   - BMKLocationKit
-  - BSImagePicker
+  - BSImagePicker (~> 3.1.0)
   - Bugly
   - Charts
   - Chrysan
@@ -131,9 +127,7 @@ SPEC REPOS:
     - BaiduMapKit
     - BetterSegmentedControl
     - BMKLocationKit
-    - BSGridCollectionViewLayout
     - BSImagePicker
-    - BSImageView
     - Bugly
     - Charts
     - Chrysan
@@ -188,9 +182,7 @@ SPEC CHECKSUMS:
   BaiduMapKit: 075465cf7134d0ebf81796b93a59d504c350d9a4
   BetterSegmentedControl: b27bddbdff29b6cae988678d6cd106858986cd03
   BMKLocationKit: fd3d6b4a9a3a1a2763819f56b780bda5fc5b8726
-  BSGridCollectionViewLayout: 3e6f23b3a2b4f0ca9afae09ca01389d1057f7b32
-  BSImagePicker: 553707de1adaad42eac252e0b84d20dbdba83fe9
-  BSImageView: ab22ff8cae61f1ae17a3c9efeeb216af3cf84a09
+  BSImagePicker: 86f28e0f63b78d35fec7c6f0174b7af9e6f1431e
   Bugly: 3ca9f255c01025582df26f9222893b383c7e4b4e
   Charts: f122fb70b19847fa5817d018b77d6c5a2296ab25
   Chrysan: 6bf6682adb2db76f7f5c103930a8c6670f54eebe
@@ -228,6 +220,6 @@ SPEC CHECKSUMS:
   YHPhotoKit: e88368af1fca0a110d41b88417088f7e49876981
   YHPopupView: 96d9c05c79a2a17cf69c3def09e5305cfae9e8e8
 
-PODFILE CHECKSUM: c9dd30b0987ffddb95ec8f9c0af2a4134a03ae69
+PODFILE CHECKSUM: 7994fed5103facb0bfff5a065e5612ebe4b411a2
 
 COCOAPODS: 1.8.4

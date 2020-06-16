@@ -1030,26 +1030,12 @@
 			remoteGlobalIDString = 5F72A30590D0D18EC2C2BBC2D902C6D1;
 			remoteInfo = BetterSegmentedControl;
 		};
-		B10AC59221058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E18B1C0DEBD04E12A5DC8B40B7BF5150;
-			remoteInfo = BSGridCollectionViewLayout;
-		};
 		B10AC59421058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D13C7C5DC1991163C85D47D9B72B42DD;
 			remoteInfo = BSImagePicker;
-		};
-		B10AC59621058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 797083F5F27AFF01045BE4809698B5C1;
-			remoteInfo = "BSImagePicker-BSImagePicker";
 		};
 		B10AC59A21058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1260,13 +1246,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 85979644862830BD1DFFD1D60F0D64AE;
 			remoteInfo = RxAtomic;
-		};
-		B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8B824035EFF627D7343420A8E0BC044B;
-			remoteInfo = BSImageView;
 		};
 		B1F79C77233B5F9B004D0AEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2534,10 +2513,7 @@
 				B10AC58D21058DAE00179587 /* AlamofireNetworkActivityIndicator.framework */,
 				B10AC58F21058DAE00179587 /* AlamofireObjectMapper.framework */,
 				B10AC59121058DAE00179587 /* BetterSegmentedControl.framework */,
-				B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */,
 				B10AC59521058DAE00179587 /* BSImagePicker.framework */,
-				B10AC59721058DAE00179587 /* BSImagePicker.bundle */,
-				B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */,
 				B10AC59B21058DAE00179587 /* Charts.framework */,
 				B1F79C78233B5F9B004D0AEE /* Chrysan.framework */,
 				B1F79C7A233B5F9B004D0AEE /* Chrysan.bundle */,
@@ -5197,25 +5173,11 @@
 			remoteRef = B10AC59021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSGridCollectionViewLayout.framework;
-			remoteRef = B10AC59221058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B10AC59521058DAE00179587 /* BSImagePicker.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = BSImagePicker.framework;
 			remoteRef = B10AC59421058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B10AC59721058DAE00179587 /* BSImagePicker.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = BSImagePicker.bundle;
-			remoteRef = B10AC59621058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B10AC59B21058DAE00179587 /* Charts.framework */ = {
@@ -5426,13 +5388,6 @@
 			fileType = wrapper.framework;
 			path = RxAtomic.framework;
 			remoteRef = B1AE4E6321A3F53A00183FCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSImageView.framework;
-			remoteRef = B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B1F79C78233B5F9B004D0AEE /* Chrysan.framework */ = {
@@ -5722,9 +5677,7 @@
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/BSGridCollectionViewLayout/BSGridCollectionViewLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/BSImagePicker/BSImagePicker.framework",
-				"${BUILT_PRODUCTS_DIR}/BSImageView/BSImageView.framework",
 				"${BUILT_PRODUCTS_DIR}/BetterSegmentedControl/BetterSegmentedControl.framework",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/Chrysan/Chrysan.framework",
@@ -5765,9 +5718,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSGridCollectionViewLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImagePicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImageView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BetterSegmentedControl.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Chrysan.framework",
@@ -6801,8 +6752,6 @@
 					"-framework",
 					"\"AlamofireObjectMapper\"",
 					"-framework",
-					"\"BSGridCollectionViewLayout\"",
-					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",
 					"\"Charts\"",
@@ -6915,8 +6864,6 @@
 					"\"AlamofireNetworkActivityIndicator\"",
 					"-framework",
 					"\"AlamofireObjectMapper\"",
-					"-framework",
-					"\"BSGridCollectionViewLayout\"",
 					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",
