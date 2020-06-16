@@ -13,7 +13,7 @@ import com.x.teamwork.core.entity.Attachment;
 import com.x.teamwork.core.entity.Chat;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
 import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
@@ -205,7 +205,7 @@ public class DynamicPersistService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Dynamic projectExtFieldReleSaveDynamic( ProjectExtFieldRele object_old, ProjectExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
+	public Dynamic projectExtFieldReleSaveDynamic( CustomExtFieldRele object_old, CustomExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
 		if ( object == null) {
 			throw new Exception("object is null.");
 		}
@@ -222,13 +222,13 @@ public class DynamicPersistService {
 	}
 	
 	/**
-	 * 保存项目删除操作动态
+	 * 保存扩展属性信息删除操作动态
 	 * @param object
 	 * @param effectivePerson
 	 * @return
 	 * @throws Exception
 	 */
-	public Dynamic projectExtFieldReleDeleteDynamic( ProjectExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
+	public Dynamic projectExtFieldReleDeleteDynamic( CustomExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
 		if ( object == null) {
 			throw new Exception("object is null.");
 		}

@@ -9,70 +9,70 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 
 /**
  * 对项目扩展属性查询信息的服务
  * 
- * @author O2LEE
+ * @author O2LEE,O2LJ
  */
-class ProjectExtFieldReleService {
+class CustomExtFieldReleService {
 
-	protected List<ProjectExtFieldRele> list(EntityManagerContainer emc, List<String> groupIds) throws Exception {
+	protected List<CustomExtFieldRele> list(EntityManagerContainer emc, List<String> groupIds) throws Exception {
 		Business business = new Business( emc );
-		return business.projectExtFieldReleFactory().list(groupIds);
+		return business.customExtFieldReleFactory().list(groupIds);
 	}
 	
 	/**
-	 * 根据项目扩展属性ID查询项目扩展属性的信息
+	 * 根据扩展属性ID查询项目扩展属性的信息
 	 * @param emc
 	 * @param id
 	 * @return
 	 * @throws Exception 
 	 */
-	protected ProjectExtFieldRele get( EntityManagerContainer emc, String id ) throws Exception {
+	protected CustomExtFieldRele get( EntityManagerContainer emc, String id ) throws Exception {
 		Business business = new Business( emc );
-		return business.projectExtFieldReleFactory().get( id );
+		return business.customExtFieldReleFactory().get( id );
 	}
 
 	/**
-	 * 根据项目ID查询项目关联的所有扩展属性关联信息
+	 * 根据项目或任务ID查询关联的所有扩展属性关联信息
 	 * @param emc
-	 * @param projectId
+	 * @param correlationId
 	 * @return
 	 * @throws Exception 
 	 */
-	protected List<ProjectExtFieldRele> listReleWithProject(EntityManagerContainer emc, String projectId ) throws Exception {
+	protected List<CustomExtFieldRele> listReleWithCorrelation(EntityManagerContainer emc, String correlationId ) throws Exception {
 		Business business = new Business( emc );
-		return business.projectExtFieldReleFactory().listFieldReleObjByProject( projectId );
+		return business.customExtFieldReleFactory().listFieldReleObjByCorrelation( correlationId );
 	}
 	
 	/**
-	 * 根据项目扩展属性ID删除项目扩展属性信息
+	 * 根据扩展属性ID删除项目扩展属性信息
 	 * @param emc
 	 * @param id
 	 * @throws Exception 
 	 */
 	protected void delete( EntityManagerContainer emc, String id ) throws Exception {
-		ProjectExtFieldRele projectExtFieldRele = emc.find( id, ProjectExtFieldRele.class );
-		emc.beginTransaction( ProjectExtFieldRele.class );
-		if( projectExtFieldRele != null ) {
-			emc.remove( projectExtFieldRele , CheckRemoveType.all );
+		CustomExtFieldRele customExtFieldRele = emc.find( id, CustomExtFieldRele.class );
+		emc.beginTransaction( CustomExtFieldRele.class );
+		if( customExtFieldRele != null ) {
+			emc.remove( customExtFieldRele , CheckRemoveType.all );
 		}
 		emc.commit();
 	}
 
 	/**
-	 * 向数据库持久化项目扩展属性信息
+	 * 向数据库持久化扩展属性信息
 	 * @param emc
-	 * @param projectExtFieldRele
+	 * @param customExtFieldRele
 	 * @return
 	 * @throws Exception 
 	 */
-	protected ProjectExtFieldRele save( EntityManagerContainer emc, ProjectExtFieldRele object ) throws Exception {
-		if( StringUtils.isEmpty( object.getProjectId() )  ){
+	protected CustomExtFieldRele save( EntityManagerContainer emc, CustomExtFieldRele object ) throws Exception {
+		/*if( StringUtils.isEmpty( object.getCorrelationId() )  ){
 			throw new Exception("projectId can not empty for save field rele.");
-		}
+		}*/
 		if( StringUtils.isEmpty( object.getExtFieldName() )  ){
 			throw new Exception("extFieldName can not empty for save field rele.");
 		}
@@ -80,20 +80,20 @@ class ProjectExtFieldReleService {
 			throw new Exception("displayName can not empty for save field rele.");
 		}
 		Business business = new Business( emc );
-		ProjectExtFieldRele projectExtFieldRele = null;
-		List<ProjectExtFieldRele> projectExtFieldReleList =  business.projectExtFieldReleFactory().listWithFieldNameAndProject( object.getExtFieldName(), object.getProjectId() );
-		if( ListTools.isNotEmpty( projectExtFieldReleList )) {
-			projectExtFieldRele = projectExtFieldReleList.get( 0 );
-			object.copyTo( projectExtFieldRele );
-			emc.beginTransaction( ProjectExtFieldRele.class );
-			emc.check( projectExtFieldRele, CheckPersistType.all);
+		CustomExtFieldRele customExtFieldRele = null;
+		List<CustomExtFieldRele> customExtFieldReleList =  business.customExtFieldReleFactory().listWithFieldNameAndCorrelation( object.getExtFieldName(), object.getCorrelationId() );
+		if( ListTools.isNotEmpty( customExtFieldReleList )) {
+			customExtFieldRele = customExtFieldReleList.get( 0 );
+			object.copyTo( customExtFieldRele );
+			emc.beginTransaction( CustomExtFieldRele.class );
+			emc.check( customExtFieldRele, CheckPersistType.all);
 			emc.commit();
-			return projectExtFieldRele;
+			return customExtFieldRele;
 		}else {
 			if( StringUtils.isEmpty( object.getId())) {
-				object.setId( ProjectExtFieldRele.createId() );
+				object.setId( CustomExtFieldRele.createId() );
 			}
-			emc.beginTransaction( ProjectExtFieldRele.class );
+			emc.beginTransaction( CustomExtFieldRele.class );
 			emc.persist( object, CheckPersistType.all);
 			emc.commit();
 			return object;
@@ -107,8 +107,8 @@ class ProjectExtFieldReleService {
 	 * @return
 	 * @throws Exception 
 	 */
-	protected ProjectExtFieldRele save( EntityManagerContainer emc, String projectId, String extFieldName,  String displayName ) throws Exception {
-		ProjectExtFieldRele projectExtFieldRele = null;
+	protected CustomExtFieldRele save( EntityManagerContainer emc, String projectId, String extFieldName,  String displayName ) throws Exception {
+		CustomExtFieldRele projectExtFieldRele = null;
 		if( StringUtils.isEmpty( projectId )  ){
 			throw new Exception("projectId can not empty for save field rele.");
 		}
@@ -118,8 +118,8 @@ class ProjectExtFieldReleService {
 		if( StringUtils.isEmpty( displayName )  ){
 			throw new Exception("displayName can not empty for save field rele.");
 		}
-		projectExtFieldRele = new ProjectExtFieldRele();
-		projectExtFieldRele.setProjectId(projectId);
+		projectExtFieldRele = new CustomExtFieldRele();
+		projectExtFieldRele.setCorrelationId(projectId);
 		projectExtFieldRele.setExtFieldName(extFieldName);
 		projectExtFieldRele.setDisplayName(displayName);	
 		return  save( emc, projectExtFieldRele );
@@ -133,14 +133,14 @@ class ProjectExtFieldReleService {
 			throw new Exception("extFieldName can not empty for save field rele.");
 		}
 		Business business = new Business( emc );
-		List<ProjectExtFieldRele> fieldReles = business.projectExtFieldReleFactory().listWithFieldNameAndProject( extFieldName, projectId );
+		List<CustomExtFieldRele> fieldReles = business.customExtFieldReleFactory().listWithFieldNameAndCorrelation( extFieldName, projectId );
 		if(ListTools.isNotEmpty(fieldReles )) {
 			return fieldReles.get(0).getDisplayName();
 		}
 		return null;
 	}
 	
-	public ProjectExtFieldRele getExtFieldRele(EntityManagerContainer emc, String projectId, String extFieldName) throws Exception {
+	public CustomExtFieldRele getExtFieldRele(EntityManagerContainer emc, String projectId, String extFieldName) throws Exception {
 		if( StringUtils.isEmpty( projectId )  ){
 			throw new Exception("projectId can not empty for save field rele.");
 		}
@@ -148,7 +148,7 @@ class ProjectExtFieldReleService {
 			throw new Exception("extFieldName can not empty for save field rele.");
 		}
 		Business business = new Business( emc );
-		List<ProjectExtFieldRele> fieldReles = business.projectExtFieldReleFactory().listWithFieldNameAndProject( extFieldName, projectId );
+		List<CustomExtFieldRele> fieldReles = business.customExtFieldReleFactory().listWithFieldNameAndCorrelation( extFieldName, projectId );
 		if(ListTools.isNotEmpty(fieldReles )) {
 			return fieldReles.get(0);
 		}

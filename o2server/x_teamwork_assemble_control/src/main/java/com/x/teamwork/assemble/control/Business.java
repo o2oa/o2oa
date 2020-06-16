@@ -13,7 +13,7 @@ import com.x.teamwork.assemble.control.factory.ChatFactory;
 import com.x.teamwork.assemble.control.factory.DynamicFactory;
 import com.x.teamwork.assemble.control.factory.PriorityFactory;
 import com.x.teamwork.assemble.control.factory.ProjectConfigFactory;
-import com.x.teamwork.assemble.control.factory.ProjectExtFieldReleFactory;
+import com.x.teamwork.assemble.control.factory.CustomExtFieldReleFactory;
 import com.x.teamwork.assemble.control.factory.ProjectFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupReleFactory;
@@ -53,7 +53,7 @@ public class Business {
 	private TaskGroupFactory taskGroupFactory;
 	private TaskGroupReleFactory taskGroupReleFactory;
 	private TaskViewFactory taskViewFactory;
-	private ProjectExtFieldReleFactory projectExtFieldReleFactory;
+	private CustomExtFieldReleFactory customExtFieldReleFactory;
 	private ReviewFactory reviewFactory;
 	private BatchOperationFactory batchOperationFactory;
 	private TaskTagFactory taskTagFactory;	
@@ -121,11 +121,11 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public ProjectExtFieldReleFactory projectExtFieldReleFactory() throws Exception {
-		if (null == this.projectExtFieldReleFactory) {
-			this.projectExtFieldReleFactory = new ProjectExtFieldReleFactory( this );
+	public CustomExtFieldReleFactory customExtFieldReleFactory() throws Exception {
+		if (null == this.customExtFieldReleFactory) {
+			this.customExtFieldReleFactory = new CustomExtFieldReleFactory( this );
 		}
-		return projectExtFieldReleFactory;
+		return customExtFieldReleFactory;
 	}
 	
 	/**

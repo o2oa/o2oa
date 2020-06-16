@@ -19,7 +19,7 @@ import com.x.teamwork.core.entity.Chat;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.DynamicDetail;
 import com.x.teamwork.core.entity.Project;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
 import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
@@ -275,7 +275,7 @@ class DynamicService {
 	 * @param personal
 	 * @return
 	 */
-	private Dynamic composeNewDynamic( String objectType, String title, String description, String viewUrl, String optType, ProjectExtFieldRele object,  EffectivePerson effectivePerson, Boolean personal ) {
+	private Dynamic composeNewDynamic( String objectType, String title, String description, String viewUrl, String optType, CustomExtFieldRele object,  EffectivePerson effectivePerson, Boolean personal ) {
 		Dynamic dynamic = composeNewSimpleDynamic(objectType, title, description, viewUrl, optType, effectivePerson, personal );
 		dynamic.setProjectId( object.getId() );
 		dynamic.setProjectTitle( object.getDisplayName() + "(" + object.getExtFieldName() + ")" );
@@ -609,46 +609,46 @@ class DynamicService {
 	}
 	
 	/**
-	 * 组织项目扩展信息配置保存操作动态
+	 * 组织扩展信息配置保存操作动态
 	 * @param object_old
 	 * @param object
 	 * @param effectivePerson
 	 * @return
 	 */
-	protected Dynamic getProjectSaveExtFieldReleDynamic( ProjectExtFieldRele object_old, ProjectExtFieldRele object, EffectivePerson effectivePerson ) {
-		String objectType =  "PROJECT_EXTFIELD_RELE";
+	protected Dynamic getProjectSaveExtFieldReleDynamic( CustomExtFieldRele object_old, CustomExtFieldRele object, EffectivePerson effectivePerson ) {
+		String objectType =  "CUSTOM_EXTFIELD_RELE";
 		String optType =  "UPDATE_EXTFIELD_RELE";
-		String title =  "保存项目扩展属性";
+		String title =  "保存扩展属性";
 		String viewUrl = null;
 		String description = null;
 		if( object_old != null ) {
 			if( !object_old.getDisplayName().equalsIgnoreCase( object.getDisplayName() )) { //变更了显示名称
-				title =  "变更项目扩展属性显示名称";
+				title =  "变更扩展属性显示名称";
 				optType = "UPDATE_DISPLAYNAME";
-				description = effectivePerson.getName() + "变更了项目扩展属性"+object.getExtFieldName()+"的显示名称为：" + object.getDisplayName();
+				description = effectivePerson.getName() + "变更了扩展属性"+object.getExtFieldName()+"的显示名称为：" + object.getDisplayName();
 				return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
 			}
 		}else {
-			title =  "添加项目扩展属性信息";
+			title =  "添加扩展属性信息";
 			optType = "CREATE";
-			description = effectivePerson.getName() + "添加了新的项目扩展属性：" + object.getDisplayName() + "("+object.getExtFieldName()+")。";
+			description = effectivePerson.getName() + "添加了新的扩展属性：" + object.getDisplayName() + "("+object.getExtFieldName()+")。";
 			return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
 		}
 		return null;
 	}
 	
 	/**
-	 * 组织项目扩展信息配置删除操作动态
+	 * 组织扩展信息配置删除操作动态
 	 * @param object
 	 * @param effectivePerson
 	 * @return
 	 */
-	protected Dynamic getProjectDeleteExtFieldReleDynamic( ProjectExtFieldRele object, EffectivePerson effectivePerson ) {
-		String objectType =  "PROJECT_EXTFIELD_RELE";
-		String title =  "项目扩展属性信息删除";
+	protected Dynamic getProjectDeleteExtFieldReleDynamic( CustomExtFieldRele object, EffectivePerson effectivePerson ) {
+		String objectType =  "CUSTOM_EXTFIELD_RELE";
+		String title =  "扩展属性信息删除";
 		String viewUrl = null;
 		String optType =  "DELETE";
-		String description = effectivePerson.getName() +"删除了项目扩展属性：" + object.getDisplayName() + "("+object.getExtFieldName()+")。";
+		String description = effectivePerson.getName() +"删除了扩展属性：" + object.getDisplayName() + "("+object.getExtFieldName()+")。";
 		return composeNewDynamic( objectType, title, description, viewUrl, optType, object, effectivePerson, false );
 	}
 	

@@ -18,7 +18,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.teamwork.core.entity.Dynamic;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 
 public class ActionDelete extends BaseAction {
 
@@ -26,27 +26,27 @@ public class ActionDelete extends BaseAction {
 
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		ProjectExtFieldRele projectExtFieldRele = null;
+		CustomExtFieldRele customExtFieldRele = null;
 		Wo wo = new Wo();
 		Boolean check = true;
 
 		if ( StringUtils.isEmpty( flag ) ) {
 			check = false;
-			Exception exception = new ProjectExtFieldReleFlagForQueryEmptyException();
+			Exception exception = new CustomExtFieldReleFlagForQueryEmptyException();
 			result.error( exception );
 		}
 
 		if( Boolean.TRUE.equals( check ) ){
 			try {
-				projectExtFieldRele = projectExtFieldReleQueryService.get(flag);
-				if ( projectExtFieldRele == null) {
+				customExtFieldRele = customExtFieldReleQueryService.get(flag);
+				if ( customExtFieldRele == null) {
 					check = false;
-					Exception exception = new ProjectExtFieldReleNotExistsException(flag);
+					Exception exception = new CustomExtFieldReleNotExistsException(flag);
 					result.error( exception );
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ProjectExtFieldReleQueryException(e, "根据指定flag查询项目扩展属性关联信息对象时发生异常。flag:" + flag);
+				Exception exception = new CustomExtFieldReleQueryException(e, "根据指定flag查询扩展属性关联信息对象时发生异常。flag:" + flag);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
@@ -54,23 +54,23 @@ public class ActionDelete extends BaseAction {
 		
 		if( Boolean.TRUE.equals( check ) ){
 			try {
-				projectExtFieldRelePersistService.delete(flag, effectivePerson );
+				customExtFieldRelePersistService.delete(flag, effectivePerson );
 				
 				// 更新缓存
-				ApplicationCache.notify( ProjectExtFieldRele.class );
+				ApplicationCache.notify( CustomExtFieldRele.class );
 				
-				wo.setId( projectExtFieldRele.getId() );
+				wo.setId( customExtFieldRele.getId() );
 				
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ProjectExtFieldReleQueryException(e, "根据指定flag删除项目扩展属性关联信息对象时发生异常。flag:" + flag);
+				Exception exception = new CustomExtFieldReleQueryException(e, "根据指定flag删除扩展属性关联信息对象时发生异常。flag:" + flag);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
 		if( Boolean.TRUE.equals( check ) ){
 			try {					
-				Dynamic dynamic = dynamicPersistService.projectExtFieldReleDeleteDynamic( projectExtFieldRele, effectivePerson);
+				Dynamic dynamic = dynamicPersistService.projectExtFieldReleDeleteDynamic( customExtFieldRele, effectivePerson);
 				if( dynamic != null ) {
 					List<WoDynamic> dynamics = new ArrayList<>();
 					dynamics.add( WoDynamic.copier.copy( dynamic ) );

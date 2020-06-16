@@ -9,7 +9,7 @@ import com.x.teamwork.assemble.control.jaxrs.attachment.AttachmentAction;
 import com.x.teamwork.assemble.control.jaxrs.chat.ChatAction;
 import com.x.teamwork.assemble.control.jaxrs.config.SystemConfigAction;
 import com.x.teamwork.assemble.control.jaxrs.dynamic.DynamicAction;
-import com.x.teamwork.assemble.control.jaxrs.extfield.ProjectExtFieldReleAction;
+import com.x.teamwork.assemble.control.jaxrs.extfield.CustomExtFieldReleAction;
 import com.x.teamwork.assemble.control.jaxrs.global.GlobalAction;
 import com.x.teamwork.assemble.control.jaxrs.list.TaskListAction;
 import com.x.teamwork.assemble.control.jaxrs.project.ProjectAction;
@@ -20,6 +20,7 @@ import com.x.teamwork.assemble.control.jaxrs.taskListTemplate.TaskListTemplateAc
 import com.x.teamwork.assemble.control.jaxrs.taskgroup.TaskGroupAction;
 import com.x.teamwork.assemble.control.jaxrs.tasktag.TaskTagAction;
 import com.x.teamwork.assemble.control.jaxrs.taskview.TaskViewAction;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
@@ -37,10 +38,11 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add( DynamicAction.class );
 		this.classes.add( ChatAction.class );
 		this.classes.add( SystemConfigAction.class );
-		this.classes.add( ProjectExtFieldReleAction.class );
+		this.classes.add( CustomExtFieldReleAction.class );
 		this.classes.add( ProjectTemplateAction.class );
 		this.classes.add( TaskListTemplateAction.class );
 		this.classes.add( GlobalAction.class );
+		this.classes.add( CustomExtFieldRele.class );
 		return this.classes;
 	}
 
