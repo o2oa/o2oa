@@ -12,7 +12,7 @@ import java.util.Date;
 
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.AttendanceAppealInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceAppealInfo.table
+@Table(name = PersistenceProperties.AttendanceAppealAuditInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceAppealAuditInfo.table
 		+ JpaObject.IndexNameMiddle + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 				JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }))
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

@@ -368,11 +368,10 @@ public class AttendanceAppealInfoServiceAdv {
 
 	public AttendanceAppealAuditInfo getAppealAuditInfo(String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			emc.find( id, AttendanceAppealAuditInfo.class );
+			return emc.find( id, AttendanceAppealAuditInfo.class );
 		} catch ( Exception e ) {
 			throw e;
 		}
-		return null;
 	}
 
 

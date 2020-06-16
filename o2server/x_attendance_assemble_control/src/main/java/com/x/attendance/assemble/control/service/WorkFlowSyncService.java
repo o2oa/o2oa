@@ -16,16 +16,25 @@ import java.util.List;
 
 public class WorkFlowSyncService {
 
-	public static WoWorkComplex getWorkComplex( String workId ) throws Exception {
+	public static WoWorkOrCompletedComplex getWorkComplex( String workId ) throws Exception {
 		String serviceUri = "work/" + workId;
 		ActionResponse resp = ThisApplication.context().applications().getQuery(
 				x_processplatform_assemble_surface.class, serviceUri
 		);
-		WoWorkComplex wo = resp.getData( WoWorkComplex.class );
+		WoWorkOrCompletedComplex wo = resp.getData( WoWorkOrCompletedComplex.class );
 		return wo;
 	}
 
-	public static class WoWorkComplex extends GsonPropertyObject {
+	public static WoWorkOrCompletedComplex getWorkCompletedComplex( String workId ) throws Exception {
+		String serviceUri = "workcompleted/" + workId;
+		ActionResponse resp = ThisApplication.context().applications().getQuery(
+				x_processplatform_assemble_surface.class, serviceUri
+		);
+		WoWorkOrCompletedComplex wo = resp.getData( WoWorkOrCompletedComplex.class );
+		return wo;
+	}
+
+	public static class WoWorkOrCompletedComplex extends GsonPropertyObject {
 
 		@FieldDescribe("活动节点")
 		private WoActivity activity;
