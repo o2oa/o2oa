@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.assemble.control.jaxrs.attendanceschedulesetting.ActionGet;
+import com.x.attendance.entity.AttendanceScheduleSetting;
+import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -40,6 +43,7 @@ public class ActionListWithEmployee extends BaseAction {
 		Date maxRecordDate = null;
 		String maxRecordDateString = null;
 		DateOperation dateOperation = new DateOperation();
+		AttendanceScheduleSetting scheduleSetting = null;
 		Wi wrapIn = null;
 		Boolean check = true;
 
@@ -84,6 +88,7 @@ public class ActionListWithEmployee extends BaseAction {
 				q_month = dateOperation.getMonth(maxRecordDate);
 			}
 		}
+
 		if (check) {
 			if ( StringUtils.isNotEmpty( cycleYear ) && StringUtils.isNotEmpty( cycleMonth )) {
 				try {
@@ -133,6 +138,17 @@ public class ActionListWithEmployee extends BaseAction {
 				}
 			}
 		}
+
+		if (check) {
+			scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( q_empName, effectivePerson.getDebugger() );
+			Integer signProxy = scheduleSetting.getSignProxy();
+			if( scheduleSetting!= null  ){
+				for( Wo detail : wraps ){
+					detail.setSignProxy( signProxy );
+				}
+			}
+		}
+
 		result.setData(wraps);
 		return result;
 	}
@@ -314,6 +330,17 @@ public class ActionListWithEmployee extends BaseAction {
 	public static class Wo extends AttendanceDetail {
 
 		private static final long serialVersionUID = -5076990764713538973L;
+
+		@FieldDescribe("员工所属组织的排班打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
+		private Integer signProxy = 1;
+
+		public Integer getSignProxy() {
+			return signProxy;
+		}
+
+		public void setSignProxy(Integer signProxy) {
+			this.signProxy = signProxy;
+		}
 
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
