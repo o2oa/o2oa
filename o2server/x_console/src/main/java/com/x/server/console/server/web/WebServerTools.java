@@ -58,6 +58,10 @@ public class WebServerTools extends JettySeverTools {
 		 * 创建index.html
 		 */
 		createIndexPage();
+		/**
+		 * copyDefaultHtml
+		 */
+		copyDefaultHtml();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
@@ -110,6 +114,13 @@ public class WebServerTools extends JettySeverTools {
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static void copyDefaultHtml() throws Exception {
+		File file = new File(Config.dir_config(), "default.html");
+		if (file.exists() && file.isFile()) {
+			FileUtils.copyFile(file, new File(Config.base(), "servers/webServer/default.html"));
+		}
 	}
 
 	private static void updateFavicon() throws Exception {
@@ -189,9 +200,9 @@ public class WebServerTools extends JettySeverTools {
 			map.put("indexPage", Config.portal().getIndexPage());
 			map.put("webSocketEnable", Config.communicate().wsEnable());
 			map.put("urlMapping", Config.portal().getUrlMapping());
-			
+
 			/* 密码规则 */
-		    map.put("passwordRegex",Config.person().getPasswordRegex() );
+			map.put("passwordRegex", Config.person().getPasswordRegex());
 			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
 			
 		    /*RSA*/
