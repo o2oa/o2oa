@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -22,7 +23,7 @@ import java.util.Date;
  */
 public class ActionUploadFile extends BaseAction {
 
-    public ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId, String type, byte[] bytes,
+    public ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId, String type, String fileName, byte[] bytes,
                                     FormDataContentDisposition disposition) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             ActionResult<Wo> result = new ActionResult<>();
@@ -31,13 +32,19 @@ public class ActionUploadFile extends BaseAction {
                 throw new ExceptionAllocateStorageMaaping();
             }
 
-            String fileName = "";
             /** 文件名编码转换 */
             if (StringUtils.isEmpty(fileName)) {
-                fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
-                        DefaultCharset.charset);
+                try {
+                    fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
+                            DefaultCharset.charset);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             fileName = FilenameUtils.getName(fileName);
+            if (StringUtils.isEmpty(fileName)) {
+                throw new ExceptionFileNameEmpty();
+            }
             /** 禁止不带扩展名的文件上传 */
             if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
                 throw new ExceptionEmptyExtension(fileName);
