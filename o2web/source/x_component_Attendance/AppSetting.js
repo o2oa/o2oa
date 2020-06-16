@@ -145,10 +145,14 @@ MWF.xApplication.Attendance.AppSetting = new Class({
             "<tr><td colspan='4' styles='formTableHead'>系统设置</td></tr>" +
             "<tr><td styles='formTableTitle' lable='APPEALABLE'></td>"+
             "    <td styles='formTableValue' item='APPEALABLE'></td>"+
-            "<tr><td styles='formTableTitle' lable='APPEAL_AUDITOR_TYPE'></td>"+
+            "<tr><td styles='formTableTitle' lable='APPEAL_AUDIFLOWTYPE'></td>"+
+            "    <td styles='formTableValue' item='APPEAL_AUDIFLOWTYPE'></td>"+
+            "<tr item='AUDITOR_TYPE' style='display:"+ (d.APPEAL_AUDIFLOWTYPE == "WORKFLOW" ? "none" : "") +"'><td styles='formTableTitle' lable='APPEAL_AUDITOR_TYPE'></td>"+
             "    <td styles='formTableValue' item='APPEAL_AUDITOR_TYPE'></td>"+
-            "<tr item='valueArea' style='display:"+ (d.APPEAL_AUDITOR_TYPE == "汇报对象" ? "none" : "") +"' ><td styles='formTableTitle' lable='APPEAL_AUDITOR_VALUE'></td>"+
-            "    <td styles='formTableValue' item='APPEAL_AUDITOR_VALUE'></td>"+
+            "<tr item='valueArea' style='display:"+ (d.APPEAL_AUDITOR_TYPE == "汇报对象" || d.APPEAL_AUDIFLOWTYPE == "WORKFLOW" ? "none" : "") +"' ><td styles='formTableTitle' lable='APPEAL_AUDITOR_VALUE'></td>"+
+            "    <td styles='formTableValue' style='width: 60%' item='APPEAL_AUDITOR_VALUE'></td>" +
+            "<tr item='AUDIFLOW' style='display:"+ (d.APPEAL_AUDIFLOWTYPE == "BUILTIN" ? "none" : "") +"'><td styles='formTableTitle' lable='APPEAL_AUDIFLOW_ID'></td>" +
+            "    <td styles='formTableValue' style='width: 60%' item='APPEAL_AUDIFLOW_ID'></td>" +
             //"<tr><td styles='formTableTitle' lable='APPEAL_CHECKER_TYPE'></td>"+
             //"    <td styles='formTableValue' item='APPEAL_CHECKER_TYPE'></td>"+
             //"<tr><td styles='formTableTitle' lable='APPEAL_CHECKER_VALUE'></td>"+
@@ -156,12 +160,26 @@ MWF.xApplication.Attendance.AppSetting = new Class({
             "</table>";
         this.createTableArea.set("html",html);
 
+
         this.itemTemplate = {
             APPEALABLE : { text:"申诉及审批功能启用状态",
                 type : "select",
                 value : d.APPEALABLE || "true",
                 selectText : ["开启","关闭"],
                 selectValue : ["true","false"]
+            },
+            APPEAL_AUDIFLOWTYPE : { text : "考勤结果申诉流程类型",
+                type : "select",
+                value : d.APPEAL_AUDIFLOWTYPE ,
+                selectValue : this.dataJson.APPEAL_AUDIFLOWTYPE.selectContent.split("|"), //["人员属性","所属部门职位","指定人","汇报对象"],
+                selectText : ["自定义流程","内置流程"],
+                event : {
+                    change : function( item, ev ){
+                        this.createTableArea.getElement("[item='AUDITOR_TYPE']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
+                        this.createTableArea.getElement("[item='valueArea']").setStyle( "display" , (item.getValue() == "WORKFLOW") ? "none" : "" );
+                        this.createTableArea.getElement("[item='AUDIFLOW']").setStyle( "display" , (item.getValue() == "BUILTIN") ? "none" : "" );
+                    }.bind(this)
+                }
             },
             APPEAL_AUDITOR_TYPE : { text : "申诉审核人确定方式",
                 type : "select",
@@ -177,7 +195,25 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                 type : "text",
                 value : d.APPEAL_AUDITOR_VALUE ,
                 defaultValue : "直属领导"
-            }//,
+            },
+            APPEAL_AUDIFLOW_ID : { text : "自定义申请流程",
+                type : "org",
+                orgType: ["process"],
+                count : 1,
+                isEdited : this.isEdited || this.isNew,
+                value : !d.APPEAL_AUDIFLOW_ID||d.APPEAL_AUDIFLOW_ID=="无" ?"":d.APPEAL_AUDIFLOW_ID,
+                defaultValue : "",
+                orgWidgetOptions : {
+                    "onLoadedInfor": function(item){
+                        // this.loadAcceptAndReject( item );
+                        console.log(item);
+                    }.bind(this),
+                    "onComplete": function(item){
+                        console.log(item);
+                    }.bind(this)
+                }
+            }
+            //,
             //APPEAL_CHECKER_TYPE : { text : "考勤结果申诉复核人确定方式",
             //    type : "select",
             //    value : d.APPEAL_CHECKER_TYPE ,
@@ -255,6 +291,10 @@ MWF.xApplication.Attendance.AppSetting = new Class({
     okCreate: function(e){
         var data = this.document.getResult(true,",",true,false,false);
         if(data){
+            var APPEAL_AUDIFLOW_ID = data.APPEAL_AUDIFLOW_ID
+            if(!!APPEAL_AUDIFLOW_ID&&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""){
+                data.APPEAL_AUDIFLOW_ID = this.document.items.APPEAL_AUDIFLOW_ID.orgObject[0].data.id;
+            }
             var arr = this.encodeData( this.data, data );
             this.save( arr );
         }
