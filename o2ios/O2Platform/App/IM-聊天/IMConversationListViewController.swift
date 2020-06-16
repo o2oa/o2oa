@@ -198,22 +198,21 @@ extension IMConversationListViewController: UITableViewDelegate, UITableViewData
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: "IMConversationItemCell", for: indexPath)
-    }
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let c = cell as? IMConversationItemCell else {
-            return
-        }
-        if self.instantMsgList.count > 0 {
-            if indexPath.row == 0 {
-                c.setInstantContent(item: self.instantMsgList.last!)
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "IMConversationItemCell", for: indexPath) as? IMConversationItemCell {
+            if self.instantMsgList.count > 0 {
+                if indexPath.row == 0 {
+                    cell.setInstantContent(item: self.instantMsgList.last!)
+                }else {
+                    cell.bindConversation(conversation: self.conversationList[indexPath.row - 1])
+                }
             }else {
-                c.bindConversation(conversation: self.conversationList[indexPath.row - 1])
+                cell.bindConversation(conversation: self.conversationList[indexPath.row])
             }
-        }else {
-            c.bindConversation(conversation: self.conversationList[indexPath.row])
+            return cell
         }
+        return UITableViewCell()
     }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 64
     }

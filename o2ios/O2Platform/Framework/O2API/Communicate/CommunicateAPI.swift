@@ -18,6 +18,7 @@ enum CommunicateAPI {
     case readConversation(String)
     case instantMessageList(Int)
     case createConversation(IMConversationInfo)
+    case imUploadFile(String, String, String, Data)
     
     
 }
@@ -57,6 +58,8 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/instant/list/currentperson/noim/count/\(count)/desc"
         case .createConversation(_):
             return "/jaxrs/im/conversation"
+        case .imUploadFile(let conversationId, let type, _, _):
+            return "/jaxrs/im/msg/upload/\(conversationId)/type/\(type)"
         }
     }
     
@@ -64,7 +67,7 @@ extension CommunicateAPI: TargetType {
         switch self {
         case .myConversationList, .instantMessageList(_):
             return .get
-        case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_):
+        case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_), .imUploadFile(_, _, _, _):
             return .post
         case .readConversation(_):
             return .put
@@ -87,6 +90,13 @@ extension CommunicateAPI: TargetType {
             return .requestParameters(parameters: msg.toJSON()!, encoding: JSONEncoding.default)
         case .createConversation(let conv):
             return .requestParameters(parameters: conv.toJSON()!, encoding: JSONEncoding.default)
+        case .imUploadFile(_, _, let fileName, let data):
+            //字符串类型 文件名
+            let strData = fileName.data(using: .utf8)
+            let fileNameData = MultipartFormData(provider: .data(strData!), name: "fileName")
+            //文件类型
+            let fileData = MultipartFormData(provider: .data(data), name: "file", fileName: fileName)
+            return .uploadMultipart([fileData, fileNameData])
         }
     }
     

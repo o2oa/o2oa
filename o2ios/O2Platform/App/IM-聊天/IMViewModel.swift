@@ -75,6 +75,25 @@ extension IMViewModel {
                 })
         }
     }
+    
+    //上传文件
+    func uploadFile(conversationId: String, type: String, fileName: String, file: Data) -> Promise<String> {
+       return Promise { fulfill, reject in
+           self.communicateAPI.request(.imUploadFile(conversationId, type, fileName, file), completion: { (result) in
+               let response = OOResult<BaseModelClass<OOCommonIdModel>>(result)
+               if response.isResultSuccess() {
+                   if let id = response.model?.data {
+                       fulfill(id.id ?? "")
+                   }else {
+                       reject(OOAppError.apiEmptyResultError)
+                   }
+               }else {
+                   reject(response.error!)
+               }
+           })
+       }
+   }
+   
 
     //查询会话列表
     func myConversationList() -> Promise<[IMConversationInfo]> {

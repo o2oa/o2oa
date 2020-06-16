@@ -22,11 +22,6 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ZIb-3p-hnq">
-                    <rect key="frame" x="0.0" y="44" width="414" height="754"/>
-                    <color key="backgroundColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
-                    <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sDg-us-Ed9">
                     <rect key="frame" x="0.0" y="798" width="414" height="98"/>
                     <subviews>
@@ -49,17 +44,73 @@
                                 <action selector="clickEmojiBtn:" destination="-1" eventType="touchUpInside" id="hZk-xk-g8t"/>
                             </connections>
                         </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="H2g-NL-0Ps">
+                            <rect key="frame" x="14" y="53" width="386" height="36"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dw7-Gt-B9S">
+                                    <rect key="frame" x="0.0" y="2" width="96.5" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="L8w-G8-QcX"/>
+                                    </constraints>
+                                    <state key="normal" image="chat_mic"/>
+                                    <connections>
+                                        <action selector="micBtnClick:" destination="-1" eventType="touchUpInside" id="qN7-d7-8AE"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="maW-x1-6ob">
+                                    <rect key="frame" x="96.5" y="2" width="96.5" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="NCL-G0-g4l"/>
+                                    </constraints>
+                                    <state key="normal" image="chat_img"/>
+                                    <connections>
+                                        <action selector="imgBtnClick:" destination="-1" eventType="touchUpInside" id="Jbr-NQ-U7b"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zj7-bo-0tf">
+                                    <rect key="frame" x="193" y="2" width="96.5" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="mDx-JV-z4Q"/>
+                                    </constraints>
+                                    <state key="normal" image="chat_camera"/>
+                                    <connections>
+                                        <action selector="cameraBtnClick:" destination="-1" eventType="touchUpInside" id="v70-6D-pKx"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eXj-l2-Ioo">
+                                    <rect key="frame" x="289.5" y="2" width="96.5" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="Fae-3Q-Qrq"/>
+                                    </constraints>
+                                    <state key="normal" image="chat_location"/>
+                                    <connections>
+                                        <action selector="locationBtnClick:" destination="-1" eventType="touchUpInside" id="Jwe-pL-EpP"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="36" id="xmi-XZ-ezm"/>
+                            </constraints>
+                        </stackView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="H2g-NL-0Ps" firstAttribute="top" secondItem="8BW-XG-rBx" secondAttribute="bottom" constant="5" id="1hG-6h-KgV"/>
                         <constraint firstAttribute="trailing" secondItem="oTD-nU-xkE" secondAttribute="trailing" constant="12" id="BtK-YW-2fb"/>
                         <constraint firstItem="oTD-nU-xkE" firstAttribute="top" secondItem="sDg-us-Ed9" secondAttribute="top" constant="12" id="JKE-h8-gll"/>
                         <constraint firstItem="oTD-nU-xkE" firstAttribute="leading" secondItem="8BW-XG-rBx" secondAttribute="trailing" constant="24" id="Mzm-dM-gqy"/>
+                        <constraint firstItem="H2g-NL-0Ps" firstAttribute="leading" secondItem="sDg-us-Ed9" secondAttribute="leading" constant="14" id="Nkm-xr-kRS"/>
                         <constraint firstItem="8BW-XG-rBx" firstAttribute="top" secondItem="sDg-us-Ed9" secondAttribute="top" constant="12" id="hnf-bY-DYH"/>
                         <constraint firstItem="8BW-XG-rBx" firstAttribute="leading" secondItem="sDg-us-Ed9" secondAttribute="leading" constant="14" id="kAO-OU-1mN"/>
+                        <constraint firstAttribute="trailing" secondItem="H2g-NL-0Ps" secondAttribute="trailing" constant="14" id="nDu-Mf-6te"/>
                         <constraint firstAttribute="height" constant="98" id="qiu-7O-AwO"/>
                     </constraints>
                 </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ZIb-3p-hnq">
+                    <rect key="frame" x="0.0" y="24" width="414" height="720"/>
+                    <color key="backgroundColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </tableView>
             </subviews>
             <color key="backgroundColor" systemColor="systemGray6Color" red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -76,6 +127,10 @@
         </view>
     </objects>
     <resources>
+        <image name="chat_camera" width="42" height="32"/>
         <image name="chat_emoji" width="24" height="24"/>
+        <image name="chat_img" width="32" height="32"/>
+        <image name="chat_location" width="41" height="32"/>
+        <image name="chat_mic" width="32" height="32"/>
     </resources>
 </document>

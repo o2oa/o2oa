@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CocoaLumberjack
 
 class IMChatMessageSendViewCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
@@ -48,14 +49,52 @@ class IMChatMessageSendViewCell: UITableViewCell {
         }
         self.messageBackgroundView.removeSubviews()
         if let jsonBody = item.body, let body = parseJson(msg: jsonBody) {
-            if body.type == o2_im_msg_type_emoji {
+            if o2_im_msg_type_emoji == body.type {
                 emojiMsgRender(emoji: body.body!)
-            }else {
+            }else if o2_im_msg_type_image == body.type {
+                imageMsgRender(info: body)
+            } else {
                 textMsgRender(msg: body.body!)
             }
         }
     }
     
+    //图片消息
+    private func imageMsgRender(info: IMMessageBodyInfo) {
+        let width: CGFloat = 144
+        let height: CGFloat = 192
+        self.messageBgWidth.constant = width + 20
+        self.messageBgHeight.constant = height + 20
+        //图片
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        if let fileId = info.fileId {
+            DDLogDebug("fileId  :\(fileId)")
+            let urlStr = AppDelegate.o2Collect.generateURLWithAppContextKey(
+                CommunicateContext.communicateContextKey,
+                query: CommunicateContext.imDownloadImageWithSizeQuery,
+                parameter: ["##id##": fileId as AnyObject,
+                    "##width##": "144" as AnyObject,
+                    "##height##": "192" as AnyObject], generateTime: false)
+            if let url = URL(string: urlStr!) {
+                imageView.hnk_setImageFromURL(url)
+            } else {
+                imageView.image = UIImage(named: "chat_image")
+            }
+        } else if let filePath = info.fileTempPath {
+            DDLogDebug("filePath  :\(filePath)")
+            imageView.hnk_setImageFromFile(filePath)
+        } else {
+            imageView.image = UIImage(named: "chat_image")
+        }
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.messageBackgroundView.addSubview(imageView)
+        let top = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: imageView.superview!, attribute: .top, multiplier: 1, constant: 10)
+        let bottom = NSLayoutConstraint(item: imageView.superview!, attribute: .bottom, relatedBy: .equal, toItem: imageView, attribute: .bottom, multiplier: 1, constant: 10)
+        let left = NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal, toItem: imageView.superview!, attribute: .leading, multiplier: 1, constant: 10)
+        let right = NSLayoutConstraint(item: imageView.superview!, attribute: .trailing, relatedBy: .equal, toItem: imageView, attribute: .trailing, multiplier: 1, constant: 10)
+        NSLayoutConstraint.activate([top, bottom, left, right])
+
+    }
     
     private func emojiMsgRender(emoji: String) {
         let emojiSize = 36

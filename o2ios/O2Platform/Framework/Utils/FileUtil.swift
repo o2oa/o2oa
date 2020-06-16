@@ -104,6 +104,10 @@ public class FileUtil {
         return NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first!
     }
     
+    public func cacheDir() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+    }
+    
     public func cacheDirectoryPath(file: String) -> String {
         return (self.cacheDirectory() as NSString).appendingPathComponent(file)
     }

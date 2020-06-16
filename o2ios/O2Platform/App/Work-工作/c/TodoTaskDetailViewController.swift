@@ -903,10 +903,19 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
                         DispatchQueue.main.async {
                             self.showLoading(title: "上传中...")
                         }
+                        var newData = imageData
+                        //处理图片旋转的问题
+                        if imageOrientation != UIImage.Orientation.up && imageData != nil {
+                            let newImage = UIImage(data: imageData!)?.fixOrientation()
+                            if newImage != nil {
+                                newData = newImage?.pngData()
+                            }
+                        }
+                        
                         DispatchQueue.global(qos: .userInitiated).async {
                             Alamofire.upload(multipartFormData: { (mData) in
                                 //mData.append(fileURL, withName: "file")
-                                mData.append(imageData!, withName: "file", fileName: fileName, mimeType: "application/octet-stream")
+                                mData.append(newData!, withName: "file", fileName: fileName, mimeType: "application/octet-stream")
                                 let siteData = site.data(using: String.Encoding.utf8, allowLossyConversion: false)
                                 mData.append(siteData!, withName: "site")
                             }, to: url, encodingCompletion: { (encodingResult) in
