@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -59,20 +60,38 @@ class ActionSetPassword extends BaseAction {
 				if (StringUtils.equals(wi.getNewPassword(), wi.getOldPassword())) {
 					throw new ExceptionNewPasswordSameAsOldPassword();
 				}
+				
+				String oldPassword = wi.getOldPassword();
+				String newPassword = wi.getNewPassword();
+				String confirmPassword = wi.getConfirmPassword();
+				String isEncrypted = wi.getIsEncrypted();
+				
+				//RSA解秘
+				if (!StringUtils.isEmpty(isEncrypted)) {
+					if(isEncrypted.trim().equalsIgnoreCase("y")) {
+						oldPassword = Crypto.decryptRSA(oldPassword);
+						newPassword = Crypto.decryptRSA(newPassword);
+						confirmPassword = Crypto.decryptRSA(confirmPassword);
+					}
+				}
+				
+				
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-						&& StringUtils.equals(Config.token().getPassword(), wi.getOldPassword())) {
+						&& StringUtils.equals(Config.token().getPassword(), oldPassword)) {
 					logger.info("user{name:" + person.getName() + "} use superPermission.");
 				} else {
-					if (!StringUtils.equals(Crypto.encrypt(wi.getOldPassword(), Config.token().getKey()),
+					if (!StringUtils.equals(Crypto.encrypt(oldPassword, Config.token().getKey()),
 							person.getPassword())) {
 						throw new ExceptionOldPasswordNotMatch();
 					}
-					if (!wi.getNewPassword().matches(Config.person().getPasswordRegex())) {
+					if (!newPassword.matches(Config.person().getPasswordRegex())) {
 						throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 					}
 				}
+				
+				
 				emc.beginTransaction(Person.class);
-				person.setPassword(Crypto.encrypt(wi.getNewPassword(), Config.token().getKey()));
+				person.setPassword(Crypto.encrypt(newPassword, Config.token().getKey()));
 				person.setChangePasswordTime(new Date());
 				emc.commit();
 				ApplicationCache.notify(Person.class);
@@ -86,11 +105,19 @@ class ActionSetPassword extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
-
+		
+		@FieldDescribe("原密码")
 		private String oldPassword;
+		
+		@FieldDescribe("新密码")
 		private String newPassword;
-		private String confirmPassword;
-
+		
+		@FieldDescribe("确认新密码")
+		private String confirmPassword;	
+		
+		@FieldDescribe("是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key")
+		private String isEncrypted;
+		
 		public String getOldPassword() {
 			return oldPassword;
 		}
@@ -115,6 +142,13 @@ class ActionSetPassword extends BaseAction {
 			this.newPassword = newPassword;
 		}
 
+		public String getIsEncrypted() {
+			return isEncrypted;
+		}
+
+		public void setIsEncrypted(String isEncrypted) {
+			this.isEncrypted = isEncrypted;
+		}
 	}
 
 	public static class Wo extends WrapBoolean {
