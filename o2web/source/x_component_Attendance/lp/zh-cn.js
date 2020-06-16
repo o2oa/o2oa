@@ -139,5 +139,10 @@ MWF.xApplication.Attendance.LP = {
 	},
 	"selfHoliday" : {
 		"inputValid" : "部门、员工姓名、休假类型、开始时间、结束时间、休假天数必填，请填写！"
-	}
+	},
+	"nextActivity": "下一个活动：",
+	"nextUser": "处理人：",
+	"deal": "处理",
+	"processStarted": "文件已启动",
+	"processStartedMessage": "您启动了一个新的工作："
 };
