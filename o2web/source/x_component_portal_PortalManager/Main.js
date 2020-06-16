@@ -290,7 +290,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         this.data.name = this.nameInput.input.get("value");
         this.data.alias = this.aliasInput.input.get("value");
         this.data.description = this.descriptionInput.input.get("value");
-        this.data.portalCategory = this.typeInput.input.get("value");
+        this.data.portalCategory = this.typeInput.input.get("value") || "";
         this.data.firstPage = this.firstPageInput.input.get("value");
         this.data.pcClient = this.pcClientInput.getValue()==="true";
         this.data.mobileClient = this.mobileClientInput.getValue()==="true";

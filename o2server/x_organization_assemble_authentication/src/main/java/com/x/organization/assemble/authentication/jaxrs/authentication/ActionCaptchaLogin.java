@@ -42,7 +42,7 @@ class ActionCaptchaLogin extends BaseAction {
 			//RSA解秘
 			if (!StringUtils.isEmpty(isEncrypted)) {
 				if(isEncrypted.trim().equalsIgnoreCase("y")) {
-			    	password = decryptRSA(password);
+			    	password = this.decryptRSA(password);
 				}
 			}
 			
@@ -115,8 +115,21 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
-	 //加密
-		public String encryptRSA(String strEncrypt) {
+
+	//用户登入解密 
+		public  String decryptRSA(String strDecrypt) {
+			String privateKey;
+			String decrypt = null;
+			try {
+				privateKey = getPrivateKey();
+			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return decrypt;
+		}
+		//转成Base64	
+		public  String encryptRSA(String strEncrypt) {
 			String encrypt = null;
 			try {
 				 String publicKey = Config.publicKey();
@@ -126,26 +139,11 @@ class ActionCaptchaLogin extends BaseAction {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		
 			return encrypt;
 		}
 		
-		//解密
-		public String decryptRSA(String strDecrypt) {
-			String privateKey;
-			String decrypt = null;
-			try {
-				privateKey = getPrivateKey();
-			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-			return decrypt;
-		}
-		
-		//获取PublicKey
-		public String  getPublicKey() {
+		//转成Base64			
+		public  String  getPublicKey() {
 			String publicKey = "";
 			 try {
 				 publicKey = Config.publicKey();
@@ -158,9 +156,8 @@ class ActionCaptchaLogin extends BaseAction {
 			return publicKey;
 		}
 		
-		
-		//获取privateKey
-		public String  getPrivateKey() {
+		//转成Base64		
+		public  String  getPrivateKey() {
 			 String privateKey = "";
 			 try {
 				 privateKey = Config.privateKey();

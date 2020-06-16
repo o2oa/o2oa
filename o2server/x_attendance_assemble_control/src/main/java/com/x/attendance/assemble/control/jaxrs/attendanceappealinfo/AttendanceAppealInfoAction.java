@@ -112,19 +112,19 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 	}
 
 	/**
-	 * 对某条打卡记录进行申诉
+	 * 对某条打卡记录进行申诉，使用流程进行申诉
 	 * @param asyncResponse
 	 * @param request
 	 * @param id
 	 * @param jsonElement
 	 */
-	@JaxrsMethodDescribe(value = "根据ID对考勤结果申诉信息提起申诉", action = ActionAppealCreateWithWorkFlow.class )
+	@JaxrsMethodDescribe(value = "根据ID对考勤结果申诉信息提起申诉流程", action = ActionAppealCreateWithWorkFlow.class )
 	@PUT
 	@Path("workflow/appeal/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createWithWorkFlow(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
+					   @JaxrsParameterDescribe("考勤打卡记录ID") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionAppealCreateWithWorkFlow.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		Boolean check = true;
@@ -258,12 +258,12 @@ public class AttendanceAppealInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据考勤申诉ID，更新流程的审批信息", action = ActionWorkFlowSync.class)
-	@GET
+	@JaxrsMethodDescribe(value = "根据考勤申诉ID，更新申诉审核流程的审批信息以及最终审核状态", action = ActionWorkFlowSync.class)
+	@PUT
 	@Path("workflow/sync/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void archive(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void syncWithWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 						@JaxrsParameterDescribe("考勤申诉信息ID") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<ActionWorkFlowSync.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
