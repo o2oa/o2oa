@@ -34,7 +34,7 @@ public class ActionGet extends BaseAction {
 		Task task = null;
 		TaskDetail taskDetail = null;
 		TaskExtField taskExtField = null;
-		List<ProjectExtFieldRele> extFieldReleList = null;
+		List<CustomExtFieldRele> extFieldReleList = null;
 		List<TaskTag> tags = null;
 		Boolean check = true;
 		WrapOutControl control = null;
@@ -92,10 +92,10 @@ public class ActionGet extends BaseAction {
 			
 			if( Boolean.TRUE.equals( check ) ){
 				try {
-					extFieldReleList = projectExtFieldReleQueryService.listReleWithProject( task.getProject() );
+					extFieldReleList = customExtFieldReleQueryService.listReleWithCorrelation( task.getId() ); 
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new TaskQueryException(e, "根据指定projectId查询项目扩展列配置信息对象时发生异常。projectId:" + task.getProject());
+					Exception exception = new TaskQueryException(e, "根据指定taskId查询任务扩展列配置信息对象时发生异常。taskId:" + task.getId());
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
@@ -357,14 +357,17 @@ public class ActionGet extends BaseAction {
 	
 	public static class WoExtFieldRele{
 
-		@FieldDescribe("项目ID（必填）")
-		private String projectId;
+		@FieldDescribe("关联ID（必填）")
+		private String correlationId;
 
 		@FieldDescribe("备用列名（必填）")
 		private String extFieldName;
 
 		@FieldDescribe("显示属性名称（必填）")
 		private String displayName;
+		
+		@FieldDescribe("类型：project|task（必填）")
+		private String type;
 
 		@FieldDescribe("显示方式：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|（必填）")
 		private String displayType="TEXT";
@@ -386,7 +389,7 @@ public class ActionGet extends BaseAction {
 
 		public static List<String> Excludes = new ArrayList<String>();
 
-		static WrapCopier<ProjectExtFieldRele, WoExtFieldRele> copier = WrapCopierFactory.wo( ProjectExtFieldRele.class, WoExtFieldRele.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+		static WrapCopier<CustomExtFieldRele, WoExtFieldRele> copier = WrapCopierFactory.wo( CustomExtFieldRele.class, WoExtFieldRele.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
 		public String getExtFieldName() {
 			return extFieldName;
@@ -403,13 +406,21 @@ public class ActionGet extends BaseAction {
 		public void setDisplayName(String displayName) {
 			this.displayName = displayName;
 		}
-
-		public String getProjectId() {
-			return projectId;
+		
+		public String getType() {
+			return type;
 		}
 
-		public void setProjectId(String projectId) {
-			this.projectId = projectId;
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getCorrelationId() {
+			return correlationId;
+		}
+
+		public void setCorrelationId(String correlationId) {
+			this.correlationId = correlationId;
 		}
 
 		public String getDisplayType() {

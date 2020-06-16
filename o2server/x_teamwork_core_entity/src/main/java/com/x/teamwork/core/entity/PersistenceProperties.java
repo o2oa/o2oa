@@ -110,8 +110,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_PROJECTGROUP_RELE";
 	}
 	
-	public static class ProjectExtFieldRele {
-		public static final String table = "TEW_PROJECTEXTFIELD_RELE";
+	public static class CustomExtFieldRele {
+		public static final String table = "TEW_CUSTOMEXTFIELD_RELE";
 	}
 	
 	public static class TaskGroupRele {

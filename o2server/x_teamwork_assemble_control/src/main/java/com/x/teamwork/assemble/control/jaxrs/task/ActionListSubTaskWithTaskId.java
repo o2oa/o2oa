@@ -16,7 +16,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskTag;
 
@@ -132,7 +132,7 @@ public class ActionListSubTaskWithTaskId extends BaseAction {
 
 		public static List<String> Excludes = new ArrayList<String>();
 
-		static WrapCopier<ProjectExtFieldRele, WoExtFieldRele> copier = WrapCopierFactory.wo( ProjectExtFieldRele.class, WoExtFieldRele.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+		static WrapCopier<CustomExtFieldRele, WoExtFieldRele> copier = WrapCopierFactory.wo( CustomExtFieldRele.class, WoExtFieldRele.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
 		public String getExtFieldName() {
 			return extFieldName;

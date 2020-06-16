@@ -22,7 +22,7 @@ import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
@@ -282,7 +282,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 	}
 	
 	private Dynamic changeExtTaskProperty( String personName,  String projectId, String taskId, String property, String oldValue, String mainValue, String secondaryValue, String dataType ) throws Exception {
-		ProjectExtFieldRele projectExtFieldRele = projectExtFieldReleQueryService.getExtFieldRele(projectId, property);
+		CustomExtFieldRele projectExtFieldRele = customExtFieldReleQueryService.getExtFieldRele(projectId, property);
 		if( projectExtFieldRele == null || StringUtils.isEmpty( projectExtFieldRele.getDisplayName() )) {
 			Exception exception = new TaskPersistException( "工作任务未配置扩展属性:" + property );
 			throw exception;
