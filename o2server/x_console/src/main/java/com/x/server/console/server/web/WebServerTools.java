@@ -193,7 +193,14 @@ public class WebServerTools extends JettySeverTools {
 			/* 密码规则 */
 		    map.put("passwordRegex",Config.person().getPasswordRegex() );
 			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
-		
+			
+		    /*RSA*/
+			File publicKeyFile = new File(Config.base(), "config/public.key");
+			if (publicKeyFile.exists() && publicKeyFile.isFile()) {
+					String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
+					map.put("publicKey", publicKey);
+			}
+			
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
