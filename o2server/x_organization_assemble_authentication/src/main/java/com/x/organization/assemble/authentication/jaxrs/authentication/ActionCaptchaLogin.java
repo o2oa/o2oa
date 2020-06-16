@@ -42,7 +42,7 @@ class ActionCaptchaLogin extends BaseAction {
 			//RSA解秘
 			if (!StringUtils.isEmpty(isEncrypted)) {
 				if(isEncrypted.trim().equalsIgnoreCase("y")) {
-			    	password = Crypto.decryptRSA(password);
+			    	password = this.decryptRSA(password);
 				}
 			}
 			
@@ -115,6 +115,61 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
+	
+	
+	//用户登入解密 转成Base64	
+		public  String decryptRSA(String strDecrypt) {
+			String privateKey;
+			String decrypt = null;
+			try {
+				privateKey = getPrivateKey();
+			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return decrypt;
+		}
+		//转成Base64	
+		public  String encryptRSA(String strEncrypt) {
+			String encrypt = null;
+			try {
+				 String publicKey = Config.publicKey();
+				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				 
+				encrypt = Crypto.rsaEncrypt(strEncrypt,new String(Base64.encodeBase64(publicKeyB)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return encrypt;
+		}
+		
+		//转成Base64			
+		public  String  getPublicKey() {
+			String publicKey = "";
+			 try {
+				 publicKey = Config.publicKey();
+				 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				 publicKey = new String(Base64.encodeBase64(publicKeyB));
+				 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return publicKey;
+		}
+		
+		//转成Base64		
+		public  String  getPrivateKey() {
+			 String privateKey = "";
+			 try {
+				 privateKey = Config.privateKey();
+				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
+				 privateKey = new String(Base64.encodeBase64(privateKeyB));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return privateKey;
+		}
+		
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("凭证")

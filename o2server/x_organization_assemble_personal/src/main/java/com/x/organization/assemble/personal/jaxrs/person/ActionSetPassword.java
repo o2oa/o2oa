@@ -2,6 +2,7 @@ package com.x.organization.assemble.personal.jaxrs.person;
 
 import java.util.Date;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,9 +70,9 @@ class ActionSetPassword extends BaseAction {
 				//RSA解秘
 				if (!StringUtils.isEmpty(isEncrypted)) {
 					if(isEncrypted.trim().equalsIgnoreCase("y")) {
-						oldPassword = Crypto.decryptRSA(oldPassword);
-						newPassword = Crypto.decryptRSA(newPassword);
-						confirmPassword = Crypto.decryptRSA(confirmPassword);
+						oldPassword = this.decryptRSA(oldPassword);
+						newPassword = this.decryptRSA(newPassword);
+						confirmPassword = this.decryptRSA(confirmPassword);
 					}
 				}
 				
@@ -103,6 +104,31 @@ class ActionSetPassword extends BaseAction {
 			return result;
 		}
 	}
+	
+	
+		public  String decryptRSA(String strDecrypt) {
+			String privateKey;
+			String decrypt = null;
+			try {
+				privateKey = getPrivateKey();
+			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return decrypt;
+		}
+	
+		public  String  getPrivateKey() {
+			 String privateKey = "";
+			 try {
+				 privateKey = Config.privateKey();
+				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
+				 privateKey = new String(Base64.encodeBase64(privateKeyB));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return privateKey;
+		}
 
 	public static class Wi extends GsonPropertyObject {
 		
