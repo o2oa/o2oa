@@ -368,6 +368,7 @@ public class ActionSave extends BaseAction {
 		ApplicationCache.notify( TaskView.class );
 		ApplicationCache.notify( Review.class );	
 		ApplicationCache.notify( TaskGroup.class );	
+		ApplicationCache.notify( TaskExtField.class );	
 		
 		dynamics.addAll( tagDynamics );
 		wo.setDynamics( WoDynamic.copier.copy( dynamics ) );

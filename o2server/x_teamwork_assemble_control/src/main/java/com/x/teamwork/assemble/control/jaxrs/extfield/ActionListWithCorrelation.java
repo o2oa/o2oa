@@ -15,23 +15,23 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 
 import net.sf.ehcache.Element;
 
-public class ActionListWithProject extends BaseAction {
+public class ActionListWithCorrelation extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithProject.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionListWithCorrelation.class);
 
 	@SuppressWarnings("unchecked")
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String projectId ) throws Exception {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String correlationId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
-		List<ProjectExtFieldRele> projectExtFieldReles = null;
+		List<CustomExtFieldRele> customExtFieldReles = null;
 		Boolean check = true;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "ActionList", projectId, effectivePerson.getDistinguishedName() );
-		Element element = projectExtFieldReleCache.get( cacheKey );
+		String cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithCorrelation", correlationId, effectivePerson.getDistinguishedName() );
+		Element element = customExtFieldReleCache.get( cacheKey );
 		
 		if ((null != element) && (null != element.getObjectValue())) {
 			wos = (List<Wo>) element.getObjectValue();
@@ -39,17 +39,17 @@ public class ActionListWithProject extends BaseAction {
 		} else {
 			if( Boolean.TRUE.equals( check ) ){
 				try {
-					projectExtFieldReles = projectExtFieldReleQueryService.listReleWithProject(projectId);
-					if( ListTools.isEmpty( projectExtFieldReles )) {
-						projectExtFieldReles = new ArrayList<>();
+					customExtFieldReles = customExtFieldReleQueryService.listReleWithCorrelation(correlationId);
+					if( ListTools.isEmpty( customExtFieldReles )) {
+						customExtFieldReles = new ArrayList<>();
 					}
-					wos = Wo.copier.copy( projectExtFieldReles );						
+					wos = Wo.copier.copy( customExtFieldReles );						
 					SortTools.asc( wos, "createTime");						
-					projectExtFieldReleCache.put(new Element(cacheKey, wos));
+					customExtFieldReleCache.put(new Element(cacheKey, wos));
 					result.setData(wos);	
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ProjectExtFieldReleQueryException(e, "根据用户拥有的项目扩展属性关联信息列表时发生异常。");
+					Exception exception = new CustomExtFieldReleQueryException(e, "根据关联ID查询对应的扩展属性信息列表时发生异常。");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
@@ -58,7 +58,7 @@ public class ActionListWithProject extends BaseAction {
 		return result;
 	}
 
-	public static class Wo extends ProjectExtFieldRele {
+	public static class Wo extends CustomExtFieldRele {
 		
 		private Long rank;
 
@@ -74,7 +74,7 @@ public class ActionListWithProject extends BaseAction {
 
 		public static List<String> Excludes = new ArrayList<String>();
 
-		static WrapCopier<ProjectExtFieldRele, Wo> copier = WrapCopierFactory.wo( ProjectExtFieldRele.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+		static WrapCopier<CustomExtFieldRele, Wo> copier = WrapCopierFactory.wo( CustomExtFieldRele.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
 	}
 }

@@ -23,7 +23,7 @@ public class BaseAction extends StandardJaxrsAction {
 	
 	protected 	ProjectQueryService projectQueryService = new ProjectQueryService();
 	
-	protected 	ProjectExtFieldReleQueryService projectExtFieldReleQueryService = new ProjectExtFieldReleQueryService();
+	protected 	CustomExtFieldReleQueryService customExtFieldReleQueryService = new CustomExtFieldReleQueryService();
 	
 	protected 	TaskPersistService taskPersistService = new TaskPersistService();
 	
