@@ -875,7 +875,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             if (json.data){
                 includedScripts.push( key );
                 includedScripts = includedScripts.concat(json.data.importedList);
-                MWF.Macro.exec(json.data.text, this);
+                MWF.CMSMacro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
             }else{
                 if (callback) callback.apply(this);
@@ -891,7 +891,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     //        }
     //        this.scriptAction.getScriptByName(_form.json.application, name, includedScripts, function(json){
     //            includedScripts = includedScripts.concat(json.data.importedList);
-    //            MWF.Macro.exec(json.data.text, this);
+    //            MWF.CMSMacro.exec(json.data.text, this);
     //            if (callback) callback.apply(this);
     //        }.bind(this), null, false);
     //    }else{

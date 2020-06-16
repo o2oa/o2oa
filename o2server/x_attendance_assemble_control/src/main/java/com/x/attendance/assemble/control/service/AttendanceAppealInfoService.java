@@ -82,6 +82,7 @@ public class AttendanceAppealInfoService {
 			attendanceDetail.setAppealDescription( attendanceAppealInfo.getAppealDescription());
 			emc.check(attendanceDetail, CheckPersistType.all);
 			emc.commit();
+
 			return attendanceAppealInfo;
 		}
 	}

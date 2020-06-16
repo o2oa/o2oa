@@ -42,7 +42,7 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
             "name": nameNode.get("value"),
             "alias": aliasNode.get("value"),
             "description": descriptionNode.get("value"),
-            "portalCategory": typeNode.get("value")
+            "portalCategory": typeNode.get("value") || ""
         };
         if (data.name){
             this.restActions.saveApplication(data, function(json){
