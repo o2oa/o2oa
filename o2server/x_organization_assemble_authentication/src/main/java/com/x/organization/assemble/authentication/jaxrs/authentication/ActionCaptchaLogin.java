@@ -115,9 +115,8 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
-	
-	
-	//用户登入解密 转成Base64	
+
+	//用户登入解密 
 		public  String decryptRSA(String strDecrypt) {
 			String privateKey;
 			String decrypt = null;
