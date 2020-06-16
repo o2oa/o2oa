@@ -20,8 +20,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.config.Config;
-
 public class Crypto {
 
 	private static final String utf8 = "UTF-8";
