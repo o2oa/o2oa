@@ -5,6 +5,7 @@ import java.util.List;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 
 public class AttendanceScheduleSettingServiceAdv {
@@ -73,7 +74,26 @@ public class AttendanceScheduleSettingServiceAdv {
 	 * @return
 	 * @throws Exception 
 	 */
-	public synchronized AttendanceScheduleSetting getAttendanceScheduleSettingWithPerson( String personName, Boolean debugger ) throws Exception{
+	public AttendanceScheduleSetting getAttendanceScheduleSettingWithPerson( String personName, Boolean debugger ) throws Exception{
 		return attendanceScheduleSettingService.getAttendanceScheduleSettingWithPerson( personName, debugger );		
+	}
+
+	/**
+	 * 先查询直属组织，然后再递归上级组织
+	 * @param unitName
+	 * @return
+	 * @throws Exception
+	 */
+	public AttendanceScheduleSetting getAttendanceScheduleSettingWithUnit( String unitName, Boolean debugger ) throws Exception{
+		List<String> ids = listByUnitName(unitName);
+		List<AttendanceScheduleSetting> list = null;
+		if(ListTools.isNotEmpty( ids)){
+			list = list(ids );
+		}
+		if(ListTools.isNotEmpty( list )){
+			return list.get(0);
+		}else{
+			return null;
+		}
 	}
 }

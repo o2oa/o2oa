@@ -27,14 +27,14 @@ public class ActionWorkFlowSync extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		AttendanceAppealAuditInfo attendanceAppealAuditInfo = null;
-		WorkFlowSyncService.WoWorkComplex woWorkComplex = null;
+		WorkFlowSyncService.WoWorkOrCompletedComplex woWorkComplex = null;
 		ActionAppealCreate.Wi wrapIn = null;
 		Boolean check = true;
 
 		if (check) {
-			if ( StringUtils.isNotEmpty( id )) {
+			if ( StringUtils.isEmpty( id )) {
 				check = false;
-				result.error(new Exception("传入的workId为空，或者不合法，无法同步流程数据。"));
+				result.error(new Exception("传入的id为空，或者不合法，无法同步流程数据。"));
 			}
 		}
 
@@ -101,6 +101,27 @@ public class ActionWorkFlowSync extends BaseAction {
 		}
 
 		if (check) {
+			if( woWorkComplex == null ){
+				try {
+					woWorkComplex = WorkFlowSyncService.getWorkCompletedComplex( attendanceAppealAuditInfo.getWorkId() );
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceAppealProcess(e, "系统在获取考勤打卡申诉流程信息时发生异常。ID:" + attendanceAppealAuditInfo.getWorkId() );
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+
+		if (check) {
+			if( woWorkComplex == null ){
+				check = false;
+				Exception exception = new ExceptionAttendanceAppealProcess("流程（work or workCompleted）不存在。ID:" + attendanceAppealAuditInfo.getWorkId() );
+				result.error(exception);
+			}
+		}
+
+		if (check) {
 			try {
 				String processorName = null;
 				String activityType = null;
@@ -110,8 +131,9 @@ public class ActionWorkFlowSync extends BaseAction {
 				}else{
 					processorName = woWorkComplex.getTaskList().get(0).getIdentity();
 				}
-				activityType = woWorkComplex.getActivity().getActivityType().name();
-
+				if( woWorkComplex.getActivity() != null && woWorkComplex.getActivity().getActivityType() != null ){
+					activityType = woWorkComplex.getActivity().getActivityType().name();
+				}
 				attendanceAppealInfoServiceAdv.syncAppealStatus( attendanceAppealInfo, activityType, processorName, wrapIn.getStatus() );
 
 				result.setData(new Wo(id));

@@ -111,7 +111,7 @@
         }
     };
     this.o2.debug = debug;
-    
+
     var _attempt = function(){
         for (var i = 0, l = arguments.length; i < l; i++){
             try {
@@ -224,10 +224,12 @@
     var _getAllOptions = function(options){
         var doc = (options && options.doc) || document;
         if (!doc.unid) doc.unid = _uuid();
+        var type = (options && options.type) || "text/javascript";
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": !!(options && options.sequence),
+            "type": type,
             "doc": doc,
             "dom": (options && options.dom) || document.body,
             "module": (options && options.module) || null,
@@ -250,10 +252,12 @@
     var _getJsOptions = function(options){
         var doc = (options && options.doc) || document;
         if (!doc.unid) doc.unid = _uuid();
+        var type = (options && options.type) || "text/javascript";
         return {
             "noCache": !!(options && options.nocache),
             "reload": !!(options && options.reload),
             "sequence": (!(options && options.sequence == false)),
+            "type": type,
             "doc": doc
         }
     };
@@ -332,10 +336,10 @@
             status = (status == 1223) ? 204 : status;
             if ((status >= 200 && status < 300))
                 if (success) success(xhr);
-            else if ((status >= 300 && status < 400))
-                if (failure) failure(xhr);
-            else
-                failure(xhr);
+                else if ((status >= 300 && status < 400))
+                    if (failure) failure(xhr);
+                    else
+                        failure(xhr);
             if (completed) completed(xhr);
         };
         var _checkCssErrorLoaded= function(err){ _checkCssLoaded(err) };
@@ -415,6 +419,7 @@
 
             var head = (op.doc.head || op.doc.getElementsByTagName("head")[0] || op.doc.documentElement);
             var s = op.doc.createElement('script');
+            s.type = op.type || "text/javascript";
             head.appendChild(s);
             s.id = uuid;
             s.src = this.o2.filterUrl(url);
@@ -734,7 +739,7 @@
         //     }
         //     m[name].push(node);
         // }else{
-             m[name] = node;
+        m[name] = node;
         // }
     };
     var _loadHtml = function(modules, options, callback){

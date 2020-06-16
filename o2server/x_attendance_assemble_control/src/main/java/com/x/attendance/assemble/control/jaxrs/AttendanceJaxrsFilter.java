@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs;
 
 import javax.servlet.annotation.WebFilter;
 
+import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
 import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 
 /**
@@ -29,6 +30,6 @@ import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 		"/jaxrs/uuid/*",
 		"/servlet/*"
 }, asyncSupported = true)
-public class AttendanceJaxrsFilter extends ManagerUserJaxrsFilter {
+public class AttendanceJaxrsFilter extends CipherManagerUserJaxrsFilter {
 	
 }

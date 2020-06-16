@@ -12,6 +12,8 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
@@ -188,5 +190,65 @@ public class ImAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+
+    @JaxrsMethodDescribe(value = "上传文件.", action = ActionUploadFile.class)
+    @POST
+    @Path("msg/upload/{conversationId}/type/{type}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    public void uploadFile(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                           @JaxrsParameterDescribe("会话id") @PathParam("conversationId") String conversationId,
+                           @JaxrsParameterDescribe("文件类型") @PathParam("type") String type,
+                           @JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
+                           @JaxrsParameterDescribe("附件标识") @FormDataParam(FILE_FIELD) final byte[] bytes,
+                           @JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition){
+        ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionUploadFile().execute(effectivePerson, conversationId, type, fileName, bytes, disposition);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "获取文件内容,输出头信息", action = ActionFileDownload.class)
+    @GET
+    @Path("msg/download/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                         @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+        ActionResult<ActionFileDownload.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionFileDownload().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "下载图片设定宽高后的(png格式).width(0-5000)像素,0代表不限制,height(0-5000)像素,0代表不限制.", action = ActionImageDownloadWidthHeight.class)
+    @GET
+    @Path("msg/download/{id}/image/width/{width}/height/{height}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void downloadImageWidthHeight(@Suspended final AsyncResponse asyncResponse,
+                                         @Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+                                         @JaxrsParameterDescribe("宽度") @PathParam("width") Integer width,
+                                         @JaxrsParameterDescribe("高度") @PathParam("height") Integer height) {
+        ActionResult<ActionImageDownloadWidthHeight.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionImageDownloadWidthHeight().execute(effectivePerson, id, width, height);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AttendanceScheduleSetting;
+import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +41,8 @@ public class ActionListPrevWithFilter extends BaseAction {
 		List<String> topUnitNames_tmp = null;
 		List<String> unitNames_tmp = null;
 		WrapInFilter wrapIn = null;
+		AttendanceScheduleSetting scheduleSetting_top = null;
+		AttendanceScheduleSetting scheduleSetting = null;
 		Boolean check = true;
 
 		try {
@@ -66,6 +70,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 				// 处理一下顶层组织，查询下级顶层组织
 				if ( StringUtils.isNotEmpty( wrapIn.getQ_topUnitName() )) {
 					topUnitNames.add(wrapIn.getQ_topUnitName());
+					scheduleSetting_top = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithUnit(wrapIn.getQ_topUnitName(), effectivePerson.getDebugger() );
 					try {
 						topUnitNames_tmp = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_topUnitName());
 					} catch (Exception e) {
@@ -85,6 +90,7 @@ public class ActionListPrevWithFilter extends BaseAction {
 				// 处理一下组织,查询下级组织
 				if ( StringUtils.isNotEmpty( wrapIn.getQ_topUnitName() )) {
 					unitNames.add(wrapIn.getQ_topUnitName());
+					scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithUnit(wrapIn.getQ_unitName(), effectivePerson.getDebugger() );
 					try {
 						unitNames_tmp = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_topUnitName());
 					} catch (Exception e) {
@@ -107,7 +113,20 @@ public class ActionListPrevWithFilter extends BaseAction {
 				total = business.getAttendanceDetailFactory().getCountWithFilter(wrapIn);
 				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				wraps = Wo.copier.copy(detailList);
-				
+
+				if( scheduleSetting == null ){
+					scheduleSetting = scheduleSetting_top;
+				}
+
+				if (check && scheduleSetting != null ) {
+					Integer signProxy = scheduleSetting.getSignProxy();
+					signProxy = ( signProxy == null || signProxy == 0 ) ? 1:signProxy;
+					if( scheduleSetting!= null  ){
+						for( Wo detail : wraps ){
+							detail.setSignProxy( signProxy );
+						}
+					}
+				}
 
 			} catch (Throwable th) {
 				th.printStackTrace();
@@ -122,6 +141,17 @@ public class ActionListPrevWithFilter extends BaseAction {
 	public static class Wo extends AttendanceDetail {
 
 		private static final long serialVersionUID = -5076990764713538973L;
+
+		@FieldDescribe("员工所属组织的排班打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
+		private Integer signProxy = 1;
+
+		public Integer getSignProxy() {
+			return signProxy;
+		}
+
+		public void setSignProxy(Integer signProxy) {
+			this.signProxy = signProxy;
+		}
 
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
