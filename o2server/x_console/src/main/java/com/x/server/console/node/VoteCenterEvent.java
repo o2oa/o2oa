@@ -45,6 +45,8 @@ public class VoteCenterEvent implements Event {
 				}
 
 			} catch (Exception e) {
+				logger.print("failed to connect pirmary center:{} port:{} sslEnable:{}.", entry.getKey(),
+						entry.getValue().getPort(), entry.getValue().getSslEnable());
 			}
 		}
 
