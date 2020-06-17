@@ -15,9 +15,9 @@ public class FileUtil {
     private init () {}
     
     public func createDirectory(path: String) {
-        if FileManager.default.fileExists(atPath: path, isDirectory: nil) {
+        if !directoryExist(directoryPath: path) {
             do {
-                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print("创建目录错误！")
             }
@@ -102,6 +102,10 @@ public class FileUtil {
     
     public func cacheDirectory() -> String {
         return NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first!
+    }
+    
+    public func cacheDir() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
     }
     
     public func cacheDirectoryPath(file: String) -> String {

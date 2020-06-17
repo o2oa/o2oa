@@ -81,17 +81,18 @@ class IMConversationItemCell: UITableViewCell {
         }
         // message
         if let msgBody = conversation.lastMessage?.body, let body = parseJson(msg: msgBody) {
-            if body.type == o2_im_msg_type_text {
+            
+            if body.type == o2_im_msg_type_text || body.type == o2_im_msg_type_image || body.type == o2_im_msg_type_audio {
                 self.messageLabel.text = body.body
                 self.messageLabel.isHidden = false
                 self.emojiImg.isHidden = true
-            }else if body.type == o2_im_msg_type_emoji {
+            } else if body.type == o2_im_msg_type_emoji {
                 self.messageLabel.isHidden = true
                 self.emojiImg.isHidden = false
                 let bundle = Bundle().o2EmojiBundle(anyClass: IMConversationItemCell.self)
                 let path = o2ImEmojiPath(emojiBody: body.body!)
                 self.emojiImg.image = UIImage(named: path, in: bundle, compatibleWith: nil)
-            }else {
+            } else {
                 self.messageLabel.isHidden = true
                 self.emojiImg.isHidden = true
             }

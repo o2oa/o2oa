@@ -142,6 +142,17 @@
 		B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */; };
 		B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */; };
 		B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B158E95D215DD3F500AB2727 /* AIConstants.swift */; };
+		B15BE0BE2499BCEF008CD1DB /* O2RecordVoiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */; };
+		B15BE0EE2499DD7E008CD1DB /* IMChatAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */; };
+		B15BE0F02499DD90008CD1DB /* IMChatAudioView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */; };
+		B15BE106249A06BF008CD1DB /* libvo-amrwbenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */; };
+		B15BE107249A06BF008CD1DB /* ConvertMp3.m in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */; };
+		B15BE108249A06BF008CD1DB /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE0F9249A06BE008CD1DB /* libmp3lame.a */; };
+		B15BE109249A06BF008CD1DB /* libopencore-amrwb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */; };
+		B15BE10A249A06BF008CD1DB /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */; };
+		B15BE10C249A0EFE008CD1DB /* IMAudioView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */; };
+		B15BE10E249A107C008CD1DB /* IMAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE10D249A107C008CD1DB /* IMAudioView.swift */; };
+		B15BE111249A6002008CD1DB /* AudioPlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */; };
 		B15D26EC235EF7480092F8B8 /* genstrings.sh in Resources */ = {isa = PBXBuildFile; fileRef = B15D26EB235EF7480092F8B8 /* genstrings.sh */; };
 		B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F80F2210EB93000B81F35 /* OOCalendarMainMonthViewController.swift */; };
 		B15F8129210EF15E00B81F35 /* OOCalendarEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */; };
@@ -1030,26 +1041,12 @@
 			remoteGlobalIDString = 5F72A30590D0D18EC2C2BBC2D902C6D1;
 			remoteInfo = BetterSegmentedControl;
 		};
-		B10AC59221058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E18B1C0DEBD04E12A5DC8B40B7BF5150;
-			remoteInfo = BSGridCollectionViewLayout;
-		};
 		B10AC59421058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D13C7C5DC1991163C85D47D9B72B42DD;
 			remoteInfo = BSImagePicker;
-		};
-		B10AC59621058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 797083F5F27AFF01045BE4809698B5C1;
-			remoteInfo = "BSImagePicker-BSImagePicker";
 		};
 		B10AC59A21058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1261,13 +1258,6 @@
 			remoteGlobalIDString = 85979644862830BD1DFFD1D60F0D64AE;
 			remoteInfo = RxAtomic;
 		};
-		B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8B824035EFF627D7343420A8E0BC044B;
-			remoteInfo = BSImageView;
-		};
 		B1F79C77233B5F9B004D0AEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1469,6 +1459,25 @@
 		B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebsocketManager.swift; sourceTree = "<group>"; };
 		B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2DemoAlertView.swift; sourceTree = "<group>"; };
 		B158E95D215DD3F500AB2727 /* AIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConstants.swift; sourceTree = "<group>"; };
+		B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2RecordVoiceManager.swift; sourceTree = "<group>"; };
+		B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatAudioView.swift; sourceTree = "<group>"; };
+		B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatAudioView.xib; sourceTree = "<group>"; };
+		B15BE0F2249A06BE008CD1DB /* AmrCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmrCodec.h; sourceTree = "<group>"; };
+		B15BE0F5249A06BE008CD1DB /* enc_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = enc_if.h; sourceTree = "<group>"; };
+		B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libvo-amrwbenc.a"; sourceTree = "<group>"; };
+		B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvertMp3.m; sourceTree = "<group>"; };
+		B15BE0F9249A06BE008CD1DB /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
+		B15BE0FA249A06BE008CD1DB /* ConvertMp3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvertMp3.h; sourceTree = "<group>"; };
+		B15BE0FD249A06BE008CD1DB /* if_rom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_rom.h; sourceTree = "<group>"; };
+		B15BE0FE249A06BE008CD1DB /* dec_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dec_if.h; sourceTree = "<group>"; };
+		B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrwb.a"; sourceTree = "<group>"; };
+		B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrnb.a"; sourceTree = "<group>"; };
+		B15BE103249A06BE008CD1DB /* interf_dec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_dec.h; sourceTree = "<group>"; };
+		B15BE104249A06BE008CD1DB /* interf_enc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_enc.h; sourceTree = "<group>"; };
+		B15BE105249A06BE008CD1DB /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+		B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMAudioView.xib; sourceTree = "<group>"; };
+		B15BE10D249A107C008CD1DB /* IMAudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMAudioView.swift; sourceTree = "<group>"; };
+		B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerManager.swift; sourceTree = "<group>"; };
 		B15D26BF235EF0850092F8B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/CloudFile.storyboard; sourceTree = "<group>"; };
 		B15D26EA235EF0940092F8B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CloudFile.strings; sourceTree = "<group>"; };
 		B15D26EB235EF7480092F8B8 /* genstrings.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = genstrings.sh; sourceTree = "<group>"; };
@@ -2393,6 +2402,7 @@
 				B1BC8CDA216B3D5F00AF571F /* libc++.tbd in Frameworks */,
 				B130E648223B774D00B68354 /* image_picker.framework in Frameworks */,
 				E4D23119209EF74D00837868 /* libssl.a in Frameworks */,
+				B15BE106249A06BF008CD1DB /* libvo-amrwbenc.a in Frameworks */,
 				E4C24A222080A44300E426B0 /* CFNetwork.framework in Frameworks */,
 				B1AE4E2621A3DCC100183FCD /* O2OA_Auth_SDK.framework in Frameworks */,
 				B130E64A223B774D00B68354 /* shared_preferences.framework in Frameworks */,
@@ -2403,13 +2413,16 @@
 				E40958C7208051DE000FECC3 /* CoreTelephony.framework in Frameworks */,
 				E4418C5F1DDC1AC80066348D /* CoreGraphics.framework in Frameworks */,
 				E4375B12207CABAB0065A880 /* SystemConfiguration.framework in Frameworks */,
+				B15BE108249A06BF008CD1DB /* libmp3lame.a in Frameworks */,
 				B19BCE8A2228272500BD454C /* App.framework in Frameworks */,
 				B130E649223B774D00B68354 /* path_provider.framework in Frameworks */,
 				E4375B1A207CABE90065A880 /* AudioToolbox.framework in Frameworks */,
+				B15BE10A249A06BF008CD1DB /* libopencore-amrnb.a in Frameworks */,
 				E4375B14207CABB30065A880 /* AddressBook.framework in Frameworks */,
 				E4375B18207CABD20065A880 /* AssetsLibrary.framework in Frameworks */,
 				E4375B16207CABC90065A880 /* CoreMotion.framework in Frameworks */,
 				E4375B10207CABA30065A880 /* CoreLocation.framework in Frameworks */,
+				B15BE109249A06BF008CD1DB /* libopencore-amrwb.a in Frameworks */,
 				E4375B0E207CAB980065A880 /* CoreData.framework in Frameworks */,
 				E4375B0C207CAB860065A880 /* libz.tbd in Frameworks */,
 				E4375B08207CAB770065A880 /* libsqlite3.0.tbd in Frameworks */,
@@ -2534,10 +2547,7 @@
 				B10AC58D21058DAE00179587 /* AlamofireNetworkActivityIndicator.framework */,
 				B10AC58F21058DAE00179587 /* AlamofireObjectMapper.framework */,
 				B10AC59121058DAE00179587 /* BetterSegmentedControl.framework */,
-				B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */,
 				B10AC59521058DAE00179587 /* BSImagePicker.framework */,
-				B10AC59721058DAE00179587 /* BSImagePicker.bundle */,
-				B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */,
 				B10AC59B21058DAE00179587 /* Charts.framework */,
 				B1F79C78233B5F9B004D0AEE /* Chrysan.framework */,
 				B1F79C7A233B5F9B004D0AEE /* Chrysan.bundle */,
@@ -2621,6 +2631,10 @@
 				B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */,
 				B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */,
 				B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */,
+				B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */,
+				B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */,
+				B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */,
+				B15BE10D249A107C008CD1DB /* IMAudioView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2690,6 +2704,82 @@
 				B14B339E2356EB1500442968 /* CloudFileViewModel.swift */,
 			);
 			path = vm;
+			sourceTree = "<group>";
+		};
+		B15BE0F1249A06BE008CD1DB /* lame */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F2249A06BE008CD1DB /* AmrCodec.h */,
+				B15BE0F3249A06BE008CD1DB /* vo-amrwbenc */,
+				B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */,
+				B15BE0F9249A06BE008CD1DB /* libmp3lame.a */,
+				B15BE0FA249A06BE008CD1DB /* ConvertMp3.h */,
+				B15BE0FB249A06BE008CD1DB /* opencore-amr */,
+				B15BE105249A06BE008CD1DB /* lame.h */,
+			);
+			path = lame;
+			sourceTree = "<group>";
+		};
+		B15BE0F3249A06BE008CD1DB /* vo-amrwbenc */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F4249A06BE008CD1DB /* vo-amrwbenc */,
+				B15BE0F6249A06BE008CD1DB /* lib */,
+			);
+			path = "vo-amrwbenc";
+			sourceTree = "<group>";
+		};
+		B15BE0F4249A06BE008CD1DB /* vo-amrwbenc */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F5249A06BE008CD1DB /* enc_if.h */,
+			);
+			path = "vo-amrwbenc";
+			sourceTree = "<group>";
+		};
+		B15BE0F6249A06BE008CD1DB /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		B15BE0FB249A06BE008CD1DB /* opencore-amr */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0FC249A06BE008CD1DB /* opencore-amrwb */,
+				B15BE0FF249A06BE008CD1DB /* lib */,
+				B15BE102249A06BE008CD1DB /* opencore-amrnb */,
+			);
+			path = "opencore-amr";
+			sourceTree = "<group>";
+		};
+		B15BE0FC249A06BE008CD1DB /* opencore-amrwb */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0FD249A06BE008CD1DB /* if_rom.h */,
+				B15BE0FE249A06BE008CD1DB /* dec_if.h */,
+			);
+			path = "opencore-amrwb";
+			sourceTree = "<group>";
+		};
+		B15BE0FF249A06BE008CD1DB /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */,
+				B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		B15BE102249A06BE008CD1DB /* opencore-amrnb */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE103249A06BE008CD1DB /* interf_dec.h */,
+				B15BE104249A06BE008CD1DB /* interf_enc.h */,
+			);
+			path = "opencore-amrnb";
 			sourceTree = "<group>";
 		};
 		B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */ = {
@@ -2942,6 +3032,8 @@
 				B1E0BAA02378FC01001D741F /* O2JPushManager.swift */,
 				B1ABAA0B237E498C0027EC48 /* O2VersionManager.swift */,
 				B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */,
+				B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */,
+				B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -3922,6 +4014,7 @@
 		E4B887821D9D48F1002E1A46 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				B15BE0F1249A06BE008CD1DB /* lame */,
 				E4B69721207602840062F6E8 /* O2API */,
 				E4B8892E1D9D6308002E1A46 /* Utils */,
 				B142B04E230FB53E00E7D127 /* MagicBytesMimeType */,
@@ -5197,25 +5290,11 @@
 			remoteRef = B10AC59021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSGridCollectionViewLayout.framework;
-			remoteRef = B10AC59221058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B10AC59521058DAE00179587 /* BSImagePicker.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = BSImagePicker.framework;
 			remoteRef = B10AC59421058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B10AC59721058DAE00179587 /* BSImagePicker.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = BSImagePicker.bundle;
-			remoteRef = B10AC59621058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B10AC59B21058DAE00179587 /* Charts.framework */ = {
@@ -5428,13 +5507,6 @@
 			remoteRef = B1AE4E6321A3F53A00183FCD /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSImageView.framework;
-			remoteRef = B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B1F79C78233B5F9B004D0AEE /* Chrysan.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5477,6 +5549,7 @@
 				E46E6CA01DD41F5D00AB7561 /* ZSSrightjustify@2x.png in Resources */,
 				E46E6CA91DD41F5D00AB7561 /* ZSStextcolor.png in Resources */,
 				E4C24C1F2085849500E426B0 /* o2Theme.bundle in Resources */,
+				B15BE0F02499DD90008CD1DB /* IMChatAudioView.xib in Resources */,
 				E4B781671DF8E556007B58A9 /* information.storyboard in Resources */,
 				E46E6CAA1DD41F5D00AB7561 /* ZSStextcolor@2x.png in Resources */,
 				E40E24C020B7DA3C009F8BE7 /* OOMeetingRoomTableHeaderView.xib in Resources */,
@@ -5661,6 +5734,7 @@
 				E4C24C49208D7EDE00E426B0 /* OOContactSearchSectionHeaderView.xib in Resources */,
 				E46E6C691DD41F5D00AB7561 /* ZSSbgcolor.png in Resources */,
 				E428AF4620A95FE800D964B9 /* OOAttanceTotalController.xib in Resources */,
+				B15BE10C249A0EFE008CD1DB /* IMAudioView.xib in Resources */,
 				B165CD6B2242093500373B66 /* Info.plist in Resources */,
 				E4C24C48208D7EDE00E426B0 /* OOContactGroupHeaderView.xib in Resources */,
 				E4B888DB1D9D48F1002E1A46 /* 隶变体.ttf in Resources */,
@@ -5722,9 +5796,7 @@
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/BSGridCollectionViewLayout/BSGridCollectionViewLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/BSImagePicker/BSImagePicker.framework",
-				"${BUILT_PRODUCTS_DIR}/BSImageView/BSImageView.framework",
 				"${BUILT_PRODUCTS_DIR}/BetterSegmentedControl/BetterSegmentedControl.framework",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/Chrysan/Chrysan.framework",
@@ -5765,9 +5837,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSGridCollectionViewLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImagePicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImageView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BetterSegmentedControl.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Chrysan.framework",
@@ -6036,6 +6106,7 @@
 				E4C24BB420844F3C00E426B0 /* JCMessageContentViewType.swift in Sources */,
 				E4C24B9420844F3C00E426B0 /* JCGroupSettingCell.swift in Sources */,
 				E40E24D320B7DA3C009F8BE7 /* OOMeetingPersonSelectHeaderView.swift in Sources */,
+				B15BE0BE2499BCEF008CD1DB /* O2RecordVoiceManager.swift in Sources */,
 				B1DB6EA5237E6F2C00D7BA94 /* O2VersionInfoModel.swift in Sources */,
 				E4C24B9E20844F3C00E426B0 /* JCUpdateMemberCell.swift in Sources */,
 				09E02E9A1F1745E700579887 /* ZLTextView.swift in Sources */,
@@ -6098,6 +6169,7 @@
 				B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */,
 				E4B6975020762EA00062F6E8 /* OOPasswordTextField.swift in Sources */,
 				E491664C1E03C09C006133C5 /* O2Account.swift in Sources */,
+				B15BE111249A6002008CD1DB /* AudioPlayerManager.swift in Sources */,
 				E46E6CBA1DD41F5D00AB7561 /* CYRToken.m in Sources */,
 				E4C24C53208D7EDE00E426B0 /* OOContactGroupHeaderView.swift in Sources */,
 				E4C24BD120844F3C00E426B0 /* JCNoteNameViewController.swift in Sources */,
@@ -6245,6 +6317,7 @@
 				09E02E021F12736C00579887 /* PersonV2.swift in Sources */,
 				B1B0102F23586B34002BF874 /* CFFileTableViewCell.swift in Sources */,
 				E40E24AE20B7DA3C009F8BE7 /* OOMeetingAcceptController.swift in Sources */,
+				B15BE107249A06BF008CD1DB /* ConvertMp3.m in Sources */,
 				09E02E041F127CAF00579887 /* IdentityV2.swift in Sources */,
 				E42E41CE1E6ED13C00C5B5C7 /* CMS_PublishInfo.swift in Sources */,
 				E4B888801D9D48F1002E1A46 /* File.swift in Sources */,
@@ -6265,6 +6338,7 @@
 				E4B888C41D9D48F1002E1A46 /* CollectDeviceData.swift in Sources */,
 				E4B888731D9D48F1002E1A46 /* Company.swift in Sources */,
 				E4C24B9B20844F3C00E426B0 /* JCNetworkTipsCell.swift in Sources */,
+				B15BE10E249A107C008CD1DB /* IMAudioView.swift in Sources */,
 				E45DA8E91DACC11600E0735D /* BaseWebViewUIViewController.swift in Sources */,
 				E424BAD61EE105BB0078DB47 /* O2Logger.swift in Sources */,
 				E491664A1E038D09006133C5 /* O2AlamofireSource.swift in Sources */,
@@ -6316,6 +6390,7 @@
 				E40E24D220B7DA3C009F8BE7 /* OOFormDateIntervalItemView.swift in Sources */,
 				E4184B251DB4F28800FCC907 /* SMobileChangeViewController.swift in Sources */,
 				E40E24B320B7DA3C009F8BE7 /* OOMeetingMeetingRoomManageController.swift in Sources */,
+				B15BE0EE2499DD7E008CD1DB /* IMChatAudioView.swift in Sources */,
 				E40E24D820B7DA3C009F8BE7 /* OOMeetingPersonFooterView.swift in Sources */,
 				B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */,
 				E4B697C520764A2D0062F6E8 /* O2InformationAPI.swift in Sources */,
@@ -6787,6 +6862,9 @@
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/vo-amrwbenc/lib",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
 				MARKETING_VERSION = 5.0.7;
 				OTHER_LDFLAGS = (
@@ -6800,8 +6878,6 @@
 					"\"AlamofireNetworkActivityIndicator\"",
 					"-framework",
 					"\"AlamofireObjectMapper\"",
-					"-framework",
-					"\"BSGridCollectionViewLayout\"",
 					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",
@@ -6902,6 +6978,9 @@
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/vo-amrwbenc/lib",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
 				MARKETING_VERSION = 5.0.7;
 				OTHER_LDFLAGS = (
@@ -6915,8 +6994,6 @@
 					"\"AlamofireNetworkActivityIndicator\"",
 					"-framework",
 					"\"AlamofireObjectMapper\"",
-					"-framework",
-					"\"BSGridCollectionViewLayout\"",
 					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",

@@ -266,8 +266,8 @@ class O2BaseJsMessageHandler: O2WKScriptMessageHandlerImplement {
             return
         }
         data.scale = 800
-        let chooseImage = FileBSImagePickerViewController()
-        self.viewController.bs_presentImagePickerController(chooseImage, animated: true, select: nil, deselect: nil, cancel: nil, finish: { (arr) in
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        self.viewController.presentImagePicker(vc, select: nil, deselect: nil, cancel: nil, finish: { (arr) in
             let count = arr.count
             DDLogDebug("选择了照片数量：\(count)")
             if count > 0 {

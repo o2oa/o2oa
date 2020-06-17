@@ -9,6 +9,12 @@
 import UIKit
 import CocoaLumberjack
 import O2OA_Auth_SDK
+import BSImagePicker
+import Photos
+import Alamofire
+import AlamofireImage
+import SwiftyJSON
+import QuickLook
 
 class IMChatViewController: UIViewController {
 
@@ -21,13 +27,24 @@ class IMChatViewController: UIViewController {
     @IBOutlet weak var bottomBarHeightConstraint: NSLayoutConstraint!
     //底部工具栏
     @IBOutlet weak var bottomBar: UIView!
-    
-    private let emojiBarHeight = 256
+
+    private let emojiBarHeight = 196
     //表情窗口
     private lazy var emojiBar: IMChatEmojiBarView = {
-       let view = Bundle.main.loadNibNamed("IMChatEmojiBarView", owner: self, options: nil)?.first as! IMChatEmojiBarView
+        let view = Bundle.main.loadNibNamed("IMChatEmojiBarView", owner: self, options: nil)?.first as! IMChatEmojiBarView
         view.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: emojiBarHeight.toCGFloat)
-       return view
+        return view
+    }()
+    //语音录制按钮
+    private lazy var audioBtnView: IMChatAudioView = {
+        let view = Bundle.main.loadNibNamed("IMChatAudioView", owner: self, options: nil)?.first as! IMChatAudioView
+        view.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: emojiBarHeight.toCGFloat)
+        view.delegate = self
+        return view
+    }()
+    //预览文件
+    private lazy var previewVC: CloudFilePreviewController = {
+        return CloudFilePreviewController()
     }()
 
     private lazy var viewModel: IMViewModel = {
@@ -39,7 +56,9 @@ class IMChatViewController: UIViewController {
     private var chatMessageList: [IMMessageInfo] = []
     private var page = 1
     private var isShowEmoji = false
-    private var bottomBarHeight = 64
+    private var isShowAudioView = false
+    private var bottomBarHeight = 64 //底部输入框 表情按钮 的高度
+    private let bottomToolbarHeight = 46 //底部工具栏 麦克风 相册 相机等按钮的位置
 
 
     // MARK: - functions
@@ -55,7 +74,7 @@ class IMChatViewController: UIViewController {
         self.messageInputView.delegate = self
 
         //底部安全距离 老机型没有
-        self.bottomBarHeight = Int(iPhoneX ? 64 + IPHONEX_BOTTOM_SAFE_HEIGHT: 64)
+        self.bottomBarHeight = Int(iPhoneX ? 64 + IPHONEX_BOTTOM_SAFE_HEIGHT: 64) + self.bottomToolbarHeight
         self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
         self.bottomBar.topBorder(width: 1, borderColor: base_gray_color.alpha(0.5))
         self.messageInputView.backgroundColor = base_gray_color
@@ -65,7 +84,7 @@ class IMChatViewController: UIViewController {
             if let c = self.conversation {
                 var person = ""
                 c.personList?.forEach({ (p) in
-                    if  p != O2AuthSDK.shared.myInfo()?.distinguishedName {
+                    if p != O2AuthSDK.shared.myInfo()?.distinguishedName {
                         person = p
                     }
                 })
@@ -73,7 +92,7 @@ class IMChatViewController: UIViewController {
                     self.title = person.split("@").first ?? ""
                 }
             }
-        }else {
+        } else {
             self.title = self.conversation?.title
         }
         //获取聊天数据
@@ -81,15 +100,15 @@ class IMChatViewController: UIViewController {
         //阅读
         self.viewModel.readConversation(conversationId: self.conversation?.id)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
-         NotificationCenter.default.addObserver(self, selector: #selector(receiveMessageFromWs(notice:)), name: OONotification.websocket.notificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(receiveMessageFromWs(notice:)), name: OONotification.websocket.notificationName, object: nil)
     }
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    
+
+
     @objc private func receiveMessageFromWs(notice: Notification) {
         DDLogDebug("接收到websocket im 消息")
         if let message = notice.object as? IMMessageInfo {
@@ -117,11 +136,11 @@ class IMChatViewController: UIViewController {
         DispatchQueue.main.async {
             self.tableView.reloadData()
             if self.chatMessageList.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count-1, section: 0), at: .bottom, animated: true)
+                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count - 1, section: 0), at: .bottom, animated: true)
             }
         }
     }
-    
+
     //发送文本消息
     private func sendTextMessage() {
         guard let msg = self.messageInputView.text else {
@@ -140,7 +159,7 @@ class IMChatViewController: UIViewController {
         body.body = emoji
         sendMessage(body: body)
     }
-    
+
     //发送消息到服务器
     private func sendMessage(body: IMMessageBodyInfo) {
         let message = IMMessageInfo()
@@ -154,12 +173,172 @@ class IMChatViewController: UIViewController {
         self.scrollMessageToBottom()
         //发送消息到服务器
         self.viewModel.sendMsg(msg: message)
-            .then { (result)  in
+            .then { (result) in
                 DDLogDebug("发送消息成功 \(result)")
                 self.viewModel.readConversation(conversationId: self.conversation?.id)
-        }.catch { (error) in
-            DDLogError(error.localizedDescription)
-            self.showError(title: "发送消息失败!")
+            }.catch { (error) in
+                DDLogError(error.localizedDescription)
+                self.showError(title: "发送消息失败!")
+        }
+    }
+
+    //选择照片
+    private func chooseImage() {
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        vc.settings.fetch.assets.supportedMediaTypes = [.image]
+
+        presentImagePicker(vc, select: { (asset) in
+            //选中一个
+        }, deselect: { (asset) in
+                //取消选中一个
+            }, cancel: { (assets) in
+                //取消
+            }, finish: { (assets) in
+                //结果
+                if assets.count > 0 {
+                    switch assets[0].mediaType {
+                    case .image:
+                        let options = PHImageRequestOptions()
+                        options.isSynchronous = true
+                        options.deliveryMode = .fastFormat
+                        options.resizeMode = .none
+                        PHImageManager.default().requestImageData(for: assets[0], options: options) { (imageData, result, imageOrientation, dict) in
+                            guard let data = imageData else {
+                                return
+                            }
+                            var newData = data
+                            //处理图片旋转的问题
+                            if imageOrientation != UIImage.Orientation.up {
+                                let newImage = UIImage(data: data)?.fixOrientation()
+                                if newImage != nil {
+                                    newData = newImage!.pngData()!
+                                }
+                            }
+                            var fileName = ""
+                            if dict?["PHImageFileURLKey"] != nil {
+                                let fileURL = dict?["PHImageFileURLKey"] as! URL
+                                fileName = fileURL.lastPathComponent
+                            } else {
+                                fileName = "\(UUID().uuidString).png"
+                            }
+                            let localFilePath = self.storageLocalImage(imageData: newData, fileName: fileName)
+                            let msgId = self.prepareForSendImageMsg(filePath: localFilePath)
+                            self.uploadImageAndSendMsg(messageId: msgId, imageData: newData, fileName: fileName)
+                        }
+                        break
+                    default:
+                        //
+                        DDLogError("不支持的类型")
+                        self.showError(title: "不支持的类型！")
+                        break
+                    }
+                }
+            }, completion: nil)
+    }
+    //临时存储本地
+    private func storageLocalImage(imageData: Data, fileName: String) -> String {
+        let fileTempPath = FileUtil.share.cacheDir().appendingPathComponent(fileName)
+        do {
+            try imageData.write(to: fileTempPath)
+            return fileTempPath.path
+        } catch {
+            print(error.localizedDescription)
+            return fileTempPath.path
+        }
+    }
+    //发送消息前 先载入界面
+    private func prepareForSendImageMsg(filePath: String) -> String {
+        let body = IMMessageBodyInfo()
+        body.type = o2_im_msg_type_image
+        body.body = o2_im_msg_body_image
+        body.fileTempPath = filePath
+        let message = IMMessageInfo()
+        let msgId = UUID().uuidString
+        message.body = body.toJSONString()
+        message.id = msgId
+        message.conversationId = self.conversation?.id
+        message.createPerson = O2AuthSDK.shared.myInfo()?.distinguishedName
+        message.createTime = Date().formatterDate(formatter: "yyyy-MM-dd HH:mm:ss")
+        //添加到界面
+        self.chatMessageList.append(message)
+        self.scrollMessageToBottom()
+        return msgId
+    }
+    
+    //发送消息前 先载入界面
+    private func prepareForSendFileMsg(tempMessage: IMMessageBodyInfo) -> String {
+        let message = IMMessageInfo()
+        let msgId = UUID().uuidString
+        message.body = tempMessage.toJSONString()
+        message.id = msgId
+        message.conversationId = self.conversation?.id
+        message.createPerson = O2AuthSDK.shared.myInfo()?.distinguishedName
+        message.createTime = Date().formatterDate(formatter: "yyyy-MM-dd HH:mm:ss")
+        //添加到界面
+        self.chatMessageList.append(message)
+        self.scrollMessageToBottom()
+        return msgId
+    }
+
+    //上传图片到服务器并发送消息
+    private func uploadImageAndSendMsg(messageId: String, imageData: Data, fileName: String) {
+        guard let cId = self.conversation?.id else {
+            return
+        }
+        self.viewModel.uploadFile(conversationId: cId, type: o2_im_msg_type_image, fileName: fileName, file: imageData).then { attachId in
+            DDLogDebug("上传图片成功： \(attachId)")
+            guard let message = self.chatMessageList.first (where: { (info) -> Bool in
+                return info.id == messageId
+            }) else {
+                DDLogDebug("没有找到对应的消息")
+                return
+            }
+            let body = IMMessageBodyInfo.deserialize(from: message.body)
+            body?.fileId = attachId
+            body?.fileTempPath = nil
+            message.body = body?.toJSONString()
+            //发送消息到服务器
+            self.viewModel.sendMsg(msg: message)
+                .then { (result) in
+                    DDLogDebug("图片消息 发送成功 \(result)")
+                    self.viewModel.readConversation(conversationId: self.conversation?.id)
+                }.catch { (error) in
+                    DDLogError(error.localizedDescription)
+                    self.showError(title: "发送消息失败!")
+            }
+        }.catch { err in
+            self.showError(title: "上传错误，\(err.localizedDescription)")
+        }
+    }
+    
+    //上传图片 音频 等文件到服务器并发送消息
+    private func uploadFileAndSendMsg(messageId: String, data: Data, fileName: String, type: String) {
+        guard let cId = self.conversation?.id else {
+            return
+        }
+        self.viewModel.uploadFile(conversationId: cId, type: type, fileName: fileName, file: data).then { attachId in
+            DDLogDebug("上传图片成功： \(attachId)")
+            guard let message = self.chatMessageList.first (where: { (info) -> Bool in
+                return info.id == messageId
+            }) else {
+                DDLogDebug("没有找到对应的消息")
+                return
+            }
+            let body = IMMessageBodyInfo.deserialize(from: message.body)
+            body?.fileId = attachId
+            body?.fileTempPath = nil
+            message.body = body?.toJSONString()
+            //发送消息到服务器
+            self.viewModel.sendMsg(msg: message)
+                .then { (result) in
+                    DDLogDebug("图片消息 发送成功 \(result)")
+                    self.viewModel.readConversation(conversationId: self.conversation?.id)
+                }.catch { (error) in
+                    DDLogError(error.localizedDescription)
+                    self.showError(title: "发送消息失败!")
+            }
+        }.catch { err in
+            self.showError(title: "上传错误，\(err.localizedDescription)")
         }
     }
 
@@ -170,6 +349,10 @@ class IMChatViewController: UIViewController {
         self.isShowEmoji.toggle()
         self.view.endEditing(true)
         if self.isShowEmoji {
+            //audio view 先关闭
+            self.isShowAudioView = false
+            self.audioBtnView.removeFromSuperview()
+            //开始添加emojiBar
             self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + self.emojiBarHeight.toCGFloat
             self.emojiBar.delegate = self
             self.emojiBar.translatesAutoresizingMaskIntoConstraints = false
@@ -185,8 +368,132 @@ class IMChatViewController: UIViewController {
         self.view.layoutIfNeeded()
     }
 
+    @IBAction func micBtnClick(_ sender: UIButton) {
+        DDLogDebug("点击了麦克风按钮")
+        self.isShowAudioView.toggle()
+        self.view.endEditing(true)
+        if self.isShowAudioView {
+            //emoji view 先关闭
+            self.isShowEmoji = false
+            self.emojiBar.removeFromSuperview()
+            //开始添加emojiBar
+            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + self.emojiBarHeight.toCGFloat
+            self.audioBtnView.translatesAutoresizingMaskIntoConstraints = false
+            self.bottomBar.addSubview(self.audioBtnView)
+            let top = NSLayoutConstraint(item: self.audioBtnView, attribute: .top, relatedBy: .equal, toItem: self.audioBtnView.superview!, attribute: .top, multiplier: 1, constant: CGFloat(self.bottomBarHeight))
+            let width = NSLayoutConstraint(item: self.audioBtnView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: SCREEN_WIDTH)
+            let height = NSLayoutConstraint(item: self.audioBtnView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: self.emojiBarHeight.toCGFloat)
+            NSLayoutConstraint.activate([top, width, height])
+        }else {
+            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
+            self.audioBtnView.removeFromSuperview()
+        }
+        self.view.layoutIfNeeded()
+    }
+
+    @IBAction func imgBtnClick(_ sender: UIButton) {
+        DDLogDebug("点击了图片按钮")
+        self.chooseImage()
+    }
+    @IBAction func cameraBtnClick(_ sender: UIButton) {
+        DDLogDebug("点击了相机按钮")
+        self.takePhoto(delegate: self)
+    }
+    @IBAction func locationBtnClick(_ sender: UIButton) {
+        DDLogDebug("点击了位置按钮")
+    }
 
 
+}
+
+// MARK: - 录音delegate
+extension IMChatViewController: IMChatAudioViewDelegate {
+    func sendVoice(path: String, voice: Data, duration: String) {
+        let msg = IMMessageBodyInfo()
+        msg.fileTempPath = path
+        msg.body = o2_im_msg_body_audio
+        msg.type = o2_im_msg_type_audio
+        msg.audioDuration = duration
+        let msgId = self.prepareForSendFileMsg(tempMessage: msg)
+        let fileName = path.split("/").last ?? "MySound.ilbc"
+        DDLogDebug("音频文件：\(fileName)")
+        self.uploadFileAndSendMsg(messageId: msgId, data: voice, fileName: fileName, type: o2_im_msg_type_audio)
+    }
+}
+
+// MARK: - 拍照delegate
+extension IMChatViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        if let image = info[.editedImage] as? UIImage {
+            let fileName = "\(UUID().uuidString).png"
+            let newData = image.pngData()!
+            let localFilePath = self.storageLocalImage(imageData: newData, fileName: fileName)
+            let msgId = self.prepareForSendImageMsg(filePath: localFilePath)
+            self.uploadImageAndSendMsg(messageId: msgId, imageData: newData, fileName: fileName)
+        } else {
+            DDLogError("没有选择到图片！")
+        }
+        picker.dismiss(animated: true, completion: nil)
+//        var newData = data
+//        //处理图片旋转的问题
+//        if imageOrientation != UIImage.Orientation.up {
+//            let newImage = UIImage(data: data)?.fixOrientation()
+//            if newImage != nil {
+//                newData = newImage!.pngData()!
+//            }
+//        }
+//        var fileName = ""
+//        if dict?["PHImageFileURLKey"] != nil {
+//            let fileURL = dict?["PHImageFileURLKey"] as! URL
+//            fileName = fileURL.lastPathComponent
+//        } else {
+//            fileName = "\(UUID().uuidString).png"
+//        }
+    }
+
+}
+
+// MARK: - 图片消息点击 delegate
+extension IMChatViewController: IMChatMessageDelegate {
+    func clickImageMessage(fileId: String?, tempPath: String?) {
+        if let id = fileId {
+            self.showLoading()
+            O2IMFileManager.shared
+                .getFileLocalUrl(fileId: id)
+                .always {
+                    self.hideLoading()
+                }.then { (path) in
+                    let currentURL = NSURL(fileURLWithPath: path.path)
+                    DDLogDebug(currentURL.description)
+                    DDLogDebug(path.path)
+                    if QLPreviewController.canPreview(currentURL) {
+                        self.previewVC.currentFileURLS.removeAll()
+                        self.previewVC.currentFileURLS.append(currentURL)
+                        self.previewVC.reloadData()
+                        self.pushVC(self.previewVC)
+                    } else {
+                        self.showError(title: "当前文件类型不支持预览！")
+                    }
+                }
+                .catch { (error) in
+                    DDLogError(error.localizedDescription)
+                    self.showError(title: "获取文件异常！")
+            }
+        }else if let temp = tempPath {
+            let currentURL = NSURL(fileURLWithPath: temp)
+            DDLogDebug(currentURL.description)
+            DDLogDebug(temp)
+            if QLPreviewController.canPreview(currentURL) {
+                self.previewVC.currentFileURLS.removeAll()
+                self.previewVC.currentFileURLS.append(currentURL)
+                self.previewVC.reloadData()
+                self.pushVC(self.previewVC)
+            } else {
+                self.showError(title: "当前文件类型不支持预览！")
+            }
+        }
+    }
 }
 
 // MARK: - 表情点击 delegate
@@ -209,17 +516,19 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
         if msg.createPerson == O2AuthSDK.shared.myInfo()?.distinguishedName { //发送者
             if let cell = tableView.dequeueReusableCell(withIdentifier: "IMChatMessageSendViewCell", for: indexPath) as? IMChatMessageSendViewCell {
                 cell.setContent(item: self.chatMessageList[indexPath.row])
+                cell.delegate = self
                 return cell
             }
-        }else {
+        } else {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "IMChatMessageViewCell", for: indexPath) as? IMChatMessageViewCell {
                 cell.setContent(item: self.chatMessageList[indexPath.row])
+                cell.delegate = self
                 return cell
             }
         }
         return UITableViewCell()
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
     }
@@ -230,12 +539,13 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
 extension IMChatViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         DDLogDebug("准备开始输入......")
-        closeEmoji()
+        closeOtherView()
         return true
     }
 
-    private func closeEmoji() {
+    private func closeOtherView() {
         self.isShowEmoji = false
+        self.isShowAudioView = false
         self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
         self.view.layoutIfNeeded()
     }
