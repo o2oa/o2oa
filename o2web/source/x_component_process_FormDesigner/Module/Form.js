@@ -733,8 +733,22 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this._hideInjectAction();
 	},
 
-
-
+	// _clearSubform: function(node){
+	// 	var subNode = node.getFirst();
+	// 	while (subNode){
+	// 		var nextNode = subNode.getNext();
+	// 		if (subNode.get("MWFType")){
+	// 			if ( subNode.get("MWFType") === "subform" ){
+	// 				subNode.destroy();
+	// 			}else{
+	// 				if (subNode) this._clearSubform(subNode);
+	// 			}
+	// 		}else{
+	// 			if (subNode) this._clearSubform(subNode);
+	// 		}
+	// 		subNode = nextNode;
+	// 	}
+	// },
     _clearNoId: function(node){
         var subNode = node.getFirst();
         while (subNode){
