@@ -33,7 +33,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public AttendanceAppealInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find(id, AttendanceAppealInfo.class, ExceptionWhen.none);
 	}
-	
+
+	public List<AttendanceAppealInfo> listWithDetailId(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AttendanceAppealInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceAppealInfo> cq = cb.createQuery(AttendanceAppealInfo.class);
+		Root<AttendanceAppealInfo> root = cq.from( AttendanceAppealInfo.class);
+		Predicate p = cb.equal( root.get(AttendanceAppealInfo_.detailId),  id );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
 	//@MethodDescribe("列示全部的AttendanceAppealInfo信息列表")
 	public List<String> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceAppealInfo.class);
