@@ -142,14 +142,20 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
         this.json.moduleName = this.moduleName;
     },
 	parseModules: function(){
+		var moduleNodes = [];
 		var subDom = this.node.getFirst();
 		while (subDom){
 			if (subDom.get("MWFtype")){
-				var json = this.form.getDomjson(subDom);
-				module = this.form.loadModule(json, subDom, this);
+				let json = this.form.getDomjson(subDom);
+				let moduleNode = subDom;
+				moduleNodes.push({"dom": moduleNode, "json": json});
+				//module = this.form.loadModule(json, subDom, this);
 			}
 			subDom = subDom.getNext();
 		}
+		moduleNodes.each(function(obj){
+			module = this.form.loadModule(obj.json, obj.dom, this);
+		}.bind(this));
 	},
 	destroy: function(){
 		var modules = this._getSubModule();

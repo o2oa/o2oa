@@ -8,7 +8,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class({
 			this.node.set("text", this.json.text || "");
 		}
 		if (this.json.valueType == "script"){
-			var code = this.json.script.code;
+			var code = (this.json.script) ? this.json.script.code : "";
 			if (code){
 				this.node.set("text", this.form.Macro.exec(code, this) || "");
 			} 

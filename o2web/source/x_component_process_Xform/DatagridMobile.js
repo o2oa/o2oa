@@ -26,7 +26,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.createMobileTable();
 
         this.editable = (!this.readonly);
-        if (this.editable) this.editable = this.form.Macro.exec(this.json.editableScript.code, this);
+        if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
         //this.editable = false;
 
         this.gridData = this._getValue();
@@ -90,7 +90,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 		var value = [];
 		value = this._getBusinessData();
 		if (!value){
-			if (this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
             value = {"data": value || []};
 		}
 		return value || [];
