@@ -5,6 +5,8 @@ MWF.xApplication.Profile.LP = {
     "ideaConfig": "常用意见",
     "passwordConfig": "修改密码",
     "ssoConfig": "单点登录",
+    "facelogin": "人脸登录",
+    "openFaceSet": "打开人脸登录设置",
 
     "clear": "清除界面数据",
     "setDefault": "设置为默认界面",

@@ -4,6 +4,8 @@ MWF.xApplication.Profile.LP = {
     "layoutConfig": "UI",
     "ideaConfig": "Opinion",
     "passwordConfig": "Password",
+    "facelogin": "Face Login",
+    "openFaceSet": "Open FaceSet",
 
     "clear": "清除界面数据",
     "setDefault": "设置为默认界面",
