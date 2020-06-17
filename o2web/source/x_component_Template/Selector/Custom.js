@@ -251,26 +251,22 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
             var firstLoaded = !this.loaded;
             debugger;
             this.loadSub(function () {
-                if( this.selector.options.categorySelectable ){
-
-                }else{
-                    if (firstLoaded) {
-                        if (!this.selector.isFlatCategory) {
-                            this.children.setStyles({"display": "block", "height": "auto"});
-                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                            this.isExpand = true;
-                        }
+                if (firstLoaded) {
+                    if (!this.selector.isFlatCategory) {
+                        this.children.setStyles({"display": "block", "height": "auto"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                        this.isExpand = true;
+                    }
+                } else {
+                    var display = this.children.getStyle("display");
+                    if (display === "none") {
+                        this.children.setStyles({"display": "block", "height": "auto"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                        this.isExpand = true;
                     } else {
-                        var display = this.children.getStyle("display");
-                        if (display === "none") {
-                            this.children.setStyles({"display": "block", "height": "auto"});
-                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
-                            this.isExpand = true;
-                        } else {
-                            this.children.setStyles({"display": "none", "height": "0px"});
-                            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
-                            this.isExpand = false;
-                        }
+                        this.children.setStyles({"display": "none", "height": "0px"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                        this.isExpand = false;
                     }
                 }
                 if (callback) callback();
