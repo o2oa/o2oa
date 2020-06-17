@@ -78,7 +78,8 @@ public class DumpData {
 			EntityManager em = emf.createEntityManager();
 			try {
 				long estimateCount = this.estimateCount(em, cls);
-				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(), estimateCount);
+				logger.print("dump data({}/{}): {}, count: {}.", (i + 1), classNames.size(), cls.getName(),
+						estimateCount);
 				this.dump(cls, em, estimateCount);
 			} finally {
 				em.close();
@@ -123,7 +124,7 @@ public class DumpData {
 				id = BeanUtils.getProperty(list.get(list.size() - 1), JpaObject.id_FIELDNAME);
 				File file = new File(directory, count + ".json");
 				FileUtils.write(file, pureGsonDateFormated.toJson(list), DefaultCharset.charset);
-				logger.print("dumping {}/{} part of data:{}.", loop, btach, cls.getName());
+				logger.print("dumping {}/{} part of data:{}.", loop++, btach, cls.getName());
 			}
 			em.clear();
 		} while (ListTools.isNotEmpty(list));
