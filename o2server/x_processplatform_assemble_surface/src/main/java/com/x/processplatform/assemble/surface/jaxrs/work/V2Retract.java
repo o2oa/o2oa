@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.x.base.core.project.logger.Audit;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,7 @@ class V2Retract extends BaseAction {
 	private EffectivePerson effectivePerson;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -120,6 +121,8 @@ class V2Retract extends BaseAction {
 		this.processing();
 
 		this.record();
+
+		audit.log(null, "工作召回");
 
 		result.setData(Wo.copier.copy(record));
 
