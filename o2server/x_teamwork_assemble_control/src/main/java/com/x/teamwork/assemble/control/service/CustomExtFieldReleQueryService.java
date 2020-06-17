@@ -56,9 +56,9 @@ public class CustomExtFieldReleQueryService {
 	 * @throws Exception
 	 */
 	public List<CustomExtFieldRele> listReleWithCorrelation( String correlationId ) throws Exception {
-		if (StringUtils.isEmpty(correlationId)) {
+		/*if (StringUtils.isEmpty(correlationId)) {
 			return new ArrayList<>();
-		}
+		}*/
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return customExtFieldReleService.listReleWithCorrelation(emc, correlationId);
 		} catch (Exception e) {

@@ -52,6 +52,21 @@ public class CustomExtFieldReleFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( CustomExtFieldRele_.updateTime ) ) );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+	
+	/**
+	 * 列示所有扩展属性信息列表
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CustomExtFieldRele> listAllFieldReleObj() throws Exception {
+		
+		EntityManager em = this.entityManagerContainer().get(CustomExtFieldRele.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CustomExtFieldRele> cq = cb.createQuery(CustomExtFieldRele.class);
+		Root<CustomExtFieldRele> root = cq.from(CustomExtFieldRele.class);
+		cq.orderBy( cb.asc( root.get( CustomExtFieldRele_.order ) ) );
+		return em.createQuery(cq).getResultList();
+	}
 
 	/**
 	 * 根据关联ID列示扩展属性ID信息列表
