@@ -134,12 +134,12 @@ class ActionProcessing extends BaseAction {
 
 	private void processing() throws Exception {
 		switch (type) {
-		case TYPE_APPENDTASK:
-			this.processingAppendTask();
-			break;
-		default:
-			this.processingTask();
-			break;
+			case TYPE_APPENDTASK:
+				this.processingAppendTask();
+				break;
+			default:
+				this.processingTask();
+				break;
 		}
 	}
 
@@ -189,6 +189,8 @@ class ActionProcessing extends BaseAction {
 		req.setIgnoreEmpowerIdentityList(wi.getIgnoreEmpowerIdentityList());
 		req.setType(ProcessingAttributes.TYPE_TASK);
 		req.setSeries(this.series);
+		req.setPerson(task.getPerson());
+		req.setIdentity(task.getIdentity());
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", task.getWork(), "processing"), req, task.getJob())
