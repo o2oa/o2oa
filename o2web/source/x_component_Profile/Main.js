@@ -32,7 +32,7 @@ MWF.xApplication.Profile.Main = new Class({
             this.personData = json.data;
             this.personData.personIcon = this.action.getPersonIcon();
 
-            this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser||layout.viewMode=="Default")? "viewBrowser": "view")+".html", {"bind": {"data": this.personData, "lp": this.lp}}, function(){
+            this.content.loadHtml(this.path+this.options.style+"/"+((this.inBrowser||layout.viewMode=="Default")? "viewBrowser": "view")+".html", {"bind": {"data": this.personData, "lp": this.lp}, "module": this}, function(){
                 this.loadContent()
             }.bind(this));
         }.bind(this));
@@ -44,6 +44,7 @@ MWF.xApplication.Profile.Main = new Class({
     },
 
     loadContent: function(){
+        debugger;
         var pageConfigNodes = this.content.getElements(".o2_profile_configNode");
 
         this.contentNode = this.content.getElement(".o2_profile_contentNode");
@@ -100,6 +101,9 @@ MWF.xApplication.Profile.Main = new Class({
             this.loadSSOConfigAction();
 
         }.bind(this));
+    },
+    openFaceSet: function(){
+        layout.openApplication(null, "FaceSet");
     },
     loadInforConfigActions: function(){
         this.contentImgNode = this.content.getElement(".o2_profile_inforIconContentImg");
