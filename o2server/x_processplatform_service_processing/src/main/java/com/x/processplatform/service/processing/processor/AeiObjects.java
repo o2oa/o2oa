@@ -863,7 +863,8 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitTaskCreatePart() {
 		this.getCreateTasks().stream().forEach(o -> {
 			try {
-				if (StringUtils.isEmpty(this.processingAttributes.getIdentity())) {
+				// 写入当前处理人作为上一环节处理人
+				if (StringUtils.isNotEmpty(this.processingAttributes.getIdentity())) {
 					o.getProperties()
 							.setPrevTaskIdentityList(ListTools.trim(o.getProperties().getPrevTaskIdentityList(), true,
 									true, this.processingAttributes.getIdentity()));
