@@ -3,14 +3,13 @@ package com.x.base.core.project.http;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
-import java.util.zip.CRC32;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
+import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DefaultCharset;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionResult<T> implements Serializable {
 
@@ -61,6 +60,14 @@ public class ActionResult<T> implements Serializable {
 			message += " , " + str;
 		}
 	}
+
+	/**
+	 * 此方法不会抛出execption 与 ActionResponse 带类型的方法不同
+	 * 
+	 * @see ActionResponse
+	 * 
+	 * @return
+	 */
 
 	public T getData() {
 		return data;

@@ -30,10 +30,8 @@ public class VoteCenterEvent implements Event {
 
 				ActionResponse response = CipherConnectionAction.get(false,
 						Config.url_x_program_center_jaxrs(entry, "echo"));
-
-				JsonElement jsonElement = response.getData();
-
-				if (null != jsonElement) {
+				JsonElement jsonElement = response.getData(JsonElement.class);
+				if (null != jsonElement && (!jsonElement.isJsonNull())) {
 					if ((!StringUtils.equals(Config.resource_node_centersPirmaryNode(), entry.getKey()))
 							|| (!Objects.equals(Config.resource_node_centersPirmaryPort(), entry.getValue().getPort()))
 							|| (!Objects.equals(Config.resource_node_centersPirmarySslEnable(),
@@ -47,7 +45,6 @@ public class VoteCenterEvent implements Event {
 				}
 
 			} catch (Exception e) {
-
 			}
 		}
 
