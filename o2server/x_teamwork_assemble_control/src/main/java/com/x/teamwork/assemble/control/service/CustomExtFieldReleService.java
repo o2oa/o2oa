@@ -44,7 +44,11 @@ class CustomExtFieldReleService {
 	 */
 	protected List<CustomExtFieldRele> listReleWithCorrelation(EntityManagerContainer emc, String correlationId ) throws Exception {
 		Business business = new Business( emc );
-		return business.customExtFieldReleFactory().listFieldReleObjByCorrelation( correlationId );
+		if(StringUtils.isEmpty(correlationId)){
+			return business.customExtFieldReleFactory().listAllFieldReleObj();
+		}else{
+			return business.customExtFieldReleFactory().listFieldReleObjByCorrelation( correlationId );
+		}
 	}
 	
 	/**

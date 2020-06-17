@@ -113,18 +113,20 @@ public class ActionSave extends BaseAction {
 				}
 			}
 		}
-		
+
 		if( Boolean.TRUE.equals( check ) ){
 			if( StringUtils.isEmpty(  fieldName )) {
 				//备用属性已经用完了，无法再添加新的属性
 				check = false;
-				Exception exception = new CustomExtFieldRelePersistException( "扩展属性不足(备用属性已用完)，系统无法为该对象分配["+ customExtFieldRele.getDisplayType() +"]。"  );
-				result.error(exception);
+				wo.setUseable(false);
+				/*Exception exception = new CustomExtFieldRelePersistException( "扩展属性不足(备用属性已用完)，系统无法为该对象分配["+ customExtFieldRele.getDisplayType() +"]。"  );
+				result.error(exception);*/
 			}else {
 				customExtFieldRele.setExtFieldName( fieldName );
 			}
 		}
 
+		
 		if( Boolean.TRUE.equals( check ) ){
 			try {
 				
@@ -246,6 +248,17 @@ public class ActionSave extends BaseAction {
 		
 		@FieldDescribe("操作引起的动态内容")
 		List<WoDynamic> dynamics = new ArrayList<>();
+		
+		@FieldDescribe("备用属性是否可用")
+		Boolean useable = true;
+		
+		public Boolean getUseable(){
+			return useable;
+		}
+		
+		public void setUseable(Boolean useable){
+			this.useable = useable;
+		}
 
 		public List<WoDynamic> getDynamics() {
 			return dynamics;
