@@ -9,6 +9,12 @@ public class WrapProcessing extends GsonPropertyObject {
 
 	public static final String PROCESSINGTYPE_RESET = "reset";
 
+	// @FieldDescribe("当前处理人")
+	// private String person;
+
+	// @FieldDescribe("当前处理身份")
+	// private String identity;
+
 	@FieldDescribe("流转类型.")
 	private String processingType;
 
