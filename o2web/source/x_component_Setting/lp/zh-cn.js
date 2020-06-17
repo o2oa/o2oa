@@ -64,7 +64,7 @@ MWF.xApplication.Setting.LP = {
     "base_bindLogin_infor": "启用后允许扫描二维码登录",
 
     "base_faceLogin": "启用人脸识别登录",
-    "base_faceLogin_infor": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征",
+    "base_faceLogin_infor": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征。启用后您必须创建一个SSO配置，名称为face，密钥为xplatform（这是一个试验性功能，您必须启用https）",
 
     "base_faceApi": "人脸识别服务",
     "base_faceApi_action": "编辑人脸识别服务",
