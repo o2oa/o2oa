@@ -32,7 +32,9 @@ MWF.xApplication.Selector.Person = new Class({
 
         "flatCategory" : false, //扁平化展现分类
 
-        "itemHeight" : 29
+        "itemHeight" : 29,
+
+        "showEmptyText" : true
     },
     initialize: function(container, options){
         this.active = true;
