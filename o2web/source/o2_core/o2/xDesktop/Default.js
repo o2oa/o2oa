@@ -1157,11 +1157,13 @@ o2.xDesktop.Default.StartMenu = new Class({
     },
 
     checkMenuItem: function(value, currentNames){
+        debugger;
+        debugger;
         if (value.visible===false) return false;
         var isAllow = true;
         if (value.allowList) isAllow = (value.allowList.length) ? (value.allowList.isIntersect(currentNames)) : true;
         var isDeny = false;
-        if (value.denyList) isDeny = (value.denyList.length) ? (value.denyList.isIntersect(currentNames)!==-1) : false;
+        if (value.denyList) isDeny = (value.denyList.length) ? (value.denyList.isIntersect(currentNames)) : false;
         return ((!isDeny && isAllow) || o2.AC.isAdministrator());
     },
     createApplicationMenuItem: function(value){
