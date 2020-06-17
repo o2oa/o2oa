@@ -46,7 +46,7 @@ class ComposeDetailWithMobileInSignProxy2 {
 			scheduleSetting.setMiddayRestStartTime("13:30");
 		}
 
-		String morningOffdutyTime = getMorningOffDutyTime( mobileDetails, scheduleSetting.getMiddayRestStartTime(), scheduleSetting.getMiddayRestEndTime() );
+		String afternonnOnDutyTime =  getAfternoonOnDutyTime( mobileDetails, scheduleSetting.getMiddayRestStartTime(), scheduleSetting.getMiddayRestEndTime() );
 
 		//组织员工当天的考勤打卡记录
 		AttendanceDetail detail = new AttendanceDetail();
@@ -58,12 +58,12 @@ class ComposeDetailWithMobileInSignProxy2 {
 		}
 		detail.setRecordDateString( mobileDetail.getRecordDateString() );
 		detail.setOnDutyTime( onDutyTime ); //最早的一次打卡作为当天的上班签到打卡
-		if( StringUtils.equals(morningOffdutyTime, onDutyTime )){
-			detail.setMorningOffDutyTime( null );
+		if( StringUtils.equals( afternonnOnDutyTime, onDutyTime )){
+			detail.setAfternoonOnDutyTime( null );
 		}else{
-			detail.setMorningOffDutyTime( morningOffdutyTime ); //午休打卡时间
+			detail.setAfternoonOnDutyTime( afternonnOnDutyTime ); //午休打卡时间
 		}
-		if( StringUtils.equals(offDutyTime, onDutyTime ) || StringUtils.equals(morningOffdutyTime, offDutyTime ) ){
+		if( StringUtils.equals(offDutyTime, onDutyTime ) || StringUtils.equals( afternonnOnDutyTime, offDutyTime ) ){
 			detail.setOffDutyTime( null );
 		}else{
 			detail.setOffDutyTime( offDutyTime ); //最晚的一次打卡作为当天的下班签退打卡
@@ -80,7 +80,7 @@ class ComposeDetailWithMobileInSignProxy2 {
 	 * @param middayRestEndTime
 	 * @return
 	 */
-	private String getMorningOffDutyTime(List<AttendanceDetailMobile> mobileDetails, String middayRestStartTime, String middayRestEndTime) throws Exception {
+	private String getAfternoonOnDutyTime(List<AttendanceDetailMobile> mobileDetails, String middayRestStartTime, String middayRestEndTime) throws Exception {
 		Date moningOndutyTime = null;
 		Date signTime = null, restStartTime=null, restEndTime = null;
 		String resultTime = null;

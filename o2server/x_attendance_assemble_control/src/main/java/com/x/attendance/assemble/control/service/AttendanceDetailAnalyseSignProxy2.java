@@ -43,7 +43,7 @@ class AttendanceDetailAnalyseSignProxy2 {
 		//先初始化当前打卡信息中的上下班时间要求，该要求是是根据员工所在组织排班信息获取到的
 		onWorkTime = AttendanceDetailAnalyseCoreService.getOnWorkTimeFromDetail( detail, debugger );
 		offWorkTime = AttendanceDetailAnalyseCoreService.getOffWorkTimeFromDetail( detail, debugger );
-		middleDutyTime = AttendanceDetailAnalyseCoreService.getMorningOffdutyTimeFromDetail( detail, debugger );
+		middleDutyTime = AttendanceDetailAnalyseCoreService.getAfternoonOndutyTimeFromDetail( detail, debugger );
 
 		lateStartTime = AttendanceDetailAnalyseCoreService.getLateStartTimeFromDetail( detail, scheduleSetting, debugger );
 		leaveEarlyStartTime = AttendanceDetailAnalyseCoreService.getLeaveEarlyStartTimeFromDetail( detail, scheduleSetting, debugger );
