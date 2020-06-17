@@ -90,7 +90,7 @@ class ActionProcessingNeural extends BaseAction {
 			wo.setWorkLogList(this.referenceWorkLog(business, task));
 			wo.setRouteName(routeName);
 			result.setData(wo);
-			audit.log(null, "审批");
+			audit.log(null, "任务处理");
 			return result;
 		}
 	}
