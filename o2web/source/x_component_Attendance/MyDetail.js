@@ -684,7 +684,7 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
             var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
             form.create();
         }else{
-            this.loadProcess(this.explorer.configSetting.APPEAL_AUDIFLOW_ID.configValue,null,null);
+            this.loadProcess(this.explorer.configSetting.APPEAL_AUDIFLOW_ID.configValue,{record:this.data} ,null);
         }
 
     },
@@ -706,7 +706,6 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
     afterStartProcess: function(data, title, processName){
         var workInfors = [];
         var currentTask = [];
-
         data.each(function(work){
             if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
             workInfors.push(this.getStartWorkInforObj(work));
@@ -770,20 +769,21 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         });
     },
     getProcess: function(id, callback){
-        // MWF.xDesktop.requireApp("process.ProcessManager", "Actions.RestActions", function(){
-        //     var action = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
-        //     action.getProcess(id, function(json){
         this.action = new o2.xDesktop.Actions.RestActions("", "x_processplatform_assemble_surface", "");
         this.action.actions = {"getProces": {"uri": "/jaxrs/process/{id}/complex"}};
         this.action.invoke({"name": "getProces", "async": false, "parameter": {"id": id}, "success": function(json){
                 if (callback) callback(json.data);
             }.bind(this)});
-        //     }.bind(this));
-        // }.bind(this));
     },
     seeAppeal : function(){
-        var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
-        form.open();
+        if(!this.data.appealInfos){
+            var form = new MWF.xApplication.Attendance.MyDetail.Appeal( this.explorer, this.data );
+            form.open();
+        }else{
+            var workid = this.data.appealInfos[0].appealAuditInfo.workId;
+            var options = {"workId":workid, "appId": "process.Work"+workid};
+            this.app.desktop.openApplication(null, "process.Work", options);
+        }
     }
 });
 
