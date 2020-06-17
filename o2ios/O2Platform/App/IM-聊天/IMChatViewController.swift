@@ -28,11 +28,18 @@ class IMChatViewController: UIViewController {
     //底部工具栏
     @IBOutlet weak var bottomBar: UIView!
 
-    private let emojiBarHeight = 256
+    private let emojiBarHeight = 196
     //表情窗口
     private lazy var emojiBar: IMChatEmojiBarView = {
         let view = Bundle.main.loadNibNamed("IMChatEmojiBarView", owner: self, options: nil)?.first as! IMChatEmojiBarView
         view.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: emojiBarHeight.toCGFloat)
+        return view
+    }()
+    //语音录制按钮
+    private lazy var audioBtnView: IMChatAudioView = {
+        let view = Bundle.main.loadNibNamed("IMChatAudioView", owner: self, options: nil)?.first as! IMChatAudioView
+        view.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDTH, height: emojiBarHeight.toCGFloat)
+        view.delegate = self
         return view
     }()
     //预览文件
@@ -49,6 +56,7 @@ class IMChatViewController: UIViewController {
     private var chatMessageList: [IMMessageInfo] = []
     private var page = 1
     private var isShowEmoji = false
+    private var isShowAudioView = false
     private var bottomBarHeight = 64 //底部输入框 表情按钮 的高度
     private let bottomToolbarHeight = 46 //底部工具栏 麦克风 相册 相机等按钮的位置
 
@@ -256,6 +264,21 @@ class IMChatViewController: UIViewController {
         self.scrollMessageToBottom()
         return msgId
     }
+    
+    //发送消息前 先载入界面
+    private func prepareForSendFileMsg(tempMessage: IMMessageBodyInfo) -> String {
+        let message = IMMessageInfo()
+        let msgId = UUID().uuidString
+        message.body = tempMessage.toJSONString()
+        message.id = msgId
+        message.conversationId = self.conversation?.id
+        message.createPerson = O2AuthSDK.shared.myInfo()?.distinguishedName
+        message.createTime = Date().formatterDate(formatter: "yyyy-MM-dd HH:mm:ss")
+        //添加到界面
+        self.chatMessageList.append(message)
+        self.scrollMessageToBottom()
+        return msgId
+    }
 
     //上传图片到服务器并发送消息
     private func uploadImageAndSendMsg(messageId: String, imageData: Data, fileName: String) {
@@ -286,8 +309,37 @@ class IMChatViewController: UIViewController {
         }.catch { err in
             self.showError(title: "上传错误，\(err.localizedDescription)")
         }
-
-
+    }
+    
+    //上传图片 音频 等文件到服务器并发送消息
+    private func uploadFileAndSendMsg(messageId: String, data: Data, fileName: String, type: String) {
+        guard let cId = self.conversation?.id else {
+            return
+        }
+        self.viewModel.uploadFile(conversationId: cId, type: type, fileName: fileName, file: data).then { attachId in
+            DDLogDebug("上传图片成功： \(attachId)")
+            guard let message = self.chatMessageList.first (where: { (info) -> Bool in
+                return info.id == messageId
+            }) else {
+                DDLogDebug("没有找到对应的消息")
+                return
+            }
+            let body = IMMessageBodyInfo.deserialize(from: message.body)
+            body?.fileId = attachId
+            body?.fileTempPath = nil
+            message.body = body?.toJSONString()
+            //发送消息到服务器
+            self.viewModel.sendMsg(msg: message)
+                .then { (result) in
+                    DDLogDebug("图片消息 发送成功 \(result)")
+                    self.viewModel.readConversation(conversationId: self.conversation?.id)
+                }.catch { (error) in
+                    DDLogError(error.localizedDescription)
+                    self.showError(title: "发送消息失败!")
+            }
+        }.catch { err in
+            self.showError(title: "上传错误，\(err.localizedDescription)")
+        }
     }
 
 
@@ -297,6 +349,10 @@ class IMChatViewController: UIViewController {
         self.isShowEmoji.toggle()
         self.view.endEditing(true)
         if self.isShowEmoji {
+            //audio view 先关闭
+            self.isShowAudioView = false
+            self.audioBtnView.removeFromSuperview()
+            //开始添加emojiBar
             self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + self.emojiBarHeight.toCGFloat
             self.emojiBar.delegate = self
             self.emojiBar.translatesAutoresizingMaskIntoConstraints = false
@@ -314,6 +370,25 @@ class IMChatViewController: UIViewController {
 
     @IBAction func micBtnClick(_ sender: UIButton) {
         DDLogDebug("点击了麦克风按钮")
+        self.isShowAudioView.toggle()
+        self.view.endEditing(true)
+        if self.isShowAudioView {
+            //emoji view 先关闭
+            self.isShowEmoji = false
+            self.emojiBar.removeFromSuperview()
+            //开始添加emojiBar
+            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat + self.emojiBarHeight.toCGFloat
+            self.audioBtnView.translatesAutoresizingMaskIntoConstraints = false
+            self.bottomBar.addSubview(self.audioBtnView)
+            let top = NSLayoutConstraint(item: self.audioBtnView, attribute: .top, relatedBy: .equal, toItem: self.audioBtnView.superview!, attribute: .top, multiplier: 1, constant: CGFloat(self.bottomBarHeight))
+            let width = NSLayoutConstraint(item: self.audioBtnView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: SCREEN_WIDTH)
+            let height = NSLayoutConstraint(item: self.audioBtnView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: self.emojiBarHeight.toCGFloat)
+            NSLayoutConstraint.activate([top, width, height])
+        }else {
+            self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
+            self.audioBtnView.removeFromSuperview()
+        }
+        self.view.layoutIfNeeded()
     }
 
     @IBAction func imgBtnClick(_ sender: UIButton) {
@@ -329,6 +404,21 @@ class IMChatViewController: UIViewController {
     }
 
 
+}
+
+// MARK: - 录音delegate
+extension IMChatViewController: IMChatAudioViewDelegate {
+    func sendVoice(path: String, voice: Data, duration: String) {
+        let msg = IMMessageBodyInfo()
+        msg.fileTempPath = path
+        msg.body = o2_im_msg_body_audio
+        msg.type = o2_im_msg_type_audio
+        msg.audioDuration = duration
+        let msgId = self.prepareForSendFileMsg(tempMessage: msg)
+        let fileName = path.split("/").last ?? "MySound.ilbc"
+        DDLogDebug("音频文件：\(fileName)")
+        self.uploadFileAndSendMsg(messageId: msgId, data: voice, fileName: fileName, type: o2_im_msg_type_audio)
+    }
 }
 
 // MARK: - 拍照delegate
@@ -449,12 +539,13 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
 extension IMChatViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         DDLogDebug("准备开始输入......")
-        closeEmoji()
+        closeOtherView()
         return true
     }
 
-    private func closeEmoji() {
+    private func closeOtherView() {
         self.isShowEmoji = false
+        self.isShowAudioView = false
         self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
         self.view.layoutIfNeeded()
     }

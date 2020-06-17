@@ -64,6 +64,7 @@ class IMMessageBodyInfo: NSObject, DataModel {
     @objc var body: String?
     @objc var fileId: String? //文件id
     @objc var fileTempPath: String? //本地临时文件地址
+    @objc var audioDuration: String? // 音频文件时长
     @objc var address: String? //type=location的时候位置信息
     var latitude: Double?//type=location的时候位置信息
     var longitude: Double?//type=location的时候位置信息

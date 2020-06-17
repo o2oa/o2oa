@@ -23,6 +23,12 @@ class IMChatMessageViewCell: UITableViewCell {
     @IBOutlet weak var messageBackgroundHeight: NSLayoutConstraint!
     private let messageWidth = 176
     
+    private lazy var audioView: IMAudioView = {
+        let view = Bundle.main.loadNibNamed("IMAudioView", owner: self, options: nil)?.first as! IMAudioView
+        view.frame = CGRect(x: 0, y: 0, width: IMAudioView.IMAudioView_width, height: IMAudioView.IMAudioView_height)
+        return view
+    }()
+    
     var delegate: IMChatMessageDelegate?
 
     override func awakeFromNib() {
@@ -111,10 +117,66 @@ class IMChatMessageViewCell: UITableViewCell {
                 emojiMsgRender(emoji: body.body!)
             } else if body.type == o2_im_msg_type_image {
                 imageMsgRender(info: body)
+            } else if o2_im_msg_type_audio == body.type {
+                audioMsgRender(info: body)
             } else {
                 textMsgRender(msg: body.body!)
             }
         }
+    }
+    
+    //音频消息
+    private func audioMsgRender(info: IMMessageBodyInfo) {
+        self.messageBackgroundWidth.constant = IMAudioView.IMAudioView_width + 20
+        self.messageBackgroundHeight.constant = IMAudioView.IMAudioView_height + 20
+        self.audioView.translatesAutoresizingMaskIntoConstraints = false
+        self.messageBackgroundView.addSubview(self.audioView)
+        self.audioView.setDuration(duration: info.audioDuration ?? "0")
+        //音频文件
+        if let fileId = info.fileId {
+            let urlStr = AppDelegate.o2Collect.generateURLWithAppContextKey(
+            CommunicateContext.communicateContextKey,
+            query: CommunicateContext.imDownloadFileQuery,
+            parameter: ["##id##": fileId as AnyObject], generateTime: false)
+            self.audioView.setPlayUrl(url: urlStr)
+        } else if let filePath = info.fileTempPath {
+            self.audioView.setPlayUrl(url: filePath)
+        }
+        self.audioView.addTapGesture { (tap) in
+            self.playAudio(info: info)
+        }
+        self.constraintWithContent(contentView: self.audioView)
+    }
+    
+    private func playAudio(info: IMMessageBodyInfo) {
+        if let fileId = info.fileId {
+            O2IMFileManager.shared.getFileLocalUrl(fileId: fileId)
+                .then { (url) in
+                    do {
+                        let data = try Data(contentsOf: url)
+                        AudioPlayerManager.shared.managerAudioWithData(data, toplay: true)
+                    } catch {
+                        DDLogError(error.localizedDescription)
+                    }
+            }.catch { (e) in
+                DDLogError(e.localizedDescription)
+            }
+        } else if let filePath = info.fileTempPath {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+                AudioPlayerManager.shared.managerAudioWithData(data, toplay: true)
+            } catch {
+                DDLogError(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func constraintWithContent(contentView: UIView) {
+        let top = NSLayoutConstraint(item: contentView, attribute: .top, relatedBy: .equal, toItem: contentView.superview!, attribute: .top, multiplier: 1, constant: 10)
+        let bottom = NSLayoutConstraint(item: contentView.superview!, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 10)
+        let left = NSLayoutConstraint(item: contentView, attribute: .leading, relatedBy: .equal, toItem: contentView.superview!, attribute: .leading, multiplier: 1, constant: 10)
+        let right = NSLayoutConstraint(item: contentView.superview!, attribute: .trailing, relatedBy: .equal, toItem: contentView, attribute: .trailing, multiplier: 1, constant: 10)
+        NSLayoutConstraint.activate([top, bottom, left, right])
     }
 
     //图片消息
@@ -149,11 +211,7 @@ class IMChatMessageViewCell: UITableViewCell {
         imageView.addTapGesture { (tap) in
             self.delegate?.clickImageMessage(fileId: info.fileId, tempPath: info.fileTempPath)
         }
-        let top = NSLayoutConstraint(item: imageView, attribute: .top, relatedBy: .equal, toItem: imageView.superview!, attribute: .top, multiplier: 1, constant: 10)
-        let bottom = NSLayoutConstraint(item: imageView.superview!, attribute: .bottom, relatedBy: .equal, toItem: imageView, attribute: .bottom, multiplier: 1, constant: 10)
-        let left = NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal, toItem: imageView.superview!, attribute: .leading, multiplier: 1, constant: 10)
-        let right = NSLayoutConstraint(item: imageView.superview!, attribute: .trailing, relatedBy: .equal, toItem: imageView, attribute: .trailing, multiplier: 1, constant: 10)
-        NSLayoutConstraint.activate([top, bottom, left, right])
+        self.constraintWithContent(contentView: imageView)
 
     }
 
@@ -177,11 +235,7 @@ class IMChatMessageViewCell: UITableViewCell {
         emojiImage.image = UIImage(named: path, in: bundle, compatibleWith: nil)
         emojiImage.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(emojiImage)
-        let top = NSLayoutConstraint(item: emojiImage, attribute: .top, relatedBy: .equal, toItem: emojiImage.superview!, attribute: .top, multiplier: 1, constant: 10)
-        let bottom = NSLayoutConstraint(item: emojiImage.superview!, attribute: .bottom, relatedBy: .equal, toItem: emojiImage, attribute: .bottom, multiplier: 1, constant: 10)
-        let left = NSLayoutConstraint(item: emojiImage, attribute: .leading, relatedBy: .equal, toItem: emojiImage.superview!, attribute: .leading, multiplier: 1, constant: 10)
-        let right = NSLayoutConstraint(item: emojiImage.superview!, attribute: .trailing, relatedBy: .equal, toItem: emojiImage, attribute: .trailing, multiplier: 1, constant: 10)
-        NSLayoutConstraint.activate([top, bottom, left, right])
+        self.constraintWithContent(contentView: emojiImage)
     }
 
     private func textMsgRender(msg: String) {

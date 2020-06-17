@@ -21,9 +21,11 @@ let o2_im_conversation_type_group = "group"
 let o2_im_msg_type_text = "text"
 let o2_im_msg_type_emoji = "emoji"
 let o2_im_msg_type_image = "image"
+let o2_im_msg_type_audio = "audio"
 
 //消息body
 let o2_im_msg_body_image = "[图片]"
+let o2_im_msg_body_audio = "[语音]"
 let o2_im_msg_body_video = "[视频]"
 
 
@@ -73,5 +75,26 @@ class O2IMFileManager {
     func localFilePath(fileId: String) -> URL {
         return FileUtil.share.cacheDir().appendingPathComponent("\(fileId).png")
     }
+    
+    //音频文件存储地址
+    func getRecorderPath(type: RecordType) -> String {
+        var recorderPath = FileUtil.share.cacheDir()
+        recorderPath.appendPathComponent("o2im")
+        //目录不存在就创建
+        DDLogDebug("开始创建目录\(recorderPath.path)")
+        FileUtil.share.createDirectory(path: recorderPath.path)
+        let now:Date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd-hh-mm-ss"
+        let fileName = (type == RecordType.Caf) ? "\(dateFormatter.string(from: now))-MySound.caf" : "\(dateFormatter.string(from: now))-MySound.mp3"
+        recorderPath.appendPathComponent(fileName)
+        return recorderPath.path
+    }
+    
+}
 
+
+enum RecordType :String {
+    case Caf = "caf"
+    case MP3 = "mp3"
 }
