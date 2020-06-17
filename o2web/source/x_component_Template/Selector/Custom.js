@@ -2,6 +2,7 @@ MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xApplication.Template = MWF.xApplication.Template || {};
 MWF.xApplication.Template.Selector = MWF.xApplication.Template.Selector || {};
 MWF.xDesktop.requireApp("Selector", "Person", null, false);
+MWF.xDesktop.requireApp("Selector", "Unit", null, false);
 
 // this.options.selectableItems = [
 //     {
@@ -53,6 +54,7 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         "names": [],
         "category": false,
         "expand": true,
+        "categorySelectable" : false,
         "expandSubEnable" : true
     },
     initialize: function (container, options) {
@@ -82,8 +84,13 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                     this.items.push(item);
                 }
                 if ( (item.subItemList && item.subItemList.length > 0) || item.subCategoryList && item.subCategoryList.length > 0 ) {
-                    var category = this._newItemCategory(item, this, this.itemAreaNode);
-                    this.categorys.push( category );
+                    if( this.options.categorySelectable ){
+                        var category = this._newItemCategorySelectable(item, this, this.itemAreaNode);
+                        this.categorys.push( category );
+                    }else{
+                        var category = this._newItemCategory(item, this, this.itemAreaNode);
+                        this.categorys.push( category );
+                    }
                     // item.subItemList.each(function (subItem, index) {
                     //     var item = this._newItem(subItem, this, category.children, 2, category);
                     //     this.items.push(item);
@@ -99,8 +106,11 @@ MWF.xApplication.Template.Selector.Custom = new Class({
     _getChildrenItemIds: function (data) {
         return data.subItemList || [];
     },
-    _newItemCategory: function (data, selector, item, level) {
-        return new MWF.xApplication.Template.Selector.Custom.ItemCategory(data, selector, item, level)
+    _newItemCategory: function (data, selector, container, level, parentCategory, delay) {
+        return new MWF.xApplication.Template.Selector.Custom.ItemCategory(data, selector, container, level, parentCategory, delay)
+    },
+    _newItemCategorySelectable: function (data, selector, container, level, category, delay) {
+        return new MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable(data, selector, container, level, category, delay)
     },
     _listItemByKey: function (callback, failure, key) {
         if (key) {
@@ -110,8 +120,8 @@ MWF.xApplication.Template.Selector.Custom = new Class({
             this.initSearchArea(false);
         }
     },
-    _newItemSelected: function (data, selector, item) {
-        return new MWF.xApplication.Template.Selector.Custom.ItemSelected(data, selector, item)
+    _newItemSelected: function (data, selector, container, level, category, delay) {
+        return new MWF.xApplication.Template.Selector.Custom.ItemSelected(data, selector, container, level, category, delay)
     },
     _listItemByPinyin: function (callback, failure, key) {
         if (key) {
@@ -124,8 +134,8 @@ MWF.xApplication.Template.Selector.Custom = new Class({
     _getItem: function (callback, failure, id, async) {
         if (callback) callback.apply(id, [{"id": id}]);
     },
-    _newItem: function (data, selector, container, level, category) {
-        return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category);
+    _newItem: function (data, selector, container, level, category, delay) {
+        return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category, delay);
     },
     createItemsSearchData: function (callback) {
         if (!this.itemsSearchData) {
@@ -218,6 +228,7 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
         }
     }
 });
+
 MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
     Extends: o2.xApplication.Selector.Person.ItemCategory,
     _getShowName: function () {
@@ -288,10 +299,102 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         return (this.data.subCategoryList && this.data.subCategoryList.length);
     },
     _hasChildItem: function () {
-        return this._hasChild();
+        return (this.data.subItemList && this.data.subItemList.length);
     },
     _hasChild: function () {
+        return this._hasChildCategory() || this._hasChildItem();
+    },
+    check: function () {
+    }
+});
+
+
+MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
+    Extends: o2.xApplication.Selector.Unit.Item,
+    _getShowName: function () {
+        return this.data.name;
+    },
+    createNode: function () {
+        // this.node = new Element("div", {
+        //     "styles": this.selector.css.selectorItemCategory_department //this.selector.css.selectorItemCategory_department
+        // }).inject(this.container);
+    },
+    _setIcon: function () {
+        var style = this.selector.options.style;
+        this.iconNode.setStyle("background-image", "url(" + "../x_component_Selector/$Selector/" + style + "/icon/applicationicon.png)");
+    },
+    _getTtiteText: function () {
+        return this.data.name;
+    },
+    loadSubItems: function( callback ){
+        if (!this.loaded){
+            if (!this.children){
+                this.children = new Element("div", {
+                    "styles": this.selector.css.selectorItemCategoryChildrenNode
+                }).inject(this.node, "after");
+            }
+            this.children.setStyle("display", "block");
+            //    if (!this.selector.options.expand) this.children.setStyle("display", "none");
+
+            if( this._hasChild() ){
+                this.data.subItemList.each(function (subItem, index) {
+                    var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(item);
+                    if(this.subItems)this.subItems.push( item );
+                }.bind(this));
+            }
+            if ( this._hasChildCategory() ) {
+                this.data.subCategoryList.each(function (subCategory, index) {
+                    var category = this.selector._newItemCategorySelectable(subCategory, this.selector, this.children, this.level + 1, this);
+                    this.subCategorys.push( category );
+                }.bind(this));
+            }
+
+            this.loaded = true;
+            if(callback)callback();
+        }else{
+            this.children.setStyle("display", "block");
+        }
+    },
+    loadCategoryChildren : function( callback ){
+        if (!this.categoryLoaded){
+            if ( this._hasChildCategory() ) {
+                this.data.subCategoryList.each(function (subCategory, index) {
+                    var category = this.selector._newItemCategorySelectable(subCategory, this.selector, this.children, this.level + 1, this);
+                    this.subCategorys.push( category );
+                }.bind(this));
+            }
+
+            this.categoryLoaded = true;
+            if(callback)callback();
+        }else{
+            if(callback)callback();
+        }
+    },
+    loadItemChildren : function( callback ){
+        if (!this.itemLoaded){
+
+            if( this._hasChild() ){
+                this.data.subItemList.each(function (subItem, index) {
+                    var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(item);
+                    if(this.subItems)this.subItems.push( item );
+                }.bind(this));
+            }
+            this.itemLoaded = true;
+            if(callback)callback();
+        }else{
+            if(callback)callback();
+        }
+    },
+    _hasChildCategory: function () {
+        return (this.data.subCategoryList && this.data.subCategoryList.length);
+    },
+    _hasChildItem: function () {
         return (this.data.subItemList && this.data.subItemList.length);
+    },
+    _hasChild: function () {
+        return this._hasChildCategory() || this._hasChildItem();
     },
     check: function () {
     }
