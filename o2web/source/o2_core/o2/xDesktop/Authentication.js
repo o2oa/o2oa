@@ -206,7 +206,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
     cameraLoginInit: function () {
         this.cameraLoginConfig = {
-            "maxStep": 1,
+            "maxStep": 2,
             "step": 0,
             "count": 0,
             "max": 2,
@@ -391,6 +391,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         return max - min;
     },
     checkCameraLogin: function () {
+        debugger;
         if (this.cameraLoginConfig.errorCount > this.cameraLoginConfig.errorMax) {
             this.cameraLoginVideoInfoNode.set("text", MWF.LP.desktop.login.camera_loginError);
         } else {
@@ -409,10 +410,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             //COMMON.AjaxModule.loadDom(, function(){
 
             var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-            var url = layout.config.app_protocol + "//" + addressObj.host + (addressObj.port === 80 ? "" : ":" + addressObj.port) + addressObj.context;
+            var url = layout.config.app_protocol + "//" + (addressObj.host || window.location.hostname)+ (addressObj.port === 80 ? "" : ":" + addressObj.port) + addressObj.context;
 
             var code = this.crypDES();
-            var json = { "client": "oa", "token": code };
+            var json = { "client": "face", "token": code };
             var res = new Request.JSON({
                 "method": "POST",
                 "url": url + "/jaxrs/sso",
