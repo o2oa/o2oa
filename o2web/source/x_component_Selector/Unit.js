@@ -229,9 +229,10 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
+        debugger;
         if( !this.selector.options.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
-        if (this.data.subDirectUnitCount){
+        if ( this._hasChild() ){
             if (this.selector.options.expand){
                 if (this.level===1){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
@@ -613,6 +614,9 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }else{
             if(callback)callback();
         }
+    },
+    _hasChild : function () {
+        return this.data.subDirectUnitCount;
     }
 });
 
