@@ -93,64 +93,7 @@
           "pathParameters": [],
           "formParameters": [],
           "queryParameters": [],
-          "ins": [
-            {
-              "name": "name",
-              "type": "String",
-              "isCollection": false,
-              "description": "名称,不可重名.",
-              "isBaseType": true
-            },
-            {
-              "name": "title",
-              "type": "String",
-              "isCollection": false,
-              "description": "标题.",
-              "isBaseType": true
-            },
-            {
-              "name": "visible",
-              "type": "Boolean",
-              "isCollection": false,
-              "description": "是否是可见的应用.",
-              "isBaseType": true
-            },
-            {
-              "name": "orderNumber",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "排序号,升序排列,为空在最后",
-              "isBaseType": true
-            },
-            {
-              "name": "path",
-              "type": "String",
-              "isCollection": false,
-              "description": "应用路径.",
-              "isBaseType": true
-            },
-            {
-              "name": "iconPath",
-              "type": "String",
-              "isCollection": false,
-              "description": "图标位置.",
-              "isBaseType": true
-            },
-            {
-              "name": "allowList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "可访问人员.",
-              "isBaseType": true
-            },
-            {
-              "name": "denyList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "拒绝访问人员.",
-              "isBaseType": true
-            }
-          ],
+          "ins": [],
           "outs": [
             {
               "name": "value",
@@ -231,64 +174,7 @@
           ],
           "formParameters": [],
           "queryParameters": [],
-          "ins": [
-            {
-              "name": "name",
-              "type": "String",
-              "isCollection": false,
-              "description": "名称,不可重名.",
-              "isBaseType": true
-            },
-            {
-              "name": "title",
-              "type": "String",
-              "isCollection": false,
-              "description": "标题.",
-              "isBaseType": true
-            },
-            {
-              "name": "visible",
-              "type": "Boolean",
-              "isCollection": false,
-              "description": "是否是可见的应用.",
-              "isBaseType": true
-            },
-            {
-              "name": "orderNumber",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "排序号,升序排列,为空在最后",
-              "isBaseType": true
-            },
-            {
-              "name": "path",
-              "type": "String",
-              "isCollection": false,
-              "description": "应用路径.",
-              "isBaseType": true
-            },
-            {
-              "name": "iconPath",
-              "type": "String",
-              "isCollection": false,
-              "description": "图标位置.",
-              "isBaseType": true
-            },
-            {
-              "name": "allowList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "可访问人员.",
-              "isBaseType": true
-            },
-            {
-              "name": "denyList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "拒绝访问人员.",
-              "isBaseType": true
-            }
-          ],
+          "ins": [],
           "outs": [
             {
               "name": "value",
@@ -318,80 +204,7 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": [
-            {
-              "name": "id",
-              "type": "String",
-              "isCollection": false,
-              "description": "数据库主键,自动生成."
-            },
-            {
-              "name": "name",
-              "type": "String",
-              "isCollection": false,
-              "description": "名称,不可重名."
-            },
-            {
-              "name": "title",
-              "type": "String",
-              "isCollection": false,
-              "description": "标题."
-            },
-            {
-              "name": "visible",
-              "type": "Boolean",
-              "isCollection": false,
-              "description": "是否是可见的应用."
-            },
-            {
-              "name": "orderNumber",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "排序号,升序排列,为空在最后"
-            },
-            {
-              "name": "path",
-              "type": "String",
-              "isCollection": false,
-              "description": "应用路径."
-            },
-            {
-              "name": "iconPath",
-              "type": "String",
-              "isCollection": false,
-              "description": "图标位置."
-            },
-            {
-              "name": "allowList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "可访问人员."
-            },
-            {
-              "name": "denyList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "拒绝访问人员."
-            },
-            {
-              "name": "type",
-              "type": "String",
-              "isCollection": false,
-              "description": "类型:system|custom"
-            },
-            {
-              "name": "createTime",
-              "type": "Date",
-              "isCollection": false,
-              "description": "创建时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "updateTime",
-              "type": "Date",
-              "isCollection": false,
-              "description": "修改时间,自动生成,索引创建在约束中."
-            }
-          ]
+          "outs": []
         },
         {
           "name": "listAll",
@@ -407,80 +220,7 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": [
-            {
-              "name": "id",
-              "type": "String",
-              "isCollection": false,
-              "description": "数据库主键,自动生成."
-            },
-            {
-              "name": "name",
-              "type": "String",
-              "isCollection": false,
-              "description": "名称,不可重名."
-            },
-            {
-              "name": "title",
-              "type": "String",
-              "isCollection": false,
-              "description": "标题."
-            },
-            {
-              "name": "visible",
-              "type": "Boolean",
-              "isCollection": false,
-              "description": "是否是可见的应用."
-            },
-            {
-              "name": "orderNumber",
-              "type": "Integer",
-              "isCollection": false,
-              "description": "排序号,升序排列,为空在最后"
-            },
-            {
-              "name": "path",
-              "type": "String",
-              "isCollection": false,
-              "description": "应用路径."
-            },
-            {
-              "name": "iconPath",
-              "type": "String",
-              "isCollection": false,
-              "description": "图标位置."
-            },
-            {
-              "name": "allowList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "可访问人员."
-            },
-            {
-              "name": "denyList",
-              "type": "List\u003cString\u003e",
-              "isCollection": true,
-              "description": "拒绝访问人员."
-            },
-            {
-              "name": "type",
-              "type": "String",
-              "isCollection": false,
-              "description": "类型:system|custom"
-            },
-            {
-              "name": "createTime",
-              "type": "Date",
-              "isCollection": false,
-              "description": "创建时间,自动生成,索引创建在约束中."
-            },
-            {
-              "name": "updateTime",
-              "type": "Date",
-              "isCollection": false,
-              "description": "修改时间,自动生成,索引创建在约束中."
-            }
-          ]
+          "outs": []
         }
       ]
     },
