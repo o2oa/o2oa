@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.x.base.core.project.logger.Audit;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +39,8 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Rollba
 
 class V2Rollback extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(V2Rollback.class);
+
 	private Work work;
 	private WorkLog workLog;
 	private Wi wi;
@@ -44,7 +49,7 @@ class V2Rollback extends BaseAction {
 	private String series = StringTools.uniqueToken();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-
+		Audit audit = logger.audit(effectivePerson);
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -74,6 +79,7 @@ class V2Rollback extends BaseAction {
 		}
 
 		this.record();
+		audit.log(null, "回滚工作");
 
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
