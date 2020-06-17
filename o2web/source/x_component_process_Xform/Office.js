@@ -429,7 +429,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     loadMenu: function(){
         if (!this.isMenuLoad){
-            if (this.json.menuEditButtons.length){
+            if (this.json.menuEditButtons && this.json.menuEditButtons.length){
                 this.menuNode = new Element("div", {"styles": this.form.css.officeMenuNode}).inject(this.node, "top");
                 MWF.require("MWF.widget.Toolbar", function(){
                     this.toolbarWidget = new MWF.widget.Toolbar(this.menuNode, {"style": "xform_blue_simple"}, this);
@@ -1054,6 +1054,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     checkAutoSaveNumber: function(callback){
         if (!this.autoSavedAttachments) this.autoSavedAttachments = [];
+        if (!this.json.autoSaveNumber) this.json.autoSaveNumber = 3;
         if (this.autoSavedAttachments.length >= this.json.autoSaveNumber.toInt()){
             //delete first att
             var att = this.autoSavedAttachments.shift();

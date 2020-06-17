@@ -1,84 +1,48 @@
 MWF.xApplication.process.FormDesigner.Module = MWF.xApplication.process.FormDesigner.Module || {};
-MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Element", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.$Input", null, false);
 MWF.xApplication.process.FormDesigner.Module.Checkbox = MWF.FCCheckbox = new Class({
-	Extends: MWF.FC$Element,
+	Extends: MWF.FC$Input,
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
+		"type": "checkbox",
+		"path": "../x_component_process_FormDesigner/Module/Checkbox/",
 		"propertyPath": "../x_component_process_FormDesigner/Module/Checkbox/checkbox.html"
 	},
-	
-	initialize: function(form, options){
-		this.setOptions(options);
-		
-		this.path = "../x_component_process_FormDesigner/Module/Checkbox/";
-		this.cssPath = "../x_component_process_FormDesigner/Module/Checkbox/"+this.options.style+"/css.wcss";
 
-		this._loadCss();
-		this.moduleType = "element";
-		this.moduleName = "checkbox";
-		
-		this.form = form;
-		this.container = null;
-		this.containerNode = null;
-	},
-	
-	_createMoveNode: function(){
-		this.moveNode = new Element("div", {
-			"MWFType": "checkbox",
-			"id": this.json.id,
-			"styles": this.css.moduleNodeMove,
-			"events": {
-				"selectstart": function(){
-					return false;
+	_preprocessingModuleData: function(){
+		this.node.clearStyles();
+		this.recoveryIconNode = this.node.getFirst();
+		this.recoveryIconNode.dispose();
+		this.recoveryTextNode = this.node.getFirst();
+		this.recoveryTextNode.dispose();
+
+		if (this.json.styles){
+			this.json.recoveryStyles = Object.clone(this.json.styles);
+			if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+				if ((value.indexOf("x_processplatform_assemble_surface")==-1 && value.indexOf("x_portal_assemble_surface")==-1)){
+					this.node.setStyle(key, value);
+					delete this.json.styles[key];
 				}
-			}
-		}).inject(this.form.container);
-		var icon = new Element("div", {
-			"styles": this.css.checkboxIcon
-		}).inject(this.moveNode);
-		var text = new Element("div", {
-			"styles": this.css.moduleText,
-			"text": this.json.id
-		}).inject(this.moveNode);
-	},
-	_loadNodeStyles: function(){
-		var icon = this.node.getFirst("div");
-		var text = this.node.getLast("div");
-        if (!icon) icon = new Element("div").inject(this.node, "top");
-        if (!text) text = new Element("div").inject(this.node, "bottom");
-		icon.setStyles(this.css.checkboxIcon);
-		text.setStyles(this.css.moduleText);
-	},
-	_getCopyNode: function(){
-		if (!this.copyNode) this._createCopyNode();
-		this.copyNode.setStyle("display", "inline-block");
-		return this.copyNode;
-	},
-	
-	unSelected: function(){
-		this.node.setStyles({
-			"border-width": "1px",
-			"border-color": "#999"
-		});
-		if (this.actionArea) this.actionArea.setStyle("display", "none");
-		this.form.currentSelectedModule = null;
-		
-		this.hideProperty();
-	},
-	unOver: function(){
-		if (!this.form.moveModule) if (this.form.currentSelectedModule!=this) this.node.setStyles({
-			"border-width": "1px",
-			"border-color": "#999"
-		});
-	},
-	
-	
-	_setEditStyle_custom: function(name){
-		if (name=="id"){
-			this.node.getLast().set("text", this.json.id);
+			}.bind(this));
 		}
-	}
+		this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		if (this.json.recoveryInputStyles) this.json.inputStyles = this.json.recoveryInputStyles;
 
-	
+		if (this.recoveryTextNode) {
+			this.node.empty();
+			this.recoveryTextNode.inject(this.node, "top");
+		}
+		if (this.recoveryIconNode) {
+			this.recoveryIconNode.inject(this.node, "top");
+		}
+
+		this.json.recoveryStyles = null;
+		this.json.recoveryInputStyles = null;
+		this.recoveryIconNode = null;
+		this.recoveryTextNode = null;
+	},
 });

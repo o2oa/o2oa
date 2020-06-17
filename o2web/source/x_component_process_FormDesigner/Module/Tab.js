@@ -376,5 +376,26 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
             tmpTabDiv.set("id", newElementJson.id);
 
         }.bind(this));
-    }
+    },
+	_preprocessingModuleData: function(){
+		this.recoveryWidgetstyle = this.node.get("style");
+		this.node.clearStyles();
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				this.node.setStyle(key, value);
+				delete this.json.styles[key];
+			}
+		}.bind(this));
+	},
+	_recoveryModuleData: function(){
+		this.node.set("style", this.recoveryWidgetstyle);
+		this.recoveryWidgetstyle = null;
+	},
+	setCustomStyles: function(){
+		this._recoveryModuleData();
+	}
 });

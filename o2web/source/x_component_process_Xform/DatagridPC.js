@@ -24,7 +24,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.table = this.node.getElement("table");
 
         this.editable = (this.readonly) ? false : true;
-        if (this.editable) this.editable = this.form.Macro.exec(this.json.editableScript.code, this);
+        if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 
 		this.gridData = this._getValue();
 
@@ -58,7 +58,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var value = [];
 		value = this._getBusinessData();
 		if (!value){
-			if (this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
             value = {"data": value || []};
 		}
 		return value || {};
