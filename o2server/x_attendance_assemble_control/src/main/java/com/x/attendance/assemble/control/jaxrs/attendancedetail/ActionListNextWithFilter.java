@@ -5,8 +5,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AttendanceAppealAuditInfo;
+import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -107,27 +110,49 @@ public class ActionListNextWithFilter extends BaseAction {
 					wrapIn.setUnitNames(unitNames);
 				}
 
-				// 从数据库中查询符合条件的一页数据对象
-				detailList = business.getAttendanceDetailFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
-				// 从数据库中查询符合条件的对象总数
-				total = business.getAttendanceDetailFactory().getCountWithFilter(wrapIn);
-				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-				wraps = Wo.copier.copy(detailList);
+				if (check ) {
+					// 从数据库中查询符合条件的一页数据对象
+					detailList = business.getAttendanceDetailFactory().listIdsNextWithFilter(id, count, sequence, wrapIn);
+					// 从数据库中查询符合条件的对象总数
+					total = business.getAttendanceDetailFactory().getCountWithFilter(wrapIn);
+					// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+					wraps = Wo.copier.copy(detailList);
+				}
 
 				if( scheduleSetting == null ){
 					scheduleSetting = scheduleSetting_top;
 				}
 
-				if (check && scheduleSetting != null ) {
-					Integer signProxy = scheduleSetting.getSignProxy();
-					signProxy = ( signProxy == null || signProxy == 0 ) ? 1:signProxy;
-					if( scheduleSetting!= null  ){
-						for( Wo detail : wraps ){
-							detail.setSignProxy( signProxy );
+				if (check && ListTools.isNotEmpty( wraps )) {
+					Integer signProxy = 1;
+					List<AttendanceAppealInfo> appealInfos = null;
+					AttendanceAppealAuditInfo appealAuditInfo = null;
+					List<WoAttendanceAppealInfo> woAppealInfos = null;
+					for( Wo detail : wraps ){
+						if ( scheduleSetting != null ) {
+							signProxy = scheduleSetting.getSignProxy();
+						}
+						detail.setSignProxy( signProxy );
+
+						//判断并补充申诉信息
+						if( detail.getAppealStatus() != 0 ){
+							//十有八九已经提过申诉了，查询申诉信息
+							appealInfos = attendanceAppealInfoServiceAdv.listWithDetailId( detail.getId() );
+							if(ListTools.isNotEmpty( appealInfos ) ){
+								woAppealInfos = WoAttendanceAppealInfo.copier.copy( appealInfos );
+							}
+							if(ListTools.isNotEmpty( woAppealInfos ) ){
+								for( WoAttendanceAppealInfo woAppealInfo : woAppealInfos ){
+									appealAuditInfo = attendanceAppealInfoServiceAdv.getAppealAuditInfo( woAppealInfo.getId() );
+									if( appealAuditInfo != null ){
+										woAppealInfo.setAppealAuditInfo( WoAttendanceAppealAuditInfo.copier.copy( appealAuditInfo ));
+									}
+								}
+							}
+							detail.setAppealInfos(woAppealInfos);
 						}
 					}
 				}
-
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
@@ -145,6 +170,13 @@ public class ActionListNextWithFilter extends BaseAction {
 		@FieldDescribe("员工所属组织的排班打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
 		private Integer signProxy = 1;
 
+		@FieldDescribe("考勤申诉内容")
+		private List<WoAttendanceAppealInfo> appealInfos = null;
+
+		public List<WoAttendanceAppealInfo> getAppealInfos() { return appealInfos; }
+
+		public void setAppealInfos(List<WoAttendanceAppealInfo> appealInfos) { this.appealInfos = appealInfos; }
+
 		public Integer getSignProxy() {
 			return signProxy;
 		}
@@ -156,4 +188,5 @@ public class ActionListNextWithFilter extends BaseAction {
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
 	}
+
 }
