@@ -337,8 +337,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 //				var module = subDom.retrieve("module");
 //				alert(subDom.get("id")+": "+module);
 //				if (!module){
-					let json = this.getDomjson(subDom);
-					let moduleNode = subDom;
+					var json = this.getDomjson(subDom);
+					var moduleNode = subDom;
 				moduleNodes.push({"dom": moduleNode, "json": json});
 					//module = this.loadModule(json, subDom, parent);
 //				}
