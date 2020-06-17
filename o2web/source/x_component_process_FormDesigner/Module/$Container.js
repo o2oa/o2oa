@@ -146,8 +146,8 @@ MWF.xApplication.process.FormDesigner.Module.$Container = MWF.FC$Container = new
 		var subDom = this.node.getFirst();
 		while (subDom){
 			if (subDom.get("MWFtype")){
-				let json = this.form.getDomjson(subDom);
-				let moduleNode = subDom;
+				var json = this.form.getDomjson(subDom);
+				var moduleNode = subDom;
 				moduleNodes.push({"dom": moduleNode, "json": json});
 				//module = this.form.loadModule(json, subDom, this);
 			}
