@@ -6,8 +6,8 @@
   "compare": {"uri":"/compare", "method": "POST"},
   "analyze": {"uri":"/face/analyze", "method": "POST"},
   "detectattr": {"uri":"/face/detectattr/{attr}", "method": "POST", "enctype": "formData"},
-  "getFaceSet": {"uri":"/faceset/getFaceSet/{faceset}"},
-  "createFaceSet": {"uri":"/faceset/createfaceset/{faceset}"},
+  "getFaceSet": {"uri":"/faceset/getFaceSet/{faceset}", "method": "POST"},
+  "createFaceSet": {"uri":"/faceset/createfaceset/{faceset}", "method": "POST"},
 
 
   "clazz": "x_faceset_control"
