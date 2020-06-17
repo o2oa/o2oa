@@ -93,7 +93,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         return css;
     },
     loadCss: function () {
-        cssText = this.json.css.code;
+        cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
         var styleNode = $("style" + this.json.id);
         if (styleNode) styleNode.destroy();
@@ -709,7 +709,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         });
     },
     _loadJsheader: function () {
-        var code = this.json.jsheader.code;
+        var code = (this.json.jsheader) ? this.json.jsheader.code : "";
         if (code) Browser.exec(code);
     },
     _loadEvents: function () {
