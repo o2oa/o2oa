@@ -1,4 +1,6 @@
-current_dir=$(cd "$(dirname "$0")"; pwd);
+#!/bin/bash
+# Copyright (c) http://www.o2oa.net/
+current_dir="$(cd "$(dirname "$0")"; pwd)"
 if [ -d ${current_dir}/local/update ]; then
 	if [ ! -d ${current_dir}/commons ]; then
 	mkdir ${current_dir}/commons
