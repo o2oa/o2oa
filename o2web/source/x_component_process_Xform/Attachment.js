@@ -1473,7 +1473,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage(att.data.id, this.json.id);
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
                 } else {
 
                     if (layout.mobile) {
