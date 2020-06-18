@@ -22,11 +22,13 @@ let o2_im_msg_type_text = "text"
 let o2_im_msg_type_emoji = "emoji"
 let o2_im_msg_type_image = "image"
 let o2_im_msg_type_audio = "audio"
+let o2_im_msg_type_location = "location"
 
 //消息body
 let o2_im_msg_body_image = "[图片]"
 let o2_im_msg_body_audio = "[语音]"
 let o2_im_msg_body_video = "[视频]"
+let o2_im_msg_body_location = "[位置]"
 
 
 //表情的字符串转化为O2Emoji.bundle里面的图片路径 [01] -> im_emotion_01

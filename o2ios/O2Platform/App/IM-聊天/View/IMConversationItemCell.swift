@@ -55,7 +55,6 @@ class IMConversationItemCell: UITableViewCell {
             if person != "" {
                 //头像
                 let urlstr = AppDelegate.o2Collect.generateURLWithAppContextKey(ContactContext.contactsContextKeyV2, query: ContactContext.personIconByNameQueryV2, parameter: ["##name##":person as AnyObject], generateTime: false)
-                DDLogDebug("头像url \(String(describing: urlstr))")
                 if let u = URL(string: urlstr!) {
                     self.avatarImg.hnk_setImageFromURL(u)
                 }else {
@@ -74,15 +73,14 @@ class IMConversationItemCell: UITableViewCell {
         }
         //time
         if let time = conversation.lastMessage?.createTime {
-            DDLogDebug("time: \(time)")
             let date = time.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
-            DDLogDebug("date \(date.description)")
             self.timeLabel.text = date.friendlyTime()
         }
         // message
         if let msgBody = conversation.lastMessage?.body, let body = parseJson(msg: msgBody) {
             
-            if body.type == o2_im_msg_type_text || body.type == o2_im_msg_type_image || body.type == o2_im_msg_type_audio {
+            if body.type == o2_im_msg_type_text || body.type == o2_im_msg_type_image
+                || body.type == o2_im_msg_type_audio || body.type == o2_im_msg_type_location {
                 self.messageLabel.text = body.body
                 self.messageLabel.isHidden = false
                 self.emojiImg.isHidden = true

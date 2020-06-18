@@ -10,6 +10,7 @@ import UIKit
 import CocoaLumberjack
 import O2OA_Auth_SDK
 import Starscream
+import AudioToolbox
 
 class O2MainController: UITabBarController, UITabBarControllerDelegate {
 
@@ -299,6 +300,7 @@ extension O2MainController: WebSocketDelegate {
                                 NotificationCenter.post(customeNotification: OONotification.websocket, object: messageInfo.body)
                             }
                             self.addUnreadNumber()
+                            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                         }
                     }
                 } catch { }
