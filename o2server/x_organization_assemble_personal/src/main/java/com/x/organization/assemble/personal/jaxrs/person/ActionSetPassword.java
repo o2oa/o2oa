@@ -92,8 +92,7 @@ class ActionSetPassword extends BaseAction {
 				
 				
 				emc.beginTransaction(Person.class);
-				person.setPassword(Crypto.encrypt(newPassword, Config.token().getKey()));
-				person.setChangePasswordTime(new Date());
+				business.person().setPassword(person, wi.getNewPassword());
 				emc.commit();
 				ApplicationCache.notify(Person.class);
 				Wo wo = new Wo();
