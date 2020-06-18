@@ -90,6 +90,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         if (this.shortcut) {
             if (this.form) {
                 //           if (this.form.isFocus){
+                if (!this.form.node.contains(document.activeElement)) return false;
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -120,6 +121,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         if (this.shortcut) {
             if (this.form) {
                 //          if (this.form.isFocus){
+                if (!this.form.node.contains(document.activeElement)) return false;
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -139,6 +141,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     pasteModule: function(){
         if (this.shortcut) {
             if (this.form) {
+                if (!this.form.node.contains(document.activeElement)) return false;
                 //    if (this.form.isFocus){
                 if (MWF.clipboard.data) {
                     if (MWF.clipboard.data.type == "form") {
