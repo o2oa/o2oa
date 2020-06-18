@@ -195,7 +195,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.actionNode = new Element("div", {
             "styles": this.selector.css.selectorItemActionNode
         }).inject(this.node);
-        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
 
