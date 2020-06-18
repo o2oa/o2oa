@@ -36,7 +36,7 @@ public class VoteCenterEvent implements Event {
 							|| (!Objects.equals(Config.resource_node_centersPirmaryPort(), entry.getValue().getPort()))
 							|| (!Objects.equals(Config.resource_node_centersPirmarySslEnable(),
 									entry.getValue().getSslEnable()))) {
-						logger.warn("pirmary center set as:{}, in {}.", entry.getKey(), this.nodes(list));
+						logger.warn("pirmary center set as: {}, in {}.", entry.getKey(), this.nodes(list));
 						Config.resource_node_centersPirmaryNode(entry.getKey());
 						Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
 						Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
@@ -44,7 +44,7 @@ public class VoteCenterEvent implements Event {
 					return;
 				}
 			} catch (Exception e) {
-				logger.warn("failed to connect center:{} port:{} sslEnable:{}.", entry.getKey(),
+				logger.warn("failed to connect center: {}, port: {}, sslEnable: {}.", entry.getKey(),
 						entry.getValue().getPort(), entry.getValue().getSslEnable());
 			}
 		}
