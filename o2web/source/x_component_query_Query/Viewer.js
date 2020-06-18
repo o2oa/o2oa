@@ -796,6 +796,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 this.createViewNode({"filterList": filterData});
             }else{
+                this.filterItems = [];
                 this.createViewNode();
             }
         }
@@ -813,6 +814,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadCustomSearch: function(){
+        if( this.lastFilterItems ){
+            this.filterItems = this.lastFilterItems;
+        }else{
+            this.filterItems = [];
+        }
         debugger;
         this.viewSearchIconNode.setStyle("display", "none");
         this.viewSearchInputBoxNode.setStyle("display", "none");
@@ -1074,6 +1080,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
+            this.lastFilterItems = this.filterItems;
             this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
         }
     },
