@@ -68,7 +68,6 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         this.categorys = [];
     },
     loadSelectItems: function (addToNext) {
-
         debugger;
         if (!this.options.category) {
             this.options.selectableItems.each(function (it) {
