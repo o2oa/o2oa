@@ -160,6 +160,18 @@ class IMChatViewController: UIViewController {
         sendMessage(body: body)
     }
 
+    //发送地图消息消息
+    private func sendLocationMessage(loc: O2LocationData) {
+        let body = IMMessageBodyInfo()
+        body.type = o2_im_msg_type_location
+        body.body = o2_im_msg_body_location
+        body.address = loc.address
+        body.addressDetail = loc.addressDetail
+        body.longitude = loc.longitude
+        body.latitude = loc.latitude
+        sendMessage(body: body)
+    }
+
     //发送消息到服务器
     private func sendMessage(body: IMMessageBodyInfo) {
         let message = IMMessageInfo()
@@ -264,7 +276,7 @@ class IMChatViewController: UIViewController {
         self.scrollMessageToBottom()
         return msgId
     }
-    
+
     //发送消息前 先载入界面
     private func prepareForSendFileMsg(tempMessage: IMMessageBodyInfo) -> String {
         let message = IMMessageInfo()
@@ -310,7 +322,7 @@ class IMChatViewController: UIViewController {
             self.showError(title: "上传错误，\(err.localizedDescription)")
         }
     }
-    
+
     //上传图片 音频 等文件到服务器并发送消息
     private func uploadFileAndSendMsg(messageId: String, data: Data, fileName: String, type: String) {
         guard let cId = self.conversation?.id else {
@@ -384,7 +396,7 @@ class IMChatViewController: UIViewController {
             let width = NSLayoutConstraint(item: self.audioBtnView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: SCREEN_WIDTH)
             let height = NSLayoutConstraint(item: self.audioBtnView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: self.emojiBarHeight.toCGFloat)
             NSLayoutConstraint.activate([top, width, height])
-        }else {
+        } else {
             self.bottomBarHeightConstraint.constant = self.bottomBarHeight.toCGFloat
             self.audioBtnView.removeFromSuperview()
         }
@@ -401,6 +413,10 @@ class IMChatViewController: UIViewController {
     }
     @IBAction func locationBtnClick(_ sender: UIButton) {
         DDLogDebug("点击了位置按钮")
+        let vc = IMLocationChooseController.openChooseLocation { (data) in
+            self.sendLocationMessage(loc: data)
+        }
+        self.navigationController?.pushViewController(vc, animated: false)
     }
 
 
@@ -456,6 +472,16 @@ extension IMChatViewController: UIImagePickerControllerDelegate & UINavigationCo
 
 // MARK: - 图片消息点击 delegate
 extension IMChatViewController: IMChatMessageDelegate {
+    
+    func openLocatinMap(info: IMMessageBodyInfo) {
+        let map = IMShowLocationViewController()
+        map.address = info.address
+        map.addressDetail = info.addressDetail
+        map.latitude = info.latitude
+        map.longitude = info.longitude
+        self.navigationController?.pushViewController(map, animated: false)
+    }
+    
     func clickImageMessage(fileId: String?, tempPath: String?) {
         if let id = fileId {
             self.showLoading()
@@ -480,7 +506,7 @@ extension IMChatViewController: IMChatMessageDelegate {
                     DDLogError(error.localizedDescription)
                     self.showError(title: "获取文件异常！")
             }
-        }else if let temp = tempPath {
+        } else if let temp = tempPath {
             let currentURL = NSURL(fileURLWithPath: temp)
             DDLogDebug(currentURL.description)
             DDLogDebug(temp)

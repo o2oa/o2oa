@@ -11,6 +11,7 @@ import CocoaLumberjack
 
 protocol IMChatMessageDelegate {
     func clickImageMessage(fileId: String?, tempPath: String?)
+    func openLocatinMap(info: IMMessageBodyInfo)
 }
 
 class IMChatMessageViewCell: UITableViewCell {
@@ -22,13 +23,20 @@ class IMChatMessageViewCell: UITableViewCell {
     @IBOutlet weak var messageBackgroundWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBackgroundHeight: NSLayoutConstraint!
     private let messageWidth = 176
-    
+
     private lazy var audioView: IMAudioView = {
         let view = Bundle.main.loadNibNamed("IMAudioView", owner: self, options: nil)?.first as! IMAudioView
         view.frame = CGRect(x: 0, y: 0, width: IMAudioView.IMAudioView_width, height: IMAudioView.IMAudioView_height)
         return view
     }()
-    
+
+    //位置消息 主体view
+    private lazy var locationView: IMLocationView = {
+        let view = Bundle.main.loadNibNamed("IMLocationView", owner: self, options: nil)?.first as! IMLocationView
+        view.frame = CGRect(x: 0, y: 0, width: IMLocationView.IMLocationViewWidth, height: IMLocationView.IMLocationViewHeight)
+        return view
+    }()
+
     var delegate: IMChatMessageDelegate?
 
     override func awakeFromNib() {
@@ -119,12 +127,29 @@ class IMChatMessageViewCell: UITableViewCell {
                 imageMsgRender(info: body)
             } else if o2_im_msg_type_audio == body.type {
                 audioMsgRender(info: body)
+            } else if o2_im_msg_type_location == body.type {
+                locationMsgRender(info: body)
             } else {
                 textMsgRender(msg: body.body!)
             }
         }
     }
-    
+
+    //位置消息
+    private func locationMsgRender(info: IMMessageBodyInfo) {
+        self.messageBackgroundWidth.constant = IMLocationView.IMLocationViewWidth + 20
+        self.messageBackgroundHeight.constant = IMLocationView.IMLocationViewHeight + 20
+        self.locationView.translatesAutoresizingMaskIntoConstraints = false
+        self.messageBackgroundView.addSubview(self.locationView)
+        self.locationView.setLocationAddress(address: info.address ?? "")
+        //点击打开地址
+        self.locationView.addTapGesture { (tap) in
+            //open map view
+            self.delegate?.openLocatinMap(info: info)
+        }
+        self.constraintWithContent(contentView: self.locationView)
+    }
+
     //音频消息
     private func audioMsgRender(info: IMMessageBodyInfo) {
         self.messageBackgroundWidth.constant = IMAudioView.IMAudioView_width + 20
@@ -132,22 +157,12 @@ class IMChatMessageViewCell: UITableViewCell {
         self.audioView.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(self.audioView)
         self.audioView.setDuration(duration: info.audioDuration ?? "0")
-        //音频文件
-        if let fileId = info.fileId {
-            let urlStr = AppDelegate.o2Collect.generateURLWithAppContextKey(
-            CommunicateContext.communicateContextKey,
-            query: CommunicateContext.imDownloadFileQuery,
-            parameter: ["##id##": fileId as AnyObject], generateTime: false)
-            self.audioView.setPlayUrl(url: urlStr)
-        } else if let filePath = info.fileTempPath {
-            self.audioView.setPlayUrl(url: filePath)
-        }
         self.audioView.addTapGesture { (tap) in
             self.playAudio(info: info)
         }
         self.constraintWithContent(contentView: self.audioView)
     }
-    
+
     private func playAudio(info: IMMessageBodyInfo) {
         if let fileId = info.fileId {
             O2IMFileManager.shared.getFileLocalUrl(fileId: fileId)
@@ -158,8 +173,8 @@ class IMChatMessageViewCell: UITableViewCell {
                     } catch {
                         DDLogError(error.localizedDescription)
                     }
-            }.catch { (e) in
-                DDLogError(e.localizedDescription)
+                }.catch { (e) in
+                    DDLogError(e.localizedDescription)
             }
         } else if let filePath = info.fileTempPath {
             do {
@@ -170,7 +185,7 @@ class IMChatMessageViewCell: UITableViewCell {
             }
         }
     }
-    
+
     private func constraintWithContent(contentView: UIView) {
         let top = NSLayoutConstraint(item: contentView, attribute: .top, relatedBy: .equal, toItem: contentView.superview!, attribute: .top, multiplier: 1, constant: 10)
         let bottom = NSLayoutConstraint(item: contentView.superview!, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 10)

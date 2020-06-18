@@ -66,6 +66,7 @@ class IMMessageBodyInfo: NSObject, DataModel {
     @objc var fileTempPath: String? //本地临时文件地址
     @objc var audioDuration: String? // 音频文件时长
     @objc var address: String? //type=location的时候位置信息
+    @objc var addressDetail: String?
     var latitude: Double?//type=location的时候位置信息
     var longitude: Double?//type=location的时候位置信息
 
@@ -106,4 +107,12 @@ class InstantMessage: NSObject, DataModel {
 
     }
 
+}
+
+
+struct  O2LocationData {
+    var address: String?
+    var addressDetail: String?
+    var latitude: Double?
+    var longitude: Double?
 }
