@@ -11,7 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="IMAudioView" customModule="O2Platform" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="76" height="36"/>
+            <rect key="frame" x="0.0" y="0.0" width="92" height="36"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chat_audio_play_Normal" translatesAutoresizingMaskIntoConstraints="NO" id="a6h-yn-SMe">
@@ -21,8 +21,8 @@
                         <constraint firstAttribute="width" constant="28" id="kKV-bU-3mr"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9“" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pe3-7R-eCP">
-                    <rect key="frame" x="43" y="9.5" width="23" height="17"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="60“" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pe3-7R-eCP">
+                    <rect key="frame" x="53" y="9.5" width="29" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
@@ -30,7 +30,7 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="Pe3-7R-eCP" firstAttribute="leading" secondItem="a6h-yn-SMe" secondAttribute="trailing" constant="10" id="6nk-nX-y34"/>
+                <constraint firstItem="Pe3-7R-eCP" firstAttribute="leading" secondItem="a6h-yn-SMe" secondAttribute="trailing" constant="20" id="6nk-nX-y34"/>
                 <constraint firstItem="a6h-yn-SMe" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="5" id="A7P-7Y-jsE"/>
                 <constraint firstItem="Pe3-7R-eCP" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="f3M-cW-QZa"/>
                 <constraint firstAttribute="trailing" secondItem="Pe3-7R-eCP" secondAttribute="trailing" constant="10" id="oO3-qw-7Xl"/>

@@ -199,6 +199,11 @@
 		B1750087233C937E003DA7B9 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750086233C937E003DA7B9 /* IntExtensions.swift */; };
 		B1750089233C9B2C003DA7B9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750088233C9B2C003DA7B9 /* Stack.swift */; };
 		B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17BF42F22B23758009E36E0 /* SkinViewController.swift */; };
+		B183987D249AFF64001C6FAA /* IMLocationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B183987C249AFF64001C6FAA /* IMLocationView.xib */; };
+		B18398AD249B00AA001C6FAA /* IMLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AC249B00AA001C6FAA /* IMLocationView.swift */; };
+		B18398B0249B079B001C6FAA /* IMLocationChooseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */; };
+		B18398B1249B079B001C6FAA /* IMLocationChooseController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */; };
+		B18398B3249B4154001C6FAA /* IMShowLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */; };
 		B18FFF5F23756B6C001B2887 /* JPushAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18FFF5E23756B6C001B2887 /* JPushAPI.swift */; };
 		B1908E1422685E8F00D75632 /* O2WebViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1908E1322685E8F00D75632 /* O2WebViewModels.swift */; };
 		B1908E4C22687B1A00D75632 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1908E4E22687B1A00D75632 /* Localizable.strings */; };
@@ -1527,6 +1532,11 @@
 		B1750086233C937E003DA7B9 /* IntExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
 		B1750088233C9B2C003DA7B9 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		B17BF42F22B23758009E36E0 /* SkinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinViewController.swift; sourceTree = "<group>"; };
+		B183987C249AFF64001C6FAA /* IMLocationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMLocationView.xib; sourceTree = "<group>"; };
+		B18398AC249B00AA001C6FAA /* IMLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationView.swift; sourceTree = "<group>"; };
+		B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationChooseController.swift; sourceTree = "<group>"; };
+		B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMLocationChooseController.xib; sourceTree = "<group>"; };
+		B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMShowLocationViewController.swift; sourceTree = "<group>"; };
 		B18FFF5E23756B6C001B2887 /* JPushAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPushAPI.swift; sourceTree = "<group>"; };
 		B1908E1322685E8F00D75632 /* O2WebViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebViewModels.swift; sourceTree = "<group>"; };
 		B1908E4D22687B1A00D75632 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -2598,6 +2608,9 @@
 				B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */,
 				B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */,
 				B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */,
+				B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */,
+				B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */,
+				B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */,
 			);
 			path = "IM-聊天";
 			sourceTree = "<group>";
@@ -2635,6 +2648,8 @@
 				B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */,
 				B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */,
 				B15BE10D249A107C008CD1DB /* IMAudioView.swift */,
+				B183987C249AFF64001C6FAA /* IMLocationView.xib */,
+				B18398AC249B00AA001C6FAA /* IMLocationView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -5678,6 +5693,7 @@
 				E46E6C6D1DD41F5D00AB7561 /* ZSScenterjustify.png in Resources */,
 				E40E24BE20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.xib in Resources */,
 				E4D2312B20A29E2700837868 /* OOAppMainCollectionHeaderView.xib in Resources */,
+				B18398B1249B079B001C6FAA /* IMLocationChooseController.xib in Resources */,
 				E45755A31E0BA72E00EC44F4 /* qrcode_scan_btn_scan_off@2x.png in Resources */,
 				E46E6CA71DD41F5D00AB7561 /* ZSStable.png in Resources */,
 				E4C24BC120844F3C00E426B0 /* jiantou2@2x.png in Resources */,
@@ -5729,6 +5745,7 @@
 				E46E6CC31DD41F5D00AB7561 /* ZSSRichTextEditor.js in Resources */,
 				E4C24BC220844F3C00E426B0 /* icon_baidu_marker.png in Resources */,
 				B12FD1872283CE1D00E636BA /* red.plist in Resources */,
+				B183987D249AFF64001C6FAA /* IMLocationView.xib in Resources */,
 				E4B888E21D9D48F1002E1A46 /* cloudStorage.storyboard in Resources */,
 				E46E6C8E1DD41F5D00AB7561 /* ZSSkeyboard@2x.png in Resources */,
 				E4C24C49208D7EDE00E426B0 /* OOContactSearchSectionHeaderView.xib in Resources */,
@@ -6254,6 +6271,7 @@
 				E46E6CBF1DD41F5D00AB7561 /* HRColorPickerViewController.m in Sources */,
 				E4C24B6E20844F3C00E426B0 /* JCFileManager.swift in Sources */,
 				09E02E0E1F16001B00579887 /* Head.swift in Sources */,
+				B18398AD249B00AA001C6FAA /* IMLocationView.swift in Sources */,
 				E4D2313020A29E9F00837868 /* OOAppMainCollectionReusableView.swift in Sources */,
 				B165CD5B2242093500373B66 /* PresentrShadow.swift in Sources */,
 				B107453C21A52FA00015F1B2 /* O2PersonInfo.swift in Sources */,
@@ -6364,6 +6382,7 @@
 				09E02E971F16319600579887 /* UIImageView+Haneke.swift in Sources */,
 				E4B8887D1D9D48F1002E1A46 /* FileMyDownloadViewController.swift in Sources */,
 				E4C24B6620844F3C00E426B0 /* DLFixedTabbarView.m in Sources */,
+				B18398B3249B4154001C6FAA /* IMShowLocationViewController.swift in Sources */,
 				E4C24B3520844F3C00E426B0 /* NSLayoutConstraint+JChat.swift in Sources */,
 				E45DA9121DAF7EBE00E0735D /* SZKCleanCache.m in Sources */,
 				090253DE1F0E8BA6006B1609 /* O2LoadingView.swift in Sources */,
@@ -6613,6 +6632,7 @@
 				E4C24B5720844F3C00E426B0 /* SAIToolboxInputViewLayout.swift in Sources */,
 				B1FD027021FAE00E000E9817 /* O2MainController.swift in Sources */,
 				E4B697092075FA560062F6E8 /* BaseModel.swift in Sources */,
+				B18398B0249B079B001C6FAA /* IMLocationChooseController.swift in Sources */,
 				E4B888621D9D48F1002E1A46 /* ZLCollectionView.swift in Sources */,
 				B1298E812366B2E7006E9236 /* CFImageViewCell.swift in Sources */,
 				E40E24B220B7DA3C009F8BE7 /* OOMeetingCreateViewController.swift in Sources */,
@@ -6831,7 +6851,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 68;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6866,7 +6886,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.7;
+				MARKETING_VERSION = 5.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6947,7 +6967,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 68;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6982,7 +7002,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.7;
+				MARKETING_VERSION = 5.0.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
