@@ -151,7 +151,7 @@ MWF.xApplication.process.Application.WorkCompletedExplorer.Work = new Class({
         this.workAreaNode =  new Element("div", {"styles": this.css.workItemWorkNode}).inject(this.node);
         //this.otherWorkAreaNode =  new Element("div", {"styles": this.css.workItemWorkNode}).inject(this.node);
 
-        var html = "<div class='area1Node'><div class='checkAreaNode'></div><div class='iconAreaNode'></div><div class='titleAreaNode'><div class='titleAreaTextNode'>"+this.data.title+"</div></div></div>" +
+        var html = "<div class='area1Node'><div class='checkAreaNode'></div><div class='iconAreaNode'></div><div class='titleAreaNode'><div class='titleAreaTextNode'>"+( this.data.title || "" )+"</div></div></div>" +
             "<div class='area2Node'><div class='timeAreaNode'></div><div class='processAreaNode'><div class='processAreaTextNode'>"+this.data.processName+"</div></div></div>" +
             "<div class='area3Node'><div class='actionAreaNode'></div><div class='expireAreaNode'></div><div class='personAreaNode'></div></div>";
         this.workAreaNode.set("html", html);
@@ -198,7 +198,7 @@ MWF.xApplication.process.Application.WorkCompletedExplorer.Work = new Class({
     reload: function(callback){
         this.explorer.actions.getWorkCompleted(this.data.id, function(json){
             this.data = json.data;
-            this.titleAreaTextNode.set("text", this.data.title);
+            this.titleAreaTextNode.set("text", this.data.title || "");
             this.activityAreaTextNode.set("text", this.data.activityName);
 
             this.statusAreaNode.empty();
@@ -222,7 +222,7 @@ MWF.xApplication.process.Application.WorkCompletedExplorer.Work = new Class({
     },
     remove: function(e){
         var lp = this.explorer.app.lp;
-        var text = lp.deleteWork.replace(/{title}/g, this.data.title);
+        var text = lp.deleteWork.replace(/{title}/g, this.data.title || "");
         var _self = this;
         this.workAreaNode.setStyles(this.css.workItemWorkNode_remove);
         this.readyRemove = true;
