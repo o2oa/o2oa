@@ -976,7 +976,7 @@ MWF.xApplication.process.Application.Viewer.Filter = new Class({
                 }.bind(this)
             });
         }
-        this.titleNode = new Element("div", {"styles": this.css.viewSearchFilterTextNode, "text": this.data.title}).inject(this.node);
+        this.titleNode = new Element("div", {"styles": this.css.viewSearchFilterTextNode, "text": this.data.title || ""}).inject(this.node);
         this.comparisonTitleNode = new Element("div", {"styles": this.css.viewSearchFilterTextNode, "text": this.data.comparisonTitle}).inject(this.node);
         this.valueNode = new Element("div", {"styles": this.css.viewSearchFilterTextNode, "text": "\""+this.data.value+"\""}).inject(this.node);
         this.deleteNode = new Element("div", {"styles": this.css.viewSearchFilterDeleteNode}).inject(this.node);
