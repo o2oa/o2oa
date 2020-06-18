@@ -63,11 +63,13 @@ public class CenterQueue extends AbstractQueue<CenterQueueBody> {
 		for (Entry<String, CopyOnWriteArrayList<Application>> en : applications.entrySet()) {
 			List<Application> removeApplications = new ArrayList<>();
 			for (Application application : en.getValue()) {
-				if ((now.getTime() - application.getReportDate().getTime()) > REFRESHAPPLICATIONSINTERVAL * 3 * 1000) {
+				if ((now.getTime() - application.getReportDate().getTime()) > REFRESHAPPLICATIONSINTERVAL * 1000
+						+ 10000) {
 					removeApplications.add(application);
+					logger.warn("application dropped, node: {}, application: {}.", application.getNode(), en.getKey());
 				}
 			}
-			modify = modify || en.getValue().removeAll(removeApplications);
+			modify = en.getValue().removeAll(removeApplications) || modify;
 			if (en.getValue().isEmpty()) {
 				removeEntries.add(en.getKey());
 			}
