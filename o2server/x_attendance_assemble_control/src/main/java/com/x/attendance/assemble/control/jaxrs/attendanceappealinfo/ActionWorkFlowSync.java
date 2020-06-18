@@ -149,7 +149,7 @@ public class ActionWorkFlowSync extends BaseAction {
 	public static class Wi {
 
 		@FieldDescribe("申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过.")
-		private Integer status = null;
+		private Integer status = 1;
 
 		public Integer getStatus() {
 			return status;
