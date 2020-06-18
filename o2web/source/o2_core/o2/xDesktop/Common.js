@@ -225,10 +225,12 @@ MWF.name = {
         return n;
     },
     "cn": function(name){
+        if (!name) return "";
         var idx = name.indexOf("@");
         return (idx!==-1) ? name.substring(0, idx) : name;
     },
     "ou": function(name){
+        if (!name) return "";
         var idx = name.indexOf("@");
         var lastIdx = name.lastIndexOf("@");
         if (idx===-1){
@@ -240,6 +242,7 @@ MWF.name = {
         }
     },
     "flag": function(name){
+        if (!name) return "";
         var lastIdx = name.lastIndexOf("@");
         if (lastIdx===-1){
             return "";
@@ -247,7 +250,8 @@ MWF.name = {
             return name.substring(lastIdx+1, name.length);
         }
     },
-    "type": function(){
+    "type": function(name){
+        if (!name) return "";
         var lastIdx = name.lastIndexOf("@");
         if (lastIdx===-1){
             return "";
