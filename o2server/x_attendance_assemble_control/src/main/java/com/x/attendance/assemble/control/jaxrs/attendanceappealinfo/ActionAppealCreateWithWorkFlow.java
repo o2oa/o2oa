@@ -72,6 +72,9 @@ public class ActionAppealCreateWithWorkFlow extends BaseAction {
 					wrapIn.getReason(), wrapIn.getAppealReason(),  wrapIn.getSelfHolidayType(),  wrapIn.getAddress(), 
 					wrapIn.getStartTime(),  wrapIn.getEndTime(),  wrapIn.getAppealDescription() );
 
+//			// 申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过!
+//			attendanceAppealInfo.setStatus(wrapIn.getStatus());
+
 			// 创建一个申诉审批记录信息
 			attendanceAppealAuditInfo = new AttendanceAppealAuditInfo();
 			attendanceAppealAuditInfo.setId( attendanceAppealInfo.getId());
@@ -124,8 +127,8 @@ public class ActionAppealCreateWithWorkFlow extends BaseAction {
 		@FieldDescribe("申诉详细说明, 500字")
 		private String appealDescription;
 
-		@FieldDescribe("审批状态:0-待处理，1-审批通过，-1-审批不能过，2-需要下一次审批")
-		private Integer status = 0;
+//		@FieldDescribe("审批状态:申诉状态:0-未申诉，1-申诉中，-1-申诉未通过，9-申诉通过")
+//		private Integer status = 0;
 
 		public String getWorkId() { return workId; }
 
@@ -162,10 +165,10 @@ public class ActionAppealCreateWithWorkFlow extends BaseAction {
 		public String getAppealDescription() { return appealDescription; }
 
 		public void setAppealDescription(String appealDescription) { this.appealDescription = appealDescription; }
-
-		public Integer getStatus() { return status; }
-
-		public void setStatus(Integer status) { this.status = status; }
+//
+//		public Integer getStatus() { return status; }
+//
+//		public void setStatus(Integer status) { this.status = status; }
 	}
 	
 	public static class Wo extends WoId {
