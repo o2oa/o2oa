@@ -17,9 +17,17 @@ class IMChatMessageSendViewCell: UITableViewCell {
     @IBOutlet weak var messageBgWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBgHeight: NSLayoutConstraint!
     
+    //音频消息 主体view
     private lazy var audioView: IMAudioView = {
         let view = Bundle.main.loadNibNamed("IMAudioView", owner: self, options: nil)?.first as! IMAudioView
         view.frame = CGRect(x: 0, y: 0, width: IMAudioView.IMAudioView_width, height: IMAudioView.IMAudioView_height)
+        return view
+    }()
+    
+    //位置消息 主体view
+    private lazy var locationView: IMLocationView = {
+        let view = Bundle.main.loadNibNamed("IMLocationView", owner: self, options: nil)?.first as! IMLocationView
+        view.frame = CGRect(x: 0, y: 0, width: IMLocationView.IMLocationViewWidth, height: IMLocationView.IMLocationViewHeight)
         return view
     }()
     
@@ -61,10 +69,27 @@ class IMChatMessageSendViewCell: UITableViewCell {
                 imageMsgRender(info: body)
             }else if o2_im_msg_type_audio == body.type {
                 audioMsgRender(info: body)
-            } else {
+            } else if o2_im_msg_type_location == body.type {
+                locationMsgRender(info: body)
+            }  else {
                 textMsgRender(msg: body.body!)
             }
         }
+    }
+    
+    //位置消息
+    private func locationMsgRender(info: IMMessageBodyInfo) {
+        self.messageBgWidth.constant = IMLocationView.IMLocationViewWidth + 20
+        self.messageBgHeight.constant = IMLocationView.IMLocationViewHeight + 20
+        self.locationView.translatesAutoresizingMaskIntoConstraints = false
+        self.messageBackgroundView.addSubview(self.locationView)
+        self.locationView.setLocationAddress(address: info.address ?? "")
+        //点击打开地址
+        self.locationView.addTapGesture { (tap) in
+            //open map view//open map view
+            self.delegate?.openLocatinMap(info: info)
+        }
+        self.constraintWithContent(contentView: self.locationView)
     }
     
     //音频消息
@@ -74,16 +99,6 @@ class IMChatMessageSendViewCell: UITableViewCell {
         self.audioView.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(self.audioView)
         self.audioView.setDuration(duration: info.audioDuration ?? "0")
-        //音频文件
-        if let fileId = info.fileId {
-            let urlStr = AppDelegate.o2Collect.generateURLWithAppContextKey(
-            CommunicateContext.communicateContextKey,
-            query: CommunicateContext.imDownloadFileQuery,
-            parameter: ["##id##": fileId as AnyObject], generateTime: false)
-            self.audioView.setPlayUrl(url: urlStr)
-        } else if let filePath = info.fileTempPath {
-            self.audioView.setPlayUrl(url: filePath)
-        }
         self.audioView.addTapGesture { (tap) in
             self.playAudio(info: info)
         }
