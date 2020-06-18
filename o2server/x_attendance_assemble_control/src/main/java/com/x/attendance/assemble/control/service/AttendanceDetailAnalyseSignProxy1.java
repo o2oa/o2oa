@@ -175,12 +175,12 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
 						}else{
-							if(StringUtils.isNotEmpty( detail.getAbnormalDutyDayTime() )){
+							if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
 								detail.setAbnormalDutyDayTime("上午|下午");
 							}else {
 								detail.setAbnormalDutyDayTime("下午");
 							}
-							if(StringUtils.isNotEmpty( detail.getAbsentDayTime() )){
+							if( StringUtils.equals( "上午", detail.getAbsentDayTime()) ){
 								detail.setAbsentDayTime("全天");
 							}else{
 								detail.setAbsentDayTime("下午");
