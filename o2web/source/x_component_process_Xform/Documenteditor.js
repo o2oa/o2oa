@@ -99,6 +99,54 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var control = this.getShowControl();
         this.json.fileup =  !!(control.signer);
 
+        if (this.json.css && this.json.css.code){
+            var cssText = this.form.parseCSS(this.json.css.code);
+            cssText = cssText.replace(/documenteditor_table/g, 'documenteditor_table'+this.form.json.id+this.json.id)
+
+
+            // var rex = new RegExp("(.+)(?=\\{)", "g");
+            // var match;
+            // var id = this.json.id.replace(/\-/g, "");
+            // var prefix = this.form.json.id+this.json.id;
+            //
+            // while ((match = rex.exec(cssText)) !== null) {
+            //     var rulesStr = match[0];
+            //     if (rulesStr.indexOf(",")!=-1){
+            //         var rules = rulesStr.split(/\s*,\s*/g);
+            //         rules = rules.map(function(r){
+            //             return r+prefix;
+            //         });
+            //         var rule = rules.join(", ");
+            //         cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+            //         rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+            //
+            //     }else{
+            //         var rule = match[0]+prefix;
+            //         cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+            //         rex.lastIndex = rex.lastIndex + prefix.length;
+            //     }
+            // }
+
+            var styleNode = document.createElement("style");
+            styleNode.setAttribute("type", "text/css");
+            styleNode.id="style"+this.json.id;
+            styleNode.inject(pageContentNode);
+
+            if(styleNode.styleSheet){
+                var setFunc = function(){
+                    styleNode.styleSheet.cssText = cssText;
+                };
+                if(styleNode.styleSheet.disabled){
+                    setTimeout(setFunc, 10);
+                }else{
+                    setFunc();
+                }
+            }else{
+                var cssTextNode = document.createTextNode(cssText);
+                styleNode.appendChild(cssTextNode);
+            }
+        }
+
         //this.json.documentTempleteType!="cus"
         this.getTempleteJson(function(){
             var templete = this.json.documentTempleteName || "standard";
@@ -293,6 +341,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     // },
     _loadFiletext: function(){
         this.layout_filetext = this.contentNode.getElement(".doc_layout_filetext");
+        this.layout_filetext.addClass("css"+this.form.json.id+this.json.id);
         this.layout_filetext.setStyles(this.css.doc_layout_filetext);
 
         //this.layout_filetext = this.contentNode.getElement(".doc_layout_filetext");
@@ -1412,14 +1461,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // ];
 
         //CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.13.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-
+debugger;
         var editorConfig = {
             qtRows: 20, // Count of rows
             qtColumns: 20, // Count of columns
             qtBorder: '1', // Border of inserted table
             qtWidth: '95%', // Width of inserted table
             qtStyle: { 'border-collapse' : 'collapse' },
-            qtClass: 'test', // Class of table
+            qtClass: 'documenteditor_table'+this.form.json.id+this.json.id, // Class of table
             qtCellPadding: '0', // Cell padding table
             qtCellSpacing: '0', // Cell spacing table
             qtPreviewBorder: '4px double black', // preview table border
@@ -2121,6 +2170,7 @@ debugger;
     },
 
     toWord: function(callback, name){
+        debugger;
         var toEdit = false;
         if (this.editMode){
             toEdit = true;
@@ -2138,7 +2188,7 @@ debugger;
             this.node.setStyles({
                 "height":"auto"
             });
-
+debugger;
             //var content = this.contentNode.getFirst().getFirst().get("html");
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
             var htmlNode = tmpNode.getLast();
