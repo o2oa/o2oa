@@ -27,7 +27,7 @@ MWF.xApplication.Selector.Person = new Class({
         "hasShuttle" : false, //穿梭按钮
         "searchbarInTopNode" : true, //搜索框在标题上还是另起一行
         "hasSelectedSearchbar" : false, //已选是不是有搜索框
-        "noSelectedContainer" : true, //是否有已选项
+        "noSelectedContainer" : false, //是否隐藏右侧已选区域
         "contentUrl" : "", //和默认的页面布局不一样的话，可以传入页面布局HTML URL
         "injectToBody" : false, //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
 
@@ -2395,6 +2395,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if (!this.fx.isRunning()){
                 var display = this.children.getStyle("display");
                 if (display === "none"){
+                    this.selector.fireEvent("expand", [this] );
                     this.children.setStyles({
                         "display": "block",
                         "height": "0px"
@@ -2403,6 +2404,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                     this.isExpand = true;
                 }else{
+                    this.selector.fireEvent("collapse", [this] );
                     if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
                     this.fx.start("height", ""+this.childrenHeight+"px", "0px").chain(function(){
                         this.children.setStyles({
