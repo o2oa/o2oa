@@ -141,6 +141,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     pasteModule: function(){
         if (this.shortcut) {
             if (this.form) {
+                debugger;
                 if (!this.form.node.contains(document.activeElement)) return false;
                 //    if (this.form.isFocus){
                 if (MWF.clipboard.data) {
