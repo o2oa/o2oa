@@ -375,6 +375,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.actionArea) this.actionArea.setStyle("display", "none");
 	},
 	selected: function(){
+		if (this.form && this.form.node)this.form.node.focus();
 		if (this.form.currentSelectedModule){
 			if (this.form.currentSelectedModule==this){
 				return true;
