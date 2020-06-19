@@ -59,6 +59,7 @@ MWF.xApplication.Template.Selector.Custom = new Class({
     },
     initialize: function (container, options) {
         this.setOptions(options);
+
         this.path = "../x_component_Selector/$Selector/";
         this.cssPath = "../x_component_Selector/$Selector/" + this.options.style + "/css.wcss";
         this._loadCss(true);
@@ -68,7 +69,6 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         this.categorys = [];
     },
     loadSelectItems: function (addToNext) {
-
         debugger;
         if (!this.options.category) {
             this.options.selectableItems.each(function (it) {
@@ -82,8 +82,8 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                 if (item.isItem) {
                     var item = this._newItem(item, this, this.itemAreaNode);
                     this.items.push(item);
-                }
-                if ( (item.subItemList && item.subItemList.length > 0) || item.subCategoryList && item.subCategoryList.length > 0 ) {
+                }else{
+                    // if ( (item.subItemList && item.subItemList.length > 0) || item.subCategoryList && item.subCategoryList.length > 0 ) {
                     if( this.options.categorySelectable ){
                         var category = this._newItemCategorySelectable(item, this, this.itemAreaNode);
                         this.categorys.push( category );
@@ -91,11 +91,12 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                         var category = this._newItemCategory(item, this, this.itemAreaNode);
                         this.categorys.push( category );
                     }
-                    // item.subItemList.each(function (subItem, index) {
-                    //     var item = this._newItem(subItem, this, category.children, 2, category);
-                    //     this.items.push(item);
-                    //     category.subItems.push(item);
-                    // }.bind(this));
+                        // item.subItemList.each(function (subItem, index) {
+                        //     var item = this._newItem(subItem, this, category.children, 2, category);
+                        //     this.items.push(item);
+                        //     category.subItems.push(item);
+                        // }.bind(this));
+                    // }
                 }
             }.bind(this));
         }
