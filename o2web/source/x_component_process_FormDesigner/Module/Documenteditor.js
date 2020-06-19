@@ -76,7 +76,6 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 	_initModule: function(){
 		this._resetContent();
 
-		debugger;
 		var templateJson = this.form.dataTemplate["Documenteditor"];
 		if (!templateJson){
 			var templateUrl = "../x_component_process_FormDesigner/Module/Documenteditor/template.json";
