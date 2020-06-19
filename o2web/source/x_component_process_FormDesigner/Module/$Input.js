@@ -123,6 +123,7 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
         }
     },
     _preprocessingModuleData: function(){
+        debugger;
         this.node.clearStyles();
         this.recoveryIconNode = this.node.getFirst();
         this.recoveryIconNode.dispose();
@@ -141,7 +142,7 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
             "position": "relative",
             "margin-right": "20px",
             "padding-right": "4px"
-        })
+        });
 
         if (this.json.styles){
             this.json.recoveryStyles = Object.clone(this.json.styles);
@@ -187,12 +188,12 @@ MWF.xApplication.process.FormDesigner.Module.$Input = MWF.FC$Input = new Class({
     setCustomStyles: function(){
         this._recoveryModuleData();
         //debugger;
-        var border = this.node.getStyle("border");
+        //var border = this.node.getStyle("border");
         this.node.clearStyles();
         this.node.setStyles(this.css.moduleNode);
 
         if (this.initialStyles) this.node.setStyles(this.initialStyles);
-        this.node.setStyle("border", border);
+        //this.node.setStyle("border", border);
 
         if (this.json.styles) Object.each(this.json.styles, function(value, key){
             if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
