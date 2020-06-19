@@ -100,6 +100,7 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
 		this.json.recoveryStyles = null;
 	},
     setCustomStyles: function(){
+		debugger;
 		this._recoveryModuleData();
 
         var border = this.node.getStyle("border");
@@ -115,7 +116,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Data = MWF.FCDatagrid$Data
                 this.node.setStyle(key, value);
             }
         }.bind(this));
-    },
+
+		this.setCustomNodeStyles(this.node, this.parentContainer.json.contentStyles);
+	},
     checkSequence: function(obj, oldValue){
         if ((this.json.cellType == "sequence") && (oldValue != "sequence")){
             if (this.treeNode.firstChild){
