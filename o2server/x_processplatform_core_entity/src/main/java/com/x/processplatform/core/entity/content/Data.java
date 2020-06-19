@@ -188,6 +188,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		private String serial;
 		private String activityType;
 		private String activityName;
+		private Date activityArrivedTime;
 		private String manualTaskIdentityText;
 		/** 来自workCompleted的结束时间 */
 		private Date completedTime;
@@ -378,6 +379,13 @@ public class Data extends ListOrderedMap<String, Object> {
 			this.manualTaskIdentityText = manualTaskIdentityText;
 		}
 
+		public Date getActivityArrivedTime() {
+			return activityArrivedTime;
+		}
+
+		public void setActivityArrivedTime(Date activityArrivedTime) {
+			this.activityArrivedTime = activityArrivedTime;
+		}
 	}
 
 	public static class DataAttachment extends GsonPropertyObject {
