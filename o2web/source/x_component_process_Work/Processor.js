@@ -451,7 +451,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
 
         //临时添加
-        if(this.form.data.json.events.afterSelectRoute){
+        if(this.form.data.json.events && this.form.data.json.events.afterSelectRoute){
             this.form.Macro.exec(this.form.data.json.events.afterSelectRoute.code, node);
         }
 
