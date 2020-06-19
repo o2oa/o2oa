@@ -62,8 +62,9 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 	public void getNodeInfoList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		String currentIP = request.getLocalAddr();
 		try {
-			result = (ActionResult<ActionGet.Wo>) new ActionGet().execute(effectivePerson, "");
+			result = (ActionResult<ActionGet.Wo>) new ActionGet().execute(effectivePerson, currentIP);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
