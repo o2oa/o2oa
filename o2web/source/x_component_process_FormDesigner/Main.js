@@ -1290,14 +1290,29 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     },
 	loadFormData: function(callback){
 		this.actions.getForm(this.options.id, function(form){
+		    debugger;
 			if (form){
+			    var formTemplete = null;
+                MWF.getJSON("../x_component_process_FormDesigner/Module/Form/template/form.json", {
+                    "onSuccess": function(obj){ formTemplete = obj; }.bind(this)
+                }, false);
 
 				this.formData = JSON.decode(MWF.decodeJsonString(form.data.data));
+				if (formTemplete.pcData){
+				    Object.merge(formTemplete.pcData, this.formData);
+                    Object.merge(this.formData, formTemplete.pcData);
+                }
 				this.formData.isNewForm = false;
 				this.formData.json.id = form.data.id;
 
                 if (form.data.mobileData){
                     this.formMobileData = JSON.decode(MWF.decodeJsonString(form.data.mobileData));
+
+                    if (formTemplete.mobileData){
+                        Object.merge(formTemplete.mobileData, this.formMobileData);
+                        Object.merge(this.formMobileData, formTemplete.mobileData);
+                    }
+
                     this.formMobileData.isNewForm = false;
                     this.formMobileData.json.id = form.data.id;
                 }else{
