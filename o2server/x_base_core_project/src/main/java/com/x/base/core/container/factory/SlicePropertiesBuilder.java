@@ -4,6 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class SlicePropertiesBuilder {
 
+	private SlicePropertiesBuilder() {
+		// nothing
+	}
+
 	public static String driver_db2 = "com.ibm.db2.jcc.DB2Driver";
 	public static String driver_oracle = "oracle.jdbc.OracleDriver";
 	public static String driver_mysql = "com.mysql.jdbc.Driver";
