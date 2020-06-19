@@ -118,11 +118,11 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 		//先查询该员工所有的考勤数据
 		if (check) {
 			try {
-				attendanceDetailMobileList = attendanceDetailServiceAdv.listAttendanceDetailMobile( effectivePerson.getDistinguishedName(), signDate );
+				attendanceDetailMobileList = attendanceDetailServiceAdv.listAttendanceDetailMobile( attendanceDetailMobile.getEmpName(), signDate );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAttendanceDetailProcess(e,
-						"根据条件查询员工手机打卡信息列表时发生异常.DistinguishedName:" + effectivePerson.getDistinguishedName() + ",Date:" + signDate);
+						"根据条件查询员工手机打卡信息列表时发生异常.DistinguishedName:" + attendanceDetailMobile.getEmpName() + ",Date:" + signDate);
 				result.error(exception);
 				logger.error(e, currentPerson, request, null);
 			}
@@ -147,7 +147,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				&& !StringUtils.equalsAnyIgnoreCase("cipher", effectivePerson.getName())) {
 			AttendanceScheduleSetting scheduleSetting = null;
 			//打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）
-			scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( effectivePerson.getDistinguishedName(), effectivePerson.getDebugger() );
+			scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( attendanceDetailMobile.getEmpName(), effectivePerson.getDebugger() );
 			if( scheduleSetting != null ){
 				if( scheduleSetting.getSignProxy() == 3 ){
 					//3-四次打卡（上午下午都打上班下班卡）
@@ -163,6 +163,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( woSignFeature != null ){
 				woSignFeature.setSignDate( signDate );
 			}
+
 			attendanceDetailMobile.setCheckin_type( woSignFeature.getCheckinType() );
 			if( StringUtils.isEmpty( wrapIn.getSignDescription() )){
 				attendanceDetailMobile.setSignDescription( woSignFeature.getCheckinType() );
@@ -188,7 +189,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 
 		if( check ){
 			//对该员工的所有移动考勤数据进行一个整合，并且立即send到分析队列
-			attendanceDetailServiceAdv.pushToDetail( currentPerson.getDistinguishedName(), attendanceDetailMobile.getRecordDateString(), effectivePerson.getDebugger() );
+			attendanceDetailServiceAdv.pushToDetail( attendanceDetailMobile.getEmpName(), attendanceDetailMobile.getRecordDateString(), effectivePerson.getDebugger() );
 		}
 		return result;
 	}
