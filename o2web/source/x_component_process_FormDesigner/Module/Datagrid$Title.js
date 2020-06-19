@@ -115,7 +115,27 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid$Title = MWF.FCDatagrid$Tit
 	_dragInLikeElement: function(module){
 		return false;
 	},
-	
+
+	setCustomStyles: function(){
+		this._recoveryModuleData();
+
+		var border = this.node.getStyle("border");
+		this.node.clearStyles();
+		this.node.setStyles(this.css.moduleNode);
+
+		if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.node.setStyle("border", border);
+
+		Object.each(this.json.styles, function(value, key){
+			var reg = /^border\w*/ig;
+			if (!key.test(reg)){
+				this.node.setStyle(key, value);
+			}
+		}.bind(this));
+
+		this.setCustomNodeStyles(this.node, this.parentContainer.json.titleStyles);
+	},
+
 	insertCol: function(){
 		var module = this;
 		var url = this.path+"insertCol.html";

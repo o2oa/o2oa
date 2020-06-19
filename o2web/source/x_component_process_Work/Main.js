@@ -134,6 +134,9 @@ MWF.xApplication.process.Work.Main = new Class({
             this.loadWorkByDraft(this.options.draft);
         }else if (this.options.jobId || this.options.jobid || this.options.job){
             var jobId = this.options.jobId || this.options.jobid || this.options.job;
+            delete this.options.jobId;
+            delete this.options.jobid;
+            delete this.options.job;
             this.loadWorkByJob(jobId);
         }
     },
@@ -166,7 +169,9 @@ MWF.xApplication.process.Work.Main = new Class({
                             this.close();
                         }
                     }
-                }.bind(this), "failure": function(){}}, [this.options.form.id, this.options.form.app], id);
+                }.bind(this), "failure": function(){
+                    this.close();
+                }.bind(this)}, [this.options.form.id, this.options.form.app], id);
         }else{
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
@@ -193,7 +198,9 @@ MWF.xApplication.process.Work.Main = new Class({
                             this.close();
                         }
                     }
-                }.bind(this), "failure": function(){}}, id);
+                }.bind(this), "failure": function(){
+                    this.close();
+                }.bind(this)}, id);
         }
     },
     loadWorkByJob: function(jobId){
@@ -224,8 +231,10 @@ MWF.xApplication.process.Work.Main = new Class({
 
                 }
             }else{
-
+                this.close();
             }
+        }.bind(this), function(){
+            this.close();
         }.bind(this));
     },
     loadWorkByDraft: function(work, data){
