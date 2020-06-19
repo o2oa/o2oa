@@ -391,20 +391,22 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			return module;
 		}else if( MWF["FC"+json.type] ){
 			var module;
-			var className = ( dom.get("MWFType") || "div" ).capitalize();
+			var className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
-				json = Object.merge(moduleData, json);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
 				module = new MWF["FC"+json.type](this);
 				module.load(json, dom, parent);
 			}.bind(this), false);
 			return module;
 		}else{
 			var module;
-			var className = ( dom.get("MWFType") || "div" ).capitalize();
+			var className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
-				json = Object.merge(moduleData, json);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
 				module = new MWF["FCDiv"](this);
 				module.load(json, dom, parent);
 			}.bind(this), false);
