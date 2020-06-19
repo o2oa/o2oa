@@ -27,6 +27,7 @@ MWF.xApplication.Selector.Person = new Class({
         "hasShuttle" : false, //穿梭按钮
         "searchbarInTopNode" : true, //搜索框在标题上还是另起一行
         "hasSelectedSearchbar" : false, //已选是不是有搜索框
+        "noSelectedContainer" : false, //是否隐藏右侧已选区域
         "contentUrl" : "", //和默认的页面布局不一样的话，可以传入页面布局HTML URL
         "injectToBody" : false, //当传入HTML URL的时候是否插入到document.body, false的时候插入到this.container
 
@@ -196,7 +197,7 @@ MWF.xApplication.Selector.Person = new Class({
 
             //  this.container.setStyle("z-index", this.options.zIndex);
             this.node = new Element("div", {
-                "styles": this.css.containerNode, //(this.options.count.toInt()===1) ? this.css.containerNodeSingle : this.css.containerNode,
+                "styles": this.options.noSelectedContainer ? this.css.containerNodeSingle : this.css.containerNode, //(this.options.count.toInt()===1)
                 "events": {
                     "click": function(e){e.stopPropagation();},
                     "mousedown": function(e){e.stopPropagation();},
@@ -337,7 +338,7 @@ MWF.xApplication.Selector.Person = new Class({
 
         if (this.selectNode) this.selectNode.setStyles(this.css.selectNodeMobile);
         if (this.searchInputDiv) this.searchInputDiv.setStyles(this.css.searchInputDiv);
-        if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput );
+        if (this.searchInput) this.searchInput.setStyles( (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput );
         if (this.letterAreaNode) this.letterAreaNode.setStyles(this.css.letterAreaNode);
         if (this.itemAreaScrollNode) this.itemAreaScrollNode.setStyles(this.css.itemAreaScrollNode);
         if (this.itemAreaNode) this.itemAreaNode.setStyles(this.css.itemAreaNode);
@@ -571,7 +572,7 @@ MWF.xApplication.Selector.Person = new Class({
             "styles": this.css.searchInputDiv
         }).inject(this.selectNode);
         this.searchInput = new Element("input.searchInput", {
-            "styles": (this.options.count.toInt()===1) ? this.css.searchInputSingle : this.css.searchInput,
+            "styles": (this.options.count.toInt()===1 || this.options.noSelectedContainer) ? this.css.searchInputSingle : this.css.searchInput,
             "type": "text"
         }).inject(this.searchInputDiv);
         var width = size.x-20-18;
@@ -924,6 +925,10 @@ MWF.xApplication.Selector.Person = new Class({
         this.selectedContainerNode = new Element("div", {
             "styles": this.css.selectedContainerNode
         }).inject(this.contentNode);
+
+        if( this.options.noSelectedContainer ){
+            this.selectedContainerNode.hide();
+        }
 
         //if( this.options.embedded && this.options.count.toInt()!==1 ){
         if( this.options.hasTop ){
@@ -1354,6 +1359,7 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
     setSize : function(){
+
         if( !this.options.width && !this.options.height )return;
 
         var getOffsetX = function(node){
@@ -1417,7 +1423,9 @@ MWF.xApplication.Selector.Person = new Class({
 
             //if (this.options.count.toInt() !== 1){
             var width = nodeWidth - getOffsetX(this.selectNode) - getOffsetX(this.selectedContainerNode);
-            var halfWidth = Math.floor(width / 2);
+
+            var halfWidth = this.options.noSelectedContainer ? width : Math.floor(width / 2);
+
             this.selectNode.setStyle("width", halfWidth);
             //this.searchInput.setStyle("width", halfWidth - 6);
             if(this.letterAreaNode ){
@@ -1657,7 +1665,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.actionNode = new Element("div", {
             "styles": this.selector.css.selectorItemActionNode
         }).inject(this.node);
-        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
 
@@ -1726,7 +1734,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
         this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
+        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
         }
     },
@@ -1763,7 +1771,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
         if (!this.isSelected){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_over);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_over  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_over  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_over );
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
@@ -1778,12 +1786,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
         if (!this.isSelected){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
             }
         }
@@ -1801,7 +1809,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-                if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
+                if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
 
@@ -1825,7 +1833,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
 
         this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
         this.selector.fireEvent("unselectItem",[this])
@@ -1846,7 +1854,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode_selected );
 
                 this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-                if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
+                if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
             }
@@ -1868,7 +1876,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.checkTextNodeIndent( this.textNode, this.selector.css.selectorItemTextNode );
 
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
             }
         }
@@ -1895,7 +1903,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( itemSearch.textNode, this.selector.css.selectorItemTextNode );
 
                     itemSearch.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-                    if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+                    if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         itemSearch.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
                 }
@@ -1914,7 +1922,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.checkTextNodeIndent( item.textNode, this.selector.css.selectorItemTextNode );
 
                     item.actionNode.setStyles(this.selector.css.selectorItemActionNode);
-                    if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+                    if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
                         item.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
                     }
                 }
@@ -1963,7 +1971,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     postLoad : function(){
         if( this.selector.css.selectorSelectedItemActionNode ){
             this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode );
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorSelectedItemActionNode_single  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorSelectedItemActionNode_single  ){
                 this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single );
             }
         }
@@ -2000,7 +2008,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
                 this.node.setStyles(this.selector.css.selectorItem_over);
             }
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected_over);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected_over  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected_over  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected_over );
             }
         }
@@ -2015,13 +2023,13 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
         if (!this.isSelected){
             var styles = this.selector.css.selectorSelectedItemActionNode || this.selector.css.selectorItemActionNode;
             this.actionNode.setStyles(styles);
-            if( this.selector.options.count.toInt() === 1 &&
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) &&
                 ( this.selector.css.selectorSelectedItemActionNode_single || this.selector.css.selectorItemActionNode_single )  ){
                 this.actionNode.setStyles( this.selector.css.selectorSelectedItemActionNode_single || this.selector.css.selectorItemActionNode_single );
             }
         }else if( this.selector.css.selectorItemActionNode_over_force ){
             this.actionNode.setStyles(this.selector.css.selectorItemActionNode_selected);
-            if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single_selected  ){
+            if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
                 this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
             }
         }
@@ -2387,6 +2395,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if (!this.fx.isRunning()){
                 var display = this.children.getStyle("display");
                 if (display === "none"){
+                    this.selector.fireEvent("expand", [this] );
                     this.children.setStyles({
                         "display": "block",
                         "height": "0px"
@@ -2395,6 +2404,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                     this.isExpand = true;
                 }else{
+                    this.selector.fireEvent("collapse", [this] );
                     if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
                     this.fx.start("height", ""+this.childrenHeight+"px", "0px").chain(function(){
                         this.children.setStyles({

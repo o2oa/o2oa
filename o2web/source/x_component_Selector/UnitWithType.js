@@ -141,10 +141,12 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
             }
             this.levelNode.addEvent("click", function(e){
                 if (this.isExpand){
+                    this.selector.fireEvent("collapse", [this] );
                     this.children.setStyle("display", "none");
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_collapse);
                     this.isExpand = false;
                 }else{
+                    this.selector.fireEvent("expand", [this] );
                     this.loadSubItems();
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                     this.isExpand = true;
