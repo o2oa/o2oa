@@ -395,7 +395,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
 				json = Object.merge(moduleData, json);
-				var module = new MWF["FC"+json.type](this);
+				module = new MWF["FC"+json.type](this);
 				module.load(json, dom, parent);
 			}.bind(this), false);
 			return module;
@@ -405,7 +405,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
 				json = Object.merge(moduleData, json);
-				var module = new MWF["FCDiv"](this);
+				module = new MWF["FCDiv"](this);
 				module.load(json, dom, parent);
 			}.bind(this), false);
 			return module;
