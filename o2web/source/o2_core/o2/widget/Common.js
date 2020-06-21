@@ -13,7 +13,7 @@ o2.widget.Common = new Class({
         }else{
             this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+o2.version.v : this.cssPath+"?v="+o2.version.v;
             var r = new Request.JSON({
-                url: this.cssPath,
+                url: o2.filterUrl(this.cssPath),
                 secure: false,
                 async: false,
                 method: "get",
