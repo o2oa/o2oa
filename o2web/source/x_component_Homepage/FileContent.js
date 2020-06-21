@@ -145,12 +145,12 @@ MWF.xApplication.Homepage.FileContent.File = new Class({
     },
     openAttachment: function(d){
         o2.Actions.get("x_file_assemble_control").getFileDownloadUrl(d.id, function(url){
-            window.open(url);
+            window.open(o2.filterUrl(url));
         });
     },
     downloadAttachment: function(d){
         o2.Actions.get("x_file_assemble_control").getFileUrl(d.id, function(url){
-            window.open(url);
+            window.open(o2.filterUrl(url));
         });
     },
     open: function(e, d){
