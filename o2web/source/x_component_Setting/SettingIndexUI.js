@@ -146,7 +146,7 @@ MWF.xApplication.Setting.UIIndexDocument.Item = new Class({
             this.previewMaskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px", "z-index": zidx});
             this.previewMaskNode.addEvents({
                 "click": function(e){
-                    window.open("../x_desktop/index.html?style="+this.data.id+"&styletype="+((this.data.name=="default") ? "default" : "custom"));
+                    window.open(o2.filterUrl("../x_desktop/index.html?style="+this.data.id+"&styletype="+((this.data.name=="default") ? "default" : "custom")));
                     e.stopPropagation();
                 }.bind(this),
                 "mousedown": function(e){e.stopPropagation();},
@@ -296,7 +296,7 @@ MWF.xApplication.Setting.UIIndexDocument.Editor = new Class({
             this.previewMaskNode.setStyles({"width": ""+size.x+"px", "height": ""+size.y+"px", "z-index": zidx});
             this.previewMaskNode.addEvents({
                 "click": function(e){
-                    window.open("../x_desktop/index.html?style="+this.item.data.id+"&styletype="+((this.item.data.name=="default") ? "default" : "custom"));
+                    window.open(o2.filterUrl("../x_desktop/index.html?style="+this.item.data.id+"&styletype="+((this.item.data.name=="default") ? "default" : "custom")));
                     e.stopPropagation();
                 }.bind(this),
                 "mousedown": function(e){e.stopPropagation();},
