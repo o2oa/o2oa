@@ -71,7 +71,7 @@ MWF.xApplication.OKR.Actions.RestActions = new Class({
         this.action.getActions(function(){
             var url = this.action.actions.getAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
 
