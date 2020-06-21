@@ -90,7 +90,7 @@ MWF.xApplication.Attendance.ImportExplorer = new Class({
         }.bind(this))
     },
     downloadTemplate : function(){
-        window.open( this.path + encodeURIComponent( "dataTemplate.xls" ), "_blank" )
+        window.open( o2.filterUrl(this.path + encodeURIComponent( "dataTemplate.xls" ), "_blank" ))
     },
     showDescription: function( el ){
         if( this.descriptionNode ){

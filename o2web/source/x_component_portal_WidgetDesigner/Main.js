@@ -90,6 +90,6 @@ MWF.xApplication.portal.WidgetDesigner.Main = new Class({
                 this.savePage();
                 //this.page.preview();
                 var url = "../x_desktop/portal.html?id="+this.application.id+"&widget="+this.page.json.id;
-                window.open(url);
+                window.open(o2.filterUrl(url));
         }
 });

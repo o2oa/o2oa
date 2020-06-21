@@ -292,14 +292,14 @@ MWF.xApplication.Common.Main = new Class({
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
 		var status = (this.desktop.openBrowserStatus) ? JSON.encode(this.desktop.openBrowserStatus) : "";
 
-		var url = "app.html?app=" + this.options.name + "&status=" + status;
-		window.open(url, "_blank");
+		var url = "../x_desktop/app.html?app=" + this.options.name + "&status=" + status;
+		window.open(o2.filterUrl(url), "_blank");
 		if (!this.inBrowser) if (!noClose) this.close();
 	},
 	openInNewWindow: function () {
 		this.desktop.openBrowserApp = this.options.name;
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
-		window.open("app.html", "_blank");
+		window.open(o2.filterUrl("../x_desktop/app.html"), "_blank");
 		if (!this.inBrowser) this.close();
 	},
 	setContentEvent: function () {

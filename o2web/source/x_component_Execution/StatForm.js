@@ -514,7 +514,7 @@ MWF.xApplication.Execution.StatForm = new Class({
                             var address = this.actions.action.address;
 
                             var url = address + "/jaxrs/export/statisticreportcontent/"+json.data.id+"/stream"
-                            window.open(url)
+                            window.open(o2.filterUrl(url))
                         }
                     }.bind(this),
                     function(xhr,text,error){
