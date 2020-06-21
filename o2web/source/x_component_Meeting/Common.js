@@ -896,7 +896,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 },
                 events : {
                     click : function(){
-                        window.open( "../x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id, "_blank" );
+                        window.open(o2.filterUrl("../x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id), "_blank" );
                     }.bind(this)
                 }
             }).inject( this.qrCodeArea );

@@ -259,7 +259,7 @@ MWF.xApplication.Execution.WorkDeploy = new Class({
                 }).inject(this.importDiv);
                 this.importTemplateDiv.addEvents({
                     "click":function(){
-                        window.open("../x_component_Execution/baseWork.xls")
+                        window.open(o2.filterUrl("../x_component_Execution/baseWork.xls"))
                     }.bind(this)
                 });
                 this.importTitleDiv = new Element("div.importTitleDiv",{

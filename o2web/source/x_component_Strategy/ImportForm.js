@@ -190,7 +190,7 @@ MWF.xApplication.Strategy.ImportForm = new Class({
                                 this.app.notice(json.data.describe, "error");
                                 var address = this.actions.action.address;
                                 var url = address+"/jaxrs/measuresimport/result/flag/"+json.data.flag;
-                                window.open(url);
+                                window.open(o2.filterUrl(url));
                             }
 
                         }.bind(this),function(xhr,text,error){
