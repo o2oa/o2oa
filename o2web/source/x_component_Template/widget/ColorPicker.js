@@ -45,7 +45,7 @@ MWF.xApplication.Template.widget.ColorPicker = new Class({
         }else{
             this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+COMMON.version : this.cssPath+"?v="+COMMON.version;
             var r = new Request.JSON({
-                url: this.cssPath,
+                url: o2.filterUrl(this.cssPath),
                 secure: false,
                 async: false,
                 method: "get",
