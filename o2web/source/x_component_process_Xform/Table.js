@@ -66,7 +66,7 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class({
             tds.setStyles({
                 "border-bottom": this.json.styles.border,
                 "border-right": this.json.styles.border,
-                "background": "transparent"
+                //"background": "transparent"
             });
         }
     },
