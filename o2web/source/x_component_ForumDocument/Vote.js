@@ -231,7 +231,7 @@ MWF.xApplication.ForumDocument.Vote = new Class({
                             "styles": this.css.optionPicture
                         }).inject(area);
                         img.addEvent("click", function () {
-                            window.open(MWF.xDesktop.getImageSrc(this.id), "_blank");
+                            window.open(o2.filterUrl(MWF.xDesktop.getImageSrc(this.id)), "_blank");
                         }.bind({id: n.optionPictureId}));
                     }
 
@@ -381,7 +381,7 @@ MWF.xApplication.ForumDocument.Vote = new Class({
                         "styles" : this.css.optionPicture
                     }).inject( area );
                     img.addEvent("click",function(){
-                        window.open( MWF.xDesktop.getImageSrc( this.id ), "_blank" );
+                        window.open( o2.filterUrl(MWF.xDesktop.getImageSrc( this.id )), "_blank" );
                     }.bind({id: n.optionPictureId}))
                 }
             }else{

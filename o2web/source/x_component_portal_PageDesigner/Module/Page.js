@@ -641,7 +641,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	preview: function(){
         var url = "../x_desktop/portal.html?id="+this.json.application+"&page="+this.json.id;
-        window.open(url);
+        window.open(o2.filterUrl(url));
         // MWF.xDesktop.requireApp("process.FormDesigner", "Preview", function(){
         //
          //    if (this.options.mode=="Mobile"){

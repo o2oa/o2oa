@@ -2673,7 +2673,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         htmlFormId = htmlFormId.replace("#", "%23");
         var url = "/x_processplatform_assemble_surface/jaxrs/attachment/batch/download/work/" + this.businessData.work.id + "/site/(0)/stream";
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
-        window.open( url + "?fileName=&flag=" + htmlFormId);
+        window.open( o2.filterUrl(url + "?fileName=&flag=" + htmlFormId));
     },
     resetWork: function () {
         if (!this.businessData.control["allowReset"]) {
@@ -3613,10 +3613,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            window.open(o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form));
         } else {
             var application = app || this.businessData.work.application;
-            window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
         }
     },
     readedWork: function (e) {
@@ -3664,10 +3664,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
-            window.open("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
+            window.open(o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form));
         } else {
             var application = app || this.businessData.work.application;
-            window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
+            window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form));
         }
         //window.open("../x_desktop/printWork.html?workid="+this.businessData.work.id+"&app="+this.businessData.work.application+"&form="+form);
     },
@@ -3732,9 +3732,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     history.replaceState(null, "work", redirectlink);
                     redirectlink.toURI().go();
                 } else {
-                    window.location = "appMobile.html?app=process.TaskCenter";
-                    history.replaceState(null, "work", "../x_desktop/appMobile.html?app=process.TaskCenter");
-                    "appMobile.html?app=process.TaskCenter".toURI().go();
+                    window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
+                    history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
+                    o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
                 }
             }
         }
