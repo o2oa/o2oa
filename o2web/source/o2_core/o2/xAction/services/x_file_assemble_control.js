@@ -3,7 +3,7 @@ MWF.xAction.RestActions.Action["x_file_assemble_control"] = new Class({
     getAttachment: function(id){
         var url= this.designAddress+this.fileActions.getAttachmentData.uri;
         url = url.replace(/{id}/g, id);
-        window.open(url);
+        window.open(o2.filterUrl(url));
     },
     saveFolder: function(data, success, failure){
         if (data.id){
