@@ -208,7 +208,7 @@ var MobileProcessStarter = new Class({
         if( this.processId ){
             href = href + "&processId=" + this.processId
         }
-        window.location = href + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink;
+        window.location = o2.filterUrl(href + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink);
     },
     gotoSelectIdentityPage : function(){
         var option = {
@@ -223,7 +223,7 @@ var MobileProcessStarter = new Class({
         }else{
             redirectlink = encodeURIComponent(redirectlink);
         }
-        window.location = "../x_desktop/appMobile.html?app=portal.Portal&appid=" + this.process.application + "&processId=" + this.process.id + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink;
+        window.location = o2.filterUrl("../x_desktop/appMobile.html?app=portal.Portal&appid=" + this.process.application + "&processId=" + this.process.id + "&option=" + JSON.stringify(option) + "&redirectlink=" + redirectlink);
     },
     loadSelectProcessLayout : function( applactionId, processId ){
         this.applactionId = applactionId;

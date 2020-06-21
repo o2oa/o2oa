@@ -441,7 +441,7 @@ MWF.xApplication.AppCenter.Exporter = new Class({
 
                         if (this.mask) this.mask.hide();
                         this.dlg.close();
-                        window.open(this.app.actions.action.address+uri);
+                        window.open(o2.filterUrl(this.app.actions.action.address+uri));
 
                         MWF.release(this);
                     }.bind(this), function(xhr, text, error){

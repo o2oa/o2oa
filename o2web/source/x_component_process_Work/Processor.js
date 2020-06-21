@@ -1622,7 +1622,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.switchUser({"credential": ( _self.task.personDn || _self.task.person ) }, function(){
                 var text = MWF.xApplication.process.Work.LP.managerLoginSuccess.replace("{user}", user );
                 MWF.xDesktop.notice("success", {x: "right", y:"top"}, text );
-                window.open("../x_desktop/work.html?workid="+_self.task.work);
+                window.open(o2.filterUrl("../x_desktop/work.html?workid="+_self.task.work));
             }.bind(this));
             this.close();
         }, function () {
