@@ -1,3 +1,4 @@
+
 MWF.require("MWF.widget.Common", null, false);
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
     Implements: [Events],
