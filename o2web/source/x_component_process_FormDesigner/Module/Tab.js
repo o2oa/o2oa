@@ -215,6 +215,9 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 					tabPage.page = page;
 					tabPage.load(moduleData, page.tabNode, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tabPage = new MWF.FCTab$Page(this, page);
 					tabPage.page = page;
 					tabPage.load(json, page.tabNode, this);
@@ -236,6 +239,9 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 					tabContent.page = page;
 					tabContent.load(moduleData, page.contentNode, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tabContent = new MWF.FCTab$Content(this, page);
 					tabContent.page = page;
 					tabContent.load(json, page.contentNode, this);
