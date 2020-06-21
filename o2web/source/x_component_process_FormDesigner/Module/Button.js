@@ -22,7 +22,7 @@ MWF.xApplication.process.FormDesigner.Module.Button = MWF.FCButton = new Class({
 		this.container = null;
 		this.containerNode = null;
 	},
-	
+
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
 			"MWFType": "button",
@@ -94,5 +94,97 @@ MWF.xApplication.process.FormDesigner.Module.Button = MWF.FCButton = new Class({
                 if (button) button.set("text", this.json.id);
 			}
 		}
-	}
+	},
+	_preprocessingModuleData: function(){
+		var button = this.node.getElement("button");
+		button.clearStyles();
+		debugger;
+		button.setStyles(this.css.buttonStyles);
+
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				button.setStyle(key, value);
+				delete this.json.styles[key];
+			}
+		}.bind(this));
+		this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		// var button = this.node.getElement("button");
+		// button.clearStyles();
+		// button.setStyles(this.css.buttonIcon);
+		//
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+	},
+	setCustomStyles: function(){
+		this._recoveryModuleData();
+		//debugger;
+		var border = this.node.getStyle("border");
+		this.node.clearStyles();
+		this.node.setStyles(this.css.moduleNode);
+
+		if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.node.setStyle("border", border);
+
+		var button = this.node.getElement("button");
+		button.clearStyles();
+		button.setStyles(this.css.buttonIcon);
+
+		if (this.json.styles) Object.each(this.json.styles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+				var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+				if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+					value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+				}else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+					value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+				}
+				if (value.indexOf("/x_portal_assemble_surface")!==-1){
+					value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+				}else if (value.indexOf("x_portal_assemble_surface")!==-1){
+					value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+				}
+			}
+
+			var reg = /^border\w*/ig;
+			if (!key.test(reg)){
+				if (key){
+					if (key.toString().toLowerCase()==="display"){
+						if (value.toString().toLowerCase()==="none"){
+							this.node.setStyle("opacity", 0.3);
+						}else{
+							this.node.setStyle("opacity", 1);
+							this.node.setStyle(key, value);
+						}
+					}else{
+						button.setStyle(key, value);
+					}
+				}
+			}
+			//this.node.setStyle(key, value);
+		}.bind(this));
+
+		// Object.each(this.json.styles, function(value, key){
+		// 	var reg = /^border\w*/ig;
+		// 	if (!key.test(reg)){
+		// 		if (key){
+		// 			if (key.toString().toLowerCase()==="display"){
+		// 				if (value.toString().toLowerCase()==="none"){
+		//                    this.node.setStyle("opacity", 0.3);
+		// 				}else{
+		//                    this.node.setStyle("opacity", 1);
+		// 				}
+		// 			}else{
+		//                this.node.setStyle(key, value);
+		// 			}
+		// 		}
+		// 	}
+		// }.bind(this));
+	},
 });

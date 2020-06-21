@@ -959,6 +959,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				delete this.json.styles[key];
 			}
 		}.bind(this));
+		this.json.preprocessing = "y";
 	},
 	_recoveryModuleData: function(){
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
