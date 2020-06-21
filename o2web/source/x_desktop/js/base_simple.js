@@ -317,11 +317,11 @@ o2.addReady(function () {
             redirectlink = encodeURIComponent(redirectlink);
         }
         if (options.workId) {
-            window.location = "workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         } else if (options.workCompletedId) {
-            window.location = "workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         }else if (options.draft){
-            window.location = "workmobilewithaction.html?draft=" + JSON.stringify(options.draft) + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?draft=" + JSON.stringify(options.draft) + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         }else {
             console.log("open work 错误，缺少参数！");
         }
@@ -338,7 +338,7 @@ o2.addReady(function () {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
             window.webkit.messageHandlers.openO2CmsDocument.postMessage({ "docId": options.documentId, "docTitle": title });
         } else {
-            window.location = "appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openCms = function (appNames, options, statusObj) {
@@ -348,7 +348,7 @@ o2.addReady(function () {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication) {
             window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
         } else {
-            window.location = "appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openMeeting = function (appNames, options, statusObj) {
@@ -358,7 +358,7 @@ o2.addReady(function () {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting) {
             window.webkit.messageHandlers.openO2Meeting.postMessage("");
         } else {
-            window.location = "appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -369,7 +369,7 @@ o2.addReady(function () {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar) {
             window.webkit.messageHandlers.openO2Calendar.postMessage("");
         } else {
-            window.location = "appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openTaskCenter = function (appNames, options, statusObj) {
@@ -383,7 +383,7 @@ o2.addReady(function () {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace) {
             window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);
         } else {
-            window.location = "appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -411,7 +411,7 @@ o2.addReady(function () {
                 var uri = new URI(window.location.href);
                 var optionsStr = uri.getData("option");
                 var statusStr = uri.getData("status");
-                window.location = "appMobile.html?app=" + appNames + "&option=" + (optionsStr || "") + "&status=" + (statusStr || "") + ((layout.debugger) ? "&debugger" : "");
+                window.location = o2.filterUrl("../x_desktop/appMobile.html?app=" + appNames + "&option=" + (optionsStr || "") + "&status=" + (statusStr || "") + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -424,9 +424,9 @@ o2.addReady(function () {
 
                 debugger;
                 if (layout.app.$openWithSelf) {
-                    return window.location = "app.html?" + par + ((layout.debugger) ? "&debugger" : "");
+                    return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
                 } else {
-                    return window.open("app.html?" + par + ((layout.debugger) ? "&debugger" : ""), par);
+                    return window.open(o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "")), par);
                 }
             }
         } else {

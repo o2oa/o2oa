@@ -539,7 +539,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
             url = url.replace("{tableFlag}",_self.data.id);
             url = url.replace("{count}",1000);
-            window.open(url)
+            window.open(o2.filterUrl(url))
             this.close();
         }, function(){
             this.close();

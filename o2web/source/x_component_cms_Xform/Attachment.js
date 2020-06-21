@@ -402,7 +402,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.documentAction.getAttachmentUrl(att.data.id, this.form.businessData.document.id, function (url) {
                             var xtoken = Cookie.read("x-token");
-                            window.location = url + "?x-token=" + xtoken;
+                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
                         });
                     } else {
                         this.form.documentAction.getAttachmentStream(att.data.id, this.form.businessData.document.id);
@@ -423,7 +423,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.documentAction.getAttachmentUrl(att.data.id, this.form.businessData.document.id, function (url) {
                             var xtoken = Cookie.read("x-token");
-                            window.location = url + "?x-token=" + xtoken;
+                            window.location = o2.filterUrl(url + "?x-token=" + xtoken);
                         });
                     } else {
                         this.form.documentAction.getAttachmentData(att.data.id, this.form.businessData.document.id);
