@@ -80,7 +80,7 @@ MWF.xDesktop.Authentication = new Class({
             this.fireEvent("openLogin");
         }
     },
-    logout: function () {
+    logout: function ( callback ) {
         MWF.Actions.get("x_organization_assemble_authentication").logout(function () {
             if (this.socket) {
                 this.socket.close();
@@ -88,7 +88,11 @@ MWF.xDesktop.Authentication = new Class({
             }
             Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
-            window.location.reload();
+            if( callback ){
+                callback()
+            }else{
+                window.location.reload();
+            }
         }.bind(this));
     },
     openLoginForm: function (options, callback) {
@@ -131,6 +135,7 @@ MWF.xDesktop.Authentication = new Class({
         form.create();
     },
     openChangePasswordForm: function (options, callback) {
+        //options 里应该包括 userName
         var opt = Object.merge(this.popupOptions || {}, options || {}, {
             onPostOk: function (json) {
                 if (callback) callback(json);
@@ -1023,8 +1028,8 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.explorer.openResetPasswordForm();
         this.close();
     },
-    gotoChangePassword : function(){ //密码过期
-        this.explorer.openChangePasswordForm( null, function(){
+    gotoChangePassword : function( options ){ //密码过期
+        this.explorer.openChangePasswordForm( options, function(){
             this.explorer.loadLogin();
         }.bind(this));
         this.close();
@@ -1084,7 +1089,12 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
                 if (json.type === "error") {
                     if (this.app) this.app.notice(json.message, "error");
                 } else if( json.data.passwordExpired ){ //密码过期
-                    this.gotoChangePassword();
+                    var userName = json.data.distinguishedName;
+                    this.explorer.logout( function(){ //注销再到密码修改页
+                        this.gotoChangePassword({
+                            userName : userName
+                        });
+                    }.bind(this))
                 } else {
                     this._close();
                     if (this.formMaskNode) this.formMaskNode.destroy();
@@ -2074,7 +2084,8 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
         "hasMark": false,
         "title": MWF.LP.authentication.ChangePasswordFormTitle,
         "draggable": true,
-        "closeAction": true
+        "closeAction": true,
+        "userName" : ""
     },
     _createTableContent: function () {
         var self = this;
@@ -2288,11 +2299,14 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
     },
     _ok: function (data, callback) {
         var d = {
+            userName : this.options.userName,
             oldPassword : data.password,
             newPassword : data.newPassword,
-            confirmPassword : data.confirmPassword
+            confirmPassword : data.confirmPassword,
+            isEncrypted : "n" //是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key"
         }
-        o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
+        // o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
+        o2.Actions.load("x_organization_assemble_personal").PersonAction.setPasswordAnonymous( d, function (json) {
             if (callback) callback(json);
             //this.fireEvent("postOk")
         }.bind(this), function (errorObj) {
