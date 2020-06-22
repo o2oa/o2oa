@@ -15,7 +15,7 @@ MWF.xApplication.Homepage.Main = new Class({
 		"isResize": true,
 		"isMax": true,
 		"title": MWF.xApplication.Homepage.LP.title,
-		"minHeight": 600
+		"minHeight": 700
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.Homepage.LP;
@@ -77,6 +77,7 @@ MWF.xApplication.Homepage.Main = new Class({
 		var height = size.y - edge;
 		if (height<this.options.minHeight) height = this.options.minHeight;
 		this.node.setStyle("height", ""+height+"px");
+
 
 		var rightHeight = height - this.calendarContentNode.getEdgeHeight();
 		var leftHeight = this.ltlLayout.getSize().y - this.taskContentNode.getEdgeHeight();
