@@ -1018,7 +1018,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
     Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change"]
+        "moduleEvents": ["upload", "delete", "afterDelete", "load", "change","download","open"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1089,6 +1089,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
     },
 
     _loadEvents: function (editorConfig) {
+        debugger;
         Object.each(this.json.events, function (e, key) {
             if (e.code) {
                 if (this.options.moduleEvents.indexOf(key) !== -1) {
@@ -1409,9 +1410,34 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
         // }
         // this.fileReplaceNode.click();
     },
+    queryDownload : function( att ){
+        if( this.json.events && this.json.events.queryDownload && this.json.events.queryDownload.code ){
+            var flag = this.form.Macro.exec(this.json.events.queryDownload.code, att );
+            if( flag === false ){
+                return false
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
+    },
+    queryOpen : function( att ){
+        if( this.json.events && this.json.events.queryOpen && this.json.events.queryOpen.code ){
+            var flag = this.form.Macro.exec(this.json.events.queryOpen.code, att );
+            if( flag === false ){
+                return false
+            }else{
+                return true;
+            }
+        }else{
+            return true;
+        }
+    },
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
+                if( !this.queryDownload( att ) )return;
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
@@ -1427,9 +1453,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                         this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
                     }
                 }
+                this.fireEvent("download",[att])
             }.bind(this));
         } else {
             attachments.each(function (att) {
+                if( !this.queryDownload( att ) )return;
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
@@ -1445,12 +1473,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                         this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
                     }
                 }
+                this.fireEvent("download",[att])
             }.bind(this));
         }
     },
     openAttachment: function (e, node, attachments) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
+                if( !this.queryOpen( att ) )return;
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
@@ -1467,9 +1497,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                     }
 
                 }
+                this.fireEvent("open",[att])
             }.bind(this));
         } else {
             attachments.each(function (att) {
+                if( !this.queryOpen( att ) )return;
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
@@ -1486,6 +1518,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                         this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
                     }
                 }
+                this.fireEvent("open",[att])
             }.bind(this));
         }
         //this.downloadAttachment(e, node, attachment);
