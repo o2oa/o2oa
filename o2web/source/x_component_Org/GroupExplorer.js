@@ -46,6 +46,7 @@ MWF.xApplication.Org.GroupExplorer = new Class({
         return {
             "personList": [],
             "groupList": [],
+            "identityList" : [],
             "unitList": [],
             "description": "",
             "unique": "",
