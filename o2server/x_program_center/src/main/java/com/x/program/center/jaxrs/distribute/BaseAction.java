@@ -41,18 +41,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return true;
 		}
 		for (Node o : Config.nodes().values()) {
-			if (BooleanUtils.isTrue(o.getApplication().getEnable())) {
-				if (StringUtils.equals(o.getApplication().getProxyHost(), source)) {
-					return true;
-				}
+			if (BooleanUtils.isTrue(o.getApplication().getEnable())
+					&& StringUtils.equals(o.getApplication().getProxyHost(), source)) {
+				return true;
 			}
-			if (BooleanUtils.isTrue(o.getWeb().getEnable())) {
-				if (StringUtils.equals(o.getWeb().getProxyHost(), source)) {
-					return true;
-				}
+			if (BooleanUtils.isTrue(o.getWeb().getEnable()) && StringUtils.equals(o.getWeb().getProxyHost(), source)) {
+				return true;
 			}
 		}
 		return false;
+
 	}
 
 	private Boolean fromNode(HttpServletRequest request, String source) throws Exception {
@@ -60,19 +58,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return false;
 		}
 		for (Entry<String, Node> en : Config.nodes().entrySet()) {
-			if (BooleanUtils.isTrue(en.getValue().getEnable())) {
-				if (StringUtils.equalsIgnoreCase(en.getKey(), source)) {
-					return true;
-				}
+			if (BooleanUtils.isTrue(en.getValue().getEnable()) && StringUtils.equalsIgnoreCase(en.getKey(), source)) {
+				return true;
 			}
 		}
 		return false;
+
 	}
 
 	WoWebServer getRandomWebServer(HttpServletRequest request, String source) throws Exception {
-		if (this.fromProxy(request, source)) {
-			return this.getRandomWebServerProxy();
-		} else if (this.fromNode(request, source)) {
+		if (BooleanUtils.isTrue(fromProxy(request, source))) {
+			return this.getRandomWebServerProxy(source);
+		} else if (BooleanUtils.isTrue(this.fromNode(request, source))) {
 			return this.getRandomWebServerNode();
 		} else {
 			return this.getRandomWebServerFrom(request, source);
@@ -92,13 +89,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return wrap;
 	}
 
-	private WoWebServer getRandomWebServerProxy() throws Exception {
+	private WoWebServer getRandomWebServerProxy(String source) throws Exception {
 		WoWebServer wrap = null;
 		Entry<String, WebServer> entry = Config.nodes().webServers().getRandom();
 		if (null != entry) {
 			wrap = new WoWebServer();
 			WebServer webServer = entry.getValue();
-			wrap.setHost(webServer.getProxyHost());
+			// 如果只配置了center的porxy而没有配置application的proxy,强制设置成source
+			wrap.setHost(StringUtils.isBlank(webServer.getProxyHost()) ? source : webServer.getProxyHost());
 			wrap.setPort(webServer.getProxyPort());
 			wrap.setSslEnable(webServer.getSslEnable());
 		}
@@ -119,9 +117,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	Map<String, WoAssemble> getRandomAssembles(HttpServletRequest request, String source) throws Exception {
-		if (this.fromProxy(request, source)) {
-			return this.getRandomAssemblesProxy();
-		} else if (this.fromNode(request, source)) {
+		if (BooleanUtils.isTrue(this.fromProxy(request, source))) {
+			return this.getRandomAssemblesProxy(source);
+		} else if (BooleanUtils.isTrue(this.fromNode(request, source))) {
 			return this.getRandomAssemblesNode();
 		} else {
 			return this.getRandomAssemblesFrom(request, source);
@@ -144,14 +142,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return map;
 	}
 
-	private Map<String, WoAssemble> getRandomAssemblesProxy() throws Exception {
+	private Map<String, WoAssemble> getRandomAssemblesProxy(String source) throws Exception {
 		Map<String, WoAssemble> map = new HashMap<>();
 		for (String str : ThisApplication.context().applications().keySet()) {
 			WoAssemble wrap = new WoAssemble();
 			Application application = ThisApplication.context().applications().randomWithWeight(str);
 			if (null != application) {
 				wrap.setContext(application.getContextPath());
-				wrap.setHost(application.getProxyHost());
+				// 如果只配置了center的porxy而没有配置application的proxy,强制设置成source
+				wrap.setHost(StringUtils.isBlank(application.getProxyHost()) ? source : application.getProxyHost());
 				wrap.setPort(application.getProxyPort());
 				wrap.setName(application.getName());
 			}
