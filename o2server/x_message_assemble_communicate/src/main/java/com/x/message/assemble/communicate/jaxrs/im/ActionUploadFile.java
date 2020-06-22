@@ -3,6 +3,7 @@ package com.x.message.assemble.communicate.jaxrs.im;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.ActionResult;
@@ -70,6 +71,7 @@ public class ActionUploadFile extends BaseAction {
             emc.commit();
             Wo wo = new Wo();
             wo.setId(file.getId());
+            wo.setFileExtension(file.getExtension());
             result.setData(wo);
             return result;
         }
@@ -79,5 +81,16 @@ public class ActionUploadFile extends BaseAction {
 
 
     public static class Wo extends WoId {
+
+        @FieldDescribe( "文件扩展名" )
+        private String fileExtension;
+
+        public String getFileExtension() {
+            return fileExtension;
+        }
+
+        public void setFileExtension(String fileExtension) {
+            this.fileExtension = fileExtension;
+        }
     }
 }
