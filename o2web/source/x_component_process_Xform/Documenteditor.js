@@ -1737,7 +1737,8 @@ debugger;
                         case "issuanceDate":
                         case "editionDate":
                             var d = new Date(v);
-                            if (d.isValid()){
+                            debugger;
+                            if (d.isValid() && d.getFullYear()!=1970){
                                 var y = d.getFullYear();
                                 var m = d.getMonth();
                                 var day = d.getDate();
@@ -1777,7 +1778,16 @@ debugger;
                         case "editionDate":
                             var tmpStrs = strs.map(function(n, i){
                                 var d = Date.parse(n);
-                                return (d.isValid()) ? d.format("%Y年%m月%d日") : n;
+                                if (d.isValid() && d.getFullYear()!=1970){
+                                    var y = d.getFullYear();
+                                    var m = d.getMonth();
+                                    var day = d.getDate();
+                                    m = m +1;
+                                    return ""+y+"年"+m+"月"+day+"日";
+                                }else{
+                                    return n;
+                                }
+                                //return () ? d.format("%Y年%m月%d日") : n;
                             });
                             this.data[name] = tmpStrs.join("，");
                             break;
@@ -1818,7 +1828,16 @@ debugger;
                     }
                     if (name=="issuanceDate" || name=="editionDate"){
                         var d = Date.parse(v);
-                        this.data[name] = (d.isValid()) ? d.format("%Y年%m月%d日") : v;
+                        if (d.isValid() && d.getFullYear()!=1970){
+                            var y = d.getFullYear();
+                            var m = d.getMonth();
+                            var day = d.getDate();
+                            m = m +1;
+                            this.data[name] = ""+y+"年"+m+"月"+day+"日";
+                        }else{
+                            this.data[name] = v;
+                        }
+                        //this.data[name] = (d.isValid() && d.getFullYear()!=1970) ? d.format("%Y年%m月%d日") : v;
                     }
                 }
                 break;
