@@ -63,6 +63,7 @@ class IMMessageBodyInfo: NSObject, DataModel {
     @objc var type: String?
     @objc var body: String?
     @objc var fileId: String? //文件id
+    @objc var fileExtension: String? //文件扩展
     @objc var fileTempPath: String? //本地临时文件地址
     @objc var audioDuration: String? // 音频文件时长
     @objc var address: String? //type=location的时候位置信息
@@ -71,6 +72,21 @@ class IMMessageBodyInfo: NSObject, DataModel {
     var longitude: Double?//type=location的时候位置信息
 
 
+    required override init() { }
+
+    func mapping(mapper: HelpingMapper) {
+
+    }
+}
+
+class IMUploadBackModel: NSObject, DataModel {
+    public override var description: String {
+        return "IMUploadBackModel"
+    }
+    
+    @objc var id:String?
+    @objc var fileExtension: String? //文件扩展
+    
     required override init() { }
 
     func mapping(mapper: HelpingMapper) {

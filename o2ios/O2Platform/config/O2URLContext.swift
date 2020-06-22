@@ -47,6 +47,7 @@ struct FileContext {
     static let fileDownloadCMSIdQuery = "servlet/download/##id##/stream"
     static let fileDownloadItemIdQuery = "jaxrs/attachment/##id##/download/stream"
     static let fileDownloadPicItemIdQuery = "jaxrs/file/##id##/download/stream"
+    static let fileDownloadNoStreamIdQuery = "jaxrs/file/##id##/download"
     static let fileUploadTopQuery = "jaxrs/attachment/upload/folder/(0)"
     static let fileUploadSubQuery = "jaxrs/attachment/upload/folder/##id##"
     static let fileUploadReference = "jaxrs/file/upload/referencetype/##referencetype##/reference/##reference##/scale/##scale##"

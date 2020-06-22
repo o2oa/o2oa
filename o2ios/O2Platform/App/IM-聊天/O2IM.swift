@@ -51,13 +51,13 @@ class O2IMFileManager {
 
     private init() { }
     //根据id下载文件，并返回文件的本地url
-    func getFileLocalUrl(fileId: String) -> Promise<URL> {
+    func getFileLocalUrl(fileId: String, fileExtension: String) -> Promise<URL> {
         return Promise { fulfill, reject in
-            let url = self.localFilePath(fileId: fileId)
+            let url = self.localFilePath(fileId: fileId, ext: fileExtension)
             if FileUtil.share.fileExist(filePath: url.path) {
                 fulfill(url)
             } else {
-                self.communicateAPI.request(.imDownloadFullFile(fileId), completion: { result in
+                self.communicateAPI.request(.imDownloadFullFile(fileId, fileExtension), completion: { result in
                         switch result {
                         case .success(_):
                             DDLogError("下载成功。。。。。\(fileId)")
@@ -74,8 +74,8 @@ class O2IMFileManager {
 
     }
 
-    func localFilePath(fileId: String) -> URL {
-        return FileUtil.share.cacheDir().appendingPathComponent("\(fileId).png")
+    func localFilePath(fileId: String, ext: String) -> URL {
+        return FileUtil.share.cacheDir().appendingPathComponent("\(fileId).\(ext)")
     }
     
     //音频文件存储地址
