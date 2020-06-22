@@ -19,7 +19,7 @@ enum CommunicateAPI {
     case instantMessageList(Int)
     case createConversation(IMConversationInfo)
     case imUploadFile(String, String, String, Data)
-    case imDownloadFullFile(String)
+    case imDownloadFullFile(String, String)
     
     
 }
@@ -61,14 +61,14 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/im/conversation"
         case .imUploadFile(let conversationId, let type, _, _):
             return "/jaxrs/im/msg/upload/\(conversationId)/type/\(type)"
-        case .imDownloadFullFile(let id):
+        case .imDownloadFullFile(let id, _):
             return "/jaxrs/im/msg/download/\(id)"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .myConversationList, .instantMessageList(_), .imDownloadFullFile(_):
+        case .myConversationList, .instantMessageList(_), .imDownloadFullFile(_, _):
             return .get
         case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_), .imUploadFile(_, _, _, _):
             return .post
@@ -100,10 +100,10 @@ extension CommunicateAPI: TargetType {
             //文件类型
             let fileData = MultipartFormData(provider: .data(data), name: "file", fileName: fileName)
             return .uploadMultipart([fileData, fileNameData])
-        case .imDownloadFullFile(let id):
+        case .imDownloadFullFile(let id, let fileExtension):
             let myDest:DownloadDestination = { temporaryURL, response in
                 //本地存储
-                return (O2IMFileManager.shared.localFilePath(fileId: id), [.removePreviousFile, .createIntermediateDirectories])
+                return (O2IMFileManager.shared.localFilePath(fileId: id, ext: fileExtension), [.removePreviousFile, .createIntermediateDirectories])
             }
             return .downloadDestination(myDest)
         }

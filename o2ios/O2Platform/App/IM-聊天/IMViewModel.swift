@@ -77,13 +77,13 @@ extension IMViewModel {
     }
     
     //上传文件
-    func uploadFile(conversationId: String, type: String, fileName: String, file: Data) -> Promise<String> {
+    func uploadFile(conversationId: String, type: String, fileName: String, file: Data) -> Promise<IMUploadBackModel> {
        return Promise { fulfill, reject in
            self.communicateAPI.request(.imUploadFile(conversationId, type, fileName, file), completion: { (result) in
-               let response = OOResult<BaseModelClass<OOCommonIdModel>>(result)
+               let response = OOResult<BaseModelClass<IMUploadBackModel>>(result)
                if response.isResultSuccess() {
-                   if let id = response.model?.data {
-                       fulfill(id.id ?? "")
+                   if let back = response.model?.data {
+                       fulfill(back)
                    }else {
                        reject(OOAppError.apiEmptyResultError)
                    }
