@@ -263,7 +263,13 @@ public class SyncOrganization {
 			person.setName(user.getName());
 			person.setMobile(user.getMobile());
 			person.setUnique(user.getUserid());
-			person.setEmployee(user.getJobnumber());
+			String employee = user.getJobnumber();
+			if(StringUtils.isNotEmpty(employee)){
+				if(business.person().employeeExists(employee, person.getUnique())){
+					employee = "";
+				}
+			}
+			person.setEmployee(employee);
 			person.setMail(user.getEmail());
 			person.setOfficePhone(user.getMobile());
 			person.setGenderType(GenderType.d);
@@ -276,7 +282,13 @@ public class SyncOrganization {
 			person.setName(user.getName());
 			person.setMobile(user.getMobile());
 			person.setUnique(user.getUserid());
-			person.setEmployee(user.getJobnumber());
+			String employee = user.getJobnumber();
+			if(StringUtils.isNotEmpty(employee)){
+				if(business.person().employeeExists(employee, person.getUnique())){
+					employee = "";
+				}
+			}
+			person.setEmployee(employee);
 			person.setMail(user.getEmail());
 			person.setOfficePhone(user.getMobile());
 			person.setGenderType(GenderType.d);
@@ -309,7 +321,13 @@ public class SyncOrganization {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		emc.beginTransaction(Person.class);
 		person.setDingdingHash(DigestUtils.sha256Hex(XGsonBuilder.toJson(user)));
-		person.setEmployee(user.getJobnumber());
+		String employee = user.getJobnumber();
+		if(StringUtils.isNotEmpty(employee)){
+			if(business.person().employeeExists(employee, person.getUnique())){
+				employee = "";
+			}
+		}
+		person.setEmployee(employee);
 		person.setName(user.getName());
 		person.setMobile(user.getMobile());
 		person.setMail(user.getEmail());
