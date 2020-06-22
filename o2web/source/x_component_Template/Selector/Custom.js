@@ -248,9 +248,9 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         return this.data.name;
     },
     clickItem: function (callback) {
+        debugger;
         if (this._hasChild()) {
             var firstLoaded = !this.loaded;
-            debugger;
             this.loadSub(function () {
                 if (firstLoaded) {
                     if (!this.selector.isFlatCategory) {
@@ -277,7 +277,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
     loadSub: function (callback) {
         debugger;
         if (!this.loaded) {
-            if( this._hasChild() ){
+            if( this._hasChildItem() ){
                 this.data.subItemList.each(function (subItem, index) {
                     var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
                     this.selector.items.push(item);
