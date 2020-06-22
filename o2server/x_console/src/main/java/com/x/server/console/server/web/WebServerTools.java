@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.servlet.DispatcherType;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -208,8 +209,10 @@ public class WebServerTools extends JettySeverTools {
 		    /*RSA*/
 			File publicKeyFile = new File(Config.base(), "config/public.key");
 			if (publicKeyFile.exists() && publicKeyFile.isFile()) {
-					String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
-					map.put("publicKey", publicKey);
+					 String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
+					 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+					 publicKey = new String(Base64.encodeBase64(publicKeyB));
+					 map.put("publicKey", publicKey);
 			}
 			
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
