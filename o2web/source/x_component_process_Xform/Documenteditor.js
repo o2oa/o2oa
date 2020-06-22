@@ -1545,6 +1545,9 @@ debugger;
 
         //editorConfig.extraAllowedContent = mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)';
 
+        editorConfig.pasteFromWordRemoveFontStyles = false;
+        editorConfig.pasteFromWordRemoveStyles = false;
+
         //editorConfig.removeButtons = 'NewPage,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,Styles,Font,FontSize,TextColor,BGColor,ShowBlocks,About';
         editorConfig.removePlugins = ['magicline'];
         editorConfig.enterMode = 3;
@@ -1679,6 +1682,19 @@ debugger;
                 }.bind(this));
                 this.filetextEditor.on( 'focus', function( e ) {
                     window.setTimeout(this.reLocationFiletextToolbar.bind(this), 10);
+                }.bind(this) );
+
+                this.filetextEditor.on( 'paste', function( e ) {
+                    var html = e.data.dataValue;
+                    var tmp = new Element("div")
+                    tmp.set("html", html);
+                    var pList = tmp.getElements("p");
+                    pList.each(function(p, i){
+                        var textIndent = p.getStyle("text-indent");
+                        if (textIndent.toInt()) p.appendText("　　","top");
+                    });
+                    e.data.dataValue = tmp.get("html");
+                    tmp.destroy();
                 }.bind(this) );
 
                 // this.filetextEditor.on("key", function(e){
