@@ -113,7 +113,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 
                 var radio = new Element("input", {
                     "type": "radio",
-                    "name": this.json.properties.name || flag+this.json.id,
+                    "name": (this.json.properties && this.json.properties.name) ? this.json.properties.name : flag+this.json.id,
                     "value": value,
                     "showText": text,
                     "styles": this.json.buttonStyles
