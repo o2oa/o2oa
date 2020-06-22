@@ -140,7 +140,7 @@ public class PersonAction extends StandardJaxrsAction {
 	
 	@JaxrsMethodDescribe(value = "匿名更新个人的密码.", action = ActionSetPasswordAnonymous.class)
 	@POST
-	@Path("passwordAnonymous")
+	@Path("password/anonymous")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void setPasswordAnonymous(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
