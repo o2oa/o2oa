@@ -1690,8 +1690,12 @@ debugger;
                     tmp.set("html", html);
                     var pList = tmp.getElements("p");
                     pList.each(function(p, i){
-                        var textIndent = p.getStyle("text-indent");
-                        if (textIndent.toInt()) p.appendText("　　","top");
+                        if (Browser.name=="ie"){
+                            p.appendText("　　","top");
+                        }else{
+                            var textIndent = p.getStyle("text-indent");
+                            if (textIndent.toInt()) p.appendText("　　","top");
+                        }
                     });
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
