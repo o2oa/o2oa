@@ -37,9 +37,9 @@ public class Exmail extends ConfigObject {
 	private String token;
 	@FieldDescribe("回调encodingAesKey")
 	private String encodingAesKey;
-	@FieldDescribe(" 存储邮件数量个人属性值.")
+	@FieldDescribe("存储邮件数量个人属性值.")
 	private String personAttributeNewCountName;
-	@FieldDescribe(" 存储邮件标题个人属性值.")
+	@FieldDescribe("存储邮件标题个人属性值.")
 	private String personAttributeTitleName;
 
 	public static Exmail defaultInstance() {
