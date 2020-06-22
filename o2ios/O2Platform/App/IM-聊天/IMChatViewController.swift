@@ -235,7 +235,7 @@ class IMChatViewController: UIViewController {
                             }
                             let localFilePath = self.storageLocalImage(imageData: newData, fileName: fileName)
                             let msgId = self.prepareForSendImageMsg(filePath: localFilePath)
-                            self.uploadImageAndSendMsg(messageId: msgId, imageData: newData, fileName: fileName)
+                            self.uploadFileAndSendMsg(messageId: msgId, data: newData, fileName: fileName, type: o2_im_msg_type_image)
                         }
                         break
                     default:
@@ -292,44 +292,15 @@ class IMChatViewController: UIViewController {
         return msgId
     }
 
-    //上传图片到服务器并发送消息
-    private func uploadImageAndSendMsg(messageId: String, imageData: Data, fileName: String) {
-        guard let cId = self.conversation?.id else {
-            return
-        }
-        self.viewModel.uploadFile(conversationId: cId, type: o2_im_msg_type_image, fileName: fileName, file: imageData).then { attachId in
-            DDLogDebug("上传图片成功： \(attachId)")
-            guard let message = self.chatMessageList.first (where: { (info) -> Bool in
-                return info.id == messageId
-            }) else {
-                DDLogDebug("没有找到对应的消息")
-                return
-            }
-            let body = IMMessageBodyInfo.deserialize(from: message.body)
-            body?.fileId = attachId
-            body?.fileTempPath = nil
-            message.body = body?.toJSONString()
-            //发送消息到服务器
-            self.viewModel.sendMsg(msg: message)
-                .then { (result) in
-                    DDLogDebug("图片消息 发送成功 \(result)")
-                    self.viewModel.readConversation(conversationId: self.conversation?.id)
-                }.catch { (error) in
-                    DDLogError(error.localizedDescription)
-                    self.showError(title: "发送消息失败!")
-            }
-        }.catch { err in
-            self.showError(title: "上传错误，\(err.localizedDescription)")
-        }
-    }
+     
 
     //上传图片 音频 等文件到服务器并发送消息
     private func uploadFileAndSendMsg(messageId: String, data: Data, fileName: String, type: String) {
         guard let cId = self.conversation?.id else {
             return
         }
-        self.viewModel.uploadFile(conversationId: cId, type: type, fileName: fileName, file: data).then { attachId in
-            DDLogDebug("上传图片成功： \(attachId)")
+        self.viewModel.uploadFile(conversationId: cId, type: type, fileName: fileName, file: data).then { back in
+            DDLogDebug("上传文件成功")
             guard let message = self.chatMessageList.first (where: { (info) -> Bool in
                 return info.id == messageId
             }) else {
@@ -337,13 +308,14 @@ class IMChatViewController: UIViewController {
                 return
             }
             let body = IMMessageBodyInfo.deserialize(from: message.body)
-            body?.fileId = attachId
+            body?.fileId = back.id
+            body?.fileExtension = back.fileExtension
             body?.fileTempPath = nil
             message.body = body?.toJSONString()
             //发送消息到服务器
             self.viewModel.sendMsg(msg: message)
                 .then { (result) in
-                    DDLogDebug("图片消息 发送成功 \(result)")
+                    DDLogDebug("消息 发送成功 \(result)")
                     self.viewModel.readConversation(conversationId: self.conversation?.id)
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
@@ -446,7 +418,7 @@ extension IMChatViewController: UIImagePickerControllerDelegate & UINavigationCo
             let newData = image.pngData()!
             let localFilePath = self.storageLocalImage(imageData: newData, fileName: fileName)
             let msgId = self.prepareForSendImageMsg(filePath: localFilePath)
-            self.uploadImageAndSendMsg(messageId: msgId, imageData: newData, fileName: fileName)
+            self.uploadFileAndSendMsg(messageId: msgId, data: newData, fileName: fileName, type: o2_im_msg_type_image)
         } else {
             DDLogError("没有选择到图片！")
         }
@@ -482,11 +454,15 @@ extension IMChatViewController: IMChatMessageDelegate {
         self.navigationController?.pushViewController(map, animated: false)
     }
     
-    func clickImageMessage(fileId: String?, tempPath: String?) {
-        if let id = fileId {
+    func clickImageMessage(info: IMMessageBodyInfo) {
+        if let id = info.fileId {
             self.showLoading()
+            var ext = info.fileExtension ?? "png"
+            if ext.isEmpty {
+                ext = "png"
+            }
             O2IMFileManager.shared
-                .getFileLocalUrl(fileId: id)
+                .getFileLocalUrl(fileId: id, fileExtension: ext)
                 .always {
                     self.hideLoading()
                 }.then { (path) in
@@ -506,7 +482,7 @@ extension IMChatViewController: IMChatMessageDelegate {
                     DDLogError(error.localizedDescription)
                     self.showError(title: "获取文件异常！")
             }
-        } else if let temp = tempPath {
+        } else if let temp = info.fileTempPath {
             let currentURL = NSURL(fileURLWithPath: temp)
             DDLogDebug(currentURL.description)
             DDLogDebug(temp)

@@ -42,7 +42,8 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         if UIDevice.deviceModelReadable() != "Simulator" {
             self.checkAppVersion()
         }
-
+        //
+        self.tabBar.tintColor = O2ThemeManager.color(for: "Base.base_color")!
         self.delegate = self
         _initControllers()
         selectedIndex = 2

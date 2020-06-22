@@ -10,7 +10,7 @@ import UIKit
 import CocoaLumberjack
 
 protocol IMChatMessageDelegate {
-    func clickImageMessage(fileId: String?, tempPath: String?)
+    func clickImageMessage(info: IMMessageBodyInfo)
     func openLocatinMap(info: IMMessageBodyInfo)
 }
 
@@ -165,7 +165,11 @@ class IMChatMessageViewCell: UITableViewCell {
 
     private func playAudio(info: IMMessageBodyInfo) {
         if let fileId = info.fileId {
-            O2IMFileManager.shared.getFileLocalUrl(fileId: fileId)
+            var ext = info.fileExtension ?? "mp3"
+            if ext.isEmpty {
+                ext = "mp3"
+            }
+            O2IMFileManager.shared.getFileLocalUrl(fileId: fileId, fileExtension: ext)
                 .then { (url) in
                     do {
                         let data = try Data(contentsOf: url)
@@ -224,7 +228,7 @@ class IMChatMessageViewCell: UITableViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(imageView)
         imageView.addTapGesture { (tap) in
-            self.delegate?.clickImageMessage(fileId: info.fileId, tempPath: info.fileTempPath)
+            self.delegate?.clickImageMessage(info: info)
         }
         self.constraintWithContent(contentView: imageView)
 
