@@ -149,14 +149,6 @@ interface MeetingAssembleControlService {
     @DELETE("jaxrs/attachment/{id}")
     fun deleteMeetingFile(@Path("id") id: String): Observable<ApiResponse<IdData>>
 
-    /**
-     * 下载会议材料
-     * @param fileId
-     *
-     * @return
-     */
-    @GET("jaxrs/attachment/{id}/download/{stream}")
-    fun downloadMeetingFile(@Path("id") fileId: String,@Path("stream") stream: Boolean = true): Call<ResponseBody>
 
     /**
      * 更新会议

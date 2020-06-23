@@ -92,9 +92,9 @@
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:baselineAligned="false">
              <LinearLayout
+                 android:id="@+id/ll_o2_chat_audio_btn"
                  android:layout_width="0dp"
                  android:layout_height="wrap_content"
                  android:layout_weight="1"
@@ -107,6 +107,7 @@
                      android:src="@mipmap/chat_mic" />
              </LinearLayout>
             <LinearLayout
+                android:id="@+id/ll_o2_chat_album_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -119,6 +120,7 @@
                     android:src="@mipmap/chat_img" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/ll_o2_chat_camera_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -131,6 +133,7 @@
                     android:src="@mipmap/chat_camera" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/ll_o2_chat_location_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -147,13 +150,46 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_o2_chat_emoji_box"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:layout_marginBottom="@dimen/spacing_small"
             android:visibility="gone"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             />
 
+        <RelativeLayout
+            android:id="@+id/tv_o2_chat_audio_send_box"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_o2_chat_audio_speak_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/font_small"
+                android:textColor="@color/z_color_subtitle_font"
+                android:text="@string/activity_im_audio_speak" />
+            <TextView
+                android:id="@+id/tv_o2_chat_audio_speak_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:layout_below="@+id/tv_o2_chat_audio_speak_title"
+                android:textSize="@dimen/font_mini"
+                android:textColor="@color/z_color_primary_blur_blue"
+                tools:text="00:01" />
+            <ImageButton
+                android:id="@+id/image_o2_chat_audio_speak_btn"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@mipmap/chat_mic"
+                android:layout_centerInParent="true"
+                android:background="@drawable/f5_circle"
+                />
+        </RelativeLayout>
 
     </LinearLayout>
 

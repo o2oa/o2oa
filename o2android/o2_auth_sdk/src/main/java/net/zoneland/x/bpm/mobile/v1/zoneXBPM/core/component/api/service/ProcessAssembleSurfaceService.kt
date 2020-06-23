@@ -339,25 +339,25 @@ interface ProcessAssembleSurfaceService {
     @PUT("jaxrs/attachment/update/{attachmentId}/work/{workId}")
     fun replaceAttachment(@Part body: MultipartBody.Part, @Path("attachmentId") attachmentId: String, @Path("workId") workId: String): Observable<ApiResponse<IdData>>
 
-    /**
-     * 附件下载
-     * @param attachId
-     * *
-     * @return
-     */
-    @GET("jaxrs/attachment/download/{attachId}/work/{workId}/stream")
-    @Headers("Content-Type: application/json; charset=utf-8")
-    fun downloadWorkAttachment(@Path("attachId") attachId: String, @Path("workId") workId: String): Call<ResponseBody>
-
-    /**
-     * 附件下载
-     * @param attachId
-     * *
-     * @return
-     */
-    @GET("jaxrs/attachment/download/{attachId}/workcompleted/{workCompletedId}/stream")
-    @Headers("Content-Type: application/json; charset=utf-8")
-    fun downloadWorkCompletedAttachment(@Path("attachId") attachId: String, @Path("workCompletedId") workCompletedId: String): Call<ResponseBody>
+//    /**
+//     * 附件下载
+//     * @param attachId
+//     * *
+//     * @return
+//     */
+//    @GET("jaxrs/attachment/download/{attachId}/work/{workId}/stream")
+//    @Headers("Content-Type: application/json; charset=utf-8")
+//    fun downloadWorkAttachment(@Path("attachId") attachId: String, @Path("workId") workId: String): Call<ResponseBody>
+//
+//    /**
+//     * 附件下载
+//     * @param attachId
+//     * *
+//     * @return
+//     */
+//    @GET("jaxrs/attachment/download/{attachId}/workcompleted/{workCompletedId}/stream")
+//    @Headers("Content-Type: application/json; charset=utf-8")
+//    fun downloadWorkCompletedAttachment(@Path("attachId") attachId: String, @Path("workCompletedId") workCompletedId: String): Call<ResponseBody>
 
     /**
      * 测试附件是否可用

@@ -17,14 +17,7 @@ import rx.Observable
 
 interface FileAssembleControlService {
 
-    /**
-     * 下载文件
-     * @param fileId
-     * *
-     * @return
-     */
-    @GET("jaxrs/attachment/{id}/download/stream")
-    fun downloadFile(@Path("id") id: String): Call<ResponseBody>
+
 
     /**
      * 上传文件
