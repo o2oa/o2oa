@@ -1,4 +1,4 @@
-package com.x.organization.assemble.personal.jaxrs.person;
+package com.x.organization.assemble.personal.jaxrs.reset;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
@@ -23,7 +23,7 @@ import com.x.organization.assemble.personal.jaxrs.reset.ExceptionPersonNotExiste
 import com.x.organization.core.entity.Person;
 
 public class ActionSetPasswordAnonymous extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionSetPassword.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionSetPasswordAnonymous.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -53,7 +53,7 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 					throw new ExceptionOldPasswordEmpty();
 				}
 				if (StringUtils.isEmpty(wi.getNewPassword())) {
-					throw new ExceptionNewPasswordEmpty();
+					throw new ExceptionPasswordEmpty();
 				}
 				
 				if (StringUtils.isEmpty(wi.getConfirmPassword())) {
