@@ -92,7 +92,8 @@
 		"meetingSitTitle": "列席：",
 		"meetingAttend": "",
 		"meetingLeave": "",
-		"meetingSit": ""
+		"meetingSit": "",
+		"meetingRecord": ""
 	},
 	"container": ""
 }
