@@ -3,12 +3,16 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.invited
 import android.widget.TextView
 import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.meeting.MeetingFileInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.O2FileDownloadHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.SDCardHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import rx.android.schedulers.AndroidSchedulers
@@ -26,81 +30,20 @@ class MeetingDetailInfoPresenter : BasePresenterImpl<MeetingDetailInfoContract.V
 
     override fun downloadMeetingFile(meetingFileInfoJson: MeetingFileInfoJson) {
         val path = FileExtensionHelper.getXBPMMEETINGAttachmentFileByName(meetingFileInfoJson.name)
-        doAsync {
-            try {
-                val file = File(path)
-                if (!file.exists()) {
-                    val call = RetrofitClient.instance().meetingAssembleControlApi()
-                            .downloadMeetingFile(meetingFileInfoJson.id)
-                    SDCardHelper.generateNewFile(path)
-                    val responseBody = call.execute()
-                    val headerDisposition = responseBody.headers().get("Content-Disposition")
-                    XLog.debug("header disposition: $headerDisposition")
-                    val dataInput = DataInputStream(responseBody.body()?.byteStream())
-                    val fileOut = DataOutputStream(FileOutputStream(file))
-                    val buffer = ByteArray(4096)
-                    var count = 0
-                    do {
-                        count = dataInput.read(buffer)
-                        if (count > 0) {
-                            fileOut.write(buffer, 0, count)
-                        }
-                    } while (count > 0)
-                    fileOut.close()
-                    dataInput.close()
-                }
-                uiThread {
-                    mView?.downloadAttachmentSuccess(file)
-                }
-            } catch (e: Exception) {
-                XLog.error("下载附件失败！", e)
-                if (File(path).exists()) {
-                    File(path).delete()
-                }
-            }
-
-            /*val call = RetrofitClient.instance(it.getContext()).meetingAssembleControlApi()
-                    .downloadMeetingFile(meetingFileInfoJson.id)
-                try {
-                    SDCardHelper.generateNewFile(path)
-                    val responseBody = call.execute()
-                    val headerDisposition = responseBody.headers().get("Content-Disposition")
-                    XLog.debug("header disposition: $headerDisposition")
-                    val dataInput = DataInputStream(responseBody.body().byteStream())
-                    val fileOut = DataOutputStream(FileOutputStream(file))
-                    val buffer = ByteArray(4096)
-                    var count = 0
-                    do {
-                        count = dataInput.read(buffer)
-                        if (count > 0) {
-                            fileOut.write(buffer, 0, count)
-                        }
-                    } while (count > 0)
-                    fileOut.close()
-                    dataInput.close()
-                } catch (e: Exception) {
-                    XLog.error("下载附件失败！", e)
-                    if (file.exists()) {
-                        file.delete()
+        val downloadUrl = APIAddressHelper.instance()
+                .getCommonDownloadUrl(APIDistributeTypeEnum.x_meeting_assemble_control, "jaxrs/attachment/${meetingFileInfoJson.id}/download/true")
+        O2FileDownloadHelper.download(downloadUrl, path)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .o2Subscribe {
+                    onNext {
+                        mView?.downloadAttachmentSuccess(File(path))
+                    }
+                    onError { e, _ ->
+                        XLog.error("", e)
                     }
                 }
-            Observable.create(Observable.OnSubscribe<File> { t ->
-                val thisFile = File(path)
-                if (file.exists()) {
-                    t?.onNext(thisFile)
-                } else {
-                    t?.onError(Exception("附件下载异常，找不到文件！"))
-                }
-                t?.onCompleted()
-            })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ file -> it.downloadAttachmentSuccess(file) }, { e ->
-                        XToast.toastShort(it.getContext(), "下载附件失败，${e.message}")
-                        XLog.error("",e)
-                        it.downloadAttachmentSuccess(null)
-                    })*/
-        }
+
     }
 
     override fun asyncLoadPersonName(nameTv: TextView, id: String) {

@@ -18,21 +18,17 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonFragmentPagerAdapter
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.FileOperateType
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import rx.Observer
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
-import java.io.FileOutputStream
-import java.util.concurrent.Future
 
 
 class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveContract.Presenter>(), CloudDriveContract.View {
@@ -98,9 +94,9 @@ class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveCo
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             //有下载文件的 取消下载
-            if (!downloadTaskMap.isEmpty()) {
+            if (downloadTaskMap.isNotEmpty()) {
                 downloadTaskMap.map {
-                    it.value.cancel(true)
+                    it.value.unsubscribe()
                 }
                 downloadTaskMap.clear()
                 yunpan_download_file_id.gone()
@@ -146,55 +142,87 @@ class CloudDriveActivity : BaseMVPActivity<CloudDriveContract.View, CloudDriveCo
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    val downloadTaskMap = HashMap<String, Future<Unit>>()
+    val downloadTaskMap = HashMap<String, Subscription>()
     fun openYunPanFile(id: String, fileName: String) {
         XLog.debug("download id:$id, , file:$fileName")
         if (!downloadTaskMap.containsKey(id)) {
             yunpan_download_file_id.visible()
-            downloadTaskMap.put(id, doAsync {
-                var downfile = true
-                val path = FileExtensionHelper.getXBPMTempFolder()+ File.separator + fileName
-                XLog.debug("file path $path")
-                val file = File(path)
-                if (!file.exists()) {
-                    XLog.debug("file not exist, ${file.path}")
-                    try {
-                        val call = RetrofitClient.instance().fileAssembleControlApi()
-                                .downloadFile(id)
-                        val response = call.execute()
-                        val input  = DataInputStream(response.body()?.byteStream())
-                        val output = DataOutputStream(FileOutputStream(file))
-                        val buffer = ByteArray(4096)
-                        var count = 0
-                        do {
-                            count = input.read(buffer)
-                            if (count > 0) {
-                                output.write(buffer, 0, count)
+            val path = FileExtensionHelper.getXBPMTempFolder()+ File.separator + fileName
+            XLog.debug("file path $path")
+            val downloadUrl = APIAddressHelper.instance()
+                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_file_assemble_control, "jaxrs/attachment/$id/download/stream")
+            val subscription = O2FileDownloadHelper.download(downloadUrl, path)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Boolean>{
+                        override fun onError(e: Throwable?) {
+                            yunpan_download_file_id.gone()
+                            if (downloadTaskMap.containsKey(id)){
+                                downloadTaskMap.remove(id)
                             }
-                        } while (count > 0)
-                        output.close()
-                        input.close()
-                        downfile = true
-                    }catch (e: Exception){
-                        XLog.error("download file fail", e)
-                        downfile = false
-                    }
-                }
-                uiThread {
-                    if (downloadTaskMap.containsKey(id)){
-                        downloadTaskMap.remove(id)
-                    }
-                    yunpan_download_file_id.gone()
-                    if (downfile) {
-                        AndroidUtils.openFileWithDefaultApp(this@CloudDriveActivity, file)
-                    }else {
-                        if (file.exists()){
-                            file.delete()
+                            XToast.toastShort(this@CloudDriveActivity, "下载附件失败！")
                         }
-                        XToast.toastShort(this@CloudDriveActivity, "下载附件失败！")
-                    }
-                }
-            })
+
+                        override fun onNext(t: Boolean?) {
+                            yunpan_download_file_id.gone()
+                            if (downloadTaskMap.containsKey(id)){
+                                downloadTaskMap.remove(id)
+                            }
+                            AndroidUtils.openFileWithDefaultApp(this@CloudDriveActivity, File(path))
+                        }
+
+                        override fun onCompleted() {
+
+                        }
+
+                    })
+            downloadTaskMap[id] = subscription
+
+//            downloadTaskMap.put(id, doAsync {
+//                var downfile = true
+//                val path = FileExtensionHelper.getXBPMTempFolder()+ File.separator + fileName
+//                XLog.debug("file path $path")
+//                val file = File(path)
+//                if (!file.exists()) {
+//                    XLog.debug("file not exist, ${file.path}")
+//                    try {
+//                        val call = RetrofitClient.instance().fileAssembleControlApi()
+//                                .downloadFile(id)
+//                        val response = call.execute()
+//                        val input  = DataInputStream(response.body()?.byteStream())
+//                        val output = DataOutputStream(FileOutputStream(file))
+//                        val buffer = ByteArray(4096)
+//                        var count = 0
+//                        do {
+//                            count = input.read(buffer)
+//                            if (count > 0) {
+//                                output.write(buffer, 0, count)
+//                            }
+//                        } while (count > 0)
+//                        output.close()
+//                        input.close()
+//                        downfile = true
+//                    }catch (e: Exception){
+//                        XLog.error("download file fail", e)
+//                        downfile = false
+//                    }
+//                }
+//                uiThread {
+//                    if (downloadTaskMap.containsKey(id)){
+//                        downloadTaskMap.remove(id)
+//                    }
+//                    yunpan_download_file_id.gone()
+//                    if (downfile) {
+//                        AndroidUtils.openFileWithDefaultApp(this@CloudDriveActivity, file)
+//                    }else {
+//                        if (file.exists()){
+//                            file.delete()
+//                        }
+//                        XToast.toastShort(this@CloudDriveActivity, "下载附件失败！")
+//                    }
+//                }
+//            })
+
         }
 
     }

@@ -45,6 +45,52 @@
                 android:layout_height="32dp"
                 android:visibility="gone"
                 tools:src="@mipmap/im_emotion_01"/>
+            <ImageView
+                android:id="@+id/image_o2_chat_message_image_body"
+                android:layout_width="144dp"
+                android:layout_height="192dp"
+                android:visibility="gone"
+                android:scaleType="fitCenter"
+                tools:src="@mipmap/default_image"/>
+            <LinearLayout
+                android:id="@+id/ll_o2_chat_message_audio_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@mipmap/chat_icon_audio_play"/>
+                <TextView
+                    android:id="@+id/tv_o2_chat_message_audio_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    tools:text="60&#34;" />
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rl_o2_chat_message_location_body"
+                android:layout_width="175dp"
+                android:layout_height="109dp"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="175dp"
+                    android:layout_height="109dp"
+                    android:src="@mipmap/chat_location_background"/>
+                <TextView
+                    android:id="@+id/tv_o2_chat_message_location_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_tiny"
+                    android:background="@color/z_color_white_translucent_af"
+                    android:maxLines="1"
+                    android:textSize="@dimen/font_small"
+                    android:ellipsize="end"
+                    tools:text="浙江省杭州市萧山区高桥路111号" />
+            </RelativeLayout>
         </LinearLayout>
 
         <ImageButton
