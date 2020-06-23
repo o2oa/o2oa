@@ -23,6 +23,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.MessageType
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
@@ -70,15 +71,15 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                     if (lastMessage != null) {
                         val lastTime = DateHelper.convertStringToDate(lastMessage.createTime)
                         val lastMessageBody = lastMessage.messageBody()
-                        when(lastMessageBody) {
-                            is IMMessageBody.Emoji -> {
+                        when(lastMessageBody?.type) {
+                            MessageType.emoji.key -> {
                                 val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
-                                image.setImageResource(O2IM.emojiResId(lastMessageBody.body))
+                                image.setImageResource(O2IM.emojiResId(lastMessageBody.body!!))
                                 image.visible()
                                 val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
                                 text.gone()
                             }
-                            is IMMessageBody.Text -> {
+                            MessageType.text.key -> {
                                 val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
                                 image.gone()
                                 val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
@@ -89,10 +90,11 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
                                 val image = holder.getView<ImageView>(R.id.tv_o2_im_con_last_message_emoji)
                                 image.gone()
                                 val text = holder.getView<TextView>(R.id.tv_o2_im_con_last_message)
-                                text.text = ""
+                                text.text = lastMessageBody?.body
                                 text.visible()
                             }
                         }
+
                         holder.setText(R.id.tv_o2_im_con_last_message_time, DateHelper.friendlyTime(lastTime))
 
                     }

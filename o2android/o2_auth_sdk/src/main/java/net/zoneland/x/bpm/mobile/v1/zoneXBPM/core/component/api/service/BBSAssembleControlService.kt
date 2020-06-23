@@ -138,12 +138,5 @@ interface BBSAssembleControlService {
     fun getSubjectAttachList(@Path("id") id: String): Observable<ApiResponse<List<BBSSubjectAttachmentJson>>>
 
 
-    /**
-     * 附件下载
-     * @param attachId
-     * *
-     * @return
-     */
-    @GET("jaxrs/attachment/download/{id}/stream/{stream}")
-    fun downloadAttach(@Path("id") id: String,@Path("stream") stream: Boolean = true): Call<ResponseBody>
+
 }

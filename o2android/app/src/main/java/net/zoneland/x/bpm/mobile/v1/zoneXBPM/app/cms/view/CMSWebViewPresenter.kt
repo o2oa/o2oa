@@ -3,13 +3,16 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view
 import android.text.TextUtils
 import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentAttachmentJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.AttachmentItemVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.O2FileDownloadHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -100,47 +103,56 @@ class CMSWebViewPresenter : BasePresenterImpl<CMSWebViewContract.View>(), CMSWeb
                     .flatMap { res->
                         val attachInfo = res.data
                         if (attachInfo != null) {
+
                             val filePath = FileExtensionHelper.getXBPMCMSAttachFolder() + File.separator + attachInfo.name
-                            val file = File(filePath)
-                            try {
-                                if (!file.exists()) {
-                                    val call = cmsService.downloadAttach(attachmentId)
-                                    val response = call.execute()
-                                    val input = DataInputStream(response.body()?.byteStream())
-                                    val output = DataOutputStream(FileOutputStream(file))
-                                    val buffer = ByteArray(4096)
-                                    var count = 0
-                                    do {
-                                        count = input.read(buffer)
-                                        if (count > 0) {
-                                            output.write(buffer, 0, count)
-                                        }
-                                    } while (count > 0)
-                                    output.close()
-                                    input.close()
-                                }
-                            } catch (e: Exception) {
-                                XLog.error("下载附件异常", e)
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                            }
+                            val downloadUrl = APIAddressHelper.instance()
+                                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_cms_assemble_control, "jaxrs/fileinfo/download/document/$attachmentId/stream")
+                            O2FileDownloadHelper.download(downloadUrl, filePath)
+                                    .flatMap {
+                                        Observable.just(File(filePath))
+                                    }
+
+
+//                            val file = File(filePath)
+//                            try {
+//                                if (!file.exists()) {
+//                                    val call = cmsService.downloadAttach(attachmentId)
+//                                    val response = call.execute()
+//                                    val input = DataInputStream(response.body()?.byteStream())
+//                                    val output = DataOutputStream(FileOutputStream(file))
+//                                    val buffer = ByteArray(4096)
+//                                    var count = 0
+//                                    do {
+//                                        count = input.read(buffer)
+//                                        if (count > 0) {
+//                                            output.write(buffer, 0, count)
+//                                        }
+//                                    } while (count > 0)
+//                                    output.close()
+//                                    input.close()
+//                                }
+//                            } catch (e: Exception) {
+//                                XLog.error("下载附件异常", e)
+//                                if (file.exists()) {
+//                                    file.delete()
+//                                }
+//                            }
+//                            Observable.create { t ->
+//                                val thisfile = File(filePath)
+//                                if (file.exists()) {
+//                                    t?.onNext(thisfile)
+//                                } else {
+//                                    t?.onError(Exception("附件下载异常，找不到文件！"))
+//                                }
+//                                t?.onCompleted()
+//                            }
+
+
+                        }else {
                             Observable.create { t ->
-                                val thisfile = File(filePath)
-                                if (file.exists()) {
-                                    t?.onNext(thisfile)
-                                } else {
-                                    t?.onError(Exception("附件下载异常，找不到文件！"))
-                                }
+                                t?.onError(Exception("没有获取到附件信息，无法下载附件！"))
                                 t?.onCompleted()
                             }
-                        }else {
-                            Observable.create(object : Observable.OnSubscribe<File> {
-                                override fun call(t: Subscriber<in File>?) {
-                                    t?.onError(Exception("没有获取到附件信息，无法下载附件！"))
-                                    t?.onCompleted()
-                                }
-                            })
                         }
                     }.observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ file -> mView?.downloadAttachmentSuccess(file) }, { e ->

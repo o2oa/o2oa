@@ -105,6 +105,10 @@ object O2IM {
         return im_emoji_hashMap[key] ?: R.mipmap.im_emotion_01
     }
 
+    enum class AudioPlayState {
+        playing,
+        idle
+    }
 
     //instant message type
 

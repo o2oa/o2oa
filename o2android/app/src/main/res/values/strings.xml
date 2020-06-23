@@ -215,6 +215,9 @@
     <string name="activity_im_tribe_save">保      存</string>
     <string name="activity_im_tribe_delete">删除并退出</string>
     <string name="activity_im_tribe_update">更      新</string>
+    <string name="activity_im_audio_speak">按住说话</string>
+    <string name="activity_im_audio_speak_cancel">上滑取消发送</string>
+    <string name="activity_location_send">发送</string>
 
     <!-- myinfo activity -->
     <string name="title_activity_my_info">我的资料</string>

@@ -79,7 +79,6 @@ class MeetingDetailInfoActivity : BaseMVPActivity<MeetingDetailInfoContract.View
     override fun downloadAttachmentSuccess(file: File?) {
         hideLoadingDialog()
         XLog.debug(file?.name)
-        XToast.toastShort(this,"下载成功")
         if (file != null && file.exists()) AndroidUtils.openFileWithDefaultApp(this, file)
     }
 
