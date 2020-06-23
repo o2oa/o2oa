@@ -94,13 +94,32 @@ public class CustomExtFieldReleAction extends StandardJaxrsAction {
 	@Path("list/{correlationId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listFieldsWithProject(@Suspended final AsyncResponse asyncResponse, 
+	public void listFieldsWithCorrelation(@Suspended final AsyncResponse asyncResponse, 
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("关联ID") @PathParam("correlationId") String correlationId ) {
 		ActionResult<List<ActionListWithCorrelation.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);	
 		try {
 			result = new ActionListWithCorrelation().execute( request, effectivePerson, correlationId );
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "根据扩展属性类型查询扩展属性信息列表.", action = ActionListWithType.class)
+	@GET
+	@Path("listPublicFields/{type}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listFieldsWithType(@Suspended final AsyncResponse asyncResponse, 
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("扩展属性类型") @PathParam("type") String type ) {
+		ActionResult<List<ActionListWithType.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);	
+		try {
+			result = new ActionListWithType().execute( request, effectivePerson, type );
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

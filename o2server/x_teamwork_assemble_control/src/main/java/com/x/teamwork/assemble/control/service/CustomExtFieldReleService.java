@@ -52,6 +52,18 @@ class CustomExtFieldReleService {
 	}
 	
 	/**
+	 * 根据扩展属性类型查询扩展属性关联信息
+	 * @param emc
+	 * @param type
+	 * @return
+	 * @throws Exception 
+	 */
+	protected List<CustomExtFieldRele> listReleWithType(EntityManagerContainer emc, String type ) throws Exception {
+		Business business = new Business( emc );
+		return business.customExtFieldReleFactory().listFieldReleObjByType( type );
+	}
+	
+	/**
 	 * 根据扩展属性ID删除项目扩展属性信息
 	 * @param emc
 	 * @param id

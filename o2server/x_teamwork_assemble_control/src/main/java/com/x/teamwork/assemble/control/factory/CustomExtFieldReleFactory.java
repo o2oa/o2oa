@@ -69,7 +69,7 @@ public class CustomExtFieldReleFactory extends AbstractFactory {
 	}
 
 	/**
-	 * 根据关联ID列示扩展属性ID信息列表
+	 * 根据关联ID列示扩展属性信息列表
 	 * @param correlationId
 	 * @return
 	 * @throws Exception
@@ -83,6 +83,24 @@ public class CustomExtFieldReleFactory extends AbstractFactory {
 		CriteriaQuery<CustomExtFieldRele> cq = cb.createQuery(CustomExtFieldRele.class);
 		Root<CustomExtFieldRele> root = cq.from(CustomExtFieldRele.class);
 		Predicate p = cb.equal( root.get(CustomExtFieldRele_.correlationId), correlationId );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+	
+	/**
+	 * 根据扩展属性类型列示扩展属性信息列表
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CustomExtFieldRele> listFieldReleObjByType( String type ) throws Exception {
+		if( StringUtils.isEmpty( type ) ){
+			throw new Exception("type can not be empty!");
+		}
+		EntityManager em = this.entityManagerContainer().get(CustomExtFieldRele.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CustomExtFieldRele> cq = cb.createQuery(CustomExtFieldRele.class);
+		Root<CustomExtFieldRele> root = cq.from(CustomExtFieldRele.class);
+		Predicate p = cb.equal( root.get(CustomExtFieldRele_.type), type );
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
