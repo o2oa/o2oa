@@ -505,6 +505,8 @@
 						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit=='y')?'checked':''} type="radio" value="y"/>允许
 						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'none')}" name="subjectEdit" text{($.subjectEdit!='y' && $.subjectEdit!='s')?'checked':''} type="radio" value="n"/>不允许
 						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}subjectEditScriptArea').setStyle('display', 'block')}" name="subjectEdit" text{($.subjectEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
+						<br>
+						标题允许编辑时，请不要绑定数据
 					</td>
 				</tr>
 			</table>

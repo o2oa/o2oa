@@ -659,7 +659,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     reSetEdit: function(control){
         //未进行数据绑定时，可允许编辑
         if (!control) var control = this.getEditControl();
-        if (!!this.json.subjectValueData && this.json.subjectValueType=="data") this.layout_subject.set("contenteditable", control.subject);
+        if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
+            this.layout_subject.set("contenteditable", control.subject);
+            this.layout_subject.addEvent("blur", function(){
+                this.getData();
+            }.bind(this))
+        }
 
         // this.layout_subject.addEvent("keydown", function(e){
         //     debugger;
@@ -1938,6 +1943,7 @@ debugger;
     },
     getData: function(){
         //if (this.editMode){
+        debugger;
         if (this.layout_copies) this.data.copies = this.layout_copies.get("text");
         if (this.layout_secret) this.data.secret = this.layout_secret.get("text");
         if (this.layout_priority) this.data.priority = this.layout_priority.get("text");
