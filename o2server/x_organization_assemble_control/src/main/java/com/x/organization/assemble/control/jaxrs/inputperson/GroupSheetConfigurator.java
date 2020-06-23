@@ -74,7 +74,7 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 	private static List<String> nameItems = Arrays.asList(new String[] { "群组名称 *", "name" });
 	private static List<String> personCodeItems = Arrays.asList(new String[] { "人员编号", "personCode" });
 	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号", "unitCode" });
-	private static List<String> groupCodeItems = Arrays.asList(new String[] { "群组编号", "groupCode" });
+	private static List<String> groupCodeItems = Arrays.asList(new String[] { "子群组编号","群组编号", "groupCode" });
 	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述","群组描述", "description" });
 
 	public String getCellStringValue(Cell cell) {

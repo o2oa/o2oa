@@ -136,7 +136,7 @@ public class ActionTemplate extends BaseAction {
 		XSSFSheet sheet = workbook.createSheet("职务信息");
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
-		cell.setCellValue("职务账号 *");
+		cell.setCellValue("职务编号 *");
 		cell = row.createCell(1);
 		cell.setCellValue("职务名称 *");
 		cell = row.createCell(2);
@@ -160,7 +160,7 @@ public class ActionTemplate extends BaseAction {
 		cell = row.createCell(3);
 		cell.setCellValue("组织编号");
 		cell = row.createCell(4);
-		cell.setCellValue("群组编号");
+		cell.setCellValue("子群组编号");
 		cell = row.createCell(5);
 		cell.setCellValue("描述");
 		CellStyle cellStyle = workbook.createCellStyle();
