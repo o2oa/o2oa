@@ -60,7 +60,7 @@ class ActionUploadWorkInfo extends BaseAction {
 			if(workHtml!=null && workHtml.toLowerCase().indexOf("<html") == -1){
 				workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 			}
-			String id = saveHtml(workId, flag, workHtml, effectivePerson.getDistinguishedName(), title);
+			String id = saveHtml(workId, flag, workHtml, effectivePerson.getDistinguishedName(), title, wi.getPageWidth());
 			Wo wo = new Wo();
 			wo.setId(id);
 			result.setData(wo);
@@ -71,7 +71,7 @@ class ActionUploadWorkInfo extends BaseAction {
 	public static class Wo extends WoId {
 	}
 
-	private String saveHtml(String workId, String flag, String workHtml, String person, String title){
+	private String saveHtml(String workId, String flag, String workHtml, String person, String title, Float pageWidth){
 		try {
 			CacheResultObject ro = new CacheResultObject();
 			ro.setPerson(person);
@@ -82,7 +82,7 @@ class ActionUploadWorkInfo extends BaseAction {
 					fs.createDocument(is, "WordDocument");
 					fs.writeFilesystem(out);
 					ro.setBytes(out.toByteArray());
-					ro.setName(title + "-表单信息.doc");
+					ro.setName(title + "-处理单.doc");
 				}
 			}else if("pdf".equals(flag)){
                 try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -92,14 +92,18 @@ class ActionUploadWorkInfo extends BaseAction {
 					props.setFontProvider(dfp);
 					PdfWriter writer = new PdfWriter(out);
 					PdfDocument pdf = new PdfDocument(writer);
-					pdf.setDefaultPageSize(new PageSize(1000, PageSize.A4.getHeight()));
+					float width = PageSize.A4.getWidth();
+					if(pageWidth!=null && pageWidth>100){
+						width = pageWidth.floatValue();
+					}
+					pdf.setDefaultPageSize(new PageSize(width, PageSize.A4.getHeight()));
                     HtmlConverter.convertToPdf(workHtml, pdf, props);
                     ro.setBytes(out.toByteArray());
-                    ro.setName(title + "-表单信息.pdf");
+                    ro.setName(title + "-处理单.pdf");
                 }
             }else {
 				ro.setBytes(workHtml.getBytes(DefaultCharset.charset));
-				ro.setName(title + "-表单信息.html");
+				ro.setName(title + "-处理单.html");
 			}
 
 			String cacheKey = ApplicationCache.concreteCacheKey(workId, UUID.randomUUID().toString());
@@ -116,12 +120,22 @@ class ActionUploadWorkInfo extends BaseAction {
 		@FieldDescribe("待转换html.")
 		private String workHtml;
 
+		@FieldDescribe("转pdf页面宽度，默认A4.")
+		private Float pageWidth;
+
 		public String getWorkHtml() { return workHtml; }
 
 		public void setWorkHtml(String workHtml) {
 			this.workHtml = workHtml;
 		}
 
+		public Float getPageWidth() {
+			return pageWidth;
+		}
+
+		public void setPageWidth(Float pageWidth) {
+			this.pageWidth = pageWidth;
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
