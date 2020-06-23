@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".app.im.O2LocationActivity">
+    <include layout="@layout/snippet_appbarlayout_toolbar" />
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/map_baidu_o2_location"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet"
+        android:clickable="true" />
+
+
+    <TextView
+        android:id="@+id/tv_o2_location_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="@dimen/spacing_tiny"
+        android:background="@color/z_color_white_translucent_af"
+        android:maxLines="1"
+        android:textSize="@dimen/font_small"
+        android:textAlignment="center"
+        android:ellipsize="end"
+        android:visibility="gone"
+        tools:text="浙江省杭州市萧山区高桥路111号" />
+
+
+</android.support.constraint.ConstraintLayout>

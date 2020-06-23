@@ -5,16 +5,15 @@ import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.AttachmentInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.SDCardHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -208,42 +207,51 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                         val info: AttachmentInfo? = response.data
                         if (info != null) {
                             val path = FileExtensionHelper.getXBPMWORKAttachmentFileByName(info.name)
-                            val file = File(path)
-                            if (!file.exists()) { //下载
-                                try {
-                                    SDCardHelper.generateNewFile(path)
-                                    val call = service.downloadWorkAttachment(attachmentId, workId)
-                                    val downloadRes = call.execute()
-                                    val headerDisposition = downloadRes.headers().get("Content-Disposition")
-                                    XLog.debug("header disposition: $headerDisposition")
-                                    val dataInput = DataInputStream(downloadRes.body()?.byteStream())
-                                    val fileOut = DataOutputStream(FileOutputStream(file))
-                                    val buffer = ByteArray(4096)
-                                    var count = 0
-                                    do {
-                                        count = dataInput.read(buffer)
-                                        if (count > 0) {
-                                            fileOut.write(buffer, 0, count)
-                                        }
-                                    } while (count > 0)
-                                    fileOut.close()
-                                    dataInput.close()
-                                } catch (e: Exception) {
-                                    XLog.error("下载附件失败！", e)
-                                    if (file.exists()) {
-                                        file.delete()
+                            SDCardHelper.generateNewFile(path)
+                            val downloadUrl = APIAddressHelper.instance()
+                                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_processplatform_assemble_surface, "jaxrs/attachment/download/$attachmentId/work/$workId/stream")
+                            O2FileDownloadHelper.download(downloadUrl, path)
+                                    .flatMap {
+                                        Observable.just(File(path))
                                     }
-                                }
-                            }
-                            Observable.create { t ->
-                                val thisfile = File(path)
-                                if (file.exists()) {
-                                    t?.onNext(thisfile)
-                                } else {
-                                    t?.onError(Exception("附件下载异常，找不到文件！"))
-                                }
-                                t?.onCompleted()
-                            }
+
+
+//                            val file = File(path)
+//                            if (!file.exists()) { //下载
+//                                try {
+//                                    SDCardHelper.generateNewFile(path)
+//                                    val call = service.downloadWorkAttachment(attachmentId, workId)
+//                                    val downloadRes = call.execute()
+//                                    val headerDisposition = downloadRes.headers().get("Content-Disposition")
+//                                    XLog.debug("header disposition: $headerDisposition")
+//                                    val dataInput = DataInputStream(downloadRes.body()?.byteStream())
+//                                    val fileOut = DataOutputStream(FileOutputStream(file))
+//                                    val buffer = ByteArray(4096)
+//                                    var count = 0
+//                                    do {
+//                                        count = dataInput.read(buffer)
+//                                        if (count > 0) {
+//                                            fileOut.write(buffer, 0, count)
+//                                        }
+//                                    } while (count > 0)
+//                                    fileOut.close()
+//                                    dataInput.close()
+//                                } catch (e: Exception) {
+//                                    XLog.error("下载附件失败！", e)
+//                                    if (file.exists()) {
+//                                        file.delete()
+//                                    }
+//                                }
+//                            }
+//                            Observable.create { t ->
+//                                val thisfile = File(path)
+//                                if (file.exists()) {
+//                                    t?.onNext(thisfile)
+//                                } else {
+//                                    t?.onError(Exception("附件下载异常，找不到文件！"))
+//                                }
+//                                t?.onCompleted()
+//                            }
                         } else {
                             Observable.create(object : Observable.OnSubscribe<File> {
                                 override fun call(t: Subscriber<in File>?) {
@@ -276,42 +284,53 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                         val info: AttachmentInfo? = response.data
                         if (info != null) {
                             val path = FileExtensionHelper.getXBPMWORKAttachmentFileByName(info.name)
-                            val file = File(path)
-                            if (!file.exists()) { //下载
-                                try {
-                                    SDCardHelper.generateNewFile(path)
-                                    val call = service.downloadWorkCompletedAttachment(attachmentId, workCompleted)
-                                    val downloadRes = call.execute()
-                                    val headerDisposition = downloadRes.headers().get("Content-Disposition")
-                                    XLog.debug("header disposition: $headerDisposition")
-                                    val dataInput = DataInputStream(downloadRes.body()?.byteStream())
-                                    val fileOut = DataOutputStream(FileOutputStream(file))
-                                    val buffer = ByteArray(4096)
-                                    var count = 0
-                                    do {
-                                        count = dataInput.read(buffer)
-                                        if (count > 0) {
-                                            fileOut.write(buffer, 0, count)
-                                        }
-                                    } while (count > 0)
-                                    fileOut.close()
-                                    dataInput.close()
-                                } catch (e: Exception) {
-                                    XLog.error("下载附件失败！", e)
-                                    if (file.exists()) {
-                                        file.delete()
+                            SDCardHelper.generateNewFile(path)
+                            val downloadUrl = APIAddressHelper.instance()
+                                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_processplatform_assemble_surface, "jaxrs/attachment/download/$attachmentId/workcompleted/$workCompleted/stream")
+                            O2FileDownloadHelper.download(downloadUrl, path)
+                                    .flatMap {
+                                        Observable.just(File(path))
                                     }
-                                }
-                            }
-                            Observable.create { t ->
-                                val thisfile = File(path)
-                                if (file.exists()) {
-                                    t?.onNext(thisfile)
-                                } else {
-                                    t?.onError(Exception("附件下载异常，找不到文件！"))
-                                }
-                                t?.onCompleted()
-                            }
+
+
+//                            val file = File(path)
+//                            if (!file.exists()) { //下载
+//                                try {
+//                                    SDCardHelper.generateNewFile(path)
+//                                    val call = service.downloadWorkCompletedAttachment(attachmentId, workCompleted)
+//                                    val downloadRes = call.execute()
+//                                    val headerDisposition = downloadRes.headers().get("Content-Disposition")
+//                                    XLog.debug("header disposition: $headerDisposition")
+//                                    val dataInput = DataInputStream(downloadRes.body()?.byteStream())
+//                                    val fileOut = DataOutputStream(FileOutputStream(file))
+//                                    val buffer = ByteArray(4096)
+//                                    var count = 0
+//                                    do {
+//                                        count = dataInput.read(buffer)
+//                                        if (count > 0) {
+//                                            fileOut.write(buffer, 0, count)
+//                                        }
+//                                    } while (count > 0)
+//                                    fileOut.close()
+//                                    dataInput.close()
+//                                } catch (e: Exception) {
+//                                    XLog.error("下载附件失败！", e)
+//                                    if (file.exists()) {
+//                                        file.delete()
+//                                    }
+//                                }
+//                            }
+//                            Observable.create { t ->
+//                                val thisfile = File(path)
+//                                if (file.exists()) {
+//                                    t?.onNext(thisfile)
+//                                } else {
+//                                    t?.onError(Exception("附件下载异常，找不到文件！"))
+//                                }
+//                                t?.onCompleted()
+//                            }
+
+
                         } else {
                             Observable.create(object : Observable.OnSubscribe<File> {
                                 override fun call(t: Subscriber<in File>?) {

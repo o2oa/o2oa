@@ -6,7 +6,11 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageFileData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageForm
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.*
 import rx.Observable
 
@@ -68,5 +72,17 @@ interface MessageCommunicateService {
      */
     @GET("jaxrs/instant/list/currentperson/noim/count/{count}/desc")
     fun instantMessageList(@Path("count") count: Int) : Observable<ApiResponse<List<InstantMessage>>>
+
+    /**
+     * 上传文件
+     * im消息文件 图片 音频 视频等
+     * @param conversationId 会话id
+     * @param type 消息类型 image audio 等
+     */
+    @Multipart
+    @POST("jaxrs/im/msg/upload/{conversationId}/type/{type}")
+    fun uploadFile(@Path("conversationId") conversationId: String, @Path("type") type: String, @Part body: MultipartBody.Part): Observable<ApiResponse<IMMessageFileData>>
+
+
 
 }

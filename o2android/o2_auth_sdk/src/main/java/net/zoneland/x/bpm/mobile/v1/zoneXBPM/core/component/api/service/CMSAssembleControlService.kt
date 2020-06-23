@@ -101,15 +101,6 @@ interface CMSAssembleControlService {
 
 
     /**
-     * 附件下载
-     * @param id 附件id
-     * *
-     * @return
-     */
-    @GET("jaxrs/fileinfo/download/document/{id}/stream")
-    fun downloadAttach(@Path("id") id: String): Call<ResponseBody>
-
-    /**
      * 附件上传
      * @param body
      * *
