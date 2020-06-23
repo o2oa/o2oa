@@ -6851,7 +6851,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6886,7 +6886,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.8;
+				MARKETING_VERSION = 5.1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6967,7 +6967,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 69;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -7002,7 +7002,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.8;
+				MARKETING_VERSION = 5.1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
