@@ -337,7 +337,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
             this.children.setStyle("display", "block");
             //    if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
-            if( this._hasChild() ){
+            if( this._hasChildItem() ){
                 this.data.subItemList.each(function (subItem, index) {
                     var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
                     this.selector.items.push(item);
@@ -375,7 +375,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     loadItemChildren : function( callback ){
         if (!this.itemLoaded){
 
-            if( this._hasChild() ){
+            if( this._hasChildItem() ){
                 this.data.subItemList.each(function (subItem, index) {
                     var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
                     this.selector.items.push(item);
