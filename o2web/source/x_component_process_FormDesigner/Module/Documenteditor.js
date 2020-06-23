@@ -45,6 +45,17 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 	},
 	_setEditStyle_custom: function(name, obj, oldValue){
 		debugger;
+
+		if (name=="documentTempleteType"){
+			if (this.json.documentTempleteType!=oldValue){
+				this._resetContent();
+			}
+		}
+		if (name=="documentTempleteUrl"){
+			if (this.json.documentTempleteUrl!=oldValue){
+				this._resetContent();
+			}
+		}
 		if (name=="documentTempleteName"){
 			if (this.json.documentTempleteName!=oldValue){
 				this._resetContent();
@@ -59,26 +70,38 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		this.node.empty();
 		var pageNode = new Element("div.doc_layout_page", {"styles": this.css.doc_page}).inject(this.node);
 		var pageContentNode = new Element("div.doc_layout_page_content", {"styles": this.css.doc_layout_page_content}).inject(pageNode);
-		o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
-			var o = json[this.json.documentTempleteName];
-			if (o){
-				pageContentNode.loadHtml("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+o.file, function(){
-					// if (this.attachmentTemplete){
-					// 	var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
-					// 	if (attNode) attNode.empty();
-					// }
-					// if (callback) callback(control);
-				}.bind(this));
 
-			}
-		}.bind(this));
+		if (this.json.documentTempleteType=="cus" && this.json.documentTempleteUrl){
+			pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
+				// if (this.attachmentTemplete){
+				// 	var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
+				// 	if (attNode) attNode.empty();
+				// }
+				// if (callback) callback(control);
+			}.bind(this));
+		}else{
+			o2.getJSON(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json"), function(json){
+				var o = json[this.json.documentTempleteName];
+				if (o){
+					pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+o.file), function(){
+						// if (this.attachmentTemplete){
+						// 	var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
+						// 	if (attNode) attNode.empty();
+						// }
+						// if (callback) callback(control);
+					}.bind(this));
+
+				}
+			}.bind(this));
+		}
+
 	},
 	_initModule: function(){
 		this._resetContent();
 
 		var templateJson = this.form.dataTemplate["Documenteditor"];
 		if (!templateJson){
-			var templateUrl = "../x_component_process_FormDesigner/Module/Documenteditor/template.json";
+			var templateUrl = o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/template.json");
 			templateJson = MWF.getJSON(templateUrl, null, false);
 		}
 		if (templateJson) this.json.defaultValue = Object.merge(templateJson.defaultValue, this.json.defaultValue);
