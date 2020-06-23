@@ -65,6 +65,23 @@ public class CustomExtFieldReleQueryService {
 			throw e;
 		}
 	}
+	
+	/**
+	 * 根据扩展属性类型查询扩展属性关联信息
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CustomExtFieldRele> listReleWithType( String type ) throws Exception {
+		if (StringUtils.isEmpty(type)) {
+			return new ArrayList<>();
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return customExtFieldReleService.listReleWithType(emc, type);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 	public String getExtFieldDisplayName(String projectId, String extFieldName) throws Exception {
 		if( StringUtils.isEmpty( projectId )  ){
