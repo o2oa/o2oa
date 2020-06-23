@@ -147,10 +147,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }
         }
 
-        //this.json.documentTempleteType!="cus"
-        this.getTempleteJson(function(){
-            var templete = this.json.documentTempleteName || "standard";
-            pageContentNode.loadHtml("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file, function(){
+        if (this.json.documentTempleteType=="cus"){
+            pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
                 if (this.attachmentTemplete){
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
@@ -158,13 +156,26 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (callback) callback(control);
                 this.fireEvent("loadPage");
             }.bind(this));
-        }.bind(this));
+        }else{
+            this.getTempleteJson(function(){
+                var templete = this.json.documentTempleteName || "standard";
+                pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file), function(){
+                    if (this.attachmentTemplete){
+                        var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
+                        if (attNode) attNode.empty();
+                    }
+                    if (callback) callback(control);
+                    this.fireEvent("loadPage");
+                }.bind(this));
+            }.bind(this));
+        }
+
     },
     getTempleteJson: function(callback){
         if (this.templeteJson){
             if (callback) callback();
         }else{
-            o2.getJSON("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json", function(json){
+            o2.getJSON(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/templete.json"), function(json){
                 this.templeteJson = json;
                 if (callback) callback();
             }.bind(this));
@@ -197,6 +208,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.meetingAttend = this._getShow("meetingAttend", "meetingAttendShow", "meetingAttendShowScript");
         control.meetingLeave = this._getShow("meetingLeave", "meetingLeaveShow", "meetingLeaveShowScript");
         control.meetingSit = this._getShow("meetingSit", "meetingSitShow", "meetingSitShowScript");
+        control.meetingRecord = this._getShow("meetingRecord", "meetingRecordShow", "meetingRecordShowScript");
         return control;
     },
     // _getEdit: function(name, typeItem, scriptItem){
@@ -238,6 +250,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.meetingAttend = this._getShow("meetingAttend", "meetingAttendEdit", "meetingAttendEditScript");
         control.meetingLeave = this._getShow("meetingLeave", "meetingLeaveEdit", "meetingLeaveEditScript");
         control.meetingSit = this._getShow("meetingSit", "meetingSitEdit", "meetingSitEditScript");
+        control.meetingRecord = this._getShow("meetingRecord", "meetingRecordEdit", "meetingRecordEditScript");
         return control;
     },
     //份数 密级 紧急程度
@@ -435,6 +448,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_meetingSitArea = this.contentNode.getElement(".doc_layout_meeting_sit");
         this.layout_meetingSitTitle = this.contentNode.getElement(".doc_layout_meeting_sit_title");
         this.layout_meetingSitContent = this.contentNode.getElement(".doc_layout_meeting_sit_content");
+
+        this.layout_meetingRecordArea = this.contentNode.getElement(".doc_layout_meeting_record");
+        this.layout_meetingRecordTitle = this.contentNode.getElement(".doc_layout_meeting_record_title");
+        this.layout_meetingRecordContent = this.contentNode.getElement(".doc_layout_meeting_record_content");
     },
     _loadPageLayout: function(control){
         this._loadCopiesSecretPriority();
@@ -633,6 +650,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_meetingAttendArea) this.layout_meetingAttendArea[m("meetingAttend")]();
         if (this.layout_meetingLeaveArea) this.layout_meetingLeaveArea[m("meetingLeave")]();
         if (this.layout_meetingSitArea) this.layout_meetingSitArea[m("meetingSit")]();
+        if (this.layout_meetingRecordArea) this.layout_meetingRecordArea[m("meetingRecord")]();
 
         // this.layout_annotation[m("annotation")]();
         // this.layout_annotation[m("annotation")]();
@@ -1885,6 +1903,7 @@ debugger;
         this._computeItemData("meetingAttend", "meetingAttendValueType", "meetingAttendValueData", "meetingAttendValueScript", ev, "layout_meetingAttendContent");
         this._computeItemData("meetingLeave", "meetingLeaveValueType", "meetingLeaveValueData", "meetingLeaveValueScript", ev, "layout_meetingLeaveContent");
         this._computeItemData("meetingSit", "meetingSitValueType", "meetingSitValueData", "meetingSitValueScript", ev, "layout_meetingSitContent");
+        this._computeItemData("meetingRecord", "meetingRecordValueType", "meetingRecordValueData", "meetingRecordValueScript", ev, "layout_meetingRecordContent");
     },
 
     _loadValue: function(){
@@ -1959,6 +1978,7 @@ debugger;
         if (this.layout_meetingAttendContent) this.data.meetingAttend = this.layout_meetingAttendContent.get("html");
         if (this.layout_meetingLeaveContent) this.data.meetingLeave = this.layout_meetingLeaveContent.get("html");
         if (this.layout_meetingSitContent) this.data.meetingSit = this.layout_meetingSitContent.get("html");
+        if (this.layout_meetingRecordContent) this.data.meetingRecord = this.layout_meetingRecordContent.get("html");
 
         //}
         return this.data;
@@ -2048,6 +2068,7 @@ debugger;
             if (this.layout_meetingAttendContent) this.layout_meetingAttendContent.set("html", data.meetingAttend || " ");
             if (this.layout_meetingLeaveContent) this.layout_meetingLeaveContent.set("html", data.meetingLeave || " ");
             if (this.layout_meetingSitContent) this.layout_meetingSitContent.set("html", data.meetingSit || " ");
+            if (this.layout_meetingRecordContent) this.layout_meetingRecordContent.set("html", data.meetingRecord || " ");
         }
     },
     createErrorNode: function(text){
