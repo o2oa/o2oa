@@ -1,4 +1,4 @@
-package com.x.organization.assemble.personal.jaxrs.person;
+package com.x.organization.assemble.personal.jaxrs.reset;
 
 import com.x.base.core.project.exception.PromptException;
 
