@@ -27,6 +27,7 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 
 	private Integer nameColumn;
 	private Integer uniqueColumn;
+	private Integer descriptionColumn;
 
 	private Map<String, Integer> attributes = new HashMap<>();
 
@@ -46,7 +47,9 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 						this.uniqueColumn = i;
 					} else if (nameItems.contains(str)) {
 						this.nameColumn = i;
-					}else {
+					}else if (descriptionItems.contains(str)) {
+						this.descriptionColumn = i;
+					} else {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
 							String attribute = matcher.group(1);
@@ -60,6 +63,7 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "职务编号 *",  "unique" });
 	private static List<String> nameItems = Arrays.asList(new String[] { "职务名称 *", "name" });
+	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述","职务描述", "description" });
 
 	public String getCellStringValue(Cell cell) {
 		if (null != cell) {
@@ -101,6 +105,10 @@ public class DutySheetConfigurator extends GsonPropertyObject {
 
 	public Map<String, Integer> getAttributes() {
 		return attributes;
+	}
+	
+	public Integer getDescriptionColumn() {
+		return descriptionColumn;
 	}
 
 	public Integer getFirstRow() {
