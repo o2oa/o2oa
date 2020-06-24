@@ -2254,7 +2254,7 @@ debugger;
             this.node.setStyles({
                 "height":"auto"
             });
-debugger;
+
             //var content = this.contentNode.getFirst().getFirst().get("html");
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
             var htmlNode = tmpNode.getLast();
