@@ -61,7 +61,7 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
         self.window?.makeKeyAndVisible()
     }
     
-    func replyAction(sender:Any?){
+    @objc func replyAction(sender:Any?){
         self.performSegue(withIdentifier:"showReplyActionSegue", sender: nil)
     }
     

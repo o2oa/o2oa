@@ -52,7 +52,7 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="L8w-G8-QcX"/>
                                     </constraints>
-                                    <state key="normal" image="chat_mic"/>
+                                    <state key="normal" image="icon_yuyin"/>
                                     <connections>
                                         <action selector="micBtnClick:" destination="-1" eventType="touchUpInside" id="qN7-d7-8AE"/>
                                     </connections>
@@ -62,7 +62,7 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="NCL-G0-g4l"/>
                                     </constraints>
-                                    <state key="normal" image="chat_img"/>
+                                    <state key="normal" image="icon_tupian"/>
                                     <connections>
                                         <action selector="imgBtnClick:" destination="-1" eventType="touchUpInside" id="Jbr-NQ-U7b"/>
                                     </connections>
@@ -72,7 +72,7 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="mDx-JV-z4Q"/>
                                     </constraints>
-                                    <state key="normal" image="chat_camera"/>
+                                    <state key="normal" image="icon_xiangji"/>
                                     <connections>
                                         <action selector="cameraBtnClick:" destination="-1" eventType="touchUpInside" id="v70-6D-pKx"/>
                                     </connections>
@@ -82,7 +82,7 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="32" id="Fae-3Q-Qrq"/>
                                     </constraints>
-                                    <state key="normal" image="chat_location"/>
+                                    <state key="normal" image="icon_ditu"/>
                                     <connections>
                                         <action selector="locationBtnClick:" destination="-1" eventType="touchUpInside" id="Jwe-pL-EpP"/>
                                     </connections>
@@ -127,10 +127,10 @@
         </view>
     </objects>
     <resources>
-        <image name="chat_camera" width="42" height="32"/>
         <image name="chat_emoji" width="24" height="24"/>
-        <image name="chat_img" width="32" height="32"/>
-        <image name="chat_location" width="41" height="32"/>
-        <image name="chat_mic" width="32" height="32"/>
+        <image name="icon_ditu" width="22" height="22"/>
+        <image name="icon_tupian" width="22" height="22"/>
+        <image name="icon_xiangji" width="22" height="22"/>
+        <image name="icon_yuyin" width="22" height="22"/>
     </resources>
 </document>
