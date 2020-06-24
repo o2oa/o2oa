@@ -171,8 +171,8 @@ class ActionPrepareCover extends BaseAction {
 			if (!findWs.contains(w)) {
 				for (T t : ListTools.nullToEmpty(ts)) {
 					if (!findTs.contains(t)) {
-						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "appName")) && StringUtils
-								.equals(BeanUtils.getProperty(w, "appName"), BeanUtils.getProperty(t, "appName"))) {
+						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "name")) && StringUtils
+								.equals(BeanUtils.getProperty(w, "name"), BeanUtils.getProperty(t, "name"))) {
 							MatchElement<W, T> m = new MatchElement<>();
 							m.setW(w);
 							m.setT(t);
@@ -189,8 +189,8 @@ class ActionPrepareCover extends BaseAction {
 			if (!findWs.contains(w)) {
 				for (T t : ListTools.nullToEmpty(ts)) {
 					if (!findTs.contains(t)) {
-						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "appAlias")) && StringUtils
-								.equals(BeanUtils.getProperty(w, "appAlias"), BeanUtils.getProperty(t, "appAlias"))) {
+						if (StringUtils.isNotEmpty(BeanUtils.getProperty(w, "alias")) && StringUtils
+								.equals(BeanUtils.getProperty(w, "alias"), BeanUtils.getProperty(t, "alias"))) {
 							MatchElement<W, T> m = new MatchElement<>();
 							m.setW(w);
 							m.setT(t);
