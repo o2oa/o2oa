@@ -225,6 +225,7 @@ MWF.xApplication.process.Xform.LP = {
         "diff_patch_count": "共有{history}个历史版本，{diff}处修订。",
         "original": "原始版本",
         "nodiff": "目前还没有历史修改信息"
-    }
+    },
+    "fullWidth": "已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格"
 
 };
