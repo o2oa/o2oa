@@ -103,8 +103,10 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 		}.bind(this));
 	},
 	_recoveryModuleData: function(){
-		this.node.set("style", this.recoveryWidgetstyle);
+		if (this.recoveryWidgetstyle) this.node.set("style", this.recoveryWidgetstyle);
 		this.recoveryWidgetstyle = null;
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
 	},
 	setCustomStyles: function(){
 		this._recoveryModuleData();
