@@ -935,7 +935,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.allowEdit) {
                 var button = this.toolbar.childrenButton[0];
                 button.setText(MWF.xApplication.process.Xform.LP.editdoc);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png")
+                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+                //this.getFullWidthFlagNode().dispose();
             }
             this.editMode = false;
         }else{
@@ -943,7 +944,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.allowEdit) {
                 var button = this.toolbar.childrenButton[0];
                 button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png")
+                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+                //this.toolbar.node.inject(this.getFullWidthFlagNode());
+
             }
             this.editMode = true;
         }
@@ -955,11 +958,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
                     button.setText(MWF.xApplication.process.Xform.LP.editdoc);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png")
+                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+                    //this.getFullWidthFlagNode().dispose();
                 }
                 button = this.toolbar.childrenButton[0];
                 button.setText(MWF.xApplication.process.Xform.LP.editdoc);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png")
+                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
+                //this.getFullWidthFlagNode().dispose();
+
 
                 // if (!layout.mobile)this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
                 // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
@@ -971,17 +977,32 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
                     button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png")
+                    button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+                    //this.toolbar.node.inject(this.getFullWidthFlagNode());
                 }
                 button = this.toolbar.childrenButton[0];
                 button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
-                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png")
+                button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
+                //this.toolbar.node.inject(this.getFullWidthFlagNode());
                 // if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
                 // this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
             }
             this.editMode = true;
         }
     },
+    // getFullWidthFlagNode: function(){
+    //     if (!this.fullWidthFlagNode){
+    //         this.fullWidthFlagNode = new Element("span", {
+    //             "styles": {
+    //                 "line-height": "26px",
+    //                 "color": "#999999",
+    //                 "font-size": "12px"
+    //             },
+    //             "text": MWF.xApplication.process.Xform.LP.fullWidth
+    //         });
+    //     }
+    //     return this.fullWidthFlagNode;
+    // },
     _printDoc: function(){
         this.toWord(function(data){
             if (this.form.businessData.work && !this.form.businessData.work.completedTime){
@@ -1228,6 +1249,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.allowHistory){
            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
         }
+
+        // if (this.json.fullWidth=="y"){
+        //     html += "<span style='line-height: 26px; color: #999999; font-size: 12px'>已启用半角空格自动转换为全角空格，如需输入半角空格，请使用：SHIFT+空格</span>"
+        // }
         this.toolbarNode = new Element("div", {"styles": this.css.doc_toolbar_node}).inject(this.toolNode);
         this.toolbarNode.set("html", html);
 
@@ -1689,6 +1714,20 @@ debugger;
         }
     },
 
+    transWidth: function(node){
+        if (!node) return '';
+        while (node){
+            if (node.nodeType==3){
+                node.nodeValue = node.nodeValue.replace(/\x20/g, "　");
+            }else if (node.nodeType==8){
+                //nothing
+            }else{
+                this.transWidth(node.firstChild);
+            }
+            node = node.nextSibling;
+        }
+    },
+
     loadCkeditorFiletext: function(callback, inline){
         if (this.layout_filetext){
             o2.load("../o2_lib/htmleditor/ckeditor4130/ckeditor.js", function(){
@@ -1708,25 +1747,48 @@ debugger;
                 }.bind(this) );
 
                 this.filetextEditor.on( 'paste', function( e ) {
+                    debugger;
                     var html = e.data.dataValue;
+                    //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
                     var tmp = new Element("div")
                     tmp.set("html", html);
                     var pList = tmp.getElements("p");
                     pList.each(function(p, i){
-                        if (Browser.name=="ie"){
-                            p.appendText("　　","top");
-                        }else{
-                            var textIndent = p.getStyle("text-indent");
-                            if (textIndent.toInt()) p.appendText("　　","top");
+                        //if (Browser.name=="ie"){
+                        if (this.json.fullWidth=="y") this.transWidth(p);
+                        if (!p.getParent("table")){
+                            var text = p.get("text");
+                            var rex = /^\u3000*/;
+                            var m = text.match(rex);
+                            var l = (m[0]) ? Math.max((2-m[0].length), 0): 2;
+                            for (var i=0; i<l; i++) p.appendText("　","top");
                         }
-                    });
+                        //}else{
+                        //    var textIndent = p.getStyle("text-indent");
+                        //    if (textIndent.toInt()) p.appendText("　　","top");
+                        //}
+                    }.bind(this));
                     e.data.dataValue = tmp.get("html");
                     tmp.destroy();
                 }.bind(this) );
 
-                // this.filetextEditor.on("key", function(e){
-                //     debugger;
-                // }.bind(this));
+
+                if (this.json.fullWidth=="y"){
+                    this.filetextEditor.addCommand( 'insertHalfSpace', {
+                        exec: function( editor ) {
+                            editor.insertText(" ");
+                        }
+                    } );
+                    this.filetextEditor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' )
+
+                    this.filetextEditor.on("key", function(e){
+                        if (this.json.fullWidth=="y") if (e.data.keyCode==32){
+                            e.editor.insertText("　");
+                            e.cancel();
+                        }
+                    }.bind(this));
+                }
+
 
             }.bind(this));
         }
