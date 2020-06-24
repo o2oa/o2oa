@@ -72,6 +72,7 @@ class ActionInputAll extends BaseAction {
 	private  boolean wholeFlag = false;
 	
 	private static Map<String, String> dutyMap = new HashMap<String,String>();
+	private static Map<String, String> dutyDescriptionMap = new HashMap<String,String>();
 	
 	List<UnitItem> unit = new ArrayList<>();
 	List<PersonItem> person = new ArrayList<>();
@@ -192,12 +193,18 @@ class ActionInputAll extends BaseAction {
 				if (null != row) {
 					String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
 					String key = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
+					String dutyDescription = configurator.getCellStringValue(row.getCell(configurator.getDescriptionColumn()));
 					//System.out.println("职务name="+name+"_职务value="+key);
 					if(StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(key)){
 						dutyMap.put(key, name);
 						
 					}else{
 						dutyFlag = true;
+					}
+					if(StringUtils.isNotEmpty(dutyDescription) && StringUtils.isNotEmpty(key)){
+						dutyDescriptionMap.put(key, dutyDescription);
+					}else{
+						dutyDescriptionMap.put(key, "");
 					}
 				}
 			}
@@ -447,6 +454,7 @@ class ActionInputAll extends BaseAction {
 				String personCode = configurator.getCellStringValue(row.getCell(configurator.getPersonCodeColumn()));
 				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
 				String groupCode = configurator.getCellStringValue(row.getCell(configurator.getGroupCodeColumn()));
+				String description = configurator.getCellStringValue(row.getCell(configurator.getDescriptionColumn()));
 				
 				//if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(mobile)) {
 					GroupItem groupItem = new GroupItem();
@@ -484,6 +492,9 @@ class ActionInputAll extends BaseAction {
 							 
 						 }
 					}
+					if(StringUtils.isNotEmpty(description)){
+						groupItem.setDescription(description);
+					}
 					
 					groups.add(groupItem);
 					logger.debug("scan group:{}.", groupItem);
@@ -508,6 +519,7 @@ class ActionInputAll extends BaseAction {
 					DutyItem dutyItem = new DutyItem();
 					dutyItem.setRow(i+1);
 					dutyItem.setName(dutyMap.get(dutyCode));
+					dutyItem.setDescription(dutyDescriptionMap.get(dutyCode));
 					EntityManagerContainer emc = business.entityManagerContainer();
 					
 					Unit u = null;
