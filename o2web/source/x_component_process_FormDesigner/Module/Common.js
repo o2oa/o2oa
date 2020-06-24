@@ -108,6 +108,8 @@ MWF.xApplication.process.FormDesigner.Module.Common = MWF.FCCommon = new Class({
     },
 
     setCustomStyles: function(){
+        this._recoveryModuleData();
+        
         var border = this.node.getStyle("border");
         this.node.clearStyles();
         var styles = this.node.getStyles("display", "padding");
