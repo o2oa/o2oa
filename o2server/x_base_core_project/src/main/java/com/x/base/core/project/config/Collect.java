@@ -31,6 +31,7 @@ public class Collect extends ConfigObject {
 	private static String Default_appUrl = "https://sample.o2oa.net/app/download.html";
 	private static String Default_server = "collect.o2oa.net";
 	private static Integer Default_port = 20080;
+	private static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
 
 	public static Collect defaultInstance() {
 		return new Collect();
