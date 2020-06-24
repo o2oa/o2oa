@@ -1,3 +1,4 @@
+layout.app = true;
 layout.addReady(function(){
     // MWF.require("MWF.xScript.Environment", null, false);
     // MWF.require("MWF.xScript.PageEnvironment", null, false);
