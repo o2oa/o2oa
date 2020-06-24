@@ -92,10 +92,11 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			if( StringUtils.isEmpty( distinguishedName )){
 				distinguishedName = currentPerson.getDistinguishedName();
 			}
-			attendanceDetailMobile.setEmpName( distinguishedName );
+
 			Person person = userManagerService.getPersonObjByName( distinguishedName );
 
 			if( person != null ){
+				attendanceDetailMobile.setEmpName( person.getDistinguishedName() );
 				if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
 					if( person != null ){
 						if( StringUtils.isNotEmpty( person.getEmployee() )){
