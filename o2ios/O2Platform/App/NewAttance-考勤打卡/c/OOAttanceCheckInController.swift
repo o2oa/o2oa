@@ -72,7 +72,7 @@ class OOAttanceCheckInController: UITableViewController {
         
         getCurrentCheckinList()
         getMyRecords()
-//        self.perform(#selector(createButton), with: nil, afterDelay: 0)
+        self.perform(#selector(createButton), with: nil, afterDelay: 0)
     }
     
     
@@ -81,7 +81,7 @@ class OOAttanceCheckInController: UITableViewController {
 //    }
     
     //创建打卡按钮
-    @objc private func createButton(feature: OOAttandanceFeature) {
+    @objc private func createButton() {
         let window = UIApplication.shared.windows[0]
         myButton = UIButton(type: .custom)
         myButton?.frame = CGRect(x: kScreenW - 90, y: kScreenH - 150, width: 70, height: 70)
@@ -129,6 +129,13 @@ class OOAttanceCheckInController: UITableViewController {
     }
     
     @objc private func postCheckinButton(_ sender:UIButton){
+        if self.feature != nil {
+            if self.feature?.signSeq ?? -1 < 1 {
+                self.showError(title: "当前不需要打卡！")
+                return
+            }
+        }
+        
         MBProgressHUD_JChat.showMessage(message: "打卡中...", toView: self.view)
         checkinForm.checkin_type = self.feature?.checkinType ?? ""
         viewModel.postMyCheckin(checkinForm) { (result) in
@@ -179,11 +186,8 @@ class OOAttanceCheckInController: UITableViewController {
             switch result {
             case .ok(let record):
                 let model = record as? OOMyAttandanceRecords
-                if let feature = model?.feature, feature.signSeq ?? -1 > 0 {
+                if let feature = model?.feature {
                     self.feature = feature
-                    self.createButton(feature: feature)
-                }else {
-                    self.removeButton()
                 }
                 break
             case .fail(let err):
