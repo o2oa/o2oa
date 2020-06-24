@@ -377,7 +377,7 @@ public class ActionExportAll extends BaseAction {
 			row.createCell(1).setCellValue("群组编号 *");
 			row.createCell(2).setCellValue("人员编号");
 			row.createCell(3).setCellValue("组织编号");
-			row.createCell(4).setCellValue("群组编号");
+			row.createCell(4).setCellValue("子群组编号");
 			row.createCell(5).setCellValue("描述");
 
 			for (int i = 0; i < groupList.size(); i++) {
