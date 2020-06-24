@@ -148,7 +148,7 @@ class OOLoginViewController: OOBaseViewController {
     }
     
     @IBAction func btnReBindNodeAction(_ sender: UIButton) {
-        self.showSystemAlert(title: "重新绑定", message: "重新绑定到新的服务节点，原节点信息将被清空，确认吗？") { (action) in
+        self.showDefaultConfirm(title: "重新绑定", message: "重新绑定到新的服务节点，原节点信息将被清空，确认吗？") { (action) in
             O2AuthSDK.shared.clearAllInformationBeforeReBind(callback: { (result, msg) in
                 DDLogInfo("清空登录和绑定信息，result:\(result), msg:\(msg ?? "")")
                 DBManager.shared.removeAll()
