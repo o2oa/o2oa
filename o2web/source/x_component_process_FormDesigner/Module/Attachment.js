@@ -67,6 +67,9 @@ MWF.xApplication.process.FormDesigner.Module.Attachment = MWF.FCAttachment = new
 	_initModule: function(){
 		this.node.empty();
 		this.loadAttachmentController(this.json.editorProperties);
+
+		this.setPropertiesOrStyles("styles");
+
 		this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction();
 		this._setNodeEvent();
