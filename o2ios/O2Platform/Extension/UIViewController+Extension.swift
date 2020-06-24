@@ -341,6 +341,7 @@ extension UIViewController {
     //照片选择器
     func choosePhotoWithImagePicker(callback: @escaping (String, Data)-> Void) {
         let vc = FileBSImagePickerViewController().bsImagePicker()
+        vc.settings.fetch.assets.supportedMediaTypes = [.image]
         presentImagePicker(vc, select: nil, deselect: nil, cancel: nil, finish: {
             (arr) in
             let count = arr.count
@@ -351,58 +352,31 @@ extension UIViewController {
                 switch asset.mediaType {
                 case .image:
                     let options = PHImageRequestOptions()
-//                    options.isSynchronous = true
+                    options.isSynchronous = true
                     options.deliveryMode = .fastFormat
-                    options.isNetworkAccessAllowed = true
                     options.resizeMode = .none
-                    options.progressHandler = { progress, error, p, d in
-                            print("下载进度。。。\(progress)")
-                        print("下载错误。。。\(String(describing: error))")
-                    }
-                    PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: options, resultHandler: { (image, dict) in
-                        if image == nil {
-                            print("选择照片出错 is nil")
-                        } else {
-                            //处理图片旋转的问题
-                            let newImage = image?.fixOrientation()
-                            let newData = newImage!.hnk_data()
-                            if newData == nil {
-                                print("照片旋转出错")
-                            }else {
-                                var fileName = "unkownFile"
-                                if let fileURL = dict?["PHImageFileURLKey"] as? URL {
-                                    fileName = fileURL.lastPathComponent
-                                }
-                                callback(fileName, newData!)
+                    PHImageManager.default().requestImageData(for: asset, options: options) { (imageData, result, imageOrientation, dict) in
+                        guard let data = imageData else {
+                            return
+                        }
+                        var newData = data
+                        //处理图片旋转的问题
+                        if imageOrientation != UIImage.Orientation.up {
+                            let newImage = UIImage(data: data)?.fixOrientation()
+                            if newImage != nil {
+                                newData = newImage!.pngData()!
                             }
                         }
-                    })
-                    
-                    
-                    //选择iCloud上的照片获取不到data
-//                    PHImageManager.default().requestImageData(for: asset, options: options, resultHandler: { (imageData, result, imageOrientation, dict) in
-//                        if imageData == nil {
-//                            print("选择照片出错")
-//                        }else {
-//                            var newData = imageData
-//                            //处理图片旋转的问题
-//                            if imageOrientation != UIImage.Orientation.up && imageData != nil {
-//                                let newImage = UIImage(data: imageData!)?.fixOrientation()
-//                                if newImage != nil {
-//                                    newData = newImage?.pngData()
-//                                }
-//                            }
-//                            if newData == nil {
-//                                print("照片旋转出错")
-//                            }else {
-//                                var fileName = "unkownFile"
-//                                if let fileURL = dict?["PHImageFileURLKey"] as? URL {
-//                                    fileName = fileURL.lastPathComponent
-//                                }
-//                                callback(fileName, newData!)
-//                            }
-//                        }
-//                    })
+                        var fileName = ""
+                        if dict?["PHImageFileURLKey"] != nil {
+                            let fileURL = dict?["PHImageFileURLKey"] as! URL
+                            fileName = fileURL.lastPathComponent
+                        } else {
+                            fileName = "\(UUID().uuidString).png"
+                        }
+                        callback(fileName, newData)
+                    }
+                     
                     break
                 case .video:
                      print("视频文件。还不支持。。。。。")

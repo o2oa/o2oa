@@ -77,7 +77,7 @@ class IMConversationListViewController: UIViewController {
                 }
             }
             DispatchQueue.main.async {
-                if self.conversationList.count > 0 {
+                if self.conversationList.count > 0 || self.instantMsgList.count > 0{
                     self.emptyView.isHidden = true
                 } else {
                     self.emptyView.isHidden = false
