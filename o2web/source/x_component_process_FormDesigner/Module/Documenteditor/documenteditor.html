@@ -84,6 +84,17 @@
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
+				<td class="editTableTitle">全角转换:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="fullWidth" text{($.fullWidth=='y')?'checked':''} type="radio" value="y"/>是
+					<input class="editTableRadio" name="fullWidth" text{($.fullWidth!='y')?'checked':''} type="radio" value="n"/>否
+					<div>选择“是”自动将输入的半角空格转换为全角</div>
+				</td>
+			</tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
 				<td class="editTableTitle">WORD转换:</td>
 				<td class="editTableValue">
 					<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}toWordArea').setStyle('display', 'block')}" name="toWord" text{($.toWord=='y')?'checked':''} type="radio" value="y"/>是
