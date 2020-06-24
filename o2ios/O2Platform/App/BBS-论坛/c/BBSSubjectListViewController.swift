@@ -84,7 +84,7 @@ class BBSSubjectListViewController: UIViewController {
         self.window?.makeKeyAndVisible()
     }
     
-    func createAction(sender:Any?){
+    @objc func createAction(sender:Any?){
         self.performSegue(withIdentifier: "showCreateSubjectSegue", sender: nil)
     }
     
@@ -92,7 +92,7 @@ class BBSSubjectListViewController: UIViewController {
         self.subjects.removeAll()
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(BBSContext.bbsContextKey, query: BBSContext.subjectFromSectionByPageQuery, parameter: ["##pageNumber##":self.pageModel.pageNumber.toString as AnyObject,"##pageSize##":self.pageModel.pageSize.toString as AnyObject])
         Alamofire.request(url!, method: .put, parameters: ["sectionId":(sectionData?.id)!,"withTopSubject":true], encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
-            debugPrint("sectionId = \(self.sectionData?.id)!")
+            debugPrint("sectionId = \(String(describing: self.sectionData?.id))!")
             debugPrint(response)
             switch response.result {
             case .success(let val):
