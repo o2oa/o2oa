@@ -107,9 +107,49 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Content = MWF.FCTab$Content = n
 		this.recoveryWidgetstyle = null;
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
 		this.json.recoveryStyles = null;
-	},
-	setCustomStyles: function(){
-		this._recoveryModuleData();
 	}
+	// setCustomStyles: function(){
+	// 	this._recoveryModuleData();
+	// 	//debugger;
+	// 	var border = this.node.getStyle("border");
+	// 	this.node.clearStyles();
+	// 	this.node.setStyles(this.css.moduleNode);
+	//
+	// 	if (this.initialStyles) this.node.setStyles(this.initialStyles);
+	// 	this.node.setStyle("border", border);
+	//
+	// 	if (this.json.styles) Object.each(this.json.styles, function(value, key){
+	// 		if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+	// 			var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+	// 			var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+	// 			if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+	// 				value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+	// 			}else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+	// 				value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+	// 			}
+	// 			if (value.indexOf("/x_portal_assemble_surface")!==-1){
+	// 				value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+	// 			}else if (value.indexOf("x_portal_assemble_surface")!==-1){
+	// 				value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+	// 			}
+	// 		}
+	//
+	// 		var reg = /^border\w*/ig;
+	// 		if (!key.test(reg)){
+	// 			if (key){
+	// 				if (key.toString().toLowerCase()==="display"){
+	// 					if (value.toString().toLowerCase()==="none"){
+	// 						this.node.setStyle("opacity", 0.3);
+	// 					}else{
+	// 						this.node.setStyle("opacity", 1);
+	// 						this.node.setStyle(key, value);
+	// 					}
+	// 				}else{
+	// 					this.node.setStyle(key, value);
+	// 				}
+	// 			}
+	// 		}
+	// 	}.bind(this));
+	// }
 
 });
