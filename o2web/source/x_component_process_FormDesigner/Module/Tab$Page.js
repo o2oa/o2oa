@@ -254,8 +254,10 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		}.bind(this));
 	},
 	_recoveryModuleData: function(){
-		this.node.set("style", this.recoveryWidgetstyle);
+		if (this.recoveryWidgetstyle) this.node.set("style", this.recoveryWidgetstyle);
 		this.recoveryWidgetstyle = null;
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
 	},
 	setCustomStyles: function(){
 		this._recoveryModuleData();
