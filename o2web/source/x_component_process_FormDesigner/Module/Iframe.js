@@ -46,6 +46,56 @@ MWF.xApplication.process.FormDesigner.Module.Iframe = MWF.FCIframe = new Class({
 		this.parseModules();
         this.json.moduleName = this.moduleName;
 	},
+	_resetModuleDomNode: function(){
+		// if (this.json.preprocessing){
+		// 	var node = new Element("div", {
+		// 		"MWFType": "iframe",
+		// 		"id": this.json.id,
+		// 		"styles": this.css.moduleNodeMove,
+		// 		"events": {
+		// 			"selectstart": function(){
+		// 				return false;
+		// 			}
+		// 		}
+		// 	}).inject(this.node, "after");
+		// 	this.node.destroy();
+		// 	this._createNode(node);
+		//}
+	},
+	_preprocessingModuleData: function(){
+		// var iframe = new Element("iframe", {
+		// 	"src": src
+		// }).inject(this.node, "after");
+		// iframe.setStyles({
+		// 	"width": "100%",
+		// 	"border": "0"
+		// });
+		// this.recoveryNode = this.node.dispose();
+		//
+		// if (this.json.styles){
+		// 	this.json.recoveryStyles = Object.clone(this.json.styles);
+		// 	if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+		// 		if ((value.indexOf("x_processplatform_assemble_surface")==-1 && value.indexOf("x_portal_assemble_surface")==-1)){
+		// 			iframe.setStyle(key, value);
+		// 			delete this.json.styles[key];
+		// 		}
+		// 	}.bind(this));
+		// }
+		// this.json.preprocessing = "y";
+	},
+	_recoveryModuleData: function(){
+		// if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		//
+		// if (this.recoveryNode) {
+		// 	this.node.empty();
+		// 	this.recoveryTextNode.inject(this.node, "top");
+		// }
+		// if (this.recoveryIconNode) {
+		// 	this.recoveryIconNode.inject(this.node, "top");
+		// }
+		// this.json.recoveryStyles = null;
+		// this.recoveryNode = null;
+	},
 	_createMoveNode: function(){
 		this.moveNode = new Element("div", {
 			"MWFType": "iframe",
@@ -58,8 +108,8 @@ MWF.xApplication.process.FormDesigner.Module.Iframe = MWF.FCIframe = new Class({
 			}
 		}).inject(this.form.container);
 	},
-	_createNode: function(){
-		this.node = this.moveNode.clone(true, true);
+	_createNode: function(node){
+		this.node = node || this.moveNode.clone(true, true);
 		this.node.setStyles(this.css.moduleNode);
 		this.node.set("id", this.json.id);
 		this.node.addEvent("selectstart", function(){
