@@ -1558,12 +1558,14 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 
         this.jsonStringNode.set("text", JSON.stringify(json,null,2));
 
-        MWF.widget.ace.load(function(){
-            COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
-                var highlight = ace.require("ace/ext/static_highlight");
-                highlight(this.jsonStringNode, {mode: "ace/mode/json", theme: "ace/theme/tomorrow", "fontSize": 16});
-            }.bind(this));
-        }.bind(this));
+		o2.require("o2.widget.ace", function(){
+			MWF.widget.ace.load(function(){
+				COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+					var highlight = ace.require("ace/ext/static_highlight");
+					highlight(this.jsonStringNode, {mode: "ace/mode/json", theme: "ace/theme/tomorrow", "fontSize": 16});
+				}.bind(this));
+			}.bind(this));
+		}.bind(this));
 	},
 	clearJson: function(){
 		this.json = null;
