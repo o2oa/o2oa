@@ -621,8 +621,8 @@ MWF.xApplication.process.Application.WorkExplorer = new Class({
     removeWork: function(work, all){
         this.actions.removeWork(work.data.id, this.app.options.id, all, function(json){
             json.data.each(function(item){
-                this.items.erase(this.works[item.id]);
                 this.works[item.id].destroy();
+                this.items.erase(this.works[item.id]);
                 MWF.release(this.works[item.id]);
                 delete this.works[item.id];
             }.bind(this));
