@@ -179,15 +179,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                 htmlNode.set("text", html_beautify(copy.outerHTML, {"indent_size":1}));
                             }.bind(this));
 
-
-                            MWF.widget.ace.load(function(){
-                                COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
-                                    var highlight = ace.require("ace/ext/static_highlight");
-                                    highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
+                            o2.require("o2.widget.ace", function(){
+                                MWF.widget.ace.load(function(){
+                                    COMMON.AjaxModule.loadDom("../o2_lib/ace/src-min-noconflict/ext-static_highlight.js", function(){
+                                        var highlight = ace.require("ace/ext/static_highlight");
+                                        highlight(htmlNode, {mode: "ace/mode/html", theme: "ace/theme/eclipse", "fontSize": 16});
+                                    }.bind(this));
                                 }.bind(this));
                             }.bind(this));
-
-
 
 							copy.destroy();
 						}.bind(this)
