@@ -168,7 +168,7 @@ MWF.xApplication.process.ProcessManager.Explorer = new Class({
         }).inject(this.elementContentNode);
 
         this.setContentSize();
-        this.app.addEvent("resize", function(){this.setContentSize();}.bind(this));
+        this.app.addEvent("resize", this.setContentSize.bind(this));
     },
     setContentSize: function(){
         var toolbarSize = this.toolbarNode.getSize();
