@@ -165,10 +165,12 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 //}.bind(this))
                 this.selectAllNode.addEvent( "click", function(ev) {
                     if (this.isSelectedAll) {
-                        this.unselectAll(ev);
+                        // this.unselectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
                         this.selector.fireEvent("unselectCatgory", [this])
                     } else {
-                        this.selectAll(ev);
+                        // this.selectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
                         this.selector.fireEvent("selectCatgory", [this])
                     }
                     ev.stopPropagation();
