@@ -132,8 +132,35 @@ MWF.xApplication.Template.Selector.Custom = new Class({
             this.initSearchArea(false);
         }
     },
-    _getItem: function (callback, failure, id, async) {
-        if (callback) callback.apply(id, [{"id": id}]);
+    nestData : function( data, isItem ){
+        if( !this.nestedData )this.nestedData = {};
+        var setNest = function (d, isItem) {
+            if( isItem ){
+                this.nestedData[ d["id"] || d["name"] ] = d;
+            }else if( this.options.categorySelectable ){
+                this.nestedData[ d["id"] || d["name"] ] = { id : d.id , name : d.name };
+                if( d.subItemList )this.nestData( d.subItemList, true  );
+                if( d.subCategoryList )this.nestData( d.subCategoryList );
+            }else{
+                if( d.subItemList )this.nestData( d.subItemList, true );
+                if( d.subCategoryList )this.nestData( d.subCategoryList );
+            }
+        }.bind(this);
+        if( data ){
+            for( var i=0; i<data.length; i++ ){
+                var d = data[i];
+                setNest(d, isItem );
+            }
+        }else{
+            for( var i=0; i<this.options.selectableItems.length; i++ ){
+                var d = this.options.selectableItems[i];
+                setNest(d, d.isItem);
+            }
+        }
+    },
+    _getItem: function (callback, failure, id, async, data) {
+        if( !this.nestedData )this.nestData();
+        if (callback) callback.apply(id, [{ "data": this.nestedData[id] || {"id": id} }]);
     },
     _newItem: function (data, selector, container, level, category, delay) {
         return new MWF.xApplication.Template.Selector.Custom.Item(data, selector, container, level, category, delay);
@@ -182,8 +209,8 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
     },
     checkSelectedSingle: function () {
         var selectedItem = this.selector.options.values.filter(function (item, index) {
-            if (typeOf(item) === "object") return (this.data.id === item.id) || (this.data.name === item.name);
-            if (typeOf(item) === "string") return (this.data.id === item) || (this.data.name === item);
+            if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
+            if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
             return false;
         }.bind(this));
         if (selectedItem.length) {
@@ -192,7 +219,7 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
     },
     checkSelected: function () {
         var selectedItem = this.selector.selectedItems.filter(function (item, index) {
-            return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+            return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
         }.bind(this));
         if (selectedItem.length) {
             //selectedItem[0].item = this;
@@ -347,6 +374,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
             if ( this._hasChildCategory() ) {
                 this.data.subCategoryList.each(function (subCategory, index) {
                     var category = this.selector._newItemCategorySelectable(subCategory, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(category);
                     this.subCategorys.push( category );
                 }.bind(this));
             }
@@ -362,6 +390,7 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
             if ( this._hasChildCategory() ) {
                 this.data.subCategoryList.each(function (subCategory, index) {
                     var category = this.selector._newItemCategorySelectable(subCategory, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(category);
                     this.subCategorys.push( category );
                 }.bind(this));
             }
@@ -397,6 +426,28 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     _hasChild: function () {
         return this._hasChildCategory() || this._hasChildItem();
     },
+    checkSelectedSingle: function () {
+        var selectedItem = this.selector.options.values.filter(function (item, index) {
+            if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
+            if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
+            return false;
+        }.bind(this));
+        if (selectedItem.length) {
+            this.selectedSingle();
+        }
+    },
+    checkSelected: function () {
+        var selectedItem = this.selector.selectedItems.filter(function (item, index) {
+            return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+        }.bind(this));
+        if (selectedItem.length) {
+            //selectedItem[0].item = this;
+            selectedItem[0].addItem(this);
+            this.selectedItem = selectedItem[0];
+            this.setSelected();
+        }
+    },
     check: function () {
+        this.checkSelected();
     }
 });
