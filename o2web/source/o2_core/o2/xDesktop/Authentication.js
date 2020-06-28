@@ -2306,7 +2306,7 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
             isEncrypted : "n" //是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key"
         }
         // o2.Actions.load("x_organization_assemble_personal").PasswordAction.changePassword( d, function (json) {
-        o2.Actions.load("x_organization_assemble_personal").PersonAction.setPasswordAnonymous( d, function (json) {
+        o2.Actions.load("x_organization_assemble_personal").ResetAction.setPasswordAnonymous( d, function (json) {
             if (callback) callback(json);
             //this.fireEvent("postOk")
         }.bind(this), function (errorObj) {
