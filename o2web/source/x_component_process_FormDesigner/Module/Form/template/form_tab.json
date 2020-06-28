@@ -18,6 +18,10 @@
         "code": "",
         "html": ""
       },
+      "submitScript":{
+        "code":"layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();",
+        "html": ""
+      },
       "events": {
         "postLoad": {
           "code": "",
@@ -8374,6 +8378,10 @@
       "scriptSrc": [],
       "jsheader": {
         "code": "",
+        "html": ""
+      },
+      "submitScript":{
+        "code":"layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();",
         "html": ""
       },
       "events": {
