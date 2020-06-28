@@ -44,7 +44,6 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 		});
 	},
 	_setEditStyle_custom: function(name, obj, oldValue){
-		debugger;
 
 		if (name=="documentTempleteType"){
 			if (this.json.documentTempleteType!=oldValue){
