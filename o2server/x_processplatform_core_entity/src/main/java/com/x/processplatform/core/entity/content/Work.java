@@ -15,19 +15,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -42,6 +34,15 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Work.table, uniqueConstraints = {
@@ -53,7 +54,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 7668822947307502058L;
 	private static final String TABLE = PersistenceProperties.Content.Work.table;
-
+	public static final String TITLEALIAS_SUBJECT = "subject";
 	public static final String WORKCREATETYPE_SURFACE = "surface";
 	public static final String WORKCREATETYPE_ASSIGN = "assign";
 
@@ -77,14 +78,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
 		}
 		this.serial = Objects.toString(this.serial, "");
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(title, length_255B);
-			this.titleLob = title;
-		} else {
-			this.title = Objects.toString(this.title, "");
-			this.titleLob = null;
+		// add by Ray 20200622
+		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
 		}
-		/* 填入处理人文本 */
+		// 填入处理人文本
 		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
 			this.manualTaskIdentityText = "";
 		} else {
@@ -93,6 +91,14 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.setManualTaskIdentityText(text);
 		}
 	}
+
+	@PostLoad
+	public void postLoad() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+			this.title = this.getProperties().getTitle();
+		}
+	}
+
 	/* 更新运行方法 */
 
 	public Work() {
@@ -121,16 +127,25 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		return this.properties;
 	}
 
+	// public void setTitle(String title) {
+	// this.title = title;
+	// }
+
+	// public String getTitle() {
+	// if (StringUtils.isNotEmpty(this.titleLob)) {
+	// return this.titleLob;
+	// } else {
+	// return this.title;
+	// }
+	// }
+
 	public void setTitle(String title) {
 		this.title = title;
+		this.getProperties().setTitle(title);
 	}
 
 	public String getTitle() {
-		if (StringUtils.isNotEmpty(this.titleLob)) {
-			return this.titleLob;
-		} else {
-			return this.title;
-		}
+		return this.title;
 	}
 
 	public String getWorkCreateType() {
@@ -154,12 +169,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private String title;
 
-	public static final String titleLob_FIELDNAME = "titleLob";
-	@FieldDescribe("标题,长文本")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + titleLob_FIELDNAME)
-	private String titleLob;
+	// public static final String titleLob_FIELDNAME = "titleLob";
+	// @FieldDescribe("标题,长文本")
+	// @Lob
+	// @Basic(fetch = FetchType.EAGER)
+	// @Column(length = JpaObject.length_1M, name = ColumnNamePrefix +
+	// titleLob_FIELDNAME)
+	// private String titleLob;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("工作开始时间")
@@ -994,13 +1010,13 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.manualTaskIdentityText = manualTaskIdentityText;
 	}
 
-	public String getTitleLob() {
-		return titleLob;
-	}
+	// public String getTitleLob() {
+	// return titleLob;
+	// }
 
-	public void setTitleLob(String titleLob) {
-		this.titleLob = titleLob;
-	}
+	// public void setTitleLob(String titleLob) {
+	// this.titleLob = titleLob;
+	// }
 
 	public String getStringValue01() {
 		return stringValue01;
