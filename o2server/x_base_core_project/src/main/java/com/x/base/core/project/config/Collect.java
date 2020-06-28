@@ -31,6 +31,11 @@ public class Collect extends ConfigObject {
 	private static String Default_appUrl = "https://sample.o2oa.net/app/download.html";
 	private static String Default_server = "collect.o2oa.net";
 	private static Integer Default_port = 20080;
+	public static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
+	public static String ADDRESS_COLLECT_ECHO = "/o2_collect_assemble/jaxrs/echo";
+	public static String ADDRESS_COLLECT_VALIDATE = "/o2_collect_assemble/jaxrs/unit/validate";
+	public static String ADDRESS_COLLECT_VALIDATE_CODE = "/o2_collect_assemble/jaxrs/unit/validate/codeanswer";
+	public static String ADDRESS_COLLECT_APPLICATION_LIST = "/o2_collect_assemble/jaxrs/application/list";
 
 	public static Collect defaultInstance() {
 		return new Collect();
