@@ -909,6 +909,7 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
         //this.loadSearch();
         MWF.UD.getDataJson("taskCenter_startTop", function(json){
             this.top5Data = json;
+            debugger;
             if (this.top5Data && this.top5Data.length){
                 new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.app.lp.startTop5}).inject(this.childNode);
                 var top5ChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
@@ -978,8 +979,14 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
         this.textNode = new Element("div", {"styles": this.css.processTextNode}).inject(this.node);
 
+        var appName = "";
+        if( typeOf( this.data.applicationName ) === "string" ){
+            appName = this.data.applicationName;
+        }else if( typeOf( this.data.applicationName ) === "object" && this.data.applicationName.name ){
+            appName = this.data.applicationName.name;
+        }
         this.textNode.set({
-            "text": this.data.name+((this.data.applicationName) ? " -- ("+this.data.applicationName+")" : ""),
+            "text": this.data.name+((this.data.applicationName) ? " -- ("+appName+")" : ""),
             "title": this.data.name+"-"+this.data.description
         });
         //var _self = this;
