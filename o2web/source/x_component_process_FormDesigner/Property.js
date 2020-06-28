@@ -1587,6 +1587,7 @@ debugger;
 
 	loadMaplist: function(){
 		var maplists = this.propertyContent.getElements(".MWFMaplist");
+		debugger;
 		maplists.each(function(node){
 			var title = node.get("title");
 			var name = node.get("name");
