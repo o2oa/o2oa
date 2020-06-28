@@ -1,7 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
-import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,15 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -32,6 +27,11 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -66,33 +66,42 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 		if (StringUtils.isEmpty(this.startTimeMonth) && (null != this.startTime)) {
 			this.startTimeMonth = DateTools.format(this.startTime, DateTools.format_yyyyMM);
 		}
-		if (StringTools.utf8Length(this.getOpinion()) > length_255B) {
-			this.opinionLob = this.getOpinion();
-			this.opinion = StringTools.utf8SubString(this.getOpinion(), length_255B);
-		} else {
-			this.opinion = Objects.toString(this.getOpinion(), "");
-			this.opinionLob = null;
+		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
+		}
+		if (StringTools.utf8Length(this.getProperties().getOpinion()) > length_255B) {
+			this.opinion = StringTools.utf8SubString(this.getProperties().getOpinion(), length_255B - 3) + "...";
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+				this.title = this.getProperties().getTitle();
+			}
+			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
+				this.opinion = this.getProperties().getOpinion();
+			}
 		}
 	}
 
 	public void setOpinion(String opinion) {
 		this.opinion = opinion;
+		this.getProperties().setOpinion(opinion);
 	}
 
 	public String getOpinion() {
-		if (StringUtils.isNotEmpty(this.opinionLob)) {
-			return this.opinionLob;
-		} else {
-			return this.opinion;
-		}
+		return this.opinion;
 	}
 
 	public void setTitle(String title) {
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(this.title, 252) + "...";
-		} else {
-			this.title = Objects.toString(title, "");
-		}
+		this.title = title;
+		this.getProperties().setTitle(title);
+	}
+
+	public String getTitle() {
+		return this.title;
 	}
 
 	public Read() {
@@ -620,10 +629,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWork(String work) {
 		this.work = work;
-	}
-
-	public String getTitle() {
-		return title;
 	}
 
 	public String getIdentity() {

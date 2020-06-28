@@ -196,7 +196,7 @@ public class ProcessPlatform extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "30 0/10 8-18 * * ?";
 

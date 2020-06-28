@@ -29,8 +29,6 @@ import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static final String subject_path = "subject";
-
 	protected Gson gson = XGsonBuilder.instance();
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
@@ -41,14 +39,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return jsonElement;
 	}
 
-	/** 将data中的Title 和 serial 字段同步到work中 */
+	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, Work work, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, Work.title_FIELDNAME);
 		if (null == title) {
-			title = XGsonBuilder.extractString(jsonElement, subject_path);
+			title = XGsonBuilder.extractString(jsonElement, Work.TITLEALIAS_SUBJECT);
 		}
 		String serial = XGsonBuilder.extractString(jsonElement, Work.serial_FIELDNAME);
-		/* 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中 */
+		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
 		if (((null != title) && (!Objects.equals(title, work.getTitle())))
 				|| ((null != serial) && (!Objects.equals(serial, work.getSerial())))) {
 			business.entityManagerContainer().beginTransaction(Work.class);
@@ -69,50 +67,58 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<Review> reviews = business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME,
 					work.getJob());
 
-			if ((null != title) && (!Objects.equals(title, work.getTitle()))) {
-				work.setTitle(title);
-				for (Task o : tasks) {
-					o.setTitle(title);
-				}
-				for (TaskCompleted o : taskCompleteds) {
-					o.setTitle(title);
-				}
-				for (Read o : reads) {
-					o.setTitle(title);
-				}
-				for (ReadCompleted o : readCompleteds) {
-					o.setTitle(title);
-				}
-				for (Review o : reviews) {
-					o.setTitle(title);
-				}
-			}
-
-			if ((null != serial) && (!Objects.equals(serial, work.getSerial()))) {
-				work.setSerial(serial);
-				for (Task o : tasks) {
-					o.setSerial(serial);
-				}
-				for (TaskCompleted o : taskCompleteds) {
-					o.setSerial(serial);
-				}
-				for (Read o : reads) {
-					o.setSerial(serial);
-				}
-				for (ReadCompleted o : readCompleteds) {
-					o.setSerial(serial);
-				}
-				for (Review o : reviews) {
-					o.setSerial(serial);
-				}
-			}
-			/** 这里必须先提交掉,不然后面的获取会得到不一致的状态 */
-			/**
-			 * <openjpa-2.4.3-SNAPSHOT-r422266:1777109 nonfatal user error>
-			 * org.apache.openjpa.persistence.InvalidStateException: Opera tion attempted on
-			 * a deleted instance.
-			 */
+			this.updateTitle(title, work, tasks, taskCompleteds, reads, readCompleteds, reviews);
+			this.updateSerial(serial, work, tasks, taskCompleteds, reads, readCompleteds, reviews);
+			// 这里必须先提交掉,不然后面的获取会得到不一致的状态
+			// <openjpa-2.4.3-SNAPSHOT-r422266:1777109 nonfatal user error>
+			// org.apache.openjpa.persistence.InvalidStateException: Opera tion attempted on
+			// a deleted instance.
 			business.entityManagerContainer().commit();
+		}
+	}
+
+	private void updateTitle(String title, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
+			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
+		if ((null != title) && (!Objects.equals(title, work.getTitle()))) {
+			work.setTitle(title);
+			for (Task o : tasks) {
+				o.setTitle(title);
+			}
+			for (TaskCompleted o : taskCompleteds) {
+				o.setTitle(title);
+			}
+			for (Read o : reads) {
+				o.setTitle(title);
+			}
+			for (ReadCompleted o : readCompleteds) {
+				o.setTitle(title);
+			}
+			for (Review o : reviews) {
+				o.setTitle(title);
+			}
+		}
+
+	}
+
+	private void updateSerial(String serial, Work work, List<Task> tasks, List<TaskCompleted> taskCompleteds,
+			List<Read> reads, List<ReadCompleted> readCompleteds, List<Review> reviews) {
+		if ((null != serial) && (!Objects.equals(serial, work.getSerial()))) {
+			work.setSerial(serial);
+			for (Task o : tasks) {
+				o.setSerial(serial);
+			}
+			for (TaskCompleted o : taskCompleteds) {
+				o.setSerial(serial);
+			}
+			for (Read o : reads) {
+				o.setSerial(serial);
+			}
+			for (ReadCompleted o : readCompleteds) {
+				o.setSerial(serial);
+			}
+			for (Review o : reviews) {
+				o.setSerial(serial);
+			}
 		}
 	}
 
@@ -141,13 +147,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, work);
 				business.entityManagerContainer().persist(_o);
 			}
-			/* 标记数据已经被修改 */
+			// 标记数据已经被修改
 			business.entityManagerContainer().beginTransaction(Work.class);
 			work.setDataChanged(true);
-			/* 基于前面的原因,这里进行单独提交 */
+			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
-	} 
+	}
 
 	void updateData(Business business, WorkCompleted workCompleted, JsonElement jsonElement, String... paths)
 			throws Exception {
@@ -175,7 +181,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, workCompleted);
 				business.entityManagerContainer().persist(_o);
 			}
-			/** 基于前面的原因,这里进行单独提交 */
+			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 
 		}
@@ -209,9 +215,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
 		business.entityManagerContainer().beginTransaction(Item.class);
 		if ((null != cursor) && cursor.getItemType().equals(ItemType.a)) {
-			/* 向数组里面添加一个成员对象 */
+			// 向数组里面添加一个成员对象
 			Integer index = business.item().getArrayLastIndexWithJobWithPath(work.getJob(), paths);
-			/* 新的路径开始 */
+			// 新的路径开始
 			String[] ps = new String[paths.length + 1];
 			for (int i = 0; i < paths.length; i++) {
 				ps[i] = paths[i];
@@ -223,7 +229,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().persist(o);
 			}
 		} else if ((cursor == null) && parent.getItemType().equals(ItemType.o)) {
-			/* 向parent对象添加一个属性值 */
+			// 向parent对象添加一个属性值
 			List<Item> adds = converter.disassemble(jsonElement, paths);
 			for (Item o : adds) {
 				this.fill(o, work);
@@ -233,7 +239,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throw new Exception("unexpected post data with work" + work + ".path:" + StringUtils.join(paths, ".")
 					+ "json:" + jsonElement);
 		}
-		/* 标记数据已经被修改 */
+		// 标记数据已经被修改
 		business.entityManagerContainer().beginTransaction(Work.class);
 		work.setDataChanged(true);
 		business.entityManagerContainer().commit();
@@ -249,30 +255,28 @@ abstract class BaseAction extends StandardJaxrsAction {
 		for (Item o : exists) {
 			business.entityManagerContainer().remove(o);
 		}
-		if (paths.length > 0) {
-			if (NumberUtils.isCreatable(paths[paths.length - 1])) {
-				int position = paths.length - 1;
-				for (Item o : business.item().listWithJobWithPathWithAfterLocation(work.getJob(),
-						NumberUtils.toInt(paths[position]), paths)) {
-					o.path(Integer.toString(o.pathLocation(position) - 1), position);
-				}
+		if ((paths.length > 0) && NumberUtils.isCreatable(paths[paths.length - 1])) {
+			int position = paths.length - 1;
+			for (Item o : business.item().listWithJobWithPathWithAfterLocation(work.getJob(),
+					NumberUtils.toInt(paths[position]), paths)) {
+				o.path(Integer.toString(o.pathLocation(position) - 1), position);
 			}
 		}
-		/* 标记数据已经被修改 */
+		// 标记数据已经被修改
 		business.entityManagerContainer().beginTransaction(Work.class);
 		work.setDataChanged(true);
 		business.entityManagerContainer().commit();
 	}
 
 	void fill(Item o, Work work) {
-		/** 将DateItem与Work放在同一个分区 */
+		// 将DateItem与Work放在同一个分区
 		o.setDistributeFactor(work.getDistributeFactor());
 		o.setBundle(work.getJob());
 		o.setItemCategory(ItemCategory.pp);
 	}
 
 	void fill(Item o, WorkCompleted workCompleted) {
-		/** 将DateItem与Work放在同一个分区 */
+		// 将DateItem与Work放在同一个分区
 		o.setDistributeFactor(workCompleted.getDistributeFactor());
 		o.setBundle(workCompleted.getJob());
 		o.setItemCategory(ItemCategory.pp);

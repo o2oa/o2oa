@@ -46,7 +46,7 @@ public class JobFactory extends AbstractFactory {
 			return workCompleted.getJob();
 		}
 		List<WorkCompleted> os = this.entityManagerContainer().fetchEqual(WorkCompleted.class,
-				ListTools.toList(WorkCompleted.work_FIELDNAME), WorkCompleted.work_FIELDNAME, flag);
+				ListTools.toList(WorkCompleted.job_FIELDNAME), WorkCompleted.work_FIELDNAME, flag);
 		if (ListTools.isNotEmpty(os)) {
 			return os.get(0).getJob();
 		}
