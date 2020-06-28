@@ -136,24 +136,6 @@ public class Record extends SliceJpaObject {
 		this.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
 	}
 
-	// public Record(Work work) {
-	// this();
-	// this.setApplication(work.getApplication());
-	// this.setProcess(work.getProcess());
-	// this.setWork(work.getId());
-	// this.setJob(work.getJob());
-	// this.setDisplay(true);
-	// this.setCompleted(false);
-	// this.setFromActivity(work.getActivity());
-	// this.setFromActivityType(work.getActivityType());
-	// this.setFromActivityName(work.getActivityName());
-	// this.setFromActivityAlias(work.getActivityAlias());
-	// this.setFromActivityToken(work.getActivityToken());
-	//// this.getProperties().setOpinion("");
-	//// this.getProperties().setRouteName(task.getRouteName());
-	//// this.getProperties().setMediaOpinion(task.getMediaOpinion());
-	// }
-
 	public Record(WorkLog workLog) {
 		this();
 		this.setApplication(workLog.getApplication());

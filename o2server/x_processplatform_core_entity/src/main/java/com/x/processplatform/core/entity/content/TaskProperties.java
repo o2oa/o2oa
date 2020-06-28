@@ -4,43 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 public class TaskProperties extends JsonProperties {
 
 	private List<String> prevTaskIdentityList;
 
-//	private List<String> routeList;
-//	private List<String> routeNameList;
-//	private List<String> routeOpinionList;
-//	private List<String> routeDecisionOpinionList;
+	@FieldDescribe("标题")
+	private String title;
 
-//	public List<String> getRouteDecisionOpinionList() {
-//		if (null == routeDecisionOpinionList) {
-//			routeDecisionOpinionList = new ArrayList<String>();
-//		}
-//		return routeDecisionOpinionList;
-//	}
-//
-//	public List<String> getRouteOpinionList() {
-//		if (null == routeOpinionList) {
-//			routeOpinionList = new ArrayList<String>();
-//		}
-//		return routeOpinionList;
-//	}
-//
-//	public List<String> getRouteNameList() {
-//		if (null == routeNameList) {
-//			routeNameList = new ArrayList<String>();
-//		}
-//		return routeNameList;
-//	}
-//
-//	public List<String> getRouteList() {
-//		if (null == routeList) {
-//			routeList = new ArrayList<String>();
-//		}
-//		return routeList;
-//	}
+	@FieldDescribe("意见")
+	private String opinion;
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == prevTaskIdentityList) {
@@ -53,20 +27,20 @@ public class TaskProperties extends JsonProperties {
 		this.prevTaskIdentityList = prevTaskIdentityList;
 	}
 
-//	public void setRouteList(List<String> routeList) {
-//		this.routeList = routeList;
-//	}
-//
-//	public void setRouteNameList(List<String> routeNameList) {
-//		this.routeNameList = routeNameList;
-//	}
-//
-//	public void setRouteOpinionList(List<String> routeOpinionList) {
-//		this.routeOpinionList = routeOpinionList;
-//	}
-//
-//	public void setRouteDecisionOpinionList(List<String> routeDecisionOpinionList) {
-//		this.routeDecisionOpinionList = routeDecisionOpinionList;
-//	}
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
 
 }
