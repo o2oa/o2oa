@@ -15,6 +15,6 @@
   "###ssoAddress": "单点登录获取地址###",
   "###token": "回调token###",
   "###encodingAesKey": "回调encodingAesKey###",
-  "###personAttributeNewCountName": " 存储邮件数量个人属性值.###",
-  "###personAttributeTitleName": " 存储邮件标题个人属性值.###"
+  "###personAttributeNewCountName": "存储邮件数量个人属性值.###",
+  "###personAttributeTitleName": "存储邮件标题个人属性值.###"
 }

@@ -13,6 +13,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 
 public class CenterQueue extends AbstractQueue<CenterQueueBody> {
@@ -46,13 +47,16 @@ public class CenterQueue extends AbstractQueue<CenterQueueBody> {
 			if (null != application) {
 				application.setReportDate(now);
 			} else {
+				if (ListTools.isNotEmpty(applications.get(body.getClassName()))) {
+					logger.print("cluster add application: {}, node: {}.", body.getNode(), body.getClassName());
+				}
 				body.setReportDate(now);
 				applications.add(body.getClassName(), body);
 				Config.resource_node_applicationsTimestamp(now);
 				applications.updateTimestamp(now);
-				Config.resource_node_applications(XGsonBuilder.instance().toJsonTree(applications));
 			}
 		}
+		Config.resource_node_applications(XGsonBuilder.instance().toJsonTree(applications));
 	}
 
 	private void refresh(CenterQueueRefreshBody body) throws Exception {
@@ -63,10 +67,10 @@ public class CenterQueue extends AbstractQueue<CenterQueueBody> {
 		for (Entry<String, CopyOnWriteArrayList<Application>> en : applications.entrySet()) {
 			List<Application> removeApplications = new ArrayList<>();
 			for (Application application : en.getValue()) {
-				if ((now.getTime() - application.getReportDate().getTime()) > REFRESHAPPLICATIONSINTERVAL * 1000
-						+ 10000) {
+				if ((now.getTime() - application.getReportDate().getTime()) > REFRESHAPPLICATIONSINTERVAL * 2 * 1000) {
 					removeApplications.add(application);
-					logger.warn("application dropped, node: {}, application: {}.", application.getNode(), en.getKey());
+					logger.warn("cluster dropped application: {}, node: {}, report date: {}.", en.getKey(),
+							application.getNode(), DateTools.format(application.getReportDate()));
 				}
 			}
 			modify = en.getValue().removeAll(removeApplications) || modify;
