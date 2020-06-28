@@ -1025,6 +1025,7 @@ MWF.xApplication.Selector.Person = new Class({
     },
 
     setSelectedItem: function(){
+        debugger;
         if (this.options.values.length){
             this.options.values.each(function(v, i){
                 if (typeOf(v)==="object"){
