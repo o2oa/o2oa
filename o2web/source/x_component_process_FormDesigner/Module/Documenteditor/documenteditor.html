@@ -92,6 +92,16 @@
 				</td>
 			</tr>
 		</table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">段落缩进:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" name="textIndent" text{($.textIndent!=='n')?'checked':''} type="radio" value="y"/>是
+					<input class="editTableRadio" name="textIndent" text{($.textIndent=='n')?'checked':''} type="radio" value="n"/>否
+					<div>选择“是”每段首行自动缩进</div>
+				</td>
+			</tr>
+		</table>
 
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 			<tr>
@@ -1194,6 +1204,8 @@
 			<div id="text{$.pid}meetingRecordValueScriptArea" style="display: text{($.meetingRecordValueType=='script')?'block':'none'}" class="MWFFormulaArea" name="meetingRecordValueScript" title="会议记录绑定值脚本 (S)"></div>
 		</div>
 <!-----------------------------------------------会议记录------------------------------------------------------------------->
+
+		<div class="MWFMaplist" name="customFields" title="自定义元素配置"></div>
 
 	</div>
 	<div title="事件"  class="MWFTab" style="overflow: hidden">
