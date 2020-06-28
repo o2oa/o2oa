@@ -376,7 +376,32 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称"
+            },
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "值"
+            },
+            {
+              "name": "count",
+              "type": "Long",
+              "isCollection": false,
+              "description": "数量"
+            },
+            {
+              "name": "duration",
+              "type": "Long",
+              "isCollection": false,
+              "description": "总时长"
+            }
+          ]
         },
         {
           "name": "listCountCompletedTaskByActivity",
@@ -834,7 +859,26 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称"
+            },
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "值"
+            },
+            {
+              "name": "count",
+              "type": "Long",
+              "isCollection": false,
+              "description": "数量"
+            }
+          ]
         },
         {
           "name": "listCountExpiredWorkByApplication",
@@ -962,7 +1006,26 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称"
+            },
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "值"
+            },
+            {
+              "name": "count",
+              "type": "Long",
+              "isCollection": false,
+              "description": "数量"
+            }
+          ]
         },
         {
           "name": "listCountStartTaskByActivity",
@@ -1127,7 +1190,26 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "name",
+              "type": "String",
+              "isCollection": false,
+              "description": "名称"
+            },
+            {
+              "name": "value",
+              "type": "String",
+              "isCollection": false,
+              "description": "值"
+            },
+            {
+              "name": "count",
+              "type": "Long",
+              "isCollection": false,
+              "description": "数量"
+            }
+          ]
         },
         {
           "name": "listCountStartWorkByApplication",
@@ -1380,7 +1462,26 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "application",
+              "type": "List\u003cWoApplication\u003e",
+              "isCollection": true,
+              "description": "应用分类"
+            },
+            {
+              "name": "process",
+              "type": "List\u003cWoProcess\u003e",
+              "isCollection": true,
+              "description": "分类流程"
+            },
+            {
+              "name": "activity",
+              "type": "List\u003cWoActivity\u003e",
+              "isCollection": true,
+              "description": "活动分类"
+            }
+          ]
         },
         {
           "name": "categoryTrigger",
@@ -1396,7 +1497,26 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "application",
+              "type": "List\u003cWoApplication\u003e",
+              "isCollection": true,
+              "description": "应用分类"
+            },
+            {
+              "name": "process",
+              "type": "List\u003cWoProcess\u003e",
+              "isCollection": true,
+              "description": "分类流程"
+            },
+            {
+              "name": "activity",
+              "type": "List\u003cWoActivity\u003e",
+              "isCollection": true,
+              "description": "活动分类"
+            }
+          ]
         },
         {
           "name": "organization",
@@ -1412,7 +1532,20 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "unit",
+              "type": "List\u003cWoUnit\u003e",
+              "isCollection": true,
+              "description": "按组织统计"
+            },
+            {
+              "name": "person",
+              "type": "List\u003cWoPerson\u003e",
+              "isCollection": true,
+              "description": "按个人统计"
+            }
+          ]
         },
         {
           "name": "running",
@@ -1444,7 +1577,80 @@
           "formParameters": [],
           "queryParameters": [],
           "ins": [],
-          "outs": []
+          "outs": [
+            {
+              "name": "applicationCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "应用数量"
+            },
+            {
+              "name": "processCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "流程数量"
+            },
+            {
+              "name": "taskCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "待办数量"
+            },
+            {
+              "name": "taskCompletedCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "已办数量"
+            },
+            {
+              "name": "readCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "待阅数量"
+            },
+            {
+              "name": "readCompletedCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "已阅数量"
+            },
+            {
+              "name": "workCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "工作实例数量"
+            },
+            {
+              "name": "workCompletedCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "已完成工作数量"
+            },
+            {
+              "name": "expiredTaskCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "超时待办数量"
+            },
+            {
+              "name": "expiredTaskCompletedCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "超时已办数量"
+            },
+            {
+              "name": "expiredWorkCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "超时工作数量"
+            },
+            {
+              "name": "expiredWorkCompletedCount",
+              "type": "Long",
+              "isCollection": false,
+              "description": "身份对象"
+            }
+          ]
         }
       ]
     },

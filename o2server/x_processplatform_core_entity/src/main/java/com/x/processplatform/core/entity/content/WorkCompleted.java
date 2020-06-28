@@ -1,7 +1,6 @@
 package com.x.processplatform.core.entity.content;
 
 import java.util.Date;
-import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -11,16 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -31,6 +25,12 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -78,12 +78,15 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		if (StringUtils.isEmpty(this.creatorUnitLevelName)) {
 			this.creatorUnitLevelName = "";
 		}
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(title, length_255B);
-			this.titleLob = title;
-		} else {
-			this.title = Objects.toString(this.title, "");
-			this.titleLob = null;
+		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+			this.title = this.getProperties().getTitle();
 		}
 	}
 
@@ -137,14 +140,11 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setTitle(String title) {
 		this.title = title;
+		this.getProperties().setTitle(title);
 	}
 
 	public String getTitle() {
-		if (StringUtils.isNotEmpty(this.titleLob)) {
-			return this.titleLob;
-		} else {
-			return this.title;
-		}
+		return this.title;
 	}
 
 	public Boolean getMerged() {
@@ -164,13 +164,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
-
-	public static final String titleLob_FIELDNAME = "titleLob";
-	@FieldDescribe("标题,长文本")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + titleLob_FIELDNAME)
-	private String titleLob;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("工作开始时间")
@@ -800,14 +793,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.allowRollback = allowRollback;
 	}
 
-	// public String getData() {
-	// 	return data;
-	// }
-
-	// public void setData(String data) {
-	// 	this.data = data;
-	// }
-
 	public String getStringValue01() {
 		return stringValue01;
 	}
@@ -1056,14 +1041,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.timeValue02 = timeValue02;
 	}
 
-	public String getTitleLob() {
-		return titleLob;
-	}
-
-	public void setTitleLob(String titleLob) {
-		this.titleLob = titleLob;
-	}
-
 	public void setMerged(Boolean merged) {
 		this.merged = merged;
 	}
@@ -1103,7 +1080,5 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setActivityDescription(String activityDescription) {
 		this.activityDescription = activityDescription;
 	}
-
-	
 
 }

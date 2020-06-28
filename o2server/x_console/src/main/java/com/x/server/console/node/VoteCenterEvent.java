@@ -44,8 +44,9 @@ public class VoteCenterEvent implements Event {
 					return;
 				}
 			} catch (Exception e) {
-				logger.warn("failed to connect center: {}, port: {}, sslEnable: {}.", entry.getKey(),
-						entry.getValue().getPort(), entry.getValue().getSslEnable());
+				// logger.warn("failed to connect center: {}, port: {}, sslEnable: {}.",
+				// entry.getKey(),
+				// entry.getValue().getPort(), entry.getValue().getSslEnable());
 			}
 		}
 

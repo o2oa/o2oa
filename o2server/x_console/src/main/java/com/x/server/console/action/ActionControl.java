@@ -132,7 +132,7 @@ public class ActionControl extends ActionBase {
 
 	private static Option ecOption() {
 		return Option.builder("ec").longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
-				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message.").build();
+				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message org.").build();
 	}
 
 	private static Option clh2Option() {
@@ -197,6 +197,9 @@ public class ActionControl extends ActionBase {
 				break;
 			case "message":
 				new EraseContentMessage().execute();
+				break;
+			case "org":
+				new EraseContentOrg().execute();
 				break;
 			default:
 				logger.print("type may be processPlatform bbs cms log message.");
