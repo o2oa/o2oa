@@ -228,7 +228,7 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
                         activity.go<PictureViewActivity>(bundle)
                     } else {
                         val activity = activity as CloudDriveActivity
-                        activity.openYunPanFile(item.id, item.fileName)
+                        activity.openYunPanFile(item.id, item.name)
                     }
                 }
             }
