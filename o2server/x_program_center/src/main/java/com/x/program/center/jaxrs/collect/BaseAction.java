@@ -30,7 +30,7 @@ class BaseAction extends StandardJaxrsAction {
 
 	Boolean connect() {
 		try {
-			String url = Config.collect().url("/o2_collect_assemble/jaxrs/echo");
+			String url = Config.collect().url(Collect.ADDRESS_COLLECT_ECHO);
 			ActionResponse actionResponse = ConnectionAction.get(url, null);
 			if (Objects.equals(Type.success, actionResponse.getType())) {
 				return true;
@@ -44,7 +44,7 @@ class BaseAction extends StandardJaxrsAction {
 	}
 
 	Boolean validate(String name, String password) throws Exception {
-		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/validate");
+		String url = Config.collect().url(Collect.ADDRESS_COLLECT_VALIDATE);
 		Map<String, String> map = new HashMap<>();
 		map.put("name", name);
 		map.put("password", password);
@@ -53,7 +53,7 @@ class BaseAction extends StandardJaxrsAction {
 	}
 
 	Boolean validateCodeAnswer(String mobile, String codeAnswer) throws Exception {
-		String url = Config.collect().url("/o2_collect_assemble/jaxrs/unit/validate/codeanswer");
+		String url = Config.collect().url(Collect.ADDRESS_COLLECT_VALIDATE_CODE);
 		Map<String, String> map = new HashMap<>();
 		map.put("mobile", mobile);
 		map.put("codeAnswer", codeAnswer);
