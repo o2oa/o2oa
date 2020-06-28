@@ -17,6 +17,7 @@ MWF.xApplication.Selector.Person = new Class({
         "expand": true,
         "embedded" : false, //是否嵌入在其他容器中
         "selectAllEnable" : false, //是否允许全选
+        "selectAllRange" : "direct", //全选直属人员 还是 所有下级人员
 
         "level1Indent" : 10, //第一级的缩进
         "indent" : 10, //后续的缩进
@@ -2119,10 +2120,10 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }).inject(selectAllWrap);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
-                    this.unselectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
                     this.selector.fireEvent("unselectCatgory",[this])
                 }else{
-                    this.selectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
                     this.selector.fireEvent("selectCatgory",[this])
                 }
                 ev.stopPropagation();
@@ -2139,8 +2140,10 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         //    this.textNode.setStyle("color", "#333");
         //}
 
-        if( this.selectAllNode && !this._hasChildItem() ){
-            this.selectAllNode.setStyle("display", "none");
+        if( this.selectAllNode ){
+            if( this.selector.options.selectAllRange === "direct" && !this._hasChildItem() ){
+                this.selectAllNode.setStyle("display", "none");
+            }
         }
 
         this.node.addEvents({
@@ -2202,10 +2205,12 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }).inject(this.node);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
-                    this.unselectAll(ev);
+                    // this.unselectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
                     this.selector.fireEvent("unselectCatgory",[this])
                 }else{
-                    this.selectAll(ev);
+                    // this.selectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
                     this.selector.fireEvent("selectCatgory",[this])
                 }
                 ev.stopPropagation();
@@ -2247,8 +2252,11 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.actionNode.setStyle("background", "transparent");
             this.textNode.setStyle("color", "#777");
         }
-        if( this.selectAllNode && !this._hasChildItem() ){
-            this.selectAllNode.setStyle("display", "none");
+
+        if( this.selectAllNode ){
+            if( this.selector.options.selectAllRange === "direct" && !this._hasChildItem() ){
+                this.selectAllNode.setStyle("display", "none");
+            }
         }
 
         this.setEvent();
@@ -2263,6 +2271,9 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             "styles": this.selector.css.selectorItemCategory,
             "title" : this._getTtiteText()
         }).inject(this.container);
+    },
+    isSelectAllEnable : function(){
+
     },
     unselectAll : function(ev, exclude){
         var excludeList = exclude || [];
@@ -2291,6 +2302,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     selectAllNested : function(){
+        debugger;
         this.selectAll();
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
@@ -2313,7 +2325,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     _selectAll : function( ev ){
-        if( !this.subItems || !this.subItems.length )return;
+        if( this.selector.options.selectAllRange === "direct" && ( !this.subItems || !this.subItems.length ) )return;
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
         var selectedSubItemCount = 0;
@@ -2341,7 +2353,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     checkSelectAll : function(){
         if( !this.isSelectedAll )return;
         if( !this.selectAllNode )return;
-        if( ! this.subItems )return;
+        if( !this.subItems )return;
         var hasSelectedItem = false;
         for( var i=0; i< this.subItems.length; i++ ){
             if( this.subItems[i].isSelected ){
