@@ -14,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,6 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.jaxrs.reset.ActionSetPasswordAnonymous;
 
 @Path("reset")
+@JaxrsDescribe("重置操作")
 public class ResetAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ResetAction.class);
