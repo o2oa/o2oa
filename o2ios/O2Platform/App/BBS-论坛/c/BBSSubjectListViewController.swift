@@ -77,7 +77,7 @@ class BBSSubjectListViewController: UIViewController {
         self.button?.addTarget(self, action: #selector(createAction), for: .touchUpInside)
         self.window = UIWindow(frame: CGRect(x: width - 60, y: height - 60, width: 40, height: 40))
         self.window?.windowLevel = UIWindow.Level.alert + 1
-        self.window?.backgroundColor = UIColor.green
+        self.window?.backgroundColor = base_color
         self.window?.layer.cornerRadius = 20
         self.window?.layer.masksToBounds = true
         self.window?.addSubview(self.button!)
@@ -184,6 +184,7 @@ extension BBSSubjectListViewController:UITableViewDataSource {
 
 extension BBSSubjectListViewController:UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         let subject = subjects[indexPath.row]
         self.performSegue(withIdentifier: "showSubjectDetailSegue", sender: subject)
     }
