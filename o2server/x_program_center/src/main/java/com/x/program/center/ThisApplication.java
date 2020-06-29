@@ -8,23 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.program.center.schedule.Area;
-import com.x.program.center.schedule.CleanupCode;
-import com.x.program.center.schedule.CleanupPromptErrorLog;
-import com.x.program.center.schedule.CleanupScheduleLog;
-import com.x.program.center.schedule.CleanupUnexpectedErrorLog;
-import com.x.program.center.schedule.CleanupWarnLog;
-import com.x.program.center.schedule.CollectLog;
-import com.x.program.center.schedule.CollectPerson;
-import com.x.program.center.schedule.DingdingSyncOrganization;
-import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
-import com.x.program.center.schedule.FireSchedule;
-import com.x.program.center.schedule.QiyeweixinSyncOrganization;
-import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
-import com.x.program.center.schedule.RefreshApplications;
-import com.x.program.center.schedule.TriggerAgent;
-import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
-import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
+import com.x.program.center.schedule.*;
 
 public class ThisApplication {
 
@@ -87,6 +71,7 @@ public class ThisApplication {
 			context().scheduleLocal(CleanupUnexpectedErrorLog.class, 10, 60 * 30);
 			context().scheduleLocal(CleanupWarnLog.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
+			context().scheduleLocal(CollectMarket.class, 10, 60 * 60 * 6);
 			context().scheduleLocal(CollectLog.class, 10, 60 * 30);
 			// 运行间隔由60秒缩减到30秒
 			context().scheduleLocal(TriggerAgent.class, 150, 30);

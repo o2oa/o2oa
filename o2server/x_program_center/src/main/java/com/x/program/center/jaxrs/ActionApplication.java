@@ -23,6 +23,7 @@ import com.x.program.center.jaxrs.distribute.DistributeAction;
 import com.x.program.center.jaxrs.input.InputAction;
 import com.x.program.center.jaxrs.invoke.InvokeAction;
 import com.x.program.center.jaxrs.jest.JestAction;
+import com.x.program.center.jaxrs.market.MarketAction;
 import com.x.program.center.jaxrs.module.ModuleAction;
 import com.x.program.center.jaxrs.output.OutputAction;
 import com.x.program.center.jaxrs.pms.PmsAction;
@@ -68,6 +69,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(TestAction.class);
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
+		classes.add(MarketAction.class);
 		return classes;
 	}
 }
