@@ -128,7 +128,7 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		this.setTitle(read.getTitle());
 		this.application = read.getApplication();
 		this.applicationName = read.getApplicationName();
-		this.applicationAlias = this.getApplicationAlias();
+		this.applicationAlias = read.getApplicationAlias();
 		this.process = read.getProcess();
 		this.processName = read.getProcessName();
 		this.processAlias = read.getProcessAlias();
