@@ -55,30 +55,22 @@ class OOAttanceCheckInController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        getWorkPlace()
+        
     }
     
 
    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        title = "打卡"
-        
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
-        //tableView.tableHeaderView = headerView
-        //tableView.contentInset = UIEdgeInsets(top: 230, left: 0, bottom: 0, right: 0)
-        //register Cell
         tableView.register(UINib.init(nibName: "OOAttanceItemCell", bundle: nil), forCellReuseIdentifier: "OOAttanceItemCell")
         
         getCurrentCheckinList()
         getMyRecords()
         self.perform(#selector(createButton), with: nil, afterDelay: 0)
+        
+        getWorkPlace()
     }
     
-    
-//    @objc func closeWindow() {
-//        self.tabBarController?.navigationController?.dismiss(animated: true, completion: nil)
-//    }
     
     //创建打卡按钮
     @objc private func createButton() {
@@ -167,13 +159,14 @@ class OOAttanceCheckInController: UITableViewController {
         viewModel.getLocationWorkPlace { (myResult) in
             switch myResult {
             case .ok(let result):
+                DDLogDebug("有打卡位置了。。。。。。")
                 let model = result as? [OOAttandanceWorkPlace]
                 DispatchQueue.main.async {
                    self.headerView.workPlaces = model
                 }
                 break
             case .fail(let s):
-                MBProgressHUD_JChat.show(text: "错误:\n\(s)", view: self.view, 2)
+                self.showError(title: "错误:\n\(s)")
                 break
             default:
                 break

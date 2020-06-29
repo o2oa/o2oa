@@ -54,6 +54,7 @@ class IMChatMessageViewCell: UITableViewCell {
             let date = time.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
             self.timeLabel.text = date.friendlyTime()
         }
+        self.messageBackgroundView.removeSubviews()
         if let msg = item.title {
             textMsgRender(msg: msg)
         }

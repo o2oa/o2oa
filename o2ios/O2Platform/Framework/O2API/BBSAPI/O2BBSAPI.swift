@@ -32,8 +32,10 @@ enum O2BBSAPI {
     case subjectFromSectionByPageQuery(SubjectsParameter)
     case createSubject
     case replySubject
+    case getAttachment(String)
     case uploadAttachForSubject(String)
-    case downloadAttachForSubject(String)
+    case downloadAttachForSubject(O2BBSSubjectAttachmentInfo)
+    case getSubjectAttachmentList(String)
 }
 
 // MARK:- 上下文实现
@@ -71,21 +73,25 @@ extension O2BBSAPI:TargetType{
         case .subjectByIdQuery(let id):
             return "/jaxrs/subject/view/\(id.urlEscaped)"
         case .subjectFromSectionByPageQuery(let parameter):
-            return "jaxrs/subject/filter/list/page/\(parameter.pageParameter!.currentPageNo)/count/\(parameter.pageParameter!.countByPage)"
+            return "/jaxrs/subject/filter/list/page/\(parameter.pageParameter!.currentPageNo)/count/\(parameter.pageParameter!.countByPage)"
         case .createSubject:
             return "/jaxrs/user/subject"
         case .replySubject:
             return "/jaxrs/user/reply"
+        case .getAttachment(let attId):
+            return "/jaxrs/attachment/\(attId)"
         case .uploadAttachForSubject(let subjectId):
             return "/jaxrs/attachment/upload/subject/\(subjectId)"
-        case .downloadAttachForSubject(let attachId):
-            return "/jaxrs/attachment/download/\(attachId)"
+        case .downloadAttachForSubject(let att):
+            return "/jaxrs/attachment/download/\(att.id!)"
+        case .getSubjectAttachmentList(let subjectId):
+            return "/jaxrs/subjectattach/list/subject/\(subjectId)"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .getCategoryAndSectionQuery:
+        case .getCategoryAndSectionQuery, .getSubjectAttachmentList(_), .getAttachment(_):
             return .get
         case .getSectionItemQuery(_):
             return .get
@@ -112,8 +118,8 @@ extension O2BBSAPI:TargetType{
     
     var task: Task {
         switch self {
-        case .downloadAttachForSubject(_):
-            let myDest = getDownDest()
+        case .downloadAttachForSubject(let attachment):
+            let myDest = getDownDest(filename: attachment.fileName!)
             return .downloadDestination(myDest)
         case .uploadAttachForSubject(_):
             return .requestPlain
@@ -129,11 +135,9 @@ extension O2BBSAPI:TargetType{
         return nil
     }
     
-    func getDownDest() -> DownloadDestination {
+    func getDownDest(filename: String) -> DownloadDestination {
         let myDest:DownloadDestination = { temporaryURL, response in
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let fileName = response.suggestedFilename!
-            let fileURL = documentsURL.appendingPathComponent("O2").appendingPathComponent("cloud").appendingPathComponent(fileName)
+            let fileURL = O2CloudFileManager.shared.cloudFileLocalFolder().appendingPathComponent(filename)
             return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
             
         }

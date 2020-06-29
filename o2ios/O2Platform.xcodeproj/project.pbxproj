@@ -258,6 +258,9 @@
 		B1E95FA72375155F004876B7 /* CloudFileBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */; };
 		B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCD2281729400842F48 /* QDatePicker.swift */; };
 		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
+		B1F6CDBE24A88D26005CB1E0 /* BBSViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */; };
+		B1F6CDEE24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */; };
+		B1F6CDF024A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */; };
 		B1FAE9E12115F95800981A25 /* OOCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */; };
 		B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAFD432105C23B008A0CDF /* Operators.swift */; };
 		B1FB9FAE2302891F00A90722 /* ContactPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */; };
@@ -1594,6 +1597,9 @@
 		B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileBaseVC.swift; sourceTree = "<group>"; };
 		B1EE2CCD2281729400842F48 /* QDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QDatePicker.swift; sourceTree = "<group>"; };
 		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
+		B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSViewModel.swift; sourceTree = "<group>"; };
+		B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSSubjectAttachmentViewController.swift; sourceTree = "<group>"; };
+		B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSSubjectAttachmentViewCell.swift; sourceTree = "<group>"; };
 		B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarViewController.swift; sourceTree = "<group>"; };
 		B1FAFD432105C23B008A0CDF /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewModel.swift; sourceTree = "<group>"; };
@@ -3288,6 +3294,7 @@
 				E41441D71DCAC5C600E3DDA3 /* c */,
 				E41441D81DCAC5C600E3DDA3 /* m */,
 				E41441D91DCAC5C600E3DDA3 /* v */,
+				B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */,
 			);
 			path = "BBS-论坛";
 			sourceTree = "<group>";
@@ -3301,6 +3308,7 @@
 				E46E6BF61DD2C8B500AB7561 /* BBSReplySubjectViewController.swift */,
 				E4418C6C1DDD5D6A0066348D /* BBSSubjectCreateTableViewController.swift */,
 				E47EF77C1DDDC78300B5B8C2 /* BBSSubjectContentViewController.swift */,
+				B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -3320,6 +3328,7 @@
 				E41441E01DCB248C00E3DDA3 /* BBSForumCell.swift */,
 				E4740ABE1DCC267100686780 /* BBSHeaderCollectionReusableView.swift */,
 				E4740AC01DCC45A300686780 /* SubjectTableViewCell.swift */,
+				B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */,
 			);
 			path = v;
 			sourceTree = "<group>";
@@ -5949,6 +5958,7 @@
 				E4B8889E1D9D48F1002E1A46 /* MJRefreshFooter.m in Sources */,
 				E4F45446208EC359002FBC32 /* OOPersonsViewController.swift in Sources */,
 				09E02E841F16319600579887 /* CGSize+Swift.swift in Sources */,
+				B1F6CDBE24A88D26005CB1E0 /* BBSViewModel.swift in Sources */,
 				E4B888751D9D48F1002E1A46 /* Department.swift in Sources */,
 				E4C24B6D20844F3C00E426B0 /* JCAlertView.swift in Sources */,
 				B190923521071777009A7906 /* OOCalendarModels.swift in Sources */,
@@ -6096,6 +6106,8 @@
 				B167F7662362C60200F182B8 /* CloudFileMoveFolderCell.swift in Sources */,
 				B165CD5C2242093500373B66 /* CoverHorizontalAnimation.swift in Sources */,
 				B1908E1422685E8F00D75632 /* O2WebViewModels.swift in Sources */,
+				B1F6CDF024A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift in Sources */,
+				B1F6CDEE24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift in Sources */,
 				E4B69738207602A40062F6E8 /* OOAccessTokenAuthorizable.swift in Sources */,
 				E4C24BB120844F3C00E426B0 /* JCMessageOptions.swift in Sources */,
 				E4B8889C1D9D48F1002E1A46 /* MJRefreshBackFooter.m in Sources */,
