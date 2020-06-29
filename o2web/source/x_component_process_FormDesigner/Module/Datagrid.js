@@ -97,6 +97,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 					tdContainer = new MWF.FCDatagrid$Data(this.form);
 					tdContainer.load(moduleData, td, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tdContainer = new MWF.FCDatagrid$Data(this.form);
 					tdContainer.load(json, td, this);
 				}
@@ -117,6 +120,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 					thElement = new MWF.FCDatagrid$Title(this.form);
 					thElement.load(moduleData, th, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					thElement = new MWF.FCDatagrid$Title(this.form);
 					thElement.load(json, th, this);
 				}

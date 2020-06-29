@@ -29,7 +29,7 @@ class ActionUpdateWithWork extends BaseAction {
 		Wo wo = new Wo();
 		String executorSeed = null;
 
-		/* 防止提交空数据清空data */
+		// 防止提交空数据清空data
 		if (null == jsonElement || (!jsonElement.isJsonObject())) {
 			throw new ExceptionNotJsonObject();
 		}

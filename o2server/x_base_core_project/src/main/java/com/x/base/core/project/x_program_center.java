@@ -11,6 +11,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.program.center.core.entity.PromptErrorLog", "com.x.program.center.core.entity.UnexpectedErrorLog",
 		"com.x.program.center.core.entity.Structure", "com.x.program.center.core.entity.WarnLog",
 		"com.x.program.center.core.entity.validation.Meta", "com.x.portal.core.entity.Page",
+		"com.x.program.center.core.entity.Application", "com.x.program.center.core.entity.Attachment",
 		"com.x.portal.core.entity.Portal", "com.x.organization.core.entity.Group",
 		"com.x.organization.core.entity.Custom", "com.x.organization.core.entity.Role",
 		"com.x.organization.core.entity.Person", "com.x.organization.core.entity.Identity",

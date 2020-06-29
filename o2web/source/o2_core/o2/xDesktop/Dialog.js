@@ -134,19 +134,36 @@ o2.xDesktop.Dialog = o2.DDL = new Class({
                     button = this.cancelButton;
                     button.show();
                 }else{
-                    button = new Element("input", {
-                        "type": "button"
-                    }).inject(this.button);
-                }
-                button.set({
-                    "value": bt.text,
-                    "title": bt.title,
-                    "styles": styles,
-                    "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
-                    "events": {
-                        "click": function(e){bt.action.call(this, this, e)}.bind(this)
+                    if( !bt.tag ){
+                        button = new Element("input", {
+                            "type": "button"
+                        }).inject(this.button);
+                    }else{
+                        button = new Element( bt.tag, {}).inject(this.button);
                     }
-                })
+                }
+                debugger;
+                if( button.get("type") === "button" ){
+                    button.set({
+                        "value": bt.text,
+                        "title": bt.title,
+                        "styles": styles,
+                        "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
+                        "events": {
+                            "click": function(e){bt.action.call(this, this, e)}.bind(this)
+                        }
+                    })
+                }else{
+                    button.set({
+                        "text": bt.text,
+                        "title": bt.title,
+                        "styles": styles,
+                        "class": (bt.type!=="cancel") ? "mainColor_bg" : "",
+                        "events": {
+                            "click": function(e){bt.action.call(this, this, e)}.bind(this)
+                        }
+                    })
+                }
             }.bind(this));
         }
     },

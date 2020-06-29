@@ -39,6 +39,7 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_UF = "uf";
 	private static final String CMD_DDL = "ddl";
 	private static final String CMD_RST = "rst";
+	private static final String CMD_SC = "sc";
 
 	private static final int REPEAT_MAX = 100;
 	private static final int REPEAT_MIN = 1;
@@ -75,6 +76,8 @@ public class ActionControl extends ActionBase {
 				ddl(cmd);
 			} else if (cmd.hasOption(CMD_RST)) {
 				rst(cmd);
+			} else if (cmd.hasOption(CMD_SC)) {
+				sc(cmd);
 			} else {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("control command", options);
@@ -99,6 +102,7 @@ public class ActionControl extends ActionBase {
 		options.addOption(ufOption());
 		options.addOption(ddlOption());
 		options.addOption(rstOption());
+		options.addOption(scOption());
 		return options;
 	}
 
@@ -128,7 +132,7 @@ public class ActionControl extends ActionBase {
 
 	private static Option ecOption() {
 		return Option.builder("ec").longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
-				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message.").build();
+				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message org.").build();
 	}
 
 	private static Option clh2Option() {
@@ -165,8 +169,12 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option rstOption() {
-		return Option.builder("rst").longOpt("restartApp").argName("name").hasArg().desc("重启指定应用: 应用名称:name, 不带.war")
-				.build();
+		return Option.builder("rst").longOpt("restartApplication").argName("name").hasArg()
+				.desc("重启指定应用: 应用名称:name, 不带.war").build();
+	}
+
+	private static Option scOption() {
+		return Option.builder("sc").longOpt("showCluster").desc("显示集群信息.").build();
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
@@ -189,6 +197,9 @@ public class ActionControl extends ActionBase {
 				break;
 			case "message":
 				new EraseContentMessage().execute();
+				break;
+			case "org":
+				new EraseContentOrg().execute();
 				break;
 			default:
 				logger.print("type may be processPlatform bbs cms log message.");
@@ -268,6 +279,11 @@ public class ActionControl extends ActionBase {
 		String name = Objects.toString(cmd.getOptionValue(CMD_RST), "");
 		RestatWar rst = new RestatWar();
 		rst.execute(name);
+	}
+
+	private void sc(CommandLine cmd) throws Exception {
+		ShowCluster sc = new ShowCluster();
+		sc.execute();
 	}
 
 	private Integer getArgInteger(CommandLine cmd, String opt, Integer defaultValue) {

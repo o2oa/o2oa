@@ -29,7 +29,7 @@ import com.x.base.core.project.tools.Crypto;
 public class ActionUploadFile  extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(CommandAction.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson,HttpServletRequest request, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request ,EffectivePerson effectivePerson, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();	
 			Wo wo  = null;
 			String curServer = request.getLocalAddr();
@@ -38,22 +38,32 @@ public class ActionUploadFile  extends BaseAction {
 			fileInputStream.close();
 			if(nodeName.equalsIgnoreCase("*")) {
 				Nodes nodes = Config.nodes();
+				logger.info("先其他服务器");
 				for (String node : nodes.keySet()){
 					//先其他服务器
 					if(!node.equalsIgnoreCase(curServer)) {
 						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
 							 byteArrayInputStream = new ByteArrayInputStream(byteArray);
+								logger.info("node="+node);
 					      wo = executeCommand( ctl,  node ,  nodes.get(node).nodeAgentPort(),  byteArrayInputStream, disposition);
 						}
 					}
-				   //后当前服务器
-				    if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+				}
+				
+				logger.info("后当前服务器");
+				for(String node : nodes.keySet()) {
+					   //后当前服务器
+					if(node.equalsIgnoreCase(curServer)) {
+				       if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
 				        	 byteArrayInputStream = new ByteArrayInputStream(byteArray);
-					      wo = executeCommand( ctl,  curServer ,  nodes.get(curServer).nodeAgentPort(),  byteArrayInputStream, disposition);
-			        }
+				        		logger.info("node="+node);
+					       wo = executeCommand( ctl,  node ,  nodes.get(curServer).nodeAgentPort(),  byteArrayInputStream, disposition);
+			          }
+					}
 				}
 			}else {
 				
+				 byteArrayInputStream = new ByteArrayInputStream(byteArray);
 			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  byteArrayInputStream, disposition);
 			}
 			
@@ -90,7 +100,7 @@ public class ActionUploadFile  extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("发送文件end.......");
+				logger.info("发送文件end.");
 				
 			}finally {
 				dos.close();
@@ -100,7 +110,6 @@ public class ActionUploadFile  extends BaseAction {
 			}
 		} catch (Exception ex) {
 			wo.setStatus("fail");
-			//logger.warn("socket dispatch executeCommand to {}:{} error={}", nodeName, nodePort, ex.getMessage());
 		}
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		wo.setTime(df.format(new Date()));

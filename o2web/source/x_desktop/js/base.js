@@ -126,9 +126,10 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             redirectlink = encodeURIComponent(redirectlink);
         }
         if (options.workId) {
-            window.location = "../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+            o2.
+            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         } else if (options.workCompletedId) {
-            window.location = "../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink;
+            window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         }
     };
     var _openWork = function (options) {
@@ -143,7 +144,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsDocument) {
             window.webkit.messageHandlers.openO2CmsDocument.postMessage({ "docId": options.documentId, "docTitle": title });
         } else {
-            window.location = "../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openCms = function (appNames, options, statusObj) {
@@ -153,7 +154,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication) {
             window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
         } else {
-            window.location = "../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openMeeting = function (appNames, options, statusObj) {
@@ -163,7 +164,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting) {
             window.webkit.messageHandlers.openO2Meeting.postMessage("");
         } else {
-            window.location = "../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -174,7 +175,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar) {
             window.webkit.messageHandlers.openO2Calendar.postMessage("");
         } else {
-            window.location = "../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
     var _openTaskCenter = function (appNames, options, statusObj) {
@@ -188,7 +189,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace) {
             window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);
         } else {
-            window.location = "../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : "");
+            window.location = o2.filterUrl("../x_desktop/appMobile.html?" + par + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -216,7 +217,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 var uri = new URI(window.location.href);
                 var optionsStr = uri.getData("option");
                 var statusStr = uri.getData("status");
-                window.location = "../x_desktop/appMobile.html?app=" + appNames + "&option=" + (optionsStr || "") + "&status=" + (statusStr || "") + ((layout.debugger) ? "&debugger" : "");
+                window.location = o2.filterUrl("../x_desktop/appMobile.html?app=" + appNames + "&option=" + (optionsStr || "") + "&status=" + (statusStr || "") + ((layout.debugger) ? "&debugger" : ""));
         }
     };
 
@@ -237,9 +238,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
                 var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
 
                 if (layout.app.$openWithSelf) {
-                    return window.location = "../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "");
+                    return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
                 } else {
-                    return window.open("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""), par);
+                    return window.open(o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "")), par);
                 }
             }
         } else {
@@ -269,7 +270,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         if (status) statusStr = JSON.encode(status);
 
         var port = uri.get("port");
-        window.location = uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "") + ((layout.debugger) ? "&debugger" : "");
+        window.location = o2.filterUrl(uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "") + ((layout.debugger) ? "&debugger" : ""));
     };
 
     layout.load = function (appNames, options, statusObj) {
@@ -367,6 +368,9 @@ o2.addReady(function () {
     var lpLoaded = false;
     var commonLoaded = false;
     var lp = o2.session.path + "/lp/" + o2.language + ".js";
+
+    if (o2.session.isDebugger && (o2.session.isMobile || layout.mobile)) o2.load("../o2_lib/eruda/eruda.js");
+
     o2.load(lp, function () {
         _loadProgressBar();
         lpLoaded = true;

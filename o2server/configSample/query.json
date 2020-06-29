@@ -1,6 +1,6 @@
 {
   "crawlWorkCompleted": {
-    "enable": true,
+    "enable": false,
     "cron": "50 50 22 * * ?",
     "count": 2000.0,
     "excludeAttachment": [],
@@ -14,7 +14,7 @@
     "###maxAttachmentSize": "最大附件大小.###"
   },
   "crawlWork": {
-    "enable": true,
+    "enable": false,
     "cron": "40 40 7-21 * * ?",
     "count": 100.0,
     "excludeAttachment": [],
@@ -28,7 +28,7 @@
     "###maxAttachmentSize": "最大附件大小.###"
   },
   "crawlCms": {
-    "enable": true,
+    "enable": false,
     "cron": "30 30 7-21 * * ?",
     "count": 100.0,
     "excludeAttachment": [],

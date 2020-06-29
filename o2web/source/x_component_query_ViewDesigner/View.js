@@ -646,7 +646,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 id : this.data.application,
                 viewId : this.data.id
             });
-            window.open(url,"_blank");
+            window.open(o2.filterUrl(url),"_blank");
         }.bind(this));
     },
     saveSilence: function(callback){

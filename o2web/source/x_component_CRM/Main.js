@@ -36,8 +36,8 @@ MWF.xApplication.CRM.Main = new Class({
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
 		var status = (this.desktop.openBrowserStatus) ? JSON.encode(this.desktop.openBrowserStatus) : "";
 
-		var url = "app.html?app="+this.options.name+"&status="+status;
-		window.open(url, "_blank");
+		var url = "../x_desktop/app.html?app="+this.options.name+"&status="+status;
+		window.open(o2.filterUrl(url), "_blank");
 		if (!this.inBrowser)
 			try{
 				this.close();

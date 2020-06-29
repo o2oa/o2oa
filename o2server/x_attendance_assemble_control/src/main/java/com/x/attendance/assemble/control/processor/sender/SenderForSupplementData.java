@@ -24,7 +24,7 @@ public class SenderForSupplementData {
 	public void execute( List<AttendanceEmployeeConfig> attendanceEmployeeConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap, String cycleYear, String cycleMonth, Boolean debugger ) {	
 
 		StatusSystemImportOpt statusSystemImportOpt = StatusSystemImportOpt.getInstance();		
-		
+
 		for ( AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigList ) {
 			if( attendanceEmployeeConfig.getEmpInTopUnitTime() == null || attendanceEmployeeConfig.getEmpInTopUnitTime().isEmpty() ){
 				logger.warn( "person["+attendanceEmployeeConfig.getEmployeeName()+"] in company date is null, system can not supplement data for person." );

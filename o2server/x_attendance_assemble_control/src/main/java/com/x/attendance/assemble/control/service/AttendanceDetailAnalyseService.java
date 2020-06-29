@@ -296,7 +296,11 @@ public class AttendanceDetailAnalyseService {
 						saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统格式化记录的打卡日期发生异常，未能设置日期格式的打卡时间属性recordDate，日期recordDateString：" + detail.getRecordDateString() );
 						check = false;
 					}
-					if( recordDate != null ){ detail.setRecordDate( recordDate ); }
+					if( recordDate != null ){
+						detail.setRecordDate( recordDate );
+						detail.setYearString( dateOperation.getYear( detail.getRecordDate() ) );
+						detail.setMonthString( dateOperation.getMonth( detail.getRecordDate() ) );
+					}
 				}else{
 					saveAnalyseResultAndStatus( emc, detail.getId(), -1, "系统格式化记录的打卡日期发生异常，未能设置日期格式的打卡时间属性为空" );
 					check = false;

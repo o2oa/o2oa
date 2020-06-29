@@ -231,6 +231,12 @@ MWF.xApplication.Setting.Document.Check = new Class({
                 }
 
                 this.actions[method](this.explorer[this.data.data.key], function(){
+                    // if (this.data.data.valueKey==="faceLogin"){
+                    //     if (this.explorer[this.data.data.key][this.data.data.valueKey]){
+                    //
+                    //     }
+                    // }
+
                     this.fireEvent("editSuccess");
                     //this.app.notice(this.lp.setSaved, "success");
                 }.bind(this));

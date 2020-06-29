@@ -104,7 +104,10 @@ public class CalendarFactory extends AbstractFactory {
 			p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal(root.get(Calendar_.source), source));
 		}
 		if( StringUtils.isNotEmpty( createor )) {
-			p = CriteriaBuilderTools.predicate_and( cb, p, cb.equal(root.get(Calendar_.createor), createor));
+			p = CriteriaBuilderTools.predicate_and( cb, p, cb.or(
+					cb.equal(root.get(Calendar_.createor), createor),
+					cb.equal(root.get(Calendar_.target), createor)
+			));
 		}		
 		
 		Predicate permission = null;
@@ -140,7 +143,10 @@ public class CalendarFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Calendar> root = cq.from(Calendar.class);
-		Predicate permission = cb.equal( root.get(Calendar_.createor), personName );
+		Predicate permission = cb.or(
+				cb.equal(root.get(Calendar_.createor), personName),
+				cb.equal(root.get(Calendar_.target), personName)
+		);
 		cq.select(root.get(Calendar_.id));
 		return em.createQuery(cq.where(permission)).getResultList();
 	}

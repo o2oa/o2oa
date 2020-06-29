@@ -382,7 +382,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             form = this.json.id;
             if (this.json.printForm && this.json.printForm !== "none") form = this.json.printForm;
         }
-        window.open("../x_desktop/printcmsdoc.html?documentid=" + this.businessData.document.id + "&form=" + form);
+        window.open(o2.filterUrl("../x_desktop/printcmsdoc.html?documentid=" + this.businessData.document.id + "&form=" + form));
     },
 
     formValidation: function (status) {
@@ -619,7 +619,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class({
             form = this.json.id;
             if (this.json.printForm) form = this.json.printForm;
         }
-        window.open("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form);
+        window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form));
     },
     openWindow: function (form, app) {
         var form = form;

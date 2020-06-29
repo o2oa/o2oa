@@ -285,8 +285,15 @@ MWF.xApplication.Attendance.MyAppeal.View = new Class({
 
     },
     _openDocument: function( documentData ){
-        var appeal = new MWF.xApplication.Attendance.MyAppeal.Appeal(this.explorer, documentData );
-        appeal.open();
+        if(!!documentData.appealAuditInfo){
+            var workid = documentData.appealAuditInfo.workId;
+            var options = {"workId":workid, "appId": "process.Work"+workid};
+            this.app.desktop.openApplication(null, "process.Work", options);
+        }else{
+            var appeal = new MWF.xApplication.Attendance.MyAppeal.Appeal(this.explorer, documentData );
+            appeal.open();
+        }
+
     }
 
 });

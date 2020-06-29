@@ -27,6 +27,7 @@ public class ThisApplication {
 	public static final String BBSMANAGER = "BBSManager@CMSManagerSystemRole@R";
 	public static QueueNewReplyNotify queueNewReplyNotify;
 	public static QueueNewSubjectNotify queueNewSubjectNotify;
+	public static String CONFIG_BBS_ANONYMOUS_PERMISSION = "YES";
 
 	public static Context context() {
 		return context;
@@ -34,6 +35,7 @@ public class ThisApplication {
 
 	public static void init() throws Exception {
 		try {
+			CONFIG_BBS_ANONYMOUS_PERMISSION = (new BBSConfigSettingService()).getValueWithConfigCode("BBS_ANONYMOUS_PERMISSION");;
 			initAllSystemConfig();
 			queueNewReplyNotify = new QueueNewReplyNotify();
 			queueNewSubjectNotify = new QueueNewSubjectNotify();

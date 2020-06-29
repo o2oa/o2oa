@@ -33,24 +33,17 @@ public class UserManagerService {
 	public Person getPerson(String personName) throws Exception {
 		Business business = null;
 		Person person = null;
-		List<Person> personList = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			person = business.organization().person().getObject(personName);
 			if (person == null) {
 				if (personName.endsWith("@P") && personName.split("@P").length == 3) {
-					personList = business.organization().person().listObject(personName.split("@")[1]);
-					if (ListTools.isNotEmpty(personList)) {
-						return personList.get(0);
-					}
+					return business.organization().person().getObject(personName.split("@")[1]);
 				}
 			}
 			if (person == null) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 3) {
-					personList = business.organization().person().listObject(personName.split("@")[0]);
-					if (ListTools.isNotEmpty(personList)) {
-						return personList.get(0);
-					}
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					return business.organization().person().getObject(personName.split("@")[0]);
 				}
 			}
 		} catch (Exception e) {
@@ -75,7 +68,12 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			unitNames = business.organization().unit().listWithPerson(personName);
-			if (unitNames != null && !unitNames.isEmpty()) {
+			if ( ListTools.isEmpty( unitNames )) {
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					unitNames = business.organization().unit().listWithPerson( personName.split("@")[0] );
+				}
+			}
+			if ( ListTools.isNotEmpty( unitNames )) {
 				for (String unitName : unitNames) {
 					unit = business.organization().unit().getObject(unitName);
 					if (level < unit.getLevel()) {
@@ -125,7 +123,13 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
-			personName = business.organization().person().get(personName);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			identity = getMajorIdentityWithPerson(personName);
 			if (identity != null && !identity.isEmpty()) {
 				topUnitName = business.organization().unit().getWithIdentityWithLevel(identity, 1);
@@ -167,8 +171,13 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
-			personName = business.organization().person().get(personName);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			identities = business.organization().identity().listWithPerson(personName);
 			if (identities != null && !identities.isEmpty()) {
 				if( identities.size() == 1 ) {
@@ -221,6 +230,13 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			unitNames = business.organization().unit().listWithPersonSupNested(personName);
 			return unitNames == null ? new ArrayList<>() : unitNames;
 		} catch (NullPointerException e) {
@@ -233,18 +249,25 @@ public class UserManagerService {
 	/**
 	 * 根据用户姓名查询用户所有的身份信息
 	 * 
-	 * @param userName
+	 * @param personName
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listIdentitiesWithPerson(String userName) throws Exception {
-		if (StringUtils.isEmpty(userName)) {
+	public List<String> listIdentitiesWithPerson(String personName) throws Exception {
+		if (StringUtils.isEmpty(personName)) {
 			throw new Exception("userName is null!");
 		}
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.organization().identity().listWithPerson(userName);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
+			return business.organization().identity().listWithPerson(personName);
 		} catch (NullPointerException e) {
 			return null;
 		} catch (Exception e) {
@@ -265,6 +288,13 @@ public class UserManagerService {
 		List<String> nameList = new ArrayList<String>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			roleList = business.organization().role().listWithPerson(personName);
 			if (roleList != null && roleList.size() > 0) {
 				roleList.stream().filter(r -> !nameList.contains(r)).distinct().forEach(r -> nameList.add(r));
@@ -290,6 +320,13 @@ public class UserManagerService {
 		List<String> nameList = new ArrayList<String>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			groupList = business.organization().group().listWithPerson(personName);
 			if (groupList != null && groupList.size() > 0) {
 				groupList.stream().filter(g -> !nameList.contains(g)).distinct().forEach(g -> nameList.add(g));
@@ -321,6 +358,13 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
+			}
 			roleList = business.organization().role().listWithPerson(personName);
 			if (roleList != null && !roleList.isEmpty()) {
 				if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
@@ -402,47 +446,9 @@ public class UserManagerService {
 		return null;
 	}
 
-	public List<String> getPersonPermissionCodes(String personName) throws Exception {
-		List<String> queryObjectNames = new ArrayList<>();
-		List<String> groupNames = null;
-		List<String> roleNames = null;
-		List<String> unitNames = null;
-
-		// 选查询个人涉及的所有组织角色以及群组编码
-		groupNames = listGroupNamesByPerson(personName);
-		roleNames = listRoleNamesByPerson(personName);
-		unitNames = listUnitNamesWithPerson(personName);
-
-		queryObjectNames.add(personName);
-
-		// 将三个列表合为一个，再进行分类权限查询
-		if (groupNames != null && !groupNames.isEmpty()) {
-			for (String name : groupNames) {
-				if (!queryObjectNames.contains(name)) {
-					queryObjectNames.add(name);
-				}
-			}
-		}
-		if (roleNames != null && !roleNames.isEmpty()) {
-			for (String name : roleNames) {
-				if (!queryObjectNames.contains(name)) {
-					queryObjectNames.add(name);
-				}
-			}
-		}
-		if (unitNames != null && !unitNames.isEmpty()) {
-			for (String name : unitNames) {
-				if (!queryObjectNames.contains(name)) {
-					queryObjectNames.add(name);
-				}
-			}
-		}
-		return queryObjectNames;
-	}
-
 	/**
-	 * 根据组织名称，查询组织内所有的人员标识，包括下级组织
-	 * 
+	 * 根据组织名称，查询组织内所有的人员标识，包括下级组织<br/>
+	 * 2020-06-12 改为使用唯一标识查询<br/>
 	 * @param unitName
 	 * @return
 	 * @throws Exception
@@ -453,15 +459,43 @@ public class UserManagerService {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			return business.organization().person().listWithUnitSubNested(unitName);
+
+			//2020-06-12 unitName可能有3段，可能有2段，统一使用中间的唯一标识来进行查询
+			String unique = getUniqueWithName( unitName );
+
+			return business.organization().person().listWithUnitSubNested( unique );
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
 	/**
-	 * 根据群组名称，查询群组内所有的人员标识
-	 * 
+	 * 获取组织对象的唯一标识<br/>
+	 *<br/>
+	 * 组织对象标识一般会有3段，如 综合部@1304-73504398-13419-0347@U, 张三@293041-9305983-04258-0943@P<br/>
+	 * 文档权限里也会存在2段，因为第一段经常会变，如组织：行政综合部@1304-73504398-13419-0347@U<br/>
+	 * 所以查询的时候最好只用中间的唯一标识来查询<br/>
+	 * @param orgObjectName
+	 * @return
+	 */
+	private String getUniqueWithName(String orgObjectName ) {
+		if( StringUtils.isNotEmpty( orgObjectName )){
+			String[] array = orgObjectName.split("@");
+			if( array.length == 3 ){
+				return array[1];
+			}else if( array.length == 2 ){
+				return array[0];
+			}else{
+				return orgObjectName;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 根据群组名称，查询群组内所有的人员标识<br/>
+	 * 2020-06-12 改为使用唯一标识查询<br/>
+	 *
 	 * @param groupName
 	 * @return
 	 * @throws Exception
@@ -472,19 +506,34 @@ public class UserManagerService {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			return business.organization().person().listWithGroup(groupName);
+
+			//2020-06-12 unitName可能有3段，可能有2段，统一使用中间的唯一标识来进行查询
+			String unique = getUniqueWithName( groupName );
+
+			return business.organization().person().listWithGroup( unique );
 		} catch (Exception e) {
 			throw e;
 		}
 	}
 
+	/**
+	 * 根据角色名称，查询角色成员内所有的人员标识<br/>
+	 * 2020-06-12 改为使用唯一标识查询<br/>
+	 * @param role
+	 * @return
+	 * @throws Exception
+	 */
 	public List<String> listPersonWithRole(String role) throws Exception {
 		if (StringUtils.isEmpty(role)) {
 			throw new Exception("role is empty!");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			return business.organization().person().listWithRole(role);
+
+			//2020-06-12 unitName可能有3段，可能有2段，统一使用中间的唯一标识来进行查询
+			String unique = getUniqueWithName( role );
+
+			return business.organization().person().listWithRole( unique );
 		} catch (Exception e) {
 			throw e;
 		}

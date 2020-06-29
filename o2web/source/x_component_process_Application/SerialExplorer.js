@@ -110,6 +110,8 @@ MWF.xApplication.process.Application.SerialExplorer = new Class({
                 this.items.push(item);
             }.bind(this));
             this.mask.hide();
+        }.bind(this), function () {
+            if(this.mask)this.mask.hide();
         }.bind(this));
     },
     _createItem: function(data){

@@ -11,8 +11,22 @@ public class TaskCompletedProperties extends JsonProperties {
 	@FieldDescribe("从task带过来的上一处理人")
 	private List<String> prevTaskIdentityList;
 
-	@FieldDescribe("从手续处理人")
+	@FieldDescribe("后续处理人")
 	private List<String> nextTaskIdentityList = new ArrayList<>();
+
+	@FieldDescribe("标题")
+	private String title;
+
+	@FieldDescribe("意见")
+	private String opinion;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 	public List<String> getPrevTaskIdentityList() {
 		if (null == this.prevTaskIdentityList) {
@@ -34,6 +48,14 @@ public class TaskCompletedProperties extends JsonProperties {
 
 	public void setPrevTaskIdentityList(List<String> prevTaskIdentityList) {
 		this.prevTaskIdentityList = prevTaskIdentityList;
+	}
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
 	}
 
 }
