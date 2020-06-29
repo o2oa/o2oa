@@ -60,7 +60,12 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                                 return;
                             }
 
-                            module.appendWidgetModules( widgetid, relativeNode, position );
+                            var wrapDiv = "yes";
+                            dlg.node.getElements(".wrapDiv").each( function (el) {
+                                if( el.get("checked") )wrapDiv = el.get("value");
+                            });
+
+                            module.appendWidgetModules( widgetid, relativeNode, position, wrapDiv );
                             this.close();
                         }
                     },
@@ -143,7 +148,7 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
         this.form.moveModule = null;
         delete this;
     },
-    appendWidgetModules: function( widgetid, relativeNode, position ){
+    appendWidgetModules: function( widgetid, relativeNode, position, wrapDiv ){
         MWF.Actions.get("x_portal_assemble_designer").getWidget(widgetid, function(json){
 
             var parentModule = this.parentContainer || this.inContainer || this.onDragModule;
@@ -180,10 +185,20 @@ MWF.xApplication.portal.PageDesigner.Module.Widgetmodules = MWF.PCWidgetmodules 
                 this.page.json.moduleList[moduleJson.id] = moduleJson;
             }.bind(this));
 
-
-            debugger;
-
-            this.page.parseModules(this.containerModule, this.node);
+            if( wrapDiv === "no" ){
+                this.node.getChildren().each( function (el) {
+                    if( el.get("MWFType") && el.get("id")){
+                        var id = el.get("id");
+                        el.inject( relativeNode || this.copyNode, position || "before" );
+                    }
+                }.bind(this));
+                this.page.parseModules( parentModule, parentModule.node);
+                //this.containerModule.delete();
+                this.page.selected();
+                this.containerModule.destroy();
+            }else{
+                this.page.parseModules(this.containerModule, this.node);
+            }
 
             //var copyModuleNode = this.node.getFirst();
             //while (copyModuleNode) {
