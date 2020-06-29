@@ -1,5 +1,7 @@
 package com.x.program.center;
 
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.http.TokenType;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -10,6 +12,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.factory.PersonFactory;
 import com.x.program.center.factory.UnitFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Business {
 
@@ -47,6 +52,20 @@ public class Business {
 		req.setPassword(Config.collect().getPassword());
 		ActionResponse resp = ConnectionAction.put(url, null, req);
 		return resp.getData(WoValidateCollect.class).getValue();
+	}
+
+	public String loginCollect() throws Exception {
+		String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
+		Map<String, String> map = new HashMap<>();
+		map.put("credential", Config.collect().getName());
+		map.put("password", Config.collect().getPassword());
+		ActionResponse resp = ConnectionAction.post(url, null, map);
+		LoginWo loginWo = resp.getData(LoginWo.class);
+		if(loginWo!=null) {
+			return loginWo.getToken();
+		}else{
+			return null;
+		}
 	}
 
 	public static class ValidateReq extends GsonPropertyObject {
@@ -90,6 +109,40 @@ public class Business {
 	}
 
 	public static class WoValidateCollect extends WrapBoolean {
+	}
+
+	public static class LoginWo extends GsonPropertyObject {
+
+		private String token;
+
+		private String name;
+
+		private TokenType tokenType;
+
+		public String getToken() {
+			return token;
+		}
+
+		public void setToken(String token) {
+			this.token = token;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public TokenType getTokenType() {
+			return tokenType;
+		}
+
+		public void setTokenType(TokenType tokenType) {
+			this.tokenType = tokenType;
+		}
+
 	}
 
 }

@@ -215,6 +215,9 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 					tabPage.page = page;
 					tabPage.load(moduleData, page.tabNode, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tabPage = new MWF.FCTab$Page(this, page);
 					tabPage.page = page;
 					tabPage.load(json, page.tabNode, this);
@@ -236,6 +239,9 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 					tabContent.page = page;
 					tabContent.load(moduleData, page.contentNode, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tabContent = new MWF.FCTab$Content(this, page);
 					tabContent.page = page;
 					tabContent.load(json, page.contentNode, this);
@@ -376,5 +382,68 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
             tmpTabDiv.set("id", newElementJson.id);
 
         }.bind(this));
-    }
+    },
+	_preprocessingModuleData: function(){
+		this.recoveryWidgetstyle = this.node.get("style");
+		this.node.clearStyles();
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				this.node.setStyle(key, value);
+				delete this.json.styles[key];
+			}
+		}.bind(this));
+	},
+	_recoveryModuleData: function(){
+		if (this.recoveryWidgetstyle) this.node.set("style", this.recoveryWidgetstyle);
+		this.recoveryWidgetstyle = null;
+		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
+		this.json.recoveryStyles = null;
+	}
+	// setCustomStyles: function(){
+	// 	this._recoveryModuleData();
+	// 	//debugger;
+	// 	var border = this.node.getStyle("border");
+	// 	this.node.clearStyles();
+	// 	this.node.setStyles(this.css.moduleNode);
+	//
+	// 	if (this.initialStyles) this.node.setStyles(this.initialStyles);
+	// 	this.node.setStyle("border", border);
+	//
+	// 	if (this.json.styles) Object.each(this.json.styles, function(value, key){
+	// 		if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+	// 			var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+	// 			var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+	// 			if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+	// 				value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+	// 			}else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+	// 				value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+	// 			}
+	// 			if (value.indexOf("/x_portal_assemble_surface")!==-1){
+	// 				value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+	// 			}else if (value.indexOf("x_portal_assemble_surface")!==-1){
+	// 				value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+	// 			}
+	// 		}
+	//
+	// 		var reg = /^border\w*/ig;
+	// 		if (!key.test(reg)){
+	// 			if (key){
+	// 				if (key.toString().toLowerCase()==="display"){
+	// 					if (value.toString().toLowerCase()==="none"){
+	// 						this.node.setStyle("opacity", 0.3);
+	// 					}else{
+	// 						this.node.setStyle("opacity", 1);
+	// 						this.node.setStyle(key, value);
+	// 					}
+	// 				}else{
+	// 					this.node.setStyle(key, value);
+	// 				}
+	// 			}
+	// 		}
+	// 	}.bind(this));
+	// }
 });

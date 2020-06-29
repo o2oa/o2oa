@@ -1,24 +1,25 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.MessageType
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+import retrofit2.http.POST
 
 
 class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -120,23 +121,16 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     time = DateHelper.imChatMessageTime(message.createTime)
                 }
             }
+            holder.setText(R.id.tv_o2_chat_message_person_name, name)
+                    .setText(R.id.tv_o2_chat_message_time, time)
+
             if (messageBody != null) {
-                if (messageBody is IMMessageBody.Text) {
-                    val textBody = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
-                    textBody.text = messageBody.body
-                    textBody.visible()
-                    val imgBody = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
-                    imgBody.gone()
-                    holder.setText(R.id.tv_o2_chat_message_person_name, name)
-                            .setText(R.id.tv_o2_chat_message_time, time)
-                }else if (messageBody is IMMessageBody.Emoji) {
-                    val textBody = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
-                    textBody.gone()
-                    val imgBody = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
-                    imgBody.setImageResource(O2IM.emojiResId(messageBody.body))
-                    imgBody.visible()
-                    holder.setText(R.id.tv_o2_chat_message_person_name, name)
-                            .setText(R.id.tv_o2_chat_message_time, time)
+                when(messageBody.type) {
+                    MessageType.text.key -> renderTextMessage(messageBody, holder)
+                    MessageType.emoji.key -> renderEmojiMessage(messageBody, holder)
+                    MessageType.image.key -> renderImageMessage(messageBody, holder, position)
+                    MessageType.audio.key -> renderAudioMessage(messageBody, holder, position)
+                    MessageType.location.key -> renderLocationMessage(messageBody, holder)
                 }
             }
 
@@ -163,9 +157,90 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    private fun renderTextMessage(msgBody: IMMessageBody, holder: CommonRecyclerViewHolder) {
+        val textMessageView = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+        textMessageView.visible()
+        textMessageView.text = msgBody.body
+        val emojiMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+        emojiMessageView.gone()
+        val imageMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_image_body)
+        imageMessageView.gone()
+        val audioMessageView = holder.getView<LinearLayout>(R.id.ll_o2_chat_message_audio_body)
+        audioMessageView.gone()
+        val locationMessageView = holder.getView<RelativeLayout>(R.id.rl_o2_chat_message_location_body)
+        locationMessageView.gone()
+    }
+    private fun renderEmojiMessage(msgBody: IMMessageBody, holder: CommonRecyclerViewHolder) {
+        val textMessageView = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+        textMessageView.gone()
+        val emojiMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+        if (msgBody.body  != null) {
+            emojiMessageView.setImageResource(O2IM.emojiResId(msgBody.body!!))
+        }
+        emojiMessageView.visible()
+        val imageMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_image_body)
+        imageMessageView.gone()
+        val audioMessageView = holder.getView<LinearLayout>(R.id.ll_o2_chat_message_audio_body)
+        audioMessageView.gone()
+        val locationMessageView = holder.getView<RelativeLayout>(R.id.rl_o2_chat_message_location_body)
+        locationMessageView.gone()
+    }
+    private fun renderImageMessage(msgBody: IMMessageBody, holder: CommonRecyclerViewHolder,  position: Int) {
+        val textMessageView = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+        textMessageView.gone()
+        val emojiMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+        emojiMessageView.gone()
+        val imageMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_image_body)
+        if (!TextUtils.isEmpty(msgBody.fileId)) {
+            val url = APIAddressHelper.instance().getImImageDownloadUrlWithWH(msgBody.fileId!!, 144, 192)
+            O2ImageLoaderManager.instance().showImage(imageMessageView, url)
+        }else if (!TextUtils.isEmpty(msgBody.fileTempPath)) {
+            O2ImageLoaderManager.instance().showImage(imageMessageView, msgBody.fileTempPath!!)
+        }
+        imageMessageView.visible()
+        imageMessageView.setOnClickListener { eventListener?.openOriginImage(position, msgBody) }
+        val audioMessageView = holder.getView<LinearLayout>(R.id.ll_o2_chat_message_audio_body)
+        audioMessageView.gone()
+        val locationMessageView = holder.getView<RelativeLayout>(R.id.rl_o2_chat_message_location_body)
+        locationMessageView.gone()
+    }
+    private fun renderAudioMessage(msgBody: IMMessageBody, holder: CommonRecyclerViewHolder, position: Int) {
+        val textMessageView = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+        textMessageView.gone()
+        val emojiMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+        emojiMessageView.gone()
+        val imageMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_image_body)
+        imageMessageView.gone()
+        val audioMessageView = holder.getView<LinearLayout>(R.id.ll_o2_chat_message_audio_body)
+        val durationTv = holder.getView<TextView>(R.id.tv_o2_chat_message_audio_duration)
+        durationTv.text = "${msgBody.audioDuration}\""
+        audioMessageView.visible()
+        audioMessageView.setOnClickListener { eventListener?.playAudio(position, msgBody) }
+        val locationMessageView = holder.getView<RelativeLayout>(R.id.rl_o2_chat_message_location_body)
+        locationMessageView.gone()
+    }
+    private fun renderLocationMessage(msgBody: IMMessageBody, holder: CommonRecyclerViewHolder) {
+        val textMessageView = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
+        textMessageView.gone()
+        val emojiMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_emoji_body)
+        emojiMessageView.gone()
+        val imageMessageView = holder.getView<ImageView>(R.id.image_o2_chat_message_image_body)
+        imageMessageView.gone()
+        val audioMessageView = holder.getView<LinearLayout>(R.id.ll_o2_chat_message_audio_body)
+        audioMessageView.gone()
+        val locationMessageView = holder.getView<RelativeLayout>(R.id.rl_o2_chat_message_location_body)
+        val addressTv = holder.getView<TextView>(R.id.tv_o2_chat_message_location_address)
+        addressTv.text = msgBody.address
+        locationMessageView.visible()
+        locationMessageView.setOnClickListener { eventListener?.openLocation(msgBody) }
+    }
+
 
     interface MessageEventListener {
         //重新发送消息
         fun resendClick(message: IMMessage)
+        fun playAudio(position: Int, msgBody: IMMessageBody)
+        fun openOriginImage(position: Int, msgBody: IMMessageBody)
+        fun openLocation(msgBody: IMMessageBody)
     }
 }

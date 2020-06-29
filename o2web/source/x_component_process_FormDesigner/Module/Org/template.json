@@ -92,6 +92,46 @@
 		"blur": {
 			"code": "",
 			"html": ""
+		},
+		"queryLoadSelector" : {
+			"code": "",
+			"html": ""
+		},
+		"postLoadSelector" : {
+			"code": "",
+			"html": ""
+		},
+		"queryLoadCategory" : {
+			"code": "",
+			"html": ""
+		},
+		"postLoadCategory" : {
+			"code": "",
+			"html": ""
+		},
+		"selectCategory": {
+			"code": "",
+			"html": ""
+		},
+		"unselectCategory": {
+			"code": "",
+			"html": ""
+		},
+		"queryLoadItem" : {
+			"code": "",
+			"html": ""
+		},
+		"postLoadItem" : {
+			"code": "",
+			"html": ""
+		},
+		"selectItem" : {
+			"code": "",
+			"html": ""
+		},
+		"unselectItem" : {
+			"code": "",
+			"html": ""
 		}
 	},
 	"properties": {},

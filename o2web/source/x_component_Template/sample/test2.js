@@ -1066,7 +1066,7 @@ this.define("openMinder", function( workId ){
     if( layout.desktop.openApplication ){
         layout.desktop.openApplication(null, "portal.Portal", options)
     }else{
-        window.open( "../x_desktop/app.html?app=portal.Portal&option="+ JSON.stringify(options) );
+        window.open( o2.filterUrl("../x_desktop/app.html?app=portal.Portal&option="+ JSON.stringify(options)) );
     }
 });
 

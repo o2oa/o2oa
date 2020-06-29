@@ -47,6 +47,7 @@ struct FileContext {
     static let fileDownloadCMSIdQuery = "servlet/download/##id##/stream"
     static let fileDownloadItemIdQuery = "jaxrs/attachment/##id##/download/stream"
     static let fileDownloadPicItemIdQuery = "jaxrs/file/##id##/download/stream"
+    static let fileDownloadNoStreamIdQuery = "jaxrs/file/##id##/download"
     static let fileUploadTopQuery = "jaxrs/attachment/upload/folder/(0)"
     static let fileUploadSubQuery = "jaxrs/attachment/upload/folder/##id##"
     static let fileUploadReference = "jaxrs/file/upload/referencetype/##referencetype##/reference/##reference##/scale/##scale##"
@@ -261,6 +262,14 @@ struct BBSContext {
     
 }
 
+struct CommunicateContext {
+    static let communicateContextKey = "x_message_assemble_communicate"
+    static let imUploadFileQuery = "jaxrs/im/msg/upload/##conversationId##/type/##type##"
+    //文件打开地址
+    static let imDownloadFileQuery = "jaxrs/im/msg/download/##id##"
+    //图片根据尺寸压缩 0<width<5000 0<height<5000
+    static let imDownloadImageWithSizeQuery = "jaxrs/im/msg/download/##id##/image/width/##width##/height/##height##"
+}
 
 struct DesktopContext {
     static let DesktopContextKey = "x_desktop"

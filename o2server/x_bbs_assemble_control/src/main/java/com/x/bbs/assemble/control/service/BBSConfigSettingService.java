@@ -118,7 +118,7 @@ public class BBSConfigSettingService{
 	
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
-	 * @param id
+	 * @param configCode
 	 * @return
 	 * @throws Exception
 	 */
@@ -315,6 +315,18 @@ public class BBSConfigSettingService{
 			checkAndInitSystemConfig("BBS_MYREPLY_SORTTYPE", "我的回贴排序模式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
 			logger.warn( "system init system config 'BBS_MYREPLY_SORTTYPE' got an exception." );
+			logger.error(e);
+		}
+
+		value = "YES";
+		type = "select";
+		selectContent = "YES|NO";
+		isMultiple = false;
+		description = "是否允许匿名访问资源：可选值：YES|NO（允许|不允许），单选。";
+		try {
+			checkAndInitSystemConfig("BBS_ANONYMOUS_PERMISSION", "是否允许匿名访问", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_ANONYMOUS_PERMISSION' got an exception." );
 			logger.error(e);
 		}
 	}

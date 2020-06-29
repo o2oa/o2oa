@@ -12,6 +12,7 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public static final String TYPE_TASK = "task";
 	public static final String TYPE_APPENDTASK = "appendTask";
+	public static final String TYPE_ADDSPLIT = "addSplit";
 	public static final String TYPE_REROUTE = "reroute";
 	public static final String TYPE_RESET = "reset";
 	public static final String TYPE_RETRACT = "retract";
@@ -27,6 +28,12 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	@FieldDescribe("忽略授权的身份")
 	private List<String> ignoreEmpowerIdentityList = new ArrayList<>();
+
+	@FieldDescribe("当前处理人")
+	private String person;
+
+	@FieldDescribe("当前处理人身份")
+	private String identity;
 
 	public ProcessingAttributes() {
 		this.series = StringTools.uniqueToken();
@@ -141,6 +148,22 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public void setIgnoreEmpowerIdentityList(List<String> ignoreEmpowerIdentityList) {
 		this.ignoreEmpowerIdentityList = ignoreEmpowerIdentityList;
+	}
+
+	public String getPerson() {
+		return person;
+	}
+
+	public void setPerson(String person) {
+		this.person = person;
+	}
+
+	public String getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(String identity) {
+		this.identity = identity;
 	}
 
 }

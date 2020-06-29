@@ -280,6 +280,9 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
                     tdContainer.table = this;
 					tdContainer.load(moduleData, td, this);
 				}else{
+					var moduleData = Object.clone(data);
+					Object.merge(moduleData, json);
+					Object.merge(json, moduleData);
 					tdContainer = new MWF.FCTable$Td(this.form);
                     tdContainer.table = this;
 					tdContainer.load(json, td, this);
@@ -551,6 +554,26 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	getContainerNodes: function(){
 		//return this.node.getElements("td");
         return this._getTds();
+	},
+	_preprocessingModuleData: function(){
+		this.node.clearStyles();
+		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+		this.json.recoveryStyles = Object.clone(this.json.styles);
+
+		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){
+			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+				//需要运行时处理
+			}else{
+				var reg = /^border\w*/ig;
+				if (!key.test(reg)){
+					if (key){
+						this.node.setStyle(key, value);
+						delete this.json.styles[key];
+					}
+				}
+			}
+		}.bind(this));
+		this.json.preprocessing = "y";
 	}
 	
 });

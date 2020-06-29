@@ -466,10 +466,28 @@ function build_concat_xform(){
         .pipe(rename({ extname: '.min.js' }))
         .pipe(gulp.dest(dest))
 }
+
+function build_bundle(){
+    let path = "o2_core";
+    var src = [
+        'o2web/source/o2_lib/mootools/mootools-1.6.0_all.js',
+        'o2web/source/o2_lib/mootools/plugin/mBox.js',
+        'o2web/source/o2_core/o2.js',
+        'o2web/source/x_desktop/js/base.js',
+        "o2web/source/o2_core/o2/framework.js"
+    ];
+    var dest = 'target/o2server/servers/webServer/'+path+'/';
+    return gulp.src(src)
+        .pipe(concat('bundle.js'))
+        .pipe(gulp.dest(dest))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest(dest))
+}
 // function build_concat(){
 //     return gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
 // }
-exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform);
+exports.build_concat = gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle);
 
 
 function build_web_v_html() {
@@ -558,7 +576,7 @@ function chmod_commons(){
 function chmod_sh(){
     return (shell.task('chmod 777 target/o2server/*.sh'))();
 }
-exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform), build_web_v_html, build_web_v_o2);
+exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle), build_web_v_html, build_web_v_o2);
 if (os.platform().indexOf("win")==-1){
     exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh);
 }else{

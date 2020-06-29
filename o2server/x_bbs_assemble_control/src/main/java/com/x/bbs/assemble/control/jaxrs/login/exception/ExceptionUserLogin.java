@@ -9,4 +9,8 @@ public class ExceptionUserLogin extends PromptException {
 	public ExceptionUserLogin( Throwable e, String name ) {
 		super("用户进行系统登入时发生异常! Person:" + name, e );
 	}
+
+	public ExceptionUserLogin( String message ) {
+		super(message );
+	}
 }

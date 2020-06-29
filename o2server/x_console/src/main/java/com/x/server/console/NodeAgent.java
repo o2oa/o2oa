@@ -29,6 +29,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.server.Servers;
 
 import io.github.classgraph.ClassGraph;
@@ -43,6 +44,8 @@ public class NodeAgent extends Thread {
 	}
 
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
+
+	public static final Pattern syncFile_pattern = Pattern.compile("^syncFile:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$",
 			Pattern.CASE_INSENSITIVE);
@@ -77,8 +80,6 @@ public class NodeAgent extends Thread {
 							DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 						String json = dis.readUTF();
 
-						// logger.info("receive socket json={}",json);
-
 						CommandObject commandObject = XGsonBuilder.instance().fromJson(json, CommandObject.class);
 						if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEncrypt())) {
 							String decrypt = Crypto.rsaDecrypt(commandObject.getCredential(), Config.privateKey());
@@ -88,7 +89,28 @@ public class NodeAgent extends Thread {
 								continue;
 							}
 						}
+						
+						matcher = syncFile_pattern.matcher(commandObject.getCommand());
+						if (matcher.find()) {
+							String strCommand = commandObject.getCommand();
+							strCommand = strCommand.trim();
+							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
+							logger.info("收接到同步命令:" + strCommand);
+							String syncFilePath = dis.readUTF();
+							File file  = new File(Config.base(), syncFilePath);
+							fos = new FileOutputStream(file);
+							byte[] bytes = new byte[1024];
+							int length = 0;
+							while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
+								fos.write(bytes, 0, length);
+								fos.flush();
+							}
+							fos.close();
+                         	logger.info("同步完成");
+							continue;
 
+						}
+						
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							String strCommand = commandObject.getCommand();
@@ -125,7 +147,7 @@ public class NodeAgent extends Thread {
 							bytes = FileUtils.readFileToByteArray(file);
 							filename = filename.substring(0, filename.lastIndexOf("."));
 							// 部署
-							String result = this.redeploy(filename, bytes);
+							String result = this.redeploy(filename, bytes,true);
 							logger.info("部署:" + result);
 							continue;
 
@@ -167,7 +189,28 @@ public class NodeAgent extends Thread {
 							strCommand = strCommand.trim();
 							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
 							logger.info("收接到命令:" + strCommand);
-							commandQueue.add(strCommand);
+							
+							//为了同步文件
+	                        if (strCommand.indexOf("create encrypt")>-1) {
+	                        	matcher = CommandFactory.create_encrypt_key_pattern.matcher(strCommand);
+	                			if (matcher.find()) {
+	                				try {
+	                					boolean CreateEncryptKey = new ActionCreateEncryptKey().execute();
+	                					if(CreateEncryptKey) {
+	                						dos.writeUTF("Create Encrypt Key true");
+	                						dos.flush();
+	                					}else {
+	                						dos.writeUTF("Create Encryp tKey false");
+	                						dos.flush();
+	                					}
+	                				} catch (Exception e) {
+	                					e.printStackTrace();
+	                				}
+	                			}
+							}else {
+							    commandQueue.add(strCommand);
+							}
+	                        
 							continue;
 						}
 
@@ -313,7 +356,7 @@ public class NodeAgent extends Thread {
 		return result;
 	}
 
-	private String redeploy(String name, byte[] bytes) {
+	private String redeploy(String name, byte[] bytes, boolean rebootApp) {
 		String result = "success";
 		try {
 			logger.print("redeploy:{}.", name);
@@ -325,10 +368,10 @@ public class NodeAgent extends Thread {
 					storeJar(name, bytes);
 					break;
 				case "customWar":
-					customWar(name, bytes);
+					customWar(name, bytes,rebootApp);
 					break;
 				case "customJar":
-					customJar(name, bytes);
+					customJar(name, bytes,rebootApp);
 					break;
 			}
 		} catch (Exception e) {
@@ -389,6 +432,8 @@ public class NodeAgent extends Thread {
 		for (ClassInfo info : classInfos) {
 			contextPaths.add("/" + info.getSimpleName());
 		}
+		
+		
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -415,6 +460,7 @@ public class NodeAgent extends Thread {
 				}
 			}
 		}
+		
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -443,7 +489,7 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private void customWar(String simpleName, byte[] bytes) throws Exception {
+	private void customWar(String simpleName, byte[] bytes,boolean rebootApp) throws Exception {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
 		File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		FileUtils.writeByteArrayToFile(war, bytes, false);
@@ -460,10 +506,16 @@ public class NodeAgent extends Thread {
 					}
 				}
 			}
+			
+			if(rebootApp) {
+				  Servers.stopApplicationServer();
+				  Thread.sleep(3000);
+				  Servers.startApplicationServer();
+			}
 		}
 	}
 
-	private void customJar(String simpleName, byte[] bytes) throws Exception {
+	private void customJar(String simpleName, byte[] bytes,boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
 		List<String> contexts = new ArrayList<>();
@@ -476,12 +528,18 @@ public class NodeAgent extends Thread {
 			for (Handler handler : hanlderList.getHandlers()) {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contexts.contains(app.getContextPath())) {
+					if (contexts.contains(app.getContextPath())  ) {
 						app.stop();
-						Thread.sleep(2000);
+						Thread.sleep(3000);
 						app.start();
 					}
 				}
+			}
+			
+			if(rebootApp) {
+				  Servers.stopApplicationServer();
+				  Thread.sleep(1000);
+				  Servers.startApplicationServer();
 			}
 		}
 	}

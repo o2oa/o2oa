@@ -62,11 +62,11 @@ public class SchedulerBuilder {
 	/* 更新node节点applications 和 选择center主节点 */
 	private void registApplicationsAndVoteCenterTask(Scheduler scheduler, String scheduleGroup) throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(RegistApplicationsAndVoteCenterTask.class)
-				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup).withDescription(Config.node())
-				.build();
+				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
+				.withDescription(Config.node()).build();
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
-				.withSchedule(CronScheduleBuilder.cronSchedule("*/30 * * * * ?")).build();
+				.withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?")).build();
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
@@ -77,7 +77,8 @@ public class SchedulerBuilder {
 		properties.setProperty("org.quartz.scheduler.rmi.proxy", "false");
 		properties.setProperty("org.quartz.scheduler.wrapJobExecutionInUserTransaction", "false");
 		properties.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
-		properties.setProperty("org.quartz.threadPool.threadCount", "5");
+		// properties.setProperty("org.quartz.threadPool.threadCount", "5");
+		properties.setProperty("org.quartz.threadPool.threadCount", "50");
 		properties.setProperty("org.quartz.threadPool.threadPriority", "5");
 		properties.setProperty("org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread", "true");
 		properties.setProperty("org.quartz.jobStore.misfireThreshold", "60000");

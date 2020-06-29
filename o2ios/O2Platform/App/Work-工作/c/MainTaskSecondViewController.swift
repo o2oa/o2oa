@@ -292,7 +292,7 @@ class MainTaskSecondViewController: UIViewController {
     //热点图片新闻
     private func loadPlayerList(){
         DDLogDebug("loadPlayerList ...........................")
-        self.taskImageshowEntitys.removeAll(keepingCapacity: true)
+//        self.taskImageshowEntitys.removeAll(keepingCapacity: true)
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(HotpicContext.hotpicContextKey, query: HotpicContext.hotpicAllListQuery, parameter: ["##page##":"0" as AnyObject,"##count##":"8" as AnyObject])
         Alamofire.request(url!, method: .put, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
@@ -302,7 +302,7 @@ class MainTaskSecondViewController: UIViewController {
                     let data = JSON(val)["data"]
                     let entrys = Mapper<TaskImageshowEntity>().mapArray(JSONString: data.description)
                     DispatchQueue.main.async {
-                        self.taskImageshowEntitys.append(contentsOf: entrys!)
+                        self.taskImageshowEntitys = entrys ?? []
                     }
                 }else{
                     

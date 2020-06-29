@@ -23,6 +23,7 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.BufferedReader
+import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -297,8 +298,17 @@ class PictureLoaderService(val context: Context) {
         var inputstream:InputStream? = null
         try {
             XLog.debug("load avatar : $name")
-            val response = RetrofitClient.instance().assembleExpressApi().loadPersonAvatar(name).execute()
-            inputstream = response.body()?.byteStream()
+//            val response = RetrofitClient.instance().assembleExpressApi().loadPersonAvatar(name).execute()
+//            inputstream = response.body()?.byteStream()
+            val downloadUrl = APIAddressHelper.instance().getCommonDownloadUrl(APIDistributeTypeEnum.x_organization_assemble_express, "servlet/icon/$name")
+                val url = URL(downloadUrl)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.setRequestProperty("Accept-Encoding", "identity")
+                val newCookie = "x-token:" + O2SDKManager.instance().zToken
+                conn.setRequestProperty("Cookie", newCookie)
+                conn.setRequestProperty("x-token", O2SDKManager.instance().zToken)
+                conn.connect()
+                inputstream = conn.inputStream
         }catch (e: Exception){XLog.error("获取头像失败", e)}
         return inputstream
     }

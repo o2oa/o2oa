@@ -120,6 +120,10 @@ class OOCalendarLeftMenuController: UITableViewController {
         if indexPath.section == 0 {
             self.performSegue(withIdentifier: "showCalendarSegue", sender: "update")
         }
+        
+        if indexPath.section == 1 {
+            self.performSegue(withIdentifier: "showCalendarSegue", sender: "updateDept")
+        }
         tableView.deselectRow(at: indexPath, animated: false)
     }
 
@@ -137,6 +141,13 @@ class OOCalendarLeftMenuController: UITableViewController {
                     let row  = tableView.indexPathForSelectedRow!.row
                     cc.calendarInfo = self.myCalendarList[row]
                 }
+                
+                if type == "updateDept"{
+                    let cc = segue.destination as! OOCalendarViewController
+                    let row  = tableView.indexPathForSelectedRow!.row
+                    cc.calendarInfo = self.departmentCalendarList[row]
+                }
+
             }
         }
     }

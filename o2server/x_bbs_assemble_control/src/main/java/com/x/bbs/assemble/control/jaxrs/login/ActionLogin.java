@@ -14,11 +14,11 @@ import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.login.exception.ExceptionInsufficientPermissions;
 import com.x.bbs.assemble.control.jaxrs.login.exception.ExceptionUserLogin;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 手机用户访问论坛信息，首页所有的信息整合在一起 匿名用户可以访问
- * 
- * @param request
+ *
  * @return
  */
 public class ActionLogin extends BaseAction {
@@ -36,13 +36,18 @@ public class ActionLogin extends BaseAction {
 
 		if (check) {
 			if ("anonymous".equalsIgnoreCase(effectivePerson.getTokenType().name())) {
-				try {
-					operationRecordService.loginOperation("anonymous", hostIp, hostName);
-					result.setData(new RoleAndPermission());
-				} catch (Exception e) {
-					Exception exception = new ExceptionUserLogin(e, "anonymous");
+				if(StringUtils.equalsAnyIgnoreCase( ThisApplication.CONFIG_BBS_ANONYMOUS_PERMISSION, "YES")){
+					try {
+						operationRecordService.loginOperation("anonymous", hostIp, hostName);
+						result.setData(new RoleAndPermission());
+					} catch (Exception e) {
+						Exception exception = new ExceptionUserLogin(e, "anonymous");
+						result.error(exception);
+						logger.error(e, effectivePerson, request, null);
+					}
+				}else{
+					Exception exception = new ExceptionUserLogin("系统不允许匿名访问社区资源。");
 					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
 				}
 			} else {
 				RoleAndPermission roleAndPermission = null;

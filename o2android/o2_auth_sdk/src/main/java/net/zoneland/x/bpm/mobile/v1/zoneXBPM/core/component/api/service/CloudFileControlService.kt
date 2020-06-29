@@ -128,16 +128,6 @@ interface CloudFileControlService {
 
 
     /**
-     * 下载文件
-     * @param id
-     * *
-     * @return
-     */
-    @GET("jaxrs/attachment2/{id}/download/stream")
-    fun downloadFile(@Path("id") id: String): Call<ResponseBody>
-
-
-    /**
      * 分享
      */
     @POST("jaxrs/share")

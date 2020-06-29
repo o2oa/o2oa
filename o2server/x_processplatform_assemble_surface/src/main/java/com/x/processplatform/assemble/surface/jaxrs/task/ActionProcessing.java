@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -66,6 +67,7 @@ class ActionProcessing extends BaseAction {
 	private final String TYPE_TASK = "task";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		this.effectivePerson = effectivePerson;
 		wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -96,6 +98,7 @@ class ActionProcessing extends BaseAction {
 			this.type = this.type(business, task, wi);
 		}
 		this.processing();
+		audit.log(null, "任务处理");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;
@@ -134,12 +137,12 @@ class ActionProcessing extends BaseAction {
 
 	private void processing() throws Exception {
 		switch (type) {
-		case TYPE_APPENDTASK:
-			this.processingAppendTask();
-			break;
-		default:
-			this.processingTask();
-			break;
+			case TYPE_APPENDTASK:
+				this.processingAppendTask();
+				break;
+			default:
+				this.processingTask();
+				break;
 		}
 	}
 
@@ -189,6 +192,8 @@ class ActionProcessing extends BaseAction {
 		req.setIgnoreEmpowerIdentityList(wi.getIgnoreEmpowerIdentityList());
 		req.setType(ProcessingAttributes.TYPE_TASK);
 		req.setSeries(this.series);
+		req.setPerson(task.getPerson());
+		req.setIdentity(task.getIdentity());
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", task.getWork(), "processing"), req, task.getJob())

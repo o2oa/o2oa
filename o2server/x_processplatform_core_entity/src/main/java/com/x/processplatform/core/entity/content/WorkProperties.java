@@ -5,14 +5,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 public class WorkProperties extends JsonProperties {
 
+	@FieldDescribe("强制待办处理人")
 	private List<String> manualForceTaskIdentityList = new ArrayList<>();
 
+	@FieldDescribe("授权对象")
 	private LinkedHashMap<String, String> manualEmpowerMap = new LinkedHashMap<>();
 
+	@FieldDescribe("服务回调值")
 	private LinkedHashMap<String, Object> serviceValue = new LinkedHashMap<>();
+
+	@FieldDescribe("标题")
+	private String title;
 
 	public List<String> getManualForceTaskIdentityList() {
 		if (this.manualForceTaskIdentityList == null) {
@@ -47,48 +54,12 @@ public class WorkProperties extends JsonProperties {
 		this.serviceValue = serviceValue;
 	}
 
+	public String getTitle() {
+		return title;
+	}
 
-
-	
-
-//	private String destinationRoute;
-//
-//	private String destinationRouteName;
-//
-//	private ActivityType destinationActivityType;
-//
-//	private String destinationActivity;
-
-//	public String getDestinationRoute() {
-//		return destinationRoute;
-//	}
-//
-//	public void setDestinationRoute(String destinationRoute) {
-//		this.destinationRoute = destinationRoute;
-//	}
-//
-//	public String getDestinationRouteName() {
-//		return destinationRouteName;
-//	}
-//
-//	public void setDestinationRouteName(String destinationRouteName) {
-//		this.destinationRouteName = destinationRouteName;
-//	}
-//
-//	public ActivityType getDestinationActivityType() {
-//		return destinationActivityType;
-//	}
-//
-//	public void setDestinationActivityType(ActivityType destinationActivityType) {
-//		this.destinationActivityType = destinationActivityType;
-//	}
-//
-//	public String getDestinationActivity() {
-//		return destinationActivity;
-//	}
-//
-//	public void setDestinationActivity(String destinationActivity) {
-//		this.destinationActivity = destinationActivity;
-//	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
 }

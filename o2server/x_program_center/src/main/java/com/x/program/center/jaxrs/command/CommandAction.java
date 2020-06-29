@@ -45,7 +45,8 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionCommand.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionCommand().execute(effectivePerson, jsonElement);
+			
+			result = new ActionCommand().execute(request,effectivePerson, jsonElement);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -61,8 +62,9 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 	public void getNodeInfoList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		String currentIP = request.getLocalAddr();
 		try {
-			result = (ActionResult<ActionGet.Wo>) new ActionGet().execute(effectivePerson, "");
+			result = (ActionResult<ActionGet.Wo>) new ActionGet().execute(effectivePerson, currentIP);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -85,7 +87,7 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadFile().execute(effectivePerson, request ,ctl, nodeName, nodePort, fileInputStream, disposition);
+			result = new ActionUploadFile().execute(request , effectivePerson, ctl, nodeName, nodePort, fileInputStream, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

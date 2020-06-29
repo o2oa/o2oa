@@ -66,7 +66,7 @@ class ActionListSummaryWithPortalCategory extends BaseAction {
 		private static final long serialVersionUID = 4546727999450453639L;
 
 		static WrapCopier<Portal, Wo> copier = WrapCopierFactory.wo(Portal.class, Wo.class,
-				JpaObject.singularAttributeField(Portal.class, true, true), null);
+				JpaObject.singularAttributeField(Portal.class, true, false), null);
 
 		private List<WoPage> pageList = new ArrayList<>();
 

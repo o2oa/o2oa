@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>5.1.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>71</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -163,15 +163,15 @@
 		<key>centerContext</key>
 		<string>/x_program_center</string>
 		<key>centerHost</key>
-		<string>qywx.o2oa.net</string>
+		<string>sample.o2oa.net</string>
 		<key>centerPort</key>
-		<integer>20030</integer>
+		<integer>40030</integer>
 		<key>httpProtocol</key>
-		<string>http</string>
+		<string>https</string>
 		<key>id</key>
 		<string>o2CenterServer</string>
 		<key>name</key>
-		<string>dev</string>
+		<string>sample</string>
 	</dict>
 </dict>
 </plist>

@@ -1,28 +1,28 @@
 MWF.xDesktop.requireApp("query.ViewDesigner", "", null, false);
 MWF.APPDTBD = MWF.xApplication.query.TableDesigner;
 MWF.APPDTBD.options = {
-	"multitask": true,
-	"executable": false
+    "multitask": true,
+    "executable": false
 };
 MWF.xDesktop.requireApp("query.TableDesigner", "Table", null, false);
 
 MWF.xApplication.query.TableDesigner.Main = new Class({
-	Extends: MWF.xApplication.query.ViewDesigner.Main,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
-		"name": "query.TableDesigner",
-		"icon": "icon.png",
-		"title": MWF.APPDTBD.LP.title,
-		"appTitle": MWF.APPDTBD.LP.title,
-		"id": "",
+    Extends: MWF.xApplication.query.ViewDesigner.Main,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "name": "query.TableDesigner",
+        "icon": "icon.png",
+        "title": MWF.APPDTBD.LP.title,
+        "appTitle": MWF.APPDTBD.LP.title,
+        "id": "",
         "tooltip": {
             "unCategory": MWF.APPDTBD.LP.unCategory
         },
-		"actions": null,
-		"category": null,
-		"processData": null
-	},
+        "actions": null,
+        "category": null,
+        "processData": null
+    },
 
     onQueryLoad: function(){
         this.shortcut = true;
@@ -105,19 +105,19 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             }
         }
     },
-	
-	//loadView------------------------------------------
+
+    //loadView------------------------------------------
     loadView: function(){
-		this.getViewData(this.options.id, function(vdata){
+        this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
             this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.table = new MWF.xApplication.query.TableDesigner.Table(this, vdata);
-			this.table.load();
-		}.bind(this));
-	},
+            this.table.load();
+        }.bind(this));
+    },
 
-	loadNewViewData: function(callback){
+    loadNewViewData: function(callback){
         var url = "../x_component_query_TableDesigner/$Table/table.json";
         MWF.getJSON(url, {
             "onSuccess": function(obj){
@@ -136,11 +136,11 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                 this.notice(xhr.responseText, "error");
             }.bind(this)
         });
-	},
+    },
     loadViewData: function(id, callback){
-		this.actions.getTable(id, function(json){
-			if (json){
-				var data = json.data;
+        this.actions.getTable(id, function(json){
+            if (json){
+                var data = json.data;
                 data.draftData = JSON.decode(data.draftData);
 
                 if (!this.application){
@@ -151,9 +151,9 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                 }else{
                     if (callback) callback(data);
                 }
-			}
-		}.bind(this));
-	},
+            }
+        }.bind(this));
+    },
 
     saveView: function(){
         this.view.save(function(){
@@ -165,7 +165,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     },
     statusBuild: function(){
         this.view.statusBuild();
-	},
+    },
     statusDraft: function(){
         this.view.statusDraft();
     },
@@ -177,6 +177,9 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     },
     tableImplode: function(){
         this.view.tableImplode();
+    },
+    tableClear: function(){
+        this.view.tableClear();
     },
     tableHelp: function(){
         var content = new Element("div", {"styles": {"margin": "20px"}});
@@ -200,8 +203,8 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     // dictionaryImplode: function(){
     //     this.view.implode();
     // }
-	//recordStatus: function(){
-	//	return {"id": this.options.id};
-	//},
+    //recordStatus: function(){
+    //	return {"id": this.options.id};
+    //},
 
 });

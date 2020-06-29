@@ -22,6 +22,7 @@ enum OOAttendanceAPI {
     case checkinCycle(String,String) //考勤周期
     case checkinTotalForMonth(OOAttandanceTotalBean) //考勤统计
     case checkinAnalyze(OOAttandanceTotalBean) //考勤分析
+    case listMyRecord //当前用户当前的打卡情况和班次
 }
 
 // MARK:- 上下文实现
@@ -66,6 +67,8 @@ extension OOAttendanceAPI:TargetType {
             return "/jaxrs/attendancedetail/filter/list"
         case .checkinAnalyze(let bean):
             return "/jaxrs/statisticshow/person/\(bean.q_empName!)/\(bean.q_year!)/\(bean.q_month!)"
+        case .listMyRecord:
+            return "/jaxrs/attendancedetail/mobile/my"
         
         }
     }
@@ -89,6 +92,8 @@ extension OOAttendanceAPI:TargetType {
         case .checkinTotalForMonth(_):
             return .put
         case .checkinAnalyze(_):
+            return .get
+        case .listMyRecord:
             return .get
         }
     }
@@ -116,6 +121,8 @@ extension OOAttendanceAPI:TargetType {
         case .checkinTotalForMonth(let bean):
             return .requestParameters(parameters: bean.toJSON() ?? [:], encoding: JSONEncoding.default)
         case .checkinAnalyze(_):
+            return .requestPlain
+        case .listMyRecord:
             return .requestPlain
         }
     }

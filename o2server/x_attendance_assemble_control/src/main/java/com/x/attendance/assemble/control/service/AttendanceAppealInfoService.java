@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.entity.AttendanceAppealAuditInfo;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.Business;
@@ -19,17 +20,25 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 public class AttendanceAppealInfoService {
 
 	public AttendanceAppealInfo get( EntityManagerContainer emc, String id ) throws Exception {
-		if( id == null || id.isEmpty() || "(0)".equals( id )){
+		if( StringUtils.isEmpty( id ) || "(0)".equals( id )){
     		return null;
     	}
 		return emc.find(id, AttendanceAppealInfo.class);
 	}
 	public List<AttendanceAppealInfo> list(EntityManagerContainer emc, List<String> ids) throws Exception {
-		if( ids == null || ids.isEmpty() ){
+		if(ListTools.isEmpty( ids ) ){
     		return null;
     	}
 		return new Business(emc).getAttendanceAppealInfoFactory().list(ids);
 	}
+
+	public List<AttendanceAppealInfo> listWithDetailId(EntityManagerContainer emc, String id) throws Exception {
+		if( StringUtils.isEmpty( id ) ){
+			return null;
+		}
+		return new Business(emc).getAttendanceAppealInfoFactory().listWithDetailId(id);
+	}
+
 	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		AttendanceAppealInfo attendanceAppealInfo = null;
 		if( StringUtils.isNotEmpty( id ) && !"(0)".equals( id )){
@@ -82,6 +91,7 @@ public class AttendanceAppealInfoService {
 			attendanceDetail.setAppealDescription( attendanceAppealInfo.getAppealDescription());
 			emc.check(attendanceDetail, CheckPersistType.all);
 			emc.commit();
+
 			return attendanceAppealInfo;
 		}
 	}
@@ -175,5 +185,6 @@ public class AttendanceAppealInfoService {
 		emc.commit();
 	}
 
-	
+
+
 }

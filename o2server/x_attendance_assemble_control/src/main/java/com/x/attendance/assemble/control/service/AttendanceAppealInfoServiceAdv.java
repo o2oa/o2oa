@@ -29,6 +29,15 @@ public class AttendanceAppealInfoServiceAdv {
 			throw e;
 		}
 	}
+
+	public List<AttendanceAppealInfo> listWithDetailId(String id) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceAppealInfoService.listWithDetailId( emc, id );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	public List<AttendanceAppealInfo> list(List<String> ids) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return attendanceAppealInfoService.list( emc, ids );	
@@ -368,11 +377,10 @@ public class AttendanceAppealInfoServiceAdv {
 
 	public AttendanceAppealAuditInfo getAppealAuditInfo(String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			emc.find( id, AttendanceAppealAuditInfo.class );
+			return emc.find( id, AttendanceAppealAuditInfo.class );
 		} catch ( Exception e ) {
 			throw e;
 		}
-		return null;
 	}
 
 
@@ -410,4 +418,6 @@ public class AttendanceAppealInfoServiceAdv {
 
 
 	}
+
+
 }

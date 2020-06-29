@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -18,6 +19,8 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 
+import org.apache.commons.collections4.ListUtils;
+
 class ActionUpdatePrevTaskIdentity extends BaseAction {
 
 	@ActionLogger
@@ -29,7 +32,7 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 		bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<Task> os = emc.fetchIn(Task.class, ListTools.toList(Task.job_FIELDNAME), Task.id_FIELDNAME,
+			List<Task> os = emc.fetchIn(Task.class, ListTools.toList(Task.job_FIELDNAME), JpaObject.id_FIELDNAME,
 					bag.wi.getTaskList());
 			if (os.isEmpty()) {
 				Wo wo = new Wo();
@@ -43,10 +46,12 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 			public ActionResult<Wo> call() throws Exception {
 				Wo wo = new Wo();
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					List<Task> os = emc.listIn(Task.class, Task.id_FIELDNAME, bag.wi.getTaskList());
+					List<Task> os = emc.listIn(Task.class, JpaObject.id_FIELDNAME, bag.wi.getTaskList());
 					emc.beginTransaction(Task.class);
 					for (Task o : os) {
-						o.getProperties().setPrevTaskIdentityList(bag.wi.getPrevTaskIdentityList());
+						o.getProperties().setPrevTaskIdentityList(
+								ListTools.trim(ListUtils.sum(o.getProperties().getPrevTaskIdentityList(),
+										bag.wi.getPrevTaskIdentityList()), true, true));
 						emc.check(o, CheckPersistType.all);
 						wo.getValueList().add(o.getId());
 					}

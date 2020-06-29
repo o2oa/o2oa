@@ -155,15 +155,7 @@ interface OrgAssembleExpressService {
     @POST("jaxrs/unitduty/list/identity/unit/name/object")
     fun identityListByUnitAndDuty(@Body body: UnitDutyIdentityForm): Observable<ApiResponse<List<IdentityJson>>>
 
-    /**
-     * 获取用户头像
-     * @param person
-     * *
-     * @return
-     */
-    @GET("servlet/icon/{person}")
-    @Headers("Content-Type: application/octet-stream")
-    fun loadPersonAvatar(@Path("person") person: String): Call<ResponseBody>
+
 
     /**
      * 根据身份查询和层级查询组织

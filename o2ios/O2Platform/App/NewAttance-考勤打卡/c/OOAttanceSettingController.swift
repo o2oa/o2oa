@@ -258,15 +258,7 @@ extension OOAttanceSettingController:BMKGeoCodeSearchDelegate {
     func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKReverseGeoCodeSearchResult!, errorCode error: BMKSearchErrorCode) {
         dataView.workPlaceNameTextField.text = result.address
         dataView.workAliasNameTextField.text = result.sematicDescription
-//        for item in result.poiList {
-//            let m = item as! BMKPoiInfo
-//            print(m.name)            ///<POI名称
-//            print(m.uid)
-//            print(m.address)      ///<POI地址
-//            print(m.city)        ///<POI所在城市
-//            print(m.phone)        ///<POI电话号码
-//            print(m.pt.longitude,m.pt.latitude)    ///<POI坐标
-//        }
+
         //设置settingBean
         settingBean.placeName = result.address
         settingBean.placeAlias = result.sematicDescription

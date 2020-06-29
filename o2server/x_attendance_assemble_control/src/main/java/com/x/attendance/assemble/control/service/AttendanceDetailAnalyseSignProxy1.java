@@ -95,8 +95,8 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setAbsentDayTime("上午");
 							detail.setIsAbsent( true );
 							AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);//递增缺勤天数 + 0.5
-							AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
 						}
+						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
 					}else if( lateStartTime != null && onDutyTime.after( lateStartTime )){
 						//上午签到过了，并没有超过缺勤起算时间，如果排班设置里已经配置过了迟到起算时间，那么判断员工是否已经迟到，如果未休假也不是周末的话
 						logger.debug( debugger, "上午打卡时间晚于迟到计时时间......" );
@@ -127,8 +127,8 @@ class AttendanceDetailAnalyseSignProxy1 {
 						detail.setAbsentDayTime("上午");
 						detail.setIsAbsent(true);
 						AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);
-						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
 					}
+					AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
 					logger.debug( debugger, "上午工作时长, 未打卡：minutes= 0 分钟。" );
 					detail.setWorkTimeDuration( 0L );
 				}
@@ -149,6 +149,7 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setIsLeaveEarlier( true );
 						}
 					}
+
 					//下午已经签退了，现在计算全天的工作时长
 					if( afternoonStartTime != null ){ //已经配置过了下午上班时间
 						minutes = dateOperation.getMinutes( afternoonStartTime, offDutyTime);
@@ -174,12 +175,12 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
 						}else{
-							if(StringUtils.isNotEmpty( detail.getAbnormalDutyDayTime() )){
+							if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
 								detail.setAbnormalDutyDayTime("上午|下午");
 							}else {
 								detail.setAbnormalDutyDayTime("下午");
 							}
-							if(StringUtils.isNotEmpty( detail.getAbsentDayTime() )){
+							if( StringUtils.equals( "上午", detail.getAbsentDayTime()) ){
 								detail.setAbsentDayTime("全天");
 							}else{
 								detail.setAbsentDayTime("下午");
@@ -187,10 +188,9 @@ class AttendanceDetailAnalyseSignProxy1 {
 							detail.setIsAbnormalDuty(true);
 							detail.setIsAbsent(true);
 							AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);
-							AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
 							logger.debug( debugger, "没请假，未打卡，算缺卡和缺勤状态。" );
 						}
-
+						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
 						//员工未签退，计算全天的工作时长，下午的时长不计算
 //						detail.setWorkTimeDuration( 0L );
 						logger.debug( debugger, "员工未签退，全天工作时长暂时记为0分钟，等待补卡或者补提请假申请。" );

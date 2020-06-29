@@ -126,7 +126,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
         var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getPageByName": "getPageByNameMobile";
 
         if (this.json.subpageType==="script"){
-            if (this.json.subpageScript.code){
+            if (this.json.subpageScript && this.json.subpageScript.code){
                 var formNome = this.form.Macro.exec(this.json.subpageScript.code, this);
                 if (formNome){
                     var app = this.form.businessData.pageInfor.portal;
@@ -169,7 +169,7 @@ MWF.xApplication.process.Xform.Subpage = MWF.APPSubpage =  new Class({
         if( this.json.parameterType === "map" ){
             params = this.json.parametersMapList;
         }else if( this.json.parameterType === "script" ){
-            var code = this.json.parametersScript.code;
+            var code = (this.json.parametersScript) ? this.json.parametersScript.code : "";
             if (code){
                 params = this.form.Macro.exec(code, this);
             }

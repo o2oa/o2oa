@@ -8,21 +8,16 @@ import android.widget.ImageView
 import kotlinx.android.synthetic.main.fragment_picture_viewer.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.BitmapUtil
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import rx.Observable
+import rx.Observer
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.File
-import java.io.FileOutputStream
-
-
 
 
 class CloudDrivePictureViewerFragment : BaseMVPViewPagerFragment<CloudDrivePictureViewerContract.View, CloudDrivePictureViewerContract.Presenter>(), CloudDrivePictureViewerContract.View {
@@ -47,59 +42,46 @@ class CloudDrivePictureViewerFragment : BaseMVPViewPagerFragment<CloudDrivePictu
         }else {
             circle_progress_fragment_picture_view.visible()
             zoomImage_fragment_picture_view.visible()
-            doAsync {
-                val path = FileExtensionHelper.getXBPMTempFolder()+ File.separator + fileName
-                XLog.debug("file path $path")
-                val file = File(path)
-                var bitmap:Bitmap? = null
-                if (!file.exists()) {
-                    XLog.debug("file not exist, ${file.path}")
-                    try {
-                        //下载
-                        val call = RetrofitClient.instance().fileAssembleControlApi()
-                                .downloadFile(fileId)
-                        val response = call.execute()
-                        response.errorBody()?.string()
-                        val input  = DataInputStream(response.body()?.byteStream())
-                        val output = DataOutputStream(FileOutputStream(file))
-                        val buffer = ByteArray(4096)
-                        var count = 0
-                        do {
-                            count = input.read(buffer)
-                            if (count > 0) {
-                                output.write(buffer, 0, count)
-                            }
-                        } while (count > 0)
-                        output.close()
-                        input.close()
-                    }catch (e: Exception){
-                        try {
-                            file.delete()
-                        } catch (e: Exception) {
+
+            val path = FileExtensionHelper.getXBPMTempFolder()+ File.separator + fileName
+            XLog.debug("file path $path")
+            val downloadUrl = APIAddressHelper.instance()
+                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_file_assemble_control, "jaxrs/attachment/$fileId/download/stream")
+            O2FileDownloadHelper.download(downloadUrl, path)
+                    .subscribeOn(Schedulers.io())
+                    .flatMap {
+                        var bitmap:Bitmap? = null
+                        //压缩
+                        val options = BitmapFactory.Options()
+                        options.inJustDecodeBounds = true
+                        val imageSize = getImageViewWidthAndHeight(zoomImage_fragment_picture_view)
+                        val  newW = imageSize.width
+                        val   newH = imageSize.height
+                        XLog.debug("zoomBitmap, newW:$newW,newH:$newH")
+                        options.inSampleSize = BitmapUtil.getFitInSampleSize(newW, newH, options)
+                        options.inJustDecodeBounds = false
+                        bitmap = BitmapFactory.decodeFile(path, options)
+                        Observable.just(bitmap)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Bitmap> {
+                        override fun onError(e: Throwable?) {
+                            XLog.error("的丁大丁大", e)
+                            circle_progress_fragment_picture_view?.gone()
                         }
-                        XLog.error("download file fail", e)
 
-                    }
-                }
+                        override fun onNext(bitmap: Bitmap?) {
+                            if (bitmap!=null) {
+                                zoomImage_fragment_picture_view?.setImageBitmap(bitmap)
+                            }
+                            circle_progress_fragment_picture_view?.gone()
+                        }
 
-                //压缩
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
-                val imageSize = getImageViewWidthAndHeight(zoomImage_fragment_picture_view)
-                val  newW = imageSize.width
-                val   newH = imageSize.height
-                XLog.debug("zoomBitmap, newW:$newW,newH:$newH")
-                options.inSampleSize = BitmapUtil.getFitInSampleSize(newW, newH, options)
-                options.inJustDecodeBounds = false
-                bitmap = BitmapFactory.decodeFile(path, options)
+                        override fun onCompleted() {
+                        }
 
-                uiThread {
-                    circle_progress_fragment_picture_view?.gone()
-                    if (bitmap!=null) {
-                        zoomImage_fragment_picture_view?.setImageBitmap(bitmap)
-                    }
-                }
-            }
+                    })
+
         }
     }
 

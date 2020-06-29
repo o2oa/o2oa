@@ -8,7 +8,7 @@
   "docToWordDefaultSite": "$doc",
   "executorCount": 32.0,
   "urge": {
-    "enable": true,
+    "enable": false,
     "cron": "30 0/10 8-18 * * ?",
     "###enable": "是否启用###",
     "###cron": "定时cron表达式.###"

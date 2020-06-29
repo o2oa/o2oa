@@ -297,6 +297,54 @@ function createO2ConcatTask(path, isMin, thisOptions) {
             })))
             .pipe(gulp.dest(dest))
     });
+
+    gulp.task(path+" : bundle", function(){
+        var option = thisOptions || options;
+        var src = [
+            'source/o2_lib/mootools/mootools-1.6.0_all.js',
+            'source/o2_lib/mootools/plugin/mBox.js',
+            'source/' + path + '/o2.js',
+            'source/x_desktop/js/base.js',
+            "source/o2_core/o2/framework.js"
+        ];
+        var dest = option.dest+'/' + path + '/';
+        return gulp.src(src)
+            .pipe(concat('bundle.js'))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+            .pipe(uglify())
+            .pipe(rename({ extname: '.min.js' }))
+            .pipe(gulpif((option.upload == 'local' && option.location != ''), gulp.dest(option.location + path + '/')))
+            .pipe(gulpif((option.upload == 'ftp' && option.host != ''), ftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || '@anonymous',
+                port: option.port || 21,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulpif((option.upload == 'sftp' && option.host != ''), sftp({
+                host: option.host,
+                user: option.user || 'anonymous',
+                pass: option.pass || null,
+                port: option.port || 22,
+                remotePath: (option.remotePath || '/') + path
+            })))
+            .pipe(gulp.dest(dest))
+    });
 }
 
 function getAppTask(path, isMin, thisOptions) {
@@ -307,7 +355,7 @@ function getAppTask(path, isMin, thisOptions) {
     }else if (path==="o2_core"){
         createDefaultTask(path, isMin, thisOptions);
         createO2ConcatTask(path, isMin, thisOptions);
-        return gulp.series(path, path+" : concat", path+".xDesktop : concat");
+        return gulp.series(path, path+" : concat", path+".xDesktop : concat",  path+" : bundle");
     }else{
         createDefaultTask(path, isMin, thisOptions);
         return gulp.series(path);

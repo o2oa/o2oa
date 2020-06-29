@@ -381,7 +381,7 @@ MWF.xApplication.cms.Xform.Office = MWF.CMSOffice =  new Class({
                     }else if(window.webkit){
                         window.webkit.messageHandlers.openDocument.postMessage(url);
                     }else{
-                        window.open(url);
+                        window.open(o2.filterUrl(url));
                     }
                 }
             }.bind(this));

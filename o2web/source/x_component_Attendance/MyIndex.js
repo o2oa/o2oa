@@ -17,7 +17,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
         //"leaveEarly":"#fe8d03", //橙色，早退
         "noSign":"#ee807f", //粉红色,未签到
         "appealSuccess" : "#2ac497", //黄绿色，申诉通过
-        "lackOfTime" : "#dec674",//工时不足人次
+        //"lackOfTime" : "#dec674",//工时不足人次
         "abNormalDuty" : "#fedcbd"//异常打卡人次
     },
     initialize: function(node, app, actions, options){
@@ -705,7 +705,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             late : 0,
             appealSuccess : 0,
             //leaveEarly : 0,
-            lackOfTime : 0,
+            //lackOfTime : 0,
             abNormalDuty : 0,
             normal : 0
         };
@@ -743,7 +743,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
 
             if( this.isAskForLevel(d,"pm") ){
                 totals.levelAsked = totals.levelAsked + 0.5;
-                events.push( {  text: '请假或外出报备', start: d.recordDateString,  backgroundColor :this.statusColor.levelAsked } )
+                events.push( {  text: this.lp.index.levelAsked, start: d.recordDateString,  backgroundColor :this.statusColor.levelAsked } )
             }else if( this.isAppealSuccess(d,"pm")){
                 events.push( {  text: this.lp.appealSuccess, start: d.recordDateString,  backgroundColor :this.statusColor.appealSuccess } );
                 totals.appealSuccess = totals.appealSuccess + 0.5;
@@ -756,10 +756,10 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             //    totals.leaveEarly = totals.leaveEarly + 0.5
             }else if( this.isAbsent(d,"pm")){
                     totals.noSign = totals.noSign + 0.5;
-                    events.push( {  text: '缺勤', start: d.recordDateString,  backgroundColor :this.statusColor.noSign } )
-            }else if( this.isLackOfTime(d,"pm")){
+                    events.push( {  text: this.lp.index.absent, start: d.recordDateString,  backgroundColor :this.statusColor.noSign } )
+           /* }else if( this.isLackOfTime(d,"pm")){
                 events.push( {  text: this.lp.lackOfTime + '，' + this.lp.signTime + '：' + d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.lackOfTime } );
-                totals.lackOfTime = totals.lackOfTime + 0.5
+                totals.lackOfTime = totals.lackOfTime + 0.5*/
             }else if( this.isAbnormalDuty(d,"pm")){
                 events.push( {  text: this.lp.abNormalDuty + '，' + this.lp.signTime + '：' + d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.abNormalDuty } );
                 totals.abNormalDuty = totals.abNormalDuty + 0.5
@@ -768,8 +768,11 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             }else if( this.isWeekend(d, "pm") ){
                 return;
             }else{
-                totals.normal = totals.normal + 0.5;
-                events.push( {  text: '出勤，打卡时间：'+ d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.normal } )
+                if(!!d.offDutyTime){
+                    totals.normal = totals.normal + 0.5;
+                    events.push( {  text: this.lp.index.offDutyTime+ d.offDutyTime, start: d.recordDateString,  backgroundColor :this.statusColor.normal } )
+                }
+
             }
         }.bind(this) );
         this.totalData = totals;
@@ -783,7 +786,7 @@ MWF.xApplication.Attendance.MyIndex = new Class({
             noSign : (!totals.noSign || !total) ? 0 : ((totals.noSign/total * 100).toFixed(2)  + "%"),
             late : (!totals.late || !total) ? 0 : ((totals.late/total * 100).toFixed(2) + "%"),
             //leaveEarly : (!totals.leaveEarly || !total) ? 0 : ((totals.leaveEarly/total* 100).toFixed(2)  + "%"),
-            lackOfTime : (!totals.lackOfTime || !total) ? 0 : ((totals.lackOfTime/total * 100).toFixed(2) + "%"),
+            //lackOfTime : (!totals.lackOfTime || !total) ? 0 : ((totals.lackOfTime/total * 100).toFixed(2) + "%"),
             abNormalDuty : (!totals.abNormalDuty || !total) ? 0 : ((totals.abNormalDuty/total* 100).toFixed(2)  + "%"),
             normal : (!totals.normal || !total) ? 0 : ((totals.normal/total* 100).toFixed(2)  + "%"),
             appealSuccess  : (!totals.appealSuccess || !total) ? 0 : ((totals.appealSuccess/total * 100).toFixed(2)  + "%")
