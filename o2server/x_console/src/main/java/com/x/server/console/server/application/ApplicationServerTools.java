@@ -60,12 +60,12 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.x_query_assemble_surface;
 import com.x.base.core.project.x_query_service_processing;
-import com.x.base.core.project.x_teamwork_assemble_control;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -97,8 +97,8 @@ public class ApplicationServerTools extends JettySeverTools {
 			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
 			x_okr_assemble_control.class.getName(), x_hotpic_assemble_control.class.getName(),
-			x_teamwork_assemble_control.class.getName(), x_query_service_processing.class.getName(),
-			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName());
+			x_query_service_processing.class.getName(), x_query_assemble_designer.class.getName(),
+			x_query_assemble_surface.class.getName());
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
@@ -127,7 +127,8 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
 				webApp.setExtraClasspath(calculateExtraClassPath(clz));
 				webApp.getMimeTypes().addMimeMapping("vcf", "text/x-vcard");
-				//webApp.getMimeTypes().addMimeMapping("wcss", "application/json");
+				// webApp.getMimeTypes().addMimeMapping("wcss",
+				// "application/json");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
