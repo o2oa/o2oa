@@ -1311,6 +1311,8 @@ MWF.xApplication.MinderEditor.ExportForm = new Class({
 
             var protocols = [];
 
+            debugger;
+
             var pool = kityminder.data.getRegisterProtocol();
             for(var name in pool) {
                 if (pool.hasOwnProperty(name) && pool[name].encode) {
