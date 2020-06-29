@@ -280,8 +280,8 @@ MWF.xApplication.MinderEditor.Clipboard = new Class({
                                     pidx--;
                                     pnode = nodes[pidx];
                                 }
-                            };
-                        };
+                            }
+                        }
                         var str = encode(nodes);
                         clipBoardEvent.clipboardData.setData('text/plain', str);
                     }
