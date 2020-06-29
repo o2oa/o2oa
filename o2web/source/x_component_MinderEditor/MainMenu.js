@@ -365,11 +365,37 @@ MWF.xApplication.MinderEditor.MainMenu = new Class({
             this.app.openRenameDialog();
             this.hide();
         }.bind(this) );
-        this.createActionNode( actionArea, "download", "导出", "将文件导出到本地", function(){
-            this.app.openExportDialog();
+        this.createActionNode( actionArea, "download", "导出", "导出图片到本地", function(){
+            // this.app.openExportDialog();
+            this.exportAsImage();
             this.hide();
         }.bind(this));
 
+    },
+    exportAsImage : function(){
+        var title = this.app.minder.getRoot().getText();
+
+        var converter = new MWF.xApplication.MinderEditor.Converter(this.app, this.app.minder, {
+            "background": "#ffffff",
+            "zoom": 2
+        });
+        converter.toPng(null, null, function( img ){
+            var id = this.app.data.id;
+            var formData = new FormData();
+            formData.append('file', img, title+".png");
+            formData.append('site', id);
+
+            MWF.xDesktop.uploadImageByScale( id, "mindInfo", -1, formData, img,
+                function(json){
+                    var url = o2.Actions.load("x_file_assemble_control").FileAction.action.actions.downloadStream.uri.replace( "{id}", json.data.id );
+                    url = o2.filterUrl( o2.Actions.load("x_file_assemble_control").FileAction.action.address + url);
+                    window.open(url);
+                }.bind(this)
+            );
+
+        }.bind(this), function(){
+            this.app.notice("抱歉，脑图中有外网图片，无法导出","error")
+        }.bind(this))
     },
     openFileVersion : function(){
         var _self = this;
