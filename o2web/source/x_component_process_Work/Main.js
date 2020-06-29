@@ -170,7 +170,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         }
                     }
                 }.bind(this), "failure": function(){
-                    this.close();
+                    //this.close();
                 }.bind(this)}, [this.options.form.id, this.options.form.app], id);
         }else{
             o2.Actions.invokeAsync([
@@ -199,7 +199,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         }
                     }
                 }.bind(this), "failure": function(){
-                    this.close();
+                    //this.close();
                 }.bind(this)}, id);
         }
     },
@@ -217,18 +217,26 @@ MWF.xApplication.process.Work.Main = new Class({
                     this.options.workId = id;
                     this.loadWork();
                 }else{
-                    var worksAreaNode = this.createWorksArea();
-                    // for (var x=0;x<3;x++){
-                    json.data.workList.each(function(work){
-                        this.createWorkNode(work, worksAreaNode);
-                    }.bind(this));
-                    json.data.workCompletedList.each(function(work){
-                        this.createWorkCompletedNode(work, worksAreaNode);
-                    }.bind(this));
-                    // }
-                    if (this.mask) this.mask.hide();
-                    this.formNode.setStyles(this.css.formNode_bg);
-
+                    if (this.options.choice){
+                        var worksAreaNode = this.createWorksArea();
+                        // for (var x=0;x<3;x++){
+                        json.data.workList.each(function(work){
+                            this.createWorkNode(work, worksAreaNode);
+                        }.bind(this));
+                        json.data.workCompletedList.each(function(work){
+                            this.createWorkCompletedNode(work, worksAreaNode);
+                        }.bind(this));
+                        // }
+                        if (this.mask) this.mask.hide();
+                        this.formNode.setStyles(this.css.formNode_bg);
+                    }else{
+                        if (json.data.workList.length){
+                            this.options.workId =  json.data.workList[0].id;
+                        }else{
+                            this.options.workId =  json.data.workCompletedList[0].id;
+                        }
+                        this.loadWork();
+                    }
                 }
             }else{
                 this.close();
