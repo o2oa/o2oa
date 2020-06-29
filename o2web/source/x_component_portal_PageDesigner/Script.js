@@ -534,7 +534,7 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.scriptAreaNode.setStyle("margin-left", width+3);
                 this.listAreaNode.setStyle("width", width);
 
-                if (this.editor) this.editor.resize();
+                if (this.jsEditor) this.jsEditor.resize();
             }.bind(this)
         });
     },
@@ -709,9 +709,9 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         // if (this.value){
         if (!this.node) this.createNode();
             //if (this.isShow)
-        if (this.editor){
-            this.editor.setValue(this.value);
-            this.editor.session.setValue(this.value);
+        if (this.jsEditor){
+            this.jsEditor.setValue(this.value);
+            //this.editor.session.setValue(this.value);
             //this.jsEditor.node.show();
         }
         // }else{
@@ -821,7 +821,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         this.script.designer.saveForm();
     },
     change: function(){
-        this.data[this.key] = this.editor.getValue();
+        this.data[this.key] = this.jsEditor.getValue();
     },
     setSize: function(){
         var size = this.script.scriptTabNode.getComputedSize();
@@ -830,7 +830,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         var tabMarginBottom = this.script.scriptTab.tabNodeContainer.getStyle("margin-bottom").toFloat();
         var h = size.height-tabSize.totalHeight-tabMarginTop-tabMarginBottom;
         this.scriptPageNode.setStyle("height", ""+h+"px");
-        if (this.editor) this.editor.resize();
+        if (this.jsEditor) this.jsEditor.resize();
     },
     createScriptEditor: function(){
         this.scriptPageNode = new Element("div");
