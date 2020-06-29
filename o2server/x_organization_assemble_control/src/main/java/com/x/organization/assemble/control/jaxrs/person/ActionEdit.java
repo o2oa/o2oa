@@ -1,11 +1,15 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
@@ -18,7 +22,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
 import com.x.organization.assemble.control.message.OrgBodyMessage;
@@ -26,12 +29,8 @@ import com.x.organization.assemble.control.message.OrgMessage;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.Unit;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionEdit extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
@@ -53,7 +52,8 @@ class ActionEdit extends BaseAction {
 				isNameUpdate = true;
 			}
 			Wi.copier.copy(wi, person);
-
+			// 防止创建的时候加了空格
+			person.setName(StringUtils.trim(person.getName()));
 			this.checkName(business, person.getName(), person.getId());
 			this.checkMobile(business, person.getMobile(), person.getId());
 			this.checkEmployee(business, person.getEmployee(), person.getId());
@@ -103,8 +103,6 @@ class ActionEdit extends BaseAction {
 			business.instrument().collect().person();
 
 			/** 创建 组织变更org消息通信 */
-			// createMessageCommunicate(strOriginalPerson,person, effectivePerson);
-
 			OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "person", strOriginalPerson, person, effectivePerson);
 
