@@ -126,6 +126,15 @@ o2.widget.JavascriptEditor = new Class({
                     this.format();
                 }.bind(this));
 
+                this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_F, function(e){
+                    this.format();
+                }.bind(this));
+
+                // this.editor.onKeyDown(function(e){
+                //     debugger;
+                //     e.preventDefault();
+                // });
+
                 if( this.fontSize ){
                     this.editor.updateOptions( {"fontSize": this.fontSize} );
                 }
