@@ -86,6 +86,7 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                     // if ( (item.subItemList && item.subItemList.length > 0) || item.subCategoryList && item.subCategoryList.length > 0 ) {
                     if( this.options.categorySelectable ){
                         var category = this._newItemCategorySelectable(item, this, this.itemAreaNode);
+                        this.items.push(category);
                         this.categorys.push( category );
                     }else{
                         var category = this._newItemCategory(item, this, this.itemAreaNode);
