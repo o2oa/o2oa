@@ -153,10 +153,13 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		Root<AttendanceDetailMobile> root = cq.from(AttendanceDetailMobile.class);
 		Predicate p = cb.isNotNull( root.get( AttendanceDetailMobile_.id ) );
 		if( StringUtils.isNotEmpty( distinguishedName ) ){
-			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.empNo ), distinguishedName ) );
+			p = cb.or(
+					cb.equal( root.get( AttendanceDetailMobile_.empNo ), distinguishedName ),
+					cb.equal( root.get( AttendanceDetailMobile_.empName ), distinguishedName )
+			);
 		}
 		if( StringUtils.isNotEmpty( signDate ) ){
-			p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), signDate ) );
+			p = cb.and( cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), signDate ), p );
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( 100 ).getResultList();
 	}

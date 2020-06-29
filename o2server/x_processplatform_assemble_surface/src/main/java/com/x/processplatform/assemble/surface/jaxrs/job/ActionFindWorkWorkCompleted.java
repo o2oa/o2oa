@@ -15,6 +15,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -34,6 +35,9 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 		logger.debug(effectivePerson, "job:{}.", job);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			if (!business.readableWithJob(effectivePerson, job)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
 			wo.setWorkList(this.listWork(business, job));

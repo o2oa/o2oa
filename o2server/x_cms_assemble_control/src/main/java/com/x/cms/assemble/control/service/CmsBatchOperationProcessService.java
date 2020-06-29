@@ -42,7 +42,7 @@ public class CmsBatchOperationProcessService {
 	 * @throws Exception 
 	 */
 	public String process( CmsBatchOperation cmsBatchOperation ) throws Exception {
-		logger.info( "process -> Cms processing batch operation: " + cmsBatchOperation.toString() );
+		logger.debug( "process -> Cms processing batch operation: " + cmsBatchOperation.toString() );
 		//先把cmsBatchOperation状态修改为执行中
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			cmsBatchOperation = emc.find( cmsBatchOperation.getId(), CmsBatchOperation.class );
@@ -51,7 +51,7 @@ public class CmsBatchOperationProcessService {
 				emc.beginTransaction( CmsBatchOperation.class );
 				emc.check( cmsBatchOperation, CheckPersistType.all );
 				emc.commit();
-				logger.info( "process -> cms change batch operation running......: " );
+				logger.debug( "process -> cms change batch operation running......: " );
 			}			
 		} catch (Exception e) {
 			throw e;

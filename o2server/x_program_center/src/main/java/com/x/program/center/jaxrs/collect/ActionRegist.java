@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.collect;
 
+import com.x.program.center.schedule.CollectMarket;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,8 +48,9 @@ class ActionRegist extends BaseAction {
 			Config.collect().setPassword(password);
 			Config.collect().save();
 			Config.flush();
-			/* 直接提交人员 */
+			/* 人员和应用市场同步 */
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
+			ThisApplication.context().scheduleLocal(CollectMarket.class);
 		}
 		result.setData(wo);
 		return result;

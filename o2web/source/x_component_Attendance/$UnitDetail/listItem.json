@@ -6,7 +6,7 @@
     "item" : "function( d ){ return d.empName.split('@')[0] }",
     "name" : "empName",
     "defaultSort" : "asc",
-    "width" : "15%"
+    "width" : "11%"
   },
   {
     "title" : "日期",
@@ -14,7 +14,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "recordDateString",
     "name" : "recordDateString",
-    "width" : "15%"
+    "width" : "11%"
   },
 
   {
@@ -23,7 +23,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "function( data ){ if(data.isHoliday){return '节假日'}else if(data.isWeekend){return '周末'}else if(data.isWorkday){return '调休工作日'}else{return '工作日'}  }",
     "name" : "description",
-    "width" : "15%"
+    "width" : "11%"
   },
 
   {
@@ -32,7 +32,23 @@
     "contentStyles" : "normalTdNode",
     "item" : "onDutyTime",
     "name" : "onDutyTime",
-    "width" : "15%"
+    "width" : "11%"
+  },
+  {
+    "title" : "午休开始时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "morningOffDutyTime",
+    "name" : "morningOffDutyTime",
+    "width" : "11%"
+  },
+  {
+    "title" : "午休结束时间",
+    "headStyles" : "normalThNode",
+    "contentStyles" : "normalTdNode",
+    "item" : "afternoonOnDutyTime",
+    "name" : "afternoonOnDutyTime",
+    "width" : "11%"
   },
   {
     "title" : "下班打卡时间",
@@ -40,7 +56,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "offDutyTime",
     "name" : "offDutyTime",
-    "width" : "15%"
+    "width" : "11%"
   },
   {
     "title": "考勤状态",
@@ -48,7 +64,7 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){  var status=''; if(d.isGetSelfHolidays){ status = '请假或外出报备' }else if(d.isLate){ status = '迟到' }else if(d.isLeaveEarlier){ status = '早退' }else if(d.isAbsent){ status = '缺勤' }else if(d.isAbnormalDuty){ status = '异常打卡' }else if(d.isLackOfTime){ status = '工时不足' }else{ status = '正常' }; return status; }",
     "name" : "status",
-    "width" : "10%"
+    "width" : "11%"
   },
   {
     "title": "申诉状态",
@@ -56,7 +72,7 @@
     "contentStyles": "normalTdNode",
     "item": "function( d ){  if(d.appealStatus==1){ return '申诉中' }else if(d.appealStatus==-1){ return '申诉未通过' }else if(d.appealStatus==9){ return '申诉通过' }else{ return '' } }",
     "name" : "appealStatus",
-    "width" : "10%"
+    "width" : "11%"
   }
 //  {
 //    "access" : "admin",

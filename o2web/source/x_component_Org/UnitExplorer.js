@@ -591,6 +591,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                         var _dutyData = this.data;
                         this.data.woIdentityList.each(function(identity, i){
                             new MWF.widget.O2Identity(identity, contentNode, {
+                                "lazy" : true,
                                 "canRemove": _self.data.control.allowEdit,
                                 "onRemove": function(O2Identity, e){
                                     _self.deleteDutyIdentity(_dutyData, e, O2Identity);

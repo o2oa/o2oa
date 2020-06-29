@@ -17,6 +17,10 @@
         "code": "",
         "html": ""
       },
+      "submitScript":{
+        "code":"layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();",
+        "html": ""
+      },
 
       "events": {
         "queryLoad" : {
@@ -194,7 +198,10 @@
         "code": "",
         "html": ""
       },
-
+      "submitScript":{
+        "code":"layout.mobile ? this.popupProcessorMobile() : this.popupProcessor();",
+        "html": ""
+      },
       "events": {
         "help": {
           "code": "",

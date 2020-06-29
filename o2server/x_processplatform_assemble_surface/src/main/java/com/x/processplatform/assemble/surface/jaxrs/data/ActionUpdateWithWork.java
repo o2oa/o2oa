@@ -26,13 +26,10 @@ class ActionUpdateWithWork extends BaseAction {
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Audit audit = logger.audit(effectivePerson);
-			/** 防止提交空数据清空data */
+			// 防止提交空数据清空data
 			if (null == jsonElement || (!jsonElement.isJsonObject())) {
 				throw new ExceptionNotJsonObject();
 			}
-//			if (jsonElement.getAsJsonObject().entrySet().isEmpty()) {
-//				throw new ExceptionEmptyData();
-//			}
 			Business business = new Business(emc);
 			work = emc.find(id, Work.class);
 			if (null == work) {

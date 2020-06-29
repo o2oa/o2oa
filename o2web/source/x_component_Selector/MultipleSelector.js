@@ -570,8 +570,12 @@ MWF.xApplication.Selector.MultipleSelector = new Class({
                         })
                     }
                 }else{
-                    if( this.contentWidth )options.width = this.contentWidth;
-                    if( this.contentHeight )options.height = this.contentHeight;
+                    // if( this.contentWidth )options.width = this.contentWidth;
+                    // if( this.contentHeight )options.height = this.contentHeight;
+
+                    if( this.contentWidth )this.selectors[t].options.width = this.contentWidth;
+                    if( this.contentHeight )this.selectors[t].options.height = this.contentHeight;
+
                     this.selectors[t].loadContent( pageNode );
                     this.selectors[t].setSize();
 

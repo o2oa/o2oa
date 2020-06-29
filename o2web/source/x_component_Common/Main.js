@@ -292,14 +292,14 @@ MWF.xApplication.Common.Main = new Class({
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
 		var status = (this.desktop.openBrowserStatus) ? JSON.encode(this.desktop.openBrowserStatus) : "";
 
-		var url = "app.html?app=" + this.options.name + "&status=" + status;
-		window.open(url, "_blank");
+		var url = "../x_desktop/app.html?app=" + this.options.name + "&status=" + status;
+		window.open(o2.filterUrl(url), "_blank");
 		if (!this.inBrowser) if (!noClose) this.close();
 	},
 	openInNewWindow: function () {
 		this.desktop.openBrowserApp = this.options.name;
 		this.desktop.openBrowserStatus = (this.recordStatus) ? this.recordStatus() : null;
-		window.open("app.html", "_blank");
+		window.open(o2.filterUrl("../x_desktop/app.html"), "_blank");
 		if (!this.inBrowser) this.close();
 	},
 	setContentEvent: function () {
@@ -401,6 +401,7 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	close: function (hasTaskitem) {
 		if (this.inBrowser) {
+			window.open("", "_self").close();
 			window.close();
 		} else {
 			this.fireAppEvent("queryClose");
@@ -508,7 +509,7 @@ MWF.xApplication.Common.Main = new Class({
 	},
 	confirm: function (type, e, title, text, width, height, ok, cancel, callback, mask, style) {
 		MWF.require("MWF.xDesktop.Dialog", function () {
-			var content = layout.mobile ? $(document.body) : this.content;
+			var content = layout.mobile ? $(document.body) : this.content || $(document.body);
 			var size = content.getSize();
 			var x = 0;
 			var y = 0;

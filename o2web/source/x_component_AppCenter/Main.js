@@ -381,7 +381,9 @@ MWF.xApplication.AppCenter.Exporter = new Class({
                     if (callback) callback();
                 }.bind(this),
                 "onPostClose": function() {
-                    _self.app.fireEvent("exporterClose");
+                    if(_self.app){
+                        _self.app.fireEvent("exporterClose");
+                    }
                     MWF.release(_self);
                 }
             });
@@ -441,8 +443,8 @@ MWF.xApplication.AppCenter.Exporter = new Class({
 
                         if (this.mask) this.mask.hide();
                         this.dlg.close();
-                        window.open(this.app.actions.action.address+uri);
-
+                        window.open(o2.filterUrl(this.app.actions.action.address+uri));
+                        this.app.fireEvent("exporterClose");
                         MWF.release(this);
                     }.bind(this), function(xhr, text, error){
                         if (xhr.status!=0){

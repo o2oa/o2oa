@@ -6,6 +6,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     Extends: MWF.APP$Input,
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select"],
+        "selectorEvents" : ["queryLoadSelector","postLoadSelector","postLoadContent","queryLoadCategory","postLoadCategory",
+            "selectCategory", "unselectCategory","queryLoadItem","postLoadItem","selectItem", "unselectItem","change"],
         "readonly": true
     },
 
@@ -34,7 +36,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if (COMMON.Browser.safari) w = w-20;
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    if (COMMON.Browser.safari) w = w - 20;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",
@@ -139,6 +143,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
 
     getOptions: function(){
 
+        var _self = this;
+
         if( this.selectTypeList.length === 0 )return false;
 
         var values = this.getInputData();
@@ -213,6 +219,30 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         //    }
         //}
 
+        var defaultOpt = {};
+
+        if( this.json.events && typeOf(this.json.events) === "object" ){
+            Object.each(this.json.events, function(e, key){
+                if (e.code){
+                    if (this.options.selectorEvents.indexOf(key)!==-1){
+                        if( key === "postLoadSelector" ) {
+                            this.addEvent("loadSelector", function (selector) {
+                                return this.form.Macro.fire(e.code, selector);
+                            }.bind(this))
+                        }else if( key === "queryLoadSelector"){
+                            defaultOpt["onQueryLoad"] = function(target){
+                                return this.form.Macro.fire(e.code, target);
+                            }.bind(this)
+                        }else{
+                            defaultOpt["on"+key.capitalize()] = function(target){
+                                return this.form.Macro.fire(e.code, target);
+                            }.bind(this)
+                        }
+                    }
+                }
+            }.bind(this));
+        }
+
         if( this.selectTypeList.length === 1 ){
             return Object.merge( {
                 "type": this.selectTypeList[0],
@@ -220,9 +250,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     this.selectOnComplete(items);
                 }.bind(this),
                 "onCancel": this.selectOnCancel.bind(this),
-                "onLoad": this.selectOnLoad.bind(this),
+                // "onLoad": this.selectOnLoad.bind(this),
+                "onLoad": function(){
+                    //this 为 selector
+                    _self.selectOnLoad(this, this.selector );
+                },
                 "onClose": this.selectOnClose.bind(this)
-            }, identityOpt || unitOpt || groupOpt )
+            }, defaultOpt, identityOpt || unitOpt || groupOpt )
         }else if( this.selectTypeList.length > 1 ){
             var options = {
                 "type" : "",
@@ -231,15 +265,19 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     this.selectOnComplete(items);
                 }.bind(this),
                 "onCancel": this.selectOnCancel.bind(this),
-                "onLoad": this.selectOnLoad.bind(this),
+                // "onLoad": this.selectOnLoad.bind(this),
+                "onLoad": function(){
+                    //this 为 selector
+                    _self.selectOnLoad(this)
+                },
                 "onClose": this.selectOnClose.bind(this)
             };
             if( this.form.json.selectorStyle ){
                 options = Object.merge( options, this.form.json.selectorStyle );
             }
-            if( identityOpt )options.identityOptions = identityOpt;
-            if( unitOpt )options.unitOptions = unitOpt;
-            if( groupOpt )options.groupOptions = groupOpt;
+            if( identityOpt )options.identityOptions = Object.merge( {}, defaultOpt, identityOpt );
+            if( unitOpt )options.unitOptions =  Object.merge( {}, defaultOpt, unitOpt );
+            if( groupOpt )options.groupOptions = Object.merge( {}, defaultOpt, groupOpt );
             return options;
         }
 
@@ -286,8 +324,9 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     selectOnCancel: function(){
         this.validation();
     },
-    selectOnLoad: function(){
+    selectOnLoad: function( selector ){
         if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
+        this.fireEvent("loadSelector", [selector])
     },
     selectOnClose: function(){
         v = this._getBusinessData();
@@ -509,6 +548,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (callback) callback(data);
         });
     },
+
+    _resetNodeInputEdit: function(){
+        var node = new Element("div", {
+            "styles": {
+                "overflow": "hidden",
+                //"position": "relative",
+                "margin-right": "20px"
+            }
+        }).inject(this.node, "after");
+        this.node.destroy();
+        this.node = node;
+    },
     _loadNodeInputEdit: function(){
         var input=null;
         MWF.require("MWF.widget.Combox", function(){
@@ -533,16 +584,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         });
         input.set(this.json.properties);
 
-        var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            //"position": "relative",
-            "margin-right": "20px"
-        }}).inject(this.node, "after");
-        input.inject(node);
-        //this.combox = input;
+        if (!this.json.preprocessing) this._resetNodeInputEdit();
 
-        this.node.destroy();
-        this.node = node;
+        this.node.empty();
+        input.inject(this.node);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -566,8 +611,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             if (this.validation()) this._setBusinessData(this.getInputData("change"));
         }.bind(this));
     },
-    _loadNodeEdit: function(){
 
+    _resetNodeEdit: function(){
         var input = new Element("div", {
             "styles": {
                 "background": "transparent",
@@ -575,18 +620,20 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 "min-height": "24px"
             }
         });
-        input.set(this.json.properties);
-
         var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            "position": "relative",
-            "margin-right": "20px",
-            "min-height": "24px"
-        }}).inject(this.node, "after");
+                "overflow": "hidden",
+                "position": "relative",
+                "margin-right": "20px",
+                "min-height": "24px"
+            }}).inject(this.node, "after");
         input.inject(node);
-
         this.node.destroy();
         this.node = node;
+    },
+    _loadNodeEdit: function(){
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type,

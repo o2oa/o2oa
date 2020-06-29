@@ -102,6 +102,24 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "根据传入用户，获取可见的Application,并绑定其可见的Porcess", action = ActionManageListWithPersonComplex.class)
+	@GET
+	@Path("list/complex/manage/{person}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithPersonComplex(@Suspended final AsyncResponse asyncResponse,
+									  @Context HttpServletRequest request, @JaxrsParameterDescribe("用户") @PathParam("person") String person) {
+		ActionResult<List<ActionManageListWithPersonComplex.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithPersonComplex().execute(effectivePerson,person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "仅获取指定Application的Icon,没有权限限制", action = ActionGetIcon.class)
 	@GET
 	@Path("{flag}/icon")

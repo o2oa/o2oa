@@ -80,12 +80,12 @@ o2.addReady(function(){
                                 redirectlink = encodeURIComponent(redirectlink);
                             }
                             if( options.workId ){
-                                window.location = "workmobilewithaction.html?workid="+options.workId+"&redirectlink="+redirectlink;
+                                window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid="+options.workId+"&redirectlink="+redirectlink);
                             }else if( options.workCompletedId ){
-                                window.location = "workmobilewithaction.html?workcompletedid="+options.workCompletedId+"&redirectlink="+redirectlink;
+                                window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid="+options.workCompletedId+"&redirectlink="+redirectlink);
                             }
                         }else{
-                            window.location = "appMobile.html?app="+appNames+"&option="+(optionsStr || "")+"&status="+(statusStr || "");
+                            window.location = o2.filterUrl("../x_desktop/appMobile.html?app="+appNames+"&option="+(optionsStr || "")+"&status="+(statusStr || ""));
                         }
                     }else{
                         var appPath = appNames.split(".");

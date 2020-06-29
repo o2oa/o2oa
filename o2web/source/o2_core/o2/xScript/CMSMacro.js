@@ -81,8 +81,8 @@ MWF.CMSMacro.CMSFormContext = new Class({
 
 });
 
-if( !MWF.Macro.ViewContext ){
-    MWF.Macro.ViewContext = new Class({
+if( !MWF.CMSMacro.ViewContext ){
+    MWF.CMSMacro.ViewContext = new Class({
         macroFunction: null,
         environment: {},
         initialize: function(view){
@@ -112,7 +112,7 @@ if( !MWF.Macro.ViewContext ){
         },
         exec: function(code, target){
             this.setTarget(target);
-            var returnValue = MWF.Macro.exec(code, this.environment);
+            var returnValue = MWF.CMSMacro.exec(code, this.environment);
             //this.form.businessData.data = Object.merge(this.form.businessData.data, this.environment.data);
 
             return returnValue;
@@ -122,7 +122,7 @@ if( !MWF.Macro.ViewContext ){
         fire: function(code, target, event){
             this.setTarget(target);
             this.setEvent(event);
-            return MWF.Macro.exec(code, this.environment);
+            return MWF.CMSMacro.exec(code, this.environment);
         }
     });
 }

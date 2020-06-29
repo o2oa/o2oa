@@ -144,7 +144,7 @@ public class AttendanceSettingService {
 		isMultiple = false;
 		description = "考勤结果申诉流程，单值。该配置在'自定义申诉流程("+AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN+")'时，需要启动的申请流程ID。";
 		try {
-			checkAndInitSystemConfig("APPEAL_AUDIFLOW_ID", "自定义申请流程", value, description, type, selectContent, isMultiple, ++ordernumber );
+			checkAndInitSystemConfig("APPEAL_AUDIFLOW_ID", "自定义申诉流程", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
 			logger.warn( "system init system config 'APPEAL_AUDIFLOW_ID' got an exception." );
 			logger.error(e);

@@ -30,24 +30,23 @@ public class VoteCenterEvent implements Event {
 
 				ActionResponse response = CipherConnectionAction.get(false,
 						Config.url_x_program_center_jaxrs(entry, "echo"));
-
-				JsonElement jsonElement = response.getData();
-
-				if (null != jsonElement) {
+				JsonElement jsonElement = response.getData(JsonElement.class);
+				if (null != jsonElement && (!jsonElement.isJsonNull())) {
 					if ((!StringUtils.equals(Config.resource_node_centersPirmaryNode(), entry.getKey()))
 							|| (!Objects.equals(Config.resource_node_centersPirmaryPort(), entry.getValue().getPort()))
 							|| (!Objects.equals(Config.resource_node_centersPirmarySslEnable(),
 									entry.getValue().getSslEnable()))) {
-						logger.print("pirmary center set as:{}, in {}.", entry.getKey(), this.nodes(list));
+						logger.warn("pirmary center set as: {}, in {}.", entry.getKey(), this.nodes(list));
 						Config.resource_node_centersPirmaryNode(entry.getKey());
 						Config.resource_node_centersPirmaryPort(entry.getValue().getPort());
 						Config.resource_node_centersPirmarySslEnable(entry.getValue().getSslEnable());
 					}
 					return;
 				}
-
 			} catch (Exception e) {
-
+				// logger.warn("failed to connect center: {}, port: {}, sslEnable: {}.",
+				// entry.getKey(),
+				// entry.getValue().getPort(), entry.getValue().getSslEnable());
 			}
 		}
 

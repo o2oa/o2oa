@@ -138,6 +138,15 @@ public class HttpToken {
 		}
 	}
 
+	public void setResponseToken(HttpServletRequest request, HttpServletResponse response,
+								  String tokenName, String token) throws Exception {
+		if (!StringUtils.isEmpty(token)) {
+			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request);
+			response.setHeader("Set-Cookie", cookie);
+			response.setHeader(tokenName, token);
+		}
+	}
+
 	public String getToken(HttpServletRequest request) throws Exception {
 		String token = null;
 		token = URLTools.getQueryStringParameter(request.getQueryString(), X_Token);

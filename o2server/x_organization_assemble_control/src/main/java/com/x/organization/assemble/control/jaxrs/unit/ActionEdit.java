@@ -44,6 +44,9 @@ class ActionEdit extends BaseAction {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Unit unit = business.unit().pick(flag);
+			Unit oldUnit = unit;
+			boolean checkFlag = false;
+			
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(flag);
 			}
@@ -57,7 +60,6 @@ class ActionEdit extends BaseAction {
 			/** pick出来的对象需要重新取出 */
 			emc.beginTransaction(Unit.class);
 			unit = emc.find(unit.getId(), Unit.class);
-			
 			Gson gsontool = new Gson();
 			String strOriginalUnit = gsontool.toJson(unit);
 			
@@ -75,12 +77,19 @@ class ActionEdit extends BaseAction {
 			if (this.duplicateName(business, unit)) {
 				throw new ExceptionDuplicateName(unit.getName());
 			}
-			business.unit().adjustInherit(unit);
+			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
+			checkFlag = this.checkUnitTypeName(oldUnit,unit);
+			if(checkFlag){
+				business.unit().adjustInherit(unit);
+			}
 			emc.check(unit, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Unit.class);
 			
-			this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
+			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
+			if(checkFlag){
+				this.updateIdentityUnitNameAndUnitLevelName(effectivePerson, flag, jsonElement);
+			}
 
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
@@ -199,6 +208,16 @@ class ActionEdit extends BaseAction {
 			}
 
 		}
+	}
+	
+	private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
+		List<String> oldUnitType = oldUnit.getTypeList();
+		List<String> unitType = unit.getTypeList();
+		//判断两个list是否相同
+		if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName())) || (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
+			return true;
+		}
+		return false;
 	}
 	
 	

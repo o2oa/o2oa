@@ -41,19 +41,8 @@ class ActionSimulate extends BaseAction {
 			if (wi == null) {
 				wi = new Wi();
 			}
-			Runtime runtime = new Runtime();
-			runtime.person = effectivePerson.getDistinguishedName();
-			runtime.identityList = business.organization().identity()
-					.listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.unitList = business.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.unitAllList = business.organization().unit()
-					.listWithPersonSupNested(effectivePerson.getDistinguishedName());
-			runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.roleList = business.organization().role().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.parameter = wi.getParameter();
-			runtime.filterList = wi.getFilterList();
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount());
 			runtime.bundleList = wi.getBundleList();
-			runtime.count = this.getCount(view, wi.getCount());
 			switch (StringUtils.trimToEmpty(view.getType())) {
 
 			case View.TYPE_CMS:

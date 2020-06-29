@@ -90,9 +90,14 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         if (this.shortcut) {
             if (this.form) {
                 //           if (this.form.isFocus){
+                if (!this.form.node.contains(document.activeElement)){
+                    return false;
+                }
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
+
+                        debugger;
 
                         this.form.fireEvent("queryGetFormData", [module.node]);
                         var html = module.getHtml();
@@ -118,6 +123,7 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         if (this.shortcut) {
             if (this.form) {
                 //          if (this.form.isFocus){
+                if (!this.form.node.contains(document.activeElement)) return false;
                 if (this.form.currentSelectedModule) {
                     var module = this.form.currentSelectedModule;
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
@@ -137,6 +143,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     pasteModule: function(){
         if (this.shortcut) {
             if (this.form) {
+                debugger;
+                if (!this.form.node.contains(document.activeElement)) return false;
                 //    if (this.form.isFocus){
                 if (MWF.clipboard.data) {
                     if (MWF.clipboard.data.type == "form") {
@@ -1284,14 +1292,29 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     },
 	loadFormData: function(callback){
 		this.actions.getForm(this.options.id, function(form){
+		    debugger;
 			if (form){
+			    var formTemplete = null;
+                MWF.getJSON("../x_component_process_FormDesigner/Module/Form/template/form.json", {
+                    "onSuccess": function(obj){ formTemplete = obj; }.bind(this)
+                }, false);
 
 				this.formData = JSON.decode(MWF.decodeJsonString(form.data.data));
+				if (formTemplete.pcData){
+				    Object.merge(formTemplete.pcData, this.formData);
+                    Object.merge(this.formData, formTemplete.pcData);
+                }
 				this.formData.isNewForm = false;
 				this.formData.json.id = form.data.id;
 
                 if (form.data.mobileData){
                     this.formMobileData = JSON.decode(MWF.decodeJsonString(form.data.mobileData));
+
+                    if (formTemplete.mobileData){
+                        Object.merge(formTemplete.mobileData, this.formMobileData);
+                        Object.merge(this.formMobileData, formTemplete.mobileData);
+                    }
+
                     this.formMobileData.isNewForm = false;
                     this.formMobileData.json.id = form.data.id;
                 }else{
@@ -1501,12 +1524,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
             var pcData, mobileData;
             if (this.pcForm){
-                this.pcForm._getFormData();
-                pcData = this.pcForm.data;
+                pcData = this.pcForm._getFormData();
+                //pcData = this.pcForm.data;
             }
             if (this.mobileForm){
-                this.mobileForm._getFormData();
-                mobileData = this.mobileForm.data;
+                mobileData = this.mobileForm._getFormData();
+                //mobileData = this.mobileForm.data;
             }else{
                 if (this.formMobileData) mobileData = this.formMobileData;
             }
@@ -1668,12 +1691,12 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
     saveTemplate: function(markNode, areaNode, iconNode, nameNode, categorySelect, newCategoryNode, descriptionNode){
         var pcData, mobileData;
         if (this.pcForm){
-            this.pcForm._getFormData();
-            pcData = this.pcForm.data;
+            pcData = this.pcForm._getFormData();
+            //pcData = this.pcForm.data;
         }
         if (this.mobileForm){
-            this.mobileForm._getFormData();
-            mobileData = this.mobileForm.data;
+            mobileData = this.mobileForm._getFormData();
+            //mobileData = this.mobileForm.data;
         }
 
         var name = nameNode.get("value");

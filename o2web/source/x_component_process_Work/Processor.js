@@ -388,17 +388,24 @@ MWF.xApplication.process.Work.Processor = new Class({
         if (this.selectedRoute){
             if (this.selectedRoute.get("text") != node.get("text")){
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.removeClass("mainColor_bg");
 
                 this.selectedRoute = node;
                 node.setStyles(this.css.routeNode_selected);
+                node.addClass("mainColor_bg");
+                node.removeClass("lightColor_bg");
 
             }else{
                 this.selectedRoute.setStyles(this.css.routeNode);
+                this.selectedRoute.addClass("lightColor_bg");
+                this.selectedRoute.removeClass("mainColor_bg");
                 this.selectedRoute = null;
             }
         }else{
             this.selectedRoute = node;
             node.setStyles(this.css.routeNode_selected);
+            node.addClass("mainColor_bg");
+            node.removeClass("lightColor_bg");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
     },
@@ -444,7 +451,7 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
 
         //临时添加
-        if(this.form.data.json.events.afterSelectRoute){
+        if(this.form.data.json.events && this.form.data.json.events.afterSelectRoute){
             this.form.Macro.exec(this.form.data.json.events.afterSelectRoute.code, node);
         }
 
@@ -669,6 +676,7 @@ MWF.xApplication.process.Work.Processor = new Class({
     setIdeaList: function(ideas){
         var _self = this;
         ideas.each(function(idea){
+            if( !idea )return;
             new Element("div", {
                 "styles": this.css.selectIdeaItemNode,
                 "text": idea,
@@ -1614,7 +1622,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             o2.Actions.load("x_organization_assemble_authentication").AuthenticationAction.switchUser({"credential": ( _self.task.personDn || _self.task.person ) }, function(){
                 var text = MWF.xApplication.process.Work.LP.managerLoginSuccess.replace("{user}", user );
                 MWF.xDesktop.notice("success", {x: "right", y:"top"}, text );
-                window.open("../x_desktop/work.html?workid="+_self.task.work);
+                window.open(o2.filterUrl("../x_desktop/work.html?workid="+_self.task.work));
             }.bind(this));
             this.close();
         }, function () {

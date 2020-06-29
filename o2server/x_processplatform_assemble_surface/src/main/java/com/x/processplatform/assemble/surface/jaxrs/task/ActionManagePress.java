@@ -14,6 +14,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Process;
 
 import java.net.URLEncoder;
 
@@ -31,9 +32,10 @@ class ActionManagePress extends BaseAction {
 			if (null == application) {
 				throw new ExceptionEntityNotExist(task.getApplication(), Application.class);
 			}
-			/** 需要对这个应用的管理权限 */
-			if (!business.application().allowControl(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson, application);
+			Process process = business.process().pick(task.getProcess());
+			// 需要对这个应用的管理权限
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("task", task.getId(), "press"));

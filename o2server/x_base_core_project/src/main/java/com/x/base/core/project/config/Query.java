@@ -97,7 +97,7 @@ public class Query extends ConfigObject {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QUERY);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
 	}
-	
+
 	public static class CrawlCms extends ConfigObject {
 
 		public static CrawlCms defaultInstance() {
@@ -105,7 +105,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "30 30 7-21 * * ?";
 
@@ -180,7 +180,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "40 40 7-21 * * ?";
 
@@ -268,7 +268,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "50 50 22 * * ?";
 
@@ -347,8 +347,6 @@ public class Query extends ConfigObject {
 		}
 
 	}
-
-	
 
 	public void setCrawlWorkCompleted(CrawlWorkCompleted crawlWorkCompleted) {
 		this.crawlWorkCompleted = crawlWorkCompleted;

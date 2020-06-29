@@ -19,9 +19,9 @@ MWF.xAction.RestActions.Action["x_faceset_control"] = new Class({
                 options.data.append("api_key", this.faceKeys.api_key);
                 options.data.append("api_secret", this.faceKeys.api_secret);
             }else{
-                if (!options.data) options.data = {};
-                options.data.api_key = this.faceKeys.api_key;
-                options.data.api_secret = this.faceKeys.api_secret
+                if (!options.parameter) options.parameter = {};
+                options.parameter.api_key = this.faceKeys.api_key;
+                options.parameter.api_secret = this.faceKeys.api_secret
             }
         }
         return this.action.invoke(options);
@@ -45,7 +45,7 @@ MWF.xAction.RestActions.Action["x_faceset_control"].RestActions = new Class({
     Extends: MWF.xDesktop.Actions.RestActions,
     getAddress: function(success, failure){
         //this.address = "http://dev.o2oa.net:8888/"+this.serviceName;
-        this.address = "http://release.o2oa.net:8888/"+this.serviceName;
+        this.address = "http://develop.o2oa.net:8888/"+this.serviceName;
         //this.address = "http://127.0.0.1:8888/"+this.serviceName;
         if (success) success.apply();
     }

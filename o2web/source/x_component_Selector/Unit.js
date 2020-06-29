@@ -195,7 +195,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.actionNode = new Element("div", {
             "styles": this.selector.css.selectorItemActionNode
         }).inject(this.node);
-        if( this.selector.options.count.toInt() === 1 && this.selector.css.selectorItemActionNode_single  ){
+        if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
 
@@ -229,11 +229,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
+        debugger;
         if( !this.selector.options.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
-        if (this.data.subDirectUnitCount){
+        if ( this._hasChild() || this.selector.options.expandEmptyCategory ){
             if (this.selector.options.expand){
-                if (this.level===1){
+                if (this.level===1 && this._hasChild() ){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                     this.loadSubItems();
                 }else{
@@ -245,10 +246,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             }
             this.levelNode.addEvent("click", function(e){
                 if (this.isExpand){
+                    this.selector.fireEvent("collapse", [this] );
                     this.children.setStyle("display", "none");
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_collapse);
                     this.isExpand = false;
                 }else{
+                    this.selector.fireEvent("expand", [this] );
                     this.loadSubItems();
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                     this.isExpand = true;
@@ -277,10 +280,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 }).inject(this.textNode, "before");
                 this.selectAllNode.addEvent( "click", function(ev){
                     if( this.isSelectedAll ){
-                        this.unselectAll(ev);
+                        // this.unselectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
                         this.selector.fireEvent("unselectCatgory",[this])
                     }else{
-                        this.selectAll(ev);
+                        // this.selectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
                         this.selector.fireEvent("selectCatgory",[this])
                     }
                     ev.stopPropagation();
@@ -613,6 +618,9 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }else{
             if(callback)callback();
         }
+    },
+    _hasChild : function () {
+        return this.data.subDirectUnitCount;
     }
 });
 

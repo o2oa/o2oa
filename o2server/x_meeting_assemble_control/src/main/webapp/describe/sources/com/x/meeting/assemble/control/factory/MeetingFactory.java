@@ -189,7 +189,8 @@ public class MeetingFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Meeting> root = cq.from(Meeting.class);
-		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), new Date());
+		//Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), new Date());
+		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), new Date());
 		p = cb.and(p, cb.equal(root.get(Meeting_.room), roomId));
 		p = cb.and(p, cb.equal(root.get(Meeting_.manualCompleted), false));
 		if (allowOnly) {

@@ -43,13 +43,15 @@ class AttendanceDetailAnalyseSignProxy2 {
 		//先初始化当前打卡信息中的上下班时间要求，该要求是是根据员工所在组织排班信息获取到的
 		onWorkTime = AttendanceDetailAnalyseCoreService.getOnWorkTimeFromDetail( detail, debugger );
 		offWorkTime = AttendanceDetailAnalyseCoreService.getOffWorkTimeFromDetail( detail, debugger );
-		middleDutyTime = AttendanceDetailAnalyseCoreService.getMorningOffdutyTimeFromDetail( detail, debugger );
+		middleDutyTime = AttendanceDetailAnalyseCoreService.getAfternoonOndutyTimeFromDetail( detail, debugger );
 
 		lateStartTime = AttendanceDetailAnalyseCoreService.getLateStartTimeFromDetail( detail, scheduleSetting, debugger );
 		leaveEarlyStartTime = AttendanceDetailAnalyseCoreService.getLeaveEarlyStartTimeFromDetail( detail, scheduleSetting, debugger );
 		absenceStartTime = AttendanceDetailAnalyseCoreService.getAbsenceStartTimeFromDetail( detail, scheduleSetting, debugger );
 		morningEndTime = AttendanceDetailAnalyseCoreService.getMiddleRestStartTimeFromDetail( detail, scheduleSetting, debugger );
 		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );
+
+		Date now = new Date();
 
 		if ( onWorkTime != null && offWorkTime != null && morningEndTime != null && afternoonStartTime != null ) {
 			logger.debug( debugger, "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， morningEndTime="+morningEndTime + "， afternoonStartTime="+afternoonStartTime + "， offWorkTime="+offWorkTime );
@@ -103,8 +105,8 @@ class AttendanceDetailAnalyseSignProxy2 {
 							detail.setAbsentDayTime("上午");
 							detail.setIsAbsent( true );
 							AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);//递增缺勤天数 + 0.5
-							AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
 						}
+						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
 					}else if( lateStartTime != null && onDutyTime.after( lateStartTime )){
 						//上午签到过了，并没有超过缺勤起算时间，如果排班设置里已经配置过了迟到起算时间，那么判断员工是否已经迟到，如果未休假也不是周末的话
 						logger.debug( debugger, "上午打卡时间晚于迟到计时时间......" );
@@ -122,36 +124,39 @@ class AttendanceDetailAnalyseSignProxy2 {
 
 					}
 				}else{
-					logger.debug( debugger, "员工上午缺卡" );
-					if(  isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay ){
-						logger.debug( debugger, "请假不计考勤，不需要打卡，不算异常" );
-						detail.setIsAbsent( false );
-						detail.setAbnormalDutyDayTime("无");
-						detail.setIsAbnormalDuty( false );
-					}else{
-						logger.debug(debugger, "没打卡，没请假，工作日，算缺勤。");
-						detail.setAbnormalDutyDayTime("上午");
-						detail.setIsAbnormalDuty(true);
-						detail.setAbsentDayTime("上午");
-						detail.setIsAbsent(true);
-						AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);
-						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
+					if( offWorkTime.before( now ) ){
+						//上班卡没打的情况
+						logger.debug( debugger, "员工上午缺卡" );
+						if(  isSelfHoliday_Morning || isSelfHoliday_Afternoon || isNotWorkDay ){
+							logger.debug( debugger, "请假不计考勤，不需要打卡，不算异常" );
+							detail.setIsAbsent( false );
+							detail.setAbnormalDutyDayTime("无");
+							detail.setIsAbnormalDuty( false );
+						}else{
+							logger.debug(debugger, "没打卡，没请假，工作日，算缺勤。");
+							detail.setAbnormalDutyDayTime("上午");
+							detail.setIsAbnormalDuty(true);
+							detail.setAbsentDayTime("上午");
+							detail.setIsAbsent(true);
+							AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);
+						}
+						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
+						logger.debug( debugger, "上午工作时长, 未打卡：minutes= 0 分钟。" );
+						detail.setWorkTimeDuration( 0L );
 					}
-					logger.debug( debugger, "上午工作时长, 未打卡：minutes= 0 分钟。" );
-					detail.setWorkTimeDuration( 0L );
 				}
 
 				//=========================================================================================================
 				//=====中午  如果员工已经签到， 中午签到只是一个记录 ，如果未签到，则记录中缺卡 ================================================================================
 				//=========================================================================================================
-				if( middleDutyTime == null ){
+				if( middleDutyTime == null && morningEndTime.before( now ) ){
 					if ( isSelfHoliday_Afternoon || isSelfHoliday_Afternoon || isNotWorkDay ) {
 						logger.debug(debugger, "请假不计考勤，不算出勤");
 						detail.setIsAbsent(false);
 						detail.setAbsence(0.0);
 					} else {
 						logger.debug(debugger, "没请假，中午缺卡");
-						if(StringUtils.isNotEmpty( detail.getAbnormalDutyDayTime() )){
+						if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
 							detail.setAbnormalDutyDayTime("上午|中午");
 						}else {
 							detail.setAbnormalDutyDayTime("中午");
@@ -215,12 +220,17 @@ class AttendanceDetailAnalyseSignProxy2 {
 							detail.setLeaveEarlierTimeDuration( 0L );
 							detail.setIsLeaveEarlier( false );
 						}else{
-							if(StringUtils.isNotEmpty( detail.getAbnormalDutyDayTime() )){
+							if( StringUtils.equals( "上午", detail.getAbnormalDutyDayTime()) ){
 								detail.setAbnormalDutyDayTime("上午|下午");
-							}else {
+							}else if( StringUtils.equals( "中午", detail.getAbnormalDutyDayTime()) ){
+								detail.setAbnormalDutyDayTime("中午|下午");
+							}else if( StringUtils.equals( "上午|中午", detail.getAbnormalDutyDayTime()) ){
+								detail.setAbnormalDutyDayTime("上午|中午|下午");
+							}else{
 								detail.setAbnormalDutyDayTime("下午");
 							}
-							if(StringUtils.isNotEmpty( detail.getAbsentDayTime() )){
+
+							if( StringUtils.equals( "上午", detail.getAbsentDayTime()) ){
 								detail.setAbsentDayTime("全天");
 							}else{
 								detail.setAbsentDayTime("下午");
@@ -228,10 +238,9 @@ class AttendanceDetailAnalyseSignProxy2 {
 							detail.setIsAbnormalDuty(true);
 							detail.setIsAbsent(true);
 							AttendanceDetailAnalyseCoreService.increaseAbsenceStatusForAttendanceDetail(detail);
-							AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);
 							logger.debug( debugger, "没请假，未打卡，算缺卡和缺勤状态。" );
 						}
-
+						AttendanceDetailAnalyseCoreService.increaseAttendanceStatusForAttendanceDetail(detail);//递减出勤天数 - 0.5
 						//员工未签退，计算全天的工作时长，下午的时长不计算
 						detail.setWorkTimeDuration( 0L );
 						logger.debug( debugger, "员工未签退，全天工作时长暂时记为0分钟，等待补卡或者补提请假申请。" );

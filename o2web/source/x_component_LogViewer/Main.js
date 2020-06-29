@@ -61,7 +61,9 @@ MWF.xApplication.LogViewer.Main = new Class({
         o2.Actions.load("x_program_center").CommandAction.getNodeInfoList(
             function( json ){
                 var nodeList = json.data.nodeList;
-                new Element("option", {"value": "*", "text": "*"}).inject(this.nodeSelect);
+                if(nodeList.length>1){
+                    new Element("option", {"value": "*", "text": "*"}).inject(this.nodeSelect);
+                }
                 nodeList.each(function (node) {
                     new Element("option", {
                         "value": node.node.nodeAgentPort,

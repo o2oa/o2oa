@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
+import com.x.attendance.entity.AttendanceAppealAuditInfo;
+import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.attendance.entity.AttendanceDetail;
+import com.x.attendance.entity.AttendanceScheduleSetting;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -19,6 +22,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionListWithFilter extends BaseAction {
 
@@ -112,6 +116,40 @@ public class ActionListWithFilter extends BaseAction {
 				}
 			}
 		}
+
+		if (check && ListTools.isNotEmpty( wraps )) {
+			AttendanceScheduleSetting scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithPerson( q_empName, effectivePerson.getDebugger() );
+
+			Integer signProxy = 1;
+			List<AttendanceAppealInfo> appealInfos = null;
+			AttendanceAppealAuditInfo appealAuditInfo = null;
+			List<WoAttendanceAppealInfo> woAppealInfos = null;
+			for( Wo detail : wraps ){
+				if ( scheduleSetting != null ) {
+					signProxy = scheduleSetting.getSignProxy();
+				}
+				detail.setSignProxy( signProxy );
+
+				//判断并补充申诉信息
+				if( detail.getAppealStatus() != 0 ){
+					//十有八九已经提过申诉了，查询申诉信息
+					appealInfos = attendanceAppealInfoServiceAdv.listWithDetailId( detail.getId() );
+					if(ListTools.isNotEmpty( appealInfos ) ){
+						woAppealInfos = WoAttendanceAppealInfo.copier.copy( appealInfos );
+					}
+					if(ListTools.isNotEmpty( woAppealInfos ) ){
+						for( WoAttendanceAppealInfo woAppealInfo : woAppealInfos ){
+							appealAuditInfo = attendanceAppealInfoServiceAdv.getAppealAuditInfo( woAppealInfo.getId() );
+							if( appealAuditInfo != null ){
+								woAppealInfo.setAppealAuditInfo( WoAttendanceAppealAuditInfo.copier.copy( appealAuditInfo ));
+							}
+						}
+					}
+					detail.setAppealInfos(woAppealInfos);
+				}
+			}
+		}
+
 		result.setData(wraps);
 		return result;
 	}
@@ -158,5 +196,24 @@ public class ActionListWithFilter extends BaseAction {
 
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
+
+		@FieldDescribe("员工所属组织的排班打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
+		private Integer signProxy = 1;
+
+		@FieldDescribe("考勤申诉内容")
+		private List<WoAttendanceAppealInfo> appealInfos = null;
+
+		public List<WoAttendanceAppealInfo> getAppealInfos() { return appealInfos; }
+
+		public void setAppealInfos(List<WoAttendanceAppealInfo> appealInfos) { this.appealInfos = appealInfos; }
+
+		public Integer getSignProxy() {
+			return signProxy;
+		}
+
+		public void setSignProxy(Integer signProxy) {
+			this.signProxy = signProxy;
+		}
+
 	}
 }
