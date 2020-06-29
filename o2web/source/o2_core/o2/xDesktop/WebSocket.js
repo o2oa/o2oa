@@ -370,10 +370,10 @@ MWF.xDesktop.WebSocket = new Class({
     },
 
     receiveFileEditorMessage: function(data){
-        var content = "<font style='color: #ea621f; font-weight: bold'>"+data.person+"</font> "+MWF.LP.desktop.messsage.receiveFileEditor+"“"+data.name+"”. ";
+        // var content = "<font style='color: #ea621f; font-weight: bold'>"+data.person+"</font> "+MWF.LP.desktop.messsage.receiveFileEditor+"“"+data.name+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileEditorMessage,
-            "content": content
+            "content": data.title
         };
         var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
         var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
@@ -400,10 +400,11 @@ MWF.xDesktop.WebSocket = new Class({
     },
 
     receiveFileShareMessage: function(data){
-        var content = "<font style='color: #ea621f; font-weight: bold'>"+data.person+"</font> "+MWF.LP.desktop.messsage.receiveFileShare+"“"+data.name+"”. ";
+        debugger;
+        // var content = "<font style='color: #ea621f; font-weight: bold'>"+data.person+"</font> "+MWF.LP.desktop.messsage.receiveFileShare+"“"+data.name+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileShareMessage,
-            "content": content
+            "content": data.title
         };
         var messageItem = layout.desktop.message.addMessage(msg, ((data.body) ? data.body.startTime : ""));
         var tooltipItem = layout.desktop.message.addTooltip(msg, ((data.body) ? data.body.startTime : ""));
