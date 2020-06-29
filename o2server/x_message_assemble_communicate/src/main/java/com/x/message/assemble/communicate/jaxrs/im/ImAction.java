@@ -52,6 +52,25 @@ public class ImAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+
+    @JaxrsMethodDescribe(value = "修改会话.", action = ActionConversationUpdate.class)
+    @PUT
+    @Path("conversation")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void update(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       JsonElement jsonElement) {
+        ActionResult<ActionConversationUpdate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionConversationUpdate().execute( effectivePerson, jsonElement );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     //conversation/{id}  GET 如果没有扩展就创建扩展
     @JaxrsMethodDescribe(value = "会话对象.", action = ActionGetConversation.class)
     @GET
