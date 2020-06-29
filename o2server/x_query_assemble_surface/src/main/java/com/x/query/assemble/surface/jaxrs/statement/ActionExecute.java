@@ -56,12 +56,12 @@ class ActionExecute extends BaseAction {
 			Object data = null;
 
 			switch (Objects.toString(statement.getFormat(), "")) {
-			case Statement.FORMAT_SCRIPT:
-				data = this.script(effectivePerson, business, statement, runtime);
-				break;
-			default:
-				data = this.jpql(effectivePerson, business, statement, runtime);
-				break;
+				case Statement.FORMAT_SCRIPT:
+					data = this.script(effectivePerson, business, statement, runtime);
+					break;
+				default:
+					data = this.jpql(effectivePerson, business, statement, runtime);
+					break;
 			}
 			result.setData(data);
 			return result;
@@ -116,9 +116,9 @@ class ActionExecute extends BaseAction {
 				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
 			}
 		}
-		query.setFirstResult((runtime.page - 1) * runtime.size);
-		query.setMaxResults(runtime.size);
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+			query.setFirstResult((runtime.page - 1) * runtime.size);
+			query.setMaxResults(runtime.size);
 			data = query.getResultList();
 		} else {
 			business.entityManagerContainer().beginTransaction(cls);
@@ -139,9 +139,9 @@ class ActionExecute extends BaseAction {
 				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
 			}
 		}
-		query.setFirstResult((runtime.page - 1) * runtime.size);
-		query.setMaxResults(runtime.size);
 		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+			query.setFirstResult((runtime.page - 1) * runtime.size);
+			query.setMaxResults(runtime.size);
 			data = query.getResultList();
 		} else {
 			business.entityManagerContainer().beginTransaction(cls);
