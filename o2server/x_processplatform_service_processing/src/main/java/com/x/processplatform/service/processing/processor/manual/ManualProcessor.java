@@ -623,25 +623,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 	}
 
-	// private void expireScript(AeiObjects aeiObjects, Manual manual, Task task)
-	// throws Exception {
-	// ScriptContext scriptContext = aeiObjects.scriptContext();
-	// Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-	// bindings.put(ScriptFactory.BINDING_NAME_TASK, task);
-	// Object objectValue = aeiObjects.business().element()
-	// .getCompiledScript(aeiObjects.getWork().getApplication(), manual,
-	// Business.EVENT_MANUALTASKEXPIRE)
-	// .eval(scriptContext);
-	// WorkTime wt = new WorkTime();
-	// if (NumberUtils.isCreatable(objectValue.toString())) {
-	// task.setExpireTime(wt.forwardMinutes(new Date(),
-	// NumberUtils.toInt(ScriptFactory.asString(objectValue))));
-	// } else {
-	// task.setExpireTime(null);
-	// }
-	//
-	// }
-
 	private void expireScript(AeiObjects aeiObjects, Manual manual, Task task) throws Exception {
 		ExpireScriptResult expire = new ExpireScriptResult();
 		ScriptContext scriptContext = aeiObjects.scriptContext();
