@@ -18,12 +18,9 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
     
     
     @IBOutlet weak var progressView: UIProgressView!
-    
+    @IBOutlet weak var webViewContainer: UIView!
+    @IBOutlet weak var attachmentBtn: UIButton!
     var loadUrl:String?
-    
-    var window:UIWindow?
-    
-    var button:UIButton?
     
     var subject:BBSSubjectData? {
         didSet {
@@ -31,39 +28,58 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
         }
     }
     
+    private lazy var viewModel: BBSViewModel = {
+        return BBSViewModel()
+    }()
+    private var attachmentList: [O2BBSSubjectAttachmentInfo] = []
+    
     override func viewWillAppear(_ animated: Bool) {
-        self.window?.isHidden = false
+        //监控进度
+        webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        self.window?.isHidden = true
+        webView.removeObserver(self, forKeyPath: "estimatedProgress")
     }
-
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+       if keyPath == "estimatedPrgress" {
+           progressView.isHidden = webView.estimatedProgress == 1
+           progressView.setProgress(Float(webView.estimatedProgress), animated: true)
+       }
+   }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        createButton()
+        self.attachmentBtn.isHidden = true
+        if let subjectId = self.subject?.id {
+            self.viewModel.getSubjectAttachmentList(subjectId: subjectId)
+                .then { attachments  in
+                    if attachments.count > 0 {
+                        self.attachmentList = attachments
+                        self.attachmentBtn.isHidden = false
+                    }
+            }.catch { (error) in
+                DDLogError(error.localizedDescription)
+            }
+        }
+        
         self.theWebView()
-        self.view = webView
+        self.webViewContainer.addSubview(self.webView)
+        
     }
     
-    func createButton(){
-        let width = SCREEN_WIDTH
-        let height = SCREEN_HEIGHT
-        self.button  = UIButton(frame: CGRect(x: 0,y: 0,width: 40,height: 40))
-        self.button?.setImage(UIImage(named: "icon_bbs_reply_white"), for: UIControl.State())
-        self.button?.addTarget(self, action: #selector(replyAction), for: .touchUpInside)
-        self.window = UIWindow(frame: CGRect(x: width - 60, y: height - 60, width: 40, height: 40))
-        self.window?.windowLevel = UIWindow.Level.alert + 1
-        self.window?.backgroundColor = UIColor.green
-        self.window?.layer.cornerRadius = 20
-        self.window?.layer.masksToBounds = true
-        self.window?.addSubview(self.button!)
-        self.window?.makeKeyAndVisible()
+    
+    @IBAction func clickAttachmentBtn(_ sender: UIButton) {
+        DDLogDebug("点击附件列表")
+        if self.attachmentList.count > 0 {
+            self.performSegue(withIdentifier: "showSubAttachmentActionSegue", sender: nil)
+        }else {
+            self.showError(title: "没有附件！")
+        }
     }
     
-    @objc func replyAction(sender:Any?){
-        self.performSegue(withIdentifier:"showReplyActionSegue", sender: nil)
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showReplyActionSegue" {
@@ -73,6 +89,10 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
             if let parentId = sender {
                 destVC.parentId = parentId as? String
             }
+        }else if segue.identifier == "showSubAttachmentActionSegue" {
+            let navVC = segue.destination as! ZLNavigationController
+            let destVC = navVC.topViewController as! BBSSubjectAttachmentViewController
+            destVC.attachmentList = self.attachmentList
         }
     }
     
@@ -101,17 +121,18 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
         loadDetailSubject()
     }
 
+    //写评论
+    @IBAction func replaySubject(_ sender: UIButton) {
+        self.performSegue(withIdentifier:"showReplyActionSegue", sender: nil)
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if keyPath == "estimatedPrgress" {
-            progressView.isHidden = webView.estimatedProgress == 1
-            progressView.setProgress(Float(webView.estimatedProgress), animated: true)
-        }
-    }
+   
     
 
 }
@@ -121,12 +142,12 @@ class BBSSubjectDetailViewController: BaseWebViewUIViewController {
 extension BBSSubjectDetailViewController:WKNavigationDelegate,WKUIDelegate {
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        DDLogDebug("didFailProvisionalNavigation \(navigation)  error = \(error)")
+        DDLogDebug("didFailProvisionalNavigation \(String(describing: navigation))  error = \(error)")
     }
 
     
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        DDLogDebug("didStartProvisionalNavigation \(navigation)")
+        DDLogDebug("didStartProvisionalNavigation \(String(describing: navigation))")
     }
     
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {

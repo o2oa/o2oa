@@ -15,7 +15,7 @@ class IMViewModel: NSObject {
     }
 
 
-    let communicateAPI = OOMoyaProvider<CommunicateAPI>()
+    private let communicateAPI = OOMoyaProvider<CommunicateAPI>()
 }
 
 extension IMViewModel {

@@ -17,7 +17,7 @@ import CocoaLumberjack
 class BBSSubjectCreateTableViewController: UITableViewController {
 
     
-    let subjectcategory = ["讨论","投票","新闻","悬赏","辩论","灌水","知识","动态"]
+    let subjectcategory = ["讨论","新闻","灌水","知识","动态"]
     
     var sectionData:BBSectionListData?
     

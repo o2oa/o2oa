@@ -30,14 +30,11 @@ class BBSReplySubjectViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         htmlEditorController  = ZSSRichTextEditor()
-        //htmlEditorController.setSelectedColor(<#T##color: UIColor!##UIColor!#>, tag: <#T##Int32#>)
         htmlEditorController.view.frame = self.view.frame
         self.view.addSubview(htmlEditorController.view)
         htmlEditorController.alwaysShowToolbar = true
         htmlEditorController.placeholder = "请输入回复内容"
         self.addChild(htmlEditorController)
-
-        
     }
 
     override func didReceiveMemoryWarning() {
