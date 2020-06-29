@@ -365,8 +365,8 @@ MWF.xApplication.MinderEditor.MainMenu = new Class({
             this.app.openRenameDialog();
             this.hide();
         }.bind(this) );
-        this.createActionNode( actionArea, "download", "导出", "将文件导出到本地", function(){
-            this.app.openExportDialog();
+        this.createActionNode( actionArea, "download", "导出", "将文件以图片形式导出到本地", function(){
+            // this.app.openExportDialog();
             this.hide();
         }.bind(this));
 
