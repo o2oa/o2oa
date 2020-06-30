@@ -20,6 +20,8 @@ import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import org.apache.commons.lang3.StringUtils;
+
 class ActionEdit extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
@@ -42,7 +44,7 @@ class ActionEdit extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Record record = emc.find(id, Record.class);
 					Wi.copier.copy(bag.wi, record);
-					if (record.getCompleted()) {
+					if (StringUtils.isNotEmpty(record.getWorkCompleted())) {
 						WorkCompleted workCompleted = emc.find(record.getWorkCompleted(), WorkCompleted.class);
 						if (null == workCompleted) {
 							throw new ExceptionEntityNotExist(record.getWorkCompleted(), WorkCompleted.class);
