@@ -55,6 +55,7 @@ class ActionDelete extends BaseAction {
 				}
 			}
 			/* 先删除content内容 */
+			this.delete_draft(business, process);
 			this.delete_task(business, process);
 			this.delete_taskCompleted(business, process, onlyRemoveNotCompleted);
 			this.delete_read(business, process);
