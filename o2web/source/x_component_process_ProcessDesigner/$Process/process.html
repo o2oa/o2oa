@@ -39,14 +39,6 @@
                 <td class="editTableValue"><textarea  name="description" class="editTableTextarea">text{$.description}</textarea></td>
             </tr>
             <tr>
-                <td class="editTableTitle">版本:</td>
-                <td class="editTableValue">text{$.editionName}</td>
-            </tr>
-            <tr>
-                <td class="editTableTitle">版本描述:</td>
-                <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
-            </tr>
-            <tr>
                 <td class="editTableTitle">图标:</td>
                 <td class="editTableValue"><div class="MWFIcon" name="icon"></div></td>
             </tr>
@@ -59,7 +51,35 @@
                 </td>
             </tr>
         </table>
+        <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">版 本</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">版本名称:</td>
+                <td class="editTableValue">text{$.editionName}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">版本标识:</td>
+                <td class="editTableValue">text{$.edition}</td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">版本描述:</td>
+                <td class="editTableValue"><textarea  name="editionDes" class="editTableTextarea">text{$.editionDes}</textarea></td>
+            </tr>
+        </table>
+
+
         <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">启 动</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">启动终端:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>PC端和移动端
+                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>仅PC端
+<!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
+                </td>
+            </tr>
+        </table>
+
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">启动模式:</td>
@@ -84,6 +104,7 @@
                 </tr>
             </table>
         </div>
+
         <div style="height: 22px; line-height: 22px; background-color: #f1f1f1; text-align: center; font-weight: bold; border-top: 1px solid #cccccc">权 限</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>
