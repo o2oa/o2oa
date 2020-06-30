@@ -188,35 +188,6 @@ public class ProcessFactory extends ElementFactory {
 	}
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
-	public List<String> listStartableWithApplicationTerminalMobile(EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, Application application) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Process.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Process> root = cq.from(Process.class);
-		Predicate p = cb.conjunction();
-		if (effectivePerson.isNotManager() && (!this.business().organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
-			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-					cb.isEmpty(root.get(Process_.startableUnitList)));
-			p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
-			if (ListTools.isNotEmpty(identities)) {
-				p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
-			}
-			if (ListTools.isNotEmpty(units)) {
-				p = cb.or(p, root.get(Process_.startableUnitList).in(units));
-			}
-		}
-		p = cb.and(p, cb.equal(root.get(Process_.application), application.getId()));
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
-		// 不指名仅在client端可启动那么可启动
-		p = cb.and(p, cb.or(cb.isNull(root.get(Process_.startableTerminal)),
-				cb.notEqual(root.get(Process_.startableTerminal), Process.DEFAULTSTARTABLETERMINAL_CLIENT)));
-		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
-	}
-
-	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
 	public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
 			Process process) throws Exception {
 		if (effectivePerson.isManager()

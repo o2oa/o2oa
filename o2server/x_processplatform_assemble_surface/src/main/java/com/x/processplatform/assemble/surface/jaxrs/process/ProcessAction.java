@@ -100,18 +100,20 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application获取mobile端可启动的流程.", action = ActionListWithPersonWithApplicationTerminalMobile.class)
+	@JaxrsMethodDescribe(value = "根据指定Application和指定条件获取可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
 	@GET
-	@Path("list/application/{applicationFlag}/terminal/mobile")
+	@Path("list/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithPersonWithApplicationTerminalMobile(@Suspended final AsyncResponse asyncResponse,
+	public void listWithPersonWithApplicationFilter(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<List<ActionListWithPersonWithApplicationTerminalMobile.Wo>> result = new ActionResult<>();
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionListWithPersonWithApplicationFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithPersonWithApplicationTerminalMobile().execute(effectivePerson, applicationFlag);
+			result = new ActionListWithPersonWithApplicationFilter().execute(effectivePerson, applicationFlag,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
