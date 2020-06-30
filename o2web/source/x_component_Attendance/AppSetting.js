@@ -292,7 +292,8 @@ MWF.xApplication.Attendance.AppSetting = new Class({
         var data = this.document.getResult(true,",",true,false,false);
         if(data){
             var APPEAL_AUDIFLOW_ID = data.APPEAL_AUDIFLOW_ID
-            if(!!APPEAL_AUDIFLOW_ID&&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""){
+            //if(!!APPEAL_AUDIFLOW_ID&&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""){
+            if(!!APPEAL_AUDIFLOW_ID&&APPEAL_AUDIFLOW_ID!="无"&&APPEAL_AUDIFLOW_ID!=""&&!!this.document.items.APPEAL_AUDIFLOW_ID.orgObject){
                 data.APPEAL_AUDIFLOW_ID = this.document.items.APPEAL_AUDIFLOW_ID.orgObject[0].data.id;
             }
             var arr = this.encodeData( this.data, data );
