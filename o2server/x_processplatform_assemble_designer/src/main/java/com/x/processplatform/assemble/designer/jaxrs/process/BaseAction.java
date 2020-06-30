@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,18 +19,6 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.DocumentVersion;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.SerialNumber;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Cancel;
@@ -78,6 +67,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 				list.clear();
 			}
 		}
+	}
+
+	void delete_draft(Business business, Process process) throws Exception {
+		List<String> ids = business.draft().listWithProcess(process.getId());
+		this.delete_batch(business.entityManagerContainer(), Draft.class, ids);
 	}
 
 	void delete_task(Business business, Process process) throws Exception {
