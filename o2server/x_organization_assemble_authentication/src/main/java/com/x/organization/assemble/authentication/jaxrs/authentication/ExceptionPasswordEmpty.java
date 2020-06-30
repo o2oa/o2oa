@@ -7,6 +7,6 @@ class ExceptionPasswordEmpty extends PromptException {
 	private static final long serialVersionUID = 1859164370743532895L;
 
 	ExceptionPasswordEmpty() {
-		super("密码不能为空.");
+		super("密码不能为空或者密码解密错误.");
 	}
 }
