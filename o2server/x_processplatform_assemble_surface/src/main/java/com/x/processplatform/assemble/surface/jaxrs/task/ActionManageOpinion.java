@@ -1,10 +1,11 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.Objects;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -19,7 +20,7 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-import java.util.Objects;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class ActionManageOpinion extends BaseAction {
 
@@ -35,10 +36,9 @@ public class ActionManageOpinion extends BaseAction {
 			Process process = business.process().pick(task.getProcess());
 			Application application = business.application().pick(task.getApplication());
 			/* 需要对这个应用的管理权限 */
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-
 			emc.beginTransaction(Read.class);
 			if (StringTools.utf8Length(wi.getOpinion()) > JpaObject.length_255B) {
 				task.setOpinionLob(wi.getOpinion());
