@@ -53,6 +53,8 @@ class IMChatViewController: UIViewController {
 
     // MARK: - properties
     var conversation: IMConversationInfo? = nil
+    
+    //private
     private var chatMessageList: [IMMessageInfo] = []
     private var page = 1
     private var isShowEmoji = false
@@ -95,6 +97,12 @@ class IMChatViewController: UIViewController {
         } else {
             self.title = self.conversation?.title
         }
+        //群会话 添加修改标题的按钮
+        if self.conversation?.type == o2_im_conversation_type_group &&
+            O2AuthSDK.shared.myInfo()?.distinguishedName == self.conversation?.adminPerson {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "修改", style: .plain, target: self, action: #selector(clickUpdate))
+        }
+        
         //获取聊天数据
         self.loadMsgList(page: page)
         //阅读
@@ -117,6 +125,74 @@ class IMChatViewController: UIViewController {
                 self.scrollMessageToBottom()
                 self.viewModel.readConversation(conversationId: self.conversation?.id)
             }
+        }
+    }
+    
+    @objc private func clickUpdate() {
+        self.showSheetAction(title: "", message: "选择要修改的项", actions: [
+            UIAlertAction(title: "修改群名", style: .default, handler: { (action) in
+                self.updateTitle()
+            }),
+            UIAlertAction(title: "修改成员", style: .default, handler: { (action) in
+                self.updatePeople()
+            })
+        ])
+    }
+    
+    private func updateTitle() {
+        self.showPromptAlert(title: "", message: "修改群名", inputText: "") { (action, result) in
+            if result.isEmpty {
+                self.showError(title: "请输入群名")
+            }else {
+                self.showLoading()
+                self.viewModel.updateConversationTitle(id: (self.conversation?.id!)!, title: result)
+                    .then { (c) in
+                        self.title = result
+                        self.conversation?.title = result
+                        self.showSuccess(title: "修改成功")
+                }.catch { (err) in
+                    DDLogError(err.localizedDescription)
+                    self.showError(title: "修改失败")
+                }
+            }
+        }
+    }
+    
+    private func updatePeople() {
+        //选择人员 反选已经存在的成员
+        if let users = self.conversation?.personList  {
+            self.showContactPicker(modes: [.person], callback: { (result) in
+                if let people = result.users  {
+                    if people.count >= 3 {
+                        var peopleDNs: [String] = []
+                        var containMe = false
+                        people.forEach { (item) in
+                            peopleDNs.append(item.distinguishedName!)
+                            if O2AuthSDK.shared.myInfo()?.distinguishedName == item.distinguishedName {
+                                containMe = true
+                            }
+                        }
+                        if !containMe {
+                            peopleDNs.append((O2AuthSDK.shared.myInfo()?.distinguishedName)!)
+                        }
+                        self.showLoading()
+                        self.viewModel.updateConversationPeople(id: (self.conversation?.id!)!, users: peopleDNs)
+                            .then { (c)  in
+                                self.conversation?.personList = peopleDNs
+                                self.showSuccess(title: "修改成功")
+                        }.catch { (err) in
+                            DDLogError(err.localizedDescription)
+                            self.showError(title: "修改失败")
+                        }
+                    }else {
+                        self.showError(title: "选择人数不足3人")
+                    }
+                }else {
+                    self.showError(title: "请选择人员")
+                }
+            }, initUserPickedArray: users)
+        }else {
+            self.showError(title: "成员列表数据错误！")
         }
     }
 
