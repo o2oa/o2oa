@@ -163,8 +163,10 @@ public class MeetingFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Meeting> root = cq.from(Meeting.class);
-		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), start);
-		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), end));
+		//Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), start);
+		//p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), end));
+		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), start);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), end));
 		cq.select(root.get(Meeting_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
@@ -174,8 +176,10 @@ public class MeetingFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Meeting> root = cq.from(Meeting.class);
-		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), start);
-		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), end));
+		//Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), start);
+		//p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), end));
+		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), start);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), end));
 		p = cb.and(p,
 				cb.or(cb.equal(root.get(Meeting_.applicant), person), cb.equal(root.get(Meeting_.auditor), person),
 						cb.isMember(person, root.get(Meeting_.invitePersonList))));
