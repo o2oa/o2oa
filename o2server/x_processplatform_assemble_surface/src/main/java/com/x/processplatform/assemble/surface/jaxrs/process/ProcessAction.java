@@ -3,7 +3,12 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -101,7 +106,7 @@ public class ProcessAction extends StandardJaxrsAction {
 	}
 
 	@JaxrsMethodDescribe(value = "根据指定Application和指定条件获取可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
-	@GET
+	@POST
 	@Path("list/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -115,7 +120,7 @@ public class ProcessAction extends StandardJaxrsAction {
 			result = new ActionListWithPersonWithApplicationFilter().execute(effectivePerson, applicationFlag,
 					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
