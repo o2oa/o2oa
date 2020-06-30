@@ -46,12 +46,12 @@ public class Process extends SliceJpaObject {
 	public static final String SERIALPHASE_ARRIVE = "arrive";
 	public static final String SERIALPHASE_INQUIRE = "inquire";
 
-	public static final String DEFAULTSTARTMODE_DRAFT = "draft";
-	public static final String DEFAULTSTARTMODE_INSTANCE = "instance";
+	public static final String STARTMODE_DRAFT = "draft";
+	public static final String STARTMODE_INSTANCE = "instance";
 
-	public static final String DEFAULTSTARTABLETERMINAL_CLIENT = "client";
-	public static final String DEFAULTSTARTABLETERMINAL_MOBILE = "mobile";
-	public static final String DEFAULTSTARTABLETERMINAL_ALL = "all";
+	public static final String STARTABLETERMINAL_CLIENT = "client";
+	public static final String STARTABLETERMINAL_MOBILE = "mobile";
+	public static final String STARTABLETERMINAL_ALL = "all";
 
 	public String getId() {
 		return id;
