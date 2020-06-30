@@ -14,6 +14,7 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.*;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -95,7 +96,11 @@ class ActionManageListFilterPaging extends BaseAction {
 			p = cb.and(p,cb.equal(root.get(Read_.stringValue10), wi.getStringValue10()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(Read_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
@@ -182,7 +187,11 @@ class ActionManageListFilterPaging extends BaseAction {
 			p = cb.and(p,cb.equal(root.get(Read_.stringValue10), wi.getStringValue10()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(Read_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
@@ -230,6 +239,9 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		@FieldDescribe("流程")
 		private List<String> processList;
+
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -322,6 +334,14 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {

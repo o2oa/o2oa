@@ -314,4 +314,27 @@ public class ProcessFactory extends ElementFactory {
 		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+
+	/* 根据processList获取同版本的所有流程 */
+	public List<String> listEditionProcess(List<String> processList) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Process.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Process> root = cq.from(Process.class);
+		Predicate p = cb.conjunction();
+		p = cb.and(p, root.get(Process_.id).in(processList));
+
+		p = cb.and(p, cb.isNull(root.get(Process_.editionEnable)));
+		Subquery<Process> subquery = cq.subquery(Process.class);
+		Root<Process> subRoot = subquery.from(Process.class);
+		Predicate subP = cb.conjunction();
+		subP = cb.and(subP, cb.equal(root.get(Process_.edition), subRoot.get(Process_.edition)));
+		subP = cb.and(subP, subRoot.get(Process_.id).in(processList));
+		subP = cb.and(subP, cb.isNotNull(root.get(Process_.edition)));
+		subquery.select(subRoot).where(subP);
+		p = cb.or(p, cb.exists(subquery));
+
+		cq.select(root.get(Process_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 }
