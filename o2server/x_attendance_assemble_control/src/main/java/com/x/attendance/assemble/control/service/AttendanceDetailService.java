@@ -211,6 +211,7 @@ public class AttendanceDetailService {
 			emc.beginTransaction( AttendanceSetting.class );
 			emc.check( attendanceDetail_old, CheckPersistType.all);	
 			emc.commit();
+			attendanceDetail = attendanceDetail_old;
 		}else{
 			//需要新增打卡信息数据
 			if( attendanceDetail.getId() == null ) {
