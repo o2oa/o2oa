@@ -71,6 +71,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
+
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
 
@@ -125,6 +128,14 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {
@@ -385,7 +396,11 @@ abstract class V2Base extends StandardJaxrsAction {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(Read_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
