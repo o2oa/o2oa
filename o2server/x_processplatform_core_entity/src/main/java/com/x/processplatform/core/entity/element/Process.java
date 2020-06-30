@@ -51,7 +51,7 @@ public class Process extends SliceJpaObject {
 
 	public static final String DEFAULTSTARTABLETERMINAL_CLIENT = "client";
 	public static final String DEFAULTSTARTABLETERMINAL_MOBILE = "mobile";
-	public static final String DEFAULTSTARTABLETERMINAL_BOTH = "both";
+	public static final String DEFAULTSTARTABLETERMINAL_ALL = "all";
 
 	public String getId() {
 		return id;
@@ -366,7 +366,7 @@ public class Process extends SliceJpaObject {
 	private Boolean checkDraft;
 
 	public static final String startableTerminal_FIELDNAME = "startableTerminal";
-	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,both")
+	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + startableTerminal_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String startableTerminal;
