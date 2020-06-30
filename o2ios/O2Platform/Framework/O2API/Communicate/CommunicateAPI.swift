@@ -18,6 +18,8 @@ enum CommunicateAPI {
     case readConversation(String)
     case instantMessageList(Int)
     case createConversation(IMConversationInfo)
+    case updateConversationTitle(String, String)
+    case updateConversationPeople(String, [String])
     case imUploadFile(String, String, String, Data)
     case imDownloadFullFile(String, String)
     
@@ -59,6 +61,8 @@ extension CommunicateAPI: TargetType {
             return "/jaxrs/instant/list/currentperson/noim/count/\(count)/desc"
         case .createConversation(_):
             return "/jaxrs/im/conversation"
+        case .updateConversationTitle(_, _), .updateConversationPeople(_, _):
+            return "/jaxrs/im/conversation"
         case .imUploadFile(let conversationId, let type, _, _):
             return "/jaxrs/im/msg/upload/\(conversationId)/type/\(type)"
         case .imDownloadFullFile(let id, _):
@@ -72,7 +76,7 @@ extension CommunicateAPI: TargetType {
             return .get
         case .msgListByPaging(_, _, _), .sendMsg(_), .createConversation(_), .imUploadFile(_, _, _, _):
             return .post
-        case .readConversation(_):
+        case .readConversation(_), .updateConversationPeople(_, _), .updateConversationTitle(_, _):
             return .put
         }
     }
@@ -93,6 +97,16 @@ extension CommunicateAPI: TargetType {
             return .requestParameters(parameters: msg.toJSON()!, encoding: JSONEncoding.default)
         case .createConversation(let conv):
             return .requestParameters(parameters: conv.toJSON()!, encoding: JSONEncoding.default)
+        case .updateConversationTitle(let id, let title):
+            let form = IMConversationUpdateForm()
+            form.id = id
+            form.title = title
+            return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
+        case .updateConversationPeople(let id, let people):
+            let form = IMConversationUpdateForm()
+            form.id = id
+            form.personList = people
+            return .requestParameters(parameters: form.toJSON()!, encoding: JSONEncoding.default)
         case .imUploadFile(_, _, let fileName, let data):
             //字符串类型 文件名
             let strData = fileName.data(using: .utf8)

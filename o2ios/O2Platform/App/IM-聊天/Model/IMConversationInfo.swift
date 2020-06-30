@@ -31,6 +31,20 @@ class IMConversationInfo: NSObject, DataModel {
     }
 }
 
+class IMConversationUpdateForm: NSObject, DataModel  {
+    @objc var id: String?
+    @objc var title: String?
+    @objc var personList: [String]?
+    @objc var adminPerson: String?
+    @objc var note: String?
+    
+    required override init() { }
+
+       func mapping(mapper: HelpingMapper) {
+
+       }
+}
+
 
 class IMMessageRequestForm: NSObject, DataModel {
 
