@@ -3,7 +3,12 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -100,20 +105,22 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application获取mobile端可启动的流程.", action = ActionListWithPersonWithApplicationTerminalMobile.class)
-	@GET
-	@Path("list/application/{applicationFlag}/terminal/mobile")
+	@JaxrsMethodDescribe(value = "根据指定Application和指定条件获取可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
+	@POST
+	@Path("list/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listWithPersonWithApplicationTerminalMobile(@Suspended final AsyncResponse asyncResponse,
+	public void listWithPersonWithApplicationFilter(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
-			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
-		ActionResult<List<ActionListWithPersonWithApplicationTerminalMobile.Wo>> result = new ActionResult<>();
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionListWithPersonWithApplicationFilter.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithPersonWithApplicationTerminalMobile().execute(effectivePerson, applicationFlag);
+			result = new ActionListWithPersonWithApplicationFilter().execute(effectivePerson, applicationFlag,
+					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
