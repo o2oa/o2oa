@@ -33,6 +33,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Cancel cancel) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -82,6 +83,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Cancel cancel) throws Exception {
+		// nothing
 	}
 
 }
