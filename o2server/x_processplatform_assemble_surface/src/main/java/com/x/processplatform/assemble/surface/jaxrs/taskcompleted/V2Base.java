@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,14 +25,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.TaskCompleted_;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
 
 abstract class V2Base extends StandardJaxrsAction {
 
@@ -76,6 +69,9 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		@FieldDescribe("流程")
 		private List<String> processList;
+
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -137,6 +133,14 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {
@@ -413,7 +417,11 @@ abstract class V2Base extends StandardJaxrsAction {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(TaskCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(TaskCompleted_.startTime), DateTools.parse(wi.getStartTime())));
