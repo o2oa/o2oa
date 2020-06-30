@@ -908,6 +908,86 @@ public class AttendanceDetail extends SliceJpaObject {
 
 	public void setMiddayRestEndTime(String middayRestEndTime) { this.middayRestEndTime = middayRestEndTime; }
 
+	public Boolean getHoliday() {
+		return isHoliday;
+	}
+
+	public void setHoliday(Boolean holiday) {
+		isHoliday = holiday;
+	}
+
+	public Boolean getWorkday() {
+		return isWorkday;
+	}
+
+	public void setWorkday(Boolean workday) {
+		isWorkday = workday;
+	}
+
+	public Boolean getGetSelfHolidays() {
+		return isGetSelfHolidays;
+	}
+
+	public void setGetSelfHolidays(Boolean getSelfHolidays) {
+		isGetSelfHolidays = getSelfHolidays;
+	}
+
+	public Boolean getAbsent() {
+		return isAbsent;
+	}
+
+	public void setAbsent(Boolean absent) {
+		isAbsent = absent;
+	}
+
+	public Boolean getAbnormalDuty() {
+		return isAbnormalDuty;
+	}
+
+	public void setAbnormalDuty(Boolean abnormalDuty) {
+		isAbnormalDuty = abnormalDuty;
+	}
+
+	public Boolean getLackOfTime() {
+		return isLackOfTime;
+	}
+
+	public void setLackOfTime(Boolean lackOfTime) {
+		isLackOfTime = lackOfTime;
+	}
+
+	public Boolean getWorkOvertime() {
+		return isWorkOvertime;
+	}
+
+	public void setWorkOvertime(Boolean workOvertime) {
+		isWorkOvertime = workOvertime;
+	}
+
+	public Boolean getLeaveEarlier() {
+		return isLeaveEarlier;
+	}
+
+	public void setLeaveEarlier(Boolean leaveEarlier) {
+		isLeaveEarlier = leaveEarlier;
+	}
+
+	public Boolean getLate() {
+		return isLate;
+	}
+
+	public void setLate(Boolean late) {
+		isLate = late;
+	}
+
+	public Boolean getWeekend() {
+		return isWeekend;
+	}
+
+	public void setWeekend(Boolean weekend) {
+		isWeekend = weekend;
+	}
+
 	/**
 	 * 清除对该条数据信息的分析结果
 	 */
