@@ -1865,7 +1865,7 @@ debugger;
                     var pList = tmp.getElements("p");
                     pList.each(function(p, i){
                         //if (Browser.name=="ie"){
-                        if (this.json.fullWidth=="y") this.transWidth(p);
+                        if (this.json.fullWidth!=="n") this.transWidth(p);
                         if (!p.getParent("table")){
                             var text = p.get("text");
                             var rex = /^\u3000*/;
@@ -1906,7 +1906,7 @@ debugger;
                     // }.bind(this));
 
                 }
-                if (this.json.fullWidth=="y"){
+                if (this.json.fullWidth!=="n"){
                     this.filetextEditor.addCommand( 'insertHalfSpace', {
                         exec: function( editor ) {
                             editor.insertText(" ");
@@ -1915,7 +1915,7 @@ debugger;
                     this.filetextEditor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
 
                     this.filetextEditor.on("key", function(e){
-                        if (this.json.fullWidth=="y") if (e.data.keyCode==32){
+                        if (this.json.fullWidth!=="n") if (e.data.keyCode==32){
                             e.editor.insertText("　");
                             e.cancel();
                         }
