@@ -206,9 +206,11 @@ public class AttendanceDetailService {
 			attendanceDetail_old.setRecordDateString( attendanceDetail.getRecordDateString() );
 			attendanceDetail_old.setRecordStatus( 0 );
 			attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
-			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOnWorkTime() );
-			
-			emc.beginTransaction( AttendanceSetting.class );
+			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOffDutyTime() );
+			attendanceDetail_old.setAfternoonOnDutyTime(attendanceDetail.getAfternoonOnDutyTime());
+			attendanceDetail_old.setMorningOffDutyTime(attendanceDetail.getMorningOffDutyTime());
+
+			emc.beginTransaction( AttendanceDetail.class );
 			emc.check( attendanceDetail_old, CheckPersistType.all);	
 			emc.commit();
 			attendanceDetail = attendanceDetail_old;

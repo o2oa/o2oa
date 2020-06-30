@@ -142,15 +142,15 @@ public class AttendanceAppealInfoServiceAdv {
 	 * @throws Exception
 	 */
 	private String getAppealProcessPerson( String personName, String auditorType, String auditorTypeValue, String personUnitName, String identity ) throws Exception {
-		if( personName == null || personName.isEmpty() ) {
+		if( StringUtils.isEmpty(personName) ) {
 			logger.info( "personName is null!" );
 			return null;
 		}
-		if( auditorType == null || auditorType.isEmpty() ) {
+		if( StringUtils.isEmpty(auditorType) ) {
 			logger.info( "auditorType is null!" );
 			return null;
 		}
-		if( auditorTypeValue == null || auditorTypeValue.isEmpty() ) {
+		if( StringUtils.isEmpty(auditorTypeValue) ) {
 			logger.info( "auditorTypeValue is null!" );
 			return null;
 		}
@@ -177,11 +177,11 @@ public class AttendanceAppealInfoServiceAdv {
 	 * @throws Exception
 	 */
 	private String getPersonWithUnitDuty( String personName, String dutyName, String personUnitName, String identity ) throws Exception {
-		if( StringUtils.isNotEmpty( personName ) ) {
+		if( StringUtils.isEmpty( personName ) ) {
 			logger.info( "personName is null!" );
 			return null;
 		}
-		if( StringUtils.isNotEmpty( dutyName ) ) {
+		if( StringUtils.isEmpty( dutyName ) ) {
 			logger.info( "dutyName is null!" );
 			return null;
 		}
