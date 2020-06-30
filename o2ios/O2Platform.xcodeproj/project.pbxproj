@@ -158,6 +158,8 @@
 		B15F8129210EF15E00B81F35 /* OOCalendarEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */; };
 		B15F812C21102BC000B81F35 /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F812A21102BBF00B81F35 /* DatePickerView.swift */; };
 		B15F812D21102BC000B81F35 /* DatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15F812B21102BBF00B81F35 /* DatePickerView.xib */; };
+		B162F28924AB0E7300A6BF06 /* O2StringPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */; };
+		B162F28B24AB0E9900A6BF06 /* O2StringPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */; };
 		B165CCD52241DBD700373B66 /* LWDatePickerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CCD42241DBD700373B66 /* LWDatePickerDialog.swift */; };
 		B165CD582242093500373B66 /* CoverVerticalAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD412242093500373B66 /* CoverVerticalAnimation.swift */; };
 		B165CD592242093500373B66 /* PresentrController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD422242093500373B66 /* PresentrController.swift */; };
@@ -1493,6 +1495,8 @@
 		B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarEventViewController.swift; sourceTree = "<group>"; };
 		B15F812A21102BBF00B81F35 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		B15F812B21102BBF00B81F35 /* DatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DatePickerView.xib; sourceTree = "<group>"; };
+		B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2StringPicker.swift; sourceTree = "<group>"; };
+		B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = O2StringPicker.xib; sourceTree = "<group>"; };
 		B165CCD42241DBD700373B66 /* LWDatePickerDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWDatePickerDialog.swift; sourceTree = "<group>"; };
 		B165CD412242093500373B66 /* CoverVerticalAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverVerticalAnimation.swift; sourceTree = "<group>"; };
 		B165CD422242093500373B66 /* PresentrController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentrController.swift; sourceTree = "<group>"; };
@@ -2803,6 +2807,15 @@
 			path = "opencore-amrnb";
 			sourceTree = "<group>";
 		};
+		B162F25924AB0E1400A6BF06 /* stringsPicker */ = {
+			isa = PBXGroup;
+			children = (
+				B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */,
+				B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */,
+			);
+			path = stringsPicker;
+			sourceTree = "<group>";
+		};
 		B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */ = {
 			isa = PBXGroup;
 			children = (
@@ -2969,6 +2982,7 @@
 		B1EE2C9A2281723A00842F48 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				B162F25924AB0E1400A6BF06 /* stringsPicker */,
 				B19FF868226DBB2200FA0B76 /* o2JsApi */,
 				E4B697052075FA550062F6E8 /* TimerButton */,
 				B1EE2CCD2281729400842F48 /* QDatePicker.swift */,
@@ -5737,6 +5751,7 @@
 				E46E6C841DD41F5D00AB7561 /* ZSSimage@2x.png in Resources */,
 				E4B697012075DE5F0062F6E8 /* OOGuidePageController.xib in Resources */,
 				B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */,
+				B162F28B24AB0E9900A6BF06 /* O2StringPicker.xib in Resources */,
 				E4D23110209C40F600837868 /* OOPersonCollectionViewCell.xib in Resources */,
 				B167F7672362C60200F182B8 /* CloudFileMoveFolderCell.xib in Resources */,
 				E46E6CAD1DD41F5D00AB7561 /* ZSSundo.png in Resources */,
@@ -6500,6 +6515,7 @@
 				B12FD1E22283D5B700E636BA /* NSObject+Theme.swift in Sources */,
 				B167F7632362BFC200F182B8 /* CloudFileMoveFolderController.swift in Sources */,
 				E4C24B5920844F3C00E426B0 /* SAIInputBarDisplayable.swift in Sources */,
+				B162F28924AB0E7300A6BF06 /* O2StringPicker.swift in Sources */,
 				B1E0BAA12378FC01001D741F /* O2JPushManager.swift in Sources */,
 				E4B7819D1DFA9181007B58A9 /* CMSCategoryItemData.swift in Sources */,
 				B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */,
@@ -6863,7 +6879,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6898,7 +6914,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6979,7 +6995,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 69;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -7014,7 +7030,7 @@
 					"$(PROJECT_DIR)/O2Platform/Framework/lame",
 					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.1.0;
+				MARKETING_VERSION = 5.1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

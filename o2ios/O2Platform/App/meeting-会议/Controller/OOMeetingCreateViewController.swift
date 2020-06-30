@@ -43,13 +43,18 @@ class OOMeetingCreateViewController: UIViewController {
     }
     
     @objc func createMeetingAction(_ sender:Any){
-        let mForm = ooFormView.getFormDataFormBean()
+        let mBack = ooFormView.getFormDataFormBean()
+        guard let mForm = mBack.0 else {
+            self.showError(title: mBack.1 ?? "表单填写错误")
+            return
+        }
+        
         self.viewModel.selectedPersons.forEach { (p) in
             mForm.invitePersonList.append(p.distinguishedName!)
         }
         let mBean = OOMeetingFormBean(meetingForm: mForm)
         if mBean.checkFormValues() {
-            let jsno = mBean.toJSONString() ?? "default "
+            let jsno = mBean.toJSONString() ?? "{}"
             DDLogDebug(jsno)
             viewModel.createMeetingAction(mBean, completedBlock: { (resultMessage) in
                 if let message = resultMessage {

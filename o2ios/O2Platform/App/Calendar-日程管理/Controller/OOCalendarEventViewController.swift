@@ -76,10 +76,17 @@ class OOCalendarEventViewController: UITableViewController {
             eventEndTime.text = Date().add(component: .hour, value: 1).toString("yyyy-MM-dd HH:mm")
         }
     }
+ 
     
-    @IBOutlet weak var repeatPickerView: UIPickerView!
-    @IBOutlet weak var remindPickerView: UIPickerView!
-    @IBOutlet weak var calendarPickerView: UIPickerView!
+    
+    @IBOutlet weak var calendarLabelView: UILabel!
+    @IBOutlet weak var calendarStackView: UIStackView!
+    @IBOutlet weak var remindLabelView: UILabel!
+    @IBOutlet weak var remindStackView: UIStackView!
+    @IBOutlet weak var repeatLabelView: UILabel!
+    @IBOutlet weak var repeatStackView: UIStackView!
+    
+    
     @IBOutlet weak var repeatTableViewCell: UITableViewCell!
     @IBOutlet weak var eventTitle: UITextField!
     @IBOutlet weak var eventAllDaySwitch: UISwitch!
@@ -120,16 +127,10 @@ class OOCalendarEventViewController: UITableViewController {
             self.navigationItem.title = "新建日程"
         }
         
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
         //隐藏输入法
         eventTitle.delegate = self
         eventTitle.returnKeyType = .done
-//        eventRemark.delegate = self
-//        eventRemark.returnKeyType = .done
+ 
         
         eventStartTime.text = Date().toString("yyyy-MM-dd HH:mm")
         eventEndTime.text = Date().add(component: .hour, value: 1).toString("yyyy-MM-dd HH:mm")
@@ -145,8 +146,85 @@ class OOCalendarEventViewController: UITableViewController {
             }else {
                 selectRepeatOther()
             }
+        }else {
+            self.repeatLabelView.text  = self.repeatOptions[0].value
+            self.repeatValue = self.repeatOptions[0].key
+            self.remindLabelView.text = self.remindOptions[0].value
+            self.remindValue = self.remindOptions[0].key
         }
         // 添加点击事件
+        calendarStackView.addTapGesture { (tap) in
+            let calendarNames = self.calendarList.map { (info) -> String in
+                info.name ?? ""
+            }
+            let calendarIds = self.calendarList.map { (info) -> String in
+                info.id ?? ""
+            }
+            var current = calendarIds[0]
+            if !self.calendarId.isEmpty {
+                current = self.calendarId
+            }
+            let calendarPicker = O2StringPicker.instance(items: calendarNames, completionHandler: { (result) in
+                if let cal = self.calendarList.first(where: { (info) -> Bool in
+                    return info.id == result
+                }) {
+                    self.changeCalendarWithColor(cal)
+                    self.calendarLabelView.text = cal.name
+                }
+            }, values: calendarIds, pickerTitle: "请选择日历", currentValue: current)
+            calendarPicker.show()
+        }
+        remindStackView.addTapGesture { (tap) in
+            let remindnames = self.remindOptions.map { (o) -> String in
+                o.value
+            }
+            let remindIds = self.remindOptions.map { (o) -> String in
+                o.key
+            }
+            var current = remindIds[0]
+            if !self.remindValue.isEmpty {
+                current = self.remindValue
+            }
+            let remindPicker = O2StringPicker.instance(items: remindnames, completionHandler: { (result) in
+                if let op = self.remindOptions.first(where: { (o) -> Bool in
+                    return o.key == result
+                }) {
+                    self.remindValue = op.key
+                    self.remindLabelView.text = op.value
+                }
+               
+            }, values: remindIds, pickerTitle: "请选择提醒方式", currentValue: current)
+            remindPicker.show()
+        }
+        repeatStackView.addTapGesture { (tap) in
+            let repeatNames = self.repeatOptions.map { (o) -> String in
+                o.value
+            }
+            let repeatIds = self.repeatOptions.map { (o) -> String in
+                o.key
+            }
+            var current = repeatIds[0]
+            if !self.repeatValue.isEmpty {
+                current = self.repeatValue
+            }
+            let repeatPicker = O2StringPicker.instance(items: repeatNames, completionHandler: { (result) in
+                if let op = self.repeatOptions.first(where: { (o) -> Bool in
+                    return o.key == result
+                }) {
+                     self.repeatValue = op.key
+                    self.repeatLabelView.text = op.value
+                     if "WEEKLY" ==  self.repeatValue {
+                         self.selectRepeatWeekly()
+                     }else if "NONE" == self.repeatValue || "" == self.repeatValue {
+                         self.selectRepeatNONE()
+                     }else {
+                         self.selectRepeatOther()
+                     }
+                }
+               
+            }, values: repeatIds, pickerTitle: "请选择重复方式", currentValue: current)
+            repeatPicker.show()
+        }
         eventStartTimeStackView.addTapGesture { (tap) in
             self.showDatePicker(true)
         }
@@ -186,19 +264,22 @@ class OOCalendarEventViewController: UITableViewController {
         })
         viewModel.getMyCalendarList().then { (calendars) in
             self.calendarList = (calendars.myCalendars ?? []) + (calendars.unitCalendars ?? [])
-            self.calendarPickerView.reloadAllComponents()
+            //self.calendarPickerView.reloadAllComponents()
             //初始化颜色
             if !self.calendarList.isEmpty {
                 if self.eventInfo != nil {
-                    if let index = self.calendarList.index(where: { (info) -> Bool in
+                    if let index = self.calendarList.firstIndex(where: { (info) -> Bool in
                         return info.id == self.eventInfo?.calendarId
                     }) {
                         self.changeCalendarWithColor(self.calendarList[index], false)
-                        self.calendarPickerView.selectRow(index, inComponent: 0, animated: true)
+                        self.calendarLabelView.text = self.calendarList[index].name
+                        //self.calendarPickerView.selectRow(index, inComponent: 0, animated: true)
                     }else {
+                        self.calendarLabelView.text = self.calendarList[0].name
                         self.changeCalendarWithColor(self.calendarList[0])
                     }
                 }else {
+                    self.calendarLabelView.text = self.calendarList[0].name
                     self.changeCalendarWithColor(self.calendarList[0])
                 }
             }
@@ -213,10 +294,11 @@ class OOCalendarEventViewController: UITableViewController {
 
     @objc func registerCompletion(notification:Notification){
         let theData = notification.userInfo!
-        let contentHtml = theData["contentHtml"] as! String
-        print("contentHtml =" , contentHtml)
-        self.eventRemark = contentHtml
-        self.webRemark.loadHTMLString(contentHtml == nil ? "" : contentHtml, baseURL: nil)
+        if let contentHtml = theData["contentHtml"] as? String {
+            print("contentHtml =" , contentHtml)
+            self.eventRemark = contentHtml
+            self.webRemark.loadHTMLString(contentHtml, baseURL: nil)
+        }
     }
 
     
@@ -265,7 +347,7 @@ class OOCalendarEventViewController: UITableViewController {
         if let color = calendar?.color {
             if isChangeColorValue {
                 colorValue = color
-                if let index = self.colorOptions.index(where: { (colorString) -> Bool in
+                if let index = self.colorOptions.firstIndex(where: { (colorString) -> Bool in
                     return color == colorString
                 }) {
                     self.selectColorView(tag: index)
@@ -367,11 +449,12 @@ class OOCalendarEventViewController: UITableViewController {
                 showError(title: "开始日期或结束日期错误！")
                 return
             }
-            if start!.compare(end!) != .orderedAscending {
-                showError(title: "开始日期不能大于结束日期！")
-                return
-            }
-            MBProgressHUD_JChat.showMessage(message: "正在保存...", toView: self.view)
+            if !(allday && startTime == endTime) && start!.compare(end!) != .orderedAscending {
+               showError(title: "开始日期不能大于结束日期！")
+               return
+           }
+             
+            self.showLoading()
             let event = OOCalendarEventInfo.init()
             event.title = title
             event.calendarId = calendarId
@@ -386,7 +469,7 @@ class OOCalendarEventViewController: UITableViewController {
                 DDLogInfo("保存结果：\(result)")
                 self.closeWindow()
                 }.always{
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "保存日程错误！")
@@ -415,11 +498,11 @@ class OOCalendarEventViewController: UITableViewController {
             showError(title: "开始日期或结束日期错误！")
             return
         }
-        if start!.compare(end!) != .orderedAscending {
+        if !(allday && startTime == endTime) && start!.compare(end!) != .orderedAscending {
             showError(title: "开始日期不能大于结束日期！")
             return
         }
-        MBProgressHUD_JChat.showMessage(message: "正在保存...", toView: self.view)
+        self.showLoading()
         eventInfo?.title = title
         eventInfo?.calendarId = calendarId
         eventInfo?.color = colorValue
@@ -447,7 +530,7 @@ class OOCalendarEventViewController: UITableViewController {
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
             }.always{
-                MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新单个日程错误！")
@@ -458,7 +541,7 @@ class OOCalendarEventViewController: UITableViewController {
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
             }.always{
-                MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新after日程错误！")
@@ -469,7 +552,7 @@ class OOCalendarEventViewController: UITableViewController {
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
             }.always{
-                MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新all日程错误！")
@@ -495,14 +578,14 @@ class OOCalendarEventViewController: UITableViewController {
     }
     
     private func deleteEvent(type: Int) {
-        MBProgressHUD_JChat.showMessage(message: "正在删除...", toView: self.view)
+        self.showLoading()
         switch type {
         case 0:
             viewModel.deleteCalendarEventSingle(id: (eventInfo?.id!)!).then { (result)  in
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
                 }.always{
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除Single日程错误！")
@@ -512,7 +595,7 @@ class OOCalendarEventViewController: UITableViewController {
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
                 }.always{
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除After日程错误！")
@@ -522,7 +605,7 @@ class OOCalendarEventViewController: UITableViewController {
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
                 }.always{
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除All日程错误！")
@@ -547,7 +630,7 @@ class OOCalendarEventViewController: UITableViewController {
         }
         if let color = eventInfo?.color {
             colorValue = color
-            if let index = self.colorOptions.index(where: { (colorString) -> Bool in
+            if let index = self.colorOptions.firstIndex(where: { (colorString) -> Bool in
                 return color == colorString
             }) {
                 self.selectColorView(tag: index)
@@ -556,25 +639,27 @@ class OOCalendarEventViewController: UITableViewController {
         if let remind = eventInfo?.valarmTime_config {
             if remind != "" {
                 remindValue = remind
-                if let index = self.remindOptions.index(where: { (r) -> Bool in
+                if let index = self.remindOptions.firstIndex(where: { (r) -> Bool in
                     return remind == r.key
                 }) {
-                    self.remindPickerView.selectRow(index, inComponent: 0, animated: true)
+//                    self.remindPickerView.selectRow(index, inComponent: 0, animated: true)
+                    self.remindLabelView.text = self.remindOptions[index].value
                 }
             }
         }
         if let repeatupdate = eventInfo?.recurrenceRule {
             rruleDecode(rrule: repeatupdate)
             DDLogInfo("freq:\(self.repeatValue)")
-            if let index = self.repeatOptions.index(where: { (re) -> Bool in
+            if let index = self.repeatOptions.firstIndex(where: { (re) -> Bool in
                 return  self.repeatValue != "" && re.key == self.repeatValue
             }){
-                self.repeatPickerView.selectRow(index, inComponent: 0, animated: true)
+//                self.repeatPickerView.selectRow(index, inComponent: 0, animated: true)
+                self.repeatLabelView.text  = self.repeatOptions[index].value
             }
         }
         // eventRemark.text = eventInfo?.comment
-         eventRemark = eventInfo?.comment as! String
-         self.webRemark.loadHTMLString(eventRemark == nil ? "" : eventRemark, baseURL: nil)
+         eventRemark = eventInfo?.comment ?? ""
+         self.webRemark.loadHTMLString(eventRemark, baseURL: nil)
 
     }
     
@@ -588,10 +673,8 @@ class OOCalendarEventViewController: UITableViewController {
             if rruleItem.contains("UNTIL") {
                 DDLogInfo("UNTIL:\(rruleItem)")
                 let untilDate = rruleItem.split("=")[1]
-                let date = try? untilDate.subString(from:0, to: 8)
-                if date != nil {
-                    untilDateLabel.text = Date.date(date!, formatter: "yyyyMMdd")?.toString("yyyy-MM-dd")
-                }
+                let date = untilDate.subString(from:0, to: 8)
+                untilDateLabel.text = Date.date(date, formatter: "yyyyMMdd")?.toString("yyyy-MM-dd")
             }
             if rruleItem.contains("BYDAY") {
                 DDLogInfo("BYDAY:\(rruleItem)")
@@ -650,111 +733,24 @@ class OOCalendarEventViewController: UITableViewController {
                 return CGFloat(90)
             }
         case 6:
-            if eventInfo != nil && eventInfo?.id != nil {
-                if canUpdate {
-                    deleteBtn.isHidden = false
-                    return CGFloat(140)
-                }else {
-                    deleteBtn.isHidden = true
-                    return CGFloat(100)
-                }
-            }else {
-                deleteBtn.isHidden = true
-                return CGFloat(100)
-            }
+//            if eventInfo != nil && eventInfo?.id != nil {
+//                if canUpdate {
+//                    deleteBtn.isHidden = false
+//                    return CGFloat(140)
+//                }else {
+//                    deleteBtn.isHidden = true
+//                    return CGFloat(100)
+//                }
+//            }else {
+//                deleteBtn.isHidden = true
+//                return CGFloat(100)
+//            }
+            return CGFloat(160)
         default:
             return CGFloat(45)
         }
     }
 
-}
-
-//MARK: - extension
-
-extension OOCalendarEventViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    // 几级选项器
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        
-        return 1
-    }
-    // 多少行数据
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch pickerView.tag {
-        case 110://日历选项
-            return calendarList.count
-        case 111: // 提醒选项
-            return remindOptions.count
-        case 112: // 重复选项
-            return repeatOptions.count
-        default:
-            return 0
-        }
-    }
-    // 选项显示名称
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//        switch pickerView.tag {
-//        case 110://日历选项
-//            return calendarList[row].name
-//        case 111: // 提醒选项
-//            return remindOptions[row].value
-//        case 112: // 重复选项
-//            return repeatOptions[row].value
-//        default:
-//            return ""
-//        }
-//    }
-    // 选项 view
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        var title = ""
-        switch pickerView.tag {
-        case 110://日历选项
-            title =  calendarList[row].name ?? ""
-        case 111: // 提醒选项
-            title = remindOptions[row].value
-        case 112: // 重复选项
-            title = repeatOptions[row].value
-        default:
-            title = ""
-        }
-        
-        if view == nil {
-            let titleLabel = UILabel.init()
-            titleLabel.adjustsFontSizeToFitWidth  = true
-            titleLabel.textAlignment = NSTextAlignment.center
-            titleLabel.textColor = UIColor.darkGray
-            titleLabel.font = setting_item_textFont
-            titleLabel.text = title
-            return titleLabel
-        }else {
-            let titleLabel = view as! UILabel
-            titleLabel.text = title
-            return titleLabel
-        }
-    }
-    // 选中
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        switch pickerView.tag {
-        case 110://日历选项
-            
-            self.changeCalendarWithColor(calendarList[row])
-        case 111: // 提醒选项
-            
-            remindValue = remindOptions[row].key
-        case 112: // 重复选项
-            
-            repeatValue = repeatOptions[row].key
-            if "WEEKLY" ==  repeatValue {
-                selectRepeatWeekly()
-            }else if "NONE" == repeatValue || "" == repeatValue {
-                selectRepeatNONE()
-            }else {
-                selectRepeatOther()
-            }
-        default:
-            DDLogError("啥pickerView？？？？")
-        }
-    }
-    
     private func selectRepeatWeekly() {
         self.tableView.beginUpdates()
         self.repeatTableViewCell.frame.size.height = CGFloat(120)
@@ -776,7 +772,97 @@ extension OOCalendarEventViewController: UIPickerViewDelegate, UIPickerViewDataS
         untilDateStackView.isHidden = false
         self.tableView.endUpdates()
     }
+    
 }
+
+//MARK: - extension
+
+//extension OOCalendarEventViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+//    // 几级选项器
+//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+//
+//        return 1
+//    }
+//    // 多少行数据
+//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+//        switch pickerView.tag {
+//        case 110://日历选项
+//            return calendarList.count
+//        case 111: // 提醒选项
+//            return remindOptions.count
+//        case 112: // 重复选项
+//            return repeatOptions.count
+//        default:
+//            return 0
+//        }
+//    }
+//    // 选项显示名称
+////    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+////        switch pickerView.tag {
+////        case 110://日历选项
+////            return calendarList[row].name
+////        case 111: // 提醒选项
+////            return remindOptions[row].value
+////        case 112: // 重复选项
+////            return repeatOptions[row].value
+////        default:
+////            return ""
+////        }
+////    }
+//    // 选项 view
+//    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+//        var title = ""
+//        switch pickerView.tag {
+//        case 110://日历选项
+//            title =  calendarList[row].name ?? ""
+//        case 111: // 提醒选项
+//            title = remindOptions[row].value
+//        case 112: // 重复选项
+//            title = repeatOptions[row].value
+//        default:
+//            title = ""
+//        }
+//
+//        if view == nil {
+//            let titleLabel = UILabel.init()
+//            titleLabel.adjustsFontSizeToFitWidth  = true
+//            titleLabel.textAlignment = NSTextAlignment.center
+//            titleLabel.textColor = UIColor.darkGray
+//            titleLabel.font = setting_item_textFont
+//            titleLabel.text = title
+//            return titleLabel
+//        }else {
+//            let titleLabel = view as! UILabel
+//            titleLabel.text = title
+//            return titleLabel
+//        }
+//    }
+//    // 选中
+//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+//        switch pickerView.tag {
+//        case 110://日历选项
+//
+//            self.changeCalendarWithColor(calendarList[row])
+//        case 111: // 提醒选项
+//
+//            remindValue = remindOptions[row].key
+//        case 112: // 重复选项
+//
+//            repeatValue = repeatOptions[row].key
+//            if "WEEKLY" ==  repeatValue {
+//                selectRepeatWeekly()
+//            }else if "NONE" == repeatValue || "" == repeatValue {
+//                selectRepeatNONE()
+//            }else {
+//                selectRepeatOther()
+//            }
+//        default:
+//            DDLogError("啥pickerView？？？？")
+//        }
+//    }
+//
+//
+//}
 
 extension OOCalendarEventViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

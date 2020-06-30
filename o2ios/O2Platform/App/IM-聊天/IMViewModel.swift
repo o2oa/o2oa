@@ -42,6 +42,41 @@ extension IMViewModel {
         
     }
     
+    //修改标题
+    func updateConversationTitle(id: String, title: String) -> Promise<IMConversationInfo> {
+        return Promise { fulfill, reject in
+            self.communicateAPI.request(.updateConversationTitle(id, title), completion: { result in
+                let response = OOResult<BaseModelClass<IMConversationInfo>>(result)
+                if response.isResultSuccess() {
+                    if let info = response.model?.data {
+                        fulfill(info)
+                    } else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                } else {
+                    reject(response.error!)
+                }
+            })
+        }
+    }
+    //修改成员列表
+    func updateConversationPeople(id: String, users: [String]) -> Promise<IMConversationInfo> {
+        return Promise { fulfill, reject in
+            self.communicateAPI.request(.updateConversationPeople(id, users), completion: { result in
+                let response = OOResult<BaseModelClass<IMConversationInfo>>(result)
+                if response.isResultSuccess() {
+                    if let info = response.model?.data {
+                        fulfill(info)
+                    } else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                } else {
+                    reject(response.error!)
+                }
+            })
+        }
+    }
+    
     //阅读会话
     func readConversation(conversationId: String?) {
         guard let id = conversationId else {

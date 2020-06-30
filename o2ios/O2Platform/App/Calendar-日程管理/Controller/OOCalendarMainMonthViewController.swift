@@ -104,7 +104,7 @@ class OOCalendarMainMonthViewController: UIViewController {
         self.performSegue(withIdentifier: "showEventDetail", sender: "add")
     }
     private func loadData() {
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         let filter = OOCalendarEventFilter()
         filter.startTime = self._startTime?.toString("yyyy-MM-dd HH:mm:ss")
         filter.endTime = self._endTime?.toString("yyyy-MM-dd HH:mm:ss")
@@ -145,15 +145,15 @@ class OOCalendarMainMonthViewController: UIViewController {
                 fulfill(result)
             }
             }.then { (dict) in
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
                 DDLogInfo("filter 结果： \(dict.count)")
                 self.eventsByDate = dict
                 // 刷新页面
                 self.calendarViewDic[0]?.reloadData()
                 self.calendarViewDic[0]?.select(self._selectDay)
                 self.selectCalendarDate(self._selectDay!)
-            }.catch { (error) in
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+        }.always {
+            self.hideLoading()
+        }.catch { (error) in
                 DDLogError(error.localizedDescription)
         }
     }
