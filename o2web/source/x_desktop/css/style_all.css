@@ -19,6 +19,8 @@ body {
 	background-color: #FFFFDD;
 }*/
 
+input,button,select,textarea{outline:none}
+
 select.script::-ms-expand { display: none; }
 ::-ms-clear, ::-ms-reveal{display: none;}
 
