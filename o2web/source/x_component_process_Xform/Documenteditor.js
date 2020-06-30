@@ -564,44 +564,47 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         debugger;
         if (this.layout_issuanceUnit && this.layout_issuanceDate){
-            var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
-                "font-size":"16pt",
-                "font-family":"'Times New Roman',仿宋",
-                "letter-spacing": "-0.4pt"
-            }).x;
-            var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
-                "font-size":"16pt",
-                "font-family":"'Times New Roman',仿宋",
-                "letter-spacing": "-0.4pt"
-            }).x;
-            // var unitWidth = this.layout_issuanceUnit.getSize().x;
-            // var dateWidth = this.layout_issuanceDate.getSize().x;
-            if (unitWidth<dateWidth){
-                var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                if (flagTd){
-                    var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
-                    flagTd.setStyle("width", ""+pt+"pt");
+            var table = this.layout_issuanceUnit.getParent("table")
+            if (table && !table.hasClass("doc_layout_headIssuance")) {
+                var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
+                    "font-size": "16pt",
+                    "font-family": "'Times New Roman',仿宋",
+                    "letter-spacing": "-0.4pt"
+                }).x;
+                var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
+                    "font-size": "16pt",
+                    "font-family": "'Times New Roman',仿宋",
+                    "letter-spacing": "-0.4pt"
+                }).x;
+                // var unitWidth = this.layout_issuanceUnit.getSize().x;
+                // var dateWidth = this.layout_issuanceDate.getSize().x;
+                if (unitWidth < dateWidth) {
+                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                    if (flagTd) {
+                        var pt = ((dateWidth - unitWidth) / 96) * 72 + 32 + 32;
+                        flagTd.setStyle("width", "" + pt + "pt");
+                    }
+                    table = this.layout_issuanceDate.getParent("table");
+                    table.setStyle("width", "auto");
+                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                    if (flagTd) flagTd.setStyle("width", "32pt");
+                    var p = this.layout_issuanceDate.getParent("p");
+                    if (p) p.setStyle("text-align", "right");
+
+                } else {
+                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                    if (flagTd) flagTd.setStyle("width", "32pt");
+                    var table = this.layout_issuanceUnit.getParent("table");
+                    var x = table.getSize().x;
+
+                    table = this.layout_issuanceDate.getParent("table");
+                    table.setStyle("width", "" + x + "px");
+
+                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                    if (flagTd) flagTd.setStyle("width", "32pt");
+                    var p = this.layout_issuanceDate.getParent("p");
+                    if (p) p.setStyle("text-align", "center");
                 }
-                table = this.layout_issuanceDate.getParent("table");
-                table.setStyle("width", "auto");
-                flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                if (flagTd) flagTd.setStyle("width", "32pt");
-                var p = this.layout_issuanceDate.getParent("p");
-                if (p) p.setStyle("text-align", "right");
-
-            }else{
-                var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                if (flagTd) flagTd.setStyle("width", "32pt");
-                var table = this.layout_issuanceUnit.getParent("table");
-                var x = table.getSize().x;
-
-                table = this.layout_issuanceDate.getParent("table");
-                table.setStyle("width", ""+x+"px");
-
-                flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                if (flagTd) flagTd.setStyle("width", "32pt");
-                var p = this.layout_issuanceDate.getParent("p");
-                if (p) p.setStyle("text-align", "center");
             }
         }
 
@@ -693,6 +696,29 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
                         tdClass = tdClassList.join(" ");
                         td.set("class", tdClass);
+                    }
+                }
+            }
+
+            var coptyToTitleNode = (this.layout_copytoTitle || this.layout_copyto2Title);
+            if (coptyToTitleNode){
+                var editionTable = coptyToTitleNode.getParent("table");
+                if (editionTable.get("data-compute-style")=="y"){
+                    var rows = editionTable.rows;
+                    for (var i=0; i<rows.length; i++){
+                        var cell = rows[i].cells[0];
+
+                        var tmp = cell.getElement(".doc_layout_edition_issuance_unit");
+                        if (!tmp) tmp = cell.getElement(".doc_layout_edition_issuance_date");
+                        if (!tmp){
+                            var text = cell.get("text").trim();
+                            var l = 14*text.length;
+                            cell.setStyles({
+                                "max-width": ""+l+"pt",
+                                "min-width": ""+l+"pt"
+                            });
+                        }
+
                     }
                 }
             }
@@ -2307,47 +2333,72 @@ debugger;
             }
 
             debugger;
-            if (this.layout_issuanceUnit && this.layout_issuanceDate){
 
-                var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
-                    "font-size":"16pt",
-                    "font-family":"'Times New Roman',仿宋",
-                    "letter-spacing": "-0.4pt"
-                }).x;
-                var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
-                    "font-size":"16pt",
-                    "font-family":"'Times New Roman',仿宋",
-                    "letter-spacing": "-0.4pt"
-                }).x;
+            if (this.layout_issuanceUnit && this.layout_issuanceDate ){
+                var table = this.layout_issuanceUnit.getParent("table")
+                if (table && !table.hasClass("doc_layout_headIssuance")){
+                    var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
+                        "font-size":"16pt",
+                        "font-family":"'Times New Roman',仿宋",
+                        "letter-spacing": "-0.4pt"
+                    }).x;
+                    var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
+                        "font-size":"16pt",
+                        "font-family":"'Times New Roman',仿宋",
+                        "letter-spacing": "-0.4pt"
+                    }).x;
 
-                // var unitWidth = this.layout_issuanceUnit.getSize().x;
-                // var dateWidth = this.layout_issuanceDate.getSize().x;
-                if (unitWidth<dateWidth){
-                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    if (flagTd){
-                        var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
-                        flagTd.setStyle("width", ""+pt+"pt");
+                    // var unitWidth = this.layout_issuanceUnit.getSize().x;
+                    // var dateWidth = this.layout_issuanceDate.getSize().x;
+                    if (unitWidth<dateWidth){
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd){
+                            var pt = ((dateWidth-unitWidth)/96)*72 +32+32;
+                            flagTd.setStyle("width", ""+pt+"pt");
+                        }
+                        table = this.layout_issuanceDate.getParent("table");
+                        table.setStyle("width", "auto");
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        var p = this.layout_issuanceDate.getParent("p");
+                        if (p) p.setStyle("text-align", "right");
+
+                    }else{
+                        var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        var table = this.layout_issuanceUnit.getParent("table");
+                        var x = table.getSize().x;
+
+                        table = this.layout_issuanceDate.getParent("table");
+                        table.setStyle("width", ""+x+"px");
+
+                        flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
+                        if (flagTd) flagTd.setStyle("width", "32pt");
+                        var p = this.layout_issuanceDate.getParent("p");
+                        if (p) p.setStyle("text-align", "center");
                     }
-                    table = this.layout_issuanceDate.getParent("table");
-                    table.setStyle("width", "auto");
-                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-                    var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "right");
+                }
+            }
+            var coptyToTitleNode = (this.layout_copytoTitle || this.layout_copyto2Title);
+            if (coptyToTitleNode){
+                var editionTable = coptyToTitleNode.getParent("table");
+                if (editionTable.get("data-compute-style")=="y"){
+                    var rows = editionTable.rows;
+                    for (var i=0; i<rows.length; i++){
+                        var cell = rows[i].cells[0];
 
-                }else{
-                    var flagTd = this.layout_issuanceUnit.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-                    var table = this.layout_issuanceUnit.getParent("table");
-                    var x = table.getSize().x;
+                        var tmp = cell.getElement(".doc_layout_edition_issuance_unit");
+                        if (!tmp) tmp = cell.getElement(".doc_layout_edition_issuance_date");
+                        if (!tmp){
+                            var text = cell.get("text").trim();
+                            var l = 14*text.length;
+                            cell.setStyles({
+                                "max-width": ""+l+"pt",
+                                "min-width": ""+l+"pt"
+                            });
+                        }
 
-                    table = this.layout_issuanceDate.getParent("table");
-                    table.setStyle("width", ""+x+"px");
-
-                    flagTd = this.layout_issuanceDate.getParent("td").getNext("td");
-                    if (flagTd) flagTd.setStyle("width", "32pt");
-                    var p = this.layout_issuanceDate.getParent("p");
-                    if (p) p.setStyle("text-align", "center");
+                    }
                 }
             }
         }
