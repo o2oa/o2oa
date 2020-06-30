@@ -24,6 +24,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.Person;
+import org.apache.commons.lang3.StringUtils;
 
 public class ActionReciveAttendance extends BaseAction {
 	
@@ -107,6 +109,35 @@ public class ActionReciveAttendance extends BaseAction {
 				}
 			}
 		}
+
+		if( check ){
+			String distinguishedName = wrapIn.getEmpName();
+			if( StringUtils.isEmpty( distinguishedName )){
+				distinguishedName = effectivePerson.getDistinguishedName();
+			}
+
+			Person person = userManagerService.getPersonObjByName( distinguishedName );
+
+			if( person != null ){
+				attendanceDetail.setEmpName( person.getDistinguishedName() );
+				if( StringUtils.isEmpty( wrapIn.getEmpNo() )){
+					if( person != null ){
+						if( StringUtils.isNotEmpty( person.getEmployee() )){
+							attendanceDetail.setEmpNo(person.getEmployee());
+						}else{
+							attendanceDetail.setEmpNo( distinguishedName );
+						}
+					}
+				}
+			}else{
+				//人员不存在
+				check = false;
+				Exception exception = new ExceptionAttendanceDetailProcess(
+						"考勤人员不存在.DistinguishedName:" + distinguishedName );
+				result.error(exception);
+			}
+		}
+
 		if (check) {
 			try {
 				attendanceDetail = attendanceDetailServiceAdv.save(attendanceDetail);
