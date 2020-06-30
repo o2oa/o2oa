@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.task;
+package com.x.processplatform.assemble.surface.jaxrs.record;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -11,32 +11,34 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 class ActionManageDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		Task task = null;
+		Record record = null;
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			task = emc.find(id, Task.class);
-			if (null == task) {
-				throw new ExceptionEntityNotExist(id, Task.class);
+			record = emc.find(id, Record.class);
+			if (null == record) {
+				throw new ExceptionEntityNotExist(id, Record.class);
 			}
-			Application application = business.application().pick(task.getApplication());
-			Process process = business.process().pick(task.getProcess());
+			Application application = business.application().pick(record.getApplication());
+			Process process = business.process().pick(record.getProcess());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
-		ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", task.getId()), task.getJob());
+		WoId resp = ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("record", record.getId()), record.getJob()).getData(WoId.class);
 		Wo wo = new Wo();
-		wo.setId(task.getId());
+		wo.setId(resp.getId());
 		result.setData(wo);
 		return result;
 	}

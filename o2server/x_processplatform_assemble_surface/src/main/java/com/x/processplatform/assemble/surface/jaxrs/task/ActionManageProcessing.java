@@ -1,8 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
-import com.x.processplatform.core.entity.element.Process;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,14 +14,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Process;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionManageProcessing extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Task task = null;
+		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Task task = null;
 			Business business = new Business(emc);
 			task = emc.find(id, Task.class);
 			if (null == task) {
@@ -36,7 +37,7 @@ class ActionManageProcessing extends BaseAction {
 			}
 			Process process = business.process().pick(task.getProcess());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			/* 如果有输入新的路由决策覆盖原有决策 */
@@ -48,14 +49,13 @@ class ActionManageProcessing extends BaseAction {
 				task.setOpinion(wi.getOpinion());
 			}
 			emc.commit();
-
-			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("task", task.getId(), "processing"), null);
-			Wo wo = new Wo();
-			wo.setId(task.getId());
-			result.setData(wo);
-			return result;
 		}
+		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("task", task.getId(), "processing"), null, task.getJob());
+		Wo wo = new Wo();
+		wo.setId(task.getId());
+		result.setData(wo);
+		return result;
 	}
 
 	public static class Wi extends Task {
