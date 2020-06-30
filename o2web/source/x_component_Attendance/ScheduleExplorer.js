@@ -95,6 +95,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     _createTableContent: function(){
         var lp = this.app.lp.schedule;
         var signProxy = this.data.signProxy||1;
+
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
