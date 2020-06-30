@@ -35,6 +35,8 @@ body {
 	box-sizing: content-box!important;
 }
 
+input,button,select,textarea{outline:none}
+
 /*
 .table-tr-selected {
 	background-color: #FFFFDD;
