@@ -27,7 +27,6 @@ public class ProcessAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
 
-
 	@JaxrsMethodDescribe(value = "获取流程.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
@@ -45,8 +44,6 @@ public class ProcessAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
-
 
 	@JaxrsMethodDescribe(value = "获取流程内容,附带所有的Activity信息", action = ActionGetComplex.class)
 	@GET
@@ -84,7 +81,7 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application获取所有流程.", action = ActionListWithPersonWithApplication.class)
+	@JaxrsMethodDescribe(value = "根据指定Application获取可启动的流程.", action = ActionListWithPersonWithApplication.class)
 	@GET
 	@Path("list/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -96,6 +93,25 @@ public class ProcessAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListWithPersonWithApplication().execute(effectivePerson, applicationFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据指定Application获取mobile端可启动的流程.", action = ActionListWithPersonWithApplicationTerminalMobile.class)
+	@GET
+	@Path("list/application/{applicationFlag}/terminal/mobile")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithPersonWithApplicationTerminalMobile(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<List<ActionListWithPersonWithApplicationTerminalMobile.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithPersonWithApplicationTerminalMobile().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -146,7 +162,7 @@ public class ProcessAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void ListWithIds(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<List<ActionListWithProcess.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

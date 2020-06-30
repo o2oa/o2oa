@@ -49,6 +49,10 @@ public class Process extends SliceJpaObject {
 	public static final String DEFAULTSTARTMODE_DRAFT = "draft";
 	public static final String DEFAULTSTARTMODE_INSTANCE = "instance";
 
+	public static final String DEFAULTSTARTABLETERMINAL_CLIENT = "client";
+	public static final String DEFAULTSTARTABLETERMINAL_MOBILE = "mobile";
+	public static final String DEFAULTSTARTABLETERMINAL_BOTH = "both";
+
 	public String getId() {
 		return id;
 	}
@@ -360,6 +364,12 @@ public class Process extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + checkDraft_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean checkDraft;
+
+	public static final String startableTerminal_FIELDNAME = "startableTerminal";
+	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,both")
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + startableTerminal_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String startableTerminal;
 
 	public static final String projection_FIELDNAME = "projection";
 	@FieldDescribe("字段映射配置.")
@@ -846,6 +856,14 @@ public class Process extends SliceJpaObject {
 
 	public void setDefaultStartMode(String defaultStartMode) {
 		this.defaultStartMode = defaultStartMode;
+	}
+
+	public String getStartableTerminal() {
+		return startableTerminal;
+	}
+
+	public void setStartableTerminal(String startableTerminal) {
+		this.startableTerminal = startableTerminal;
 	}
 
 }
