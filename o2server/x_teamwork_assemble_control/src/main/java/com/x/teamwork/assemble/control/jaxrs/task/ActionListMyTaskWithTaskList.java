@@ -48,14 +48,14 @@ public class ActionListMyTaskWithTaskList extends BaseAction {
 		}
 		
 		if( Boolean.TRUE.equals( check ) ){
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListMyTaskWithTaskList", taskListId );
+			/*cacheKey = ApplicationCache.concreteCacheKey( "ActionListMyTaskWithTaskList", taskListId );
 			element = taskCache.get( cacheKey );
 			
 			if ((null != element) && (null != element.getObjectValue())) {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {
+			} else {*/
 				Business business = null;
 				try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 					business = new Business(bc);
@@ -109,7 +109,7 @@ public class ActionListMyTaskWithTaskList extends BaseAction {
 					}
 					
 					resultObject = new ResultObject( total, wos );
-					taskCache.put(new Element( cacheKey, resultObject ));
+					//taskCache.put(new Element( cacheKey, resultObject ));
 					
 					result.setCount( resultObject.getTotal() );
 					result.setData( resultObject.getWos() );
@@ -119,7 +119,7 @@ public class ActionListMyTaskWithTaskList extends BaseAction {
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}		
+			//}		
 		}
 		return result;
 	}
