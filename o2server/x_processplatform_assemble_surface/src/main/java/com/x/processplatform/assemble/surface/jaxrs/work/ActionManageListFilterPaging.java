@@ -106,7 +106,11 @@ class ActionManageListFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
 		}
 		if (ListTools.isNotEmpty(wi.getWorkList())) {
-			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if (ListTools.isNotEmpty(wi.getJobList())) {
 			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
@@ -187,7 +191,11 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if (ListTools.isNotEmpty(wi.getWorkList())) {
 			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
@@ -228,6 +236,9 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		@FieldDescribe("流程")
 		private List<String> processList;
+
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -327,6 +338,14 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {
