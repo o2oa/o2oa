@@ -106,22 +106,40 @@ class OOMeetingCreateFormView: UIView {
     }
     
     
-    func getFormDataFormBean() -> OOMeetingForm {
+    func getFormDataFormBean() -> (OOMeetingForm?, err: String?) {
         let meetingForm = OOMeetingForm()
         //标题
-        meetingForm.subject = textItemView.model?.callbackValue  as? String
+        guard let title = textItemView.model?.callbackValue  as? String else {
+            return (nil, "请输入会议主题")
+        }
+        meetingForm.subject = title
         //日期
-        meetingForm.meetingDate = dateItemView.model?.callbackValue as! Date
+        guard let date = dateItemView.model?.callbackValue as? Date else {
+            return (nil, "请选择日期")
+        }
+        meetingForm.meetingDate = date
+        
         //开始时间
         let model = dateIntervalItemView.model as! OOFormDateIntervalModel
-        meetingForm.startTime = model.value1 as! Date
+        guard let startTime = model.value1 as? Date else {
+            return (nil, "请选择开始时间")
+        }
+        meetingForm.startTime = startTime
         //结束时间
-        meetingForm.completedTime = model.value2 as! Date
+        guard let endTime = model.value2 as? Date else {
+            return (nil, "请选择结束时间")
+        }
+        meetingForm.completedTime = endTime
         //会议室
-        let room = segueItemView.model?.callbackValue as? OOMeetingRoomInfo
-        meetingForm.room = room?.id
-        meetingForm.roomName = room?.name
-        return meetingForm
+        
+        guard let room = segueItemView.model?.callbackValue as? OOMeetingRoomInfo else {
+            return (nil, "请选择会议室")
+        }
+        meetingForm.room = room.id
+        meetingForm.roomName = room.name
+        return (meetingForm, nil)
     }
+    
+     
 
 }
