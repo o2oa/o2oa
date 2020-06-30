@@ -362,8 +362,11 @@ public class Calendar_EventServiceAdv{
 			Recur recur = rule.getRecur();
 			recur.setUntil( new net.fortuna.ical4j.model.Date(repeatEndTime) );		
 			calendar_EventRepeatMaster.setRecurrenceRule( new RRule(recur).getValue());
-			
-			calendar_EventRepeatMaster_new = copyEventPropertyToMaster( calendar_event );
+
+			calendar_EventRepeatMaster_new = new Calendar_EventRepeatMaster();
+			calendar_EventRepeatMaster_new.setRecurrenceStartTime( calendar_EventRepeatMaster.getRecurrenceStartTime());
+			calendar_EventRepeatMaster_new.setStartTime( calendar_EventRepeatMaster.getStartTime() );
+			calendar_EventRepeatMaster_new = copyEventPropertyToMaster( calendar_event, calendar_EventRepeatMaster_new );
 			calendar_EventRepeatMaster_new.setRecurrenceStartTime( calendar_event.getStartTime() );
 
 			//处理新的calendar_EventRepeatMaster_new的备注信息，原来的calendar_EventRepeatMaster不动
@@ -846,16 +849,6 @@ public class Calendar_EventServiceAdv{
 	}
 	
 	/**
-	 * 根据calendar_event创建一个新的重复主体
-	 * @param calendar_event
-	 * @return
-	 */
-	private Calendar_EventRepeatMaster copyEventPropertyToMaster( Calendar_Event calendar_event ) {
-		Calendar_EventRepeatMaster calendar_EventRepeatMaster = new Calendar_EventRepeatMaster();
-		return copyEventPropertyToMaster( calendar_event, calendar_EventRepeatMaster );
-	}
-	
-	/**
 	 * 根据calendar_event信息更新一个新的重复主体
 	 * @param calendar_event
 	 * @return
@@ -871,7 +864,7 @@ public class Calendar_EventServiceAdv{
 			
 			//修改一下开始时间的时分秒
 			String newRecurrenceStartTime_str = dateOperation.getDate( recurrenceStartTime, "yyyy-MM-dd") + " " + dateOperation.getDate( startTime_event, "HH:mm:ss");
-			String newStartTime_str = dateOperation.getDate( startTime, "yyyy-MM-dd") + " " + dateOperation.getDate( startTime_event, "HH:mm:ss");
+			String newStartTime_str = dateOperation.getDate( startTime_event, "yyyy-MM-dd") + " " + dateOperation.getDate( startTime_event, "HH:mm:ss");
 			try {
 				recurrenceStartTime_new = dateOperation.getDateFromString( newRecurrenceStartTime_str, "yyyy-MM-dd HH:mm:ss");
 			} catch (Exception e) {
@@ -884,7 +877,6 @@ public class Calendar_EventServiceAdv{
 				startTime_new = startTime;
 				e.printStackTrace();
 			}
-			
 			calendar_EventRepeatMaster.setAlarm( calendar_event.getAlarm() );
 			calendar_EventRepeatMaster.setAlarmTime( calendar_event.getAlarmTime() );
 			calendar_EventRepeatMaster.setCalendarId( calendar_event.getCalendarId() );
