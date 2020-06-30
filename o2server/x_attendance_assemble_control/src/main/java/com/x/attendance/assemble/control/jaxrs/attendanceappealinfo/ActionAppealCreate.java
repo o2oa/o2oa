@@ -142,7 +142,7 @@ public class ActionAppealCreate extends BaseAction {
 		
 		//查询申诉复核人
 		if (check) {
-			if( StringUtils.isNotEmpty( appeal_checker_type ) && !"无".equals( appeal_auditor_type  ) ) {
+			if( StringUtils.isNotEmpty( appeal_checker_type ) && !"无".equals( appeal_checker_type  ) ) {
 				try {
 					appealCheckPersonName = attendanceAppealInfoServiceAdv.getAppealCheckPerson( personName, attendanceAppealInfo.getUnitName(), wrapIn.getIdentity() );
 					attendanceAppealAuditInfo.setProcessPerson2( appealCheckPersonName );
