@@ -87,11 +87,13 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 		if (StringUtils.equals(wi.getStartableTerminal(), Process.STARTABLETERMINAL_CLIENT)) {
 			p = cb.and(p,
 					cb.or(cb.isNull(root.get(Process_.startableTerminal)),
+							cb.equal(root.get(Process_.startableTerminal), ""),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_CLIENT),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL)));
 		} else if (StringUtils.equals(wi.getStartableTerminal(), Process.STARTABLETERMINAL_MOBILE)) {
 			p = cb.and(p,
 					cb.or(cb.isNull(root.get(Process_.startableTerminal)),
+							cb.equal(root.get(Process_.startableTerminal), ""),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_MOBILE),
 							cb.equal(root.get(Process_.startableTerminal), Process.STARTABLETERMINAL_ALL)));
 		}
@@ -109,6 +111,7 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
 		@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all")
 		private String startableTerminal;
 
