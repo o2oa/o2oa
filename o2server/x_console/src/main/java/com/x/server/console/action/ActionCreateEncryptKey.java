@@ -51,7 +51,7 @@ public class ActionCreateEncryptKey extends ActionBase {
 		//为前端提供publicKey,为密码加密
 		this.writeConfigFile(new String(Base64.encodeBase64(pair.getPublic().getEncoded())));
 		
-		System.out.println("public key: config/public.key, private key: config/private.key, create key success!");
+		System.out.println("public key: config/public.key, private key: config/private.key, create key success. Please  restart server!");
 		
 		return true;
 	}
