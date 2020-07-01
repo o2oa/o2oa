@@ -1,5 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
+import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.*
@@ -10,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
@@ -37,7 +39,10 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.find
 import java.io.File
@@ -461,6 +466,19 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         //bottom toolbar
         image_o2_chat_audio_speak_btn.setOnTouchListener(this)
         ll_o2_chat_audio_btn.setOnClickListener {
+            //先检查录音权限
+            PermissionRequester(this@O2ChatActivity)
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .o2Subscribe {
+                        onNext { (granted, _, _) ->
+                            if (!granted){
+                                O2DialogSupport.openAlertDialog(this@O2ChatActivity, "需要定位权限, 去设置", { permissionSetting() })
+                            }
+                        }
+                        onError { e, _ ->
+                            XLog.error("", e)
+                        }
+                    }
             //关闭表情框
             rv_o2_chat_emoji_box.gone()
             if (rv_o2_chat_emoji_box_out.isKeyboardActive) { //输入法激活时
@@ -517,6 +535,12 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     }
         }
     }
+
+    private fun permissionSetting() {
+        val packageUri = Uri.parse("package:$packageName")
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri))
+    }
+
     // 设置表情栏的高度
 //    private fun initEmojiView() {
 //        val layoutParams = rv_o2_chat_emoji_box.layoutParams
