@@ -483,7 +483,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setDocSequence(String docSequence) {
-		this.docSequence = docSequence;
+		this.docSequence = getSequenceString(docSequence);
 	}
 
 	public String getSequenceTitle() {
@@ -491,7 +491,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setSequenceTitle(String sequenceTitle) {
-		this.sequenceTitle = sequenceTitle;
+		this.sequenceTitle = getSequenceString(sequenceTitle);
 	}
 
 	public String getSequenceAppAlias() {
@@ -499,7 +499,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setSequenceAppAlias(String sequenceAppAlias) {
-		this.sequenceAppAlias = sequenceAppAlias;
+		this.sequenceAppAlias = getSequenceString(sequenceAppAlias);
 	}
 
 	public String getSequenceCategoryAlias() {
@@ -507,7 +507,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setSequenceCategoryAlias(String sequenceCategoryAlias) {
-		this.sequenceCategoryAlias = sequenceCategoryAlias;
+		this.sequenceCategoryAlias = getSequenceString(sequenceCategoryAlias);
 	}
 
 	public String getSequenceCreatorPerson() {
@@ -515,7 +515,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setSequenceCreatorPerson(String sequenceCreatorPerson) {
-		this.sequenceCreatorPerson = sequenceCreatorPerson;
+		this.sequenceCreatorPerson = getSequenceString(sequenceCreatorPerson);
 	}
 
 	public String getSequenceCreatorUnitName() {
@@ -523,7 +523,7 @@ public class Review extends SliceJpaObject {
 	}
 
 	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
-		this.sequenceCreatorUnitName = sequenceCreatorUnitName;
+		this.sequenceCreatorUnitName = getSequenceString(sequenceCreatorUnitName);
 	}
 
 	public static final String[] sortableFieldNames = { appAlias_FIELDNAME, appId_FIELDNAME, appName_FIELDNAME,
@@ -596,5 +596,12 @@ public class Review extends SliceJpaObject {
 			return sequenceCreatorUnitName_FIELDNAME;
 		}
 		return sequence_FIELDNAME;
+	}
+
+	private String getSequenceString(String sequenceString ) {
+		if( StringUtils.length(sequenceString) > 60 ){
+			return StringUtils.substring(sequenceString, 0, 60 );
+		}
+		return sequenceString;
 	}
 }
