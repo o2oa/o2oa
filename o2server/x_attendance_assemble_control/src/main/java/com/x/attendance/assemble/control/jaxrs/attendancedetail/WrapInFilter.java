@@ -2,30 +2,39 @@ package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
 import java.util.List;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WrapInFilter extends GsonPropertyObject {
 
+	@FieldDescribe("参与查询的员工标识，人员DistinguishedName")
 	private String q_empName;
-	
+
 	private List<String> topUnitNames;
-	
+
+	@FieldDescribe("参与查询的顶层组织（公司）标识，组织DistinguishedName")
 	private String q_topUnitName;
 	
 	private List<String> unitNames;
-	
+
+	@FieldDescribe("参与查询的组织（部门）标识，组织DistinguishedName")
 	private String q_unitName;
 
+	@FieldDescribe("查询数据的年份, yyyy")
 	private String q_year;
-	
+
+	@FieldDescribe("查询数据的月份, mm")
 	private String q_month;
-	
+
+	@FieldDescribe("查询数据的统计周期年份，一般与数据日期的年份一致")
 	private String cycleYear;
-	
+
+	@FieldDescribe("查询数据的统计周期月份，一般与数据日期的月份一致")
 	private String cycleMonth;
-	
+
+	@FieldDescribe("查询数据的具体日期，yyyy-mm-dd")
 	private String q_date;
-	
+
 	private int recordStatus = 999;
 	
 	private Boolean isAbsent = null;
