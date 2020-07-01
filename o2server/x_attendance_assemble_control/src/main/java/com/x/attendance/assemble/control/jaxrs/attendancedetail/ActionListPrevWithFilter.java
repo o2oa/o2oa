@@ -43,13 +43,13 @@ public class ActionListPrevWithFilter extends BaseAction {
 		List<String> unitNames = new ArrayList<String>();
 		List<String> topUnitNames_tmp = null;
 		List<String> unitNames_tmp = null;
-		WrapInFilter wrapIn = null;
+		Wi wrapIn = null;
 		AttendanceScheduleSetting scheduleSetting_top = null;
 		AttendanceScheduleSetting scheduleSetting = null;
 		Boolean check = true;
 
 		try {
-			wrapIn = this.convertToWrapIn(jsonElement, WrapInFilter.class);
+			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
 			check = false;
 			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
@@ -160,6 +160,10 @@ public class ActionListPrevWithFilter extends BaseAction {
 		result.setCount(total);
 		result.setData(wraps);
 		return result;
+	}
+
+	public static class Wi extends WrapInFilter{
+
 	}
 
 	public static class Wo extends AttendanceDetail {
