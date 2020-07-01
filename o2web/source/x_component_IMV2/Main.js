@@ -15,7 +15,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		"isResize": true,
 		"isMax": true,
 		"title": MWF.xApplication.IMV2.LP.title,
-		"conversationId":""
+		"conversationId": ""
 	},
 	onQueryLoad: function () {
 		this.lp = MWF.xApplication.IMV2.LP;
@@ -25,15 +25,15 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.messageList = [];
 		this.emojiList = [];
 		//添加87个表情
-		for (var i=1; i < 88; i++) {
+		for (var i = 1; i < 88; i++) {
 			var emoji = {
-				"key" : i > 9 ? "["+i+"]" : "[0"+i+"]",
-				"path" : i > 9 ? "/x_component_IMV2/$Main/emotions/im_emotion_"+i+".png" : "/x_component_IMV2/$Main/emotions/im_emotion_0"+i+".png",
+				"key": i > 9 ? "[" + i + "]" : "[0" + i + "]",
+				"path": i > 9 ? "/x_component_IMV2/$Main/emotions/im_emotion_" + i + ".png" : "/x_component_IMV2/$Main/emotions/im_emotion_0" + i + ".png",
 			};
 			this.emojiList.push(emoji);
 		}
 	},
-	onQueryClose: function(){
+	onQueryClose: function () {
 		this.closeListening()
 	},
 	loadApplication: function (callback) {
@@ -53,16 +53,16 @@ MWF.xApplication.IMV2.Main = new Class({
 
 		}.bind(this));
 	},
-	startListening:function(){
+	startListening: function () {
 		this.messageNumber = layout.desktop.message.items.length;
 		//查询ws消息 如果增加
 		if (this.listener) {
 			clearInterval(this.listener);
 		}
-		this.listener = setInterval(function(){
+		this.listener = setInterval(function () {
 			var newNumber = layout.desktop.message.items.length;
 			//判断是否有新的ws消息
-			if(newNumber > this.messageNumber) {
+			if (newNumber > this.messageNumber) {
 				//查询会话数据
 				this._checkConversationMessage();
 				//查询聊天数据
@@ -71,7 +71,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			}
 		}.bind(this), 1000);
 	},
-	closeListening: function() {
+	closeListening: function () {
 		if (this.listener) {
 			clearInterval(this.listener);
 		}
@@ -82,7 +82,7 @@ MWF.xApplication.IMV2.Main = new Class({
 			var chat = list[i];
 			var itemNode = this._createConvItemNode(chat);
 			this.conversationNodeItemList.push(itemNode);
-			if(this.conversationId && this.conversationId == chat.id) {
+			if (this.conversationId && this.conversationId == chat.id) {
 				this.tapConv(chat);
 			}
 		}
@@ -127,18 +127,18 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 	},
 	//点击表情按钮
-	showEmojiBox: function() {
-		if(!this.emojiBoxNode) {
+	showEmojiBox: function () {
+		if (!this.emojiBoxNode) {
 			this.emojiBoxNode = new Element("div", { "class": "chat-emoji-box" }).inject(this.chatNode);
 			var _self = this;
-			for(var i=0; i<this.emojiList.length; i++) {
+			for (var i = 0; i < this.emojiList.length; i++) {
 				var emoji = this.emojiList[i];
-				var emojiNode = new Element("img", {"src": emoji.path, "class": "chat-emoji-img"}).inject(this.emojiBoxNode);
+				var emojiNode = new Element("img", { "src": emoji.path, "class": "chat-emoji-img" }).inject(this.emojiBoxNode);
 				emojiNode.addEvents({
 					"mousedown": function (ev) {
 						_self.sendEmojiMsg(this.emoji);
 						_self.hideEmojiBox();
-					}.bind({emoji: emoji}) 
+					}.bind({ emoji: emoji })
 				});
 			}
 		}
@@ -146,13 +146,13 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.hideFun = this.hideEmojiBox.bind(this);
 		document.body.addEvent("mousedown", this.hideFun);
 	},
-	hideEmojiBox: function() {
+	hideEmojiBox: function () {
 		//关闭emojiBoxNode
 		this.emojiBoxNode.setStyle("display", "none");
 		document.body.removeEvent("mousedown", this.hideFun);
 	},
 	//发送表情消息
-	sendEmojiMsg: function(emoji) {
+	sendEmojiMsg: function (emoji) {
 		console.log("发送表情消息");
 		this._newAndSendTextMsg(emoji.key, "emoji");
 	},
@@ -177,12 +177,12 @@ MWF.xApplication.IMV2.Main = new Class({
 			var isOld = false;
 			for (var i = 0; i < _self.conversationNodeItemList.length; i++) {
 				var c = _self.conversationNodeItemList[i];
-				if (newConv.id  == c.data.id) {
+				if (newConv.id == c.data.id) {
 					isOld = true;
 					_self.tapConv(c);
 				}
 			}
-			if(!isOld) {
+			if (!isOld) {
 				var itemNode = _self._createConvItemNode(newConv);
 				_self.conversationNodeItemList.push(itemNode);
 				_self.tapConv(newConv);
@@ -234,7 +234,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		this._refreshConvMessage(textMessage);
 	},
 	//刷新会话Item里面的最后消息内容
-	_refreshConvMessage: function(msg) {
+	_refreshConvMessage: function (msg) {
 		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
 			var node = this.conversationNodeItemList[i];
 			if (node.data.id == this.conversationId) {
@@ -243,7 +243,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 	},
 	//检查会话列表是否有更新
-	_checkConversationMessage: function() {
+	_checkConversationMessage: function () {
 		o2.Actions.load("x_message_assemble_communicate").ImAction.myConversationList(function (json) {
 			if (json.data && json.data instanceof Array) {
 				var newConList = json.data;
@@ -259,7 +259,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						}
 					}
 					//新会话 创建
-					if(isNew) {
+					if (isNew) {
 						var itemNode = this._createConvItemNode(nCv);
 						this.conversationNodeItemList.push(itemNode);
 					}
@@ -269,12 +269,12 @@ MWF.xApplication.IMV2.Main = new Class({
 		}.bind(this));
 	},
 	//检查是否有新消息
-	_checkNewMessage: function() {
+	_checkNewMessage: function () {
 		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
 			var data = { "conversationId": this.conversationId };
 			o2.Actions.load("x_message_assemble_communicate").ImAction.msgListByPaging(1, 10, data, function (json) {
 				var list = json.data;
-				if(list && list.length > 0) {
+				if (list && list.length > 0) {
 					var msg = list[0];
 					//检查聊天框是否有变化
 					if (this.conversationId == msg.conversationId) {
@@ -282,11 +282,11 @@ MWF.xApplication.IMV2.Main = new Class({
 							var isnew = true;
 							var m = list[i];
 							for (var j = 0; j < this.messageList.length; j++) {
-								if(this.messageList[j].id == m.id) {
+								if (this.messageList[j].id == m.id) {
 									isnew = false;
 								}
 							}
-							if(isnew) {
+							if (isnew) {
 								this.messageList.push(m);
 								this._buildMsgNode(m, false);
 								// this._refreshConvMessage(m);
@@ -294,7 +294,7 @@ MWF.xApplication.IMV2.Main = new Class({
 						}
 					}
 				}
-				
+
 			}.bind(this), function (error) {
 				console.log(error);
 			}.bind(this), false);
@@ -333,17 +333,35 @@ MWF.xApplication.IMV2.Main = new Class({
 		//text
 		if (msgBody.type == "emoji") { // 表情
 			var img = "";
-			for (var i=0; i< this.emojiList.length; i++) {
-				 if (msgBody.body == this.emojiList[i].key) {
+			for (var i = 0; i < this.emojiList.length; i++) {
+				if (msgBody.body == this.emojiList[i].key) {
 					img = this.emojiList[i].path;
-				 } 
+				}
 			}
-			new Element("img", {"src": img, "class": "chat-content-emoji"}).inject(lastNode);
-		}else {//text
+			new Element("img", { "src": img, "class": "chat-content-emoji" }).inject(lastNode);
+		} else if (msgBody.type == "image") {//image
+			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
+			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			new Element("img", { "src": url }).inject(imgBox);
+			imgBox.addEvents({
+				"click": function(e){
+					var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
+					window.open(downloadUrl);
+				}.bind(this)
+			});
+		} else if (msgBody.type == "audio") {
+			var url = this._getFileDownloadUrl(msgBody.fileId);
+			new Element("audio", { "src": url, "controls":"controls", "preload":"preload" }).inject(lastNode);
+		} else if (msgBody.type == "location") {
+			var mapBox = new Element("span").inject(lastNode);
+			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width":24, "height":24 }).inject(mapBox);
+			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
+			new Element("a", {"href":url, "target":"_blank", "text": msgBody.address}).inject(mapBox);
+		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
 
-		if(!isTop) {
+		if (!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}
@@ -366,23 +384,62 @@ MWF.xApplication.IMV2.Main = new Class({
 		var nameNode = new Element("div", { "text": name }).inject(receiverBodyNode);
 		var lastNode = new Element("div").inject(receiverBodyNode);
 		var lastFirstNode = new Element("div", { "class": "chat-right_triangle" }).inject(lastNode);
-		
+
 		if (msgBody.type == "emoji") { // 表情
 			var img = "";
-			for (var i=0; i< this.emojiList.length; i++) {
-				 if (msgBody.body == this.emojiList[i].key) {
+			for (var i = 0; i < this.emojiList.length; i++) {
+				if (msgBody.body == this.emojiList[i].key) {
 					img = this.emojiList[i].path;
-				 } 
+				}
 			}
-			new Element("img", {"src": img, "class": "chat-content-emoji"}).inject(lastNode);
-		}else {//text
+			new Element("img", { "src": img, "class": "chat-content-emoji" }).inject(lastNode);
+		} else if (msgBody.type == "image") {//image
+			var imgBox = new Element("div", { "class": "img-chat" }).inject(lastNode);
+			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
+			new Element("img", { "src": url }).inject(imgBox);
+			imgBox.addEvents({
+				"click": function(e){
+					var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
+					window.open(downloadUrl);
+				}.bind(this)
+			});
+		} else if (msgBody.type == "audio") {
+			var url = this._getFileDownloadUrl(msgBody.fileId);
+			new Element("audio", { "src": url, "controls":"controls", "preload":"preload" }).inject(lastNode);
+		} else if (msgBody.type == "location") {
+			var mapBox = new Element("span").inject(lastNode);
+			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width":24, "height":24 }).inject(mapBox);
+			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
+			new Element("a", {"href":url, "target":"_blank", "text": msgBody.address}).inject(mapBox);
+		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
-	
-		if(!isTop) {
+
+		if (!isTop) {
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}
+	},
+	//图片 根据大小 url
+	_getFileUrlWithWH(id, width, height) {
+		var action = MWF.Actions.get("x_message_assemble_communicate").action;
+		var url = action.address + action.actions.imgFileDownloadWithWH.uri;
+		url = url.replace("{id}", encodeURIComponent(id));
+		url = url.replace("{width}", encodeURIComponent(width));
+		url = url.replace("{height}", encodeURIComponent(height));
+		return url;
+	},
+	//file 下载的url
+	_getFileDownloadUrl(id) {
+		var action = MWF.Actions.get("x_message_assemble_communicate").action;
+		var url = action.address + action.actions.imgFileDownload.uri;
+		url = url.replace("{id}", encodeURIComponent(id));
+		return url;
+	},
+	//百度地图打开地址
+	_getBaiduMapUrl(lat, longt, address, content) {
+		var url = "https://api.map.baidu.com/marker?location="+lat+","+longt+"&title="+address+"&content="+content+"&output=html&src=net.o2oa.map";
+		return url;
 	},
 	//用户头像
 	_getIcon: function (id) {
@@ -528,19 +585,19 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 		new Element("div", { "class": "body_title", "text": convData.title }).inject(bodyUpNode);
 		this.messageTimeNode = new Element("div", { "class": "body_time", "text": convData.time }).inject(bodyUpNode);
 		if (convData.lastMessageType == "emoji") {
-			this.lastMessageNode = new Element("div", { "class": "body_down"}).inject(bodyNode);
+			this.lastMessageNode = new Element("div", { "class": "body_down" }).inject(bodyNode);
 			var imgPath = "";
-			for(var i = 0; i < this.main.emojiList.length ; i++) {
+			for (var i = 0; i < this.main.emojiList.length; i++) {
 				var emoji = this.main.emojiList[i];
 				if (emoji.key == convData.lastMessage) {
 					imgPath = emoji.path;
 				}
 			}
-			new Element("img", {"src": imgPath, "style":"width: 16px;height: 16px;"}).inject(this.lastMessageNode);
-		}else {
+			new Element("img", { "src": imgPath, "style": "width: 16px;height: 16px;" }).inject(this.lastMessageNode);
+		} else {
 			this.lastMessageNode = new Element("div", { "class": "body_down", "text": convData.lastMessage }).inject(bodyNode);
 		}
-	
+
 		var _self = this;
 		this.node.addEvents({
 			"click": function () {
@@ -549,40 +606,33 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 		});
 	},
 	/**
-	 * {
-			"id": uuid,
-			"conversationId": this.conversationId,
-			"body": bodyJson,
-			"createPerson": distinguishedName,
-			"createTime": time,
-			"sendStatus": 1
-		};
+	 *
 	 * 刷新会话列表的最后消息内容 
 	 * @param {*} lastMessage 
 	 */
-	refreshLastMsg: function(lastMessage) {
+	refreshLastMsg: function (lastMessage) {
 		//目前是text 类型的消息
 		var jsonbody = lastMessage.body;
 		var body = JSON.parse(jsonbody);
 
-		if(this.lastMessageNode) {
+		if (this.lastMessageNode) {
 			if (body.type == "emoji") { //表情 消息
 				var imgPath = "";
-				for(var i = 0; i < this.main.emojiList.length ; i++) {
+				for (var i = 0; i < this.main.emojiList.length; i++) {
 					var emoji = this.main.emojiList[i];
 					if (emoji.key == body.body) {
 						imgPath = emoji.path;
 					}
 				}
 				this.lastMessageNode.empty();
-				new Element("img", {"src": imgPath, "style":"width: 16px;height: 16px;"}).inject(this.lastMessageNode);
-			}else { //文本消息
+				new Element("img", { "src": imgPath, "style": "width: 16px;height: 16px;" }).inject(this.lastMessageNode);
+			} else { //文本消息
 				this.lastMessageNode.empty();
 				this.lastMessageNode.set('text', body.body);
 			}
 		}
 		var time = this.main._friendlyTime(o2.common.toDate(lastMessage.createTime));
-		if(this.messageTimeNode) {
+		if (this.messageTimeNode) {
 			this.messageTimeNode.set("text", time);
 		}
 	},

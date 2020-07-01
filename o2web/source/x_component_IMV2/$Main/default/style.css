@@ -292,7 +292,19 @@
     border-radius: 7px;
     text-indent: -12px;
   }
-
+  .chat-sender .img-chat {
+    width:192px;
+    height:144px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.chat-sender .img-chat img  {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+}
+  
   .chat-receiver {
     clear: both;
     /* font-size: 80%; */
@@ -309,6 +321,18 @@
     /* font-size: 70%; */
     text-align: right;
   }
+  .chat-receiver .img-chat {
+    width:192px;
+    height:144px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.chat-receiver .img-chat img  {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+}
 
   .chat-receiver div:nth-of-type(3) {
     /*float:right;*/
