@@ -104,7 +104,7 @@
                      android:layout_width="28dp"
                      android:layout_height="28dp"
                      android:layout_gravity="center"
-                     android:src="@mipmap/chat_mic" />
+                     android:src="@mipmap/chat_iicon_yuyin" />
              </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_o2_chat_album_btn"
@@ -117,7 +117,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/chat_img" />
+                    android:src="@mipmap/chat_iicon_tupian" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_o2_chat_camera_btn"
@@ -130,7 +130,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/chat_camera" />
+                    android:src="@mipmap/chat_iicon_xiangji" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_o2_chat_location_btn"
@@ -143,7 +143,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/chat_location" />
+                    android:src="@mipmap/chat_icon_ditu" />
             </LinearLayout>
         </LinearLayout>
 
@@ -185,7 +185,7 @@
                 android:id="@+id/image_o2_chat_audio_speak_btn"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:src="@mipmap/chat_mic"
+                android:src="@mipmap/chat_iicon_yuyin"
                 android:layout_centerInParent="true"
                 android:background="@drawable/f5_circle"
                 />
