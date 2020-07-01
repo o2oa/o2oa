@@ -807,7 +807,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void setSequenceTitle(String sequenceTitle) {
-		this.sequenceTitle = sequenceTitle;
+		this.sequenceTitle = getSequenceString(sequenceTitle);
 	}
 
 	public String getSequenceAppAlias() {
@@ -815,7 +815,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void setSequenceAppAlias(String sequenceAppAlias) {
-		this.sequenceAppAlias = sequenceAppAlias;
+		this.sequenceAppAlias = getSequenceString(sequenceAppAlias);
 	}
 
 	public String getSequenceCategoryAlias() {
@@ -823,7 +823,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void setSequenceCategoryAlias(String sequenceCategoryAlias) {
-		this.sequenceCategoryAlias = sequenceCategoryAlias;
+		this.sequenceCategoryAlias = getSequenceString(sequenceCategoryAlias);
 	}
 
 	public String getSequenceCreatorPerson() {
@@ -831,7 +831,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void setSequenceCreatorPerson(String sequenceCreatorPerson) {
-		this.sequenceCreatorPerson = sequenceCreatorPerson;
+		this.sequenceCreatorPerson = getSequenceString(sequenceCreatorPerson);
 	}
 
 	public String getSequenceCreatorUnitName() {
@@ -839,7 +839,7 @@ public class Document extends SliceJpaObject {
 	}
 
 	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
-		this.sequenceCreatorUnitName = sequenceCreatorUnitName;
+		this.sequenceCreatorUnitName = getSequenceString(sequenceCreatorUnitName);
 	}
 
 	// -------------------Reader-------------------------
@@ -1049,5 +1049,12 @@ public class Document extends SliceJpaObject {
 			return sequenceCreatorUnitName_FIELDNAME;
 		}
 		return sequence_FIELDNAME;
+	}
+
+	private String getSequenceString(String sequenceString ) {
+		if( StringUtils.length(sequenceString) > 60 ){
+			return StringUtils.substring(sequenceString, 0, 60 );
+		}
+		return sequenceString;
 	}
 }
