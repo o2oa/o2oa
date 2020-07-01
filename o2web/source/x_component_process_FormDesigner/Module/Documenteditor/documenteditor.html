@@ -671,17 +671,17 @@
 			</table>
 			<div id="text{$.pid}issuanceUnitShowScriptArea" style="display: text{($.issuanceUnitShow=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitShowScript" title="成文单位显示脚本 (S)"></div>
 
-<!--			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
-<!--				<tr>-->
-<!--					<td class="editTableTitle">允许编辑:</td>-->
-<!--					<td class="editTableValue">-->
-<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许-->
-<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='s')?'checked':''} type="radio" value="n"/>不允许-->
-<!--						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本-->
-<!--					</td>-->
-<!--				</tr>-->
-<!--			</table>-->
-<!--			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="成文单位编辑脚本 (S)"></div>-->
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">允许编辑:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='y')?'checked':''} type="radio" value="y"/>允许
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'none')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit!='y' && $.issuanceUnitEdit!='s')?'checked':''} type="radio" value="n"/>不允许
+						<input class="editTableRadio" onclick="if (this.checked) {$('text{$.pid}issuanceUnitEditScriptArea').setStyle('display', 'block')}" name="issuanceUnitEdit" text{($.issuanceUnitEdit=='s')?'checked':''} type="radio" value="s"/>根据脚本
+					</td>
+				</tr>
+			</table>
+			<div id="text{$.pid}issuanceUnitEditScriptArea" style="display: text{($.issuanceUnitEdit=='s')?'block':'none'}" class="MWFFormulaArea" name="issuanceUnitEditScript" title="成文单位编辑脚本 (S)"></div>
 
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
 				<tr>
