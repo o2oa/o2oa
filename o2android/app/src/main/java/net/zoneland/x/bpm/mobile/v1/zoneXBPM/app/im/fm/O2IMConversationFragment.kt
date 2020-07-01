@@ -118,6 +118,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
 
 
     override fun lazyLoad() {
+        XLog.debug("lazy load im conversation。。。。。。。。。。")
         mPresenter.getMyConversationList()
     }
 

@@ -52,11 +52,17 @@
                         android:id="@+id/tv_o2_in_con_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxWidth="250dp"
                         android:textSize="14sp"
                         android:textColor="@color/z_color_text_primary"
                         android:textAlignment="textStart"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/image_o2_in_con_avatar"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        android:layout_marginEnd="40dp"
+                        android:singleLine="true"
+                        android:ellipsize="end"
                         android:layout_marginStart="@dimen/spacing_small"
                         android:text="通知消息"/>
 
@@ -67,11 +73,16 @@
                         android:textSize="12sp"
                         android:textColor="@color/z_color_text_hint"
                         android:textAlignment="textStart"
+                        android:ellipsize="end"
+                        android:maxWidth="200dp"
+                        android:singleLine="true"
                         app:layout_constraintTop_toBottomOf="@+id/tv_o2_in_con_title"
                         app:layout_constraintStart_toEndOf="@+id/image_o2_in_con_avatar"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         android:layout_marginStart="@dimen/spacing_small"
                         android:layout_marginTop="@dimen/spacing_tiny"
-                        tools:text="消息" />
+                        tools:text="消息消息消息消息消息消息消息" />
 
 
 

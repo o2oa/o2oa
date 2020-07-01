@@ -6,10 +6,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageForm
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.MessageType
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileExtensionHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.O2FileDownloadHelper
@@ -43,6 +40,61 @@ class O2ChatPresenter : BasePresenterImpl<O2ChatContract.View>(), O2ChatContract
                     onError { e, _ ->
                         XLog.error("", e)
                         mView?.conversationGetFail()
+                    }
+                }
+    }
+
+    override fun updateConversationTitle(id: String, title: String) {
+        if (id.isEmpty() || title.isEmpty()) {
+            mView?.updateFail("参数不正确，无法修改")
+            return
+        }
+        val service = getMessageCommunicateService(mView?.getContext())
+        val form = IMConversationUpdateForm()
+        form.id = id
+        form.title = title
+        service?.updateConversation(form)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.o2Subscribe {
+                    onNext {
+                        if (it.data != null) {
+                            mView?.updateSuccess(it.data)
+                        } else {
+                            mView?.updateFail("修改失败！")
+                        }
+                    }
+                    onError { e, _ ->
+                        XLog.error("", e)
+                        mView?.updateFail("修改失败！")
+                    }
+                }
+
+    }
+
+    override fun updateConversationPeople(id: String, users: ArrayList<String>) {
+        if (id.isEmpty() || users.isEmpty()) {
+            mView?.updateFail("参数不正确，无法修改")
+            return
+        }
+        val service = getMessageCommunicateService(mView?.getContext())
+        val form = IMConversationUpdateForm()
+        form.id = id
+        form.personList = users
+        service?.updateConversation(form)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.o2Subscribe {
+                    onNext {
+                        if (it.data != null) {
+                            mView?.updateSuccess(it.data)
+                        } else {
+                            mView?.updateFail("修改失败！")
+                        }
+                    }
+                    onError { e, _ ->
+                        XLog.error("", e)
+                        mView?.updateFail("修改失败！")
                     }
                 }
     }

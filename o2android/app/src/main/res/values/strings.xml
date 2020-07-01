@@ -218,6 +218,8 @@
     <string name="activity_im_audio_speak">按住说话</string>
     <string name="activity_im_audio_speak_cancel">上滑取消发送</string>
     <string name="activity_location_send">发送</string>
+    <string name="menu_im_tribe_name_update">修改群名</string>
+    <string name="menu_im_tribe_member_update">修改成员</string>
 
     <!-- myinfo activity -->
     <string name="title_activity_my_info">我的资料</string>

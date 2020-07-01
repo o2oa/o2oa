@@ -48,7 +48,7 @@ class CalendarViewModel(app: Application) : BaseO2ViewModel(app) {
                         onNext { list ->
                             groups.value = list
                         }
-                        onError { e, isNetworkError ->
+                        onError { e, _ ->
                             XLog.error("我的日历查询异常", e)
                             groups.value = null
                         }

@@ -1,13 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service
 
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessageData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageFileData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageForm
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.*
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,6 +22,12 @@ interface MessageCommunicateService {
     @POST("jaxrs/im/conversation")
     fun createConversation(@Body info: IMConversationInfo): Observable<ApiResponse<IMConversationInfo>>
 
+    /**
+     * 更新会话
+     */
+    @Headers("Content-Type:application/json;charset=UTF-8")
+    @PUT("jaxrs/im/conversation")
+    fun updateConversation(@Body form: IMConversationUpdateForm) : Observable<ApiResponse<IMConversationInfo>>
 
     /**
      * 获取会话信息

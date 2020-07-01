@@ -1,13 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".app.main.activity.ChatActivity">
+    tools:context=".app.im.O2ChatActivity">
 
-    <item android:id="@+id/menu_chat_person_info"
-        app:showAsAction="ifRoom"
+<!--    <item android:id="@+id/menu_chat_person_info"-->
+<!--        app:showAsAction="ifRoom"-->
+<!--        android:orderInCategory="90"-->
+<!--        android:icon="@mipmap/icon_menu_account_circle"-->
+<!--        android:title="@string/person_info"/>-->
+    <item android:id="@+id/menu_chat_update_title"
         android:orderInCategory="90"
-        android:icon="@mipmap/icon_menu_account_circle"
-        android:title="@string/person_info"/>
-
+        android:title="@string/menu_im_tribe_name_update"/>
+    <item android:id="@+id/menu_chat_update_member"
+        android:orderInCategory="90"
+        android:title="@string/menu_im_tribe_member_update"/>
 
 </menu>
