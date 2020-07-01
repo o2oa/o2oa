@@ -644,6 +644,8 @@ class OOCalendarEventViewController: UITableViewController {
                 }) {
 //                    self.remindPickerView.selectRow(index, inComponent: 0, animated: true)
                     self.remindLabelView.text = self.remindOptions[index].value
+                }else {
+                    self.remindLabelView.text = self.remindOptions[0].value
                 }
             }
         }
@@ -655,6 +657,8 @@ class OOCalendarEventViewController: UITableViewController {
             }){
 //                self.repeatPickerView.selectRow(index, inComponent: 0, animated: true)
                 self.repeatLabelView.text  = self.repeatOptions[index].value
+            }else {
+                self.repeatLabelView.text  = self.repeatOptions[0].value
             }
         }
         // eventRemark.text = eventInfo?.comment
