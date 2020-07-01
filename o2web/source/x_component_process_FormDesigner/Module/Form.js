@@ -796,6 +796,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 						data[k] = this._copyFormJson(initial[k], data[k]);
 					}
 					break;
+				case "boolean":
+					data[k] = initial[k];
+					break;
 				default :
 					if (initial[k]) data[k] = initial[k];
 			}
