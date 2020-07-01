@@ -471,7 +471,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public String getReporterWithPerson(String personName) throws Exception {
-		if( personName == null || personName.isEmpty() ){
+		if( StringUtils.isEmpty( personName ) ){
 			throw new Exception( "personName is null!" );
 		}
 		Person person = null;
