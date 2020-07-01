@@ -2602,7 +2602,7 @@ debugger;
             var tmpNode = this.contentNode.getFirst().getFirst().clone(true);
             var htmlNode = tmpNode.getLast();
             htmlNode = this.removeDisplayNone(htmlNode);
-            var content = "<html><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
+            var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
             fileName = fileName+".doc";
