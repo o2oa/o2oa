@@ -15,10 +15,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.wugang.activityresult.library.ActivityResult
 import com.zlw.main.recorderlib.RecordManager
 import com.zlw.main.recorderlib.recorder.RecordConfig
@@ -29,14 +28,18 @@ import net.muliba.fancyfilepickerlibrary.PicturePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization.ContactPickerActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.LocalImageViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
+import org.jetbrains.anko.find
 import java.io.File
 import java.util.*
 import kotlin.math.abs
@@ -113,6 +116,9 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
     private val cameraImageUri: Uri by lazy { FileUtil.getUriFromFile(this, File(FileExtensionHelper.getCameraCacheFilePath())) }
     private val camera_result_code = 10240
 
+    //是否能修改群名 群成员
+    private var canUpdate = false
+
 
 
 
@@ -182,6 +188,64 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
     }
 
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        if (canUpdate) {
+            menuInflater.inflate(R.menu.menu_chat, menu)
+        }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.menu_chat_update_title -> {
+                updateTitle()
+                return true
+            }
+            R.id.menu_chat_update_member -> {
+                updateMembers()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateTitle() {
+        val dialog = O2DialogSupport.openCustomViewDialog(this, "修改群名", R.layout.dialog_name_modify) { dialog ->
+            val text = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
+            val content = text.text.toString()
+            dialog.dismiss()
+            if (TextUtils.isEmpty(content)) {
+                XToast.toastShort(this@O2ChatActivity, "群名不能为空！")
+            } else {
+                showLoadingDialog()
+                mPresenter.updateConversationTitle(conversationId, content)
+            }
+        }
+        val edit = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
+        edit.hint = "请输入群名！"
+    }
+
+    private fun updateMembers() {
+        val users = conversationInfo?.personList ?: ArrayList<String>()
+        ActivityResult.of(this)
+                .className(ContactPickerActivity::class.java)
+                .params(ContactPickerActivity.startPickerBundle(pickerModes = arrayListOf(ContactPickerActivity.personPicker), multiple = true, initUserList = users))
+                .greenChannel().forResult { _, data ->
+                    val result = data?.getParcelableExtra<ContactPickerResult>(ContactPickerActivity.CONTACT_PICKED_RESULT)
+                    if (result != null && result.users.isNotEmpty()) {
+                        val a = arrayListOf<String>()
+                        a.addAll(result.users.map { it.distinguishedName })
+                        if (!a.any { it == O2SDKManager.instance().distinguishedName }) {
+                            a.add(O2SDKManager.instance().distinguishedName)
+                        }
+                        showLoadingDialog()
+                        mPresenter.updateConversationPeople(conversationId, a)
+                    }else {
+                        XLog.debug("没有选择人员！！！！")
+                    }
+                }
+    }
 
 
     override fun onDestroy() {
@@ -244,8 +308,24 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         return false
     }
 
+    override fun updateSuccess(info: IMConversationInfo) {
+        hideLoadingDialog()
+        this.conversationInfo?.title = info.title
+        updateToolbarTitle(info.title)
+        this.conversationInfo?.personList = info.personList
+    }
+
+    override fun updateFail(msg: String) {
+        hideLoadingDialog()
+        XToast.toastShort(this, msg)
+    }
+
     override fun conversationInfo(info: IMConversationInfo) {
         conversationInfo = info
+        if (conversationInfo?.adminPerson == O2SDKManager.instance().distinguishedName) {
+            canUpdate = true
+            invalidateOptionsMenu()
+        }
         //
         var title = defaultTitle
         if (O2IM.conversation_type_single == conversationInfo?.type) {
@@ -540,6 +620,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
      * 获取消息数据
      */
     private fun getPageData() {
+        mPresenter.getConversation(conversationId)
         mPresenter.getMessage(page + 1, conversationId)
         //更新阅读时间
         mPresenter.readConversation(conversationId)

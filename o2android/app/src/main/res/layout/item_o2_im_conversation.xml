@@ -22,27 +22,38 @@
             android:id="@+id/tv_o2_im_con_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="250dp"
             android:textSize="14sp"
             android:textColor="@color/z_color_text_primary"
             android:textAlignment="textStart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="@dimen/spacing_small"
-            tools:text="FancyLou"/>
+            android:layout_marginEnd="40dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            tools:text="韩飞鸿、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、汤笑蕾、"/>
 
         <TextView
             android:id="@+id/tv_o2_im_con_last_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/z_color_text_hint"
-            android:textAlignment="textStart"
-            app:layout_constraintTop_toBottomOf="@+id/tv_o2_im_con_title"
-            app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
             android:layout_marginStart="@dimen/spacing_small"
-            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxWidth="200dp"
+            android:singleLine="true"
+            android:textAlignment="textStart"
+            android:textColor="@color/z_color_text_hint"
+            android:textSize="12sp"
             android:visibility="gone"
-            tools:text="消息" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/image_o2_im_con_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/tv_o2_im_con_title"
+            tools:text="消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息消息" />
 
         <ImageView
             android:id="@+id/tv_o2_im_con_last_message_emoji"
