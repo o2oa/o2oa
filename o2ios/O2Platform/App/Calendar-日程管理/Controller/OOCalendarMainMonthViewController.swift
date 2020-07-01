@@ -130,15 +130,15 @@ class OOCalendarMainMonthViewController: UIViewController {
                 if let all = response.wholeDayEvents {
                     DDLogInfo("全天事件。。。。\(all.count)")
                     all.forEach({ (event) in
-                        if let date = event.startTimeStr?.subString(from: 0, to: 10) {
+                        //处理连续多天的事件。。。。。
+                        let dateArray = self.splitDays(startDay: event.startTimeStr!, endDay: event.endTimeStr!)
+                        for date in dateArray {
                             if var array = result[date] {
                                 array.append(event)
                                 result[date] = array
                             }else {
                                 result[date] = [event]
                             }
-                        }else {
-                            DDLogInfo("starttime is error.................")
                         }
                     })
                 }
@@ -156,6 +156,33 @@ class OOCalendarMainMonthViewController: UIViewController {
         }.catch { (error) in
                 DDLogError(error.localizedDescription)
         }
+    }
+    
+    /**
+     * 分割成多天
+     * @param startDay yyyy-MM-dd HH:mm:ss
+     * @param endDay yyyy-MM-dd HH:mm:ss
+     * @return [yyyy-MM-dd]
+     */
+    private func splitDays(startDay: String, endDay: String) -> [String] {
+        var ret:[String] = []
+        guard let sDay = Date.date(startDay) else {
+            return ret
+        }
+        guard let eDay = Date.date(endDay) else {
+            return ret
+        }
+        if sDay.haveSameYearMonthAndDay(eDay) {
+            ret.append(sDay.toString("yyyy-MM-dd"))
+        }else {
+            let gap = sDay.betweenDays(eDay)
+            for index in 0...gap {
+                let nDay = sDay.add(component: .day, value: index)
+                ret.append(nDay.toString("yyyy-MM-dd"))
+            }
+        }
+        
+        return ret
     }
     
     private func haveEventForDay(_ date:Date) -> Bool{
