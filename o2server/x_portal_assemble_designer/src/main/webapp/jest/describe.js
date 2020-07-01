@@ -869,11 +869,12 @@ Describe.prototype = {
 														} else {
 															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															if($('#' + i.name, '#ins').val() == ""){
+																/*
 																if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
 																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															}
@@ -901,11 +902,12 @@ Describe.prototype = {
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
+																/*
 																if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
 																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															}
