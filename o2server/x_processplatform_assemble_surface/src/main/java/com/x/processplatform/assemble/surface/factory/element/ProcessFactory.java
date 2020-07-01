@@ -213,11 +213,10 @@ public class ProcessFactory extends ElementFactory {
 
 	public List<String> listControlableProcess(EffectivePerson effectivePerson, Application application)
 			throws Exception {
-		Business business = this.business();
 		List<String> ids = this.listWithApplication(application);
 		List<String> list = new ArrayList<>();
 		for (String str : ids) {
-			Process o = business.process().pick(str);
+			Process o = this.pick(str);
 			if (null != o) {
 				if (effectivePerson.isPerson(o.getControllerList())) {
 					list.add(str);
@@ -258,30 +257,6 @@ public class ProcessFactory extends ElementFactory {
 		}
 		return null;
 	}
-
-	// /* 判断用户是否有管理权限 */
-	// public boolean allowControl(EffectivePerson effectivePerson, Process process)
-	// throws Exception {
-	// if (effectivePerson.isManager()) {
-	// return true;
-	// }
-	// if (null != process) {
-	// if (effectivePerson.isUser(process.getControllerList())) {
-	// return true;
-	// }
-	// Application application =
-	// this.business().application().pick(process.getApplication());
-	// if (null != application) {
-	// if (effectivePerson.isUser(application.getControllerList())) {
-	// return true;
-	// }
-	// if (effectivePerson.isUser(application.getCreatorPerson())) {
-	// return true;
-	// }
-	// }
-	// }
-	// return false;
-	// }
 
 	public <T extends Process> List<T> sort(List<T> list) {
 		list = list.stream()
