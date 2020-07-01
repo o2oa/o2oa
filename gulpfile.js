@@ -576,9 +576,12 @@ function chmod_commons(){
 function chmod_sh(){
     return (shell.task('chmod 777 target/o2server/*.sh'))();
 }
+function chmod_servers(){
+    return (shell.task('chmod 777 -R target/o2server/servers'))();
+}
 exports.build_web = gulp.series(build_web_minimize, build_web_move, gulp.parallel(build_concat_o2, build_concat_desktop, build_concat_xform, build_bundle), build_web_v_html, build_web_v_o2);
 if (os.platform().indexOf("win")==-1){
-    exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh);
+    exports.deploy = gulp.series(deploy_server, chmod_jvm, chmod_commons, chmod_sh, chmod_servers);
 }else{
     exports.deploy = gulp.series(deploy_server);
 }
