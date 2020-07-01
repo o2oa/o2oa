@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,7 +10,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -23,6 +23,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -34,6 +35,7 @@ import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
@@ -41,6 +43,7 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +61,7 @@ class ActionProcessing extends BaseAction {
 	private String taskCompletedId;
 	private String type;
 	private EffectivePerson effectivePerson;
+	private List<TaskCompleted> taskCompleteds = new ArrayList<>();
 	private List<Task> newTasks = new ArrayList<>();
 
 	private Record record;
@@ -76,6 +80,9 @@ class ActionProcessing extends BaseAction {
 			if (null == this.task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
+			// 获取当前环节已经完成的待办
+			this.taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
+					task.getActivityToken());
 			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
 					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
 
@@ -207,6 +214,13 @@ class ActionProcessing extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			final List<String> nextTaskIdentities = new ArrayList<>();
 			record = new Record(workLog, task);
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+					task.getJob());
+			if (null != workCompleted) {
+				record.setCompleted(true);
+				record.setWorkCompleted(workCompleted.getId());
+			}
 			record.getProperties().setElapsed(
 					Config.workTime().betweenMinutes(record.getProperties().getStartTime(), record.getRecordTime()));
 			record.setType(type);
@@ -218,13 +232,12 @@ class ActionProcessing extends BaseAction {
 					Task.job_FIELDNAME, task.getJob(), Task.series_FIELDNAME, this.series);
 			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 					.forEach(o -> {
-						Task task = o.getValue().get(0);
 						NextManual nextManual = new NextManual();
-						nextManual.setActivity(task.getActivity());
-						nextManual.setActivityAlias(task.getActivityAlias());
-						nextManual.setActivityName(task.getActivityName());
-						nextManual.setActivityToken(task.getActivityToken());
-						nextManual.setActivityType(task.getActivityType());
+						nextManual.setActivity(o.getValue().get(0).getActivity());
+						nextManual.setActivityAlias(o.getValue().get(0).getActivityAlias());
+						nextManual.setActivityName(o.getValue().get(0).getActivityName());
+						nextManual.setActivityToken(o.getValue().get(0).getActivityToken());
+						nextManual.setActivityType(o.getValue().get(0).getActivityType());
 						for (Task t : o.getValue()) {
 							nextManual.getTaskIdentityList().add(t.getIdentity());
 							this.newTasks.add(t);
@@ -232,11 +245,11 @@ class ActionProcessing extends BaseAction {
 						}
 						record.getProperties().getNextManualList().add(nextManual);
 					});
-			/* 去重 */
+			// 去重
 			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
 			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
 			if (null != taskCompleted) {
-				/* 处理完成后在重新写入待办信息 */
+				// 处理完成后在重新写入待办信息
 				record.getProperties().setOpinion(taskCompleted.getOpinion());
 				record.getProperties().setRouteName(taskCompleted.getRouteName());
 				record.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
@@ -252,7 +265,7 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private void processing_updateTaskCompleted() throws Exception {
-		/* 记录下一处理人信息 */
+		// 记录下一处理人信息
 		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
 		req.getTaskCompletedList().add(taskCompletedId);
 		req.setNextTaskIdentityList(record.getProperties().getNextManualTaskIdentityList());
@@ -263,11 +276,35 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private void processing_updateTask() throws Exception {
-		/* 记录上一处理人信息 */
+		// 记录上一处理人信息
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
 			req.setTaskList(ListTools.extractProperty(newTasks, JpaObject.id_FIELDNAME, String.class, true, true));
-			req.getPrevTaskIdentityList().add(task.getIdentity());
+			this.taskCompleteds.stream().forEach(o -> {
+				PrevTask prevTask = new PrevTask();
+				prevTask.setCompletedTime(o.getCompletedTime());
+				prevTask.setStartTime(o.getStartTime());
+				prevTask.setOpinion(o.getOpinion());
+				prevTask.setPerson(o.getPerson());
+				prevTask.setIdentity(o.getIdentity());
+				prevTask.setUnit(o.getUnit());
+				prevTask.setRouteName(o.getRouteName());
+				req.getPrevTaskIdentityList().add(prevTask.getIdentity());
+				req.getPrevTaskList().add(prevTask);
+			});
+			PrevTask prevTask = new PrevTask();
+			prevTask.setCompletedTime(new Date());
+			prevTask.setStartTime(task.getStartTime());
+			prevTask.setOpinion(task.getOpinion());
+			prevTask.setPerson(task.getPerson());
+			prevTask.setIdentity(task.getIdentity());
+			prevTask.setUnit(task.getUnit());
+			prevTask.setRouteName(task.getRouteName());
+			req.getPrevTaskIdentityList().add(prevTask.getIdentity());
+			req.getPrevTaskList().add(prevTask);
+			req.setPrevTask(prevTask);
+			// 去重
+			req.setPrevTaskIdentityList(ListTools.trim(req.getPrevTaskIdentityList(), true, true));
 			ThisApplication.context().applications()
 					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
 							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
