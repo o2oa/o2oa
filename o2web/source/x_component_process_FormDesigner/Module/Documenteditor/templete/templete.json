@@ -23,6 +23,18 @@
     "layouts": {
     }
   },
+  "command": {
+    "name": "命令类",
+    "file": "command.html",
+    "layouts": {
+    }
+  },
+  "combine": {
+    "name": "联合发文类",
+    "file": "combine.html",
+    "layouts": {
+    }
+  },
   "empty": {
     "name": "空模板（仅正文）",
     "file": "empty.html",
