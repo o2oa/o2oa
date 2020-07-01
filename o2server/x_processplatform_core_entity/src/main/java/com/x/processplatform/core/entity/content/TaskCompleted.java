@@ -28,6 +28,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.TaskCompletedProperties.PrevTask;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
 
@@ -212,14 +213,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
-		// this.manualMode = manual.getManualMode();
 		this.processingType = PROCESSINGTYPE_SAMETARGET;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
 	}
 
-	/* 用于相同处理人流转时使用的创建TaskCompleted */
+	// 用于相同处理人流转时使用的创建TaskCompleted
 	public TaskCompleted(Work work) {
 		this();
 		Date now = new Date();
@@ -252,7 +252,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
-		// this.processingType = ProcessingType.sameTarget;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
@@ -289,6 +288,32 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.routeName = task.getRouteName();
 		this.mediaOpinion = task.getMediaOpinion();
 		this.task = task.getId();
+		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
+		if (null != task.getProperties().getPrevTask()) {
+			PrevTask prevTask = new PrevTask();
+			prevTask.setCompletedTime(task.getProperties().getPrevTask().getCompletedTime());
+			prevTask.setStartTime(task.getProperties().getPrevTask().getStartTime());
+			prevTask.setOpinion(task.getProperties().getPrevTask().getOpinion());
+			prevTask.setPerson(task.getProperties().getPrevTask().getPerson());
+			prevTask.setIdentity(task.getProperties().getPrevTask().getIdentity());
+			prevTask.setUnit(task.getProperties().getPrevTask().getUnit());
+			prevTask.setRouteName(task.getProperties().getPrevTask().getRouteName());
+			this.getProperties().setPrevTask(prevTask);
+		}
+		if (null != task.getProperties().getPrevTaskList()) {
+			for (com.x.processplatform.core.entity.content.TaskProperties.PrevTask p : task.getProperties()
+					.getPrevTaskList()) {
+				PrevTask prevTask = new PrevTask();
+				prevTask.setCompletedTime(p.getCompletedTime());
+				prevTask.setStartTime(p.getStartTime());
+				prevTask.setOpinion(p.getOpinion());
+				prevTask.setPerson(p.getPerson());
+				prevTask.setIdentity(p.getIdentity());
+				prevTask.setUnit(p.getUnit());
+				prevTask.setRouteName(p.getRouteName());
+				this.getProperties().getPrevTaskList().add(prevTask);
+			}
+		}
 		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
 		if ((null != this.expireTime) && (expireTime.before(completedTime))) {
 			this.expired = true;
