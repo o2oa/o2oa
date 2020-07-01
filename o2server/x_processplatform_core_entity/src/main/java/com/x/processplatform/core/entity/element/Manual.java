@@ -570,6 +570,12 @@ public class Manual extends Activity {
 	@Column(name = ColumnNamePrefix + manualMergeSameJobActivity_FIELDNAME)
 	private Boolean manualMergeSameJobActivity;
 
+	public static final String manualUncompletedTaskToRead_FIELDNAME = "manualUncompletedTaskToRead";
+	@FieldDescribe("人工活动中将未处理的待办转为待阅.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + manualUncompletedTaskToRead_FIELDNAME)
+	private Boolean manualUncompletedTaskToRead;
+
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
 	@Column(length = length_255B, name = ColumnNamePrefix + displayLogScript_FIELDNAME)
@@ -1190,6 +1196,14 @@ public class Manual extends Activity {
 
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+
+	public Boolean getManualUncompletedTaskToRead() {
+		return manualUncompletedTaskToRead;
+	}
+
+	public void setManualUncompletedTaskToRead(Boolean manualUncompletedTaskToRead) {
+		this.manualUncompletedTaskToRead = manualUncompletedTaskToRead;
 	}
 
 }

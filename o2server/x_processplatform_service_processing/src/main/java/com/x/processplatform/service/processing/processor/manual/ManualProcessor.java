@@ -382,6 +382,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 			aeiObjects.getTasks().stream().filter(o -> {
 				return StringUtils.equals(aeiObjects.getWork().getId(), o.getWork());
 			}).forEach(o -> {
+				// 如果启用了将未处理待办转待阅,那么进行转换
+				if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
+					aeiObjects.getCreateReads()
+							.add(new Read(aeiObjects.getWork(), o.getIdentity(), o.getUnit(), o.getPerson()));
+				}
 				aeiObjects.deleteTask(o);
 			});
 			/* 所有预计的处理人中已经有已办,这个环节已经产生了已办，可以离开换个环节。 */
