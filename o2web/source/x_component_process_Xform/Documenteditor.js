@@ -703,7 +703,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var coptyToTitleNode = (this.layout_copytoTitle || this.layout_copyto2Title);
             if (coptyToTitleNode){
                 var editionTable = coptyToTitleNode.getParent("table");
-                if (editionTable.get("data-compute-style")=="y"){
+                if (editionTable) if (editionTable.get("data-compute-style")=="y"){
                     var rows = editionTable.rows;
                     for (var i=0; i<rows.length; i++){
                         var cell = rows[i].cells[0];
@@ -718,7 +718,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                                 "min-width": ""+l+"pt"
                             });
                         }
-
                     }
                 }
             }
@@ -747,12 +746,24 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     reSetEdit: function(control){
         //未进行数据绑定时，可允许编辑
         if (!control) var control = this.getEditControl();
-        if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
-            this.layout_subject.set("contenteditable", control.subject);
-            this.layout_subject.addEvent("blur", function(){
-                this.getData();
-            }.bind(this))
+        if (this.layout_subject){
+            if (!this.json.subjectValueData && this.json.subjectValueType=="data"){
+                this.layout_subject.set("contenteditable", control.subject);
+                this.layout_subject.addEvent("blur", function(){
+                    this.getData();
+                }.bind(this))
+            }
         }
+
+        if (this.layout_issuanceUnit){
+            if (!this.json.issuanceUnitValueData && this.json.issuanceUnitValueType=="data"){
+                this.layout_issuanceUnit.set("contenteditable", control.issuanceUnit);
+                this.layout_issuanceUnit.addEvent("blur", function(){
+                    this.getData();
+                }.bind(this))
+            }
+        }
+
 
         // this.layout_subject.addEvent("keydown", function(e){
         //     debugger;
@@ -1098,7 +1109,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             }else{
                 this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
             }
-        }.bind(this), "$doc.doc");
+        }.bind(this));
     },
     _historyDoc: function(){
         this.getHistory(function(){
@@ -2211,7 +2222,7 @@ debugger;
             // }
             // this.data.attachment = atts;
         }
-        if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("text");
+        if (this.layout_issuanceUnit) this.data.issuanceUnit = this.layout_issuanceUnit.get("html");
         if (this.layout_issuanceDate) this.data.issuanceDate = this.layout_issuanceDate.get("text");
         if (this.layout_annotation) this.data.annotation = this.layout_annotation.get("text");
         if (this.layout_copytoTitle) this.data.copytoTitle = this.layout_copytoTitle.get("text");
@@ -2307,7 +2318,7 @@ debugger;
                 this.setAttachmentData();
             }
 
-            if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("text", data.issuanceUnit || " ");
+            if (this.layout_issuanceUnit) this.layout_issuanceUnit.set("html", data.issuanceUnit || " ");
             if (this.layout_issuanceDate) this.layout_issuanceDate.set("text", data.issuanceDate || " ");
             if (this.layout_annotation) this.layout_annotation.set("text", data.annotation || " ");
             if (this.layout_copytoTitle) this.layout_copytoTitle.set("text", data.copytoTitle || " ");
@@ -2382,7 +2393,7 @@ debugger;
             var coptyToTitleNode = (this.layout_copytoTitle || this.layout_copyto2Title);
             if (coptyToTitleNode){
                 var editionTable = coptyToTitleNode.getParent("table");
-                if (editionTable.get("data-compute-style")=="y"){
+                if (editionTable) if (editionTable.get("data-compute-style")=="y"){
                     var rows = editionTable.rows;
                     for (var i=0; i<rows.length; i++){
                         var cell = rows[i].cells[0];
@@ -2563,6 +2574,12 @@ debugger;
 
     toWord: function(callback, name){
         debugger;
+        var docNmae = name || "";
+        if (!docNmae){
+            try{
+                docNmae = this.json.toWordFilename || this.form.businessData.data.subject || this.form.businessData.data["$work"].title
+            }catch (e) {}
+        }
         var toEdit = false;
         if (this.editMode){
             toEdit = true;
@@ -2587,8 +2604,10 @@ debugger;
             htmlNode = this.removeDisplayNone(htmlNode);
             var content = "<html><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
+            var fileName = docNmae || this.json.toWordFilename || "$doc";
+            fileName = fileName+".doc";
             var body = {
-                "fileName": name || this.json.toWordFilename || "$doc.doc",
+                "fileName": fileName,
                 "site": this.json.toWordSite || "$doc",
                 "content": content
             };
