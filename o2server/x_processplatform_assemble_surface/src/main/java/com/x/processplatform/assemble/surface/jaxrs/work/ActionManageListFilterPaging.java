@@ -5,7 +5,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -103,14 +102,14 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
-		}
-		if (ListTools.isNotEmpty(wi.getWorkList())) {
 			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Work_.process).in(wi.getProcessList()));
 			}else{
 				p = cb.and(p, root.get(Work_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
+		}
+		if (ListTools.isNotEmpty(wi.getWorkList())) {
+			p = cb.and(p, root.get(Work_.id).in(wi.getWorkList()));
 		}
 		if (ListTools.isNotEmpty(wi.getJobList())) {
 			p = cb.and(p, root.get(Work_.job).in(wi.getJobList()));
@@ -264,9 +263,8 @@ class ActionManageListFilterPaging extends BaseAction {
 		@FieldDescribe("job工作实例")
 		private List<String> jobList;
 
-		@FieldDescribe("工作状态")
-		@FieldTypeDescribe(fieldType="enum",fieldValue="start|processing|hanging",fieldTypeName = "com.x.processplatform.core.entity.content.WorkStatus")
-		private List<WorkStatus> workStatusList;
+		@FieldDescribe("工作状态：start|processing|hanging")
+		private List<String> workStatusList;
 
 		@FieldDescribe("关键字")
 		private String key;
@@ -364,11 +362,11 @@ class ActionManageListFilterPaging extends BaseAction {
 			this.activityNameList = activityNameList;
 		}
 
-		public List<WorkStatus> getWorkStatusList() {
+		public List<String> getWorkStatusList() {
 			return workStatusList;
 		}
 
-		public void setWorkStatusList(List<WorkStatus> workStatusList) {
+		public void setWorkStatusList(List<String> workStatusList) {
 			this.workStatusList = workStatusList;
 		}
 
