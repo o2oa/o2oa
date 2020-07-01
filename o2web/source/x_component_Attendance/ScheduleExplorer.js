@@ -94,7 +94,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     },
     _createTableContent: function(){
         var lp = this.app.lp.schedule;
-        var signProxy = this.data.signProxy;
+        var signProxy = this.data.signProxy||1;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr><td colspan='2' styles='formTableHead'>"+lp.setSchedule+"</td></tr>" +
             "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
@@ -138,7 +138,7 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
                 isEdited : this.isEdited || this.isNew,
                 itemTemplate : {
                     unitName : { text: lp.unit,  type : "org", orgType : "unit" },
-                    signProxy : { text: lp.signProxy.name,  type : "select" ,selectText:ob.values(lp.signProxy.select),selectValue:ob.keys(lp.signProxy.select),style:{
+                    signProxy : { text: lp.signProxy.name,  type : "select" ,selectText:ob.values(lp.signProxy.select),selectValue:ob.keys(lp.signProxy.select),defaultValue: signProxy,style:{
                             "width": "99%",
                             "border": "1px solid rgb(153, 153, 153)",
                             "border-radius": "3px",
@@ -207,7 +207,6 @@ MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
     _ok: function( data, callback ){
         //checkDate
         var dateList = [];
-
         var signProxy = data.signProxy;
         if(signProxy!=1){
             dateList= [data.onDutyTime,data.middayRestStartTime,data.middayRestEndTime,data.offDutyTime];
