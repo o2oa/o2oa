@@ -15,8 +15,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -132,7 +130,7 @@ class ActionAssignCreate extends BaseAction {
 			Processing p = new Processing(processingAttributes);
 			p.processing(work.getId());
 		}
- 
+
 		wo.setId(work.getId());
 		result.setData(wo);
 		return result;
@@ -250,8 +248,7 @@ class ActionAssignCreate extends BaseAction {
 		p = cb.or(p, cb.equal(root.get(Process_.alias), processFlag));
 		p = cb.or(p, cb.equal(root.get(Process_.id), processFlag));
 		p = cb.and(p, root.get(Process_.application).in(applicationIds));
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)),
-				cb.isNull(root.get(Process_.editionEnable))));
+		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root).where(p).orderBy(cb.desc(root.get(Process_.editionNumber)));
 		List<Process> list = em.createQuery(cq).getResultList();
 		if (list.isEmpty()) {
