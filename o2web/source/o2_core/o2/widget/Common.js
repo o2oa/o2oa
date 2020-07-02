@@ -13,7 +13,7 @@ o2.widget.Common = new Class({
         }else{
             this.cssPath = (this.cssPath.indexOf("?")!=-1) ? this.cssPath+"&v="+o2.version.v : this.cssPath+"?v="+o2.version.v;
             var r = new Request.JSON({
-                url: this.cssPath,
+                url: o2.filterUrl(this.cssPath),
                 secure: false,
                 async: false,
                 method: "get",
@@ -26,21 +26,6 @@ o2.widget.Common = new Class({
                     alert(error + text);
                 }
             });
-            // var r = new Request({
-            //     url: this.cssPath,
-            //     secure: false,
-            //     async: false,
-            //     method: "get",
-            //     noCache: false,
-            //     onSuccess: function(responseText, responseXML){
-            //         var f = eval("(function(){return function(){\n return "+responseText+"\n}})();");
-            //         this.css = f.apply(this);
-            //         o2.widget.css[key] = this.css;
-            //     }.bind(this),
-            //     onError: function(text, error){
-            //         alert(error + text);
-            //     }
-            // });
             r.send();
         }
 	},

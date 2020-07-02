@@ -796,6 +796,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 this.createViewNode({"filterList": filterData});
             }else{
+                this.filterItems = [];
                 this.createViewNode();
             }
         }
@@ -813,6 +814,11 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
     },
     loadCustomSearch: function(){
+        if( this.lastFilterItems ){
+            this.filterItems = this.lastFilterItems;
+        }else{
+            this.filterItems = [];
+        }
         debugger;
         this.viewSearchIconNode.setStyle("display", "none");
         this.viewSearchInputBoxNode.setStyle("display", "none");
@@ -1074,6 +1080,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                 if(this.setContentHeightFun)this.setContentHeightFun();
             }.bind(this));
+            this.lastFilterItems = this.filterItems;
             this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
         }
     },
@@ -2168,11 +2175,10 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
         // }
         // this.pagingNode.empty();
         this.node.empty();
-
         this.paging = new o2.widget.Paging(this.node, {
             //style : this.options.skin && this.options.skin.pagingBar ? this.options.skin.pagingBar : "default",
             countPerPage: this.view.json.pageSize || this.view.options.perPageCount,
-            visiblePages: this.json.visiblePages ? this.json.visiblePages.toInt() : 9,
+            visiblePages: layout.mobile?5:(this.json.visiblePages ? this.json.visiblePages.toInt() : 9),
             currentPage: this.view.currentPage,
             itemSize: this.view.count,
             pageSize: this.view.pages,
@@ -2180,9 +2186,9 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
             hasPrevPage: typeOf( this.json.hasPreNextPage ) === "boolean" ? this.json.hasPreNextPage : true,
             hasTruningBar: typeOf( this.json.hasTruningBar ) === "boolean" ? this.json.hasTruningBar : true,
             hasBatchTuring: typeOf( this.json.hasBatchTuring ) === "boolean" ? this.json.hasBatchTuring : true,
-            hasFirstPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
-            hasLastPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : true,
-            hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : true,
+            hasFirstPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : (layout.mobile?false:true),
+            hasLastPage: typeOf( this.json.hasFirstLastPage ) === "boolean" ? this.json.hasFirstLastPage : (layout.mobile?false:true),
+            hasJumper: typeOf( this.json.hasPageJumper ) === "boolean" ? this.json.hasPageJumper : (layout.mobile?false:true),
             hiddenWithDisable: false,
             hiddenWithNoItem: true,
             text: {

@@ -20,7 +20,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
  */
 public class AttendanceDetailMobileAnalyseServiceAdv {
 	private AttendanceDetailAnalyseService attendanceDetailAnalyseService = new AttendanceDetailAnalyseService();
-	private AttendanceStatisticalCycleService attendanceStatisticalCycleService = new AttendanceStatisticalCycleService();
 	private AttendanceDetailMobileAnalyseService attendanceDetailMobileAnalyseService = new AttendanceDetailMobileAnalyseService();
 	
 	/**
@@ -28,8 +27,7 @@ public class AttendanceDetailMobileAnalyseServiceAdv {
 	 * 2、如果当前的打卡记录是上班打卡，则只进行记录不进行分析
 	 * 3、如果当前的打卡记录是下班打卡，则更新考勤信息后，对考勤记录进行分析
 	 * 4、查询该用户是否仍有未分析的考勤数据，如果日期不是今天，那么，全部进行分析
-	 * 
-	 * @param emc
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -38,17 +36,15 @@ public class AttendanceDetailMobileAnalyseServiceAdv {
 		AttendanceDetail attendanceDetail = null;
 		AttendanceDetailMobile attendanceDetailMobile = null;
 		List<String> ids = null;
-		Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap = null;
 		EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
 		try{
 			business = new Business(emc);
 			attendanceDetailMobile = emc.find( id, AttendanceDetailMobile.class );
-			topUnitAttendanceStatisticalCycleMap = attendanceStatisticalCycleService.getCycleMapFormAllCycles( debugger );
 			if( attendanceDetailMobile != null ){
 				attendanceDetail = attendanceDetailMobileAnalyseService.composeAttendanceDetailMobile( emc, id );
 				if( attendanceDetail != null ){
 					if( StringUtils.isNotEmpty( attendanceDetail.getOffDutyTime() ) ){
-						attendanceDetailAnalyseService.analyseAttendanceDetail(emc, attendanceDetail, topUnitAttendanceStatisticalCycleMap, debugger );
+//						attendanceDetailAnalyseService.analyseAttendanceDetail(emc, attendanceDetail, debugger );
 					}
 				}
 				
@@ -59,7 +55,7 @@ public class AttendanceDetailMobileAnalyseServiceAdv {
 						if( attendanceDetail != null ){
 							//只要不是和手机打卡记录同一天的都需要进行分析
 							if( !attendanceDetail.getRecordDateString().equals( attendanceDetailMobile.getRecordDateString() )){
-								attendanceDetailAnalyseService.analyseAttendanceDetail( emc, attendanceDetail, topUnitAttendanceStatisticalCycleMap, debugger );
+								attendanceDetailAnalyseService.analyseAttendanceDetail( emc, attendanceDetail, debugger );
 							}
 						}
 					}

@@ -13,16 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -33,8 +28,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.TaskCompletedProperties.PrevTask;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 /**
  * 没有多值字段
@@ -55,7 +57,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	private static final String TABLE = PersistenceProperties.Content.TaskCompleted.table;
 
 	/* 继续流转 */
-//	private static final String PROCESSINGTYPE_processing = "processing";
 	public static final String PROCESSINGTYPE_TASK = "task";
 	/* 开始 */
 	public static final String PROCESSINGTYPE_START = "start";
@@ -106,29 +107,41 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		if (null == this.routeName) {
 			this.routeName = "";
 		}
-		if (StringTools.utf8Length(this.getOpinion()) > length_255B) {
-			this.opinionLob = this.getOpinion();
-			this.opinion = StringTools.utf8SubString(this.getOpinion(), length_255B);
-		} else {
-			this.opinion = Objects.toString(this.getOpinion(), "");
-			this.opinionLob = null;
-		}
 		if (Objects.isNull(this.processingType)) {
 			this.processingType = PROCESSINGTYPE_TASK;
 		}
 		switch (this.processingType) {
-		case PROCESSINGTYPE_APPENDTASK:
-		case PROCESSINGTYPE_BEAPPENDEDTASK:
-		case PROCESSINGTYPE_REROUTE:
-		case PROCESSINGTYPE_RETRACT:
-		case PROCESSINGTYPE_ROLLBACK:
-		case PROCESSINGTYPE_EMPOWER:
-		case PROCESSINGTYPE_RESET:
-			this.joinInquire = false;
-			break;
-		default:
-			this.joinInquire = true;
-			break;
+			case PROCESSINGTYPE_APPENDTASK:
+			case PROCESSINGTYPE_BEAPPENDEDTASK:
+			case PROCESSINGTYPE_REROUTE:
+			case PROCESSINGTYPE_RETRACT:
+			case PROCESSINGTYPE_ROLLBACK:
+			case PROCESSINGTYPE_EMPOWER:
+			case PROCESSINGTYPE_RESET:
+				this.joinInquire = false;
+				break;
+			default:
+				this.joinInquire = true;
+				break;
+		}
+
+		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
+		}
+		if (StringTools.utf8Length(this.getProperties().getOpinion()) > length_255B) {
+			this.opinion = StringTools.utf8SubString(this.getProperties().getOpinion(), length_255B - 3) + "...";
+		}
+	}
+
+	@PostLoad
+	public void postLoad() {
+		if (null != this.properties) {
+			if (StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+				this.title = this.getProperties().getTitle();
+			}
+			if (StringUtils.isNotEmpty(this.getProperties().getOpinion())) {
+				this.opinion = this.getProperties().getOpinion();
+			}
 		}
 	}
 
@@ -142,22 +155,20 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setOpinion(String opinion) {
 		this.opinion = opinion;
+		this.getProperties().setOpinion(opinion);
 	}
 
 	public String getOpinion() {
-		if (StringUtils.isNotEmpty(this.opinionLob)) {
-			return this.opinionLob;
-		} else {
-			return this.opinion;
-		}
+		return this.opinion;
 	}
 
 	public void setTitle(String title) {
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(this.title, 252) + "...";
-		} else {
-			this.title = Objects.toString(title, "");
-		}
+		this.title = title;
+		this.getProperties().setTitle(title);
+	}
+
+	public String getTitle() {
+		return this.title;
 	}
 
 	/* 更新运行方法 */
@@ -202,14 +213,13 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
-		// this.manualMode = manual.getManualMode();
 		this.processingType = PROCESSINGTYPE_SAMETARGET;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
 	}
 
-	/* 用于相同处理人流转时使用的创建TaskCompleted */
+	// 用于相同处理人流转时使用的创建TaskCompleted
 	public TaskCompleted(Work work) {
 		this();
 		Date now = new Date();
@@ -242,7 +252,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.opinion = "";
 		this.task = "";
 		this.duration = 0L;
-		// this.processingType = ProcessingType.sameTarget;
 		this.retractTime = null;
 		this.latest = true;
 		this.copyProjectionFields(work);
@@ -280,6 +289,32 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.mediaOpinion = task.getMediaOpinion();
 		this.task = task.getId();
 		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
+		if (null != task.getProperties().getPrevTask()) {
+			PrevTask prevTask = new PrevTask();
+			prevTask.setCompletedTime(task.getProperties().getPrevTask().getCompletedTime());
+			prevTask.setStartTime(task.getProperties().getPrevTask().getStartTime());
+			prevTask.setOpinion(task.getProperties().getPrevTask().getOpinion());
+			prevTask.setPerson(task.getProperties().getPrevTask().getPerson());
+			prevTask.setIdentity(task.getProperties().getPrevTask().getIdentity());
+			prevTask.setUnit(task.getProperties().getPrevTask().getUnit());
+			prevTask.setRouteName(task.getProperties().getPrevTask().getRouteName());
+			this.getProperties().setPrevTask(prevTask);
+		}
+		if (null != task.getProperties().getPrevTaskList()) {
+			for (com.x.processplatform.core.entity.content.TaskProperties.PrevTask p : task.getProperties()
+					.getPrevTaskList()) {
+				PrevTask prevTask = new PrevTask();
+				prevTask.setCompletedTime(p.getCompletedTime());
+				prevTask.setStartTime(p.getStartTime());
+				prevTask.setOpinion(p.getOpinion());
+				prevTask.setPerson(p.getPerson());
+				prevTask.setIdentity(p.getIdentity());
+				prevTask.setUnit(p.getUnit());
+				prevTask.setRouteName(p.getRouteName());
+				this.getProperties().getPrevTaskList().add(prevTask);
+			}
+		}
+		this.getProperties().setPrevTaskIdentityList(task.getProperties().getPrevTaskIdentityList());
 		if ((null != this.expireTime) && (expireTime.before(completedTime))) {
 			this.expired = true;
 		} else {
@@ -288,12 +323,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.duration = duration;
 		this.processingType = processingType;
 		/* 必须使用set方法,执行opinion的判断 */
-//		if (StringUtils.isEmpty(task.getOpinion())) {
-//			this.setOpinion(StringUtils.trimToEmpty(
-//					ListTools.parallel(task.getRouteNameList(), task.getRouteName(), task.getRouteOpinionList())));
-//		} else {
-//			this.setOpinion(task.getOpinion());
-//		}
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
@@ -535,12 +564,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
 
-//	public static final String opinionGroup_FIELDNAME = "opinionGroup";
-//	@FieldDescribe("意见分组")
-//	@CheckPersist(allowEmpty = true)
-//	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinionGroup_FIELDNAME)
-//	private String opinionGroup;
-
 	public static final String opinion_FIELDNAME = "opinion";
 	@FieldDescribe("处理意见.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion_FIELDNAME)
@@ -574,14 +597,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(name = ColumnNamePrefix + duration_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Long duration;
-
-//	public static final String processingType_FIELDNAME = "processingType";
-//	@FieldDescribe("流程流转类型")
-//	@Enumerated(EnumType.STRING)
-//	@Column(length = ProcessingType.length, name = ColumnNamePrefix + processingType_FIELDNAME)
-//	@Index(name = TABLE + IndexNameMiddle + processingType_FIELDNAME)
-//	@CheckPersist(allowEmpty = false)
-//	private ProcessingType processingType;
 
 	public static final String processingType_FIELDNAME = "processingType";
 	@FieldDescribe("流程流转类型")
@@ -642,14 +657,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Index(name = TABLE + IndexNameMiddle + joinInquire_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean joinInquire;
-
-//	public static final String nextTaskIdentityListText_FIELDNAME = "nextTaskIdentityListText";
-//	@FieldDescribe("下一环节处理人记录,记录前台处理待办产生的提示.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + nextTaskIdentityListText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String nextTaskIdentityListText;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -893,10 +900,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.job = job;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
 	public Date getStartTime() {
 		return startTime;
 	}
@@ -1077,14 +1080,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.activityType = activityType;
 	}
 
-	// public ManualMode getManualMode() {
-	// return manualMode;
-	// }
-	//
-	// public void setManualMode(ManualMode manualMode) {
-	// this.manualMode = manualMode;
-	// }
-
 	public String getStartTimeMonth() {
 		return startTimeMonth;
 	}
@@ -1092,14 +1087,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public void setStartTimeMonth(String startTimeMonth) {
 		this.startTimeMonth = startTimeMonth;
 	}
-
-//	public ProcessingType getProcessingType() {
-//		return processingType;
-//	}
-//
-//	public void setProcessingType(ProcessingType processingType) {
-//		this.processingType = processingType;
-//	}
 
 	public String getSerial() {
 		return serial;

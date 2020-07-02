@@ -840,7 +840,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "管理员上传附件.", action = ActionManageUpload.class)
 	@POST
-	@Path("upload/work/{workId}U/manage")
+	@Path("upload/work/{workId}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public void manageUpload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -856,6 +856,42 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageUpload().execute(effectivePerson, workId, site, fileName, bytes, disposition,
 					extraParam, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "html转pdf工具类,转换后通过downloadTransfer接口下载", action = ActionHtmlToPdf.class)
+	@POST
+	@Path("html/to/pdf")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void htmlToPdf(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						  JsonElement jsonElement) {
+		ActionResult<ActionHtmlToPdf.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionHtmlToPdf().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "下载转换后的附件", action = ActionDownloadTransfer.class)
+	@GET
+	@Path("download/transfer/flag/{flag}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadTransfer(@Suspended final AsyncResponse asyncResponse,
+								 @Context HttpServletRequest request,
+								 @JaxrsParameterDescribe("*转换后附件id") @PathParam("flag") String flag){
+		ActionResult<ActionDownloadTransfer.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadTransfer().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,6 +18,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Audit;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -34,12 +31,17 @@ import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class V2Reset extends BaseAction {
 
@@ -58,6 +60,7 @@ public class V2Reset extends BaseAction {
 	private EffectivePerson effectivePerson;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		Audit audit = logger.audit(effectivePerson);
 		ActionResult<Wo> result = new ActionResult<>();
 		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.effectivePerson = effectivePerson;
@@ -130,7 +133,7 @@ public class V2Reset extends BaseAction {
 		}
 
 		this.updateTask();
-
+		audit.log(null, "重置处理人");
 		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;
@@ -182,6 +185,13 @@ public class V2Reset extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			final List<String> nextTaskIdentities = new ArrayList<>();
 			this.record = new Record(workLog, task);
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+					task.getJob());
+			if (null != workCompleted) {
+				record.setCompleted(true);
+				record.setWorkCompleted(workCompleted.getId());
+			}
 			record.setPerson(effectivePerson.getDistinguishedName());
 			record.setType(Record.TYPE_RESET);
 			List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
@@ -190,19 +200,19 @@ public class V2Reset extends BaseAction {
 					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
 							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
 							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-			if (wi.getKeep()) {
-				/* 不排除自己,那么把自己再加进去 */
+			if (BooleanUtils.isTrue(wi.getKeep())) {
+				// 不排除自己,那么把自己再加进去
 				list.add(task);
 			}
 			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 					.forEach(o -> {
-						Task task = o.getValue().get(0);
+						Task next = o.getValue().get(0);
 						NextManual nextManual = new NextManual();
-						nextManual.setActivity(task.getActivity());
-						nextManual.setActivityAlias(task.getActivityAlias());
-						nextManual.setActivityName(task.getActivityName());
-						nextManual.setActivityToken(task.getActivityToken());
-						nextManual.setActivityType(task.getActivityType());
+						nextManual.setActivity(next.getActivity());
+						nextManual.setActivityAlias(next.getActivityAlias());
+						nextManual.setActivityName(next.getActivityName());
+						nextManual.setActivityToken(next.getActivityToken());
+						nextManual.setActivityType(next.getActivityType());
 						for (Task t : o.getValue()) {
 							nextManual.getTaskIdentityList().add(t.getIdentity());
 							nextTaskIdentities.add(t.getIdentity());

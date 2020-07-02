@@ -148,7 +148,7 @@ MWF.xAction.RestActions = MWF.Actions = {
         var address = "";
         if (addressObj){
             //var mapping = layout.getAppUrlMapping();
-            address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port);
+            address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+(addressObj.port==80 ? "" : ":"+addressObj.port);
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;

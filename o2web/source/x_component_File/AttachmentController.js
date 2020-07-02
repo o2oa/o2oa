@@ -138,6 +138,90 @@ MWF.xApplication.File.AttachmentController = new Class({
 });
 MWF.xApplication.File.AttachmentController.Attachment = new Class({
     Extends: MWF.widget.AttachmentController.Attachment,
+    loadList: function(){
+        this.node.setStyles(this.css.attachmentNode_list);
+        if (this.isSelected) this.node.setStyles(this.css.attachmentNode_list_selected);
+
+        this.iconNode = new Element("div", {"styles": this.css.attachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.attachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.attachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.attachmentTextNode_list}).inject(this.node);
+        this.textTitleNode = new Element("div", {"styles": this.css.attachmentTextTitleNode_list}).inject(this.textNode);
+        this.textTitleNode.set("text", this.data.name);
+
+        var size = "";
+        var k = this.data.length/1204;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.attachmentTextSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", size);
+
+        this.textUploaderNode = new Element("div", {"styles": this.css.attachmentTextUploaderNode_list}).inject(this.textNode);
+        this.textUploaderNode.set("text", o2.name.cn(this.data.person || this.data.creatorUid ));
+
+        this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
+        this.textTimeNode.set("text", this.data.lastUpdateTime);
+
+        // this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+        // this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+
+        this.extensionNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+        this.extensionNode.set("text", this.data.extension || o2.LP.widget.unknow);
+
+
+
+        this.custom_List();
+    },
+    loadSequence: function(){
+        this.node.setStyles(this.css.attachmentNode_sequence);
+        if (this.isSelected) this.node.setStyles(this.css.attachmentNode_sequence_selected);
+
+        this.sequenceNode = new Element("div", {"styles": this.css.attachmentSeqNode_sequence, "text": (this.seq || 1)}).inject(this.node);
+
+        this.iconNode = new Element("div", {"styles": this.css.attachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.attachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.attachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.attachmentTextNode_sequence}).inject(this.node);
+        this.textTitleNode = new Element("div", {"styles": this.css.attachmentTextTitleNode_list}).inject(this.textNode);
+        this.textTitleNode.set("text", this.data.name);
+
+        var size = "";
+        var k = this.data.length/1204;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.attachmentTextSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", size);
+
+        this.textUploaderNode = new Element("div", {"styles": this.css.attachmentTextUploaderNode_list}).inject(this.textNode);
+        this.textUploaderNode.set("text", o2.name.cn(this.data.person || this.data.creatorUid));
+
+        this.textTimeNode = new Element("div", {"styles": this.css.attachmentTextTimeNode_list}).inject(this.textNode);
+        this.textTimeNode.set("text", this.data.lastUpdateTime);
+
+        // this.textActivityNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+        // this.textActivityNode.set("text", this.data.activityName || o2.LP.widget.unknow);
+
+        this.extensionNode = new Element("div", {"styles": this.css.attachmentTextActivityNode_list}).inject(this.textNode);
+        this.extensionNode.set("text", this.data.extension || o2.LP.widget.unknow);
+
+        this.custom_Sequence();
+    },
     createInforNode: function(callback){
         var size = "";
         var k = this.data.length/1204;

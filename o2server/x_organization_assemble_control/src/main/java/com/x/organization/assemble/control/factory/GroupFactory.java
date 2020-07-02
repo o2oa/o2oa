@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.collections4.set.ListOrderedSet;
 import org.apache.commons.lang3.StringUtils;
 
@@ -205,13 +206,17 @@ public class GroupFactory extends AbstractFactory {
 	// @MethodDescribe("查找群组的直接群组成员.")
 	public List<String> listSubDirect(String id) throws Exception {
 		Group group = this.entityManagerContainer().find(id, Group.class, ExceptionWhen.none);
-		EntityManager em = this.entityManagerContainer().get(Group.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Group> root = cq.from(Group.class);
-		Predicate p = root.get(Group_.id).in(group.getGroupList());
-		cq.select(root.get(Group_.id)).where(p);
-		return em.createQuery(cq).getResultList();
+		if(group!=null && ListTools.isNotEmpty(group.getGroupList())) {
+			EntityManager em = this.entityManagerContainer().get(Group.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Group> root = cq.from(Group.class);
+			Predicate p = root.get(Group_.id).in(group.getGroupList());
+			cq.select(root.get(Group_.id)).where(p);
+			return em.createQuery(cq).getResultList();
+		}else{
+			return new ArrayList<>();
+		}
 	}
 
 	// @MethodDescribe("查找群组的全部群组成员,包括嵌套的群组成员.")
@@ -235,6 +240,23 @@ public class GroupFactory extends AbstractFactory {
 				this.subNested(str, set);
 			}
 		}
+	}
+
+	// @MethodDescribe("获取指定身份直接所在的群组.")
+	public List<String> listSupDirectWithIdentity(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Group.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Group> root = cq.from(Group.class);
+		Predicate p = cb.isMember(id, root.get(Group_.identityList));
+		cq.select(root.get(Group_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	// @MethodDescribe("获取指定身份直接所在的群组.")
+	public List<Group> listSupDirectWithIdentityObject(String id) throws Exception {
+		List<String> ids = this.listSupDirectWithIdentity(id);
+		return this.entityManagerContainer().list(Group.class, ids);
 	}
 
 }

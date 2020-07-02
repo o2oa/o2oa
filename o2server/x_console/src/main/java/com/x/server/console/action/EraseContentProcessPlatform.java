@@ -97,19 +97,16 @@ public class EraseContentProcessPlatform {
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
 					persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManager em = emf.createEntityManager();
-			try {
-				if (DataItem.class.isAssignableFrom(cls)) {
-					logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
-							this.estimateItemCount(em, cls));
-					this.eraseItem(cls, em);
-				} else {
-					logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
-							this.estimateCount(em, cls));
-					this.erase(cls, em, storageMappings);
-				}
-			} finally {
-				System.gc();
+
+			if (DataItem.class.isAssignableFrom(cls)) {
+				logger.print("erase {} content data:{}, total:{}.", name, cls.getName(),
+						this.estimateItemCount(em, cls));
+				this.eraseItem(cls, em);
+			} else {
+				logger.print("erase {} content data:{}, total:{}.", name, cls.getName(), this.estimateCount(em, cls));
+				this.erase(cls, em, storageMappings);
 			}
+
 		}
 		Date end = new Date();
 		logger.print("erase {} completed at {}, elapsed: {} ms.", name, DateTools.format(end),

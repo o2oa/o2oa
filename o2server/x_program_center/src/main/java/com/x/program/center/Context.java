@@ -55,17 +55,6 @@ public class Context extends AbstractContext {
 	private static Logger logger = LoggerFactory.getLogger(Context.class);
 
 	public Applications applications() throws Exception {
-//		if (applications.isEmpty()) {
-//			synchronized (Context.class) {
-//				if (applications.isEmpty()) {
-//					if (null != Config.resource_node_applications()) {
-//						this.applications = XGsonBuilder.instance().fromJson(Config.resource_node_applications(),
-//								Applications.class);
-//					}
-//
-//				}
-//			}
-//		}
 		return applications;
 	}
 
@@ -171,8 +160,6 @@ public class Context extends AbstractContext {
 		context.clazz = Class.forName(servletContextEvent.getServletContext().getInitParameter(INITPARAMETER_PORJECT));
 		context.initDatas();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			// context.cleanupSchedule(emc);
-			// context.cleanupScheduleLocal(emc);
 			context.checkDefaultRole(emc);
 		}
 		servletContext.setAttribute(context.getClass().getName(), context);

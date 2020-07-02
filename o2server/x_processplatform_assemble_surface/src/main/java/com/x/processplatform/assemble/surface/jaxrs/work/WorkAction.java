@@ -224,7 +224,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("process/{processFlag}/force")
 	@JaxrsMethodDescribe(value = "创建工作（强制创建存在的流程）.", action = ActionCreateForce.class)
 	public void createForce(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
+			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
 		ActionResult<List<ActionCreateForce.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -263,14 +263,14 @@ public class WorkAction extends StandardJaxrsAction {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("application/{applicationFlag}/process/{processFlag}/force")
 	public void createWithApplicationProcessForce(@Suspended final AsyncResponse asyncResponse,
-											 @Context HttpServletRequest request,
-											 @JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
-											 @JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			@JaxrsParameterDescribe("流程标识") @PathParam("processFlag") String processFlag, JsonElement jsonElement) {
 		ActionResult<List<ActionCreateWithApplicationProcessForce.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateWithApplicationProcessForce().execute(effectivePerson, applicationFlag, processFlag,
-					jsonElement);
+			result = new ActionCreateWithApplicationProcessForce().execute(effectivePerson, applicationFlag,
+					processFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -977,18 +977,36 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = ActionManagerRetract.class)
+	@JaxrsMethodDescribe(value = "V2_增加一个会签分支", action = ActionAddSplit.class)
 	@PUT
-	@Path("v2/{id}/person/{person}/retract/manager")
+	@Path("v2/{id}/add/split")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void managerRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							   @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-							   @JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person,JsonElement jsonElement) {
-		ActionResult<ActionManagerRetract.Wo> result = new ActionResult<>();
+	public void V2AddSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2AddSplit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionManagerRetract().execute(effectivePerson, id, person);
+			result = new V2AddSplit().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "管理员替代person操作工作召回。", action = ActionManageRetract.class)
+	@PUT
+	@Path("v2/{id}/person/{person}/retract/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageRetract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("召回工作已办人员（根据流转记录确认）") @PathParam("person") String person, JsonElement jsonElement) {
+		ActionResult<ActionManageRetract.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageRetract().execute(effectivePerson, id, person);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

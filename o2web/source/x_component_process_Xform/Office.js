@@ -429,7 +429,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     loadMenu: function(){
         if (!this.isMenuLoad){
-            if (this.json.menuEditButtons.length){
+            if (this.json.menuEditButtons && this.json.menuEditButtons.length){
                 this.menuNode = new Element("div", {"styles": this.form.css.officeMenuNode}).inject(this.node, "top");
                 MWF.require("MWF.widget.Toolbar", function(){
                     this.toolbarWidget = new MWF.widget.Toolbar(this.menuNode, {"style": "xform_blue_simple"}, this);
@@ -1054,6 +1054,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
     },
     checkAutoSaveNumber: function(callback){
         if (!this.autoSavedAttachments) this.autoSavedAttachments = [];
+        if (!this.json.autoSaveNumber) this.json.autoSaveNumber = 3;
         if (this.autoSavedAttachments.length >= this.json.autoSaveNumber.toInt()){
             //delete first att
             var att = this.autoSavedAttachments.shift();
@@ -1202,6 +1203,10 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
         this.uploadFileAreaNode.set("html", html);
         this.fileUploadNode = this.uploadFileAreaNode.getFirst();
         this.uploadFileAreaNode.inject(this.officeForm);
+    },
+    isEmpty : function(){
+        var data = this.getData();
+        return !data.trim();
     },
     getData: function(){
         if (this.officeOCX && (this.officeOCX.DocType==1 || this.officeOCX.DocType==6)){
@@ -1476,7 +1481,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class({
                     }else if(window.webkit){
                         window.webkit.messageHandlers.openDocument.postMessage(url);
                     }else{
-                        window.open(url);
+                        window.open(o2.filterUrl(url));
                     }
                 }
             }.bind(this));

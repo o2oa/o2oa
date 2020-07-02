@@ -134,9 +134,19 @@ public abstract class AbstractEndProcessor extends AbstractProcessor {
 							&& StringUtils.equals(o.getWork(), work.getId()))
 					.forEach(o -> {
 						o.setWork(target.getId());
-						// o.setArrivedActivityToken(target.getActivityToken());
 						aeiObjects.getUpdateWorkLogs().add(o);
 					});
+		} catch (Exception e) {
+			logger.error(e);
+		}
+	}
+
+	protected void mergeRecord(AeiObjects aeiObjects, Work work, Work target) {
+		try {
+			aeiObjects.getRecords().stream().filter(o -> StringUtils.equals(o.getWork(), work.getId())).forEach(o -> {
+				o.setWork(target.getId());
+				aeiObjects.getUpdateRecords().add(o);
+			});
 		} catch (Exception e) {
 			logger.error(e);
 		}

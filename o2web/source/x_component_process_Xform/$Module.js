@@ -1,3 +1,4 @@
+
 MWF.require("MWF.widget.Common", null, false);
 MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
     Implements: [Events],
@@ -152,7 +153,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class({
             case "splitValue":
                 return this._getBusinessSectionDataBySplitValue();
             case "script":
-                return this._getBusinessSectionDataByScript(this.json.sectionByScript.code);
+                return this._getBusinessSectionDataByScript(((this.json.sectionByScript) ? this.json.sectionByScript.code : ""));
             default:
                 return this.form.businessData.data[this.json.id] || "";
         }

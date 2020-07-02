@@ -31,6 +31,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableValue"  colspan="2"><b>给未处理待办的人发待阅：</b>
+                    <input class="editTableRadio" name="manualUncompletedTaskToRead" text{($.manualUncompletedTaskToRead)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="manualUncompletedTaskToRead" text{(!$.manualUncompletedTaskToRead)?'checked':''} type="radio" value="false"/>否</td>
+            </tr>
+
+
+            <tr>
                 <td class="editTableTitle">合并待办:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="manualMergeSameJobActivity" text{($.manualMergeSameJobActivity)?'checked':''} type="radio" value="true"/>是
@@ -274,8 +281,8 @@
                 <td class="editTableTitle">重置范围:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="resetRange" text{($.resetRange=='all')?'checked':''} type="radio" value="all"/>所有人
-                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='company')?'checked':''} type="radio" value="unit"/>直接组织
-                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='department')?'checked':''} type="radio" value="topUnit"/>顶层组织
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='unit')?'checked':''} type="radio" value="unit"/>直接组织
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='topUnit')?'checked':''} type="radio" value="topUnit"/>顶层组织
                 </td>
             </tr>
         </table>

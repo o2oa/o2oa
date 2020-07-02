@@ -1,4 +1,5 @@
-var MPopupForm = new Class({
+MWF.xApplication.Template = MWF.xApplication.Template || {};
+MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
     options: {
@@ -76,7 +77,7 @@ var MPopupForm = new Class({
     _loadCss: function(){
         var css = {};
         var r = new Request.JSON({
-            url: this.cssPath,
+            url: o2.filterUrl(this.cssPath),
             secure: false,
             async: false,
             method: "get",

@@ -85,6 +85,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selected();
     },
 	load : function(data){
+		debugger;
 		this.data = data;
 		this.json = data.json;
 		this.html = data.html;
@@ -330,7 +331,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	},
 
 	parseModules: function(parent, dom){
-
+		var moduleNodes = [];
 		var subDom = dom.getFirst();
 		while (subDom){
 			if (subDom.get("MWFtype")){
@@ -338,7 +339,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 //				alert(subDom.get("id")+": "+module);
 //				if (!module){
 					var json = this.getDomjson(subDom);
-					module = this.loadModule(json, subDom, parent);
+					var moduleNode = subDom;
+				moduleNodes.push({"dom": moduleNode, "json": json});
+					//module = this.loadModule(json, subDom, parent);
 //				}
 //                if (module.moduleType=="container") this.parseModules(module, subDom);
 //			}else{
@@ -352,6 +355,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 //			}
 			subDom = subDom.getNext();
 		}
+
+		moduleNodes.each(function(obj){
+			module = this.loadModule(obj.json, obj.dom, parent);
+		}.bind(this));
 	},
 	
 	getDomjson: function(dom){
@@ -373,7 +380,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	
 	loadModule: function(json, dom, parent){
 		if( !json ){
-			debugger;
 			var module;
 			var className = ( dom.get("MWFType") || "div" ).capitalize();
 			this.getTemplateData(className, function(data){
@@ -385,14 +391,26 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}.bind(this), false);
 			return module;
 		}else if( MWF["FC"+json.type] ){
-			var module = new MWF["FC"+json.type](this);
-			module.load(json, dom, parent);
-			//this.moduleList.push(module);
+			var module;
+			var className = json.type.capitalize();
+			this.getTemplateData(className, function(data){
+				var moduleData = Object.clone(data);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
+				module = new MWF["FC"+json.type](this);
+				module.load(json, dom, parent);
+			}.bind(this), false);
 			return module;
 		}else{
-			var module = new MWF["FCDiv"](this);
-			module.load(json, dom, parent);
-            //this.moduleList.push(module);
+			var module;
+			var className = json.type.capitalize();
+			this.getTemplateData(className, function(data){
+				var moduleData = Object.clone(data);
+				Object.merge(moduleData, json);
+				Object.merge(json, moduleData);
+				module = new MWF["FCDiv"](this);
+				module.load(json, dom, parent);
+			}.bind(this), false);
 			return module;
 		}
 	},
@@ -733,8 +751,22 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		this._hideInjectAction();
 	},
 
-
-
+	// _clearSubform: function(node){
+	// 	var subNode = node.getFirst();
+	// 	while (subNode){
+	// 		var nextNode = subNode.getNext();
+	// 		if (subNode.get("MWFType")){
+	// 			if ( subNode.get("MWFType") === "subform" ){
+	// 				subNode.destroy();
+	// 			}else{
+	// 				if (subNode) this._clearSubform(subNode);
+	// 			}
+	// 		}else{
+	// 			if (subNode) this._clearSubform(subNode);
+	// 		}
+	// 		subNode = nextNode;
+	// 	}
+	// },
     _clearNoId: function(node){
         var subNode = node.getFirst();
         while (subNode){
@@ -751,12 +783,56 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             subNode = nextNode;
         }
     },
-	_getFormData: function(callback){
 
+	_copyFormJson: function(initial, final){
+		var data = final || {};
+		Object.keys(initial).each(function(k){
+			var t = typeOf(initial[k]);
+			switch (t) {
+				case "object":
+					var s = JSON.stringify(initial[k], null, "\t");
+					if (/((?:\:\s*)((\".+\")|(\d+)|(\[.+\])))/.test(s)){
+						//data[k] = {};
+						data[k] = this._copyFormJson(initial[k], data[k]);
+					}
+					break;
+				case "boolean":
+					data[k] = initial[k];
+					break;
+				default :
+					if (initial[k]) data[k] = initial[k];
+			}
+		}.bind(this));
+		return data;
+	},
+	_preprocessingModuleData: function(){
+		//var html = this.node.innerHTML;
+		this.moduleList.each(function(module){
+			module._preprocessingModuleData();
+		});
+		// return {
+		// 	"json": this.data.json,
+		// 	"html": this.node.outerHTML
+		// }
+	},
+	_recoveryModuleData: function(){
+		this.moduleList.each(function(module){
+			//module._recoveryModuleData();
+			module.setCustomStyles();
+			if (module.setCustomInputStyles) module.setCustomInputStyles();
+		});
+	},
+
+	_getFormData: function(callback){
+		debugger;
     	this.fireEvent("queryGetFormData");
-		var copy = this.node.clone(true, true);
-		copy.clearStyles(true);
-        this.fireEvent("postGetFormData");
+
+    	this._preprocessingModuleData();
+
+    	var copy = this.node.clone(true, true);
+		copy.clearStyles();
+
+		this.fireEvent("postGetFormData");
 
         this._clearNoId(copy);
         var html = copy.outerHTML;
@@ -765,6 +841,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		this.data.json.mode = this.options.mode;
 		this.data.html = html;
+
+		debugger;
+		var data = this._copyFormJson(this.data);
+
+		this._recoveryModuleData();
 
 		//@todo 预先整理表单样式
 		// var tmpFormNode = new Element("div", {
@@ -782,8 +863,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		// this.appForm.businessData = {};
 		// this.appForm.load();
 
-
-		return this.data;
+		return data;
+		//return this.data;
 	},
 	_clearNoDomModule : function(){
 		debugger;
@@ -913,6 +994,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             MWF.FormImport.create("office", this);
         }.bind(this));
     },
+	deletePropertiesOrStyles: function(name, key){
+		if (name=="styles"){
+			try{
+				if( key && this.json.styles[key] ){
+					delete this.json.styles[key];
+				}
+				this.setCustomStyles();
+			}catch(e){}
+		}
+		if (name=="properties"){
+			try{
+				this.node.removeProperty(key);
+			}catch(e){}
+		}
+	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
 			this.setCustomStyles();
@@ -1082,7 +1178,6 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }
         }
     },
-
     setAllStyles: function(){
         this.setPropertiesOrStyles("styles");
         this.setPropertiesOrStyles("properties");

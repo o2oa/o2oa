@@ -8,6 +8,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.x.file.core.entity.open.FileStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -87,19 +88,17 @@ public class Folder2 extends SliceJpaObject {
 	private String name;
 
 	public static final String superior_FIELDNAME = "superior";
-	@FieldDescribe("上级分类ID,为空代表顶级分类。")
+	@FieldDescribe("上级目录ID。")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + superior_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + superior_FIELDNAME)
-	@CheckPersist(allowEmpty = true, citationExists =
-	/* 上级目录必须存在,且不能为自己 */
-	@CitationExist(type = Folder2.class, equals = @Equal(property = "person", field = "person")))
+	@CheckPersist(allowEmpty = false)
 	private String superior;
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("文件状态：正常|已删除")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String status = "正常";
+	private String status = FileStatus.VALID.getName();
 
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")

@@ -24,7 +24,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		this.table = this.node.getElement("table");
 
         this.editable = (this.readonly) ? false : true;
-        if (this.editable) this.editable = this.form.Macro.exec(this.json.editableScript.code, this);
+        if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 
 		this.gridData = this._getValue();
 
@@ -58,7 +58,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var value = [];
 		value = this._getBusinessData();
 		if (!value){
-			if (this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
             value = {"data": value || []};
 		}
 		return value || {};
@@ -405,11 +405,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}, null, null, this.form.json.confirmStyle);
 
 	},
-	_completeLineEdit: function(){
+	_completeLineEdit: function( ev ){
 		//this.currentEditLine.getElemets(td);
-        if (!this.editValidation()){
-            return false;
-        }
+		if (!this.editValidation()){
+			return false;
+		}
 
 		this.isEdit = false;
 		
@@ -938,14 +938,24 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         this.setData(this._getValue());
     },
     setData: function(data){
-        if (data){
+		// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
+		if (data){
             this._setBusinessData(data);
             this.gridData = data;
         }else{
             this.gridData = this._getValue();
         }
 
-        if (this.isEdit) this._completeLineEdit();
+        // if (this.isEdit) this._completeLineEdit();
+		if( this.isEdit ){ //如果有在编辑的，取消编辑行
+			if (this.currentEditLine) {
+				this.currentEditLine.setStyle("display", "table-row");
+			}
+			this.isEdit = false;
+			this.currentEditLine = null;
+			this._editorTrGoBack();
+		}
+
         if (this.gridData){
             var trs = this.table.getElements("tr");
             for (var i=1; i<trs.length-1; i++){
@@ -984,6 +994,15 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         this._loadTotal();
         return this.totalResaults;
     },
+	isEmpty: function(){
+		var data = this.getData();
+		if( !data )return true;
+		if( typeOf( data ) === "object" ){
+			if( typeOf( data.data ) !== "array" )return true;
+			if( data.data.length === 0 )return true;
+		}
+		return false;
+	},
 	getData: function(){
         if (this.editable!=false){
 			if (this.isEdit) this._completeLineEdit();
@@ -1073,6 +1092,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getData();
+			if( typeOf(n)==="object" && JSON.stringify(n) === JSON.stringify({data:[]}) )n = "";
             var v = (data.valueType=="value") ? n : n.length;
             switch (data.operateor){
                 case "isnull":

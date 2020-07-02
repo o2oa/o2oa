@@ -354,8 +354,8 @@ MWF.xApplication.TeamWork.TaskAttachmentList.More = new Class({
     downloadAttachment: function (attachment) {
         var address = this.rootActions.AttachmentAction.action.address;
         var url = this.rootActions.AttachmentAction.action.actions.downLoad.uri;
-        url = url.replace("{id}", encodeURIComponent(attachment.id));
-        window.open(address+url)
+        url = url.replace("{id}", encodeURIComponent(attachment.id));debugger;
+        window.open(o2.filterUrl(address+url));
 
     },
     deleteAttachment: function (attachment) {

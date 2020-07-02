@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,13 +25,22 @@ public class ActionCreate extends BaseAction {
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionFolderNameEmpty();
 			}
+			if(StringUtils.isEmpty(wi.getSuperior())){
+				wi.setSuperior(Business.TOP_FOLD);
+			}else{
+				Folder2 superior = emc.find(wi.getSuperior(), Folder2.class);
+				if(superior==null){
+					throw new ExceptionFolderNotExist(wi.getSuperior());
+				}
+			}
 			if (this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), null)) {
 				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
 			}
 			emc.beginTransaction(Folder2.class);
 			Folder2 folder = Wi.copier.copy(wi);
 			folder.setPerson(effectivePerson.getDistinguishedName());
-			folder.setStatus("正常");
+			folder.setStatus(FileStatus.VALID.getName());
+
 			emc.persist(folder, CheckPersistType.all);
 			emc.commit();
 			Wo wo = new Wo();

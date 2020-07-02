@@ -875,7 +875,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             if (json.data){
                 includedScripts.push( key );
                 includedScripts = includedScripts.concat(json.data.importedList);
-                MWF.Macro.exec(json.data.text, this);
+                MWF.CMSMacro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
             }else{
                 if (callback) callback.apply(this);
@@ -891,7 +891,7 @@ MWF.xScript.CMSEnvironment = function(ev){
     //        }
     //        this.scriptAction.getScriptByName(_form.json.application, name, includedScripts, function(json){
     //            includedScripts = includedScripts.concat(json.data.importedList);
-    //            MWF.Macro.exec(json.data.text, this);
+    //            MWF.CMSMacro.exec(json.data.text, this);
     //            if (callback) callback.apply(this);
     //        }.bind(this), null, false);
     //    }else{
@@ -1118,9 +1118,10 @@ MWF.xScript.CMSEnvironment = function(ev){
         "openApplication":function(name, options){
             layout.desktop.openApplication(null, name, options);
         },
-        "createDocument" : function(columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle){
+        "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
-            if( typeOf( columnOrOptions ) == "object" ){
+            var onAfterPublish, onPostPublish;
+            if (typeOf(columnOrOptions) == "object") {
                 column = columnOrOptions.column;
                 category = columnOrOptions.category;
                 data = columnOrOptions.data;
@@ -1130,32 +1131,36 @@ MWF.xScript.CMSEnvironment = function(ev){
                 latest = columnOrOptions.latest;
                 selectColumnEnable = columnOrOptions.selectColumnEnable;
                 ignoreTitle = columnOrOptions.ignoreTitle;
+                onAfterPublish = columnOrOptions.onAfterPublish;
+                onPostPublish = columnOrOptions.onPostPublish;
             }
-            if (target){
-                if (layout.app && layout.app.inBrowser){
+            if (target) {
+                if (layout.app && layout.app.inBrowser) {
                     layout.app.content.empty();
                     layout.app = null;
                 }
             }
 
-            MWF.xDesktop.requireApp("cms.Index", "Newer", function(){
+            MWF.xDesktop.requireApp("cms.Index", "Newer", function () {
                 var starter = new MWF.xApplication.cms.Index.Newer(null, null, _form.app, null, {
                     "documentData": data,
                     "identity": identity,
 
-                    "ignoreTitle" : ignoreTitle === true,
-                    "ignoreDrafted" : latest === false,
-                    "selectColumnEnable" : !category || selectColumnEnable === true,
-                    "restrictToColumn" : !!category && selectColumnEnable !== true,
+                    "ignoreTitle": ignoreTitle === true,
+                    "ignoreDrafted": latest === false,
+                    "selectColumnEnable": !category || selectColumnEnable === true,
+                    "restrictToColumn": !!category && selectColumnEnable !== true,
 
-                    "categoryFlag" : category, //category id or name
-                    "columnFlag" : column, //column id or name,
-                    "onStarted" : function( documentId, data ){
-                        if(callback)callback();
+                    "categoryFlag": category, //category id or name
+                    "columnFlag": column, //column id or name,
+                    "onStarted": function (documentId, data) {
+                        if (callback) callback();
                     },
-                    "onPostLoad" : function(){
+                    "onPostPublish": function () {
+                        if(onPostPublish)onPostPublish();
                     },
-                    "onPostPublish" : function(){
+                    "onAfterPublish": function () {
+                        if(onAfterPublish)onAfterPublish();
                     }
                 });
                 starter.load();

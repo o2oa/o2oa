@@ -210,7 +210,7 @@ MWF.xApplication.AppCenter.Module = new Class({
 
             var uri = this.app.actions.action.actions["download"].uri;
             uri = uri.replace("{flag}", this.json.structure);
-            window.open(this.app.actions.action.address+uri);
+            window.open(o2.filterUrl(this.app.actions.action.address+uri));
 
         }.bind(this));
 
@@ -381,7 +381,9 @@ MWF.xApplication.AppCenter.Exporter = new Class({
                     if (callback) callback();
                 }.bind(this),
                 "onPostClose": function() {
-                    _self.app.fireEvent("exporterClose");
+                    if(_self.app){
+                        _self.app.fireEvent("exporterClose");
+                    }
                     MWF.release(_self);
                 }
             });
@@ -441,8 +443,8 @@ MWF.xApplication.AppCenter.Exporter = new Class({
 
                         if (this.mask) this.mask.hide();
                         this.dlg.close();
-                        window.open(this.app.actions.action.address+uri);
-
+                        window.open(o2.filterUrl(this.app.actions.action.address+uri));
+                        this.app.fireEvent("exporterClose");
                         MWF.release(this);
                     }.bind(this), function(xhr, text, error){
                         if (xhr.status!=0){
@@ -1570,7 +1572,7 @@ MWF.xApplication.AppCenter.Module.SetupLocal = new Class({
     loadCompare: function(){
         var formData = new FormData();
         formData.append('file', this.file);
-
+debugger;
         this.app.actions.compareUpload(formData, this.file, function(json){
             this.clearLoading();
             this.setupData.flag = json.data.flag;

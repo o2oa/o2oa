@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -68,10 +69,42 @@ public class ActionGet extends BaseAction {
 		if( check ){
 			try {
 				wrap = Wo.copier.copy( calendar );
+				if( StringUtils.equalsAnyIgnoreCase("SYSTEM", calendar.getCreateor() )){
+					wrap.setCreateor( effectivePerson.getDistinguishedName() );
+				}
 				wrap.setManageable( ThisApplication.isCalendarManager( effectivePerson, wrap ) );
-				wrap.setPublishable( ThisApplication.isCalendarPublisher( effectivePerson, unitNames, groupNames, wrap ) );	
+				wrap.setPublishable( ThisApplication.isCalendarPublisher( effectivePerson, unitNames, groupNames, wrap ) );
+
+				if(ListTools.isNotEmpty( wrap.getManageablePersonList() )){
+					for( String person : wrap.getManageablePersonList() ){
+						if( StringUtils.equalsAnyIgnoreCase( person, "SYSTEM")){
+							if( !wrap.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
+								wrap.getManageablePersonList().add( effectivePerson.getDistinguishedName() );
+							}
+						}
+					}
+				}
+
+				if(ListTools.isNotEmpty( wrap.getViewablePersonList() )){
+					for( String person : wrap.getViewablePersonList() ){
+						if( StringUtils.equalsAnyIgnoreCase( person, "SYSTEM")){
+							if( !wrap.getViewablePersonList().contains( effectivePerson.getDistinguishedName() )){
+								wrap.getViewablePersonList().add( effectivePerson.getDistinguishedName() );
+							}
+						}
+					}
+				}
+
+				if(ListTools.isNotEmpty( wrap.getViewablePersonList() )){
+					for( String person : wrap.getViewablePersonList() ){
+						if( StringUtils.equalsAnyIgnoreCase( person, "SYSTEM")){
+							if( !wrap.getViewablePersonList().contains( effectivePerson.getDistinguishedName() )){
+								wrap.getViewablePersonList().add( effectivePerson.getDistinguishedName() );
+							}
+						}
+					}
+				}
 			} catch (Exception e) {
-				check = false;
 				Exception exception = new ExceptionCalendarInfoProcess( e, "将所有查询到的日历信息对象转换为可以输出的信息时发生异常." );
 				result.error( exception );
 				logger.error( e, effectivePerson, request, null);

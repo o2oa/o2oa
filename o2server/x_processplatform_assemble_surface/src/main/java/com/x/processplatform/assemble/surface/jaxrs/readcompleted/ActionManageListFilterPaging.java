@@ -16,6 +16,7 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
 import com.x.processplatform.core.entity.content.Read_;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -33,7 +34,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (effectivePerson.isManager()) {
+			if (business.canManageApplication(effectivePerson, null)) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 				if (wi == null) {
 					wi = new Wi();
@@ -65,41 +66,45 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 
 		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.person), wi.person));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.person), wi.getPerson()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue01));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.getStringValue01()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue02), wi.stringValue02));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue02), wi.getStringValue02()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue03), wi.stringValue03));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue03), wi.getStringValue03()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue04), wi.stringValue04));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue05), wi.stringValue05));
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue05), wi.getStringValue05()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue06));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue06), wi.getStringValue06()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue07));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue07), wi.getStringValue07()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue08));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue08), wi.getStringValue08()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue09));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue09), wi.getStringValue09()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue10));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue10), wi.getStringValue10()));
 		}
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(ReadCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(ReadCompleted_.startTime), DateTools.parse(wi.getStartTime())));
@@ -154,41 +159,45 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 
 		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.person), wi.person));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.person), wi.getPerson()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue01));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.getStringValue01()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue02), wi.stringValue02));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue02), wi.getStringValue02()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue03), wi.stringValue03));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue03), wi.getStringValue03()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue04), wi.stringValue04));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue05), wi.stringValue05));
+		if (StringUtils.isNotBlank(wi.getStringValue05())){
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue05), wi.getStringValue05()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue06));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue06), wi.getStringValue06()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue07));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue07), wi.getStringValue07()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue08));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue08), wi.getStringValue08()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue09));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue09), wi.getStringValue09()));
 		}
 		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue01), wi.stringValue10));
+			p = cb.and(p,cb.equal(root.get(ReadCompleted_.stringValue10), wi.getStringValue10()));
 		}
 
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
+			}else{
+				p = cb.and(p, root.get(ReadCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			}
 		}
 		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
 			p = cb.and(p, cb.greaterThan(root.get(ReadCompleted_.startTime), DateTools.parse(wi.getStartTime())));
@@ -236,6 +245,9 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		@FieldDescribe("流程")
 		private List<String> processList;
+
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -302,7 +314,19 @@ class ActionManageListFilterPaging extends BaseAction {
 		public String getStringValue08() { return stringValue08; }
 		public String getStringValue09() { return stringValue09; }
 		public String getStringValue10() { return stringValue10; }
-
+		public void setStringValue01(String stringValue01) { this.stringValue01 = stringValue01; }
+		public void setStringValue02(String stringValue02) { this.stringValue02 = stringValue02; }
+		public void setStringValue03(String stringValue03) { this.stringValue03 = stringValue03; }
+		public void setStringValue04(String stringValue04) { this.stringValue04 = stringValue04; }
+		public void setStringValue05(String stringValue05) { this.stringValue05 = stringValue05; }
+		public void setStringValue06(String stringValue06) { this.stringValue06 = stringValue06; }
+		public void setStringValue07(String stringValue07) { this.stringValue07 = stringValue07; }
+		public void setStringValue08(String stringValue08) { this.stringValue08 = stringValue08; }
+		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
+		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
+		public void setPerson(String person) {
+			this.person = person;
+		}
 		public void setApplicationList(List<String> applicationList) {
 			this.applicationList = applicationList;
 		}
@@ -313,6 +337,14 @@ class ActionManageListFilterPaging extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {

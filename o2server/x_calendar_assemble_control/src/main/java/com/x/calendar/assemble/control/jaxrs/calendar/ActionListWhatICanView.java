@@ -11,6 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.ThisApplication;
 import com.x.calendar.core.entity.Calendar;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -70,19 +71,37 @@ public class ActionListWhatICanView extends BaseAction {
 			if( ListTools.isNotEmpty( calendarList )) {
 				result.setCount( Long.parseLong( calendarList.size() + "" ));
 				WoCalendar woCalendar = null;
+				Boolean existsSystemDefaultCalendar = false;
 				for( Calendar calendar : calendarList ) {
 					woCalendar = WoCalendar.copier.copy( calendar ) ;
 					woCalendar.setManageable( ThisApplication.isCalendarManager( effectivePerson, calendar ) );
 					woCalendar.setPublishable( ThisApplication.isCalendarPublisher( effectivePerson, unitNames, groupNames, calendar ) );	
 					//将所有的日历分为三类，放在三个不同的LIST里
 					//组织日历
-					if( "UNIT".equalsIgnoreCase( calendar.getType() ) ) {
-						wo.addUnitCalendar( woCalendar );
-					}else {
-						if( calendar.getCreateor().equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-							wo.addMyCalendar( woCalendar );
+					if( ListTools.isNotEmpty( calendar.getFollowers() ) && calendar.getFollowers().contains( effectivePerson.getDistinguishedName() )){
+						//我关注的日历
+						wo.addFollowCalendar( woCalendar );
+					}else{
+						//个人或者组织日历
+						if( "UNIT".equalsIgnoreCase( calendar.getType() ) ) {
+							//组织日历
+							wo.addUnitCalendar( woCalendar );
 						}else {
-							wo.addFollowCalendar( woCalendar );
+							//个人日历
+//							Boolean isMineCalendar = calendar.getCreateor().equalsIgnoreCase( effectivePerson.getDistinguishedName() );
+							Boolean isSystemCreate = StringUtils.equalsAnyIgnoreCase("SYSTEM", calendar.getCreateor() );
+							if( isSystemCreate ) {
+								if( !existsSystemDefaultCalendar ){
+									woCalendar.setCreateor( effectivePerson.getDistinguishedName() );
+									wo.addMyCalendar( woCalendar );
+									existsSystemDefaultCalendar = true;
+								}else{
+									//多了一个系统日历，删除当前这个日历
+									calendarServiceAdv.destory( calendar.getId() );
+								}
+							}else{
+								wo.addMyCalendar( woCalendar );
+							}
 						}
 					}
 				}
@@ -159,7 +178,7 @@ public class ActionListWhatICanView extends BaseAction {
 		
 		static {
 			Excludes.add(  JpaObject.sequence_FIELDNAME );
-			Excludes.add( "updateTime" );
+//			Excludes.add( "updateTime" );
 			Excludes.add( "manageablePersonList" );
 			Excludes.add( "viewablePersonList" );
 			Excludes.add( "viewableUnitList" );
@@ -169,13 +188,13 @@ public class ActionListWhatICanView extends BaseAction {
 			Excludes.add( "publishableGroupList" );
 			Excludes.add( "status" );
 			Excludes.add( "distributeFactor" );
-			Excludes.add( "isPublic" );
+//			Excludes.add( "isPublic" );
 			Excludes.add( "followers" );
-			Excludes.add( "description" );
-			Excludes.add( "target" );
-			Excludes.add( "createor" );
-			Excludes.add( "source" );
-			Excludes.add( "createTime" );		
+//			Excludes.add( "description" );
+//			Excludes.add( "target" );
+//			Excludes.add( "createor" );
+//			Excludes.add( "source" );
+//			Excludes.add( "createTime" );
 		}
 		
 		@FieldDescribe("用户是否可以对该日历进行管理.")
@@ -201,6 +220,5 @@ public class ActionListWhatICanView extends BaseAction {
 		public void setPublishable(Boolean publishable) {
 			this.publishable = publishable;
 		}
-		
 	}
 }

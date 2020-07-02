@@ -36,15 +36,18 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
             this.node.set("text", texts);
         }
     },
+    _resetNodeEdit: function(){
+        var div = new Element("div");
+        div.set(this.json.properties);
+        div.inject(this.node, "after");
 
+        this.node.destroy();
+        this.node = div;
+    },
     _loadNodeEdit: function(){
 		//this.container = new Element("select");
-		var div = new Element("div");
-		div.set(this.json.properties);
-		div.inject(this.node, "after");
-	
-		this.node.destroy();
-		this.node = div;
+        if (!this.json.preprocessing) this._resetNodeEdit();
+
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type,
@@ -110,7 +113,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class({
 
                 var radio = new Element("input", {
                     "type": "radio",
-                    "name": this.json.properties.name || flag+this.json.id,
+                    "name": (this.json.properties && this.json.properties.name) ? this.json.properties.name : flag+this.json.id,
                     "value": value,
                     "showText": text,
                     "styles": this.json.buttonStyles

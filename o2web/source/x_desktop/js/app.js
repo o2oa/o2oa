@@ -12,7 +12,6 @@ layout.addReady(function(){
             // layout.message = new MWF.xDesktop.MessageMobile();
             // layout.message.load();
             //}.bind(this));
-
             layout.apps = [];
             layout.node = $("layout");
             var appName=appNames, m_status=statusObj, option=options;

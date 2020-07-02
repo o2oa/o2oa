@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="../o2_core/o2.min.js"></script>
-    <script src="../o2_core/compatible.min.js"></script>
     <script src="../o2_lib/Decimal.js"></script>
     <script>
         function getServiceAddress(config, callback){
@@ -72,6 +71,8 @@
 
         o2.addReady(function(){
             o2.JSON.get("res/config/config.json", function(config){
+                if (!window.layout) window.layout = {};
+                window.layout.config = config;
                 getServiceAddress(config, function(address){
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("xtoken");
@@ -80,7 +81,7 @@
                     if (xtoken){
                         var res = new Request.JSON({
                             //url: "http://hbxa01.bf.ctc.com:20080/x_organization_assemble_authentication/jaxrs/sso",
-                            url: address+"/jaxrs/sso",
+                            url: o2.filterUrl(address+"/jaxrs/sso"),
                             secure: false,
                             method: "POST",
                             noCache: true,

@@ -664,6 +664,9 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         //	if (this.process.jsonParse) {
         //		window.setTimeout(function(){this.process.jsonParse.stopParseJson = true;}.bind(this), 1);
         //	}
+        try{
+            this.process.designer.paperInNode.focus();
+        }catch(e){};
         this.activitySelected();
         if (this.listItem) this.listItem.listSelected();
         //	if (this.process.property) this.process.property.hide();

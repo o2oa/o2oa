@@ -86,13 +86,20 @@
             var levels = module.split(".");
             if (levels[levels.length-1]==="*") levels[levels.length-1] = "package";
             levels.shift();
-
-            var jsPath = this.o2.session.path;
-            jsPath +="/"+levels.join("/")+".js";
-
-            var loadAsync = (async!==false);
-
-            _requireJs(jsPath, callback, loadAsync, compression, module);
+            var o = o2;
+            var i = 0;
+            while (o && i<levels.length){
+                o = o[levels[i]];
+                i++
+            }
+            if (!o){
+                var jsPath = this.o2.session.path;
+                jsPath +="/"+levels.join("/")+".js";
+                var loadAsync = (async!==false);
+                _requireJs(jsPath, callback, loadAsync, compression, module);
+            }else{
+                o2.runCallback(callback, "success", [module]);
+            }
         }
     };
     var _requireSequence = function(fun, module, thisLoaded, thisErrorLoaded, callback, async, compression){
@@ -160,12 +167,25 @@
         var module = modules[0];
         var clazz = modules[1];
         var levels = module.split(".");
-        //levels.shift();
-        var root = "x_component_"+levels.join("_");
-        var clazzName = clazz || "Main";
-        var path = "../"+root+"/"+clazzName.replace(/\./g, "/")+".js";
-        var loadAsync = (async!==false);
-        _requireJs(path, callback, loadAsync, compression);
+
+        var o = o2.xApplication;
+        var i = 0;
+        while (o && i<levels.length){
+            o = o[levels[i]];
+            i++
+        }
+        if (o) o = o[clazz || "Main"];
+
+        if (!o){
+            //levels.shift();
+            var root = "x_component_"+levels.join("_");
+            var clazzName = clazz || "Main";
+            var path = "../"+root+"/"+clazzName.replace(/\./g, "/")+".js";
+            var loadAsync = (async!==false);
+            _requireJs(path, callback, loadAsync, compression);
+        }else{
+            o2.runCallback(callback, "success");
+        }
     };
     var _requireApp = function(module, clazz, callback, async, sequence, compression){
         var type = typeOf(module);

@@ -30,7 +30,7 @@ public class Application extends GsonPropertyObject {
 	private List<ScheduleLocalRequest> scheduleLocalRequestList = new ArrayList<>();
 
 	public Application() {
-
+		// nothing
 	}
 
 	public List<ScheduleRequest> getScheduleRequestList() {

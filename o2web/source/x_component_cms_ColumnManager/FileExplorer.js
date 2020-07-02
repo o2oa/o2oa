@@ -242,7 +242,7 @@ MWF.xApplication.cms.ColumnManager.FileExplorer.File = new Class({
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.application || this.data.appId);
         url = "/x_cms_assemble_control"+url;
-        return MWF.Actions.getHost("x_cms_assemble_control")+url;
+        return o2.filterUrl(MWF.Actions.getHost("x_cms_assemble_control")+url);
     },
     _getLnkPar: function(){
         return {
@@ -348,7 +348,7 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
 
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom");
         }
     },
@@ -367,7 +367,7 @@ MWF.xApplication.cms.ColumnManager.FileDesigner = new Class({
             this.fileUrlNode.set("text", url);
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom");
         }
 

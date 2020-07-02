@@ -124,7 +124,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
         var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm": "getFormMobile";
 
         if (this.json.subformType==="script"){
-            if (this.json.subformScript.code){
+            if (this.json.subformScript && this.json.subformScript.code){
                 var data = this.form.Macro.exec(this.json.subformScript.code, this);
                 if (data){
                     var formName, app;
@@ -197,7 +197,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
         }.bind(this));
     },
     show : function(){
-        if (this.json.submitScript.code) {
+        if (this.json.submitScript && this.json.submitScript.code) {
             this.form.Macro.exec(this.json.submitScript.code, this);
         }
         // this.fireSubFormEvent("load");
@@ -213,6 +213,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
             if( !this.checkSubformUnique( this.subformData.json.id ) ){ //如果提交表单已经嵌入到表单中，那么把这个表单弹出来
                 // this.form.notice(MWF.xApplication.process.Xform.LP.subformUniqueError, "error");
                 this.isEmbedded = true;
+                this.fireEvent("afterModulesLoad");
             }else if( !this.checkSubformNested( this.subformData.json.id ) ){
                 this.form.notice(MWF.xApplication.process.Xform.LP.subformNestedError, "error");
             }else{
@@ -247,6 +248,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                 }.bind(this));
 
                 this.form.subformLoaded.push( this.subformData.json.id );
+                this.fireEvent("afterModulesLoad");
                 // this.fireSubFormEvent("postLoad");
                 // this.fireSubFormEvent("load");
                 // this.fireSubFormEvent("afterLoad");
@@ -262,7 +264,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
     getSubform: function(callback){
         var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm": "getFormMobile";
         if (this.json.submitFormType==="script"){
-            if (this.json.submitFormScript.code){
+            if (this.json.submitFormScript && this.json.submitFormScript.code){
                 var data = this.form.Macro.exec(this.json.submitFormScript.code, this);
                 if (data){
                     var formName, app;
@@ -270,7 +272,7 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                         formName = data;
                     }else{
                         if( data.application )app = data.application;
-                        if( data.subform )formName = data.subform;
+                        if( data.form )formName = data.form;
                     }
                     if( formName ){
                         if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;

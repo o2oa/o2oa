@@ -604,9 +604,10 @@ MSelector.Tootips = new Class({
             "text" : _selector.options.tooltipWhenNoSelectValue
         }).inject(_selector.listNode);
 
+        var height = parseFloat(_selector.options.height)+"px";
         noTooltipNode.setStyles({
-            "height":_selector.options.height,
-            "line-height":_selector.options.height
+            "height": height,
+            "line-height":height
         });
     },
     createItemList:function(data, node){

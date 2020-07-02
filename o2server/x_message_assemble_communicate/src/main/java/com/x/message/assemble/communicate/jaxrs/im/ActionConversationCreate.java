@@ -64,6 +64,12 @@ public class ActionConversationCreate extends BaseAction {
                 }
             }
 
+            //群聊添加管理员
+            if (conversation.getType().equals(CONVERSATION_TYPE_GROUP)) {
+                conversation.setAdminPerson(effectivePerson.getDistinguishedName());
+            }
+
+            //处理标题
             if (conversation.getTitle() == null || conversation.getTitle().isEmpty()) {
                 String title = "";
                 if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {

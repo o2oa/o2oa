@@ -5,7 +5,7 @@
     "contentStyles" : "normalTdNode",
     "item" : "checkbox",
     "name" : "checkbox",
-    "condition" : "function(d){ return d.status==0 ? true : false }",
+    "condition" : "function(d){ return d.status==0&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN' ? true : false }",
     "width" : "5%"
   },
   {
@@ -102,14 +102,14 @@
     "sub" : [{
       "title" : "同意",
       "action" : "agree",
-      "condition" : "function(d){ return d.APPEALABLE; }",
+      "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN';  }",
       "styles" : "actionAgreeNode",
       "overStyles" : "actionAgreeNode_over",
       "downStyles" : "actionAgreeNode_down"
     }, {
       "title" : "不同意",
       "action" : "deny",
-      "condition" : "function(d){ return d.APPEALABLE; }",
+      "condition" : "function(d){ return d.APPEALABLE&&d.APPEAL_AUDIFLOWTYPE=='BUILTIN'; }",
       "styles" : "actionDenyNode",
       "overStyles" : "actionDenyNode_over",
       "downStyles" : "actionDenyNode_down"

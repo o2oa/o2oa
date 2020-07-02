@@ -105,7 +105,31 @@ public abstract class Plan extends GsonPropertyObject {
 				for (SelectEntry en : orderList) {
 					o1 = r1.find(en.column);
 					o2 = r2.find(en.column);
-					if (null == o1 && null == o2) {
+					if(BooleanUtils.isTrue(en.numberOrder)){
+						if(StringUtils.isEmpty(o1.toString())){
+							c1 = Double.MAX_VALUE;
+						}else{
+							try {
+								c1 = Double.parseDouble(o1.toString());
+							} catch (Exception e) {
+								c1 = Double.MAX_VALUE;
+							}
+						}
+						if(StringUtils.isEmpty(o2.toString())){
+							c2 = Double.MAX_VALUE;
+						}else{
+							try {
+								c2 = Double.parseDouble(o2.toString());
+							} catch (Exception e) {
+								c2 = Double.MAX_VALUE;
+							}
+						}
+						if (StringUtils.equals(SelectEntry.ORDER_ASC, en.orderType)) {
+							comp = c1.compareTo(c2);
+						} else {
+							comp = c2.compareTo(c1);
+						}
+					}else if (null == o1 && null == o2) {
 						comp = 0;
 					} else if (null == o1) {
 						comp = -1;
@@ -406,14 +430,12 @@ public abstract class Plan extends GsonPropertyObject {
 		List<SelectEntry> list = new TreeList<>();
 		SelectEntry _g = this.findGroupSelectEntry();
 		if (null != _g) {
-			if (StringUtils.equals(SelectEntry.ORDER_ASC, _g.orderType)
-					|| StringUtils.equals(SelectEntry.ORDER_DESC, _g.orderType)) {
+			if (_g.isOrderType()) {
 				list.add(_g);
 			}
 		}
 		for (SelectEntry _o : this.selectList) {
-			if (StringUtils.equals(SelectEntry.ORDER_ASC, _o.orderType)
-					|| StringUtils.equals(SelectEntry.ORDER_DESC, _o.orderType)) {
+			if (_o.isOrderType()) {
 				list.add(_o);
 			}
 		}

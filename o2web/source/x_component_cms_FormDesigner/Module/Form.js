@@ -193,7 +193,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
 			var path = MWF.CMSFD.ResetTemplateModules.indexOf( className.toLowerCase() ) != -1 ? "x_component_cms_FormDesigner" : "x_component_process_FormDesigner";
-			var templateUrl = "/"+path+"/Module/"+className+"/template.json";
+			var templateUrl = "../"+path+"/Module/"+className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);

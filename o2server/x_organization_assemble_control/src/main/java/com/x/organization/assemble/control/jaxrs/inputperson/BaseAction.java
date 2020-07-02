@@ -10,8 +10,8 @@ import net.sf.ehcache.Ehcache;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected static List<String> genderTypeFemaleItems = Arrays.asList(new String[] { "f", "女", "female" });
-	protected static List<String> genderTypeMaleItems = Arrays.asList(new String[] { "m", "男", "male" });
+	protected static List<String> genderTypeFemaleItems = Arrays.asList(new String[] { "f","F" ,"女", "female" });
+	protected static List<String> genderTypeMaleItems = Arrays.asList(new String[] { "m", "M", "男", "male" });
 
 	protected Ehcache cache = ApplicationCache.instance().getCache(CacheInputResult.class);
 

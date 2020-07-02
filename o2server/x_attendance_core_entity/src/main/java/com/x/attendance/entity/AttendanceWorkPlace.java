@@ -55,38 +55,45 @@ public class AttendanceWorkPlace extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String placeName_FIELDNAME = "placeName";
 	@FieldDescribe("场所名称")
-	@Column(name = "xplaceName", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + placeName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String placeName = "";
 
+	public static final String placeAlias_FIELDNAME = "placeAlias";
 	@FieldDescribe("场所别名")
-	@Column(name = "xplaceAlias", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + placeAlias_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String placeAlias = "";
 
+	public static final String creator_FIELDNAME = "creator";
 	@FieldDescribe("创建人")
-	@Column(name = "xcreator", length = AbstractPersistenceProperties.organization_name_length)
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creator_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String creator = "";
 
+	public static final String longitude_FIELDNAME = "longitude";
 	@FieldDescribe("经度")
-	@Column(name = "xlongitude", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + longitude_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String longitude = null;
 
+	public static final String latitude_FIELDNAME = "latitude";
 	@FieldDescribe("纬度")
-	@Column(name = "xlatitude", length = JpaObject.length_32B)
+	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + latitude_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String latitude = null;
 
+	public static final String errorRange_FIELDNAME = "errorRange";
 	@FieldDescribe("误差范围")
-	@Column(name = "xerrorRange")
+	@Column( name = ColumnNamePrefix + errorRange_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private Integer errorRange = 200;
 
+	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
-	@Column(name = "xdescription", length = JpaObject.length_255B)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String description = null;
 

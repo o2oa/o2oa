@@ -8,7 +8,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.message.core.entity.Instant", "com.x.message.core.entity.Message",
 		"com.x.message.core.entity.Mass", "com.x.message.core.entity.Org",
 		"com.x.message.core.entity.IMMsg", "com.x.message.core.entity.IMConversation",
-		"com.x.message.core.entity.IMConversationExt" }, storeJars = { "x_message_core_entity", "x_meeting_core_entity",
+		"com.x.message.core.entity.IMConversationExt", "com.x.message.core.entity.IMMsgFile" }, storeJars = { "x_message_core_entity", "x_meeting_core_entity",
 				"x_processplatform_core_entity", "x_organization_core_express" })
 public class x_message_assemble_communicate extends Deployable {
 }

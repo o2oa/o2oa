@@ -107,6 +107,29 @@ public class AttendanceDetailAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "重新分析指定年月的打卡数据", action = ActionReAnalyseWithFilter.class)
+	@PUT
+	@Path("analyse/redo")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reAnalyseDetail(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+		ActionResult<ActionReAnalyseWithFilter.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+
+		if (check) {
+			try {
+				result = new ActionReAnalyseWithFilter().execute(request, effectivePerson, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceDetailProcess(e, "重新分析指定年月的打卡数据时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取用户指定年月的打卡数据列表", action = ActionListWithEmployee.class)
 	@PUT
 	@Path("filter/list/user")
@@ -326,12 +349,10 @@ public class AttendanceDetailAction extends StandardJaxrsAction {
 	}
 
 	/**
-	 * 打卡信息接入 1-员工姓名 EmployeeName 2-员工号 EmployeeNo 3-日期 RecordDateString 4-签到时间
-	 * OnDutyTime 5-签退时间 OffDutyTime
-	 * 
+	 * 打卡信息接入
 	 * @author liyi_
 	 */
-	@JaxrsMethodDescribe(value = "接入完成的上下班打卡信息记录，接入完成后直接分析", action = ActionReciveAttendance.class)
+	@JaxrsMethodDescribe(value = "接入完整的打卡信息记录，接入完成后直接分析", action = ActionReciveAttendance.class)
 	@Path("recive")
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -8,6 +8,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.organization.Unit;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
@@ -26,7 +27,8 @@ class ActionSaveToFolder extends BaseAction {
 			if (null == share) {
 				throw new ExceptionAttachmentNotExist(shareId);
 			}
-			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))) {
+			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))
+					&& !Business.TOP_FOLD.equals(folderId)) {
 				Folder2 folder = emc.find(folderId, Folder2.class);
 				if (folder == null) {
 					throw new ExceptionFolderNotExist(folderId);
@@ -36,7 +38,7 @@ class ActionSaveToFolder extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName(), folderId);
 				}
 			}else{
-				folderId = null;
+				folderId = Business.TOP_FOLD;
 			}
 			/* 判断文件的分享用户是否包含当前用户 */
 			if(!"password".equals(share.getShareType())) {
@@ -70,14 +72,14 @@ class ActionSaveToFolder extends BaseAction {
 				emc.check(newFolder, CheckPersistType.all);
 				em.persist(newFolder);
 				em.getTransaction().commit();
-				List<String> subIds = business.folder2().listSubNested(folder.getId(),"正常");
+				List<String> subIds = business.folder2().listSubNested(folder.getId(), FileStatus.VALID.getName());
 				for(String subFold : subIds){
 					folder = emc.find(subFold, Folder2.class);
 					Folder2 newSubFolder = new Folder2(folder.getName(),effectivePerson.getDistinguishedName(),folderId,folder.getStatus());
 					EntityManager em1 = emc.beginTransaction(Folder2.class);
 					em1.persist(newSubFolder);
 					em1.getTransaction().commit();
-					List<Attachment2> attachments = business.attachment2().listWithFolder2(subFold,"正常");
+					List<Attachment2> attachments = business.attachment2().listWithFolder2(subFold,FileStatus.VALID.getName());
 					for (Attachment2 att : attachments) {
 						Attachment2 newAtt = new Attachment2(att.getName(), effectivePerson.getDistinguishedName(),
 								folderId, att.getOriginFile(), att.getLength(), att.getType());

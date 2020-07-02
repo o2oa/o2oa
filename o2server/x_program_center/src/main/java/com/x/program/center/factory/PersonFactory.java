@@ -54,12 +54,12 @@ public class PersonFactory extends AbstractFactory {
 		}
 	}
 
-	public Person getWithQiyeweixinIdObject(String dingdingId) throws Exception {
+	public Person getWithQiyeweixinIdObject(String qiyeweixinId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Person.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), dingdingId);
+		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), qiyeweixinId);
 		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
 		if (os.isEmpty()) {
 			return null;
@@ -79,6 +79,22 @@ public class PersonFactory extends AbstractFactory {
 			cal.add(Calendar.DATE, passwordPeriod);
 			person.setPasswordExpiredTime(cal.getTime());
 		}
+	}
+
+	public boolean employeeExists(String employee, String excludeUnique) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p = cb.equal(root.get(Person_.employee), employee);
+		if(StringUtils.isNotEmpty(excludeUnique)){
+			p = cb.and(p, cb.notEqual(root.get(Person_.unique), excludeUnique));
+		}
+		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+		if (os.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 }

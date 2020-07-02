@@ -55,19 +55,19 @@ public class AttendanceEmployeeConfig extends SliceJpaObject {
 	 * =====
 	 */
 	public static final String topUnitName_FIELDNAME = "topUnitName";
-	@FieldDescribe("顶层组织名称")
+	@FieldDescribe("顶层组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName = "";
 
 	public static final String topUnitOu_FIELDNAME = "topUnitOu";
-	@FieldDescribe("顶层组织编号")
+	@FieldDescribe("顶层组织编号distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitOu_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String topUnitOu = "";
 
 	public static final String unitName_FIELDNAME = "unitName";
-	@FieldDescribe("组织名称")
+	@FieldDescribe("组织名称distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String unitName = "";
@@ -79,8 +79,8 @@ public class AttendanceEmployeeConfig extends SliceJpaObject {
 	private String unitOu = "";
 
 	public static final String employeeName_FIELDNAME = "employeeName";
-	@FieldDescribe("员工姓名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + employeeName_FIELDNAME )
+	@FieldDescribe("员工姓名distinguishedName")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String employeeName = "";
 
