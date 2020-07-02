@@ -140,7 +140,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
+	
 	@JaxrsMethodDescribe(value = "获取图片验证码.", action = ActionCaptcha.class)
 	@GET
 	@Path("captcha/width/{width}/height/{height}")
@@ -160,6 +160,25 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+
+	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaLoginRSAPublicKey.class)
+	@GET
+	@Path("captchaRSAPublicKey")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void captchaRSAPublicKey(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response) {
+		ActionResult<ActionCaptchaLoginRSAPublicKey.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCaptchaLoginRSAPublicKey().execute(request, response, effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "用户登录.credential=xxxx,codeAnswer=xxxx,使用短信验证码登录.", action = ActionCodeLogin.class)
 	@POST
 	@Path("code")

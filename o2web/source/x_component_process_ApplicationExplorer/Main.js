@@ -363,6 +363,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 				var emptyCategory = null;
 				json.data.each(function(category){
 					var categoryName = category.applicationCategory || category.portalCategory || category.protalCategory || category.name;
+					if( categoryName === "null" )categoryName = "";
 					if (categoryName){
 						this.createCategoryItemNode(categoryName, category.count);
 					}else{
@@ -797,9 +798,12 @@ MWF.xApplication.process.ApplicationExplorer.Application = new Class({
 			this.openApplication(e);
 		}.bind(this));
 		this.categoryNode = this.node.getElement(".o2_process_AppExp_item_categoryNode");
-		this.categoryNode.set("text", this.data.applicationCategory || this.data.portalCategory || this.data.protalCategory || this.lp.unCategory);
-		if (this.data.applicationCategory || this.data.portalCategory || this.data.protalCategory){
-			this.categoryNode.set("title", this.data.applicationCategory);
+		var category = this.data.applicationCategory || this.data.portalCategory || this.data.protalCategory;
+		var categoryText = category;
+		if( !category || category === "null" )categoryText = this.lp.unCategory;
+		this.categoryNode.set("text", categoryText );
+		if ( category && category !== "null" ){
+			this.categoryNode.set("title", category );
 			this.categoryNode.addClass("o2_process_AppExp_item_categoryColorNode");
 		}
 		this.actionArea = this.node.getElement(".o2_process_AppExp_item_ActionArea");

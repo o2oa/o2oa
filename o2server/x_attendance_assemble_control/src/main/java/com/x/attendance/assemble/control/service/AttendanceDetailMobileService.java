@@ -36,5 +36,9 @@ public class AttendanceDetailMobileService {
 		return business.getAttendanceDetailMobileFactory().listAttendanceDetailMobileWithEmployee( distinguishedName, recordDateString );
 	}
 
-	
+
+    public List<AttendanceDetailMobile> listAttendanceDetailMobile(EntityManagerContainer emc, String distinguishedName, String signDate) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailMobileFactory().listAttendanceDetailMobile( distinguishedName, signDate );
+    }
 }

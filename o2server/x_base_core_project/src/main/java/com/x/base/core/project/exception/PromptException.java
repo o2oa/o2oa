@@ -1,6 +1,6 @@
 package com.x.base.core.project.exception;
 
-import org.slf4j.helpers.MessageFormatter;
+import com.x.base.core.project.logger.MessageFormatter;
 
 public abstract class PromptException extends Exception {
 

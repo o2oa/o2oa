@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -134,14 +136,19 @@ public class ActionAppealCheck extends BaseAction {
 		return result;
 	}
 	
-public static class Wi extends AttendanceAppealInfo {
+	public static class Wi extends AttendanceAppealInfo {
 		
 		private static final long serialVersionUID = -5076990764713538973L;
 		
 		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
-		
+
+		@FieldDescribe("需要复核的ID列表")
 		private List<String> ids = null;
 
+		@FieldDescribe("复核意见")
+		private String opinion2;
+
+		@FieldDescribe("申诉人的身份，考勤人员身份：如果考勤人员属于多个组织，可以选择一个身份进行申诉信息绑定.")
 		private String identity = null;
 
 		public String getIdentity() {
@@ -159,7 +166,10 @@ public static class Wi extends AttendanceAppealInfo {
 		public void setIds(List<String> ids) {
 			this.ids = ids;
 		}
-		
+
+		public String getOpinion2() { return opinion2; }
+
+		public void setOpinion2(String opinion2) { this.opinion2 = opinion2; }
 	}
 	
 	public static class Wo {

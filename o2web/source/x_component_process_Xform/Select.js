@@ -86,14 +86,19 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
             if (this.json.styles) this.node.setStyles(this.json.styles);
 		}
     },
-    _loadNodeEdit: function(){
-        this.node.empty();
+	_resetNodeEdit: function(){
+		this.node.empty();
 		var select = new Element("select");
 		select.set(this.json.properties);
 		select.inject(this.node);
-		//this.node.destroy();
+	},
+    _loadNodeEdit: function(){
+		if (!this.json.preprocessing) this._resetNodeEdit();
+
+		var select = this.node.getFirst();
 		this.areaNode = this.node;
 		this.node = select;
+
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type,
@@ -120,7 +125,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
 		}else{
-			return this.form.Macro.exec(this.json.itemScript.code, this);
+			return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
 		}
 		return [];
 	},

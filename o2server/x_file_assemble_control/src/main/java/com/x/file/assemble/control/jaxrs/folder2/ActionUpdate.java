@@ -11,6 +11,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,7 +36,7 @@ class ActionUpdate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson.getName());
 			}
 			wi.setSuperior(StringUtils.trimToEmpty(wi.getSuperior()));
-			if(StringUtils.isNotBlank(wi.getSuperior())) {
+			if(StringUtils.isNotBlank(wi.getSuperior()) && !Business.TOP_FOLD.equals(wi.getSuperior())) {
 				Folder2 supFolder = emc.find(wi.getSuperior(), Folder2.class);
 				if (null == supFolder) {
 					throw new ExceptionFolderNotExist(wi.getSuperior());
@@ -45,13 +46,17 @@ class ActionUpdate extends BaseAction {
 				}
 				List<String> ids = new ArrayList<>();
 				ids.add(folder.getId());
-				ids.addAll(business.folder2().listSubNested(folder.getId(),"正常"));
-				if(ids.contains(folder.getSuperior())){
-					throw new Exception("superior can not be sub folder.");
+				ids.addAll(business.folder2().listSubNested(folder.getId(), FileStatus.VALID.getName()));
+				if(ids.contains(wi.getSuperior())){
+					throw new Exception("无效父目录："+wi.getSuperior()+"，父目录不能为本目录及子目录.");
 				}
+			}else{
+				wi.setSuperior(Business.TOP_FOLD);
 			}
 
-			this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), folder.getId());
+			if(this.exist(business, effectivePerson, wi.getName(), wi.getSuperior(), folder.getId())){
+				throw new ExceptionFolderNameExist(effectivePerson.getName(), wi.getName(), wi.getSuperior());
+			}
 			emc.beginTransaction(Folder2.class);
 			folder.setName(wi.getName());
 			folder.setSuperior(wi.getSuperior());

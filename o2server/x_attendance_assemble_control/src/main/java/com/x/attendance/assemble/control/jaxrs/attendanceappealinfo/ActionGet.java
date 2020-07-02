@@ -1,8 +1,12 @@
 package com.x.attendance.assemble.control.jaxrs.attendanceappealinfo;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.x.attendance.assemble.control.jaxrs.attendancedetail.ActionListNextWithFilter;
+import com.x.attendance.entity.AttendanceAppealAuditInfo;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -38,8 +42,12 @@ public class ActionGet extends BaseAction {
 		}
 		if (check) {
 			if (attendanceAppealInfo != null) {
+				AttendanceAppealAuditInfo auditInfo = attendanceAppealInfoServiceAdv.getAppealAuditInfo( attendanceAppealInfo.getId() );
 				try {
 					wrap = Wo.copier.copy(attendanceAppealInfo);
+					if( auditInfo != null ) {
+						wrap.setAppealAuditInfo( WoAttendanceAppealAuditInfo.copier.copy( auditInfo ));
+					}
 					result.setData(wrap);
 				} catch (Exception e) {
 					check = false;
@@ -58,6 +66,25 @@ public class ActionGet extends BaseAction {
 
 		public static WrapCopier<AttendanceAppealInfo, Wo> copier = WrapCopierFactory.wo(AttendanceAppealInfo.class,
 				Wo.class, null, JpaObject.FieldsInvisible);
+
+		@FieldDescribe("考勤申诉审核内容")
+		private WoAttendanceAppealAuditInfo appealAuditInfo = null;
+
+		public WoAttendanceAppealAuditInfo getAppealAuditInfo() {
+			return appealAuditInfo;
+		}
+
+		public void setAppealAuditInfo(WoAttendanceAppealAuditInfo appealAuditInfo) {
+			this.appealAuditInfo = appealAuditInfo;
+		}
+	}
+
+	public static class WoAttendanceAppealAuditInfo extends AttendanceAppealAuditInfo {
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static WrapCopier<AttendanceAppealAuditInfo, WoAttendanceAppealAuditInfo> copier = WrapCopierFactory.wo(AttendanceAppealAuditInfo.class,
+				WoAttendanceAppealAuditInfo.class, null, JpaObject.FieldsInvisible);
 
 	}
 }

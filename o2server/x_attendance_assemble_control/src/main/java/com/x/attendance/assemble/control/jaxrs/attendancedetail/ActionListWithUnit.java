@@ -6,6 +6,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AttendanceAppealAuditInfo;
+import com.x.attendance.entity.AttendanceAppealInfo;
+import com.x.attendance.entity.AttendanceScheduleSetting;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -126,182 +131,50 @@ public class ActionListWithUnit extends BaseAction {
 				}
 			}
 		}
+
+		if (check && ListTools.isNotEmpty( wraps )) {
+			AttendanceScheduleSetting scheduleSetting = null;
+			try {
+				scheduleSetting = attendanceScheduleSettingServiceAdv.getAttendanceScheduleSettingWithUnit( wraps.get(0).getUnitName(), effectivePerson.getDebugger() );
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			Integer signProxy = 1;
+			List<AttendanceAppealInfo> appealInfos = null;
+			AttendanceAppealAuditInfo appealAuditInfo = null;
+			List<WoAttendanceAppealInfo> woAppealInfos = null;
+			for( Wo detail : wraps ){
+				if ( scheduleSetting != null ) {
+					signProxy = scheduleSetting.getSignProxy();
+				}
+				detail.setSignProxy( signProxy );
+
+				//判断并补充申诉信息
+				if( detail.getAppealStatus() != 0 ){
+					//十有八九已经提过申诉了，查询申诉信息
+					appealInfos = attendanceAppealInfoServiceAdv.listWithDetailId( detail.getId() );
+					if(ListTools.isNotEmpty( appealInfos ) ){
+						woAppealInfos = WoAttendanceAppealInfo.copier.copy( appealInfos );
+					}
+					if(ListTools.isNotEmpty( woAppealInfos ) ){
+						for( WoAttendanceAppealInfo woAppealInfo : woAppealInfos ){
+							appealAuditInfo = attendanceAppealInfoServiceAdv.getAppealAuditInfo( woAppealInfo.getId() );
+							if( appealAuditInfo != null ){
+								woAppealInfo.setAppealAuditInfo( WoAttendanceAppealAuditInfo.copier.copy( appealAuditInfo ));
+							}
+						}
+					}
+					detail.setAppealInfos(woAppealInfos);
+				}
+			}
+		}
+
 		result.setData(wraps);
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		private String q_empName;
-
-		private List<String> topUnitNames;
-
-		private String q_topUnitName;
-
-		private List<String> unitNames;
-
-		private String q_unitName;
-
-		private String q_year;
-
-		private String q_month;
-
-		private String cycleYear;
-
-		private String cycleMonth;
-
-		private String q_date;
-
-		private int recordStatus = 999;
-
-		private Boolean isAbsent = null;
-
-		private Boolean isLate = null;
-
-		private Boolean isLeaveEarlier = null;
-
-		private Boolean isLackOfTime = null;
-
-		private String order = "DESC";
-
-		private String key;
-
-		public String getQ_empName() {
-			return q_empName;
-		}
-
-		public String getCycleYear() {
-			return cycleYear;
-		}
-
-		public void setCycleYear(String cycleYear) {
-			this.cycleYear = cycleYear;
-		}
-
-		public String getCycleMonth() {
-			return cycleMonth;
-		}
-
-		public void setCycleMonth(String cycleMonth) {
-			this.cycleMonth = cycleMonth;
-		}
-
-		public void setQ_empName(String q_empName) {
-			this.q_empName = q_empName;
-		}
-
-		public String getQ_year() {
-			return q_year;
-		}
-
-		public void setQ_year(String q_year) {
-			this.q_year = q_year;
-		}
-
-		public String getQ_month() {
-			return q_month;
-		}
-
-		public void setQ_month(String q_month) {
-			this.q_month = q_month;
-		}
-
-		public List<String> getTopUnitNames() {
-			return topUnitNames;
-		}
-
-		public void setTopUnitNames(List<String> topUnitNames) {
-			this.topUnitNames = topUnitNames;
-		}
-
-		public List<String> getUnitNames() {
-			return unitNames;
-		}
-
-		public void setUnitNames(List<String> unitNames) {
-			this.unitNames = unitNames;
-		}
-
-		public String getOrder() {
-			return order;
-		}
-
-		public void setOrder(String order) {
-			this.order = order;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public String getQ_date() {
-			return q_date;
-		}
-
-		public void setQ_date(String q_date) {
-			this.q_date = q_date;
-		}
-
-		public Boolean getIsAbsent() {
-			return isAbsent;
-		}
-
-		public void setIsAbsent(Boolean isAbsent) {
-			this.isAbsent = isAbsent;
-		}
-
-		public Boolean getIsLate() {
-			return isLate;
-		}
-
-		public void setIsLate(Boolean isLate) {
-			this.isLate = isLate;
-		}
-
-		public Boolean getIsLeaveEarlier() {
-			return isLeaveEarlier;
-		}
-
-		public void setIsLeaveEarlier(Boolean isLeaveEarlier) {
-			this.isLeaveEarlier = isLeaveEarlier;
-		}
-
-		public Boolean getIsLackOfTime() {
-			return isLackOfTime;
-		}
-
-		public void setIsLackOfTime(Boolean isLackOfTime) {
-			this.isLackOfTime = isLackOfTime;
-		}
-
-		public int getRecordStatus() {
-			return recordStatus;
-		}
-
-		public void setRecordStatus(int recordStatus) {
-			this.recordStatus = recordStatus;
-		}
-
-		public String getQ_topUnitName() {
-			return q_topUnitName;
-		}
-
-		public void setQ_topUnitName(String q_topUnitName) {
-			this.q_topUnitName = q_topUnitName;
-		}
-
-		public String getQ_unitName() {
-			return q_unitName;
-		}
-
-		public void setQ_unitName(String q_unitName) {
-			this.q_unitName = q_unitName;
-		}
-
+	public static class Wi extends WrapInFilter {
 	}
 
 	public static class Wo extends AttendanceDetail {
@@ -310,5 +183,23 @@ public class ActionListWithUnit extends BaseAction {
 
 		public static WrapCopier<AttendanceDetail, Wo> copier = WrapCopierFactory.wo(AttendanceDetail.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
+
+		@FieldDescribe("员工所属组织的排班打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班卡）")
+		private Integer signProxy = 1;
+
+		@FieldDescribe("考勤申诉内容")
+		private List<WoAttendanceAppealInfo> appealInfos = null;
+
+		public List<WoAttendanceAppealInfo> getAppealInfos() { return appealInfos; }
+
+		public void setAppealInfos(List<WoAttendanceAppealInfo> appealInfos) { this.appealInfos = appealInfos; }
+
+		public Integer getSignProxy() {
+			return signProxy;
+		}
+
+		public void setSignProxy(Integer signProxy) {
+			this.signProxy = signProxy;
+		}
 	}
 }

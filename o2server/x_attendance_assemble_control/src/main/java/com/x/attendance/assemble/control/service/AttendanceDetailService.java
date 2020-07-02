@@ -4,16 +4,20 @@ import java.util.List;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.AttendanceDetail;
-import com.x.attendance.entity.AttendanceDetailMobile;
-import com.x.attendance.entity.AttendanceEmployeeConfig;
-import com.x.attendance.entity.AttendanceSetting;
+import com.x.attendance.entity.*;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 
 public class AttendanceDetailService {
@@ -71,6 +75,7 @@ public class AttendanceDetailService {
 						attendanceDetail.setEmpName( attendanceEmployeeConfig.getEmployeeName() );
 						attendanceDetail.setYearString( dateOperation.getYear( dateOperation.getDateFromString(day)) );
 						attendanceDetail.setMonthString( dateOperation.getMonth( dateOperation.getDateFromString(day)));
+						attendanceDetail.setRecordDate( dateOperation.getDateFromString( day ) );
 						attendanceDetail.setRecordDateString( day );
 						attendanceDetail.setRecordStatus( 0 );
 						attendanceDetail.setBatchName( "系统补充" );
@@ -98,6 +103,11 @@ public class AttendanceDetailService {
 			String q_year, String q_month) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().listUserAttendanceDetailByYearAndMonth( q_empName, q_year, q_month );	
+	}
+
+	public List<String> listDetailByCycleYearAndMonthWithOutStatus( EntityManagerContainer emc, String user, String year, String month )  throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().listDetailByCycleYearAndMonthWithOutStatus( user, year, month );
 	}
 
 	public List<String> listUserAttendanceDetailByCycleYearAndMonth(EntityManagerContainer emc, String q_empName, String cycleYear,
@@ -201,6 +211,7 @@ public class AttendanceDetailService {
 			emc.beginTransaction( AttendanceSetting.class );
 			emc.check( attendanceDetail_old, CheckPersistType.all);	
 			emc.commit();
+			attendanceDetail = attendanceDetail_old;
 		}else{
 			//需要新增打卡信息数据
 			if( attendanceDetail.getId() == null ) {
@@ -304,5 +315,10 @@ public class AttendanceDetailService {
 		}else {
 			return null;
 		}
-	}	
+	}
+
+    public List<String> listRecordWithDateAndNoOffDuty(EntityManagerContainer emc, String dateString) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().listRecordWithDateAndNoOffDuty( dateString );
+    }
 }

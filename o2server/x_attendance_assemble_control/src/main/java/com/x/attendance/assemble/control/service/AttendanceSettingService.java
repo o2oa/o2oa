@@ -130,7 +130,7 @@ public class AttendanceSettingService {
 		type = "select";
 		selectContent = AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW + "|" + AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN;
 		isMultiple = false;
-		description = "考勤结果申诉审核人确定方式：可选值："+AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN+"|"+ AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN +"。此配置控制考勤结果申诉流程为自定义流程或者内置审批步骤（审核-复核）。";
+		description = "考勤结果申诉审核人确定方式：可选值："+AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN+"|"+ AppealConfig.APPEAL_AUDIFLOWTYPE_WORKFLOW +"。此配置控制考勤结果申诉流程为自定义流程或者内置审批步骤（审核-复核）。";
 		try {
 			checkAndInitSystemConfig("APPEAL_AUDIFLOWTYPE", "考勤结果申诉流程类型", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
@@ -138,13 +138,13 @@ public class AttendanceSettingService {
 			logger.error(e);
 		}
 
-		value = "";
+		value = "无";
 		type = "text";
 		selectContent = null;
 		isMultiple = false;
 		description = "考勤结果申诉流程，单值。该配置在'自定义申诉流程("+AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN+")'时，需要启动的申请流程ID。";
 		try {
-			checkAndInitSystemConfig("APPEAL_AUDIFLOW_ID", "自定义申请流程", value, description, type, selectContent, isMultiple, ++ordernumber );
+			checkAndInitSystemConfig("APPEAL_AUDIFLOW_ID", "自定义申诉流程", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
 			logger.warn( "system init system config 'APPEAL_AUDIFLOW_ID' got an exception." );
 			logger.error(e);

@@ -1,16 +1,19 @@
 package com.x.program.center.jaxrs.command;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import com.hankcs.hanlp.corpus.io.IOUtil;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
@@ -26,20 +29,44 @@ import com.x.base.core.project.tools.Crypto;
 public class ActionUploadFile  extends BaseAction {
     private static Logger logger = LoggerFactory.getLogger(CommandAction.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request ,EffectivePerson effectivePerson, String ctl, String nodeName , String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();	
 			Wo wo  = null;
+			String curServer = request.getLocalAddr();
+			ByteArrayInputStream byteArrayInputStream = null;
+			byte[] byteArray = IOUtil.readBytesFromOtherInputStream(fileInputStream);
+			fileInputStream.close();
 			if(nodeName.equalsIgnoreCase("*")) {
 				Nodes nodes = Config.nodes();
+				logger.info("先其他服务器");
 				for (String node : nodes.keySet()){
-					if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
-				      wo = executeCommand( ctl,  node ,  nodes.get(node).nodeAgentPort(),  fileInputStream, disposition);
+					//先其他服务器
+					if(!node.equalsIgnoreCase(curServer)) {
+						if(nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()){
+							 byteArrayInputStream = new ByteArrayInputStream(byteArray);
+								logger.info("node="+node);
+					      wo = executeCommand( ctl,  node ,  nodes.get(node).nodeAgentPort(),  byteArrayInputStream, disposition);
+						}
+					}
+				}
+				
+				logger.info("后当前服务器");
+				for(String node : nodes.keySet()) {
+					   //后当前服务器
+					if(node.equalsIgnoreCase(curServer)) {
+				       if(nodes.get(curServer).getApplication().getEnable() || nodes.get(curServer).getCenter().getEnable()){
+				        	 byteArrayInputStream = new ByteArrayInputStream(byteArray);
+				        		logger.info("node="+node);
+					       wo = executeCommand( ctl,  node ,  nodes.get(curServer).nodeAgentPort(),  byteArrayInputStream, disposition);
+			          }
 					}
 				}
 			}else {
 				
-			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  fileInputStream, disposition);
+				 byteArrayInputStream = new ByteArrayInputStream(byteArray);
+			     wo = executeCommand( ctl,  nodeName ,  Integer.parseInt(nodePort),  byteArrayInputStream, disposition);
 			}
+			
 			result.setData(wo);
 			return result;
 	}
@@ -73,16 +100,16 @@ public class ActionUploadFile  extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("发送文件end.......");
+				logger.info("发送文件end.");
 				
 			}finally {
 				dos.close();
 				dis.close();
+				socket.close();
 				fileInputStream.close();
 			}
 		} catch (Exception ex) {
 			wo.setStatus("fail");
-			//logger.warn("socket dispatch executeCommand to {}:{} error={}", nodeName, nodePort, ex.getMessage());
 		}
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		wo.setTime(df.format(new Date()));

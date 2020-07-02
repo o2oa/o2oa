@@ -60,7 +60,6 @@ public class OperatorDataSupplement implements Runnable{
 		if( check ) {
 			//根据组织信息、统计周期年、月从所有的顶层组织统计周期信息MAP中查询一个适合的统计周期，如果没有则为该组织新建一个新的配置
 			try {
-				//TODO 这个方法要检查一下并发可行性，需要 进一步优化
 				logger.debug( debugger, ">>>>>>>>>>查询指定的统计周期："+attendanceEmployeeConfig.getTopUnitName() + ", " +
 						attendanceEmployeeConfig.getUnitName() + ",  " +
 						entitySupplementData.getCycleYear() + "-" +
@@ -88,7 +87,6 @@ public class OperatorDataSupplement implements Runnable{
 		if( check ) {
 			if ( attendanceStatisticalCycle != null ) {
 				try {
-					//TODO 这个方法要检查一下并发可行性，需要 进一步优化
 					logger.warn( "系统尝试核对和补充人员考勤数据，"
 							+ "StartDate:" + attendanceStatisticalCycle.getCycleStartDate()
 							+ ", EndDate:" + attendanceStatisticalCycle.getCycleEndDate() );

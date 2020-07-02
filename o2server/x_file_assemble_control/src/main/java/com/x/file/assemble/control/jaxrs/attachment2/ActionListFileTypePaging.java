@@ -11,6 +11,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Attachment2_;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +51,7 @@ class ActionListFileTypePaging extends BaseAction {
 		CriteriaQuery<Attachment2> cq = cb.createQuery(Attachment2.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
+		p = cb.and(p, cb.equal(root.get(Attachment2_.status), FileStatus.VALID.getName()));
 		if(StringUtils.isNotEmpty(wi.getFileType())){
 			p = cb.and(p, cb.equal(root.get(Attachment2_.type), wi.getFileType()));
 		}
@@ -65,7 +66,7 @@ class ActionListFileTypePaging extends BaseAction {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Attachment2> root = cq.from(Attachment2.class);
 		Predicate p = cb.equal(root.get(Attachment2_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.equal(root.get(Attachment2_.status), "正常"));
+		p = cb.and(p, cb.equal(root.get(Attachment2_.status), FileStatus.VALID.getName()));
 		if(StringUtils.isNotEmpty(wi.getFileType())){
 			p = cb.and(p, cb.equal(root.get(Attachment2_.type), wi.getFileType()));
 		}

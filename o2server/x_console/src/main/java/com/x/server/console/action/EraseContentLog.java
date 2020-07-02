@@ -25,7 +25,6 @@ public class EraseContentLog extends EraseContentProcessPlatform {
 		addClass(FormVersion.class);
 		addClass(ScriptVersion.class);
 		this.run();
-		this.run();
 		return true;
 	}
 }

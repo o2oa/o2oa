@@ -2457,7 +2457,7 @@ MDomItem.ImageClipper = new Class({
                 "src" : MWF.xDesktop.getImageSrc( value )
             }).inject( this.imageWrap || parent );
             this.image.addEvent("click",function(){
-                window.open( MWF.xDesktop.getImageSrc( this.imageId ), "_blank" );
+                window.open( o2.filterUrl(MWF.xDesktop.getImageSrc( this.imageId )), "_blank" );
             }.bind(this));
             if( styles.imageStyle )this.image.setStyles( styles.imageStyle );
         }
@@ -2486,7 +2486,7 @@ MDomItem.ImageClipper = new Class({
                         }).inject( this.imageWrap || parent, "top" );
                         if( styles.imageStyle )this.image.setStyles( styles.imageStyle );
                         this.image.addEvent("click",function(){
-                            window.open( MWF.xDesktop.getImageSrc( this.imageId ), "_blank" );
+                            window.open( o2.filterUrl(MWF.xDesktop.getImageSrc( this.imageId )), "_blank" );
                         }.bind(this));
                         this.imageId = this.module.imageId = this.clipper.imageId;
                         if( this.options.validImmediately ){

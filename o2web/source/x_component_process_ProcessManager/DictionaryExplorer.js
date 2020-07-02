@@ -218,7 +218,9 @@ MWF.xApplication.process.ProcessManager.DictionaryExplorer = new Class({
         this.app.desktop.openApplication(e, "process.DictionaryDesigner", options);
     },
     _loadItemDataList: function(callback){
-        this.actions.listDictionary(this.app.options.application.id,callback);
+        this.actions.listDictionary(this.app.options.application.id,callback, function () {
+
+        }.bind(this));
     },
     _getItemObject: function(item){
         return new MWF.xApplication.process.ProcessManager.DictionaryExplorer.Dictionary(this, item)

@@ -39,11 +39,31 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
 
     },
     loadConfig : function(){
-        this.config = {};
+        /*this.config = {};
         var v;
         this.actions.getSettingCode( "APPEALABLE", function(json){
             v =  json.data ? json.data.configValue : null
         },null, false)
+        if( !v ){
+            this.config.APPEALABLE = true;
+        }else{
+            this.config.APPEALABLE = (v != "false" )
+        }*/
+        this.config = {};
+        var v;
+        //需要判断申述类型listSetting2020年6月16日 by gee
+        this.configSetting = new Object(null);
+        this.actions.listSetting(function(json){
+            var data = json.data;
+            if(!!data){
+                json.data.map(function(e){
+                    this.configSetting[e.configCode]=e;
+                }.bind(this));
+                v = this.configSetting.APPEALABLE.configValue;
+            }else{
+                v = null;
+            }
+        }.bind(this),null,false);
         if( !v ){
             this.config.APPEALABLE = true;
         }else{
@@ -300,6 +320,7 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
             var data = json.data;
             data.each(function(d){
                 d.APPEALABLE = this.explorer.config.APPEALABLE;
+                d.APPEAL_AUDIFLOWTYPE = this.explorer.configSetting.APPEAL_AUDIFLOWTYPE.configValue;
             }.bind(this));
             data.sort( function( a, b ){
                 return parseInt( b.appealDateString.replace(/-/g,"") ) -  parseInt( a.appealDateString.replace(/-/g,"") );
@@ -315,12 +336,20 @@ MWF.xApplication.Attendance.AppealExplorer.View = new Class({
 
     },
     _openDocument: function( documentData ){
-        var appeal = new MWF.xApplication.Attendance.AppealExplorer.Appeal(this.explorer, documentData );
-        if( !documentData.status ){
-            appeal.edit();
+
+        if(!!documentData.appealAuditInfo){
+            var workid = documentData.appealAuditInfo.workId;
+            var options = {"workId":workid, "appId": "process.Work"+workid};
+            this.app.desktop.openApplication(null, "process.Work", options);
         }else{
-            appeal.open();
+            var appeal = new MWF.xApplication.Attendance.AppealExplorer.Appeal(this.explorer, documentData );
+            if( !documentData.status ){
+                appeal.edit();
+            }else{
+                appeal.open();
+            }
         }
+
     }
 
 })

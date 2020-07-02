@@ -1,6 +1,7 @@
 package com.x.attendance.entity;
 
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -46,13 +47,13 @@ public class AttendanceQywxDetail extends SliceJpaObject  {
 
 
     public static final String o2User_FIELDNAME = "o2User";
-    @FieldDescribe("O2用户")
-    @Column(name = ColumnNamePrefix + o2User_FIELDNAME, length = length_128B)
+    @FieldDescribe("O2用户distinguishedName")
+    @Column(name = ColumnNamePrefix + o2User_FIELDNAME, length = AbstractPersistenceProperties.organization_name_length)
     private String o2User;
 
     public static final String o2Unit_FIELDNAME = "o2Unit";
-    @FieldDescribe("O2用户所在的组织")
-    @Column(name = ColumnNamePrefix + o2Unit_FIELDNAME, length = length_128B)
+    @FieldDescribe("O2用户所在的组织distinguishedName")
+    @Column(name = ColumnNamePrefix + o2Unit_FIELDNAME, length = AbstractPersistenceProperties.organization_name_length)
     private String o2Unit;
 
     public static final String userid_FIELDNAME = "userid";

@@ -134,6 +134,9 @@ MWF.xApplication.process.Work.Main = new Class({
             this.loadWorkByDraft(this.options.draft);
         }else if (this.options.jobId || this.options.jobid || this.options.job){
             var jobId = this.options.jobId || this.options.jobid || this.options.job;
+            delete this.options.jobId;
+            delete this.options.jobid;
+            delete this.options.job;
             this.loadWorkByJob(jobId);
         }
     },
@@ -166,7 +169,9 @@ MWF.xApplication.process.Work.Main = new Class({
                             this.close();
                         }
                     }
-                }.bind(this), "failure": function(){}}, [this.options.form.id, this.options.form.app], id);
+                }.bind(this), "failure": function(){
+                    //this.close();
+                }.bind(this)}, [this.options.form.id, this.options.form.app], id);
         }else{
             o2.Actions.invokeAsync([
                 {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"},
@@ -193,7 +198,9 @@ MWF.xApplication.process.Work.Main = new Class({
                             this.close();
                         }
                     }
-                }.bind(this), "failure": function(){}}, id);
+                }.bind(this), "failure": function(){
+                    //this.close();
+                }.bind(this)}, id);
         }
     },
     loadWorkByJob: function(jobId){
@@ -210,22 +217,32 @@ MWF.xApplication.process.Work.Main = new Class({
                     this.options.workId = id;
                     this.loadWork();
                 }else{
-                    var worksAreaNode = this.createWorksArea();
-                    // for (var x=0;x<3;x++){
-                    json.data.workList.each(function(work){
-                        this.createWorkNode(work, worksAreaNode);
-                    }.bind(this));
-                    json.data.workCompletedList.each(function(work){
-                        this.createWorkCompletedNode(work, worksAreaNode);
-                    }.bind(this));
-                    // }
-                    if (this.mask) this.mask.hide();
-                    this.formNode.setStyles(this.css.formNode_bg);
-
+                    if (this.options.choice){
+                        var worksAreaNode = this.createWorksArea();
+                        // for (var x=0;x<3;x++){
+                        json.data.workList.each(function(work){
+                            this.createWorkNode(work, worksAreaNode);
+                        }.bind(this));
+                        json.data.workCompletedList.each(function(work){
+                            this.createWorkCompletedNode(work, worksAreaNode);
+                        }.bind(this));
+                        // }
+                        if (this.mask) this.mask.hide();
+                        this.formNode.setStyles(this.css.formNode_bg);
+                    }else{
+                        if (json.data.workList.length){
+                            this.options.workId =  json.data.workList[0].id;
+                        }else{
+                            this.options.workId =  json.data.workCompletedList[0].id;
+                        }
+                        this.loadWork();
+                    }
                 }
             }else{
-
+                this.close();
             }
+        }.bind(this), function(){
+            this.close();
         }.bind(this));
     },
     loadWorkByDraft: function(work, data){
@@ -527,7 +544,11 @@ MWF.xApplication.process.Work.Main = new Class({
 
             this.formNode.empty();
             this.formNode.setStyles(this.css.formNode);
-            MWF.xDesktop.requireApp("process.Xform", "Form", function(){
+            var uri = window.location.href;
+            //var cl = (uri.indexOf("$all")!=-1) ? "$all" : "Form";
+            var cl = "$all";
+            MWF.xDesktop.requireApp("process.Xform", cl, function(){
+            //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {});
                 this.appForm.businessData = {
                     "data": this.data,

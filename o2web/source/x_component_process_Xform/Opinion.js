@@ -82,22 +82,29 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         }
         return true;
     },
-    _loadNodeEdit: function(){
-		var input = new Element("textarea", {"styles": {
-            "background": "transparent",
-            "width": "100%",
-            "border": "0px"
-        }});
-		input.set(this.json.properties);
+
+    _resetNodeEdit: function(){
+        var input = new Element("textarea", {"styles": {
+                "background": "transparent",
+                "width": "100%",
+                "border": "0px"
+            }});
+        input.set(this.json.properties);
 
         var node = new Element("div", {"styles": {
-            "ovwrflow": "hidden",
-            "position": "relative",
-            "padding-right": "2px"
-        }}).inject(this.node, "after");
+                "ovwrflow": "hidden",
+                "position": "relative",
+                "padding-right": "2px"
+            }}).inject(this.node, "after");
         input.inject(node);
         this.node.destroy();
         this.node = node;
+    },
+    _loadNodeEdit: function(){
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
+
 		//this.node = input;
 		this.node.set({
 			"id": this.json.id,
@@ -429,7 +436,10 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
         if (!v){
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
-                var w = size.x-23;
+                var w = size.x - 3
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    w = size.x - 23;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",

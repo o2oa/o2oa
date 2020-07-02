@@ -49,11 +49,11 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
-	public static final String docId_FIELDNAME = "docId";
-	@FieldDescribe("流程WorkId")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + docId_FIELDNAME )
-	@CheckPersist(allowEmpty = true)
-	private String docId;
+//	public static final String docId_FIELDNAME = "docId";
+//	@FieldDescribe("流程WorkId")
+//	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + docId_FIELDNAME )
+//	@CheckPersist(allowEmpty = true)
+//	private String docId;
 
 	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
@@ -80,14 +80,14 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	private String unitOu;
 
 	public static final String employeeName_FIELDNAME = "employeeName";
-	@FieldDescribe("员工姓名")
-	@Column( length = JpaObject.length_96B, name = ColumnNamePrefix + employeeName_FIELDNAME )
+	@FieldDescribe("员工姓名：员工的标识，distinguishedName")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeName_FIELDNAME )
 	@CheckPersist(allowEmpty = false)
 	private String employeeName;
 
 	public static final String employeeNumber_FIELDNAME = "employeeNumber";
-	@FieldDescribe("员工号")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + employeeNumber_FIELDNAME )
+	@FieldDescribe("员工号，如果没有员工号，可以使用员工标识代替，不可为空")
+	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeNumber_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String employeeNumber;
 
@@ -220,13 +220,13 @@ public class AttendanceSelfHoliday extends SliceJpaObject {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public String getDocId() {
-		return docId;
-	}
-
-	public void setDocId(String docId) {
-		this.docId = docId;
-	}
+//
+//	public String getDocId() {
+//		return docId;
+//	}
+//
+//	public void setDocId(String docId) {
+//		this.docId = docId;
+//	}
 
 }

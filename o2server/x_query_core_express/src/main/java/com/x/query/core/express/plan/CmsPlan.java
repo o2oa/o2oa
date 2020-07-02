@@ -130,7 +130,7 @@ public class CmsPlan extends Plan {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Document> root = cq.from(Document.class);
-		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root));
+		cq.select(root.get(Document_.id)).distinct(true).where(this.where.documentPredicate(cb, root, this.runtime, this.filterList));
 		//System.out.println(">>>>>1-listBundle_document>>>>>>SQL:" + em.createQuery(cq).toString() );
 		List<String> docIds = em.createQuery(cq).getResultList();
 		return docIds;
@@ -190,7 +190,7 @@ public class CmsPlan extends Plan {
 						Root<Item> root = cq.from(Item.class);
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.cms);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
-						cq.select(root.get(Item_.bundle)).where(p);
+						cq.select(root.get(Item_.bundle)).distinct(true).where(p);
 //						System.out.println(">>>>>>>>3 - listBundle_filterEntry SQL:" +  em.createQuery(cq) );
 						return em.createQuery(cq).getResultList();
 					} catch (Exception e) {
@@ -264,11 +264,12 @@ public class CmsPlan extends Plan {
 		 * @return
 		 * @throws Exception
 		 */
-		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root) throws Exception {
+		private Predicate documentPredicate(CriteriaBuilder cb, Root<Document> root, Runtime runtime, List<FilterEntry> filterList) throws Exception {
 			List<Predicate> ps = new TreeList<>();
 			ps.add(this.documentPredicate_creator(cb, root));
 			ps.add(this.documentPredicate_appInfo(cb, root));
 			ps.add(this.documentPredicate_date(cb, root));
+			ps.add(this.documentPredicate_Filter(cb, root, runtime, filterList));
 			
 			Predicate predicate = this.documentPredicate_typeScope(cb, root);
 			if( predicate != null  ) {
@@ -369,6 +370,44 @@ public class CmsPlan extends Plan {
 				return cb.equal(root.get(Document_.documentType), "信息");
 			}
 			return null;
+		}
+
+		private Predicate documentPredicate_Filter(CriteriaBuilder cb, Root<Document> root, Runtime runtime, List<FilterEntry> filterList) throws Exception {
+			boolean flag = true;
+			Predicate p = cb.disjunction();
+			for(FilterEntry filterEntry : filterList){
+				if(filterEntry.path.indexOf("(")>-1 && filterEntry.path.indexOf(")")>-1){
+					flag = false;
+					String path = StringUtils.substringBetween(filterEntry.path, "(", ")").trim();
+					if("readPersonList".equals(path)){
+						p = cb.or(p, cb.isMember("所有人", root.get(Document_.readPersonList)));
+						p = cb.or(p, cb.isMember(runtime.person, root.get(Document_.readPersonList)));
+						if(runtime.person.indexOf("@")>-1){
+							p = cb.or(p, cb.isMember(StringUtils.substringAfter(runtime.person, "@"), root.get(Document_.readPersonList)));
+						}
+					}else if("readUnitList".equals(path)){
+						if(ListTools.isNotEmpty(runtime.unitAllList)){
+							p = cb.or(p, root.get(Document_.readUnitList).in(runtime.unitAllList));
+						}
+					}else if("readGroupList".equals(path)){
+						if(ListTools.isNotEmpty(runtime.groupList)){
+							p = cb.or(p, root.get(Document_.readGroupList).in(runtime.groupList));
+						}
+					}else{
+						Predicate fp = filterEntry.toCmsDocumentPredicate(cb, root, runtime, path);
+						if (StringUtils.equals("and", filterEntry.logic)) {
+							p = cb.and(p, fp);
+						}else{
+							p = cb.or(p, fp);
+						}
+					}
+				}
+			}
+			if(flag){
+				return null;
+			}
+			return p;
+
 		}
 	}
 }

@@ -621,8 +621,8 @@ MWF.xApplication.process.Application.WorkExplorer = new Class({
     removeWork: function(work, all){
         this.actions.removeWork(work.data.id, this.app.options.id, all, function(json){
             json.data.each(function(item){
-                this.items.erase(this.works[item.id]);
                 this.works[item.id].destroy();
+                this.items.erase(this.works[item.id]);
                 MWF.release(this.works[item.id]);
                 delete this.works[item.id];
             }.bind(this));
@@ -666,7 +666,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         this.workAreaNode =  new Element("div", {"styles": this.css.workItemWorkNode}).inject(this.node);
         //this.otherWorkAreaNode =  new Element("div", {"styles": this.css.workItemWorkNode}).inject(this.node);
 
-        var html = "<div class='area1Node'><div class='checkAreaNode'></div><div class='iconAreaNode'></div><div class='titleAreaNode'><div class='titleAreaTextNode'>"+this.data.title+"</div></div></div>" +
+        var html = "<div class='area1Node'><div class='checkAreaNode'></div><div class='iconAreaNode'></div><div class='titleAreaNode'><div class='titleAreaTextNode'>"+( this.data.title || "" )+"</div></div></div>" +
             "<div class='area2Node'><div class='statusAreaNode'></div><div class='activityAreaNode'><div class='activityAreaTextNode'>"+this.data.activityName+"</div></div></div>" +
             "<div class='area3Node'><div class='actionAreaNode'></div><div class='expireAreaNode'></div><div class='personAreaNode'></div></div>";
         this.workAreaNode.set("html", html);
@@ -746,7 +746,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
         }else{
             this.explorer.actions.getWork(this.data.id, function(json){
                 this.data = json.data;
-                this.titleAreaTextNode.set("text", this.data.title);
+                this.titleAreaTextNode.set("text", this.data.title || "");
                 this.activityAreaTextNode.set("text", this.data.activityName);
 
                 this.statusAreaNode.empty();
@@ -853,7 +853,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
     },
     processWork: function(e){
         var lp = this.explorer.app.lp;
-        var text = lp.flowWork.replace(/{title}/g, this.data.title);
+        var text = lp.flowWork.replace(/{title}/g, this.data.title || "");
         var _self = this;
         this.workAreaNode.setStyles(this.css.workItemWorkNode_action);
         this.readyFlow = true;
@@ -1105,7 +1105,7 @@ MWF.xApplication.process.Application.WorkExplorer.Work = new Class({
     },
     remove: function(e){
         var lp = this.explorer.app.lp;
-        var text = lp.deleteWork.replace(/{title}/g, this.data.title);
+        var text = lp.deleteWork.replace(/{title}/g, this.data.title || "");
         var _self = this;
         this.workAreaNode.setStyles(this.css.workItemWorkNode_remove);
         this.readyRemove = true;
@@ -1468,10 +1468,11 @@ MWF.xApplication.process.Application.WorkExplorer.Task = new Class({
     flow: function(e){
         this.node.setStyles(this.css.taskItemNode_action);
         this.processNode = new Element("div", {"styles": this.css.taskItemFlowNode}).inject(this.explorer.app.content);
+        this.processNode.setStyles({"overflow":"auto"});
 
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var width = 540;
-            var height = 260;
+            var width = 560;
+            var height = 400;
             var size = this.explorer.app.content.getSize();
             var x = size.x/2-width/2;
             var y = size.y/2-height/2;

@@ -1,6 +1,7 @@
 package com.x.attendance.entity;
 
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
@@ -56,13 +57,13 @@ public class AttendanceDingtalkDetail extends SliceJpaObject  {
     private String userId;
 
     public static final String o2User_FIELDNAME = "o2User";
-    @FieldDescribe("O2OA用户")
-    @Column( length = length_128B, name = ColumnNamePrefix + o2User_FIELDNAME )
+    @FieldDescribe("O2OA用户distinguishedName")
+    @Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + o2User_FIELDNAME )
     private String o2User;
 
     public static final String o2Unit_FIELDNAME = "o2Unit";
-    @FieldDescribe("O2OA用户所在的组织")
-    @Column( length = length_128B, name = ColumnNamePrefix + o2Unit_FIELDNAME )
+    @FieldDescribe("O2OA用户所在的组织distinguishedName")
+    @Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + o2Unit_FIELDNAME )
     private String o2Unit;
 
     public static final String baseCheckTime_FIELDNAME = "baseCheckTime";

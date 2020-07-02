@@ -7,9 +7,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.ProcessPlatformPlan;
+import com.x.query.core.express.plan.Runtime;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -18,7 +22,9 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.View_;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -42,6 +48,67 @@ abstract class BaseAction extends StandardJaxrsAction {
 		p = cb.and(p, cb.equal(root.get(View_.alias), view.getAlias()));
 		p = cb.and(p, cb.notEqual(root.get(View_.id), view.getId()));
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() == 0;
+	}
+
+	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
+							  List<FilterEntry> filterList, Map<String, String> parameter, Integer count) throws Exception {
+		Runtime runtime = new Runtime();
+		runtime.person = effectivePerson.getDistinguishedName();
+		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
+		List<String> list = new ArrayList<>();
+		if(runtime.identityList!=null){
+			for(String identity : runtime.identityList){
+				if(identity.indexOf("@")>-1) {
+					list.add(StringUtils.substringAfter(identity, "@"));
+				}
+			}
+			runtime.identityList.addAll(list);
+			list.clear();
+		}
+		runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
+		if(runtime.unitList!=null){
+			for(String item : runtime.unitList){
+				if(item.indexOf("@")>-1) {
+					list.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+			runtime.unitList.addAll(list);
+			list.clear();
+		}
+		runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
+		if(runtime.unitAllList!=null){
+			for(String item : runtime.unitAllList){
+				if(item.indexOf("@")>-1) {
+					list.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+			runtime.unitAllList.addAll(list);
+			list.clear();
+		}
+		runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
+		if(runtime.groupList!=null){
+			for(String item : runtime.groupList){
+				if(item.indexOf("@")>-1) {
+					list.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+			runtime.groupList.addAll(list);
+			list.clear();
+		}
+		runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
+		if(runtime.roleList!=null){
+			for(String item : runtime.roleList){
+				if(item.indexOf("@")>-1) {
+					list.add(StringUtils.substringAfter(item, "@"));
+				}
+			}
+			runtime.roleList.addAll(list);
+			list.clear();
+		}
+		runtime.parameter = parameter;
+		runtime.filterList = filterList;
+		runtime.count = this.getCount(view, count);
+		return runtime;
 	}
 
 	protected Integer getCount(View view, Integer count) {

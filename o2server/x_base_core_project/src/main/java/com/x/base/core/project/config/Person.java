@@ -21,6 +21,7 @@ public class Person extends ConfigObject {
 	public static final Boolean DEFAULT_BINDLOGIN = true;
 	public static final Boolean DEFAULT_FACELOGIN = true;
 	public static final Boolean DEFAULT_SUPERPERMISSION = true;
+	public static final Boolean DEFAULT_PERSONUNITORDERBYASC = true;
 
 	public static final String REGISTER_TYPE_DISABLE = "disable";
 	public static final String REGISTER_TYPE_CAPTCHA = "captcha";
@@ -54,6 +55,7 @@ public class Person extends ConfigObject {
 		this.superPermission = DEFAULT_SUPERPERMISSION;
 		this.passwordRegex = DEFAULT_PASSWORDREGEX;
 		this.passwordRegexHint = DEFAULT_PASSWORDREGEXHINT;
+		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
 	}
 
 	public static Person defaultInstance() {
@@ -106,6 +108,9 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("token时长,分钟")
 	private Integer tokenExpiredMinutes;
+
+	@FieldDescribe("人员组织排序是否为升序，true为升序(默认)，false为降序")
+	private Boolean personUnitOrderByAsc;
 
 	public Integer getTokenExpiredMinutes() {
 		return (this.tokenExpiredMinutes == null || this.tokenExpiredMinutes < 0) ? DEFAULT_TOKENEXPIREDMINUTES
@@ -296,4 +301,11 @@ public class Person extends ConfigObject {
 		this.tokenExpiredMinutes = tokenExpiredMinutes;
 	}
 
+	public Boolean getPersonUnitOrderByAsc() {
+		return BooleanUtils.isTrue(this.personUnitOrderByAsc) ? true : false;
+	}
+
+	public void setPersonUnitOrderByAsc(Boolean personUnitOrderByAsc) {
+		this.personUnitOrderByAsc = personUnitOrderByAsc;
+	}
 }

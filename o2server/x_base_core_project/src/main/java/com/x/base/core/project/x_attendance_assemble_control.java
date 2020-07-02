@@ -4,8 +4,8 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
-@Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "考勤", packageName = "com.x.attendance.assemble.control", containerEntities = {
-		"com.x.attendance.entity.AttendanceAdmin", "com.x.attendance.entity.AttendanceAppealInfo",
+@Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "考勤管理", packageName = "com.x.attendance.assemble.control", containerEntities = {
+		"com.x.attendance.entity.AttendanceAdmin", "com.x.attendance.entity.AttendanceAppealInfo", "com.x.attendance.entity.AttendanceAppealAuditInfo",
 		"com.x.attendance.entity.AttendanceDetail", "com.x.attendance.entity.AttendanceDetailMobile",
 		"com.x.attendance.entity.AttendanceEmployeeConfig", "com.x.attendance.entity.AttendanceImportFileInfo",
 		"com.x.attendance.entity.AttendanceScheduleSetting", "com.x.attendance.entity.AttendanceSetting",

@@ -36,6 +36,7 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, End end) throws Exception {
+		// nothing
 	}
 
 	@Override
@@ -56,64 +57,70 @@ public class EndProcessor extends AbstractEndProcessor {
 			this.mergeReview(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeAttachment(aeiObjects, aeiObjects.getWork(), other);
 			this.mergeWorkLog(aeiObjects, aeiObjects.getWork(), other);
+			this.mergeRecord(aeiObjects, aeiObjects.getWork(), other);
 			aeiObjects.getWorkLogs().stream()
 					.filter(p -> StringUtils.equals(p.getFromActivityToken(), aeiObjects.getWork().getActivityToken()))
 					.forEach(obj -> {
 						aeiObjects.getDeleteWorkLogs().add(obj);
 					});
 		} else {
-			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects.getWork());
+			WorkCompleted workCompleted = this.createWorkCompleted(aeiObjects.getWork(), end);
 			workCompleted.setAllowRollback(end.getAllowRollback());
 			aeiObjects.getCreateWorkCompleteds().add(workCompleted);
 			aeiObjects.getTasks().stream().forEach(o -> aeiObjects.getDeleteTasks().add(o));
 			aeiObjects.getDocumentVersions().stream().forEach(o -> aeiObjects.getDeleteDocumentVersions().add(o));
 			aeiObjects.getTaskCompleteds().stream().forEach(o -> {
-				/* 已办的完成时间是不需要更新的 */
+				// 已办的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
-				/* 重新赋值映射字段 */
+				// 重新赋值映射字段
 				o.copyProjectionFields(workCompleted);
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateTaskCompleteds().add(o);
 			});
 			aeiObjects.getReads().stream().forEach(o -> {
-				/* 待阅的完成时间是不需要更新的 */
+				// 待阅的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
-				/* 重新赋值映射字段 */
+				// 重新赋值映射字段
 				o.copyProjectionFields(workCompleted);
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReads().add(o);
 			});
 			aeiObjects.getReadCompleteds().stream().forEach(o -> {
-				/* 已阅的完成时间是不需要更新的 */
+				// 已阅的完成时间是不需要更新的
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
-				/* 重新赋值映射字段 */
+				// 重新赋值映射字段
 				o.copyProjectionFields(workCompleted);
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReadCompleteds().add(o);
+			});
+			aeiObjects.getRecords().stream().forEach(o -> {
+				o.setCompleted(true);
+				o.setWorkCompleted(workCompleted.getId());
+				aeiObjects.getUpdateRecords().add(o);
 			});
 			aeiObjects.getReviews().stream().forEach(o -> {
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
 				o.setCompletedTime(workCompleted.getCompletedTime());
 				o.setCompletedTimeMonth(workCompleted.getCompletedTimeMonth());
-				/* 重新赋值映射字段 */
+				// 重新赋值映射字段
 				o.copyProjectionFields(workCompleted);
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateReviews().add(o);
 			});
 			aeiObjects.getWorkLogs().stream().forEach(o -> {
 				o.setSplitting(false);
 				o.setSplitToken("");
-				o.getProperties().setSplitTokenList(new ArrayList<String>());
+				o.getProperties().setSplitTokenList(new ArrayList<>());
 				o.setSplitValue("");
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateWorkLogs().add(o);
-				/* 删除未连接的WorkLog */
+				// 删除未连接的WorkLog
 				if (BooleanUtils.isNotTrue(o.getConnected())) {
 					aeiObjects.getDeleteWorkLogs().add(o);
 				}
@@ -121,10 +128,10 @@ public class EndProcessor extends AbstractEndProcessor {
 			aeiObjects.getAttachments().stream().forEach(o -> {
 				o.setCompleted(true);
 				o.setWorkCompleted(workCompleted.getId());
-				/* 加入到更新队列保证事务开启 */
+				// 加入到更新队列保证事务开启
 				aeiObjects.getUpdateAttachments().add(o);
 			});
-			/* 已workCompleted数据为准进行更新 */
+			// 已workCompleted数据为准进行更新
 			aeiObjects.getData().setWork(workCompleted);
 			aeiObjects.getData().setAttachmentList(aeiObjects.getAttachments());
 			aeiObjects.getDeleteWorks().addAll(aeiObjects.getWorks());
@@ -150,10 +157,11 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, End end) throws Exception {
+		// nothing
 	}
 
 	/* 根据work和data创建最终保存的workCompleted */
-	private WorkCompleted createWorkCompleted(Work work) throws Exception {
+	private WorkCompleted createWorkCompleted(Work work, End end) throws Exception {
 		Date completedTime = new Date();
 		Long duration = Config.workTime().betweenMinutes(work.getStartTime(), completedTime);
 		String formString = "";
@@ -166,6 +174,11 @@ public class EndProcessor extends AbstractEndProcessor {
 				formMobileString = form.getMobileData();
 			}
 		}
-		return new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		WorkCompleted workCompleted = new WorkCompleted(work, completedTime, duration, formString, formMobileString);
+		workCompleted.setActivity(end.getId());
+		workCompleted.setActivityAlias(end.getAlias());
+		workCompleted.setActivityDescription(end.getDescription());
+		workCompleted.setActivityName(end.getName());
+		return workCompleted;
 	}
 }

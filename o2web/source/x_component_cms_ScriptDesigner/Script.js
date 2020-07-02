@@ -229,15 +229,16 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
 
 
     save: function(callback){
-        var session = this.editor.editor.getSession();
-        var annotations = session.getAnnotations();
-        var validated = true;
-        for (var i=0; i<annotations.length; i++){
-            if (annotations[i].type=="error"){
-                validated = false;
-                break;
-            }
-        }
+        // var session = this.editor.editor.getSession();
+        // var annotations = session.getAnnotations();
+        // var validated = true;
+        // for (var i=0; i<annotations.length; i++){
+        //     if (annotations[i].type=="error"){
+        //         validated = false;
+        //         break;
+        //     }
+        // }
+        var validated = this.editor.validated();
 
         var name = this.designer.propertyNameNode.get("value");
         var alias = this.designer.propertyAliasNode.get("value");
@@ -265,15 +266,16 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
         }.bind(this));
     },
     saveSilence: function(callback){
-        var session = this.editor.editor.getSession();
-        var annotations = session.getAnnotations();
-        var validated = true;
-        for (var i=0; i<annotations.length; i++){
-            if (annotations[i].type=="error"){
-                validated = false;
-                break;
-            }
-        }
+        // var session = this.editor.editor.getSession();
+        // var annotations = session.getAnnotations();
+        // var validated = true;
+        // for (var i=0; i<annotations.length; i++){
+        //     if (annotations[i].type=="error"){
+        //         validated = false;
+        //         break;
+        //     }
+        // }
+        var validated = this.editor.validated();
 
         if( this.designer.currentScript == this ) {
             var name = this.designer.propertyNameNode.get("value");

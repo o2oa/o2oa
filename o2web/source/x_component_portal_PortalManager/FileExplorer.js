@@ -90,7 +90,7 @@ MWF.xApplication.portal.PortalManager.FileExplorer.File = new Class({
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.portal);
         url = "/x_portal_assemble_surface"+url;
-        return MWF.Actions.getHost("x_portal_assemble_surface")+url;
+        return o2.filterUrl(MWF.Actions.getHost("x_portal_assemble_surface")+url);
     },
     _getIcon: function(){
         return "file.png";
@@ -100,7 +100,7 @@ MWF.xApplication.portal.PortalManager.FileExplorer.File = new Class({
         url = url.replace(/{flag}/, this.data.id);
         url = url.replace(/{applicationFlag}/, this.data.portal);
         url = "/x_portal_assemble_surface"+url;
-        var href = MWF.Actions.getHost("x_portal_assemble_surface")+url;
+        var href = o2.filterUrl(MWF.Actions.getHost("x_portal_assemble_surface")+url);
 
 		return {
 			"icon": this.data.iconUrl,
@@ -147,7 +147,7 @@ MWF.xApplication.portal.PortalManager.FileDesigner = new Class({
 
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom");
 
         }
@@ -167,7 +167,7 @@ MWF.xApplication.portal.PortalManager.FileDesigner = new Class({
             this.fileUrlNode.set("text", url);
             var a = new Element("div", {
                 "styles": {"height": "30px"},
-                "html": "<a target='_blank' href='"+href+"'>open</a>"
+                "html": "<a target='_blank' href='"+o2.filterUrl(href)+"'>open</a>"
             }).inject(this.fileUrlNode, "bottom")
         }
 

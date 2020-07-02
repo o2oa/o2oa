@@ -54,6 +54,9 @@ public class HotPictureInfo extends SliceJpaObject {
 	 * =============================================================================
 	 * =====
 	 */
+	public static final String APPLICATION_CMS = "CMS";
+	public static final String APPLICATION_BBS = "BBS";
+
 	public static final String application_FIELDNAME = "application";
 	@FieldDescribe("应用名称")
 	@Column(name = "xapplication", length = JpaObject.length_64B)

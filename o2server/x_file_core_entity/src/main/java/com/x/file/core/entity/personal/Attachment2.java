@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.SliceJpaObject;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.open.FileType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,7 +87,7 @@ public class Attachment2 extends SliceJpaObject {
 		this.originFile = originFile;
 		this.length = length;
 		this.type = type;
-		this.status = "正常";
+		this.status = FileStatus.VALID.getName();
 		if (null == this.extension) {
 			throw new Exception("extension can not be null.");
 		}
@@ -135,7 +136,7 @@ public class Attachment2 extends SliceJpaObject {
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + folder_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + folder_FIELDNAME)
 	/* 上级目录必须存在 */
-	@CheckPersist(allowEmpty = true, citationExists = @CitationExist(type = Folder2.class, equals = @Equal(property = "person", field = "person")))
+	@CheckPersist(allowEmpty = false)
 	private String folder;
 
 	public static final String originFile_FIELDNAME = "originFile";
@@ -150,7 +151,7 @@ public class Attachment2 extends SliceJpaObject {
 	@FieldDescribe("文件状态：正常|已删除")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String status = "正常";
+	private String status = FileStatus.VALID.getName();
 
 	public static final String lastUpdateTime_FIELDNAME = "lastUpdateTime";
 	@FieldDescribe("最后更新时间")

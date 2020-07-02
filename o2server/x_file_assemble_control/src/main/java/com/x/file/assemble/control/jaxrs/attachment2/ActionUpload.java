@@ -26,7 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-class ActionUpload extends StandardJaxrsAction {
+class ActionUpload extends BaseAction {
 
 	// @HttpMethodDescribe(value = "创建Attachment对象,如果没有上级目录用(0)替代.", response =
 	// WrapOutId.class)
@@ -35,7 +35,8 @@ class ActionUpload extends StandardJaxrsAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))) {
+			if ((!StringUtils.isEmpty(folderId)) && (!StringUtils.equalsIgnoreCase(folderId, EMPTY_SYMBOL))
+					&& !Business.TOP_FOLD.equals(folderId)) {
 				Folder2 folder = emc.find(folderId, Folder2.class);
 				if (null == folder) {
 					throw new ExceptionFolderNotExist(folderId);
@@ -46,7 +47,7 @@ class ActionUpload extends StandardJaxrsAction {
 				}
 				folderId = folder.getId();
 			} else {
-				folderId = null;
+				folderId = Business.TOP_FOLD;
 			}
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(OriginFile.class);
 			if (null == mapping) {
@@ -65,7 +66,8 @@ class ActionUpload extends StandardJaxrsAction {
 				throw new ExceptionEmptyExtension(fileName);
 			}
 			/** 同一目录下文件名唯一 */
-			if (this.exist(business, fileName, folderId)) {
+
+			if (this.exist(business, fileName, folderId, effectivePerson.getDistinguishedName())) {
 				throw new ExceptionSameNameFileExist(fileName);
 			}
 			if(StringUtils.isEmpty(fileMd5)){
@@ -104,20 +106,6 @@ class ActionUpload extends StandardJaxrsAction {
 			result.setData(wo);
 			return result;
 		}
-	}
-
-	private Boolean exist(Business business, String fileName, String folderId) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Attachment2.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Attachment2> root = cq.from(Attachment2.class);
-		Predicate p = cb.equal(root.get(Attachment2_.name), fileName);
-		if (StringUtils.isNotEmpty(folderId)) {
-			p = cb.and(p, cb.equal(root.get(Attachment2_.folder), folderId));
-		} else {
-			p = cb.and(p, cb.or(cb.isNull(root.get(Attachment2_.folder)), cb.equal(root.get(Attachment2_.folder), "")));
-		}
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult() > 0;
 	}
 
 	public static class Wo extends WoId {

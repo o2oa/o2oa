@@ -5,16 +5,24 @@ MWF.xApplication.process.Xform.Button = MWF.APPButton =  new Class({
     iconStyle: "personfieldIcon",
 
     _loadUserInterface: function(){
-        var button = new Element("button");
-        button.inject(this.node, "after");
+        // var button = new Element("button");
+        // button.inject(this.node, "after");
+        // this.node.destroy();
+        // this.node = button;
+
+        var button = this.node.getElement("button");
+        if (!button) button = new Element("button");
+            button.inject(this.node, "after");
         this.node.destroy();
         this.node = button;
+
         this.node.set({
             "id": this.json.id,
             "text": this.json.name || this.json.id,
-            "styles": this.form.css.buttonStyles,
             "MWFType": this.json.type
         });
+        if (!this.json.preprocessing) this.node.setStyles(this.form.css.buttonStyles);
+
     }
 
 }); 

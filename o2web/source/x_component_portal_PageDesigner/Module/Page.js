@@ -641,7 +641,7 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	preview: function(){
         var url = "../x_desktop/portal.html?id="+this.json.application+"&page="+this.json.id;
-        window.open(url);
+        window.open(o2.filterUrl(url));
         // MWF.xDesktop.requireApp("process.FormDesigner", "Preview", function(){
         //
          //    if (this.options.mode=="Mobile"){
@@ -790,7 +790,21 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
             MWF.FormImport.create("office", this);
         }.bind(this));
     },
-
+	deletePropertiesOrStyles: function(name, key){
+		if (name=="styles"){
+			try{
+				if( key && this.json.styles[key] ){
+					delete this.json.styles[key];
+				}
+				this.setCustomStyles();
+			}catch(e){}
+		}
+		if (name=="properties"){
+			try{
+				this.node.removeProperty(key);
+			}catch(e){}
+		}
+	},
 	setPropertiesOrStyles: function(name){
 		if (name==="styles"){
 			this.setCustomStyles();

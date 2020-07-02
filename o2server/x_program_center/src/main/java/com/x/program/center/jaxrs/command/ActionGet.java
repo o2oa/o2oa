@@ -11,17 +11,25 @@ import com.x.base.core.project.config.Node;
 
 /*获取服器信息列表*/
 class ActionGet extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String currentIP) throws Exception {
 		
 			ActionResult<Wo> result = new ActionResult<>();			
 			Nodes nodes = Config.nodes();
+			
 			if (null == nodes) {
-				throw new ExceptionEntityNotExist(id, "Nodes");
+				throw new ExceptionEntityNotExist(currentIP, "Nodes");
 			}
 			List<NodeInfo> nodeInfoList = new ArrayList<>();
+			
 			for(String key:nodes.keySet()){
 				NodeInfo  nodeInfo  = new NodeInfo();
-				nodeInfo.setNodeAddress(key);
+				
+				if(key.equalsIgnoreCase("127.0.0.1")) {
+					nodeInfo.setNodeAddress(currentIP);	
+				}else {
+				    nodeInfo.setNodeAddress(key);
+				}
+				
 				nodeInfo.setNode(nodes.get(key));
 				nodeInfoList.add(nodeInfo);
 			}

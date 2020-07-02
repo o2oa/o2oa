@@ -758,6 +758,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "getSelectedData" : function () { return _form.getSelectedData(); },
         "setFilter" : function ( filter ) { return _form.setFilter(filter); },
         "switchView" : function ( options ) { return _form.switchView(options); },
+        "reload" : function () { _form.reload(); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,
@@ -976,6 +977,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle) {
             var column = columnOrOptions;
+            var onAfterPublish, onPostPublish;
             if (typeOf(columnOrOptions) == "object") {
                 column = columnOrOptions.column;
                 category = columnOrOptions.category;
@@ -986,6 +988,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 latest = columnOrOptions.latest;
                 selectColumnEnable = columnOrOptions.selectColumnEnable;
                 ignoreTitle = columnOrOptions.ignoreTitle;
+                onAfterPublish = columnOrOptions.onAfterPublish;
+                onPostPublish = columnOrOptions.onPostPublish;
             }
             if (target) {
                 if (layout.app && layout.app.inBrowser) {
@@ -1009,9 +1013,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     "onStarted": function (documentId, data) {
                         if (callback) callback();
                     },
-                    "onPostLoad": function () {
-                    },
                     "onPostPublish": function () {
+                        if(onPostPublish)onPostPublish();
+                    },
+                    "onAfterPublish": function () {
+                        if(onAfterPublish)onAfterPublish();
                     }
                 });
                 starter.load();

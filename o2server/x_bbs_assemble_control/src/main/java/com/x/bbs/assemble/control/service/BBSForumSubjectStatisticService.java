@@ -44,9 +44,11 @@ public class BBSForumSubjectStatisticService {
 								sectionInfo.setSubjectTotalToday( count.longValue() );
 								count = business.replyInfoFactory().countReplyForTodayBySectionId( mainSectionInfo.getId() );
 								sectionInfo.setReplyTotalToday( count.longValue() );
+
 								if( StringUtils.isEmpty( sectionInfo.getReplyMessageNotifyType() )){
 									sectionInfo.setReplyMessageNotifyType("0,0,0");
 								}
+
 								emc.check( sectionInfo, CheckPersistType.all );
 							}
 						}
@@ -59,9 +61,11 @@ public class BBSForumSubjectStatisticService {
 						mainSectionInfo.setSubjectTotalToday( count.longValue() );
 						count = business.replyInfoFactory().countReplyForTodayBySectionId( mainSectionInfo.getId() );
 						mainSectionInfo.setReplyTotalToday( count.longValue() );
+
 						if( StringUtils.isEmpty( mainSectionInfo.getReplyMessageNotifyType() )){
 							mainSectionInfo.setReplyMessageNotifyType("0,0,0");
 						}
+
 						emc.check( mainSectionInfo, CheckPersistType.all );
 					}
 				}
@@ -78,6 +82,11 @@ public class BBSForumSubjectStatisticService {
 				f.setSubjectTotalToday( count.longValue() );
 				count = business.replyInfoFactory().countForTodayByForumId( f.getId() );
 				f.setReplyTotalToday( count.longValue() );
+
+				if( StringUtils.isEmpty( f.getReplyMessageNotifyType() )){
+					f.setReplyMessageNotifyType("0,0,0");
+				}
+
 				emc.check( f, CheckPersistType.all );
 				emc.commit();
 			}catch( Exception e ){
