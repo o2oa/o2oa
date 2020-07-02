@@ -19,6 +19,7 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectAllEnable" : true //分类是否允许全选下一层
     },
     loadSelectItems: function(addToNext){
+	    var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
                 this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
@@ -27,33 +28,24 @@ MWF.xApplication.Selector.Identity = new Class({
             }
         }
         if(this.options.noUnit){
-            this.loadInclude();
+            this.loadInclude(afterLoadSelectItemFun);
         }else if (this.options.units.length){
-            // var units = [];
-            // this.options.units.each(function(u){
-            //     if (typeOf(u)==="string"){
-            //         units.push(u);
-            //     }else{
-            //         units.push(u.distinguishedName)
-            //     }
-            // });
-            // this.org2Action.listUnit({"unitList":units}, function(json){
-            //     json.data.each(function(d){
-            //         var category = this._newItemCategory("ItemUnitCategory", d, this, this.itemAreaNode);
-            //         this.subCategorys.push( category );
-            //     }.bind(this));
-            // }.bind(this));
+            var unitLoaded = 0;
+            var loadUnitSuccess = function () {
+                unitLoaded++;
+                if( unitLoaded === this.options.units.length ){
+                    this.loadInclude( afterLoadSelectItemFun );
+                }
+            }.bind(this);
+            var loadUnitFailure = loadUnitSuccess;
             this.options.units.each(function(unit){
                 if (typeOf(unit)==="string"){
-
-
                     this.orgAction.getUnit(unit, function(json){
                         if (json.data){
-
                             var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
                             this.subCategorys.push( category );
                         }
-                        this.loadInclude();
+                        loadUnitSuccess();
                     }.bind(this), function(){
                         this.orgAction.listUnitByKey(function(json){
                             if (json.data.length){
@@ -62,8 +54,8 @@ MWF.xApplication.Selector.Identity = new Class({
                                     this.subCategorys.push( category );
                                 }.bind(this))
                             }
-                            this.loadInclude();
-                        }.bind(this), null, unit);
+                            loadUnitSuccess();
+                        }.bind(this), loadUnitFailure, unit);
                     }.bind(this));
                 }else{
                     this.orgAction.getUnit(function(json){
@@ -71,8 +63,8 @@ MWF.xApplication.Selector.Identity = new Class({
                             var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
                             this.subCategorys.push( category );
                         }
-                        this.loadInclude();
-                    }.bind(this), null, unit.distinguishedName);
+                        loadUnitSuccess();
+                    }.bind(this), loadUnitFailure, unit.distinguishedName);
                     //var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
                 }
 
@@ -85,17 +77,18 @@ MWF.xApplication.Selector.Identity = new Class({
                         this.subCategorys.push( category );
                     }
                 }.bind(this));
-                this.loadInclude();
-            }.bind(this));
+                loadUnitSuccess();
+            }.bind(this), loadUnitFailure);
         }
     },
 
-    loadInclude: function() {
+    loadInclude: function(afterLoadFun) {
         if (!this.includeObject){
             this.includeObject = new MWF.xApplication.Selector.Identity.Include(this, this.itemAreaNode, {
                 "include": this.options.include, //增加的可选项
                 "resultType": this.options.resultType, //可以设置成个人，那么结果返回个人
-                "expandSubEnable": this.options.expandSubEnable //是否允许展开下一层
+                "expandSubEnable": this.options.expandSubEnable, //是否允许展开下一层
+                "onAfterLoad" : afterLoadFun
             });
         }
         this.includeObject.load();
