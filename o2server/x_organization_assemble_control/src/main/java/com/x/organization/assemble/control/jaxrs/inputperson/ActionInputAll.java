@@ -260,7 +260,7 @@ class ActionInputAll extends BaseAction {
 						String orderNumber = configurator.getCellStringValue(row.getCell(configurator.getOrderNumberColumn()));
 						orderNumber = StringUtils.trimToEmpty(orderNumber);
 						Integer order = null;
-						if(orderNumber!=null){
+						if(StringUtils.isNotEmpty(orderNumber)){
 							order = Integer.valueOf(orderNumber);
 						}
 						unitItem.setOrderNumber(order);
@@ -585,7 +585,7 @@ class ActionInputAll extends BaseAction {
 				continue;
 			}
 			if (StringUtils.isEmpty(o.getUnique())) {
-				this.setUnitMemo(workbook, configurator, o, "组织编号不能为空.");
+				this.setUnitMemo(workbook, configurator, o, "组织唯一编码不能为空.");
 				validate = false;
 				continue;
 			}
@@ -639,7 +639,7 @@ class ActionInputAll extends BaseAction {
 				continue;
 			}*/
 			if (StringUtils.isEmpty(o.getUnique())) {
-				this.setPersonMemo(workbook, configurator, o, "员工账号不能为空.");
+				this.setPersonMemo(workbook, configurator, o, "员工唯一编码不能为空.");
 				validate = false;
 				continue;
 			}
@@ -704,12 +704,12 @@ class ActionInputAll extends BaseAction {
 				identityItem.setRow(i);
 				identitys.add(identityItem);
 				if (StringUtils.isEmpty(unique)) {
-					this.setIdentityMemo(workbook, configurator, identityItem, "员工账号不能为空.");
+					this.setIdentityMemo(workbook, configurator, identityItem, "员工唯一编码不能为空.");
 					validate = false;
 					continue;
 				}
 				if (StringUtils.isEmpty(unitCode)) {
-					this.setIdentityMemo(workbook, configurator, identityItem, "组织编号不能为空.");
+					this.setIdentityMemo(workbook, configurator, identityItem, "组织唯一编码不能为空.");
 					validate = false;
 					continue;
 				}
