@@ -126,7 +126,7 @@ public class Review extends SliceJpaObject {
 	
 	public static final String priority_FIELDNAME = "priority";
 	@FieldDescribe("工作等级：普通、紧急、特急")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + priority_FIELDNAME)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + priority_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + priority_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
 	private String priority = "普通";

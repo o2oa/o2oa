@@ -9,21 +9,23 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.Task;
 
 public class ActionGetNextUseableExtFieldName extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger(ActionGetNextUseableExtFieldName.class);
 	
-	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String projectId, String fieldType ) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String correlationId, String fieldType ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Project project = null;
+		Task task = null;
 		Boolean check = true;
 		Wo wo = new Wo();
 		
 		if( Boolean.TRUE.equals( check ) ){
-			if( StringUtils.isEmpty( projectId )) {
+			if( StringUtils.isEmpty( correlationId )) {
 				check = false;
-				Exception exception = new ProjectFlagForQueryEmptyException();
+				Exception exception = new CustomExtFieldReleFlagForQueryEmptyException();
 				result.error( exception );
 			}
 		}
@@ -34,28 +36,28 @@ public class ActionGetNextUseableExtFieldName extends BaseAction {
 			}
 		}
 		
-		if( Boolean.TRUE.equals( check ) ){
+		/*if( Boolean.TRUE.equals( check ) ){
 			try {
-				project = projectQueryService.get( projectId );
+				project = projectQueryService.get( correlationId );
 				if ( project == null) {
 					check = false;
-					Exception exception = new ProjectNotExistsException( projectId );
+					Exception exception = new ProjectNotExistsException( correlationId );
 					result.error( exception );
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ProjectExtFieldRelePersistException(e, "根据指定flag查询应用项目信息对象时发生异常。flag:" +  projectId );
+				Exception exception = new CustomExtFieldRelePersistException(e, "根据指定flag查询应用项目信息对象时发生异常。flag:" +  correlationId );
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
 			}
-		}
+		}*/
 		
 		if( Boolean.TRUE.equals( check ) ){
-			String fieldName = projectExtFieldReleQueryService.getNextUseableExtFieldName( projectId, fieldType );
+			String fieldName = customExtFieldReleQueryService.getNextUseableExtFieldName( correlationId, fieldType );
 			if( StringUtils.isNotEmpty( fieldName )) {
 				wo.setFieldName(fieldName);
 			}else {
-				Exception exception = new ProjectExtFieldReleQueryException( "当前项目无可用扩展属性。" );
+				Exception exception = new CustomExtFieldReleQueryException( "当前关联ID无可用扩展属性。" );
 				result.error(exception);
 			}
 		}

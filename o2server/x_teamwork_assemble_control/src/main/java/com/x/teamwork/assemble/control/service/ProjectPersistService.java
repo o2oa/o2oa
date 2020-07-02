@@ -1,5 +1,7 @@
 package com.x.teamwork.assemble.control.service;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -8,8 +10,10 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.common.date.DateOperation;
+import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
+import com.x.teamwork.core.entity.Task;
 
 /**
  * 对项目信息查询的服务
@@ -129,6 +133,93 @@ public class ProjectPersistService {
 				emc.beginTransaction( Project.class );
 				project.removeStarPerson( effectivePerson.getDistinguishedName() );
 				emc.check( project, CheckPersistType.all );
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据项目ID恢复项目
+	 * @param projectId
+	 * @param icon
+	 * @throws Exception
+	 */
+	public void recoveryProject( String projectId ) throws Exception {
+		if ( StringUtils.isEmpty( projectId )) {
+			throw new Exception("projectId is empty!");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Project project = emc.find( projectId, Project.class );
+			Business business = new Business( emc );
+			if( project == null ) {
+				throw new Exception("Project not exists.id:" + projectId );
+			}else {
+				emc.beginTransaction( Project.class );
+				emc.beginTransaction( Task.class );
+				project.setDeleted(false);
+				emc.check( project, CheckPersistType.all );	
+				
+				List<String> ids = business.taskFactory().listByProject( projectId );
+				List<Task> tasks = business.taskFactory().list(ids);
+				if( ListTools.isNotEmpty(tasks)) {
+					for( Task task : tasks ) {
+						task.setRelation(false);
+						emc.check( task, CheckPersistType.all );	
+					}
+				}
+				
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据项目更改项目为已完成或未
+	 * @param projectId
+	 * @param icon
+	 * @throws Exception
+	 */
+	public void completeProject( String projectId ,Boolean status) throws Exception {
+		if ( StringUtils.isEmpty( projectId )) {
+			throw new Exception("projectId is empty!");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Project project = emc.find( projectId, Project.class );
+			if( project == null ) {
+				throw new Exception("Project not exists.id:" + projectId );
+			}else {
+				emc.beginTransaction( Project.class );
+				project.setCompleted(status);
+				emc.check( project, CheckPersistType.all );	
+				emc.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 根据项目设置项目是否可创建任务
+	 * @param projectId
+	 * @param icon
+	 * @throws Exception
+	 */
+	public void createableProject( String projectId ,Boolean status) throws Exception {
+		if ( StringUtils.isEmpty( projectId )) {
+			throw new Exception("projectId is empty!");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Project project = emc.find( projectId, Project.class );
+			if( project == null ) {
+				throw new Exception("Project not exists.id:" + projectId );
+			}else {
+				emc.beginTransaction( Project.class );
+				project.setCreateable(status);
+				emc.check( project, CheckPersistType.all );	
 				emc.commit();
 			}
 		} catch (Exception e) {

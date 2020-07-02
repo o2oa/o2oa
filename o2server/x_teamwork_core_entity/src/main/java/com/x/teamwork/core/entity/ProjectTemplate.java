@@ -96,7 +96,7 @@ public class ProjectTemplate extends SliceJpaObject {
 	private String icon = null;
 	
 	public static final String description_FIELDNAME = "description";
-	@FieldDescribe("模板类型")
+	@FieldDescribe("描述")
 	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true )

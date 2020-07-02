@@ -34,13 +34,13 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 		List<WoGroup> woGroupList = null;
 		Boolean check = true;
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( "ActionStatisticMyProjectsGroups", effectivePerson.getDistinguishedName() );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( "ActionStatisticMyProjectsGroups", effectivePerson.getDistinguishedName() );
 		Element element = projectCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
-		} else {
+		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					//查询我参与的所有项目
@@ -92,14 +92,14 @@ public class ActionStatisticMyProjectsGroups extends BaseAction {
 					wo.setGroups( woGroupList );
 					result.setData(wo);
 					
-					projectCache.put( new Element(cacheKey, wo) );					
+					//projectCache.put( new Element(cacheKey, wo) );					
 				} catch (Exception e) {
 					Exception exception = new ProjectQueryException(e, "将查询出来的应用项目信息对象转换为可输出的数据信息时发生异常。");
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 
