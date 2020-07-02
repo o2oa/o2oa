@@ -241,7 +241,8 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        //if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize(y);
     },
 
     addInclude: function(){
@@ -257,7 +258,7 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
     },
     save: function(callback){
         if (!this.isSave){
-            var session = this.editor.editor.getSession();
+            /*var session = this.editor.editor.getSession();
             var annotations = session.getAnnotations();
             var validated = true;
             for (var i=0; i<annotations.length; i++){
@@ -265,8 +266,8 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
                     validated = false;
                     break;
                 }
-            }
-
+            }*/
+            var validated = this.editor.validated();
             var name = this.designer.propertyNameNode.get("value");
             var alias = this.designer.propertyAliasNode.get("value");
             var description = this.designer.propertyDescriptionNode.get("value");
