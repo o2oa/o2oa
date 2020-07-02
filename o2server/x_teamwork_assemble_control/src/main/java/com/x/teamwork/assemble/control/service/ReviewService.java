@@ -146,6 +146,8 @@ public class ReviewService {
 				personObj = userManagerService.getPerson( person );
 				if( personObj != null ) {
 					personName = personObj.getDistinguishedName();
+				}else{
+					personName = userManagerService.getPersonNameWithIdentity(person);
 				}
 			}
 			if( StringUtils.isNotEmpty( personName )) {
@@ -160,7 +162,8 @@ public class ReviewService {
 			}
 			
 			//判断所有的人员是否全部加入到Project的参与者里
-			projectEntity.addParticipantPerson( person );			
+			//projectEntity.addParticipantPerson( person );		
+			projectEntity.addParticipantPerson( personName );	
 		}
 		emc.beginTransaction( Project.class );
 		emc.check( projectEntity, CheckPersistType.all);

@@ -11,6 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
+import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.EqualsTerm;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
@@ -175,6 +176,26 @@ public class ProjectQueryService {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	/**
+	 * 根据项目ID查询任务信息列表
+	 * @param projectId
+	 * @param deleted
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Task> listAllTasks(String projectId, Boolean deleted) throws Exception{
+		if ( StringUtils.isEmpty( projectId )) {
+			return null;
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return projectService.listAllTasks(emc, projectId, deleted );
+		}catch (Exception e) {
+			throw e;
+		}
+		
+		
 	}
 	
 	/**

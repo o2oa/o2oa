@@ -115,6 +115,9 @@ public class ActionCopyTask extends BaseAction {
 			//调整负责人为当前用户
 			newTask.setExecutor(effectivePerson.getDistinguishedName());
 			newTask.setExecutorIdentity(userManagerService.getIdentityWithPerson( newTask.getExecutor(), "min"));
+			
+			//调整创建人为当前用户
+			newTask.setCreatorPerson(effectivePerson.getDistinguishedName());
 
 			//调整ID
 			newTask.setId( Task.createId() );
