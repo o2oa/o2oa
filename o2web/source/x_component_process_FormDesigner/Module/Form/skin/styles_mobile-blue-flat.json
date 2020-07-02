@@ -441,7 +441,7 @@
   },
   "orgfield": {
     "styles": {
-      "border": "1px solid #979797",
+      "border": "0px",
       "border-radius": "0px",
       "color": "#000",
       "min-height": "40px",
@@ -461,7 +461,7 @@
   },
   "org": {
     "styles": {
-      "border": "1px solid #979797",
+      "border": "0px",
       "border-radius": "0px",
       "color": "#000",
       "min-height": "30px",
