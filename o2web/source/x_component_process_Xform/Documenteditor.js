@@ -1368,11 +1368,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.toolbar.load();
         }.bind(this));
 
-        this.scrollNode = this.toolbarNode.getParentSrcollNode();
-        if (this.scrollNode){
-            this.scrollNode.addEvent("scroll", function(){
-                this.resizeToolbar();
-            }.bind(this));
+        if (!layout.mobile){
+            this.scrollNode = this.toolbarNode.getParentSrcollNode();
+            if (this.scrollNode){
+                this.scrollNode.addEvent("scroll", function(){
+                    this.resizeToolbar();
+                }.bind(this));
+            }
         }
 
         this.doublePageAction = new Element("div", {"styles": this.css.doc_toolbar_doublePage, "text": MWF.xApplication.process.Xform.LP.doublePage}).inject(this.toolbarNode);
