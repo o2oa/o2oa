@@ -47,21 +47,25 @@ class JSInterfaceO2mNotification  private constructor (val activity: Activity?) 
     fun postMessage(message: String?) {
         if (!TextUtils.isEmpty(message)) {
             XLog.debug(message)
-            val json = JSONTokener(message).nextValue()
-            if (json is JSONObject) {
-                val type = json.getString("type")
-                when(type) {
-                    "alert" -> alert(message!!)
-                    "confirm" -> confirm(message!!)
-                    "prompt" -> prompt(message!!)
-                    "vibrate" -> vibrate(message!!)
-                    "toast" -> toast(message!!)
-                    "actionSheet" -> actionSheet(message!!)
-                    "showLoading" -> showLoading(message!!)
-                    "hideLoading" -> hideLoading(message!!)
+            try {
+                val json = JSONTokener(message).nextValue()
+                if (json is JSONObject) {
+                    val type = json.getString("type")
+                    when(type) {
+                        "alert" -> alert(message!!)
+                        "confirm" -> confirm(message!!)
+                        "prompt" -> prompt(message!!)
+                        "vibrate" -> vibrate(message!!)
+                        "toast" -> toast(message!!)
+                        "actionSheet" -> actionSheet(message!!)
+                        "showLoading" -> showLoading(message!!)
+                        "hideLoading" -> hideLoading(message!!)
+                    }
+                }else {
+                    XLog.error("message 格式错误！！！")
                 }
-            }else {
-                XLog.error("message 格式错误！！！")
+            } catch (e: Exception) {
+                XLog.error("", e)
             }
         }else {
             XLog.error("o2mNotification.postMessage error, 没有传入message内容！")

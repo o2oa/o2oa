@@ -55,24 +55,28 @@ class JSInterfaceO2mUtil private constructor(val activity: FragmentActivity?) {
     fun postMessage(message: String?) {
         if (!TextUtils.isEmpty(message)) {
             XLog.debug(message)
-            val json = JSONTokener(message).nextValue()
-            if (json is JSONObject) {
-                val type = json.getString("type")
-                when (type) {
-                    "date.datePicker" -> datePicker(message!!)
-                    "date.timePicker" -> timePicker(message!!)
-                    "date.dateTimePicker" -> dateTimePicker(message!!)
-                    "calendar.chooseOneDay" -> calendarDatePicker(message!!)
-                    "calendar.chooseDateTime" -> calendarDateTimePicker(message!!)
-                    "calendar.chooseInterval" -> calendarDateIntervalPicker(message!!)
-                    "device.getPhoneInfo" -> deviceGetPhoneInfo(message!!)
-                    "device.scan" -> deviceScan(message!!)
-                    "navigation.setTitle" -> navigationSetTitle(message!!)
-                    "navigation.close" -> navigationClose(message!!)
-                    "navigation.goBack" -> navigationGoBack(message!!)
+            try {
+                val json = JSONTokener(message).nextValue()
+                if (json is JSONObject) {
+                    val type = json.getString("type")
+                    when (type) {
+                        "date.datePicker" -> datePicker(message!!)
+                        "date.timePicker" -> timePicker(message!!)
+                        "date.dateTimePicker" -> dateTimePicker(message!!)
+                        "calendar.chooseOneDay" -> calendarDatePicker(message!!)
+                        "calendar.chooseDateTime" -> calendarDateTimePicker(message!!)
+                        "calendar.chooseInterval" -> calendarDateIntervalPicker(message!!)
+                        "device.getPhoneInfo" -> deviceGetPhoneInfo(message!!)
+                        "device.scan" -> deviceScan(message!!)
+                        "navigation.setTitle" -> navigationSetTitle(message!!)
+                        "navigation.close" -> navigationClose(message!!)
+                        "navigation.goBack" -> navigationGoBack(message!!)
+                    }
+                } else {
+                    XLog.error("message 格式错误！！！")
                 }
-            } else {
-                XLog.error("message 格式错误！！！")
+            } catch (e: Exception) {
+                XLog.error("", e)
             }
         } else {
             XLog.error("o2mUtil.postMessage error, 没有传入message内容！")

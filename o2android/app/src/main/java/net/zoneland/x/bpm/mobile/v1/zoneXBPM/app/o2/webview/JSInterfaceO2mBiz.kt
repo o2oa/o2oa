@@ -38,17 +38,21 @@ class JSInterfaceO2mBiz  private constructor(val activity: FragmentActivity?) {
     fun postMessage(message: String?) {
         if (!TextUtils.isEmpty(message)) {
             XLog.debug(message)
-            val json = JSONTokener(message).nextValue()
-            if (json is JSONObject) {
-                when (json.getString("type")) {
-                    "contact.departmentPicker" -> departmentsPicker(message!!)
-                    "contact.identityPicker" -> identityPicker(message!!)
-                    "contact.groupPicker" -> groupPicker(message!!)
-                    "contact.personPicker" -> personPicker(message!!)
-                    "contact.complexPicker" -> complexPicker(message!!)
+            try {
+                val json = JSONTokener(message).nextValue()
+                if (json is JSONObject) {
+                    when (json.getString("type")) {
+                        "contact.departmentPicker" -> departmentsPicker(message!!)
+                        "contact.identityPicker" -> identityPicker(message!!)
+                        "contact.groupPicker" -> groupPicker(message!!)
+                        "contact.personPicker" -> personPicker(message!!)
+                        "contact.complexPicker" -> complexPicker(message!!)
+                    }
+                } else {
+                    XLog.error("message 格式错误！！！")
                 }
-            } else {
-                XLog.error("message 格式错误！！！")
+            } catch (e: Exception) {
+                XLog.error("", e)
             }
         } else {
             XLog.error("o2mBiz.postMessage error, 没有传入message内容！")

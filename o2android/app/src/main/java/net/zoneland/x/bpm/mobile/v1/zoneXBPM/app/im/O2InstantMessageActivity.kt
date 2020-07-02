@@ -2,18 +2,35 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.text.style.UnderlineSpan
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_o2_instant_message.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.main.BBSMainActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.CalendarMainActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.CloudDriveActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.index.CMSIndexActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.main.MeetingMainActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.TaskWebViewActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecycleViewAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.ApplicationEnum
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.flutter.FlutterConnectActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CircleImageView
+import org.json.JSONObject
+import org.json.JSONTokener
+import java.lang.Exception
 
 class O2InstantMessageActivity : BaseMVPActivity<O2InstantMessageContract.View, O2InstantMessageContract.Presenter>(), O2InstantMessageContract.View {
     override var mPresenter: O2InstantMessageContract.Presenter = O2InstantMessagePresenter()
@@ -41,6 +58,7 @@ class O2InstantMessageActivity : BaseMVPActivity<O2InstantMessageContract.View, 
                     val titleText = holder.getView<TextView>(R.id.tv_o2_chat_message_body)
                     titleText.text = t.title
                     titleText.visible()
+                    messageTypeEvent(titleText, t)
                     val time = DateHelper.imChatMessageTime(t.createTime)
                     holder.setText(R.id.tv_o2_chat_message_time, time)
                 }
@@ -63,6 +81,83 @@ class O2InstantMessageActivity : BaseMVPActivity<O2InstantMessageContract.View, 
         rv_o2_instant_messages.adapter = adapter
         if (instantList.isNotEmpty()) {
             rv_o2_instant_messages.scrollToPosition(instantList.size - 1)
+        }
+    }
+
+    private fun messageTypeEvent(textView: TextView, msg: InstantMessage) {
+        val type = msg.type
+        if (type.startsWith("task_")) {
+            if (!type.contains("_delete")) {
+                openWork(msg, textView)
+            }
+        }else if (type.startsWith("taskCompleted_")) {
+            if (!type.contains("_delete")) {
+                setLinkStyle(textView) {
+
+                }
+            }
+        }else if (type.startsWith("read_")) {
+            if (!type.contains("_delete")) {
+                openWork(msg, textView)
+            }
+        }else if (type.startsWith("readCompleted_")) {
+            if (!type.contains("_delete")) {
+                openWork(msg, textView)
+            }
+        }else if (type.startsWith("review_")||type.startsWith("work_")||type.startsWith("process_")) {
+            if (!type.contains("_delete")) {
+                openWork(msg, textView)
+            }
+        }else if (type.startsWith("meeting_")) {
+            setLinkStyle(textView) {
+                go<MeetingMainActivity>()
+            }
+        }else if (type.startsWith("attachment_")) {
+            setLinkStyle(textView) {
+                go<CloudDriveActivity>()
+            }
+        }else if (type.startsWith("calendar_")) {
+            setLinkStyle(textView) {
+                go<CalendarMainActivity>()
+            }
+        }else if (type.startsWith("cms_")) {
+            setLinkStyle(textView) {
+                go<CMSIndexActivity>()
+            }
+        }else if (type.startsWith("bbs_")) {
+            setLinkStyle(textView) {
+                go<BBSMainActivity>()
+            }
+        }else if (type.startsWith("mind_")) {
+            setLinkStyle(textView) {
+                go<FlutterConnectActivity>(FlutterConnectActivity.startFlutterAppWithRoute(ApplicationEnum.MindMap.key))
+            }
+        }else {
+        }
+    }
+
+    private fun openWork(msg: InstantMessage, textView: TextView) {
+        val json = JSONTokener(msg.body).nextValue()
+        if (json is JSONObject) {
+            val work = try {json.getString("work")}catch (e: Exception){null}
+            val workCompleted = try {json.getString("workCompleted")}catch (e: Exception){null}
+            if (!TextUtils.isEmpty(work) || !TextUtils.isEmpty(workCompleted)) {
+                setLinkStyle(textView) {
+                    go<TaskWebViewActivity>(TaskWebViewActivity.start(work, workCompleted, ""))
+                }
+            }
+        }
+    }
+
+    private fun setLinkStyle(textView: TextView, openClick:(() -> Unit)) {
+        val text = textView.text
+        if (!TextUtils.isEmpty(text)) {
+            val len = text.length
+            val span  = SpannableString(text)
+            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorPrimary_blue)), 0, len,  Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            span.setSpan(UnderlineSpan(), 0, len , Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+            textView.text = span
+            textView.setOnClickListener { openClick() }
         }
     }
 
@@ -90,8 +185,6 @@ class O2InstantMessageActivity : BaseMVPActivity<O2InstantMessageContract.View, 
             return R.mipmap.app_bbs
         }else if (type.startsWith("mind_")) {
             return R.mipmap.app_mind_map
-        }else if (type.startsWith("attachment_")) {
-            return R.mipmap.app_attendance
         }else {
             return R.mipmap.app_o2_ai
         }
