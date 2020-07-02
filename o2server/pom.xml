@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>o2oa</groupId>
 	<artifactId>o2server</artifactId>
@@ -20,7 +19,6 @@
 		<module>x_bbs_core_entity</module>
 		<module>x_calendar_core_entity</module>
 		<module>x_cms_core_entity</module>
-		<module>x_cms_core_express</module>
 		<module>x_component_core_entity</module>
 		<module>x_file_core_entity</module>
 		<module>x_general_core_entity</module>
@@ -33,13 +31,13 @@
 		<module>x_organization_core_entity</module>
 		<module>x_portal_core_entity</module>
 		<module>x_processplatform_core_entity</module>
-		<module>x_teamwork_core_entity</module>
 		<module>x_program_center_core_entity</module>
 		<module>x_organization_core_express</module>
 		<module>x_query_core_express</module>
 		<module>x_processplatform_core_express</module>
 		<module>x_bbs_assemble_control</module>
 		<module>x_calendar_assemble_control</module>
+		<module>x_cms_core_express</module>
 		<module>x_cms_assemble_control</module>
 		<module>x_attendance_assemble_control</module>
 		<module>x_component_assemble_control</module>
@@ -64,7 +62,6 @@
 		<module>x_query_assemble_designer</module>
 		<module>x_query_assemble_surface</module>
 		<module>x_query_service_processing</module>
-		<module>x_teamwork_assemble_control</module>
 		<module>x_program_center</module>
 		<module>x_console</module>
 	</modules>
