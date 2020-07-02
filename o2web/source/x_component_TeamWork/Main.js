@@ -42,6 +42,11 @@ MWF.xApplication.TeamWork.Main = new Class({
 			this._loadCss();
 		}
 
+		//初始化一些信息
+		//初始化优先级
+
+		this.rootActions.GlobalAction.initConfig()
+
 
 		MWF.xDesktop.requireApp("TeamWork", "ProjectList", function(){
 			this.pl = new MWF.xApplication.TeamWork.ProjectList(this.content,this,this.rootActions,{
