@@ -1506,7 +1506,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                             if (this.json.isPrompt !== false) {
                                 this.showSubmitedDialog(json.data);
                             } else {
-                                if (this.json.afterProcessAction=="redirect" && this.json.afterProcessRedirectScript.code){
+                                if (this.json.afterProcessAction=="redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code){
                                     var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
                                     (new URI(url)).go();
                                 }else{
@@ -1622,7 +1622,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                         } else {
                             dlg.close();
 
-                            if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript.code){
+                            if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript && _work.json.afterProcessRedirectScript.code){
                                 var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
                                 (new URI(url)).go();
                             }else{
@@ -1633,7 +1633,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     window.setTimeout(countDown, 1000);
                 } else {
                     window.setTimeout(function () {
-                        if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript.code){
+                        if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript && _work.json.afterProcessRedirectScript.code){
                             var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
                             (new URI(url)).go();
                         }else{
