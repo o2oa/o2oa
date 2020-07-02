@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.teamwork.core.entity.tools.FieldInfo;
-import com.x.teamwork.core.entity.tools.ProjectExtField;
+import com.x.teamwork.core.entity.tools.CustomExtField;
 
 public class ActionListAllExtFields extends BaseAction {
 
@@ -20,7 +20,7 @@ public class ActionListAllExtFields extends BaseAction {
 
 	public static class Wo {
  
-		private List<FieldInfo> fieldInfos = ProjectExtField.listAllExtField();
+		private List<FieldInfo> fieldInfos = CustomExtField.listAllExtField();
 		
 		public List<FieldInfo> getFieldInfos() {
 			return fieldInfos;

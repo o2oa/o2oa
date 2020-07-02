@@ -39,7 +39,19 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class TaskTag {
 		public static final String table = "TEW_TAG";
 	}
-
+	
+	public static class Priority {
+		public static final String table = "TEW_PIORITY";
+	}
+	
+	public static class ProjectConfig {
+		public static final String table = "TEW_PROJECTCONFIG";
+	}
+	
+	public static class Config {
+		public static final String table = "TEW_CONFIG";
+	}
+	
 	public static class TaskDetail {
 		public static final String table = "TEW_TASKDETAIL";
 	}
@@ -98,8 +110,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "TEW_PROJECTGROUP_RELE";
 	}
 	
-	public static class ProjectExtFieldRele {
-		public static final String table = "TEW_PROJECTEXTFIELD_RELE";
+	public static class CustomExtFieldRele {
+		public static final String table = "TEW_CUSTOMEXTFIELD_RELE";
 	}
 	
 	public static class TaskGroupRele {

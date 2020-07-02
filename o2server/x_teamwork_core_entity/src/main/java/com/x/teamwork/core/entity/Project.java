@@ -120,6 +120,12 @@ public class Project extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + archive_FIELDNAME )
 	private Boolean archive = false;
 	
+	public static final String createable_FIELDNAME = "createable";
+	@FieldDescribe("是否可新建任务")
+	@Column( name = ColumnNamePrefix + createable_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + createable_FIELDNAME )
+	private Boolean createable = true;
+	
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建者，可能为System，如果由系统创建。")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + creatorPerson_FIELDNAME)
@@ -133,6 +139,13 @@ public class Project extends SliceJpaObject {
 	@Index( name = TABLE + IndexNameMiddle + executor_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String executor;
+	
+	public static final String templateId_FIELDNAME = "templateId";
+	@FieldDescribe("模板id")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + templateId_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + templateId_FIELDNAME )
+	@CheckPersist(allowEmpty = true)
+	private String templateId;
 
 	public static final String starPersonList_FIELDNAME = "starPersonList";
 	@FieldDescribe("标星人员")
@@ -255,6 +268,14 @@ public class Project extends SliceJpaObject {
 	public void setExecutor(String executor) {
 		this.executor = executor;
 	}
+	
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
 
 	public List<String> getParticipantPersonList() {
 		return participantPersonList;
@@ -319,6 +340,14 @@ public class Project extends SliceJpaObject {
 		this.archive = archive;
 	}
 
+	public Boolean getCreateable() {
+		return createable;
+	}
+
+	public void setCreateable(Boolean createable) {
+		this.createable = createable;
+	}
+	
 	public String getIcon() {
 		return icon;
 	}

@@ -22,7 +22,7 @@ import com.x.teamwork.assemble.control.service.BatchOperationPersistService;
 import com.x.teamwork.assemble.control.service.BatchOperationProcessService;
 import com.x.teamwork.assemble.control.service.MessageFactory;
 import com.x.teamwork.core.entity.Dynamic;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.Review;
 import com.x.teamwork.core.entity.Task;
 import com.x.teamwork.core.entity.TaskDetail;
@@ -237,6 +237,17 @@ public class ActionUpdateSingleProperty extends BaseAction {
 	}	
 
 	private Dynamic changeTaskProperty( String personName,  String projectId, String taskId, String dynamicTitle, String dynamicOptType, String property, String oldValue, String mainValue, String secondaryValue, String dataType, Boolean nullable ) throws Exception {
+		
+		taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
+		if(Task.priority_FIELDNAME.equalsIgnoreCase( property )){
+			mainValue = mainValue.split("\\|\\|")[0];
+		}
+		if(mainValue.equals("completed")){
+			mainValue = "已完成";
+		}
+		if(mainValue.equals("processing")){
+			mainValue = "执行中";
+		}
 		String dynamicDescription =  personName + "将工作任务的[" + dynamicTitle + "]变更为：[" + mainValue + "]。";
 		if(  StringUtils.isEmpty( mainValue ) && nullable ) {
 			Exception exception = new TaskPersistException( "工作任务属性["+ dynamicTitle +"]不允许为空，请检查您的输入。");
@@ -261,7 +272,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 				}	
 			}
 		}
-		taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
+		//taskPersistService.changeTaskProperty( taskId, property, mainValue, secondaryValue );
 		
 		Dynamic dynamic_info = new Dynamic();
 		dynamic_info.setTitle( dynamicTitle  );
@@ -271,7 +282,7 @@ public class ActionUpdateSingleProperty extends BaseAction {
 	}
 	
 	private Dynamic changeExtTaskProperty( String personName,  String projectId, String taskId, String property, String oldValue, String mainValue, String secondaryValue, String dataType ) throws Exception {
-		ProjectExtFieldRele projectExtFieldRele = projectExtFieldReleQueryService.getExtFieldRele(projectId, property);
+		CustomExtFieldRele projectExtFieldRele = customExtFieldReleQueryService.getExtFieldRele(projectId, property);
 		if( projectExtFieldRele == null || StringUtils.isEmpty( projectExtFieldRele.getDisplayName() )) {
 			Exception exception = new TaskPersistException( "工作任务未配置扩展属性:" + property );
 			throw exception;
