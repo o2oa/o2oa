@@ -221,7 +221,7 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.GroupManager, OrganizationDefinition.UnitManager,
 				OrganizationDefinition.RoleManager, OrganizationDefinition.ProcessPlatformManager,
 				OrganizationDefinition.ProcessPlatformCreator, OrganizationDefinition.MeetingManager,
-				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
+				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,OrganizationDefinition.TeamWorkManager,
 				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
 				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
 				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager);
@@ -290,7 +290,9 @@ public class Context extends AbstractContext {
 			return OrganizationDefinition.OKRManager_discription;
 		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.CRMManager_discription;
-		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
+		}else if (OrganizationDefinition.TeamWorkManager.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.TeamWorkManager_discription;
+		}else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.QueryManager_discription;
 		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MessageManager_discription;

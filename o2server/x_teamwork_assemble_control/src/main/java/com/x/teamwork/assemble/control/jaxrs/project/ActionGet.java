@@ -10,9 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -20,10 +20,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.ProjectConfig;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.ProjectGroup;
+import com.x.teamwork.core.entity.Task;
 
-import net.sf.ehcache.Element;
 
 public class ActionGet extends BaseAction {
 
@@ -36,8 +37,15 @@ public class ActionGet extends BaseAction {
 		ProjectDetail projectDetail = null;
 		List<String> groupIds = null;
 		List<ProjectGroup> groups = null;
+		List<Task>  taskList = null;
+		List<ProjectConfig>  projectConfigs = null;
 		WrapOutControl control = null;
 		Boolean check = true;
+		
+		Integer taskTotal = 0;
+		Integer progressTotal = 0;
+		Integer completedTotal = 0;
+		Integer overtimeTotal = 0;
 
 		if ( StringUtils.isEmpty( flag ) ) {
 			check = false;
@@ -45,13 +53,13 @@ public class ActionGet extends BaseAction {
 			result.error( exception );
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( flag,effectivePerson );
 		Element element = projectCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
-		} else {
+		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					project = projectQueryService.get(flag);
@@ -66,6 +74,25 @@ public class ActionGet extends BaseAction {
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
+			}
+			
+			if( Boolean.TRUE.equals( check ) ){				
+				taskList = projectQueryService.listAllTasks(flag , true);
+				if( ListTools.isNotEmpty( taskList )) {
+					for( Task task : taskList ) {
+						taskTotal ++;
+						if( "completed".equalsIgnoreCase(task.getWorkStatus()) ) {
+							completedTotal++;
+						}
+						if( "processing".equalsIgnoreCase(task.getWorkStatus()) ) {
+							progressTotal++;
+						}
+						if( task.getOvertime() ) {
+							overtimeTotal++;
+						}
+					}
+				}
+				
 			}
 			
 			if( Boolean.TRUE.equals( check ) ){
@@ -85,21 +112,44 @@ public class ActionGet extends BaseAction {
 					groups = projectGroupQueryService.list( groupIds );
 					wo.setGroups( groups );	
 					
+					//查询项目配置信息
+					projectConfigs = projectConfigQueryService.getProjectConfigByProject( project.getId() );
+					
 					Business business = null;
 					try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 						business = new Business(bc);
 					}
+					
 					control = new WrapOutControl();
+					if(ListTools.isNotEmpty(projectConfigs)){
+						ProjectConfig projectConfig = projectConfigs.get(0);
+						control.setTaskCreate(projectConfig.getTaskCreate());
+						control.setTaskCopy(projectConfig.getTaskCopy());
+						control.setTaskRemove(projectConfig.getTaskRemove());
+						control.setLaneCreate(projectConfig.getLaneCreate());
+						control.setLaneEdit(projectConfig.getLaneEdit());
+						control.setLaneRemove(projectConfig.getLaneRemove());
+						control.setAttachmentUpload(projectConfig.getAttachmentUpload());
+						control.setComment(projectConfig.getComment());
+					}else{
+						control.setTaskCreate(true);
+					}
+					
 					if( business.isManager(effectivePerson)
 							|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 							|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
 						control.setDelete( true );
 						control.setEdit( true );
 						control.setSortable( true );
+						control.setTaskCreate(true);
+						
 					}else{
 						control.setDelete( false );
 						control.setEdit( false );
 						control.setSortable( false );
+					}
+					if(project.getDeleted() || project.getCompleted()){
+						control.setTaskCreate(false);
 					}
 					if(effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson())){
 						control.setFounder( true );
@@ -107,7 +157,11 @@ public class ActionGet extends BaseAction {
 						control.setFounder( false );
 					}
 					wo.setControl(control);
-					projectCache.put(new Element(cacheKey, wo));
+					
+					wo.setProgressTotal(progressTotal);
+					wo.setCompletedTotal(completedTotal);
+					wo.setOvertimeTotal(overtimeTotal);
+					wo.setTaskTotal(taskTotal);
 					result.setData(wo);
 				} catch (Exception e) {
 					Exception exception = new ProjectQueryException(e, "将查询出来的应用项目信息对象转换为可输出的数据信息时发生异常。");
@@ -115,13 +169,58 @@ public class ActionGet extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 
 	public static class Wo extends WrapOutProject {
 		
 		private static final long serialVersionUID = -5076990764713538973L;
+		
+		@FieldDescribe("所有任务数量")
+		private Integer taskTotal = 0;
+		
+		@FieldDescribe("执行中任务数量")
+		private Integer progressTotal = 0;
+		
+		@FieldDescribe("已完成任务数量")
+		private Integer completedTotal = 0;
+		
+		@FieldDescribe("超时任务数量")
+		private Integer overtimeTotal = 0;
+		
+		public Integer getTaskTotal() {
+			return taskTotal;
+		}
+
+		public void setTaskTotal(Integer taskTotal) {
+			this.taskTotal = taskTotal;
+		}
+		
+		public Integer getProgressTotal() {
+			return progressTotal;
+		}
+
+		public void setProgressTotal(Integer progressTotal) {
+			this.progressTotal = progressTotal;
+		}
+
+		public Integer getCompletedTotal() {
+			return completedTotal;
+		}
+
+		public void setCompletedTotal( Integer completedTotal ) {
+			this.completedTotal = completedTotal;
+		}
+
+		public Integer getOvertimeTotal() {
+			return overtimeTotal;
+		}
+
+		public void setOvertimeTotal( Integer overtimeTotal ) {
+			this.overtimeTotal = overtimeTotal;
+		}
+		
 
 		public static List<String> Excludes = new ArrayList<String>();
 

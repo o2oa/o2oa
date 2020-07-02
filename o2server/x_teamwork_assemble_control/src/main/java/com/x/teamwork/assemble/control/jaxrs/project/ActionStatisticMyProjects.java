@@ -43,13 +43,13 @@ public class ActionStatisticMyProjects extends BaseAction {
 		Integer archiveCount = 0;
 		Integer deleteCount = 0;
 
-		String cacheKey = ApplicationCache.concreteCacheKey( "ActionStatisticMyProjects", effectivePerson.getDistinguishedName() );
+		/*String cacheKey = ApplicationCache.concreteCacheKey( "ActionStatisticMyProjects", effectivePerson.getDistinguishedName() );
 		Element element = projectCache.get( cacheKey );
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = (Wo) element.getObjectValue();
 			result.setData( wo );
-		} else {
+		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
 				try {
 					//查询我参与的所有项目
@@ -127,7 +127,7 @@ public class ActionStatisticMyProjects extends BaseAction {
 						SortTools.asc( woGroupList, "createTime");
 					}	
 					wo.setGroups( woGroupList );
-					projectCache.put( new Element(cacheKey, wo) );
+					//projectCache.put( new Element(cacheKey, wo) );
 					result.setData(wo);
 				} catch (Exception e) {
 					Exception exception = new ProjectQueryException(e, "将查询出来的应用项目信息对象转换为可输出的数据信息时发生异常。");
@@ -135,7 +135,7 @@ public class ActionStatisticMyProjects extends BaseAction {
 					logger.error(e, effectivePerson, request, null);
 				}
 			}
-		}
+		//}
 		return result;
 	}
 

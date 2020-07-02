@@ -12,7 +12,9 @@ import com.x.teamwork.assemble.control.factory.AttachmentFactory;
 import com.x.teamwork.assemble.control.factory.BatchOperationFactory;
 import com.x.teamwork.assemble.control.factory.ChatFactory;
 import com.x.teamwork.assemble.control.factory.DynamicFactory;
-import com.x.teamwork.assemble.control.factory.ProjectExtFieldReleFactory;
+import com.x.teamwork.assemble.control.factory.PriorityFactory;
+import com.x.teamwork.assemble.control.factory.ProjectConfigFactory;
+import com.x.teamwork.assemble.control.factory.CustomExtFieldReleFactory;
 import com.x.teamwork.assemble.control.factory.ProjectFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupFactory;
 import com.x.teamwork.assemble.control.factory.ProjectGroupReleFactory;
@@ -52,11 +54,13 @@ public class Business {
 	private TaskGroupFactory taskGroupFactory;
 	private TaskGroupReleFactory taskGroupReleFactory;
 	private TaskViewFactory taskViewFactory;
-	private ProjectExtFieldReleFactory projectExtFieldReleFactory;
+	private CustomExtFieldReleFactory customExtFieldReleFactory;
 	private ReviewFactory reviewFactory;
 	private BatchOperationFactory batchOperationFactory;
 	private TaskTagFactory taskTagFactory;	
 	private AttachmentFactory attachmentFactory;	
+	private PriorityFactory priorityFactory;
+	private ProjectConfigFactory projectConfigFactory;
 	
 	public Organization organization() throws Exception {
 		if (null == this.organization) {
@@ -118,11 +122,11 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public ProjectExtFieldReleFactory projectExtFieldReleFactory() throws Exception {
-		if (null == this.projectExtFieldReleFactory) {
-			this.projectExtFieldReleFactory = new ProjectExtFieldReleFactory( this );
+	public CustomExtFieldReleFactory customExtFieldReleFactory() throws Exception {
+		if (null == this.customExtFieldReleFactory) {
+			this.customExtFieldReleFactory = new CustomExtFieldReleFactory( this );
 		}
-		return projectExtFieldReleFactory;
+		return customExtFieldReleFactory;
 	}
 	
 	/**
@@ -195,6 +199,30 @@ public class Business {
 			this.projectGroupFactory = new ProjectGroupFactory( this );
 		}
 		return projectGroupFactory;
+	}
+	
+	/**
+	 * 获取优先级数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public ProjectConfigFactory projectConfigFactory() throws Exception {
+		if (null == this.projectConfigFactory) {
+			this.projectConfigFactory = new ProjectConfigFactory( this );
+		}
+		return projectConfigFactory;
+	}
+	
+	/**
+	 * 获取优先级数据库访问类
+	 * @return
+	 * @throws Exception
+	 */
+	public PriorityFactory priorityFactory() throws Exception {
+		if (null == this.priorityFactory) {
+			this.priorityFactory = new PriorityFactory( this );
+		}
+		return priorityFactory;
 	}
 	
 	/**
