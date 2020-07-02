@@ -8,6 +8,7 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.file.assemble.control.Business;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
 
@@ -34,7 +35,7 @@ class ActionListFolderWithFolder extends BaseAction {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
 			}
-			List<String> ids = business.folder2().listSubDirect(folder.getId(),"正常");
+			List<String> ids = business.folder2().listSubDirect(folder.getId(), FileStatus.VALID.getName());
 			List<Wo> wos = emc.fetch(ids, Wo.copier);
 			wos = wos.stream().sorted(Comparator.comparing(Folder2::getName, Comparator.nullsLast(String::compareTo)))
 					.collect(Collectors.toList());

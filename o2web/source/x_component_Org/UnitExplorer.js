@@ -488,7 +488,6 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
         }
     },
     _loadContent: function(){
-        debugger;
         this._listBaseInfor();
         this.loadListCount();
         this._listIdentityMembers();
@@ -591,6 +590,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                         var _dutyData = this.data;
                         this.data.woIdentityList.each(function(identity, i){
                             new MWF.widget.O2Identity(identity, contentNode, {
+                                "lazy" : true,
                                 "canRemove": _self.data.control.allowEdit,
                                 "onRemove": function(O2Identity, e){
                                     _self.deleteDutyIdentity(_dutyData, e, O2Identity);
@@ -1052,7 +1052,6 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         this.loadAction();
     },
     getContentHtml: function(){
-        debugger;
         var html = "<table width='100%' cellpadding='3px' cellspacing='5px'>";
         html += "<tr><td class='inforTitle'>"+this.explorer.app.lp.unitName+":</td><td class='inforContent infor_name'></td>";
         if (this.data.control.allowEdit) html += "<td class='inforTitle'>"+this.explorer.app.lp.unitUnique+":</td><td class='inforContent infor_unique'></td>";
@@ -1263,7 +1262,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
         });
 
         this.saveUnit(function(){
-            this.cancel();
+            this.cancel(  null,true );
             this.content.propertyContentScrollNode.unmask();
         }.bind(this), function(xhr, text, error){
             var errorText = error;
@@ -1303,7 +1302,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
             if (cancel) cancel(xhr, text, error);
         }.bind(this));
     },
-    cancel: function(){
+    cancel: function( ev, flag ){
         if (this.data.id){
             var tdContents = this.editContentNode.getElements("td.inforContent");
             tdContents[0].setStyles(this.style.baseInforContentNode).set("text", this.data.name || "");
@@ -1316,8 +1315,10 @@ MWF.xApplication.Org.UnitExplorer.UnitContent.BaseInfor = new Class({
             tdContents[6].setStyles(this.style.baseInforContentNode).empty();
             tdContents[7].setStyles(this.style.baseInforContentNode).set("text", this.data.orderNumber || "");
 
-            if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;
-            if (this.data.oldControllerList) this.data.controllerList = this.data.oldControllerList;
+            if( !flag ){
+                if (this.data.oldSuperior) this.data.superior = this.data.oldSuperior;
+                if (this.data.oldControllerList) this.data.controllerList = this.data.oldControllerList;
+            }
             delete this.data.oldSuperior;
             delete this.data.oldControllerList;
 

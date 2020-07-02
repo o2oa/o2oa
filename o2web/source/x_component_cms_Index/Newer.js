@@ -429,6 +429,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "isNewDocument" : true,
             "title": title,
             "creatorIdentity": identity,
+            "identity" : identity,
             "appId" :this.categoryData.appId,
             "categoryId" : this.categoryData.id,
             "form" : this.categoryData.formId,
@@ -491,13 +492,13 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "readonly" :false,
                 "documentId": id,
                 "appId": appId,
-                "onPostPublish" : function(){
-                    this.fireEvent( "postPublish" );
+                "onPostPublish" : function( args ){
+                    this.fireEvent( "postPublish", args );
                 }.bind(this),
-                "onAfterPublish" : function () {
+                "onAfterPublish" : function ( args ) {
                     debugger;
                     if(_self.view && _self.view.reload )_self.view.reload();
-                    _self.fireEvent( "afterPublish" );
+                    _self.fireEvent( "afterPublish", args );
                 }
             };
             if( typeOf(this.options.autoSave) == "boolean" )options.autoSave = this.options.autoSave;
@@ -542,6 +543,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
                 "isNewDocument" : true,
                 "title": title,
                 "creatorIdentity": data.identity,
+                "identity": data.identity,
                 "appId" :this.categoryData.appId,
                 "categoryId" : this.categoryData.id,
                 //"form" : this.categoryData.formId,

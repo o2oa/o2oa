@@ -11,7 +11,9 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if (COMMON.Browser.safari) w = w-20;
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                    if (COMMON.Browser.safari) w = w - 20;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",
@@ -153,6 +155,18 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             if (callback) callback(data);
         });
     },
+
+    _resetNodeInputEdit: function(){
+        var node = new Element("div", {
+            "styles": {
+                "overflow": "hidden",
+                //"position": "relative",
+                "margin-right": "20px"
+            }
+        }).inject(this.node, "after");
+        this.node.destroy();
+        this.node = node;
+    },
     _loadNodeInputEdit: function(){
         var input=null;
         MWF.require("MWF.widget.Combox", function(){
@@ -177,16 +191,10 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         });
         input.set(this.json.properties);
 
-        var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            //"position": "relative",
-            "margin-right": "20px"
-        }}).inject(this.node, "after");
-        input.inject(node);
-        //this.combox = input;
+        if (!this.json.preprocessing) this._resetNodeInputEdit();
 
-        this.node.destroy();
-        this.node = node;
+        this.node.empty();
+        input.inject(this.node);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -211,26 +219,28 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         }.bind(this));
     },
 
+    _resetNodeEdit: function(){
+        var input = new Element("div", {
+            "styles": {
+                "background": "transparent",
+                "border": "0px",
+                "min-height": "24px"
+            }
+        });
+        var node = new Element("div", {"styles": {
+                "overflow": "hidden",
+                "position": "relative",
+                "margin-right": "20px",
+                "min-height": "24px"
+            }}).inject(this.node, "after");
+        input.inject(node);
+        this.node.destroy();
+        this.node = node;
+    },
 	_loadNodeEdit : function(){
-		var input = this.input = new Element("div", {
-			"styles": {
-				"background": "transparent",
-				"border": "0px",
-                "min-height": "20px"
-			}
-		});
-		input.set(this.json.properties);
-
-		var node = new Element("div", {"styles": {
-			"overflow": "hidden",
-			"position": "relative",
-			"min-height" : "20px",
-			"margin-right": "20px"
-		}}).inject(this.node, "after");
-		input.inject(node);
-
-		this.node.destroy();
-		this.node = node;
+        if (!this.json.preprocessing) this._resetNodeEdit();
+        var input = this.node.getFirst();
+        input.set(this.json.properties);
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type,
@@ -276,6 +286,12 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             value = this._computeValue();
         }
         return value || "";
+    },
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
     },
 	getData: function(when){
 		if (this.json.compute == "save") this._setValue(this._computeValue());

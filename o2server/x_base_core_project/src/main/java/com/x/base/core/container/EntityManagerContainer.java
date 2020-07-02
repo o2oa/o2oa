@@ -315,7 +315,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				case 1:
 					t = list.get(0);
 					break out;
-				case 2:
+				default:
 					throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
 							+ ", attribute:" + field.getName() + ", restrict attrubte:" + singularAttribute
 							+ ", restrict value:" + restrictValue + ".");
@@ -629,6 +629,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				cb.equal(root.get(otherAttribute), otherValue), cb.equal(root.get(thirdAttribute), thirdValue)));
 		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
 		return os.isEmpty() ? null : os.get(0);
+	}
+
+	public <T extends JpaObject> T firstEqualOrEqual(Class<T> cls, String attribute, Object value,
+			String otherAttribute, Object otherValue) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(cls);
+		Root<T> root = cq.from(cls);
+		cq.select(root)
+				.where(cb.or(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue)));
+		List<T> os = em.createQuery(cq).setMaxResults(1).getResultList();
+		return os.stream().findFirst().orElse(null);
 	}
 
 	public <T extends JpaObject> Long count(Class<T> cls) throws Exception {

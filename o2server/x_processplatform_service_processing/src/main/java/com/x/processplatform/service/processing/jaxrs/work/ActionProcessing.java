@@ -36,20 +36,40 @@ class ActionProcessing extends BaseAction {
 
 		}
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				Processing processing = new Processing(wi);
-				processing.processing(id);
-				ActionResult<Wo> result = new ActionResult<>();
-				Wo wo = new Wo();
-				wo.setId(id);
-				result.setData(wo);
-				return result;
-			}
-		};
+		// Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+		// public ActionResult<Wo> call() throws Exception {
+		// Processing processing = new Processing(wi);
+		// processing.processing(id);
+		// ActionResult<Wo> result = new ActionResult<>();
+		// Wo wo = new Wo();
+		// wo.setId(id);
+		// result.setData(wo);
+		// return result;
+		// }
+		// };
 
-		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get();
 
+	}
+
+	private class CallableExecute implements Callable<ActionResult<Wo>> {
+		private Wi wi;
+		private String id;
+
+		private CallableExecute(Wi wi, String id) {
+			this.wi = wi;
+			this.id = id;
+		}
+
+		public ActionResult<Wo> call() throws Exception {
+			Processing processing = new Processing(wi);
+			processing.processing(id);
+			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			wo.setId(id);
+			result.setData(wo);
+			return result;
+		}
 	}
 
 	public static class Wi extends ProcessingAttributes {

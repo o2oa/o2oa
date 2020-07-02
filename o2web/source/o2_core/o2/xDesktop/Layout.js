@@ -1335,7 +1335,7 @@ MWF.xDesktop.Layout.Top = new Class({
         this.showApplicationMenu();
 
         window.setTimeout(function(){
-
+            o2.require("o2.widget.PinYin", null, false);
             this.getApplicationsCatalogue(function(catalog){
                 //var currentName = this.layout.session.user.name;
                 var user = this.layout.session.user;
@@ -1347,7 +1347,7 @@ MWF.xDesktop.Layout.Top = new Class({
                     var isAllow = true;
                     if (value.allowList) isAllow = (value.allowList.length) ? (value.allowList.isIntersect(currentNames)) : true;
                     var isDeny = false;
-                    if (value.denyList) isDeny = (value.denyList.length) ? (value.denyList.isIntersect(currentNames)!==-1) : false;
+                    if (value.denyList) isDeny = (value.denyList.length) ? (value.denyList.isIntersect(currentNames)) : false;
                     if ((!isDeny && isAllow) || MWF.AC.isAdministrator()){
                         this.createApplicationMenu(value, key);
                     }

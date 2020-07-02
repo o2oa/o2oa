@@ -25,7 +25,7 @@ public class AttachmentFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Attachment> root = cq.from(Attachment.class);
 		Predicate p = cb.equal(root.get(Attachment_.person), person);
-		p = cb.and(p, cb.equal(root.get(Attachment_.folder), ""));
+		p = cb.and(p, cb.or(cb.isNull(root.get(Attachment_.folder)), cb.equal(root.get(Attachment_.folder), "")));
 		cq.select(root.get(Attachment_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}

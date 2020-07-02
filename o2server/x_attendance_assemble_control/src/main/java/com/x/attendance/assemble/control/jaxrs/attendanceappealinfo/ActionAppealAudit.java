@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
 import com.x.attendance.entity.AttendanceAppealInfo;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -19,8 +20,7 @@ public class ActionAppealAudit extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionAppealAudit.class);
 
-	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
-			JsonElement jsonElement) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		List<String> ids = null;
@@ -144,8 +144,13 @@ public class ActionAppealAudit extends BaseAction {
 
 		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
 
+		@FieldDescribe("需要复核的ID列表")
 		private List<String> ids = null;
 
+		@FieldDescribe("审批意见")
+		private String opinion1;
+
+		@FieldDescribe("申诉人的身份，考勤人员身份：如果考勤人员属于多个组织，可以选择一个身份进行申诉信息绑定.")
 		private String identity = null;
 
 		public String getIdentity() {
@@ -164,6 +169,9 @@ public class ActionAppealAudit extends BaseAction {
 			this.ids = ids;
 		}
 
+		public String getOpinion1() { return opinion1; }
+
+		public void setOpinion1(String opinion1) { this.opinion1 = opinion1; }
 	}
 
 	public static class Wo {

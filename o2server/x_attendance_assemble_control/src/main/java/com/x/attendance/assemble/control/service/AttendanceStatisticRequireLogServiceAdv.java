@@ -42,4 +42,8 @@ public class AttendanceStatisticRequireLogServiceAdv {
 			throw e;
 		}
 	}
+
+    public void resetStatisticError() throws Exception {
+		attendanceStatisticRequireLogService.resetStatisticError();
+	}
 }

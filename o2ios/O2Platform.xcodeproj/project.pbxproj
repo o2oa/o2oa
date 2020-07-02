@@ -37,6 +37,7 @@
 		09E02E981F16319600579887 /* UIView+Haneke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E02E821F16319600579887 /* UIView+Haneke.swift */; };
 		09E02E9A1F1745E700579887 /* ZLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E02E991F1745E700579887 /* ZLTextView.swift */; };
 		37D63E73FDC49F690C780FD1 /* Pods_O2Platform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10069E72107080DCAD68970B /* Pods_O2Platform.framework */; };
+		8840A992248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */; };
 		A043051B1F99CFD500740423 /* MailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043051A1F99CFD500740423 /* MailViewController.swift */; };
 		B1015DDB2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */; };
 		B104303721464C690011B08E /* ai.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B104303621464C690011B08E /* ai.storyboard */; };
@@ -56,6 +57,14 @@
 		B108F402229E34D400778050 /* LBXScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B108F3FB229E34D300778050 /* LBXScanViewController.swift */; };
 		B10A2F56233DDA990011CE3D /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F55233DDA990011CE3D /* AdSupport.framework */; };
 		B10A2F58233DDAE10011CE3D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B10A2F57233DDAE10011CE3D /* Security.framework */; };
+		B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */; };
+		B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */; };
+		B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A5F2488C82F005075F0 /* IMViewModel.swift */; };
+		B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A622488C8EA005075F0 /* IMConversationInfo.swift */; };
+		B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */; };
+		B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */; };
+		B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1173A692488D4AD005075F0 /* O2IM.swift */; };
+		B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B1173B2C2489F48C005075F0 /* O2Emoji.bundle */; };
 		B1298E50236692AB006E9236 /* CloudFileListBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */; };
 		B1298E7C23669BA2006E9236 /* CloudFileTypeListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */; };
 		B1298E7E2366AE4C006E9236 /* CloudFileImageCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */; };
@@ -111,6 +120,18 @@
 		B13A0120236935BC00025F3B /* O2CloudFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */; };
 		B142B081230FB56400E7D127 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B080230FB56400E7D127 /* MimeType.swift */; };
 		B142B083230FB58B00E7D127 /* Swime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B082230FB58B00E7D127 /* Swime.swift */; };
+		B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */; };
+		B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */; };
+		B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */; };
+		B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */; };
+		B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */; };
+		B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */; };
+		B1489C7B2491FEFE009EE9FD /* IMChatEmojiBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */; };
+		B1489CAE2491FF13009EE9FD /* IMChatEmojiBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */; };
+		B1489CB12492045D009EE9FD /* IMChatEmojiItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */; };
+		B1489CB22492045D009EE9FD /* IMChatEmojiItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */; };
+		B1489CB624935104009EE9FD /* IMInstantMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */; };
+		B1489CB724935104009EE9FD /* IMInstantMessageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */; };
 		B14B339F2356EB1500442968 /* CloudFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14B339E2356EB1500442968 /* CloudFileViewModel.swift */; };
 		B14E07532301137F00AE85A0 /* ContactPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */; };
 		B14E07862301418400AE85A0 /* ContactUnitPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */; };
@@ -118,13 +139,27 @@
 		B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */; };
 		B14E078C230141BE00AE85A0 /* ContactPersonPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */; };
 		B14E07C523025C6A00AE85A0 /* OOContactExpressAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */; };
+		B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */; };
 		B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */; };
 		B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B158E95D215DD3F500AB2727 /* AIConstants.swift */; };
+		B15BE0BE2499BCEF008CD1DB /* O2RecordVoiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */; };
+		B15BE0EE2499DD7E008CD1DB /* IMChatAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */; };
+		B15BE0F02499DD90008CD1DB /* IMChatAudioView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */; };
+		B15BE106249A06BF008CD1DB /* libvo-amrwbenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */; };
+		B15BE107249A06BF008CD1DB /* ConvertMp3.m in Sources */ = {isa = PBXBuildFile; fileRef = B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */; };
+		B15BE108249A06BF008CD1DB /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE0F9249A06BE008CD1DB /* libmp3lame.a */; };
+		B15BE109249A06BF008CD1DB /* libopencore-amrwb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */; };
+		B15BE10A249A06BF008CD1DB /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */; };
+		B15BE10C249A0EFE008CD1DB /* IMAudioView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */; };
+		B15BE10E249A107C008CD1DB /* IMAudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE10D249A107C008CD1DB /* IMAudioView.swift */; };
+		B15BE111249A6002008CD1DB /* AudioPlayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */; };
 		B15D26EC235EF7480092F8B8 /* genstrings.sh in Resources */ = {isa = PBXBuildFile; fileRef = B15D26EB235EF7480092F8B8 /* genstrings.sh */; };
 		B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F80F2210EB93000B81F35 /* OOCalendarMainMonthViewController.swift */; };
 		B15F8129210EF15E00B81F35 /* OOCalendarEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */; };
 		B15F812C21102BC000B81F35 /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B15F812A21102BBF00B81F35 /* DatePickerView.swift */; };
 		B15F812D21102BC000B81F35 /* DatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B15F812B21102BBF00B81F35 /* DatePickerView.xib */; };
+		B162F28924AB0E7300A6BF06 /* O2StringPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */; };
+		B162F28B24AB0E9900A6BF06 /* O2StringPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */; };
 		B165CCD52241DBD700373B66 /* LWDatePickerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CCD42241DBD700373B66 /* LWDatePickerDialog.swift */; };
 		B165CD582242093500373B66 /* CoverVerticalAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD412242093500373B66 /* CoverVerticalAnimation.swift */; };
 		B165CD592242093500373B66 /* PresentrController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B165CD422242093500373B66 /* PresentrController.swift */; };
@@ -166,6 +201,11 @@
 		B1750087233C937E003DA7B9 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750086233C937E003DA7B9 /* IntExtensions.swift */; };
 		B1750089233C9B2C003DA7B9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750088233C9B2C003DA7B9 /* Stack.swift */; };
 		B17BF43022B23758009E36E0 /* SkinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B17BF42F22B23758009E36E0 /* SkinViewController.swift */; };
+		B183987D249AFF64001C6FAA /* IMLocationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B183987C249AFF64001C6FAA /* IMLocationView.xib */; };
+		B18398AD249B00AA001C6FAA /* IMLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AC249B00AA001C6FAA /* IMLocationView.swift */; };
+		B18398B0249B079B001C6FAA /* IMLocationChooseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */; };
+		B18398B1249B079B001C6FAA /* IMLocationChooseController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */; };
+		B18398B3249B4154001C6FAA /* IMShowLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */; };
 		B18FFF5F23756B6C001B2887 /* JPushAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18FFF5E23756B6C001B2887 /* JPushAPI.swift */; };
 		B1908E1422685E8F00D75632 /* O2WebViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1908E1322685E8F00D75632 /* O2WebViewModels.swift */; };
 		B1908E4C22687B1A00D75632 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1908E4E22687B1A00D75632 /* Localizable.strings */; };
@@ -220,6 +260,9 @@
 		B1E95FA72375155F004876B7 /* CloudFileBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */; };
 		B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCD2281729400842F48 /* QDatePicker.swift */; };
 		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
+		B1F6CDBE24A88D26005CB1E0 /* BBSViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */; };
+		B1F6CDEE24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */; };
+		B1F6CDF024A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */; };
 		B1FAE9E12115F95800981A25 /* OOCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */; };
 		B1FAFD442105C23B008A0CDF /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FAFD432105C23B008A0CDF /* Operators.swift */; };
 		B1FB9FAE2302891F00A90722 /* ContactPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */; };
@@ -1008,26 +1051,12 @@
 			remoteGlobalIDString = 5F72A30590D0D18EC2C2BBC2D902C6D1;
 			remoteInfo = BetterSegmentedControl;
 		};
-		B10AC59221058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E18B1C0DEBD04E12A5DC8B40B7BF5150;
-			remoteInfo = BSGridCollectionViewLayout;
-		};
 		B10AC59421058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D13C7C5DC1991163C85D47D9B72B42DD;
 			remoteInfo = BSImagePicker;
-		};
-		B10AC59621058DAE00179587 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 797083F5F27AFF01045BE4809698B5C1;
-			remoteInfo = "BSImagePicker-BSImagePicker";
 		};
 		B10AC59A21058DAE00179587 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1211,6 +1240,13 @@
 			remoteGlobalIDString = 183276F1FBCA05D9F840C64172C84A44;
 			remoteInfo = YHPopupView;
 		};
+		B1173A582488C3DD005075F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 891B2270823847ED23F2ECFC28F935EC;
+			remoteInfo = Starscream;
+		};
 		B14A2292224CBC2E00745E0A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
@@ -1231,13 +1267,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 85979644862830BD1DFFD1D60F0D64AE;
 			remoteInfo = RxAtomic;
-		};
-		B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E4E7755421017DB4006ED7FC /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8B824035EFF627D7343420A8E0BC044B;
-			remoteInfo = BSImageView;
 		};
 		B1F79C77233B5F9B004D0AEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1339,6 +1368,7 @@
 		10069E72107080DCAD68970B /* Pods_O2Platform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_O2Platform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47A96D30743BECAB12B424CE /* Pods-O2Platform.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O2Platform.release.xcconfig"; path = "Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform.release.xcconfig"; sourceTree = "<group>"; };
 		4F1BA982094EC6172ACF8F99 /* Pods-O2Platform.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-O2Platform.debug.xcconfig"; path = "Pods/Target Support Files/Pods-O2Platform/Pods-O2Platform.debug.xcconfig"; sourceTree = "<group>"; };
+		8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarEditRemarkViewController.swift; sourceTree = "<group>"; };
 		A043051A1F99CFD500740423 /* MailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MailViewController.swift; sourceTree = "<group>"; };
 		B1015DDA2272B5DB00C1A7E6 /* O2BaseJsMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2BaseJsMessageHandler.swift; sourceTree = "<group>"; };
 		B104303621464C690011B08E /* ai.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ai.storyboard; sourceTree = "<group>"; };
@@ -1358,6 +1388,14 @@
 		B108F3FB229E34D300778050 /* LBXScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LBXScanViewController.swift; sourceTree = "<group>"; };
 		B10A2F55233DDA990011CE3D /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		B10A2F57233DDAE10011CE3D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationListViewController.swift; sourceTree = "<group>"; };
+		B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunicateAPI.swift; sourceTree = "<group>"; };
+		B1173A5F2488C82F005075F0 /* IMViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMViewModel.swift; sourceTree = "<group>"; };
+		B1173A622488C8EA005075F0 /* IMConversationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationInfo.swift; sourceTree = "<group>"; };
+		B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMConversationItemCell.swift; sourceTree = "<group>"; };
+		B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMConversationItemCell.xib; sourceTree = "<group>"; };
+		B1173A692488D4AD005075F0 /* O2IM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2IM.swift; sourceTree = "<group>"; };
+		B1173B2C2489F48C005075F0 /* O2Emoji.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = O2Emoji.bundle; sourceTree = "<group>"; };
 		B1298E4F236692AB006E9236 /* CloudFileListBaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileListBaseController.swift; sourceTree = "<group>"; };
 		B1298E7B23669BA2006E9236 /* CloudFileTypeListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileTypeListController.swift; sourceTree = "<group>"; };
 		B1298E7D2366AE4C006E9236 /* CloudFileImageCollectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileImageCollectionController.swift; sourceTree = "<group>"; };
@@ -1409,6 +1447,18 @@
 		B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2CloudFileInfo.swift; sourceTree = "<group>"; };
 		B142B080230FB56400E7D127 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B142B082230FB58B00E7D127 /* Swime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swime.swift; sourceTree = "<group>"; };
+		B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatViewController.swift; sourceTree = "<group>"; };
+		B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatViewController.xib; sourceTree = "<group>"; };
+		B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageViewCell.swift; sourceTree = "<group>"; };
+		B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageViewCell.xib; sourceTree = "<group>"; };
+		B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatMessageSendViewCell.swift; sourceTree = "<group>"; };
+		B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatMessageSendViewCell.xib; sourceTree = "<group>"; };
+		B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatEmojiBarView.swift; sourceTree = "<group>"; };
+		B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiBarView.xib; sourceTree = "<group>"; };
+		B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatEmojiItemCell.swift; sourceTree = "<group>"; };
+		B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatEmojiItemCell.xib; sourceTree = "<group>"; };
+		B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMInstantMessageViewController.swift; sourceTree = "<group>"; };
+		B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMInstantMessageViewController.xib; sourceTree = "<group>"; };
 		B14B339E2356EB1500442968 /* CloudFileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileViewModel.swift; sourceTree = "<group>"; };
 		B14E07522301137F00AE85A0 /* ContactPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07852301418400AE85A0 /* ContactUnitPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUnitPickerViewController.swift; sourceTree = "<group>"; };
@@ -1416,8 +1466,28 @@
 		B14E0789230141AC00AE85A0 /* ContactGroupPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupPickerViewController.swift; sourceTree = "<group>"; };
 		B14E078B230141BE00AE85A0 /* ContactPersonPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPersonPickerViewController.swift; sourceTree = "<group>"; };
 		B14E07C423025C6A00AE85A0 /* OOContactExpressAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOContactExpressAPI.swift; sourceTree = "<group>"; };
+		B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebsocketManager.swift; sourceTree = "<group>"; };
 		B1534E3E21F712EA00CC8C35 /* O2DemoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2DemoAlertView.swift; sourceTree = "<group>"; };
 		B158E95D215DD3F500AB2727 /* AIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIConstants.swift; sourceTree = "<group>"; };
+		B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2RecordVoiceManager.swift; sourceTree = "<group>"; };
+		B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatAudioView.swift; sourceTree = "<group>"; };
+		B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMChatAudioView.xib; sourceTree = "<group>"; };
+		B15BE0F2249A06BE008CD1DB /* AmrCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmrCodec.h; sourceTree = "<group>"; };
+		B15BE0F5249A06BE008CD1DB /* enc_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = enc_if.h; sourceTree = "<group>"; };
+		B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libvo-amrwbenc.a"; sourceTree = "<group>"; };
+		B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvertMp3.m; sourceTree = "<group>"; };
+		B15BE0F9249A06BE008CD1DB /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
+		B15BE0FA249A06BE008CD1DB /* ConvertMp3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvertMp3.h; sourceTree = "<group>"; };
+		B15BE0FD249A06BE008CD1DB /* if_rom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_rom.h; sourceTree = "<group>"; };
+		B15BE0FE249A06BE008CD1DB /* dec_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dec_if.h; sourceTree = "<group>"; };
+		B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrwb.a"; sourceTree = "<group>"; };
+		B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrnb.a"; sourceTree = "<group>"; };
+		B15BE103249A06BE008CD1DB /* interf_dec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_dec.h; sourceTree = "<group>"; };
+		B15BE104249A06BE008CD1DB /* interf_enc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_enc.h; sourceTree = "<group>"; };
+		B15BE105249A06BE008CD1DB /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+		B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMAudioView.xib; sourceTree = "<group>"; };
+		B15BE10D249A107C008CD1DB /* IMAudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMAudioView.swift; sourceTree = "<group>"; };
+		B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerManager.swift; sourceTree = "<group>"; };
 		B15D26BF235EF0850092F8B8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/CloudFile.storyboard; sourceTree = "<group>"; };
 		B15D26EA235EF0940092F8B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CloudFile.strings; sourceTree = "<group>"; };
 		B15D26EB235EF7480092F8B8 /* genstrings.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = genstrings.sh; sourceTree = "<group>"; };
@@ -1425,6 +1495,8 @@
 		B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarEventViewController.swift; sourceTree = "<group>"; };
 		B15F812A21102BBF00B81F35 /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		B15F812B21102BBF00B81F35 /* DatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DatePickerView.xib; sourceTree = "<group>"; };
+		B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2StringPicker.swift; sourceTree = "<group>"; };
+		B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = O2StringPicker.xib; sourceTree = "<group>"; };
 		B165CCD42241DBD700373B66 /* LWDatePickerDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LWDatePickerDialog.swift; sourceTree = "<group>"; };
 		B165CD412242093500373B66 /* CoverVerticalAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverVerticalAnimation.swift; sourceTree = "<group>"; };
 		B165CD422242093500373B66 /* PresentrController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentrController.swift; sourceTree = "<group>"; };
@@ -1467,6 +1539,11 @@
 		B1750086233C937E003DA7B9 /* IntExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
 		B1750088233C9B2C003DA7B9 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		B17BF42F22B23758009E36E0 /* SkinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinViewController.swift; sourceTree = "<group>"; };
+		B183987C249AFF64001C6FAA /* IMLocationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMLocationView.xib; sourceTree = "<group>"; };
+		B18398AC249B00AA001C6FAA /* IMLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationView.swift; sourceTree = "<group>"; };
+		B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMLocationChooseController.swift; sourceTree = "<group>"; };
+		B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IMLocationChooseController.xib; sourceTree = "<group>"; };
+		B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMShowLocationViewController.swift; sourceTree = "<group>"; };
 		B18FFF5E23756B6C001B2887 /* JPushAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPushAPI.swift; sourceTree = "<group>"; };
 		B1908E1322685E8F00D75632 /* O2WebViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2WebViewModels.swift; sourceTree = "<group>"; };
 		B1908E4D22687B1A00D75632 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -1524,6 +1601,9 @@
 		B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileBaseVC.swift; sourceTree = "<group>"; };
 		B1EE2CCD2281729400842F48 /* QDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QDatePicker.swift; sourceTree = "<group>"; };
 		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
+		B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSViewModel.swift; sourceTree = "<group>"; };
+		B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSSubjectAttachmentViewController.swift; sourceTree = "<group>"; };
+		B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSSubjectAttachmentViewCell.swift; sourceTree = "<group>"; };
 		B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOCalendarViewController.swift; sourceTree = "<group>"; };
 		B1FAFD432105C23B008A0CDF /* Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		B1FB9FAD2302891F00A90722 /* ContactPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerViewModel.swift; sourceTree = "<group>"; };
@@ -2342,6 +2422,7 @@
 				B1BC8CDA216B3D5F00AF571F /* libc++.tbd in Frameworks */,
 				B130E648223B774D00B68354 /* image_picker.framework in Frameworks */,
 				E4D23119209EF74D00837868 /* libssl.a in Frameworks */,
+				B15BE106249A06BF008CD1DB /* libvo-amrwbenc.a in Frameworks */,
 				E4C24A222080A44300E426B0 /* CFNetwork.framework in Frameworks */,
 				B1AE4E2621A3DCC100183FCD /* O2OA_Auth_SDK.framework in Frameworks */,
 				B130E64A223B774D00B68354 /* shared_preferences.framework in Frameworks */,
@@ -2352,13 +2433,16 @@
 				E40958C7208051DE000FECC3 /* CoreTelephony.framework in Frameworks */,
 				E4418C5F1DDC1AC80066348D /* CoreGraphics.framework in Frameworks */,
 				E4375B12207CABAB0065A880 /* SystemConfiguration.framework in Frameworks */,
+				B15BE108249A06BF008CD1DB /* libmp3lame.a in Frameworks */,
 				B19BCE8A2228272500BD454C /* App.framework in Frameworks */,
 				B130E649223B774D00B68354 /* path_provider.framework in Frameworks */,
 				E4375B1A207CABE90065A880 /* AudioToolbox.framework in Frameworks */,
+				B15BE10A249A06BF008CD1DB /* libopencore-amrnb.a in Frameworks */,
 				E4375B14207CABB30065A880 /* AddressBook.framework in Frameworks */,
 				E4375B18207CABD20065A880 /* AssetsLibrary.framework in Frameworks */,
 				E4375B16207CABC90065A880 /* CoreMotion.framework in Frameworks */,
 				E4375B10207CABA30065A880 /* CoreLocation.framework in Frameworks */,
+				B15BE109249A06BF008CD1DB /* libopencore-amrwb.a in Frameworks */,
 				E4375B0E207CAB980065A880 /* CoreData.framework in Frameworks */,
 				E4375B0C207CAB860065A880 /* libz.tbd in Frameworks */,
 				E4375B08207CAB770065A880 /* libsqlite3.0.tbd in Frameworks */,
@@ -2483,10 +2567,7 @@
 				B10AC58D21058DAE00179587 /* AlamofireNetworkActivityIndicator.framework */,
 				B10AC58F21058DAE00179587 /* AlamofireObjectMapper.framework */,
 				B10AC59121058DAE00179587 /* BetterSegmentedControl.framework */,
-				B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */,
 				B10AC59521058DAE00179587 /* BSImagePicker.framework */,
-				B10AC59721058DAE00179587 /* BSImagePicker.bundle */,
-				B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */,
 				B10AC59B21058DAE00179587 /* Charts.framework */,
 				B1F79C78233B5F9B004D0AEE /* Chrysan.framework */,
 				B1F79C7A233B5F9B004D0AEE /* Chrysan.bundle */,
@@ -2514,6 +2595,7 @@
 				B10AC5D721058DAE00179587 /* RxSwift.framework */,
 				B10AC5D921058DAE00179587 /* SDWebImage.framework */,
 				B10AC5DF21058DAE00179587 /* SnapKit.framework */,
+				B1173A592488C3DD005075F0 /* Starscream.framework */,
 				B10AC5E321058DAE00179587 /* SwiftValidator.framework */,
 				B10AC5E521058DAE00179587 /* SwiftyJSON.framework */,
 				B10AC5E721058DAE00179587 /* SwiftyTimer.framework */,
@@ -2522,6 +2604,64 @@
 				B10AC5F121058DAE00179587 /* YHPopupView.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B1173A262488C3DD005075F0 /* IM-聊天 */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A642488CD37005075F0 /* View */,
+				B1173A612488C8D3005075F0 /* Model */,
+				B1173A5A2488C546005075F0 /* IMConversationListViewController.swift */,
+				B1173A5F2488C82F005075F0 /* IMViewModel.swift */,
+				B1173A692488D4AD005075F0 /* O2IM.swift */,
+				B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */,
+				B1489B1B248E0F4D009EE9FD /* IMChatViewController.xib */,
+				B1489CB424935104009EE9FD /* IMInstantMessageViewController.swift */,
+				B1489CB524935104009EE9FD /* IMInstantMessageViewController.xib */,
+				B18398AE249B079B001C6FAA /* IMLocationChooseController.swift */,
+				B18398AF249B079B001C6FAA /* IMLocationChooseController.xib */,
+				B18398B2249B4154001C6FAA /* IMShowLocationViewController.swift */,
+			);
+			path = "IM-聊天";
+			sourceTree = "<group>";
+		};
+		B1173A5C2488C568005075F0 /* Communicate */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A5D2488C5DF005075F0 /* CommunicateAPI.swift */,
+			);
+			path = Communicate;
+			sourceTree = "<group>";
+		};
+		B1173A612488C8D3005075F0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A622488C8EA005075F0 /* IMConversationInfo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B1173A642488CD37005075F0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B1173A652488CD5B005075F0 /* IMConversationItemCell.swift */,
+				B1173A662488CD5B005075F0 /* IMConversationItemCell.xib */,
+				B1489B4F248E192D009EE9FD /* IMChatMessageViewCell.swift */,
+				B1489B50248E192D009EE9FD /* IMChatMessageViewCell.xib */,
+				B1489BFC2490BE51009EE9FD /* IMChatMessageSendViewCell.swift */,
+				B1489BFD2490BE51009EE9FD /* IMChatMessageSendViewCell.xib */,
+				B1489C7A2491FEFE009EE9FD /* IMChatEmojiBarView.swift */,
+				B1489CAD2491FF13009EE9FD /* IMChatEmojiBarView.xib */,
+				B1489CAF2492045D009EE9FD /* IMChatEmojiItemCell.swift */,
+				B1489CB02492045D009EE9FD /* IMChatEmojiItemCell.xib */,
+				B15BE0ED2499DD7E008CD1DB /* IMChatAudioView.swift */,
+				B15BE0EF2499DD90008CD1DB /* IMChatAudioView.xib */,
+				B15BE10B249A0EFE008CD1DB /* IMAudioView.xib */,
+				B15BE10D249A107C008CD1DB /* IMAudioView.swift */,
+				B183987C249AFF64001C6FAA /* IMLocationView.xib */,
+				B18398AC249B00AA001C6FAA /* IMLocationView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		B12FD1502283CDF400E636BA /* theme */ = {
@@ -2589,6 +2729,91 @@
 				B14B339E2356EB1500442968 /* CloudFileViewModel.swift */,
 			);
 			path = vm;
+			sourceTree = "<group>";
+		};
+		B15BE0F1249A06BE008CD1DB /* lame */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F2249A06BE008CD1DB /* AmrCodec.h */,
+				B15BE0F3249A06BE008CD1DB /* vo-amrwbenc */,
+				B15BE0F8249A06BE008CD1DB /* ConvertMp3.m */,
+				B15BE0F9249A06BE008CD1DB /* libmp3lame.a */,
+				B15BE0FA249A06BE008CD1DB /* ConvertMp3.h */,
+				B15BE0FB249A06BE008CD1DB /* opencore-amr */,
+				B15BE105249A06BE008CD1DB /* lame.h */,
+			);
+			path = lame;
+			sourceTree = "<group>";
+		};
+		B15BE0F3249A06BE008CD1DB /* vo-amrwbenc */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F4249A06BE008CD1DB /* vo-amrwbenc */,
+				B15BE0F6249A06BE008CD1DB /* lib */,
+			);
+			path = "vo-amrwbenc";
+			sourceTree = "<group>";
+		};
+		B15BE0F4249A06BE008CD1DB /* vo-amrwbenc */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F5249A06BE008CD1DB /* enc_if.h */,
+			);
+			path = "vo-amrwbenc";
+			sourceTree = "<group>";
+		};
+		B15BE0F6249A06BE008CD1DB /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0F7249A06BE008CD1DB /* libvo-amrwbenc.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		B15BE0FB249A06BE008CD1DB /* opencore-amr */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0FC249A06BE008CD1DB /* opencore-amrwb */,
+				B15BE0FF249A06BE008CD1DB /* lib */,
+				B15BE102249A06BE008CD1DB /* opencore-amrnb */,
+			);
+			path = "opencore-amr";
+			sourceTree = "<group>";
+		};
+		B15BE0FC249A06BE008CD1DB /* opencore-amrwb */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE0FD249A06BE008CD1DB /* if_rom.h */,
+				B15BE0FE249A06BE008CD1DB /* dec_if.h */,
+			);
+			path = "opencore-amrwb";
+			sourceTree = "<group>";
+		};
+		B15BE0FF249A06BE008CD1DB /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE100249A06BE008CD1DB /* libopencore-amrwb.a */,
+				B15BE101249A06BE008CD1DB /* libopencore-amrnb.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		B15BE102249A06BE008CD1DB /* opencore-amrnb */ = {
+			isa = PBXGroup;
+			children = (
+				B15BE103249A06BE008CD1DB /* interf_dec.h */,
+				B15BE104249A06BE008CD1DB /* interf_enc.h */,
+			);
+			path = "opencore-amrnb";
+			sourceTree = "<group>";
+		};
+		B162F25924AB0E1400A6BF06 /* stringsPicker */ = {
+			isa = PBXGroup;
+			children = (
+				B162F28824AB0E7300A6BF06 /* O2StringPicker.swift */,
+				B162F28A24AB0E9900A6BF06 /* O2StringPicker.xib */,
+			);
+			path = stringsPicker;
 			sourceTree = "<group>";
 		};
 		B165CC9D2241DB9F00373B66 /* DatePickerDialogSwift */ = {
@@ -2683,6 +2908,7 @@
 				B15F8128210EF15E00B81F35 /* OOCalendarEventViewController.swift */,
 				B1C19024211437E200935829 /* OOCalendarLeftMenuController.swift */,
 				B1FAE9E02115F95800981A25 /* OOCalendarViewController.swift */,
+				8840A991248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -2756,6 +2982,7 @@
 		B1EE2C9A2281723A00842F48 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				B162F25924AB0E1400A6BF06 /* stringsPicker */,
 				B19FF868226DBB2200FA0B76 /* o2JsApi */,
 				E4B697052075FA550062F6E8 /* TimerButton */,
 				B1EE2CCD2281729400842F48 /* QDatePicker.swift */,
@@ -2785,6 +3012,7 @@
 		B1F79C44233B5F9B004D0AEE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B1173B2C2489F48C005075F0 /* O2Emoji.bundle */,
 				B19776E7217D9D810019F3A8 /* beep.wav */,
 				E4B888231D9D48F1002E1A46 /* images */,
 				E4B888291D9D48F1002E1A46 /* 隶变体.ttf */,
@@ -2838,6 +3066,9 @@
 				B13A011023692A8B00025F3B /* O2CloudFileManager.swift */,
 				B1E0BAA02378FC01001D741F /* O2JPushManager.swift */,
 				B1ABAA0B237E498C0027EC48 /* O2VersionManager.swift */,
+				B14E0C0B2484F1F0008AF6AE /* O2WebsocketManager.swift */,
+				B15BE0BD2499BCEF008CD1DB /* O2RecordVoiceManager.swift */,
+				B15BE110249A6002008CD1DB /* AudioPlayerManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -2869,6 +3100,7 @@
 				E45CD4211DFE503C008F99AD /* Scan-二维码扫码 */,
 				E4C24C22208D7EDE00E426B0 /* Contact-通讯录 */,
 				E4B8875E1D9D48F1002E1A46 /* contacts */,
+				B1173A262488C3DD005075F0 /* IM-聊天 */,
 				E428AF3720A95D3800D964B9 /* NewAttance-考勤打卡 */,
 				E40E246E20B7DA3C009F8BE7 /* meeting-会议 */,
 				B19091FD2107145F009A7906 /* Calendar-日程管理 */,
@@ -3076,6 +3308,7 @@
 				E41441D71DCAC5C600E3DDA3 /* c */,
 				E41441D81DCAC5C600E3DDA3 /* m */,
 				E41441D91DCAC5C600E3DDA3 /* v */,
+				B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */,
 			);
 			path = "BBS-论坛";
 			sourceTree = "<group>";
@@ -3089,6 +3322,7 @@
 				E46E6BF61DD2C8B500AB7561 /* BBSReplySubjectViewController.swift */,
 				E4418C6C1DDD5D6A0066348D /* BBSSubjectCreateTableViewController.swift */,
 				E47EF77C1DDDC78300B5B8C2 /* BBSSubjectContentViewController.swift */,
+				B1F6CDED24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -3108,6 +3342,7 @@
 				E41441E01DCB248C00E3DDA3 /* BBSForumCell.swift */,
 				E4740ABE1DCC267100686780 /* BBSHeaderCollectionReusableView.swift */,
 				E4740AC01DCC45A300686780 /* SubjectTableViewCell.swift */,
+				B1F6CDEF24A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift */,
 			);
 			path = v;
 			sourceTree = "<group>";
@@ -3405,6 +3640,7 @@
 		E4B69721207602840062F6E8 /* O2API */ = {
 			isa = PBXGroup;
 			children = (
+				B1173A5C2488C568005075F0 /* Communicate */,
 				B18FFF3323756B24001B2887 /* JpushAPI */,
 				B107453721A52B9A0015F1B2 /* PersonalAPI */,
 				B1B6A8F7217710A400C10F3C /* FaceRecognizeAPI */,
@@ -3816,6 +4052,7 @@
 		E4B887821D9D48F1002E1A46 /* Framework */ = {
 			isa = PBXGroup;
 			children = (
+				B15BE0F1249A06BE008CD1DB /* lame */,
 				E4B69721207602840062F6E8 /* O2API */,
 				E4B8892E1D9D6308002E1A46 /* Utils */,
 				B142B04E230FB53E00E7D127 /* MagicBytesMimeType */,
@@ -5091,25 +5328,11 @@
 			remoteRef = B10AC59021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B10AC59321058DAE00179587 /* BSGridCollectionViewLayout.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSGridCollectionViewLayout.framework;
-			remoteRef = B10AC59221058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		B10AC59521058DAE00179587 /* BSImagePicker.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = BSImagePicker.framework;
 			remoteRef = B10AC59421058DAE00179587 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B10AC59721058DAE00179587 /* BSImagePicker.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = BSImagePicker.bundle;
-			remoteRef = B10AC59621058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B10AC59B21058DAE00179587 /* Charts.framework */ = {
@@ -5294,6 +5517,13 @@
 			remoteRef = B10AC5F021058DAE00179587 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		B1173A592488C3DD005075F0 /* Starscream.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Starscream.framework;
+			remoteRef = B1173A582488C3DD005075F0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		B14A2293224CBC2E00745E0A /* IQKeyboardManagerSwift.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -5313,13 +5543,6 @@
 			fileType = wrapper.framework;
 			path = RxAtomic.framework;
 			remoteRef = B1AE4E6321A3F53A00183FCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B1BC8CD6216B1F0B00AF571F /* BSImageView.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = BSImageView.framework;
-			remoteRef = B1BC8CD5216B1F0B00AF571F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		B1F79C78233B5F9B004D0AEE /* Chrysan.framework */ = {
@@ -5364,6 +5587,7 @@
 				E46E6CA01DD41F5D00AB7561 /* ZSSrightjustify@2x.png in Resources */,
 				E46E6CA91DD41F5D00AB7561 /* ZSStextcolor.png in Resources */,
 				E4C24C1F2085849500E426B0 /* o2Theme.bundle in Resources */,
+				B15BE0F02499DD90008CD1DB /* IMChatAudioView.xib in Resources */,
 				E4B781671DF8E556007B58A9 /* information.storyboard in Resources */,
 				E46E6CAA1DD41F5D00AB7561 /* ZSStextcolor@2x.png in Resources */,
 				E40E24C020B7DA3C009F8BE7 /* OOMeetingRoomTableHeaderView.xib in Resources */,
@@ -5384,6 +5608,7 @@
 				E4C24B4920844F3C00E426B0 /* JCMessageImageCollectionViewCell.xib in Resources */,
 				E4C24C1820844F5200E426B0 /* yh_image_picked@2x.png in Resources */,
 				E45755A61E0BA72E00EC44F4 /* qrcode_scan_part_net.png in Resources */,
+				B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */,
 				E46E6C721DD41F5D00AB7561 /* ZSSfonts@2x.png in Resources */,
 				E46E6C6E1DD41F5D00AB7561 /* ZSScenterjustify@2x.png in Resources */,
 				B1298E822366B2E7006E9236 /* CFImageViewCell.xib in Resources */,
@@ -5398,12 +5623,14 @@
 				E4B8871E1D9D477A002E1A46 /* Assets.xcassets in Resources */,
 				E46E6CA51DD41F5D00AB7561 /* ZSSsuperscript.png in Resources */,
 				E4C24BC020844F3C00E426B0 /* 定位2.png in Resources */,
+				B1173A682488CD5B005075F0 /* IMConversationItemCell.xib in Resources */,
 				B197771D217D9D810019F3A8 /* beep.wav in Resources */,
 				E40E24C920B7DA3C009F8BE7 /* OOMeetingPersonTableViewCell.xib in Resources */,
 				E4B2321C20B3E94E0082F30A /* OOAttanceCheckinPromptView.xib in Resources */,
 				E4C24B6120844F3C00E426B0 /* addressCode in Resources */,
 				E4B697D920764A2D0062F6E8 /* myshareEditorByPerson.json in Resources */,
 				E457559D1E0BA72E00EC44F4 /* qrcode_scan_btn_flash_down@2x.png in Resources */,
+				B1489B1D248E0F4D009EE9FD /* IMChatViewController.xib in Resources */,
 				E4C24C1A20844F5200E426B0 /* emoticons.bundle in Resources */,
 				E4B888E11D9D48F1002E1A46 /* contacts.storyboard in Resources */,
 				E45755A51E0BA72E00EC44F4 /* qrcode_scan_light_green@2x.png in Resources */,
@@ -5476,6 +5703,7 @@
 				E46E6CB51DD41F5D00AB7561 /* jQuery.js in Resources */,
 				E46E6C801DD41F5D00AB7561 /* ZSSh6@2x.png in Resources */,
 				E46E6C971DD41F5D00AB7561 /* ZSSparagraph.png in Resources */,
+				B1489CAE2491FF13009EE9FD /* IMChatEmojiBarView.xib in Resources */,
 				E4B888E01D9D48F1002E1A46 /* apps.storyboard in Resources */,
 				E428AF6120AD4DCE00D964B9 /* OOAttanceCheckInController.xib in Resources */,
 				B165CD5D2242093500373B66 /* SourceSansPro-Regular.ttf in Resources */,
@@ -5488,6 +5716,7 @@
 				E46E6C6D1DD41F5D00AB7561 /* ZSScenterjustify.png in Resources */,
 				E40E24BE20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.xib in Resources */,
 				E4D2312B20A29E2700837868 /* OOAppMainCollectionHeaderView.xib in Resources */,
+				B18398B1249B079B001C6FAA /* IMLocationChooseController.xib in Resources */,
 				E45755A31E0BA72E00EC44F4 /* qrcode_scan_btn_scan_off@2x.png in Resources */,
 				E46E6CA71DD41F5D00AB7561 /* ZSStable.png in Resources */,
 				E4C24BC120844F3C00E426B0 /* jiantou2@2x.png in Resources */,
@@ -5497,6 +5726,7 @@
 				B165CD682242093500373B66 /* Montserrat-Regular.ttf in Resources */,
 				E41441DB1DCAC5D700E3DDA3 /* bbs.storyboard in Resources */,
 				E46E6C9B1DD41F5D00AB7561 /* ZSSquicklink.png in Resources */,
+				B1489CB22492045D009EE9FD /* IMChatEmojiItemCell.xib in Resources */,
 				E45755A91E0BA72E00EC44F4 /* qrcode_Scan_weixin_Line@2x.png in Resources */,
 				E4B697B920764A2D0062F6E8 /* buildlist.json in Resources */,
 				E4C24B4320844F3C00E426B0 /* defaultTheme.bundle in Resources */,
@@ -5504,6 +5734,7 @@
 				E46E6CAF1DD41F5D00AB7561 /* ZSSunlink.png in Resources */,
 				E40E24C320B7DA3C009F8BE7 /* OOMeetingInforItemCell.xib in Resources */,
 				E46E6C811DD41F5D00AB7561 /* ZSShorizontalrule.png in Resources */,
+				B1173B5E2489F48C005075F0 /* O2Emoji.bundle in Resources */,
 				E46E6C7F1DD41F5D00AB7561 /* ZSSh6.png in Resources */,
 				E46E6C9C1DD41F5D00AB7561 /* ZSSquicklink@2x.png in Resources */,
 				E46E6C901DD41F5D00AB7561 /* ZSSleftjustify@2x.png in Resources */,
@@ -5519,6 +5750,8 @@
 				E4B889071D9D4C7E002E1A46 /* podfile in Resources */,
 				E46E6C841DD41F5D00AB7561 /* ZSSimage@2x.png in Resources */,
 				E4B697012075DE5F0062F6E8 /* OOGuidePageController.xib in Resources */,
+				B1489BFF2490BE51009EE9FD /* IMChatMessageSendViewCell.xib in Resources */,
+				B162F28B24AB0E9900A6BF06 /* O2StringPicker.xib in Resources */,
 				E4D23110209C40F600837868 /* OOPersonCollectionViewCell.xib in Resources */,
 				B167F7672362C60200F182B8 /* CloudFileMoveFolderCell.xib in Resources */,
 				E46E6CAD1DD41F5D00AB7561 /* ZSSundo.png in Resources */,
@@ -5529,17 +5762,20 @@
 				E46E6C6F1DD41F5D00AB7561 /* ZSSclearstyle.png in Resources */,
 				E46E6CB11DD41F5D00AB7561 /* ZSSunorderedlist.png in Resources */,
 				E40E246D20B68AF6009F8BE7 /* OOAttandanceTotalHeaderView.xib in Resources */,
+				B1489CB724935104009EE9FD /* IMInstantMessageViewController.xib in Resources */,
 				E4C24C1720844F5200E426B0 /* yh_image_no_picked@3x.png in Resources */,
 				E46E6C7E1DD41F5D00AB7561 /* ZSSh5@2x.png in Resources */,
 				E46E6C871DD41F5D00AB7561 /* ZSSindent.png in Resources */,
 				E46E6CC31DD41F5D00AB7561 /* ZSSRichTextEditor.js in Resources */,
 				E4C24BC220844F3C00E426B0 /* icon_baidu_marker.png in Resources */,
 				B12FD1872283CE1D00E636BA /* red.plist in Resources */,
+				B183987D249AFF64001C6FAA /* IMLocationView.xib in Resources */,
 				E4B888E21D9D48F1002E1A46 /* cloudStorage.storyboard in Resources */,
 				E46E6C8E1DD41F5D00AB7561 /* ZSSkeyboard@2x.png in Resources */,
 				E4C24C49208D7EDE00E426B0 /* OOContactSearchSectionHeaderView.xib in Resources */,
 				E46E6C691DD41F5D00AB7561 /* ZSSbgcolor.png in Resources */,
 				E428AF4620A95FE800D964B9 /* OOAttanceTotalController.xib in Resources */,
+				B15BE10C249A0EFE008CD1DB /* IMAudioView.xib in Resources */,
 				B165CD6B2242093500373B66 /* Info.plist in Resources */,
 				E4C24C48208D7EDE00E426B0 /* OOContactGroupHeaderView.xib in Resources */,
 				E4B888DB1D9D48F1002E1A46 /* 隶变体.ttf in Resources */,
@@ -5601,9 +5837,7 @@
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireNetworkActivityIndicator/AlamofireNetworkActivityIndicator.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework",
-				"${BUILT_PRODUCTS_DIR}/BSGridCollectionViewLayout/BSGridCollectionViewLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/BSImagePicker/BSImagePicker.framework",
-				"${BUILT_PRODUCTS_DIR}/BSImageView/BSImageView.framework",
 				"${BUILT_PRODUCTS_DIR}/BetterSegmentedControl/BetterSegmentedControl.framework",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/Chrysan/Chrysan.framework",
@@ -5630,6 +5864,7 @@
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftValidator/SwiftValidator.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTimer/SwiftyTimer.framework",
@@ -5643,9 +5878,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireNetworkActivityIndicator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireObjectMapper.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSGridCollectionViewLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImagePicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImageView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BetterSegmentedControl.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Chrysan.framework",
@@ -5672,6 +5905,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftValidator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTimer.framework",
@@ -5739,6 +5973,7 @@
 				E4B8889E1D9D48F1002E1A46 /* MJRefreshFooter.m in Sources */,
 				E4F45446208EC359002FBC32 /* OOPersonsViewController.swift in Sources */,
 				09E02E841F16319600579887 /* CGSize+Swift.swift in Sources */,
+				B1F6CDBE24A88D26005CB1E0 /* BBSViewModel.swift in Sources */,
 				E4B888751D9D48F1002E1A46 /* Department.swift in Sources */,
 				E4C24B6D20844F3C00E426B0 /* JCAlertView.swift in Sources */,
 				B190923521071777009A7906 /* OOCalendarModels.swift in Sources */,
@@ -5849,6 +6084,7 @@
 				E4B888711D9D48F1002E1A46 /* ContactSearchViewController.swift in Sources */,
 				B130A7852281597000282AD1 /* DeviceManagerViewModel.swift in Sources */,
 				E40E24BF20B7DA3C009F8BE7 /* OOMeetingRoomDeviceListView.swift in Sources */,
+				B1173A632488C8EA005075F0 /* IMConversationInfo.swift in Sources */,
 				E4A748D51EC15EF100163F58 /* TaskAttachmentPreviewController.swift in Sources */,
 				E4B888A51D9D48F1002E1A46 /* MJRefreshBackStateFooter.m in Sources */,
 				E4B8885E1D9D48F1002E1A46 /* O2CollectionView.swift in Sources */,
@@ -5858,9 +6094,11 @@
 				E4D2310F209C40F600837868 /* OOPersonCollectionViewCell.swift in Sources */,
 				E4C24B4A20844F3C00E426B0 /* JCMessageImageCollectionViewCell.swift in Sources */,
 				E4C24B6920844F3C00E426B0 /* DLSlideView.m in Sources */,
+				B1173A672488CD5B005075F0 /* IMConversationItemCell.swift in Sources */,
 				B1534E3F21F712EA00CC8C35 /* O2DemoAlertView.swift in Sources */,
 				E4C24B7F20844F3C00E426B0 /* ImageFileCell.swift in Sources */,
 				B165CD602242093500373B66 /* AlertViewController.swift in Sources */,
+				B1173A5E2488C5DF005075F0 /* CommunicateAPI.swift in Sources */,
 				E441994A206C8A100050AE0C /* OORegisterTableView.swift in Sources */,
 				E40E24A920B7DA3C009F8BE7 /* OOMeetingCreateViewModel.swift in Sources */,
 				E40C41ED1E7F7C0D00568805 /* ZoneSubCategoryViewController.swift in Sources */,
@@ -5869,6 +6107,7 @@
 				E4CB27721E78D5B1004A7ACB /* UINavigationBar+Flat.swift in Sources */,
 				E45DA90C1DAF76C800E0735D /* SCommonViewController.swift in Sources */,
 				B108F401229E34D400778050 /* LBXScanWrapper.swift in Sources */,
+				B1489CB624935104009EE9FD /* IMInstantMessageViewController.swift in Sources */,
 				E40C41F21E83715C00568805 /* ZLUISearchBar.swift in Sources */,
 				E4B888791D9D48F1002E1A46 /* Person.swift in Sources */,
 				E4C24BA820844F3C00E426B0 /* JCChatViewController.swift in Sources */,
@@ -5882,6 +6121,8 @@
 				B167F7662362C60200F182B8 /* CloudFileMoveFolderCell.swift in Sources */,
 				B165CD5C2242093500373B66 /* CoverHorizontalAnimation.swift in Sources */,
 				B1908E1422685E8F00D75632 /* O2WebViewModels.swift in Sources */,
+				B1F6CDF024A89836005CB1E0 /* BBSSubjectAttachmentViewCell.swift in Sources */,
+				B1F6CDEE24A893B6005CB1E0 /* BBSSubjectAttachmentViewController.swift in Sources */,
 				E4B69738207602A40062F6E8 /* OOAccessTokenAuthorizable.swift in Sources */,
 				E4C24BB120844F3C00E426B0 /* JCMessageOptions.swift in Sources */,
 				E4B8889C1D9D48F1002E1A46 /* MJRefreshBackFooter.m in Sources */,
@@ -5896,6 +6137,7 @@
 				B1DE856623603408003C36E2 /* DispatchQueue+Extension.swift in Sources */,
 				E4B69772207630240062F6E8 /* String+Extenstion.swift in Sources */,
 				B175007A233C6908003DA7B9 /* BlockLongPress.swift in Sources */,
+				B1173A5B2488C546005075F0 /* IMConversationListViewController.swift in Sources */,
 				E4B69734207602A40062F6E8 /* OOAPIContext.swift in Sources */,
 				09E02E881F16319600579887 /* DiskFetcher.swift in Sources */,
 				E4C24B5520844F3C00E426B0 /* SAIToolboxInputView.swift in Sources */,
@@ -5903,10 +6145,12 @@
 				E4C24B5320844F3C00E426B0 /* SAIInputView.swift in Sources */,
 				E40E24CF20B7DA3C009F8BE7 /* OOFormDateItemView.swift in Sources */,
 				B1FBA01D230A3AB500A90722 /* O2JsApiBizUtil.swift in Sources */,
+				B1489B51248E192D009EE9FD /* IMChatMessageViewCell.swift in Sources */,
 				E4B69776207630240062F6E8 /* UIView+Extension.swift in Sources */,
 				E4C24BB420844F3C00E426B0 /* JCMessageContentViewType.swift in Sources */,
 				E4C24B9420844F3C00E426B0 /* JCGroupSettingCell.swift in Sources */,
 				E40E24D320B7DA3C009F8BE7 /* OOMeetingPersonSelectHeaderView.swift in Sources */,
+				B15BE0BE2499BCEF008CD1DB /* O2RecordVoiceManager.swift in Sources */,
 				B1DB6EA5237E6F2C00D7BA94 /* O2VersionInfoModel.swift in Sources */,
 				E4C24B9E20844F3C00E426B0 /* JCUpdateMemberCell.swift in Sources */,
 				09E02E9A1F1745E700579887 /* ZLTextView.swift in Sources */,
@@ -5959,6 +6203,7 @@
 				B1FBA01A230533FA00A90722 /* PersonPickerTableViewCell.swift in Sources */,
 				E4B6981A2079A8BB0062F6E8 /* OOBindNodeViewController.swift in Sources */,
 				E4F4544F20902263002FBC32 /* OOConfigInfoModels.swift in Sources */,
+				B1489CB12492045D009EE9FD /* IMChatEmojiItemCell.swift in Sources */,
 				E4B2321A20B3E9440082F30A /* OOAttanceCheckinPromptView.swift in Sources */,
 				E4B69810207652960062F6E8 /* OOTaskModels.swift in Sources */,
 				E4B888761D9D48F1002E1A46 /* DepartmentDuty.swift in Sources */,
@@ -5968,11 +6213,13 @@
 				B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */,
 				E4B6975020762EA00062F6E8 /* OOPasswordTextField.swift in Sources */,
 				E491664C1E03C09C006133C5 /* O2Account.swift in Sources */,
+				B15BE111249A6002008CD1DB /* AudioPlayerManager.swift in Sources */,
 				E46E6CBA1DD41F5D00AB7561 /* CYRToken.m in Sources */,
 				E4C24C53208D7EDE00E426B0 /* OOContactGroupHeaderView.swift in Sources */,
 				E4C24BD120844F3C00E426B0 /* JCNoteNameViewController.swift in Sources */,
 				B1B110E2223622C400775BEF /* O2BioLocalAuth.swift in Sources */,
 				E4184B231DB4B29B00FCC907 /* SPasswordChangeViewController.swift in Sources */,
+				B1489C7B2491FEFE009EE9FD /* IMChatEmojiBarView.swift in Sources */,
 				E4B7816C1DF8F2B2007B58A9 /* CMSData.swift in Sources */,
 				B165CD592242093500373B66 /* PresentrController.swift in Sources */,
 				E4B7816D1DF8F2B2007B58A9 /* CMSWrapOutCategoryList.swift in Sources */,
@@ -6004,6 +6251,7 @@
 				B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */,
 				E4B6975C20762EA00062F6E8 /* OOUIDownButtonTextField.swift in Sources */,
 				E4C24C0720844F4400E426B0 /* JCSearchFriendViewController.swift in Sources */,
+				B1173A602488C82F005075F0 /* IMViewModel.swift in Sources */,
 				E46E6CBB1DD41F5D00AB7561 /* HRBrightnessCursor.m in Sources */,
 				E4B697E920764A2D0062F6E8 /* OOWorkAPI.swift in Sources */,
 				E40E24C720B7DA3C009F8BE7 /* OOFormSegueItemView.swift in Sources */,
@@ -6050,6 +6298,7 @@
 				E46E6CBF1DD41F5D00AB7561 /* HRColorPickerViewController.m in Sources */,
 				E4C24B6E20844F3C00E426B0 /* JCFileManager.swift in Sources */,
 				09E02E0E1F16001B00579887 /* Head.swift in Sources */,
+				B18398AD249B00AA001C6FAA /* IMLocationView.swift in Sources */,
 				E4D2313020A29E9F00837868 /* OOAppMainCollectionReusableView.swift in Sources */,
 				B165CD5B2242093500373B66 /* PresentrShadow.swift in Sources */,
 				B107453C21A52FA00015F1B2 /* O2PersonInfo.swift in Sources */,
@@ -6113,6 +6362,7 @@
 				09E02E021F12736C00579887 /* PersonV2.swift in Sources */,
 				B1B0102F23586B34002BF874 /* CFFileTableViewCell.swift in Sources */,
 				E40E24AE20B7DA3C009F8BE7 /* OOMeetingAcceptController.swift in Sources */,
+				B15BE107249A06BF008CD1DB /* ConvertMp3.m in Sources */,
 				09E02E041F127CAF00579887 /* IdentityV2.swift in Sources */,
 				E42E41CE1E6ED13C00C5B5C7 /* CMS_PublishInfo.swift in Sources */,
 				E4B888801D9D48F1002E1A46 /* File.swift in Sources */,
@@ -6133,6 +6383,7 @@
 				E4B888C41D9D48F1002E1A46 /* CollectDeviceData.swift in Sources */,
 				E4B888731D9D48F1002E1A46 /* Company.swift in Sources */,
 				E4C24B9B20844F3C00E426B0 /* JCNetworkTipsCell.swift in Sources */,
+				B15BE10E249A107C008CD1DB /* IMAudioView.swift in Sources */,
 				E45DA8E91DACC11600E0735D /* BaseWebViewUIViewController.swift in Sources */,
 				E424BAD61EE105BB0078DB47 /* O2Logger.swift in Sources */,
 				E491664A1E038D09006133C5 /* O2AlamofireSource.swift in Sources */,
@@ -6158,6 +6409,7 @@
 				09E02E971F16319600579887 /* UIImageView+Haneke.swift in Sources */,
 				E4B8887D1D9D48F1002E1A46 /* FileMyDownloadViewController.swift in Sources */,
 				E4C24B6620844F3C00E426B0 /* DLFixedTabbarView.m in Sources */,
+				B18398B3249B4154001C6FAA /* IMShowLocationViewController.swift in Sources */,
 				E4C24B3520844F3C00E426B0 /* NSLayoutConstraint+JChat.swift in Sources */,
 				E45DA9121DAF7EBE00E0735D /* SZKCleanCache.m in Sources */,
 				090253DE1F0E8BA6006B1609 /* O2LoadingView.swift in Sources */,
@@ -6184,6 +6436,7 @@
 				E40E24D220B7DA3C009F8BE7 /* OOFormDateIntervalItemView.swift in Sources */,
 				E4184B251DB4F28800FCC907 /* SMobileChangeViewController.swift in Sources */,
 				E40E24B320B7DA3C009F8BE7 /* OOMeetingMeetingRoomManageController.swift in Sources */,
+				B15BE0EE2499DD7E008CD1DB /* IMChatAudioView.swift in Sources */,
 				E40E24D820B7DA3C009F8BE7 /* OOMeetingPersonFooterView.swift in Sources */,
 				B14E078A230141AC00AE85A0 /* ContactGroupPickerViewController.swift in Sources */,
 				E4B697C520764A2D0062F6E8 /* O2InformationAPI.swift in Sources */,
@@ -6215,6 +6468,7 @@
 				E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */,
 				E4C24B7320844F3C00E426B0 /* JCCEmoticonGroup.swift in Sources */,
 				E4C24BB720844F3C00E426B0 /* JCEmoticonPreviewer.swift in Sources */,
+				8840A992248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift in Sources */,
 				B12FD1DC2283D5B700E636BA /* ThemeScrollViewIndicatorStylePicker.swift in Sources */,
 				B12FD1DD2283D5B700E636BA /* UITextField+PlaceholderAttributes.swift in Sources */,
 				E4C24B3920844F3C00E426B0 /* Array+JChat.swift in Sources */,
@@ -6261,6 +6515,7 @@
 				B12FD1E22283D5B700E636BA /* NSObject+Theme.swift in Sources */,
 				B167F7632362BFC200F182B8 /* CloudFileMoveFolderController.swift in Sources */,
 				E4C24B5920844F3C00E426B0 /* SAIInputBarDisplayable.swift in Sources */,
+				B162F28924AB0E7300A6BF06 /* O2StringPicker.swift in Sources */,
 				B1E0BAA12378FC01001D741F /* O2JPushManager.swift in Sources */,
 				E4B7819D1DFA9181007B58A9 /* CMSCategoryItemData.swift in Sources */,
 				B15F80F3210EB93000B81F35 /* OOCalendarMainMonthViewController.swift in Sources */,
@@ -6282,6 +6537,7 @@
 				E4B888A41D9D48F1002E1A46 /* MJRefreshBackNormalFooter.m in Sources */,
 				E4B2320F20B2A9F60082F30A /* OOAttandanceWorkPlaceController.swift in Sources */,
 				E46E6CB91DD41F5D00AB7561 /* CYRTextView.m in Sources */,
+				B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */,
 				B175007C233C6908003DA7B9 /* BlockTap.swift in Sources */,
 				E4C24B5020844F3C00E426B0 /* SAIInputAccessoryViewLayout.swift in Sources */,
 				E4AA17151EE158E70030D9AB /* LogListViewController.swift in Sources */,
@@ -6371,6 +6627,7 @@
 				E4C24B8D20844F3C00E426B0 /* JCMessageLocationContentView.swift in Sources */,
 				E4CDB8851E7CFB9C008E788D /* ZLNormalNavViewController.swift in Sources */,
 				B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */,
+				B14E0C0C2484F1F0008AF6AE /* O2WebsocketManager.swift in Sources */,
 				E46E6CBC1DD41F5D00AB7561 /* HRCgUtil.m in Sources */,
 				E496E89E207314B100C68EEE /* NavView.swift in Sources */,
 				E4C24BD720844F3C00E426B0 /* JCMyInfoViewController.swift in Sources */,
@@ -6395,6 +6652,7 @@
 				E4C24BD920844F3C00E426B0 /* JCFeedbackViewController.swift in Sources */,
 				E4C24C4C208D7EDE00E426B0 /* OOCDLCell.swift in Sources */,
 				B158E95E215DD3F500AB2727 /* AIConstants.swift in Sources */,
+				B1489BFE2490BE51009EE9FD /* IMChatMessageSendViewCell.swift in Sources */,
 				E4BF45D71E74FB0C008B52F0 /* ImageSlidesShowView.swift in Sources */,
 				E4C24B5820844F3C00E426B0 /* SAIInputItem.swift in Sources */,
 				E40E24DF20B7E66E009F8BE7 /* O2BBSCreatorView.swift in Sources */,
@@ -6402,6 +6660,7 @@
 				E4C24B5720844F3C00E426B0 /* SAIToolboxInputViewLayout.swift in Sources */,
 				B1FD027021FAE00E000E9817 /* O2MainController.swift in Sources */,
 				E4B697092075FA560062F6E8 /* BaseModel.swift in Sources */,
+				B18398B0249B079B001C6FAA /* IMLocationChooseController.swift in Sources */,
 				E4B888621D9D48F1002E1A46 /* ZLCollectionView.swift in Sources */,
 				B1298E812366B2E7006E9236 /* CFImageViewCell.swift in Sources */,
 				E40E24B220B7DA3C009F8BE7 /* OOMeetingCreateViewController.swift in Sources */,
@@ -6417,6 +6676,7 @@
 				E4C24B8C20844F3C00E426B0 /* JCMessageNoticeContentView.swift in Sources */,
 				E4C24C3E208D7EDE00E426B0 /* OOContactViewModel.swift in Sources */,
 				E4D2312E20A29E7500837868 /* OOAppMainCollectionHeaderView.swift in Sources */,
+				B1173A6A2488D4AD005075F0 /* O2IM.swift in Sources */,
 				E4C24B5220844F3C00E426B0 /* SAIToolboxItemView.swift in Sources */,
 				E4C24B3C20844F3C00E426B0 /* Date+JChat.swift in Sources */,
 				E4C24C0120844F4400E426B0 /* JCUserInfoCell.swift in Sources */,
@@ -6619,7 +6879,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6650,8 +6910,11 @@
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/vo-amrwbenc/lib",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.7;
+				MARKETING_VERSION = 5.1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6663,8 +6926,6 @@
 					"\"AlamofireNetworkActivityIndicator\"",
 					"-framework",
 					"\"AlamofireObjectMapper\"",
-					"-framework",
-					"\"BSGridCollectionViewLayout\"",
 					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",
@@ -6711,6 +6972,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9ebefd7c-6117-4bee-a96c-7ddb06ad4c6f";
 				PROVISIONING_PROFILE_SPECIFIER = ZheJiangOfficeWorkMngDevProfile;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = none;
 				SWIFT_OBJC_BRIDGING_HEADER = "O2Platform/O2Platform-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
@@ -6733,7 +6995,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 67;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_TEAM = NTDRU2P6T4;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -6764,8 +7026,11 @@
 					"$(PROJECT_DIR)/O2Platform/framework/thirdlibs",
 					"$(PROJECT_DIR)/O2Platform/framework/MegviiLicMgr-iOS-SDK",
 					"$(PROJECT_DIR)/O2Platform/framework/O2OA_Flutter_SDK",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/vo-amrwbenc/lib",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame",
+					"$(PROJECT_DIR)/O2Platform/Framework/lame/opencore-amr/lib",
 				);
-				MARKETING_VERSION = 5.0.7;
+				MARKETING_VERSION = 5.1.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -6777,8 +7042,6 @@
 					"\"AlamofireNetworkActivityIndicator\"",
 					"-framework",
 					"\"AlamofireObjectMapper\"",
-					"-framework",
-					"\"BSGridCollectionViewLayout\"",
 					"-framework",
 					"\"BSImagePicker\"",
 					"-framework",
@@ -6825,6 +7088,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "b23067fd-fb08-4b85-8255-d8f3d25abc8a";
 				PROVISIONING_PROFILE_SPECIFIER = ZheJiangOfficeWorkMngDisProfile;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ENFORCE_EXCLUSIVE_ACCESS = none;
 				SWIFT_OBJC_BRIDGING_HEADER = "O2Platform/O2Platform-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";

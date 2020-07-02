@@ -67,6 +67,10 @@ class ContactPersonInfoV2ViewController: UITableViewController {
             isLoadPerson = false
         }
     }
+    //im 聊天
+    private lazy var viewModel: IMViewModel = {
+        return IMViewModel()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,28 +98,26 @@ class ContactPersonInfoV2ViewController: UITableViewController {
     }
     
     @objc private func _startChat() {
-        MBProgressHUD_JChat.showMessage(message: "创建中...", toView: view)
         var username = ""
-        if self.person != nil {
-            username = self.person?.id ?? ""
-        }else if self.identity != nil {
-            username = self.identity?.person ?? ""
+        if self.contact != nil {
+            username = self.contact?.distinguishedName ?? ""
+        }else if self.person != nil {
+            username = self.person?.distinguishedName ?? ""
         }
         if username == "" {
+            self.showError(title: "无法创建聊天！")
             return
         }
-        JMSGConversation.createSingleConversation(withUsername: username) { (result, error) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
-            if error == nil {
-                let conv = result as! JMSGConversation
-                let vc = JCChatViewController(conversation: conv)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: kUpdateConversation), object: nil, userInfo: nil)
-                self.navigationController?.pushViewController(vc, animated: true)
-            }else{
-                DDLogError(error.debugDescription)
-                MBProgressHUD_JChat.show(text: "创建会话失败，请重试", view: self.view)
-            }
+        
+        self.viewModel.createConversation(type: o2_im_conversation_type_single, users: [username]).then { (conv) in
+            let chatView = IMChatViewController()
+            chatView.conversation = conv
+            self.navigationController?.pushViewController(chatView, animated: true)
+        }.catch { (err) in
+            self.showError(title: "创建单聊失败, \(err.localizedDescription)")
         }
+        
+        
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

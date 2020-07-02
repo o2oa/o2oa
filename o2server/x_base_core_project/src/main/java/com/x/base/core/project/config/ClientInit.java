@@ -44,6 +44,10 @@ public class ClientInit extends ConfigObject {
 
 	public static class LoginPage extends ConfigObject {
 
+		public static LoginPage defaultInstance() {
+			return new LoginPage();
+		}
+
 		@FieldDescribe("是否启用定制的登录页面.")
 		private Boolean enable;
 		@FieldDescribe("登录的门户.")
@@ -77,6 +81,11 @@ public class ClientInit extends ConfigObject {
 	}
 
 	public static class CenterAddress extends ConfigObject {
+
+
+		public static CenterAddress defaultInstance() {
+			return new CenterAddress();
+		}
 
 		private String port;
 

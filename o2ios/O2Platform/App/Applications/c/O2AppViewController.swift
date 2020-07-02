@@ -75,6 +75,7 @@ class O2AppViewController: UIViewController{
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showMailSegue" {
+            segue.destination.modalPresentationStyle = .fullScreen
             if let nav = segue.destination as? ZLNavigationController {
                 nav.viewControllers.forEach { (vc) in
                     if vc is MailViewController {
@@ -164,6 +165,7 @@ extension O2AppViewController:ZLCollectionViewDelegate{
                             AppConfigSettings.shared.taskIndex = 0
                         }
                     }
+                    destVC.modalPresentationStyle = .fullScreen
                     if destVC.isKind(of: ZLNavigationController.self) {
                         DDLogInfo("cloudFIle 进来了？")
                         self.show(destVC, sender: nil)

@@ -787,7 +787,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
             switch(type){
                 case "array":
                     if (this.value!="New Item Value" && this.value!="New Element Value"){
-                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeType, this.dictionary.designer.lp.notice.changeType, 300, 120, function(){
+                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeTypeTitle, this.dictionary.designer.lp.notice.changeType, 300, 120, function(){
                             if (_self.type=="object"){
                                 _self.changeTypeObjectToArray(type);
                             }else{
@@ -810,7 +810,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
                     break;
                 case "object":
                     if (this.value!="New Item Value" && this.value!="New Element Value") {
-                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeType, this.dictionary.designer.lp.notice.changeType, 300, 120, function () {
+                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeTypeTitle, this.dictionary.designer.lp.notice.changeType, 300, 120, function () {
                             if (_self.type == "array") {
                                 _self.changeTypeArrayToObject(type);
                             } else {
@@ -833,7 +833,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
                     break;
                 default:
                     if (this.value!="New Item Value" && this.value!="New Element Value") {
-                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeType, this.dictionary.designer.lp.notice.changeTypeDeleteChildren, 300, 120, function () {
+                        this.dictionary.designer.confirm("warn", e, this.dictionary.designer.lp.notice.changeTypeTitle, this.dictionary.designer.lp.notice.changeTypeDeleteChildren, 300, 120, function () {
                             if (_self.type == "array") {
                                 _self.changeTypeArrayToPrimitive(type);
                             } else if (_self.type == "object") {

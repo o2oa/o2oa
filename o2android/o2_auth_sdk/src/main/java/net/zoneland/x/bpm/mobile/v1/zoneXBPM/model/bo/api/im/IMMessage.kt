@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im
 
 import android.text.TextUtils
-import org.json.JSONObject
-import org.json.JSONTokener
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
+
 
 data class IMMessage(
         var id: String = "",
@@ -18,16 +18,20 @@ data class IMMessage(
         if (TextUtils.isEmpty(body)) {
             return null
         }
-        val json = JSONTokener(body).nextValue()
-        if (json is JSONObject) {
-            val type = json.getString("type")
-            if ("text" == type) {
-                val textBody = json.getString("body")
-                return IMMessageBody.Text(textBody)
-            }
-        }
-        return null
+        return O2SDKManager.instance().gson.fromJson(body, IMMessageBody::class.java)
     }
+}
 
+enum class MessageType(val key:String) {
+    text("text"),
+    emoji("emoji"),
+    image("image"),
+    audio("audio"),
+    location("location")
+}
 
+enum class MessageBody(val body:String) {
+    image("[图片]"),
+    audio("[语音]"),
+    location("[位置]")
 }

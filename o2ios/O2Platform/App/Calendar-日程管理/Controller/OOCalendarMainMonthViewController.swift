@@ -104,7 +104,7 @@ class OOCalendarMainMonthViewController: UIViewController {
         self.performSegue(withIdentifier: "showEventDetail", sender: "add")
     }
     private func loadData() {
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         let filter = OOCalendarEventFilter()
         filter.startTime = self._startTime?.toString("yyyy-MM-dd HH:mm:ss")
         filter.endTime = self._endTime?.toString("yyyy-MM-dd HH:mm:ss")
@@ -130,32 +130,59 @@ class OOCalendarMainMonthViewController: UIViewController {
                 if let all = response.wholeDayEvents {
                     DDLogInfo("全天事件。。。。\(all.count)")
                     all.forEach({ (event) in
-                        if let date = event.startTimeStr?.subString(from: 0, to: 10) {
+                        //处理连续多天的事件。。。。。
+                        let dateArray = self.splitDays(startDay: event.startTimeStr!, endDay: event.endTimeStr!)
+                        for date in dateArray {
                             if var array = result[date] {
                                 array.append(event)
                                 result[date] = array
                             }else {
                                 result[date] = [event]
                             }
-                        }else {
-                            DDLogInfo("starttime is error.................")
                         }
                     })
                 }
                 fulfill(result)
             }
             }.then { (dict) in
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
                 DDLogInfo("filter 结果： \(dict.count)")
                 self.eventsByDate = dict
                 // 刷新页面
                 self.calendarViewDic[0]?.reloadData()
                 self.calendarViewDic[0]?.select(self._selectDay)
                 self.selectCalendarDate(self._selectDay!)
-            }.catch { (error) in
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+        }.always {
+            self.hideLoading()
+        }.catch { (error) in
                 DDLogError(error.localizedDescription)
         }
+    }
+    
+    /**
+     * 分割成多天
+     * @param startDay yyyy-MM-dd HH:mm:ss
+     * @param endDay yyyy-MM-dd HH:mm:ss
+     * @return [yyyy-MM-dd]
+     */
+    private func splitDays(startDay: String, endDay: String) -> [String] {
+        var ret:[String] = []
+        guard let sDay = Date.date(startDay) else {
+            return ret
+        }
+        guard let eDay = Date.date(endDay) else {
+            return ret
+        }
+        if sDay.haveSameYearMonthAndDay(eDay) {
+            ret.append(sDay.toString("yyyy-MM-dd"))
+        }else {
+            let gap = sDay.betweenDays(eDay)
+            for index in 0...gap {
+                let nDay = sDay.add(component: .day, value: index)
+                ret.append(nDay.toString("yyyy-MM-dd"))
+            }
+        }
+        
+        return ret
     }
     
     private func haveEventForDay(_ date:Date) -> Bool{

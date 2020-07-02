@@ -26,6 +26,7 @@ class OOTabBarHelper: NSObject {
         UITabBarItem.appearance().setTitleTextAttributes([
             NSAttributedString.Key.font: UIFont.init(name: "PingFangSC-Regular", size: 12) ?? UIFont.systemFont(ofSize: 12),
             NSAttributedString.Key.foregroundColor: UIColor(hex: "#666666")], for: .normal)
+        
         UITabBarItem.appearance().setTitleTextAttributes([
             NSAttributedString.Key.font: UIFont.init(name: "PingFangSC-Regular", size: 12) ?? UIFont.systemFont(ofSize: 12),
             NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color")!], for: .selected)

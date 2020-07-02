@@ -682,7 +682,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
                 if(json.data && json.data.id){
                     var address = this.actions.action.address;
                     var url = address + "/jaxrs/export/statisticreportcontent/"+json.data.id+"/stream";
-                    window.open(url)
+                    window.open(o2.filterUrl(url))
                 }
             }.bind(this),
             function(xhr,text,error){
@@ -1056,7 +1056,7 @@ MWF.xApplication.Execution.WorkStat = new Class({
                     if(json.data && json.data.id){
                         var address = this.actions.action.address;
                         var url = address + "/jaxrs/export/statisticreportcontent/"+json.data.id+"/stream";
-                        window.open(url)
+                        window.open(o2.filterUrl(url))
                     }
                 }.bind(this),
                 function(xhr,text,error){

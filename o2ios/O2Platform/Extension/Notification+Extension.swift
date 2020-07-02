@@ -22,6 +22,8 @@ enum OONotification:String {
     //重载门户webview
     case reloadPortal
     
+    case websocket
+    
     
     
     var stringValue:String {

@@ -53,6 +53,15 @@
         "margin-left": "0px"
       }
     },
+    "errorStyle" : {
+      "node" : {
+        "height": "20px",
+        "line-height": "20px",
+        "margin-left": "20px",
+        "color": "red",
+        "word-break": "keep-all"
+      }
+    },
     "selectorStyle" : {
       "style" : "blue_flat_mobile",
       "width" : "700",
@@ -67,7 +76,7 @@
       "hasSelectedSearchbar" : true,
       "contentUrl" : "../x_component_Selector/$Selector/blue_flat_mobile/selector.html",
       "injectToBody" : true,
-      "itemHeight" : 88,
+      "itemHeight" : 44,
       "flatCategory" : true
     }
   }

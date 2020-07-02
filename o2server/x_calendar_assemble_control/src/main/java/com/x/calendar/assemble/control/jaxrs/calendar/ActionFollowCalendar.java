@@ -57,7 +57,19 @@ public class ActionFollowCalendar extends BaseAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		
+
+		if( check ){
+			if(
+					( StringUtils.equalsAnyIgnoreCase( calendar.getCreateor(), effectivePerson.getDistinguishedName() ) ) ||
+					( StringUtils.equalsAnyIgnoreCase( calendar.getTarget(), effectivePerson.getDistinguishedName() ) ) ||
+					( StringUtils.equalsAnyIgnoreCase( calendar.getCreateor(), "SYSTEM" ) )
+			){
+				check = false;
+				Exception exception = new ExceptionCalendarInfoProcess( "不需要关注自己的日历.ID:" + id );
+				result.error( exception );
+			}
+		}
+
 		if( check ){
 			try {
 				check = calendarServiceAdv.follow( effectivePerson, id );

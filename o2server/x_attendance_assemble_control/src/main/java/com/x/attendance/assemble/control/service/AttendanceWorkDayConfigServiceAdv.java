@@ -40,4 +40,8 @@ public class AttendanceWorkDayConfigServiceAdv {
 			throw e;
 		}
 	}
+
+    public List<AttendanceWorkDayConfig> getAllWorkDayConfigWithCache(Boolean debugger) throws Exception {
+		return attendanceWorkDayConfigService.getAllWorkDayConfigWithCache(debugger);
+    }
 }

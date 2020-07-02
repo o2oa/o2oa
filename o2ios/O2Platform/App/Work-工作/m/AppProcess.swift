@@ -16,6 +16,7 @@ class AppProcess:Mappable {
     var creatorPerson:String?
     var application:String?
     var icon:String?
+    var defaultStartMode: String?
     
     required init?(map: Map) {
         
@@ -29,6 +30,7 @@ class AppProcess:Mappable {
         creatorPerson <- map["creatorPerson"]
         application <- map["application"]
         icon <- map["icon"]
+        defaultStartMode <- map["defaultStartMode"]
     }
 
 }

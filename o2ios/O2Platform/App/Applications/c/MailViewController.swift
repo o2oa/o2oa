@@ -51,14 +51,24 @@ class MailViewController: BaseWebViewUIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        
         if self.isIndexShow || self.hasInnerBar {
-            let statusBarWindow : UIView = UIApplication.shared.value(forKey: "statusBarWindow") as! UIView
-            let statusBar : UIView = statusBarWindow.value(forKey: "statusBar") as! UIView
-            if statusBar.responds(to:#selector(setter: UIView.backgroundColor)) {
-                statusBar.backgroundColor = base_color
+            if #available(iOS 13.0, *) {
+                if let frame = UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame {
+                    let statusBar = UIView(frame: frame)
+                   statusBar.backgroundColor = base_color
+                   UIApplication.shared.keyWindow?.addSubview(statusBar)
+                }
+            }else {
+              let statusBarWindow : UIView = UIApplication.shared.value(forKey: "statusBarWindow") as! UIView
+                let statusBar : UIView = statusBarWindow.value(forKey: "statusBar") as! UIView
+                if statusBar.responds(to:#selector(setter: UIView.backgroundColor)) {
+                    statusBar.backgroundColor = base_color
+                }
             }
             self.navigationController?.setNavigationBarHidden(true, animated: true)
         }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {

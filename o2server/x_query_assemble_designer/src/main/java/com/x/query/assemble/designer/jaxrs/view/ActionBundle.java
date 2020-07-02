@@ -38,18 +38,8 @@ class ActionBundle extends BaseAction {
 				throw new ExceptionViewNotExist(id);
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Runtime runtime = new Runtime();
-			runtime.person = effectivePerson.getDistinguishedName();
-			runtime.identityList = business.organization().identity()
-					.listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.unitList = business.organization().unit().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.unitAllList = business.organization().unit()
-					.listWithPersonSupNested(effectivePerson.getDistinguishedName());
-			runtime.groupList = business.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.roleList = business.organization().role().listWithPerson(effectivePerson.getDistinguishedName());
-			runtime.parameter = wi.getParameter();
-			runtime.filterList = wi.getFilterList();
-			runtime.count = this.getCount(view, wi.getCount());
+
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount());
 
 			List<String> os = null;
 			switch (StringUtils.trimToEmpty(view.getType())) {

@@ -5,15 +5,15 @@ layout.addReady(function(){
         var id = uri.getData("id");
         var page = uri.getData("page");
         var widget = uri.getData("widget");
+        var parameters = uri.getData("parameters");
         var statusObj = null;
-        var options = {"portalId": id, "pageId": page, "widgetId":widget };
+        var options = {"portalId": id, "pageId": page, "parameters": parameters, "widgetId":widget };
 
         var _load = function(){
             //o2.require("MWF.xDesktop.MessageMobile", function(){
             // layout.message = new MWF.xDesktop.MessageMobile();
             // layout.message.load();
             //}.bind(this));
-
             layout.apps = [];
             layout.node = $("layout");
             var appName=appNames, m_status=statusObj, option=options;

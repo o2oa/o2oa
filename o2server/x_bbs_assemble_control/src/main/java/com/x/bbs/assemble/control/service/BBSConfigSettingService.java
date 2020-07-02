@@ -118,7 +118,7 @@ public class BBSConfigSettingService{
 	
 	/**
 	 * 根据传入的ID从数据库查询BBSConfigSetting对象
-	 * @param id
+	 * @param configCode
 	 * @return
 	 * @throws Exception
 	 */
@@ -262,7 +262,7 @@ public class BBSConfigSettingService{
 		type = "text";
 		selectContent = null;
 		isMultiple = false;
-		description = "论坛标题Tail:全站网页标题内容的后缀内容。默认' - O2OA办公软件管理系统'，可以为空。";
+		description = "论坛标题Tail:全站网页标题内容的后缀内容。可以为空。";
 		try {
 			checkAndInitSystemConfig("BBS_TITLE_TAIL", "论坛标题Tail", value, description, type, selectContent, isMultiple,  ++ordernumber );
 		} catch (Exception e) {
@@ -315,6 +315,18 @@ public class BBSConfigSettingService{
 			checkAndInitSystemConfig("BBS_MYREPLY_SORTTYPE", "我的回贴排序模式", value, description, type, selectContent, isMultiple, ++ordernumber );
 		} catch (Exception e) {
 			logger.warn( "system init system config 'BBS_MYREPLY_SORTTYPE' got an exception." );
+			logger.error(e);
+		}
+
+		value = "YES";
+		type = "select";
+		selectContent = "YES|NO";
+		isMultiple = false;
+		description = "是否允许匿名访问资源：可选值：YES|NO（允许|不允许），单选。";
+		try {
+			checkAndInitSystemConfig("BBS_ANONYMOUS_PERMISSION", "是否允许匿名访问", value, description, type, selectContent, isMultiple, ++ordernumber );
+		} catch (Exception e) {
+			logger.warn( "system init system config 'BBS_ANONYMOUS_PERMISSION' got an exception." );
 			logger.error(e);
 		}
 	}

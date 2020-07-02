@@ -154,7 +154,7 @@ MWF.xAction.RestActions.Action["x_strategydeploy_assemble_control"] = new Class(
             var url = this.action.actions.getPriorityAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workId}", encodeURIComponent(workId));
-            window.open(this.actionAttachment.address+url);
+            window.open(o2.filterUrl(this.actionAttachment.address+url));
         }.bind(this));
     },
     getPriorityAttachmentStream: function(id, workId){
@@ -162,7 +162,7 @@ MWF.xAction.RestActions.Action["x_strategydeploy_assemble_control"] = new Class(
             var url = this.action.actions.getPriorityAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{workId}", encodeURIComponent(workId));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     ///////////////////////////五项///////////////////////////////

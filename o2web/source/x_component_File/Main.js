@@ -340,13 +340,13 @@ MWF.xApplication.File.Main = new Class({
 
     openAttachment: function(e, node, attachment){
         this.restActions.getFileUrl(attachment[0].data.id, function(url){
-            window.open(url);
+            window.open(o2.filterUrl(url));
         });
     },
     downloadAttachment: function(e, node, attachments){
         attachments.each(function(attachment){
             this.restActions.getFileDownloadUrl(attachment.data.id, function(url){
-                window.open(url);
+                window.open(o2.filterUrl(url));
             });
         }.bind(this));
     },

@@ -1,10 +1,10 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service
 
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageForm
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.*
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.*
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.*
 import rx.Observable
 
@@ -22,6 +22,12 @@ interface MessageCommunicateService {
     @POST("jaxrs/im/conversation")
     fun createConversation(@Body info: IMConversationInfo): Observable<ApiResponse<IMConversationInfo>>
 
+    /**
+     * 更新会话
+     */
+    @Headers("Content-Type:application/json;charset=UTF-8")
+    @PUT("jaxrs/im/conversation")
+    fun updateConversation(@Body form: IMConversationUpdateForm) : Observable<ApiResponse<IMConversationInfo>>
 
     /**
      * 获取会话信息
@@ -58,5 +64,25 @@ interface MessageCommunicateService {
     @POST("jaxrs/im/msg/list/{page}/size/{size}")
     fun messageByPage(@Path("page")page: Int,  @Path("size") size: Int, @Body conversation: IMMessageForm) :
             Observable<ApiResponse<List<IMMessage>>>
+
+
+    /**
+     * 个人消息 排除IM消息
+     *  列表
+     */
+    @GET("jaxrs/instant/list/currentperson/noim/count/{count}/desc")
+    fun instantMessageList(@Path("count") count: Int) : Observable<ApiResponse<List<InstantMessage>>>
+
+    /**
+     * 上传文件
+     * im消息文件 图片 音频 视频等
+     * @param conversationId 会话id
+     * @param type 消息类型 image audio 等
+     */
+    @Multipart
+    @POST("jaxrs/im/msg/upload/{conversationId}/type/{type}")
+    fun uploadFile(@Path("conversationId") conversationId: String, @Path("type") type: String, @Part body: MultipartBody.Part): Observable<ApiResponse<IMMessageFileData>>
+
+
 
 }

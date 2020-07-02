@@ -57,7 +57,7 @@ target 'O2Platform' do
     
     pod 'SDWebImage', '~>4.0'
     
-    pod 'BSImagePicker'
+    pod 'BSImagePicker', '~> 3.1.0'
     pod 'Eureka', '~> 5.2.1'
     pod 'SwiftyTimer'
 
@@ -93,6 +93,8 @@ target 'O2Platform' do
     pod 'JPush', '3.2.4'
     pod 'JMessage'
     
+    # websocket
+    pod 'Starscream', '~> 4.0.0'
     
     
     

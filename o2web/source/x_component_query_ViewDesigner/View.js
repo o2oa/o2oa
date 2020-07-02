@@ -177,8 +177,9 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                             }
 
                             json.data.groupGrid.each(function(line, idx){
-                                var groupTr = new Element("tr", {"styles":
-                                    this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode
+                                var groupTr = new Element("tr", {
+                                    "styles": this.json.data.viewStyles ? this.json.data.viewStyles["contentTr"] : this.css.viewContentTrNode,
+                                    "data-is-group" : "yes"
                                 }).inject(this.viewContentTableNode);
                                 var colSpan = this.items.length ;
                                 var td = new Element("td", {
@@ -645,7 +646,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 id : this.data.application,
                 viewId : this.data.id
             });
-            window.open(url,"_blank");
+            window.open(o2.filterUrl(url),"_blank");
         }.bind(this));
     },
     saveSilence: function(callback){
@@ -654,27 +655,27 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
             return false;
         }
 
-        var list;
-        if( this.data.data && this.data.data.where ){
-            if( this.data.data.where.creatorIdentityList ){
-                list = this.data.data.where.creatorIdentityList;
-                for( var i=0; i< list.length ; i++){
-                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                }
-            }
-            if( this.data.data.where.creatorPersonList ){
-                list = this.data.data.where.creatorPersonList;
-                for( var i=0; i< list.length ; i++){
-                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                }
-            }
-            if( this.data.data.where.creatorUnitList ){
-                list = this.data.data.where.creatorIdentityList;
-                for( var i=0; i< list.length ; i++){
-                    if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                }
-            }
-        }
+        // var list;
+        // if( this.data.data && this.data.data.where ){
+        //     if( this.data.data.where.creatorIdentityList ){
+        //         list = this.data.data.where.creatorIdentityList;
+        //         for( var i=0; i< list.length ; i++){
+        //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+        //         }
+        //     }
+        //     if( this.data.data.where.creatorPersonList ){
+        //         list = this.data.data.where.creatorPersonList;
+        //         for( var i=0; i< list.length ; i++){
+        //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+        //         }
+        //     }
+        //     if( this.data.data.where.creatorUnitList ){
+        //         list = this.data.data.where.creatorIdentityList;
+        //         for( var i=0; i< list.length ; i++){
+        //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+        //         }
+        //     }
+        // }
 
         this.designer.actions.saveView(this.data, function(json){
             this.data.id = json.data.id;
@@ -695,27 +696,27 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         //}
 
         debugger;
-            var list;
-            if( this.data.data && this.data.data.where ){
-                if( this.data.data.where.creatorIdentityList ){
-                    list = this.data.data.where.creatorIdentityList;
-                    for( var i=0; i< list.length ; i++){
-                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                    }
-                }
-                if( this.data.data.where.creatorPersonList ){
-                    list = this.data.data.where.creatorPersonList;
-                    for( var i=0; i< list.length ; i++){
-                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                    }
-                }
-                if( this.data.data.where.creatorUnitList ){
-                    list = this.data.data.where.creatorUnitList;
-                    for( var i=0; i< list.length ; i++){
-                        if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
-                    }
-                }
-            }
+            // var list;
+            // if( this.data.data && this.data.data.where ){
+            //     if( this.data.data.where.creatorIdentityList ){
+            //         list = this.data.data.where.creatorIdentityList;
+            //         for( var i=0; i< list.length ; i++){
+            //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+            //         }
+            //     }
+            //     if( this.data.data.where.creatorPersonList ){
+            //         list = this.data.data.where.creatorPersonList;
+            //         for( var i=0; i< list.length ; i++){
+            //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+            //         }
+            //     }
+            //     if( this.data.data.where.creatorUnitList ){
+            //         list = this.data.data.where.creatorUnitList;
+            //         for( var i=0; i< list.length ; i++){
+            //             if( typeOf( list[i] ) === "object" )list[i] = list[i].name || "";
+            //         }
+            //     }
+            // }
 
         this.designer.actions.saveView(this.data, function(json){
             this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
@@ -1334,6 +1335,18 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
             this.close();
         }, null);
     },
+    isOrderColumn : function(){
+        var sortList = this.view.json.data.orderList || [];
+        var flag = false;
+        sortList.each(function(order){
+            if (order.column==this.json.column)flag = true;
+        }.bind(this));
+        return flag;
+    },
+    isGroupColumn : function() {
+        if (!this.view.json || !this.view.json.data || !this.view.json.data.group) return false;
+        return this.view.json.data.group.column === this.json.column;
+    },
     destroy: function(){
         if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
         if (this.actionArea) this.actionArea.destroy();
@@ -1344,8 +1357,17 @@ MWF.xApplication.query.ViewDesigner.View.Column = new Class({
 
         if (this.view.viewContentTableNode){
             var trs = this.view.viewContentTableNode.getElements("tr");
+            var isGroup = this.isGroupColumn();
             trs.each(function(tr){
-                tr.deleteCell(idx);
+                if( isGroup ){
+                    if( tr.get("data-is-group") === "yes" ){
+                        tr.destroy()
+                    }
+                }else{
+                    if( tr.get("data-is-group") !== "yes" ){
+                        tr.deleteCell(idx);
+                    }
+                }
             }.bind(this));
         }
 

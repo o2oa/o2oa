@@ -167,7 +167,9 @@ MWF.xDesktop.getUserLayout = function(callback){
 },
 
 MWF.xDesktop.notice = function(type, where, content, target, offset, option){
-    var noticeTarget = target || layout.desktop.desktopNode;
+    if (!where) where = { "x": "right", "y": "top" };
+    if (!type) type = "ok";
+    var noticeTarget = target || layout.desktop.desktopNode || document.body;
 
     var off = offset;
     if (!off){
@@ -223,10 +225,12 @@ MWF.name = {
         return n;
     },
     "cn": function(name){
+        if (!name) return "";
         var idx = name.indexOf("@");
         return (idx!==-1) ? name.substring(0, idx) : name;
     },
     "ou": function(name){
+        if (!name) return "";
         var idx = name.indexOf("@");
         var lastIdx = name.lastIndexOf("@");
         if (idx===-1){
@@ -238,6 +242,7 @@ MWF.name = {
         }
     },
     "flag": function(name){
+        if (!name) return "";
         var lastIdx = name.lastIndexOf("@");
         if (lastIdx===-1){
             return "";
@@ -245,7 +250,8 @@ MWF.name = {
             return name.substring(lastIdx+1, name.length);
         }
     },
-    "type": function(){
+    "type": function(name){
+        if (!name) return "";
         var lastIdx = name.lastIndexOf("@");
         if (lastIdx===-1){
             return "";
@@ -301,7 +307,7 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
         }
         var dlg = new MWF.xDesktop.Dialog({
             "title": title,
-            "style": style || "flat",
+            "style": style || "o2",
             "top": y,
             "left": x-20,
             "fromTop":y,
@@ -314,10 +320,12 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
             "maskNode": mask,
             "buttonList": [
                 {
+                    "type": "ok",
                     "text": MWF.LP.process.button.ok,
                     "action": ok
                 },
                 {
+                    "type": "cancel",
                     "text": MWF.LP.process.button.cancel,
                     "action": cancel
                 }
@@ -358,7 +366,7 @@ MWF.xDesktop.getImageSrc = function( id ){
         var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
     }
     var url = "/jaxrs/file/"+id+"/download/stream";
-    return address+url;
+    return o2.filterUrl(address+url);
 };
 MWF.xDesktop.setImageSrc = function(){
     if( !event )return;
@@ -452,6 +460,7 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
             contentNode.setStyle("background-color", "#666666");
         }
     };
+
     if (typeOf(config.center)==="object"){
         MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
     }else if (typeOf(config.center)==="array"){
@@ -514,7 +523,9 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
     }else{
         uri = layout.config.app_protocol+"//"+host+":"+port+"/x_program_center/jaxrs/distribute/assemble/source/{source}";
     }
-    var currenthost = window.location.hostname;
+
+    var currenthost = (layout.config.applicationServer && layout.config.applicationServer.host) ? layout.config.applicationServer.host : window.location.hostname;
+    //var currenthost = window.location.hostname;
     uri = uri.replace(/{source}/g, currenthost);
     //var uri = "http://"+layout.config.center+"/x_program_center/jaxrs/distribute/assemble";
 

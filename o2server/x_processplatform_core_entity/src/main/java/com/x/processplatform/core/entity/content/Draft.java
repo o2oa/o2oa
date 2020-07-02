@@ -1,21 +1,13 @@
 package com.x.processplatform.core.entity.content;
 
-import java.util.Date;
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -24,6 +16,11 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -55,19 +52,29 @@ public class Draft extends SliceJpaObject {
 
 	/* 更新运行方法 */
 	public void onPersist() throws Exception {
-		// do nothing
-	}
-
-	public void setTitle(String title) {
-		if (StringTools.utf8Length(title) > length_255B) {
-			this.title = StringTools.utf8SubString(this.title, 252) + "...";
-		} else {
-			this.title = Objects.toString(title, "");
+		if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
 		}
 	}
 
-	public Draft() {
+	@PostLoad
+	public void postLoad() {
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
+			this.title = this.getProperties().getTitle();
+		}
+	}
 
+	public void setTitle(String title) {
+		this.title = title;
+		this.getProperties().setTitle(title);
+	}
+
+	public String getTitle() {
+		return this.title;
+	}
+
+	public Draft() {
+		// nothing
 	}
 
 	public DraftProperties getProperties() {
@@ -161,10 +168,6 @@ public class Draft extends SliceJpaObject {
 
 	public void setProcess(String process) {
 		this.process = process;
-	}
-
-	public String getTitle() {
-		return title;
 	}
 
 	public String getIdentity() {

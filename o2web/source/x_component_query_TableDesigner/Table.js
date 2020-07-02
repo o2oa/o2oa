@@ -474,7 +474,18 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.close();
         }, null);
     },
-
+    tableClear: function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.designer.confirm("warn", e, MWF.APPDTBD.LP.tableClearTitle, MWF.APPDTBD.LP.tableClearInfo, 480, 120, function(){
+            _self.designer.actions.deleteAllRow(_self.data.id,function(json){
+                this.designer.notice(this.designer.lp.tableClear_success, "success", this.node, {"x": "left", "y": "bottom"});
+            }.bind(_self));
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
     tableImplode: function(e){
         var _self = this;
         if (!e) e = this.node;
@@ -528,7 +539,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
 
             url = url.replace("{tableFlag}",_self.data.id);
             url = url.replace("{count}",1000);
-            window.open(url)
+            window.open(o2.filterUrl(url))
             this.close();
         }, function(){
             this.close();

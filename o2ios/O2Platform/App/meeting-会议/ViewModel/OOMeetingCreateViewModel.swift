@@ -84,7 +84,7 @@ extension OOMeetingCreateViewModel{
     }
     // MARK: - 获取icon
     func getIconOfPerson(_ person:OOPersonModel,compeletionBlock:@escaping (_ image:UIImage?,_ errMsg:String?) -> Void) {
-        ooContactAPI.request(.iconByPerson(person.id!)) { (result) in
+        ooContactAPI.request(.iconByPerson(person.distinguishedName!)) { (result) in
             if let err = result.error {
                 compeletionBlock(#imageLiteral(resourceName: "icon_？"),err.errorDescription)
             }else{

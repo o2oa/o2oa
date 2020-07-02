@@ -44,4 +44,7 @@
 // flutter
 #import "GeneratedPluginRegistrant.h"
 
+//lame mp3转码
+#import "ConvertMp3.h"
+#import "AmrCodec.h"
 

@@ -149,6 +149,30 @@ class APIAddressHelper private constructor() {
     }
 
     /**
+     * 聊天消息 文件下载地址
+     */
+    fun getImFileDownloadUrl(fileId: String): String {
+        return getAPIDistribute(APIDistributeTypeEnum.x_message_assemble_communicate) + "jaxrs/im/msg/download/$fileId"
+    }
+
+    /**
+     * 通用的
+     * 下载文件的地址
+     * @param context: APIDistributeTypeEnum
+     * @param urlPath : 例如：jaxrs/im/msg/download/12222233333
+     */
+    fun getCommonDownloadUrl(context: APIDistributeTypeEnum, urlPath: String): String {
+        return getAPIDistribute(context) + urlPath
+    }
+
+    /**
+     * 聊天消息
+     */
+    fun getImImageDownloadUrlWithWH(fileId: String, width: Int, height: Int): String {
+        return getAPIDistribute(APIDistributeTypeEnum.x_message_assemble_communicate) + "jaxrs/im/msg/download/$fileId/image/width/$width/height/$height"
+    }
+
+    /**
      * 云盘图片地址
      * @param fileId 图片文件id
      * @param width 展现图片宽度

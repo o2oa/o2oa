@@ -75,7 +75,9 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
-                if (COMMON.Browser.safari) w = w-20;
+                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ){
+                    if (COMMON.Browser.safari) w = w-20;
+                }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
                     "width": ""+w+"px",
@@ -111,8 +113,8 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             if (this.descriptionNode) this.descriptionNode.setStyle("display", "none");
         }
     },
-    _loadNodeEdit: function(){
-		var input = new Element("input", {
+    _resetNodeEdit: function(){
+        var input = new Element("input", {
             "styles": {
                 "background": "transparent",
                 "width": "100%",
@@ -120,18 +122,22 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
             },
             "readonly": true
         });
-		input.set(this.json.properties);
 
         var node = new Element("div", {"styles": {
-            "overflow": "hidden",
-            "position": "relative",
-            "margin-right": "20px",
-            "padding-right": "4px"
-        }}).inject(this.node, "after");
+                "overflow": "hidden",
+                "position": "relative",
+                "margin-right": "20px",
+                "padding-right": "4px"
+            }}).inject(this.node, "after");
         input.inject(node);
 
         this.node.destroy();
-		this.node = node;
+        this.node = node;
+    },
+    _loadNodeEdit: function(){
+	    if (!this.json.preprocessing) this._resetNodeEdit();
+	    var input = this.node.getFirst();
+        input.set(this.json.properties);
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type,
@@ -174,7 +180,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         }
     },
     _computeValue: function(value){
-        return (this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
+        return (this.json.defaultValue && this.json.defaultValue.code) ? this.form.Macro.exec(this.json.defaultValue.code, this): (value || "");
     },
 	getValue: function(){
         var value = this._getBusinessData();
@@ -216,6 +222,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         var text = (this.node.getFirst()) ? this.node.getFirst().get("text") : this.node.get("text");
 		return {"value": [value || ""] , "text": [text || value || ""]};
 	},
+    isEmpty : function(){
+	    var data = this.getData();
+	    return !data || !data.trim();
+    },
 	getData: function(when){
         if (this.json.compute == "save") this._setValue(this._computeValue());
 		return this.getInputData();
@@ -255,19 +265,30 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class({
         //});
         var node;
         if( this.form.json.errorStyle ){
-            node = new Element("div",{
-                "styles" : this.form.json.errorStyle.node,
-                "text": text
-            });
-            if( this.form.json.errorStyle.close ){
-                var closeNode = new Element("div",{
-                    "styles" : this.form.json.errorStyle.close ,
-                    "events": {
-                        "click" : function(){
-                            this.destroy();
-                        }.bind(node)
-                    }
-                }).inject(node);
+            if( this.form.json.errorStyle.type === "notice" ){
+                if( !this.form.errorNoticing ){ //如果是弹出
+                    this.form.errorNoticing = true;
+                    this.form.notice(text, "error", this.node, null, null, {
+                        onClose : function () {
+                            this.form.errorNoticing = false;
+                        }.bind(this)
+                    });
+                }
+            }else{
+                node = new Element("div",{
+                    "styles" : this.form.json.errorStyle.node,
+                    "text": text
+                });
+                if( this.form.json.errorStyle.close ){
+                    var closeNode = new Element("div",{
+                        "styles" : this.form.json.errorStyle.close ,
+                        "events": {
+                            "click" : function(){
+                                this.destroy();
+                            }.bind(node)
+                        }
+                    }).inject(node);
+                }
             }
         }else{
             node = new Element("div");

@@ -27,7 +27,7 @@ public class ActionSetPassword {
 			}
 			Person person = emc.find(personId, Person.class, ExceptionWhen.not_found);
 			emc.beginTransaction(Person.class);
-			business.person().setPassword(person, wrapIn.getValue());
+			business.person().setPassword(person, wrapIn.getValue(),false);
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			ApplicationCache.notify(Person.class);

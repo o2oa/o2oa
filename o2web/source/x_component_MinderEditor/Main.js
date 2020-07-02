@@ -460,7 +460,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
         this.restActions.saveMind( data, function(json){
             var id = json.data.id;
             this.restActions.getMind( id, function( json2 ){
-                var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder, this);
+                var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder);
                 converter.toPng(180, 130, function( img ){
 
                     var formData = new FormData();
@@ -515,7 +515,7 @@ MWF.xApplication.MinderEditor.Main = new Class({
         }.bind(this);
 
         var callback = function( id, flag ){
-            var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder, this);
+            var converter = new MWF.xApplication.MinderEditor.Converter(this, this.minder);
             converter.toPng(180, 130, function( img ){
                 var formData = new FormData();
                 formData.append('file', img, "untitled.png");
@@ -645,7 +645,13 @@ MWF.xApplication.MinderEditor.Main = new Class({
 });
 
 MWF.xApplication.MinderEditor.Converter = new Class({
-    initialize: function (editor, minder) {
+    Implements: [Options, Events],
+    options: {
+        "background": null,
+        "zoom": 1
+    },
+    initialize: function (editor, minder, options) {
+        this.setOptions(options);
         this.editor = editor;
         this.minder = minder;
     },
@@ -678,12 +684,16 @@ MWF.xApplication.MinderEditor.Converter = new Class({
     },
     toCanvas: function (width, height, callback, svg) {
         this.loadCanvgResource(function () {
+
             if( !svg )svg = this.editor.contentNode.get("html");
 
             var coordinates = this.getSvgCoordinates();
-
             var offsetLeft = Math.abs(coordinates.left), offsetTop = Math.abs(coordinates.top);
             var contentWidth = coordinates.x, contentHeight = coordinates.y;
+
+            if( !width  )width = contentWidth + offsetLeft;
+            if( !height )height = contentHeight + offsetTop;
+
             var matrix;
             if (width && height) {
                 if ((width > coordinates.x) && (height > coordinates.y)) {
@@ -708,6 +718,13 @@ MWF.xApplication.MinderEditor.Converter = new Class({
                 if (height < coordinates.y) {
                     yRatio = height / coordinates.y;
                 }
+                if( this.options.zoom && this.options.zoom !== 1 ){
+                    var z = parseFloat( this.options.zoom );
+                    xRatio = xRatio ? xRatio * z : z;
+                    yRatio = yRatio ? yRatio * z : z;
+                    width = width * z;
+                    height = height * z;
+                }
                 if (xRatio || yRatio) {
 
                     contentWidth = width;
@@ -725,7 +742,11 @@ MWF.xApplication.MinderEditor.Converter = new Class({
                         oy = ( height - zoom * coordinates.y )/2;
                     }
 
-                    matrix = zoom + " 0 0 " + zoom + " " + ox + " " + oy;
+                    if( this.options.zoom && this.options.zoom !== 1 ) {
+                        matrix = zoom + " 0 0 " + zoom + " " + 0 + " " + 0;
+                    }else{
+                        matrix = zoom + " 0 0 " + zoom + " " + ox + " " + oy;
+                    }
                 }
             }
 
@@ -744,6 +765,13 @@ MWF.xApplication.MinderEditor.Converter = new Class({
                 width: contentWidth, height: contentHeight,
                 styles: {width: contentWidth + "px", height: contentHeight + "px"}
             }).inject(this.editor.node);
+
+            // if( this.options.background ){
+            //     var ctx = canvas.getContext("2d");
+            //     ctx.fillStyle = this.options.background;
+            //     ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // }
+
             canvg(canvas, svg, {
                 useCORS : true, log: true, renderCallback: function (dom) {
                     if (callback)callback(canvas);

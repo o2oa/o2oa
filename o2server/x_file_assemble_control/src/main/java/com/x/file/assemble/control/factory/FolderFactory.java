@@ -27,7 +27,7 @@ public class FolderFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Folder> root = cq.from(Folder.class);
 		Predicate p = cb.equal(root.get(Folder_.person), person);
-		p = cb.and(p, cb.equal(root.get(Folder_.superior), ""));
+		p = cb.and(p, cb.or(cb.isNull(root.get(Folder_.superior)), cb.equal(root.get(Folder_.superior), "")));
 		cq.select(root.get(Folder_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}

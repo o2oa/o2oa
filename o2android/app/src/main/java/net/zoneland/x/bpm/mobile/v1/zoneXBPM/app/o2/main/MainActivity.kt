@@ -81,8 +81,8 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "")
         XLog.info("main activity isIndex $indexType..............")
 
-//        val newsFragment = O2IMConversationFragment()
-        val newsFragment = NewsFragment()
+        val newsFragment = O2IMConversationFragment()
+//        val newsFragment = NewsFragment()
         fragmentList.add(newsFragment)
         fragmentTitles.add(getString(R.string.tab_message))
 
@@ -373,7 +373,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
             0 -> resetToolBar(getString(R.string.tab_message))
             1 -> resetToolBar(getString(R.string.tab_contact))
             2 -> setIndexToolBar()
-            3 -> resetToolBar(getString(R.string.tab_contact))
+            3 -> resetToolBar(getString(R.string.tab_app))
             4 -> resetToolBar(getString(R.string.tab_settings))
         }
 
@@ -415,17 +415,18 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                 .setRequiresCharging(true)//充电的时候才执行
                 .setPeriodic(24 * 60 * 60 * 1000)
                 .build()
-        val collectLogComponent = ComponentName(this, CollectLogJobService::class.java)
-        val jobCollectLog = JobInfo.Builder(O2.O2_COLLECT_LOG_JOB_ID, collectLogComponent)
-                .setPersisted(true)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPeriodic(1000 * 60 * 60 * 12)
-                .build()
+//        val collectLogComponent = ComponentName(this, CollectLogJobService::class.java)
+//        val jobCollectLog = JobInfo.Builder(O2.O2_COLLECT_LOG_JOB_ID, collectLogComponent)
+//                .setPersisted(true)
+//                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+//                .setPeriodic(1000 * 60 * 60 * 12)
+//                .build()
 
         val jobScheduler = applicationContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         val result = jobScheduler.schedule(jobInfo)
-        val result2 = jobScheduler.schedule(jobCollectLog)
-        XLog.info("jobScheduler result:$result, result2:$result2")
+//        val result2 = jobScheduler.schedule(jobCollectLog)
+//        XLog.info("jobScheduler result:$result, result2:$result2")
+        XLog.info("jobScheduler result:$result")
     }
 
 
@@ -495,6 +496,37 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
     /**************im 消息接收器***************/
 
     var mReceiver: IMMessageReceiver? = null
+    private var unreadMsgNumber = 0
+
+    fun refreshUnreadNumber(number: Int) {
+        unreadMsgNumber = number
+        when {
+            unreadMsgNumber in 1..99 -> {
+                circle_tv_icon_main_bottom_news.visible()
+                circle_tv_icon_main_bottom_news.setText("$unreadMsgNumber")
+            }
+            unreadMsgNumber >= 100 -> {
+                circle_tv_icon_main_bottom_news.visible()
+                circle_tv_icon_main_bottom_news.setText("99..")
+            }
+            else -> circle_tv_icon_main_bottom_news.gone()
+        }
+    }
+
+    fun addUnreadMsg() {
+        unreadMsgNumber += 1
+        when {
+            unreadMsgNumber in 1..99 -> {
+                circle_tv_icon_main_bottom_news.visible()
+                circle_tv_icon_main_bottom_news.setText("$unreadMsgNumber")
+            }
+            unreadMsgNumber >= 100 -> {
+                circle_tv_icon_main_bottom_news.visible()
+                circle_tv_icon_main_bottom_news.setText("99..")
+            }
+            else -> circle_tv_icon_main_bottom_news.gone()
+        }
+    }
 
     private fun registerBroadcast() {
         mReceiver = IMMessageReceiver()
@@ -507,6 +539,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         if (newsFragment is O2IMConversationFragment) {
             newsFragment.receiveMessageFromWebsocket(message)
         }
+        addUnreadMsg()
     }
 
     inner class IMMessageReceiver : BroadcastReceiver() {

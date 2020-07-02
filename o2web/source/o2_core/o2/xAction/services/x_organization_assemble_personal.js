@@ -11,7 +11,7 @@ MWF.xAction.RestActions.Action["x_organization_assemble_personal"] = new Class({
     getPersonIcon: function(id){
         var uri = "/jaxrs/person/icon";
         this.action.getAddress();
-        return this.action.address+uri+"?"+(new Date()).getTime();
+        return o2.filterUrl(this.action.address+uri+"?"+(new Date()).getTime());
     },
     getIcon: function(person){
         var uri = "/jaxrs/icon/"+person;

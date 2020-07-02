@@ -33,7 +33,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 	public AttendanceAppealInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find(id, AttendanceAppealInfo.class, ExceptionWhen.none);
 	}
-	
+
+	public List<AttendanceAppealInfo> listWithDetailId(String id) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AttendanceAppealInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<AttendanceAppealInfo> cq = cb.createQuery(AttendanceAppealInfo.class);
+		Root<AttendanceAppealInfo> root = cq.from( AttendanceAppealInfo.class);
+		Predicate p = cb.equal( root.get(AttendanceAppealInfo_.detailId),  id );
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
 	//@MethodDescribe("列示全部的AttendanceAppealInfo信息列表")
 	public List<String> listAll() throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceAppealInfo.class);
@@ -261,16 +270,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		
 		//添加OR条件
 		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
@@ -372,16 +381,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		//添加OR
 		if( wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0){
 			sql_stringBuffer.append(" and (" );
@@ -470,16 +479,16 @@ public class AttendanceAppealInfoFactory extends AbstractFactory {
 			vs.add( wrapIn.getAppealReason() );
 			index++;
 		}
-		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson1() );
-			index++;
-		}
-		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
-			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
-			vs.add( wrapIn.getProcessPerson2() );
-			index++;
-		}
+//		if ((null != wrapIn.getProcessPerson1()) && (!wrapIn.getProcessPerson1().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson1 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson1() );
+//			index++;
+//		}
+//		if ((null != wrapIn.getProcessPerson2()) && (!wrapIn.getProcessPerson2().isEmpty())) {
+//			sql_stringBuffer.append(" and o.processPerson2 = ?" + (index));
+//			vs.add( wrapIn.getProcessPerson2() );
+//			index++;
+//		}
 		//添加OR
 		if (wrapIn.getOrAtrribute() != null && wrapIn.getOrAtrribute().size() > 0) {
 			sql_stringBuffer.append(" and (");

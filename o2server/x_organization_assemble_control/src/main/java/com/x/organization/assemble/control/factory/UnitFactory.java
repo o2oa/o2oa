@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
@@ -117,13 +118,23 @@ public class UnitFactory extends AbstractFactory {
 		return list;
 	}
 
-	public <T extends Unit> List<T> sort(List<T> list) {
-		List<T> os = list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
-				.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
-				.thenComparing(
-						Comparator.comparing(Unit::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
-				.collect(Collectors.toList());
-		return os;
+	public <T extends Unit> List<T> sort(List<T> list) throws Exception {
+		if(Config.person().getPersonUnitOrderByAsc()) {
+			List<T> os = list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
+					.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)))
+					.thenComparing(
+							Comparator.comparing(Unit::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+					.collect(Collectors.toList());
+			return os;
+		}else{
+			List<T> os = list.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo))
+					.thenComparing(Comparator.comparing(Unit::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).reversed())
+					.thenComparing(
+							Comparator.comparing(Unit::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+					.collect(Collectors.toList());
+			return os;
+		}
+
 	}
 
 	public String getSupDirect(String id) throws Exception {

@@ -1,23 +1,18 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.person
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import cn.jpush.im.android.api.JMessageClient
-import cn.jpush.im.android.api.callback.GetUserInfoCallback
-import cn.jpush.im.android.api.model.UserInfo
-import jiguang.chat.activity.ChatActivity
 import kotlinx.android.synthetic.main.activity_person_info.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2ChatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.GenderTypeEnums
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.im.JIMConstant
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
@@ -30,7 +25,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderMana
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderOptions
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CommonMenuPopupWindow
 import org.jetbrains.anko.email
-import org.jetbrains.anko.makeCall
 import org.jetbrains.anko.sendSMS
 
 
@@ -49,6 +43,7 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
     }
 
     var loadedPersonId = ""//用户的id字段
+    var loadedPersonDN = ""//用户的id字段
     var personId = ""
     var genderName = ""
     var hasCollection = false
@@ -56,7 +51,7 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
     val mobileClickMenu: CommonMenuPopupWindow by lazy { CommonMenuPopupWindow(mobileMenuItemList, this) }
     val emailMenuItemList: ArrayList<String> = arrayListOf("发送邮件","复制")
     val emailClickMenu: CommonMenuPopupWindow by lazy { CommonMenuPopupWindow(emailMenuItemList, this) }
-    private var canTalkTo = false
+//    private var canTalkTo = false
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
         personId = intent.extras?.getString(PERSON_NAME_KEY, "")?:""
@@ -86,31 +81,40 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
             R.id.image_person_back -> finish()
             R.id.btn_begin_talk -> {
                 // 开始聊天
-                if (O2App.instance._JMIsLogin()) {
-                    if (canTalkTo && O2SDKManager.instance().cId != loadedPersonId) {
-                        val intent = Intent(this, ChatActivity::class.java)
-                        val user = O2App.instance._JMMyUserInfo()
-                        val name = tv_person_name.text.toString()
-                        XLog.info("current user: ${user?.userName}, ${user?.nickname}, ${user?.appKey}")
-                        XLog.info("to user: $loadedPersonId, $name")
-                        intent.putExtra(JIMConstant.CONV_TITLE, name)
-                        intent.putExtra(JIMConstant.TARGET_ID, loadedPersonId)
-                        intent.putExtra(JIMConstant.TARGET_APP_KEY, O2App.instance.JM_IM_APP_KEY)
-                        startActivity(intent)
-                    }else {
-                        XToast.toastShort(this, "无法发起聊天，该用户没有启用聊天功能！")
-                    }
-
+                if (!TextUtils.isEmpty(loadedPersonDN) && O2SDKManager.instance().distinguishedName != loadedPersonDN) {
+                    startTalk()
                 }else {
-                    XToast.toastShort(this, "无法聊天，没有连接到IM服务器！！")
+
                 }
+//                if (O2App.instance._JMIsLogin()) {
+//                    if (canTalkTo && O2SDKManager.instance().cId != loadedPersonId) {
+//                        val intent = Intent(this, ChatActivity::class.java)
+//                        val user = O2App.instance._JMMyUserInfo()
+//                        val name = tv_person_name.text.toString()
+//                        XLog.info("current user: ${user?.userName}, ${user?.nickname}, ${user?.appKey}")
+//                        XLog.info("to user: $loadedPersonId, $name")
+//                        intent.putExtra(JIMConstant.CONV_TITLE, name)
+//                        intent.putExtra(JIMConstant.TARGET_ID, loadedPersonId)
+//                        intent.putExtra(JIMConstant.TARGET_APP_KEY, O2App.instance.JM_IM_APP_KEY)
+//                        startActivity(intent)
+//                    }else {
+//                        XToast.toastShort(this, "无法发起聊天，该用户没有启用聊天功能！")
+//                    }
+//
+//                }else {
+//                    XToast.toastShort(this, "无法聊天，没有连接到IM服务器！！")
+//                }
             }
         }
     }
 
+    private fun startTalk() {
+        mPresenter.startSingleTalk(loadedPersonDN)
+    }
+
     private fun usuallyBtnClick() {
-        if (O2SDKManager.instance().distinguishedName == personId) {
-            XLog.debug("自己收藏自己。。。。" + personId)
+        if (O2SDKManager.instance().distinguishedName == loadedPersonDN) {
+            XLog.debug("自己收藏自己。。。。$personId")
             return
         }
         if (hasCollection) {
@@ -189,6 +193,7 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
     override fun loadPersonInfo(personInfo: PersonJson) {
         hideLoadingDialog()
         loadedPersonId = personInfo.id
+        loadedPersonDN = personInfo.distinguishedName
         tv_person_mobile.text = personInfo.mobile
         tv_person_email.text = personInfo.mail
         if (GenderTypeEnums.FEMALE.key == personInfo.genderType) {
@@ -204,7 +209,7 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
         }
         tv_person_name.text = personInfo.name
         tv_person_name_2.text = personInfo.name
-        if (personInfo.woIdentityList != null && !personInfo.woIdentityList.isEmpty()) {
+        if (personInfo.woIdentityList.isNotEmpty()) {
             var department = ""
             personInfo.woIdentityList.mapIndexed { index, woIdentityListItem ->
                 if (index != personInfo.woIdentityList.size - 1) {
@@ -220,16 +225,25 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
         val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(personInfo.id)
         O2ImageLoaderManager.instance().showImage(image_person_avatar, url, O2ImageLoaderOptions(placeHolder = R.mipmap.icon_avatar_men))
 
-        //IM 服务端获取用户信息
-        JMessageClient.getUserInfo(loadedPersonId, object : GetUserInfoCallback(){
-            override fun gotResult(responseCode: Int, responseMessage: String?, info: UserInfo?) {
-                XLog.info("responseCode:$responseCode, responseMessage:$responseMessage ")
-                canTalkTo = responseCode == 0
-            }
-        })
+//        //IM 服务端获取用户信息
+//        JMessageClient.getUserInfo(loadedPersonId, object : GetUserInfoCallback(){
+//            override fun gotResult(responseCode: Int, responseMessage: String?, info: UserInfo?) {
+//                XLog.info("responseCode:$responseCode, responseMessage:$responseMessage ")
+//                canTalkTo = responseCode == 0
+//            }
+//        })
     }
 
     override fun loadPersonInfoFail() {
         hideLoadingDialog()
+    }
+
+    override fun createConvSuccess(conv: IMConversationInfo) {
+        O2ChatActivity.startChat(this, conv.id!!)
+    }
+
+    override fun createConvFail(message: String) {
+        XLog.error(message)
+        XToast.toastShort(this, "无法发起聊天，创建会话失败！")
     }
 }

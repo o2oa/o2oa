@@ -27,6 +27,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_item_attendance_check_in_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/attendance_check_in_time_label"
@@ -37,6 +38,7 @@
                 android:id="@+id/tv_item_attendance_check_in_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_tiny"
                 android:textColor="@color/z_color_text_primary"
                 android:textSize="@dimen/font_large"
                 tools:text="12:09:00"/>

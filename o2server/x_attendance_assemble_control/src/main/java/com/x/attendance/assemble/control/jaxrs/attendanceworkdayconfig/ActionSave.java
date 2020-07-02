@@ -14,6 +14,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -95,6 +96,9 @@ public class ActionSave extends BaseAction {
 							attendanceWorkDayConfig.setConfigMonth(dateOperation.getMonth(date));
 							emc.persist(attendanceWorkDayConfig, CheckPersistType.all);
 							emc.commit();
+
+							ApplicationCache.notify( AttendanceWorkDayConfig.class );
+
 							result.setData(new Wo(attendanceWorkDayConfig.getId()));
 						} catch (Exception e) {
 							Exception exception = new ExceptionWorkDayConfigProcess(e,

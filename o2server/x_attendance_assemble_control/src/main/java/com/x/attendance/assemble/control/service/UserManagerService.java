@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.service;
 import com.x.attendance.assemble.control.Business;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
@@ -58,6 +59,32 @@ public class UserManagerService {
 		}
 		return result;
 	}
+
+	public Unit getUnitWithPersonName( String personName ) throws Exception{
+		List<String> unitNames = null;
+		Business business = null;
+		Integer level = 0;
+		Unit result = null;
+		Unit unit = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			unitNames = business.organization().unit().listWithPerson( personName );
+			if( ListTools.isNotEmpty( unitNames ) ) {
+				for( String unitName : unitNames ) {
+					if( StringUtils.isNotEmpty( unitName ) && !"null".equals( unitName ) ) {
+						unit = business.organization().unit().getObject( unitName );
+						if( level < unit.getLevel() ) {
+							level = unit.getLevel();
+							result = unit;
+						}
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+		return unit;
+	}
 	
 	/**
 	 * 根据身份名称获取组织名称
@@ -69,7 +96,30 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
+			if( StringUtils.equalsAnyIgnoreCase( "xadmin", identity ) || StringUtils.equalsAnyIgnoreCase( "cipher", identity ) ){
+				return null;
+			}
 			return business.organization().unit().getWithIdentity( identity );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据身份名称获取组织名称
+	 * @param identity
+	 * @return
+	 * @throws Exception
+	 */
+	public Unit getUnitWithIdentity( String identity ) throws Exception{
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			if( StringUtils.equalsAnyIgnoreCase( "xadmin", identity ) || StringUtils.equalsAnyIgnoreCase( "cipher", identity ) ){
+				return null;
+			}
+			String name =  business.organization().unit().getWithIdentity( identity );
+			return business.organization().unit().getObject(name);
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -97,7 +147,7 @@ public class UserManagerService {
 	
 	/**
 	 * 检查组织名称是否有效
-	 * @param name
+	 * @param unitName
 	 * @return
 	 * @throws Exception 
 	 */
@@ -210,7 +260,7 @@ public class UserManagerService {
 	
 	/**
 	 * 根据组织名称获取顶层组织名称(递归)
-	 * @param organizationName
+	 * @param unitName
 	 * @return
 	 * @throws Exception 
 	 */
@@ -243,6 +293,35 @@ public class UserManagerService {
 		}
 	}
 
+	public Unit getTopUnitWithUnitName( String unitName ) throws Exception{
+		Unit currentUnit = null;
+		Unit parentUnit = null;
+		String parentUnitName = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			currentUnit = business.organization().unit().getObject( unitName );
+			if( currentUnit != null ) {
+				parentUnitName = currentUnit.getSuperior();
+				if( StringUtils.isNotEmpty( parentUnitName ) && !"0".equals( parentUnitName ) ) {
+					try {
+						parentUnit = business.organization().unit().getObject( parentUnitName );
+					}catch( NullPointerException e ) {
+					}
+				}
+				if( parentUnit == null ) {
+					return currentUnit;
+				}else {
+					return getTopUnitWithUnitName( parentUnit.getDistinguishedName() );
+				}
+			}else {
+				throw new Exception("unit is not exists:" + unitName);
+			}
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	/**
 	 * 根据上级组织名称获取所有下级组织名称列表
 	 * @param parentUnitName
@@ -254,6 +333,16 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			return business.organization().unit().listWithUnitSubNested( parentUnitName );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	public List<Person> listAllPersons() throws Exception {
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().person().listAllObject();
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -274,6 +363,38 @@ public class UserManagerService {
 			business = new Business(emc);
 			return business.organization().person().getObject(name);
 		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据个人姓名，根据个人姓名获取主身份
+	 *
+	 * @param personName
+	 * @return
+	 * @throws Exception
+	 */
+	public String getMajorIdentityWithPerson(String personName) throws Exception {
+		List<String> identities = null;
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
+			personName = business.organization().person().get(personName);
+			identities = business.organization().identity().listWithPerson(personName);
+			if (ListTools.isNotEmpty( identities )) {
+				if( identities.size() == 1 ) {
+					return identities.get(0);
+				}
+				for (String identity : identities) {
+					Identity obj = business.organization().identity().getObject(identity);
+					if (obj!= null && obj.getMajor() !=null && obj.getMajor() ) {
+						return identity;
+					}
+				}
+			}
+			return null;
+		} catch (Exception e) {
 			throw e;
 		}
 	}
@@ -350,7 +471,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public String getReporterWithPerson(String personName) throws Exception {
-		if( personName == null || personName.isEmpty() ){
+		if( StringUtils.isEmpty( personName ) ){
 			throw new Exception( "personName is null!" );
 		}
 		Person person = null;

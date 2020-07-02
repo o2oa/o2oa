@@ -292,7 +292,7 @@ class MainTaskSecondViewController: UIViewController {
     //热点图片新闻
     private func loadPlayerList(){
         DDLogDebug("loadPlayerList ...........................")
-        self.taskImageshowEntitys.removeAll(keepingCapacity: true)
+//        self.taskImageshowEntitys.removeAll(keepingCapacity: true)
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(HotpicContext.hotpicContextKey, query: HotpicContext.hotpicAllListQuery, parameter: ["##page##":"0" as AnyObject,"##count##":"8" as AnyObject])
         Alamofire.request(url!, method: .put, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
@@ -302,7 +302,7 @@ class MainTaskSecondViewController: UIViewController {
                     let data = JSON(val)["data"]
                     let entrys = Mapper<TaskImageshowEntity>().mapArray(JSONString: data.description)
                     DispatchQueue.main.async {
-                        self.taskImageshowEntitys.append(contentsOf: entrys!)
+                        self.taskImageshowEntitys = entrys ?? []
                     }
                 }else{
                     
@@ -459,11 +459,15 @@ extension MainTaskSecondViewController:UITableViewDataSource,UITableViewDelegate
     }
     
     private func forwardTodoTaskDetail(_ todoTask:TodoTask){
+        DDLogError("反反复复。。。。。。")
         let taskStoryboard = UIStoryboard(name: "task", bundle: Bundle.main)
         let todoTaskDetailVC = taskStoryboard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
         todoTaskDetailVC.todoTask = todoTask
         todoTaskDetailVC.backFlag = 3
-        self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
+        todoTaskDetailVC.modalPresentationStyle = .fullScreen
+//        self.show(todoTaskDetailVC, sender: nil)
+//        self.presentVC(todoTaskDetailVC)
+        self.navigationController?.pushViewController(todoTaskDetailVC, animated: false)
     }
 }
 //分类显示点击代理
@@ -551,7 +555,7 @@ extension MainTaskSecondViewController:NewMainAppTableViewCellDelegate{
                 if destVC.isKind(of: ZLNavigationController.self) {
                     self.show(destVC, sender: nil)
                 }else{
-                    self.navigationController?.pushViewController(destVC, animated: true)
+                    self.navigationController?.pushViewController(destVC, animated: false)
                 }
                 
             }
@@ -594,7 +598,7 @@ extension MainTaskSecondViewController:ImageSlidesShowViewDelegate{
                     DDLogError(JSON(val).description)
                 }
             case .failure(let err):
-                DDLogDebug(err as! String)
+                DDLogError(err.localizedDescription)
             }
         }
     }
@@ -604,8 +608,8 @@ extension MainTaskSecondViewController:ImageSlidesShowViewDelegate{
         let destVC = bbsStoryboard.instantiateViewController(withIdentifier: "CMSSubjectDetailVC") as! CMSItemDetailViewController
         destVC.documentId = entity.infoId
         destVC.title = entity.title
-        //self.navigationController?.navigationBar.isHidden = false
-        self.pushVC(destVC)
+        destVC.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(destVC, animated: false)
 
     }
 }

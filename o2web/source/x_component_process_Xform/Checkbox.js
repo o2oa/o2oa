@@ -30,15 +30,17 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
             this.node.set("text", texts.join(", "));
         }
     },
+    _resetNodeEdit: function(){
+        var div = new Element("div");
+        div.set(this.json.properties);
+        div.inject(this.node, "after");
 
+        this.node.destroy();
+        this.node = div;
+    },
     _loadNodeEdit: function(){
 		//this.container = new Element("select");
-		var div = new Element("div");
-		div.set(this.json.properties);
-		div.inject(this.node, "after");
-	
-		this.node.destroy();
-		this.node = div;
+        if (!this.json.preprocessing) this._resetNodeEdit();
 		this.node.set({
 			"id": this.json.id,
 			"MWFType": this.json.type,
@@ -87,7 +89,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		if (this.json.itemType == "values"){
 			return this.json.itemValues;
 		}else{
-			return this.form.Macro.exec(this.json.itemScript.code, this);
+			return this.form.Macro.exec(((this.json.itemScript) ? this.json.itemScript.code : ""), this);
 		}
 		//return [];
 	},
@@ -104,7 +106,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 
                 var radio = new Element("input", {
                     "type": "checkbox",
-                    "name": this.json.properties.name || flag+this.json.id,
+                    "name": ((this.json.properties) ? this.json.properties.name : null) || flag+this.json.id,
                     "value": value,
                     "showText": text,
                     "styles": this.json.buttonStyles
@@ -180,6 +182,12 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
 		//}
 		//return (value.length==1) ? value[0] : value;
     //},
+    isEmpty: function(){
+        var data = this.getData();
+        if( typeOf(data) !== "array" )return true;
+        if( data.length === 0 )return true;
+        return false;
+    },
     getInputData: function(){
         if (this.readonly || this.json.isReadonly ){
             return this._getBusinessData();
@@ -250,6 +258,65 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class({
                 this.errNode = null;
             }
         }
+    },
+    validationConfigItem: function(routeName, data){
+        var flag = (data.status==="all") ? true: (routeName === data.decision);
+        if (flag){
+            var n = this.getInputData();
+            if( typeOf(n)==="array" && n.length === 0 )n = "";
+            var v = (data.valueType==="value") ? n : n.length;
+            switch (data.operateor){
+                case "isnull":
+                    if (!v){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notnull":
+                    if (v){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "gt":
+                    if (v>data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "lt":
+                    if (v<data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "equal":
+                    if (v==data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "neq":
+                    if (v!=data.value){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "contain":
+                    if (v.indexOf(data.value)!=-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+                case "notcontain":
+                    if (v.indexOf(data.value)==-1){
+                        this.notValidationMode(data.prompt);
+                        return false;
+                    }
+                    break;
+            }
+        }
+        return true;
     }
 	
 }); 

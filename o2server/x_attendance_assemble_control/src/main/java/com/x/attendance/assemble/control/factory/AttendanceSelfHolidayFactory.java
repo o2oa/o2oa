@@ -66,6 +66,19 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
+	public List<String> listIdsWithBatchFlag( String batchFlag ) throws Exception {
+		if( StringUtils.isEmpty( batchFlag )){
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceSelfHoliday> root = cq.from(AttendanceSelfHoliday.class);
+		Predicate p = cb.equal( root.get(AttendanceSelfHoliday_.batchFlag), batchFlag );
+		cq.select(root.get(AttendanceSelfHoliday_.id));
+		return em.createQuery(cq.where(p)).getResultList();
+	}
+
 	//@MethodDescribe("列示单个员工的AttendanceSelfHoliday信息列表")
 	public List<String> getByEmployeeName(String empName) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
@@ -78,15 +91,15 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 	}
 	
 	//@MethodDescribe("根据流程的文档ID列示员工的AttendanceSelfHoliday信息列表")
-	public List<String> getByWorkFlowDocId(String docId) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<AttendanceSelfHoliday> root = cq.from( AttendanceSelfHoliday.class);
-		Predicate p = cb.equal(root.get(AttendanceSelfHoliday_.docId), docId);
-		cq.select(root.get(AttendanceSelfHoliday_.id));
-		return em.createQuery(cq.where(p)).getResultList();
-	}
+//	public List<String> getByWorkFlowDocId(String docId) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<AttendanceSelfHoliday> root = cq.from( AttendanceSelfHoliday.class);
+//		Predicate p = cb.equal(root.get(AttendanceSelfHoliday_.docId), docId);
+//		cq.select(root.get(AttendanceSelfHoliday_.id));
+//		return em.createQuery(cq.where(p)).getResultList();
+//	}
 
 	public List<String> listByStartDateAndEndDate(Date startDate, Date endDate) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AttendanceSelfHoliday.class);
@@ -219,9 +232,6 @@ public class AttendanceSelfHolidayFactory extends AbstractFactory {
 	
 	/**
 	 * 查询符合的文档信息总数
-	 * @param id
-	 * @param count
-	 * @param sequence
 	 * @param wrapIn
 	 * @return
 	 * @throws Exception

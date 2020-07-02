@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.attendance.entity.AttendanceAppealAuditInfo;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,6 +68,15 @@ public class ActionListNextWithFilter extends BaseAction {
 				// 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
 				wraps = Wo.copier.copy(detailList);
 
+				if(ListTools.isNotEmpty( wraps )){
+					AttendanceAppealAuditInfo auditInfo = null;
+					for( Wo wo : wraps ){
+						auditInfo = attendanceAppealInfoServiceAdv.getAppealAuditInfo( wo.getId() );
+						if( auditInfo != null ){
+							wo.setAppealAuditInfo( WoAttendanceAppealAuditInfo.copier.copy( auditInfo ));
+						}
+					}
+				}
 				// 对查询的列表进行排序
 				result.setCount(total);
 			} catch (Throwable th) {
@@ -82,6 +94,26 @@ public class ActionListNextWithFilter extends BaseAction {
 
 		public static WrapCopier<AttendanceAppealInfo, Wo> copier = WrapCopierFactory.wo(AttendanceAppealInfo.class,
 				Wo.class, null, JpaObject.FieldsInvisible);
+
+		@FieldDescribe("考勤申诉审核内容")
+		private WoAttendanceAppealAuditInfo appealAuditInfo = null;
+
+		public WoAttendanceAppealAuditInfo getAppealAuditInfo() {
+			return appealAuditInfo;
+		}
+
+		public void setAppealAuditInfo(WoAttendanceAppealAuditInfo appealAuditInfo) {
+			this.appealAuditInfo = appealAuditInfo;
+		}
+
+	}
+
+	public static class WoAttendanceAppealAuditInfo extends AttendanceAppealAuditInfo {
+
+		private static final long serialVersionUID = -5076990764713538973L;
+
+		public static WrapCopier<AttendanceAppealAuditInfo, WoAttendanceAppealAuditInfo> copier = WrapCopierFactory.wo(AttendanceAppealAuditInfo.class,
+				WoAttendanceAppealAuditInfo.class, null, JpaObject.FieldsInvisible);
 
 	}
 }

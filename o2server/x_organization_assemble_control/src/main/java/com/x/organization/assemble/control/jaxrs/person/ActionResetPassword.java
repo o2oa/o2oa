@@ -29,7 +29,7 @@ class ActionResetPassword extends BaseAction {
 				if (!business.editable(effectivePerson, o)) {
 					throw new ExceptionDenyEditPerson(effectivePerson, flag);
 				}
-				business.person().setPassword(o, this.initPassword(business, o));
+				business.person().setPassword(o, this.initPassword(business, o),true);
 				emc.beginTransaction(Person.class);
 				emc.check(o, CheckPersistType.all);
 				emc.commit();

@@ -170,6 +170,7 @@ public class ActionListMobileWithFilter extends BaseAction {
 		}
 		result.setCount(total);
 		result.setData(wraps);
+
 		return result;
 	}
 

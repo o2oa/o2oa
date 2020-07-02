@@ -285,7 +285,6 @@ class MainFileViewController: UIViewController {
     }
     
     func uploadFile(){
-        let vc = FileBSImagePickerViewController()
         var url = ""
         if self.folderQueue.count == 0 {
             url = AppDelegate.o2Collect.generateURLWithAppContextKey(FileContext.fileContextKey, query: FileContext.fileUploadTopQuery, parameter: nil,coverted: true)!
@@ -293,8 +292,8 @@ class MainFileViewController: UIViewController {
             url = AppDelegate.o2Collect.generateURLWithAppContextKey(FileContext.fileContextKey, query: FileContext.fileUploadSubQuery, parameter: ["##id##":(self.folderQueue.last?.id!)! as AnyObject],coverted: true)!
         }
         url = url.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!
-        bs_presentImagePickerController(vc, animated: true,
-                                        select: { (asset: PHAsset) -> Void in
+        let vc = FileBSImagePickerViewController().bsImagePicker()
+        presentImagePicker(vc, select: { (asset: PHAsset) -> Void in
                                             // User selected an asset.
                                             // Do something with it, start upload perhaps?
         }, deselect: { (asset: PHAsset) -> Void in

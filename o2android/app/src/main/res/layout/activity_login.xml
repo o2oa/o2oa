@@ -82,6 +82,7 @@
                             android:background="@null"
                             android:hint="@string/activity_login_username"
                             android:maxLines="1"
+                            android:singleLine="true"
                             android:textColor="@color/z_color_text_primary"
                             android:textColorHint="@color/z_color_text_hint"
                             android:textSize="13sp" />

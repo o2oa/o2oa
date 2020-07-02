@@ -37,7 +37,8 @@ allprojects {
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        maven { url "http://mvn.zoneland.net/nexus/content/repositories/land_repo/" }
+//        maven { url "http://mvn.zoneland.net/nexus/content/repositories/land_repo/" }
+        maven { url "http://maven.o2oa.net/repository/maven-public/" }
     }
 
 }

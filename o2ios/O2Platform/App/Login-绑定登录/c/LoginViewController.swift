@@ -200,7 +200,7 @@ class LoginViewController: UIViewController {
     //登录后返回执行此方法
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
+        segue.destination.modalPresentationStyle = .fullScreen
     }
     
     deinit {

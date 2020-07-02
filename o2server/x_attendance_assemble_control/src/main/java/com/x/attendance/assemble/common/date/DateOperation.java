@@ -149,26 +149,25 @@ public class DateOperation {
 		}
 		return dateString;
 	}
-	
+
 	/**
 	 * 得到某日期加上或减去天数后的日期,day为负数时减去
-	 * 
-	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd"
-	 * @throws Exception 
+	 * @param dateString
+	 * @param day
+	 * @param style
+	 * @return
+	 * @throws Exception
 	 */
 	public  String getDayAdd(String dateString, int day, String style) throws Exception {
 		Date date = getDateFromString(dateString, style);
 		return getDayAdd(date, day);
 	}
-	
+
 	/**
 	 * 得到某日期加上或减去天数后的日期,day为负数时减去
-	 * 
 	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd"
+	 * @param day
+	 * @return
 	 */
 	public  String getDayAdd(Date date, int day) {
 		Calendar calendar = Calendar.getInstance();
@@ -190,13 +189,12 @@ public class DateOperation {
 		calendar.add(Calendar.MONTH, month);
 		return format1.format(calendar.getTime());
 	}
-	
+
 	/**
 	 * 得到某日期加上或减去分钟后的日期,min为负数时减去
-	 * 
 	 * @param date
-	 * @param month
-	 * @return "yyyy-MM-dd HH:mi:ss"
+	 * @param min
+	 * @return
 	 */
 	public  String getMinutesAdd(Date date, int min) {
 		Calendar calendar = Calendar.getInstance();
@@ -204,11 +202,10 @@ public class DateOperation {
 		calendar.add(Calendar.MINUTE, min);
 		return format3.format(calendar.getTime());
 	}
+
 	/**
 	 * 得到某日期的日
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getDay(Date date) {
@@ -227,11 +224,10 @@ public class DateOperation {
 		}
 		return Integer.parseInt(result);
 	}
+
 	/**
 	 * 得到某日期的月份
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getMonth(Date date) {
@@ -253,9 +249,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某日期的年份
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getYear(Date date) {
@@ -274,11 +268,10 @@ public class DateOperation {
 		}
 		return Integer.parseInt(result);
 	}
+
 	/**
 	 * 得到某日期的小时
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getHour(Date date) {
@@ -288,31 +281,28 @@ public class DateOperation {
 			return "0";
 		}
 	}
+
 	/**
 	 * 得到某日期的分钟
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getMinites(Date date) {
 		return format12.format(date);
 	}
+
 	/**
 	 * 得到某日期的秒
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 */
 	public  String getSeconds(Date date) {
 		return format13.format(date);
 	}
+
 	/**
 	 * 得到某年有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM-dd"
+	 * @param date
 	 * @return
 	 * @throws ParseException
 	 */
@@ -325,9 +315,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某年有多少天
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 * @throws ParseException
 	 */
@@ -340,9 +328,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某年有多少天
-	 * 
-	 * @param String
-	 *            year "yyyy"
+	 * @param year
 	 * @return
 	 * @throws ParseException
 	 */
@@ -355,9 +341,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某月有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM-dd"
+	 * @param date
 	 * @return
 	 * @throws ParseException
 	 */
@@ -369,9 +353,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某月有多少天
-	 * 
-	 * @param String
-	 *            date "yyyy-MM"
+	 * @param date
 	 * @return
 	 * @throws ParseException
 	 */
@@ -384,9 +366,7 @@ public class DateOperation {
 
 	/**
 	 * 得到某月有多少天
-	 * 
-	 * @param Date
-	 *            date
+	 * @param date
 	 * @return
 	 * @throws ParseException
 	 */
@@ -468,12 +448,12 @@ public class DateOperation {
 		dayNumber = (date2.getTime() - date1.getTime()) / mins;
 		return dayNumber;
 	}
+
 	/**
-	 * 
-	 * 日期格式转换
-	 * 从YYYY-MM-DD转换到YYYYMMDD
-	 * @param date
-	 * @throws ParseException 
+	 * 日期格式转换 从YYYY-MM-DD转换到YYYYMMDD
+	 * @param dateString
+	 * @return
+	 * @throws ParseException
 	 */
 	public  String changeDateFormat(String dateString) throws ParseException{
 		Date date;

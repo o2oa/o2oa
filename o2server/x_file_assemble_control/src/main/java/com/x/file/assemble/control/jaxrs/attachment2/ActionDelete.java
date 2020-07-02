@@ -11,6 +11,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
+import com.x.file.core.entity.open.FileStatus;
 import com.x.file.core.entity.personal.Attachment;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Recycle;
@@ -38,7 +39,7 @@ class ActionDelete extends BaseAction {
 				sem.remove(share);
 				sem.getTransaction().commit();
 			}
-			if("正常".equals(attachment.getStatus())){
+			if(FileStatus.VALID.getName().equals(attachment.getStatus())){
 				Recycle recycle = new Recycle(attachment.getPerson(), attachment.getName(), attachment.getId(), "attachment");
 				recycle.setExtension(attachment.getExtension());
 				recycle.setLength(attachment.getLength());
@@ -47,7 +48,7 @@ class ActionDelete extends BaseAction {
 				rem.getTransaction().commit();
 
 				EntityManager aem = emc.beginTransaction(Attachment2.class);
-				attachment.setStatus("已删除");
+				attachment.setStatus(FileStatus.INVALID.getName());
 				aem.getTransaction().commit();
 			}
 			Wo wo = new Wo();

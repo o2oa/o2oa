@@ -244,9 +244,10 @@ MWF.xApplication.Org.$Explorer = new Class({
     },
     searchOrg: function(){
         var key = this.searchInputNode.get("value");
+        var isSearchElement = true;
+        this.searching = false;
         if (key){
             if (key!==this.options.lp.searchText){
-                var isSearchElement = true;
                 if (this.currentItem) isSearchElement = this.currentItem.unSelected();
                 if (isSearchElement){
                     this._listElementByKey(function(json){
@@ -256,6 +257,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                             var item = this._newElement(itemData, this);
                             item.load();
                         }.bind(this));
+                        this.searching = true;
                     }.bind(this), null, key);
                 }else{
                     this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
@@ -264,7 +266,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                 if (this.currentItem) isSearchElement = this.currentItem.unSelected();
                 if (isSearchElement){
                     this.clear();
-                    this.loadElements();
+                    this.reloadElements();
                 }else{
                     this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
                 }
@@ -273,7 +275,7 @@ MWF.xApplication.Org.$Explorer = new Class({
             if (this.currentItem) isSearchElement = this.currentItem.unSelected();
             if (isSearchElement){
                 this.clear();
-                this.loadElements();
+                this.reloadElements();
             }else{
                 this.app.notice(this.options.lp.elementSave, "error", this.propertyContentNode);
             }
@@ -313,6 +315,7 @@ MWF.xApplication.Org.$Explorer = new Class({
                 "friction": 4,
                 "axis": {"x": false, "y": true},
                 "onScroll": function(y){
+                    if( _self.searching )return;
                     var scrollSize = _self.listScrollNode.getScrollSize();
                     var clientSize = _self.listScrollNode.getSize();
                     var scrollHeight = scrollSize.y-clientSize.y;
@@ -369,6 +372,11 @@ MWF.xApplication.Org.$Explorer = new Class({
         if (this.elements.length<this.getPageNodeCount()){
             this.loadElements(true);
         }
+    },
+    reloadElements : function(){
+        this.elements = [];
+        this.clear();
+        this.loadElements();
     },
     loadElements: function(addToNext){
         if (!this.isElementLoaded){

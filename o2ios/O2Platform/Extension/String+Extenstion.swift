@@ -71,6 +71,10 @@ extension String {
         return self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
     }
     
+    var urlEncoded: String {
+        return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+    }
+    
     
     // MARK:- 获取字符串的CGSize
     func getSize(with fontSize: CGFloat) -> CGSize {
@@ -122,6 +126,23 @@ extension String {
             s.append(c[Int(arc4random()) % c.count])
         }
         return s
+    }
+
+    // MARK:- 获取帐号中的中文名称
+    func getChinaName() -> String{
+        let userName = self
+        var strTemp = ""
+        if !userName.isBlank{
+              let userNameSplit =  userName.split("@");
+              if strTemp == "" {
+                 strTemp = userNameSplit[0]
+              }else{
+                  strTemp = strTemp + "," + userNameSplit[0]
+              }
+              print(strTemp)
+         }
+        return strTemp
+        
     }
 
     

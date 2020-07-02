@@ -133,6 +133,19 @@
       text-indent: -12px;
     }
 
+    .chat-sender .img-chat {
+        width:192px;
+        height:144px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .chat-sender .img-chat img  {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: auto;
+    }
+
     .chat-receiver {
       clear: both;
       font-size: 80%;
@@ -156,6 +169,19 @@
       margin: 0px 50px 10px 50px;
       padding: 10px 10px 10px 10px;
       border-radius: 7px;
+    }
+
+    .chat-receiver .img-chat {
+        width:192px;
+        height:144px;
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .chat-receiver .img-chat img  {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: auto;
     }
 
     .chat-receiver div:first-child img,
@@ -301,7 +327,37 @@
       <div>麦克</div>
       <div>
         <div class="chat-left_triangle"></div>
+        <audio src="http://api.muliba.net/media?id=0085f051-224d-4513-919e-f2ad8980a128" controls="controls" preload id="music1" />
+      </div>
+    </div>
+    <div class="chat-sender">
+      <div><img src="img/mike.png"></div>
+      <div>麦克</div>
+      <div>
+        <div class="chat-left_triangle"></div>
+        <div class="img-chat">
+          <img src="https://13315641.s21i.faiusr.com/2/1/ABUIABACGAAg796F5wUo0Ou0ETCqDTjlCQ!1500x1500.jpg">
+        </div>
+        
+      </div>
+    </div>
+    <div class="chat-sender">
+      <div><img src="img/mike.png"></div>
+      <div>麦克</div>
+      <div>
+        <div class="chat-left_triangle"></div>
         <span> 你可以用ionRefresher指令实现拉动刷新，并可以用ionInfiniteScroll指令实现无限滚动。</span>
+      </div>
+    </div>
+    <div class="chat-sender">
+      <div><img src="img/mike.png"></div>
+      <div>麦克</div>
+      <div>
+        <div class="chat-left_triangle"></div>
+        <span>
+          <img src="icons/location.png" height="32" width="32">
+          <a href="https://api.map.baidu.com/marker?location=30.28295614138489,120.12924599847905&title=浙江省杭州市西湖区文三路492号&content=浙江中小企业大厦东北83米&output=html&src=net.o2oa.map" target="_blank">浙江省杭州市西湖区文三路492号</a>
+        </span>
       </div>
     </div>
     <!-- Right -->
@@ -311,6 +367,27 @@
       <div>
         <div class="chat-right_triangle"></div>
         <span> 最后但并非最不重要的是</span>
+      </div>
+    </div>
+    
+    <div class="chat-receiver">
+      <div><img src="img/max.png"></div>
+      <div>好人·马克思</div>
+      <div>
+        <div class="chat-right_triangle"></div>
+        <div class="img-chat">
+          <img src="https://13315641.s21i.faiusr.com/2/1/ABUIABACGAAg796F5wUo0Ou0ETCqDTjlCQ!1500x1500.jpg">
+        </div>
+        
+      </div>
+    </div>
+    <div class="chat-receiver">
+      <div><img src="img/max.png"></div>
+      <div>好人·马克思</div>
+      <div>
+        <div class="chat-right_triangle"></div>
+        <audio src="http://api.muliba.net/media?id=0085f051-224d-4513-919e-f2ad8980a128" controls="controls" preload id="music1" />
+
       </div>
     </div>
     <!-- Notice/Center -->
@@ -332,7 +409,7 @@
       </div>
     </div>
   </div>
-  <div style="position: absolute;width:630px;height: 260px;left: 5px;bottom: 155px;background-color: #ffffff;border: 1px solid #F1F1F1; padding-top: 8px;border-radius: 8px; box-shadow: 5px 5px #1d1d1d10;z-index: 100;">
+  <div style="display:none;position: absolute;width:630px;height: 260px;left: 5px;bottom: 155px;background-color: #ffffff;border: 1px solid #F1F1F1; padding-top: 8px;border-radius: 8px; box-shadow: 5px 5px #1d1d1d10;z-index: 100;">
     <img src="./icons/icon-emoji.png" style="width: 32px;height: 32px; float: left; margin: 5px;" />
     <img src="./icons/icon-emoji.png" style="width: 32px;height: 32px; float: left;margin: 5px;"/>
     <img src="./icons/icon-emoji.png" style="width: 32px;height: 32px; float: left;margin: 5px;"/>

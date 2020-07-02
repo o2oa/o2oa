@@ -510,6 +510,30 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		
 		return em.createQuery(cq.where(p)).getResultList();
 	}
+
+	public List<String> listDetailByCycleYearAndMonthWithOutStatus( String user, String year, String month )  throws Exception {
+		if( user == null || user.isEmpty() ||year == null || month == null || year.isEmpty() || month.isEmpty()  ){
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		cq.select( root.get(AttendanceDetail_.id ));
+		//一般始终为true, id is not null
+		Predicate p = cb.isNotNull( root.get(AttendanceDetail_.id) );
+		if( StringUtils.isNotEmpty( user ) ){
+			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.empName), user ));
+		}
+		if( StringUtils.isNotEmpty( year ) ){
+			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleYear), year ));
+		}
+		if( StringUtils.isNotEmpty( month ) ){
+			p = cb.and(p, cb.equal( root.get(AttendanceDetail_.cycleMonth), month ));
+		}
+
+		return em.createQuery(cq.where(p)).getResultList();
+	}
 	
 	//@MethodDescribe("按年份月份查询某组织的打卡数据记录列表")
 	public List<String> listUnitAttendanceDetailByYearAndMonth( List<String> unitNames, String year, String month)  throws Exception {
@@ -785,9 +809,6 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	
 	/**
 	 * 查询符合的文档信息总数
-	 * @param id
-	 * @param count
-	 * @param sequence
 	 * @param wrapIn
 	 * @return
 	 * @throws Exception
@@ -955,4 +976,19 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
 		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
 	}
+
+	public List<String> listRecordWithDateAndNoOffDuty( String recordDate ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		cq.select(root.get(AttendanceDetail_.id));
+		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDate ), recordDate );
+		Predicate offDutyTime_1 = cb.isNull(root.get( AttendanceDetail_.offDutyTime ));
+		Predicate offDutyTime_2 = cb.equal( root.get( AttendanceDetail_.offDutyTime ), "" );
+		p = cb.and( p, cb.or( offDutyTime_1, offDutyTime_2 ));
+		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
+	}
+
+
 }

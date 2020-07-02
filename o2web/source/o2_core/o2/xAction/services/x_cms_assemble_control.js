@@ -353,7 +353,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getAttachmentStream: function(id, documentid){
@@ -361,7 +361,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             var url = this.action.actions.getAttachmentStream.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            window.open(this.action.address+url);
+            window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     getAttachmentUrl: function(id, documentid, callback){
@@ -369,7 +369,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             var url = this.action.actions.getAttachmentData.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     convertLocalImageToBase64: function(size, success, failure, formData, file){
@@ -380,7 +380,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             var url = this.action.actions.getImage.uri;
             url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
-            if (callback) callback(this.action.address+url);
+            if (callback) callback(o2.filterUrl(this.action.address+url));
         }.bind(this));
     },
     //--index--

@@ -15,33 +15,42 @@ import Foundation
 //private  let _bundle:UnsafePointer<Void> =  unsafeBitCast(0,to: UnsafePointer<Void>.self)
 
 class BundleEx: Bundle {
-    
+
     override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
         if let bundle = languageBundle() {
             return bundle.localizedString(forKey: key, value: value, table: tableName)
-        }else{
+        } else {
             return super.localizedString(forKey: key, value: value, table: tableName)
         }
     }
-    
-    
+
+
 }
 
-extension Bundle{
+extension Bundle {
 //    private struct Static {
 //        static let onceToken: Static = { Static() }()
 //    }
 //
-    func onLanguage(){
+    func onLanguage() {
         //替换NSBundle.mainBundle()为自定义的BundleEx
         DispatchQueue.once(token: "language") {
             object_setClass(Bundle.main, BundleEx.self)
         }
     }
-    
+
     //当前语言的bundle
-    func languageBundle() -> Bundle?{
+    func languageBundle() -> Bundle? {
         return Languager.standardLanguager().currentLanguageBundle
+    }
+
+    //o2 表情包读取
+    func o2EmojiBundle(anyClass: AnyClass) -> Bundle {
+        var bundle: Bundle = Bundle.main
+        if let resource = Bundle(for: anyClass.self).path(forResource: "O2Emoji", ofType: "bundle") {
+            bundle = Bundle(path: resource) ?? Bundle.main
+        }
+        return bundle
     }
 }
 

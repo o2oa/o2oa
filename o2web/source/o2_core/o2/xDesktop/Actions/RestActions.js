@@ -25,11 +25,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
 //		MWF.getJSON(url, callback);
 		
 		//this.address = "http://xa02.zoneland.net:8080/"+this.serviceName;
-        debugger;
+
         var addressObj = layout.serviceAddressList[this.serviceName];
         if (addressObj){
             //var mapping = layout.getAppUrlMapping(layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context);
-            this.address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+            this.address = layout.config.app_protocol+"//"+(addressObj.host || window.location.hostname)+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
@@ -369,6 +369,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
     },
 
 	invokeFormData: function(method, uri, data, file, callback, async, progress){
+        uri = o2.filterUrl(uri);
 		var xhr = new COMMON.Browser.Request();
 		if(file){
             data.append('fileName', file.name);

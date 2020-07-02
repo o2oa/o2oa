@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.servlet.DispatcherType;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,8 @@ public class WebServerTools extends JettySeverTools {
 	private static int WEBSERVER_THREAD_POOL_SIZE_MIN = 50;
 	private static int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
 
+	private static final String MAP_LOGINPAGE = "loginPage";
+
 	public static Server start(WebServer webServer) throws Exception {
 
 		/**
@@ -56,6 +59,10 @@ public class WebServerTools extends JettySeverTools {
 		 * 创建index.html
 		 */
 		createIndexPage();
+		/**
+		 * copyDefaultHtml
+		 */
+		copyDefaultHtml();
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
@@ -108,6 +115,13 @@ public class WebServerTools extends JettySeverTools {
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static void copyDefaultHtml() throws Exception {
+		File file = new File(Config.dir_config(), "default.html");
+		if (file.exists() && file.isFile()) {
+			FileUtils.copyFile(file, new File(Config.base(), "servers/webServer/default.html"));
+		}
 	}
 
 	private static void updateFavicon() throws Exception {
@@ -175,9 +189,32 @@ public class WebServerTools extends JettySeverTools {
 			}
 			/* 上面的无效 */
 			map.put("app_protocol", "auto");
-			map.put("loginPage", Config.person().getLoginPage());
+			if ((null != Config.portal().getLoginPage())
+					&& (BooleanUtils.isTrue(Config.portal().getLoginPage().getEnable()))) {
+				map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
+			} else if ((null != Config.person().getLoginPage())
+					&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
+				map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
+			} else {
+				map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
+			}
 			map.put("indexPage", Config.portal().getIndexPage());
 			map.put("webSocketEnable", Config.communicate().wsEnable());
+			map.put("urlMapping", Config.portal().getUrlMapping());
+
+			/* 密码规则 */
+			map.put("passwordRegex", Config.person().getPasswordRegex());
+			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
+			
+		    /*RSA*/
+			File publicKeyFile = new File(Config.base(), "config/public.key");
+			if (publicKeyFile.exists() && publicKeyFile.isFile()) {
+					 String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
+					 byte[] publicKeyB = Base64.decodeBase64(publicKey);
+					 publicKey = new String(Base64.encodeBase64(publicKeyB));
+					 map.put("publicKey", publicKey);
+			}
+			
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}

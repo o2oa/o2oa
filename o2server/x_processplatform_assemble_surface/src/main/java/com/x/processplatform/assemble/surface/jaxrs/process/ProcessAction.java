@@ -3,7 +3,12 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
@@ -27,7 +32,6 @@ public class ProcessAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
 
-
 	@JaxrsMethodDescribe(value = "获取流程.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
@@ -45,8 +49,6 @@ public class ProcessAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
-
 
 	@JaxrsMethodDescribe(value = "获取流程内容,附带所有的Activity信息", action = ActionGetComplex.class)
 	@GET
@@ -84,7 +86,7 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application获取所有流程.", action = ActionListWithPersonWithApplication.class)
+	@JaxrsMethodDescribe(value = "根据指定Application获取可启动的流程.", action = ActionListWithPersonWithApplication.class)
 	@GET
 	@Path("list/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -98,6 +100,27 @@ public class ProcessAction extends StandardJaxrsAction {
 			result = new ActionListWithPersonWithApplication().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "根据指定Application和指定条件获取可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
+	@POST
+	@Path("list/application/{applicationFlag}/filter")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithPersonWithApplicationFilter(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+			JsonElement jsonElement) {
+		ActionResult<List<ActionListWithPersonWithApplicationFilter.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithPersonWithApplicationFilter().execute(effectivePerson, applicationFlag,
+					jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -146,7 +169,7 @@ public class ProcessAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void ListWithIds(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<List<ActionListWithProcess.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

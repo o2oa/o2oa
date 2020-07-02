@@ -16,6 +16,7 @@ import com.baidu.mapapi.SDKInitializer
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.smtt.sdk.QbSdk
+import com.zlw.main.recorderlib.RecordManager
 import io.realm.Realm
 import jiguang.chat.application.JGApplication
 import jiguang.chat.entity.NotificationClickEventReceiver
@@ -115,6 +116,9 @@ class O2App : MultiDexApplication() {
         NotificationClickEventReceiver(this)
         //注册日志记录器
         LogSingletonService.instance().registerApp(this)
+
+        //录音
+        RecordManager.getInstance().init(this, false)
 
         Log.i("O2app", "O2app init.....................................................")
         //stetho developer tool

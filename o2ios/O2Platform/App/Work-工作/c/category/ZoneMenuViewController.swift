@@ -51,13 +51,13 @@ class ZoneMenuViewController: UIViewController {
         self.automaticallyAdjustsScrollViewInsets = false
         //mainMenu
         if let mainVC = self.storyboard?.instantiateViewController(withIdentifier: "mainMenu") {
-            self.mainVC = mainVC as! ZoneMainCategoryViewController
+            self.mainVC = mainVC as? ZoneMainCategoryViewController
             self.addChild(mainVC)
             mainVC.view.frame = CGRect(x: 0, y: 0, width: view.bounds.width * 0.4, height: view.bounds.height)
             self.view.addSubview(mainVC.view)
         }
         if let subVC = self.storyboard?.instantiateViewController(withIdentifier: "subMenu") {
-            self.subVC = subVC as! ZoneSubCategoryViewController
+            self.subVC = subVC as? ZoneSubCategoryViewController
             self.addChild(subVC)
             subVC.view.frame = CGRect(x: view.bounds.width * 0.4, y: 0, width: view.bounds.width * 0.6, height: view.bounds.height)
             //let tView = subVC.view as! UITableView
@@ -73,7 +73,7 @@ class ZoneMenuViewController: UIViewController {
     
     @objc private func reveiveCategoryNotification(_ notification:NSNotification){
         let obj = notification.object
-        self.subVC.app = obj as! Application
+        self.subVC.app = obj as? Application
     }
     
     @objc private func receiveSubNotification(_ notification:NSNotification){
@@ -113,7 +113,12 @@ class ZoneMenuViewController: UIViewController {
                     let data = TaskCreateData(process: process, identitys: identitys)
                     self.gotoChooseIdentity(data: data)
                 }else if identitys.count == 1 {
-                    self.createProcess(processId: process!.id!, identity: identitys[0].distinguishedName!)
+                    //草稿模式
+                    if let mode = process?.defaultStartMode, mode == O2.O2_Word_draft_mode {
+                        self.createDraft(processId: process!.id!, identity: identitys[0].distinguishedName!)
+                    }else {
+                        self.createProcess(processId: process!.id!, identity: identitys[0].distinguishedName!)
+                    }
                 }else {
                     DispatchQueue.main.async {
                         self.showError(title: "当前用户没有身份，无法创建工作！")
@@ -128,6 +133,38 @@ class ZoneMenuViewController: UIViewController {
         }
     }
     
+    //创建草稿
+    private func createDraft(processId: String, identity: String) {
+        let bean = CreateProcessBean()
+               bean.title = ""
+               bean.identity = identity
+        let draftCreateUrl = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.draftWorkCreateQuery, parameter: ["##processId##":processId as AnyObject])
+        self.showLoading(title: "创建中，请稍候...")
+        Alamofire.request(draftCreateUrl!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
+            
+            switch response.result {
+            case .success(let val):
+                let draftData = JSON(val)["data"]
+                DDLogDebug(draftData.description)
+                if let draft = Mapper<ProcessDraftBean>().map(JSONString:draftData["work"].debugDescription) {
+                    let taskStoryboard = UIStoryboard(name: "task", bundle: Bundle.main)
+                    let todoTaskDetailVC = taskStoryboard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
+                    todoTaskDetailVC.draft = draft
+                    todoTaskDetailVC.backFlag = 1
+                    self.navigationController?.pushViewController(todoTaskDetailVC, animated: true)
+                    DispatchQueue.main.async {
+                        self.hideLoading()
+                    }
+                } else {
+                    self.showError(title: "创建失败")
+                }
+            case .failure(let err):
+                DDLogError(err.localizedDescription)
+                self.showError(title: "创建失败")
+            }
+        }
+    }
+    
     //创建流程
     private func createProcess(processId: String, identity:String){
         let bean = CreateProcessBean()
@@ -136,7 +173,6 @@ class ZoneMenuViewController: UIViewController {
         let createURL = AppDelegate.o2Collect.generateURLWithAppContextKey(WorkContext.workContextKey, query: WorkContext.workCreateQuery, parameter: ["##id##":processId as AnyObject])
         self.showLoading(title: "创建中，请稍候...")
         Alamofire.request(createURL!,method:.post, parameters: bean.toJSON(), encoding: JSONEncoding.default, headers: nil).responseJSON { response in
-            debugPrint(response.result)
             switch response.result {
             case .success(let val):
                 let taskList = JSON(val)["data"][0]

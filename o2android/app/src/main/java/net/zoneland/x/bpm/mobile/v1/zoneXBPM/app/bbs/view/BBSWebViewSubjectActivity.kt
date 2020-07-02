@@ -24,6 +24,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.APIDistributeTypeEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.BBSUploadImageBO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.bbs.ReplyFormJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.bbs.SubjectReplyInfoJson
@@ -32,11 +33,14 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.BBSWebViewAttachmentVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.hideSoftInput
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.AttachPopupWindow
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
@@ -274,46 +278,22 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
 
     override fun startDownLoadFile(id: String?) {
         if (!TextUtils.isEmpty(id)){
-            taskMap[id!!] = doAsync {
-                val filePath = getAttachFileLocalPath(id)
-                val file = File(filePath)
-                var downloadSuccess = false
-                try {
-                    if (!file.exists()) {
-                        val call = RetrofitClient.instance().bbsAssembleControlServiceApi()
-                                .downloadAttach(id)
-                        val response = call.execute()
-                        val input = DataInputStream(response.body()?.byteStream())
-                        val output = DataOutputStream(FileOutputStream(file))
-                        val buffer = ByteArray(4096)
-                        var count = 0
-                        do {
-                            count = input.read(buffer)
-                            if (count > 0) {
-                                output.write(buffer, 0, count)
-                            }
-                        } while (count > 0)
-                        output.close()
-                        input.close()
-                    }
-                    downloadSuccess = true
-                } catch(e: Exception) {
-                    XLog.error("下载附件异常", e)
-                }
-                uiThread {
-                    if (taskMap.containsKey(id)){
-                        taskMap.remove(id)
-                    }
-                    if (downloadSuccess) {
-                        popupWindow.notifyStatusChanged()
-                    }else{
-                        if (file.exists()){
-                            file.delete()
+            val filePath = getAttachFileLocalPath(id!!)
+            val downloadUrl = APIAddressHelper.instance()
+                    .getCommonDownloadUrl(APIDistributeTypeEnum.x_bbs_assemble_control, "jaxrs/attachment/download/$id/stream/false")
+            XLog.debug("下载附件地址： $downloadUrl")
+            O2FileDownloadHelper.download(downloadUrl, filePath)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .o2Subscribe {
+                        onNext {
+                            popupWindow.notifyStatusChanged()
                         }
-                        XToast.toastShort(this@BBSWebViewSubjectActivity, "下载附件失败！")
+                        onError { e, _ ->
+                            XLog.error("", e)
+                            XToast.toastShort(this@BBSWebViewSubjectActivity, "下载附件失败！")
+                        }
                     }
-                }
-            }
         }
     }
 

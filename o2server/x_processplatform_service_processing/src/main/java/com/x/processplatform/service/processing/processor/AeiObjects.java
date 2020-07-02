@@ -5,15 +5,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
@@ -59,6 +56,10 @@ import com.x.processplatform.service.processing.WorkContext;
 import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class AeiObjects extends GsonPropertyObject {
 
@@ -225,16 +226,15 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	public List<Projection> getProjections() throws Exception {
-		if (null == this.projections) {
-			if (null != this.getProcess()) {
-				String text = this.getProcess().getProjection();
-				if (XGsonBuilder.isJsonArray(text)) {
-					this.projections = XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
-					}.getType());
-				}
+		if ((null == this.projections) && (null != this.getProcess())) {
+			String text = this.getProcess().getProjection();
+			if (XGsonBuilder.isJsonArray(text)) {
+				this.projections = XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
+				}.getType());
 			}
 		}
 		return this.projections;
+
 	}
 
 	public List<Mapping> getMappings() throws Exception {
@@ -268,8 +268,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<Route> getRoutes() throws Exception {
 		if (null == this.routes) {
-			this.routes = this.business.element().listRouteWithActvity(work.getActivity(),
-					work.getActivityType());
+			this.routes = this.business.element().listRouteWithActvity(work.getActivity(), work.getActivityType());
 		}
 		return this.routes;
 	}
@@ -595,90 +594,127 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void executeProjection() throws Exception {
 		if (ListTools.isNotEmpty(this.getProjections())) {
-			if (this.getProcess().getProjectionFully()) {
+			executeProjectionFullyNotIncludeNormal();
+			executeProjectionWork();
+			executeProjectionTask();
+			executeProjectionTaskCompleted();
+			executeProjectionRead();
+			executeProjectionReadCompleted();
+			executeProjectionReview();
+		}
+	}
 
-				for (Work o : this.getWorks()) {
-					if ((!this.getUpdateWorks().contains(o)) && (!this.getDeleteWorks().contains(o))) {
-						this.getUpdateWorks().add(o);
-					}
-				}
+	private void executeProjectionWork() throws Exception {
+		for (Work o : this.getCreateWorks()) {
+			ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+		}
+		for (Work o : this.getUpdateWorks()) {
+			ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+		}
+	}
 
-				for (Task o : this.getTasks()) {
-					if ((!this.getUpdateTasks().contains(o)) && (!this.getDeleteTasks().contains(o))) {
-						this.getUpdateTasks().add(o);
-					}
-				}
+	private void executeProjectionTask() throws Exception {
+		for (Task o : this.getCreateTasks()) {
+			ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+		}
+		for (Task o : this.getUpdateTasks()) {
+			ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+		}
+	}
 
-				for (TaskCompleted o : this.getTaskCompleteds()) {
-					if ((!this.getUpdateTaskCompleteds().contains(o))
-							&& (!this.getDeleteTaskCompleteds().contains(o))) {
-						this.getUpdateTaskCompleteds().add(o);
-					}
-				}
+	private void executeProjectionTaskCompleted() throws Exception {
+		for (TaskCompleted o : this.getCreateTaskCompleteds()) {
+			ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+		}
+		for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
+			ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+		}
+	}
 
-				for (Read o : this.getReads()) {
-					if ((!this.getUpdateReads().contains(o)) && (!this.getDeleteReads().contains(o))) {
-						this.getUpdateReads().add(o);
-					}
-				}
+	private void executeProjectionRead() throws Exception {
+		for (Read o : this.getCreateReads()) {
+			ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+		}
+		for (Read o : this.getUpdateReads()) {
+			ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+		}
+	}
 
-				for (ReadCompleted o : this.getReadCompleteds()) {
-					if ((!this.getUpdateReadCompleteds().contains(o))
-							&& (!this.getDeleteReadCompleteds().contains(o))) {
-						this.getUpdateReadCompleteds().add(o);
-					}
-				}
+	private void executeProjectionReadCompleted() throws Exception {
+		for (ReadCompleted o : this.getCreateReadCompleteds()) {
+			ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
+		}
 
-				for (Review o : this.getReviews()) {
-					if ((!this.getUpdateReviews().contains(o)) && (!this.getDeleteReviews().contains(o))) {
-						this.getUpdateReviews().add(o);
-					}
-				}
+		for (ReadCompleted o : this.getUpdateReadCompleteds()) {
+			ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
+		}
+	}
 
+	private void executeProjectionReview() throws Exception {
+		for (Review o : this.getUpdateReviews()) {
+			ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
+		}
+
+		for (Review o : this.getDeleteReviews()) {
+			ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
+		}
+	}
+
+	private void executeProjectionFullyNotIncludeNormal() throws Exception {
+		if (BooleanUtils.isTrue(this.getProcess().getProjectionFully())) {
+			executeProjectionFullyNotIncludeNormalWork();
+			executeProjectionFullyNotIncludeNormalTask();
+			executeProjectionFullyNotIncludeNormalTaskCompleted();
+			executeProjectionFullyNotIncludeNormalRead();
+			executeProjectionFullyNotIncludeNormalReadCompleted();
+			executeProjectionFullyNotIncludeNormalReview();
+		}
+	}
+
+	private void executeProjectionFullyNotIncludeNormalWork() throws Exception {
+		for (Work o : this.getWorks()) {
+			if ((!this.getUpdateWorks().contains(o)) && (!this.getDeleteWorks().contains(o))) {
+				this.getUpdateWorks().add(o);
 			}
+		}
+	}
 
-			for (Work o : this.getCreateWorks()) {
-				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
+	private void executeProjectionFullyNotIncludeNormalTask() throws Exception {
+		for (Task o : this.getTasks()) {
+			if ((!this.getUpdateTasks().contains(o)) && (!this.getDeleteTasks().contains(o))) {
+				this.getUpdateTasks().add(o);
 			}
-			for (Work o : this.getUpdateWorks()) {
-				ProjectionFactory.projectionWork(this.getProjections(), this.getData(), o);
-			}
+		}
+	}
 
-			for (Task o : this.getCreateTasks()) {
-				ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
+	private void executeProjectionFullyNotIncludeNormalTaskCompleted() throws Exception {
+		for (TaskCompleted o : this.getTaskCompleteds()) {
+			if ((!this.getUpdateTaskCompleteds().contains(o)) && (!this.getDeleteTaskCompleteds().contains(o))) {
+				this.getUpdateTaskCompleteds().add(o);
 			}
-			for (Task o : this.getUpdateTasks()) {
-				ProjectionFactory.projectionTask(this.getProjections(), this.getData(), o);
-			}
+		}
+	}
 
-			for (TaskCompleted o : this.getCreateTaskCompleteds()) {
-				ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
+	private void executeProjectionFullyNotIncludeNormalRead() throws Exception {
+		for (Read o : this.getReads()) {
+			if ((!this.getUpdateReads().contains(o)) && (!this.getDeleteReads().contains(o))) {
+				this.getUpdateReads().add(o);
 			}
-			for (TaskCompleted o : this.getUpdateTaskCompleteds()) {
-				ProjectionFactory.projectionTaskCompleted(this.getProjections(), this.getData(), o);
-			}
+		}
+	}
 
-			for (Read o : this.getCreateReads()) {
-				ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
+	private void executeProjectionFullyNotIncludeNormalReadCompleted() throws Exception {
+		for (ReadCompleted o : this.getReadCompleteds()) {
+			if ((!this.getUpdateReadCompleteds().contains(o)) && (!this.getDeleteReadCompleteds().contains(o))) {
+				this.getUpdateReadCompleteds().add(o);
 			}
-			for (Read o : this.getUpdateReads()) {
-				ProjectionFactory.projectionRead(this.getProjections(), this.getData(), o);
-			}
+		}
+	}
 
-			for (ReadCompleted o : this.getCreateReadCompleteds()) {
-				ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
-			}
-
-			for (ReadCompleted o : this.getUpdateReadCompleteds()) {
-				ProjectionFactory.projectionReadCompleted(this.getProjections(), this.getData(), o);
-			}
-
-			for (Review o : this.getUpdateReviews()) {
-				ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
-			}
-
-			for (Review o : this.getDeleteReviews()) {
-				ProjectionFactory.projectionReview(this.getProjections(), this.getData(), o);
+	private void executeProjectionFullyNotIncludeNormalReview() throws Exception {
+		for (Review o : this.getReviews()) {
+			if ((!this.getUpdateReviews().contains(o)) && (!this.getDeleteReviews().contains(o))) {
+				this.getUpdateReviews().add(o);
 			}
 		}
 	}
@@ -816,238 +852,352 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateTasks()) || ListTools.isNotEmpty(this.getDeleteTasks())
 				|| ListTools.isNotEmpty(this.getUpdateTasks())) {
 			this.entityManagerContainer().beginTransaction(Task.class);
-			/* 保存待办 */
-			this.getCreateTasks().stream().forEach(o -> {
-				try {
-					o.setSeries(this.getProcessingAttributes().getSeries());
-					/* 写入本次操作串号 */
-					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-					/* 创建待办的参阅 */
-					this.createReview(new Review(this.getWork(), o.getPerson()));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 更新待办 */
-			this.getUpdateTasks().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().check(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除待办 */
-			this.getDeleteTasks().stream().forEach(o -> {
-				Task obj;
-				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), Task.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-						/* 发送删除待办消息 */
-						// MessageFactory.task_delete(obj);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+			// 保存待办
+			commitTaskCreatePart();
+			// 更新待办
+			commitTaskUpdatePart();
+			// 删除待办
+			commitTaskDeletePart();
 		}
+	}
+
+	private void commitTaskCreatePart() {
+		this.getCreateTasks().stream().forEach(o -> {
+			try {
+				// 写入当前处理人作为上一环节处理人
+				if (StringUtils.isNotEmpty(this.processingAttributes.getIdentity())) {
+					o.getProperties()
+							.setPrevTaskIdentityList(ListTools.trim(o.getProperties().getPrevTaskIdentityList(), true,
+									true, this.processingAttributes.getIdentity()));
+				}
+				// 写入本次操作串号
+				o.setSeries(this.getProcessingAttributes().getSeries());
+				this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				// 创建待办的参阅
+				this.createReview(new Review(this.getWork(), o.getPerson()));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitTaskUpdatePart() {
+		this.getUpdateTasks().stream().forEach(o -> {
+			try {
+				this.business.entityManagerContainer().check(o, CheckPersistType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitTaskDeletePart() {
+		this.getDeleteTasks().stream().forEach(o -> {
+			Task obj;
+			try {
+				obj = this.business.entityManagerContainer().find(o.getId(), Task.class);
+				if (null != obj) {
+					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 	}
 
 	private void commitTaskCompleted() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateTaskCompleteds()) || ListTools.isNotEmpty(this.getDeleteTaskCompleteds())
 				|| ListTools.isNotEmpty(this.getUpdateTaskCompleteds())) {
 			this.entityManagerContainer().beginTransaction(TaskCompleted.class);
-			/* 保存已办 */
-			this.getCreateTaskCompleteds().stream().forEach(o -> {
-				try {
-					/* 将相同用户的其他已办的lastest标记为false */
-					this.getTaskCompleteds().stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
-							.forEach(p -> p.setLatest(false));
-					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-					/* 创建已办的参阅 */
-					this.createReview(new Review(this.getWork(), o.getPerson()));
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 更新已办 */
-			this.getUpdateTaskCompleteds().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().check(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除已办 */
-			this.getDeleteTaskCompleteds().stream().forEach(o -> {
-				TaskCompleted obj;
-				try {
-					/* 要删除此已经办前此人其他的已办lastest标记为true */
-					TaskCompleted lastest = this.getTaskCompleteds().stream()
-							.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
-									&& (!StringUtils.equals(o.getId(), p.getId())))
-							.sorted(Comparator
-									.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
-									.reversed())
-							.findFirst().orElse(null);
-					if (null != lastest) {
-						lastest.setLatest(true);
-					}
-					obj = this.business.entityManagerContainer().find(o.getId(), TaskCompleted.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+			// 保存已办
+			commitTaskCompletedCreatePart();
+			// 更新已办
+			commitTaskCompletedUpdatePart();
+			// 删除已办 */
+			commitTaskCompletedDeletePart();
 		}
+	}
+
+	private void commitTaskCompletedCreatePart() {
+		this.getCreateTaskCompleteds().stream().forEach(o -> {
+			try {
+				/* 将相同用户的其他已办的lastest标记为false */
+				this.getTaskCompleteds().stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
+						.forEach(p -> p.setLatest(false));
+				this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+				/* 创建已办的参阅 */
+				this.createReview(new Review(this.getWork(), o.getPerson()));
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitTaskCompletedUpdatePart() {
+		this.getUpdateTaskCompleteds().stream().forEach(o -> {
+			try {
+				this.business.entityManagerContainer().check(o, CheckPersistType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitTaskCompletedDeletePart() {
+		this.getDeleteTaskCompleteds().stream().forEach(o -> {
+			TaskCompleted obj;
+			try {
+				/* 要删除此已经办前此人其他的已办lastest标记为true */
+				TaskCompleted lastest = this.getTaskCompleteds().stream()
+						.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
+								&& (!StringUtils.equals(o.getId(), p.getId())))
+						.sorted(Comparator
+								.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
+								.reversed())
+						.findFirst().orElse(null);
+				if (null != lastest) {
+					lastest.setLatest(true);
+				}
+				obj = this.business.entityManagerContainer().find(o.getId(), TaskCompleted.class);
+				if (null != obj) {
+					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 	}
 
 	private void commitRead() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateReads()) || ListTools.isNotEmpty(this.getDeleteReads())
 				|| ListTools.isNotEmpty(this.getUpdateReads())) {
 			this.entityManagerContainer().beginTransaction(Read.class);
-			/* 保存待阅 */
-			this.getCreateReads().stream().forEach(o -> {
-				Read obj;
-				try {
-					obj = this.getReads().stream().filter(p -> StringUtils.equals(o.getJob(), p.getJob())
-							&& StringUtils.equals(o.getPerson(), p.getPerson())).findFirst().orElse(null);
-					if (null == obj) {
-						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-						/* 发送创建待阅消息 */
-						// MessageFactory.read_create(o);
-						/* 创建待阅的参阅 */
-						this.createReview(new Review(this.getWork(), o.getPerson()));
-					} else {
-						o.copyTo(obj, JpaObject.FieldsUnmodify);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 更新待阅 */
-			this.getUpdateReads().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().check(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除待阅 */
-			this.getDeleteReads().stream().forEach(o -> {
-				Read obj;
-				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), Read.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-						/* 发送删除待阅消息 */
-						// MessageFactory.read_delete(obj);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+			// 保存待阅
+			commitReadCreatePart();
+			// 更新待阅
+			commitReadUpdatePart();
+			// 删除待阅
+			commitReadDeletePart();
 		}
+	}
+
+	private void commitReadCreatePart() {
+		// 去重可能的在同一次提交中产生的对同一个人的多份Read
+		this.getCreateReads().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson())).entrySet()
+				.forEach(entry -> {
+					Read obj = entry.getValue().stream()
+							.sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+									.reversed().thenComparing(
+											Comparator.comparing(Read::getId, Comparator.nullsLast(String::compareTo))))
+							.findFirst().get();
+					try {
+						Read existed = this.getReads().stream().filter(p -> StringUtils.equals(obj.getJob(), p.getJob())
+								&& StringUtils.equals(obj.getPerson(), p.getPerson())).findFirst().orElse(null);
+						// 不存在内容重复的待阅
+						if (null == existed) {
+							this.business.entityManagerContainer().persist(obj, CheckPersistType.all);
+							/* 创建待阅的参阅 */
+							this.createReview(new Review(this.getWork(), obj.getPerson()));
+						} else {
+							obj.copyTo(existed, JpaObject.FieldsUnmodify);
+						}
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
+		// this.getCreateReads().stream()
+		// .collect(Collectors.collectingAndThen(
+		// Collectors.toCollection(
+		// () -> new TreeSet<>(Comparator.comparing(o -> o.getPerson() + o.getJob()))),
+		// ArrayList::new))
+		// .stream().forEach(o -> {
+		// Read obj;
+		// try {
+		// obj = this.getReads().stream().filter(p -> StringUtils.equals(o.getJob(),
+		// p.getJob())
+		// && StringUtils.equals(o.getPerson(),
+		// p.getPerson())).findFirst().orElse(null);
+		// if (null == obj) {
+		// this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+		// /* 创建待阅的参阅 */
+		// this.createReview(new Review(this.getWork(), o.getPerson()));
+		// } else {
+		// o.copyTo(obj, JpaObject.FieldsUnmodify);
+		// }
+		// } catch (Exception e) {
+		// logger.error(e);
+		// }
+		// });
+	}
+
+	private void commitReadUpdatePart() {
+		this.getUpdateReads().stream().forEach(o -> {
+			try {
+				this.business.entityManagerContainer().check(o, CheckPersistType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitReadDeletePart() {
+		this.getDeleteReads().stream().forEach(o -> {
+			Read obj;
+			try {
+				obj = this.business.entityManagerContainer().find(o.getId(), Read.class);
+				if (null != obj) {
+					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 	}
 
 	private void commitReadCompleted() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateReadCompleteds()) || ListTools.isNotEmpty(this.getDeleteReadCompleteds())
 				|| ListTools.isNotEmpty(this.getUpdateReadCompleteds())) {
 			this.entityManagerContainer().beginTransaction(ReadCompleted.class);
-			/* 保存已阅 */
-			this.getCreateReadCompleteds().stream().forEach(o -> {
-				ReadCompleted obj;
-				try {
-					/* 已阅唯一 */
-					obj = this.getReadCompleteds().stream().filter(p -> StringUtils.equals(o.getJob(), p.getJob())
-							&& StringUtils.equals(o.getPerson(), p.getPerson())).findFirst().orElse(null);
-					if (null == obj) {
-						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-						/* 发送创建已阅消息 */
-						// MessageFactory.readCompleted_create(o);
-						/* 创建已阅参阅 */
-						this.createReview(new Review(this.getWork(), o.getPerson()));
-					} else {
-						/* 如果逻辑上相同的已阅已经存在,覆盖内容. */
-						o.copyTo(obj, JpaObject.FieldsUnmodify);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 更新已阅 */
-			this.getUpdateReadCompleteds().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().check(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除已阅 */
-			this.getDeleteReadCompleteds().stream().forEach(o -> {
-				ReadCompleted obj;
-				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), ReadCompleted.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-						/* 发送删除已阅消息 */
-						// MessageFactory.readCompleted_delete(obj);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+			// 保存已阅
+			commitReadCompletedCreatePart();
+			// 更新已阅
+			commitReadCompletedUpdatePart();
+			// 删除已阅
+			commitReadCompletedDeletePart();
 		}
+	}
+
+	private void commitReadCompletedCreatePart() {
+		this.getCreateReadCompleteds().stream().forEach(o -> {
+			ReadCompleted obj;
+			try {
+				// 已阅唯一
+				obj = this.getReadCompleteds().stream().filter(p -> StringUtils.equals(o.getJob(), p.getJob())
+						&& StringUtils.equals(o.getPerson(), p.getPerson())).findFirst().orElse(null);
+				if (null == obj) {
+					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+					// 创建已阅参阅
+					this.createReview(new Review(this.getWork(), o.getPerson()));
+				} else {
+					// 如果逻辑上相同的已阅已经存在,覆盖内容.
+					o.copyTo(obj, JpaObject.FieldsUnmodify);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitReadCompletedUpdatePart() {
+		this.getUpdateReadCompleteds().stream().forEach(o -> {
+			try {
+				this.business.entityManagerContainer().check(o, CheckPersistType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitReadCompletedDeletePart() {
+		this.getDeleteReadCompleteds().stream().forEach(o -> {
+			ReadCompleted obj;
+			try {
+				obj = this.business.entityManagerContainer().find(o.getId(), ReadCompleted.class);
+				if (null != obj) {
+					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 	}
 
 	private void commitReview() throws Exception {
 		if (ListTools.isNotEmpty(this.getCreateReviews()) || ListTools.isNotEmpty(this.getDeleteReviews())
 				|| ListTools.isNotEmpty(this.getUpdateReviews())) {
 			this.entityManagerContainer().beginTransaction(Review.class);
-			/* 保存参阅 */
-			this.getCreateReviews().stream().forEach(o -> {
-				Review obj;
-				try {
-					/* 参阅唯一 */
-					obj = this.getReviews().stream().filter(p -> StringUtils.equals(o.getJob(), p.getJob())
-							&& StringUtils.equals(o.getPerson(), p.getPerson())).findFirst().orElse(null);
-					if (null == obj) {
-						this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-						/* 发送创建参阅消息 */
-						// MessageFactory.review_create(o);
-					} else {
-						/* 如果逻辑上相同的已阅已经存在,覆盖内容. */
-						o.copyTo(obj, JpaObject.FieldsUnmodify);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 更新参阅 */
-			this.getUpdateReviews().stream().forEach(o -> {
-				try {
-					this.business.entityManagerContainer().check(o, CheckPersistType.all);
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
-			/* 删除参阅 */
-			this.getDeleteReviews().stream().forEach(o -> {
-				Review obj;
-				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), Review.class);
-					if (null != obj) {
-						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
-						/* 发送删除参阅消息 */
-						// MessageFactory.review_delete(obj);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-			});
+			// 保存参阅
+			commitReviewCreatePart();
+			// 更新参阅
+			commitReviewUpdatePart();
+			// 删除参阅
+			commitReviewDeletePart();
 		}
+	}
+
+	private void commitReviewCreatePart() {
+		// 去重可能的在同一次提交中产生的对同一个人的多份Review
+		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
+				.entrySet().forEach(entry -> {
+					Review obj = entry.getValue().stream()
+							.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+									.reversed().thenComparing(Comparator.comparing(Review::getId,
+											Comparator.nullsLast(String::compareTo))))
+							.findFirst().get();
+					try {
+						/* 参阅唯一 */
+						Review existed = this.getReviews().stream()
+								.filter(p -> StringUtils.equals(obj.getJob(), p.getJob())
+										&& StringUtils.equals(obj.getPerson(), p.getPerson()))
+								.findFirst().orElse(null);
+						if (null == existed) {
+							this.business.entityManagerContainer().persist(obj, CheckPersistType.all);
+						} else {
+							// 如果逻辑上相同的已阅已经存在,覆盖内容.
+							obj.copyTo(existed, JpaObject.FieldsUnmodify);
+						}
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
+
+		// this.getCreateReviews().stream()
+		// .collect(Collectors.collectingAndThen(
+		// Collectors.toCollection(
+		// () -> new TreeSet<>(Comparator.comparing(o -> o.getPerson() + o.getJob()))),
+		// ArrayList::new))
+		// .stream().forEach(o -> {
+		// Review obj;
+		// try {
+		// /* 参阅唯一 */
+		// obj = this.getReviews().stream().filter(p -> StringUtils.equals(o.getJob(),
+		// p.getJob())
+		// && StringUtils.equals(o.getPerson(),
+		// p.getPerson())).findFirst().orElse(null);
+		// if (null == obj) {
+		// this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+		// } else {
+		// // 如果逻辑上相同的已阅已经存在,覆盖内容.
+		// o.copyTo(obj, JpaObject.FieldsUnmodify);
+		// }
+		// } catch (Exception e) {
+		// logger.error(e);
+		// }
+		// });
+	}
+
+	private void commitReviewUpdatePart() {
+		this.getUpdateReviews().stream().forEach(o -> {
+			try {
+				this.business.entityManagerContainer().check(o, CheckPersistType.all);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void commitReviewDeletePart() {
+		this.getDeleteReviews().stream().forEach(o -> {
+			Review obj;
+			try {
+				obj = this.business.entityManagerContainer().find(o.getId(), Review.class);
+				if (null != obj) {
+					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
 	}
 
 	private void commitDocumentVersion() throws Exception {
@@ -1197,7 +1347,7 @@ public class AeiObjects extends GsonPropertyObject {
 		List<TaskCompleted> copyOfCreateTaskCompleteds = new ArrayList<>(this.getCreateTaskCompleteds());
 		List<Task> copyOfDeleteTasks = new ArrayList<>(this.getDeleteTasks());
 		for (Entry<TaskCompleted, Task> entry : ListTools.pairWithProperty(copyOfCreateTaskCompleteds,
-				TaskCompleted.task_FIELDNAME, copyOfDeleteTasks, Task.id_FIELDNAME).entrySet()) {
+				TaskCompleted.task_FIELDNAME, copyOfDeleteTasks, JpaObject.id_FIELDNAME).entrySet()) {
 			copyOfCreateTaskCompleteds.remove(entry.getKey());
 			copyOfDeleteTasks.remove(entry.getValue());
 			MessageFactory.task_to_taskCompleted(entry.getKey());
@@ -1206,7 +1356,7 @@ public class AeiObjects extends GsonPropertyObject {
 		List<ReadCompleted> copyOfCreateReadCompleteds = new ArrayList<>(this.getCreateReadCompleteds());
 		List<Read> copyOfDeleteReads = new ArrayList<>(this.getDeleteReads());
 		for (Entry<ReadCompleted, Read> entry : ListTools.pairWithProperty(copyOfCreateReadCompleteds,
-				ReadCompleted.read_FIELDNAME, copyOfDeleteReads, Read.id_FIELDNAME).entrySet()) {
+				ReadCompleted.read_FIELDNAME, copyOfDeleteReads, JpaObject.id_FIELDNAME).entrySet()) {
 			copyOfCreateReadCompleteds.remove(entry.getKey());
 			copyOfDeleteReads.remove(entry.getValue());
 			MessageFactory.read_to_readCompleted(entry.getKey());
@@ -1216,7 +1366,7 @@ public class AeiObjects extends GsonPropertyObject {
 		List<WorkCompleted> copyOfCreateWorkCompleteds = new ArrayList<>(this.getCreateWorkCompleteds());
 		List<Work> copyOfDeleteWorks = new ArrayList<>(this.getDeleteWorks());
 		for (Entry<WorkCompleted, Work> entry : ListTools.pairWithProperty(copyOfCreateWorkCompleteds,
-				WorkCompleted.work_FIELDNAME, copyOfDeleteWorks, Read.id_FIELDNAME).entrySet()) {
+				WorkCompleted.work_FIELDNAME, copyOfDeleteWorks, JpaObject.id_FIELDNAME).entrySet()) {
 			copyOfCreateWorkCompleteds.remove(entry.getKey());
 			copyOfDeleteWorks.remove(entry.getValue());
 			MessageFactory.work_to_workCompleted(entry.getKey());
@@ -1294,10 +1444,21 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void messageCreateRead() throws Exception {
-		for (Read o : this.getCreateReads()) {
-			MessageFactory.read_create(o);
-		}
+	private void messageCreateRead() {
+		// 去重可能的在同一次提交中产生的对同一个人的多份Read
+		this.getCreateReads().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson())).entrySet()
+				.forEach(entry -> {
+					Read obj = entry.getValue().stream()
+							.sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+									.reversed().thenComparing(
+											Comparator.comparing(Read::getId, Comparator.nullsLast(String::compareTo))))
+							.findFirst().get();
+					try {
+						MessageFactory.read_create(obj);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
 	}
 
 	private void messageDeleteReadCompleted() throws Exception {
@@ -1318,10 +1479,21 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
-	private void messageCreateReview() throws Exception {
-		for (Review o : this.getCreateReviews()) {
-			MessageFactory.review_create(o);
-		}
+	private void messageCreateReview() {
+		// 去重可能的在同一次提交中产生的对同一个人的多份Review
+		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
+				.entrySet().forEach(entry -> {
+					Review obj = entry.getValue().stream()
+							.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+									.reversed().thenComparing(Comparator.comparing(Review::getId,
+											Comparator.nullsLast(String::compareTo))))
+							.findFirst().get();
+					try {
+						MessageFactory.review_create(obj);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
 	}
 
 	private void messageDeleteAttachment() throws Exception {

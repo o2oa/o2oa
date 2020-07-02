@@ -77,14 +77,14 @@ class BBSSubjectListViewController: UIViewController {
         self.button?.addTarget(self, action: #selector(createAction), for: .touchUpInside)
         self.window = UIWindow(frame: CGRect(x: width - 60, y: height - 60, width: 40, height: 40))
         self.window?.windowLevel = UIWindow.Level.alert + 1
-        self.window?.backgroundColor = UIColor.green
+        self.window?.backgroundColor = base_color
         self.window?.layer.cornerRadius = 20
         self.window?.layer.masksToBounds = true
         self.window?.addSubview(self.button!)
         self.window?.makeKeyAndVisible()
     }
     
-    func createAction(sender:Any?){
+    @objc func createAction(sender:Any?){
         self.performSegue(withIdentifier: "showCreateSubjectSegue", sender: nil)
     }
     
@@ -92,7 +92,7 @@ class BBSSubjectListViewController: UIViewController {
         self.subjects.removeAll()
         let url = AppDelegate.o2Collect.generateURLWithAppContextKey(BBSContext.bbsContextKey, query: BBSContext.subjectFromSectionByPageQuery, parameter: ["##pageNumber##":self.pageModel.pageNumber.toString as AnyObject,"##pageSize##":self.pageModel.pageSize.toString as AnyObject])
         Alamofire.request(url!, method: .put, parameters: ["sectionId":(sectionData?.id)!,"withTopSubject":true], encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
-            debugPrint("sectionId = \(self.sectionData?.id)!")
+            debugPrint("sectionId = \(String(describing: self.sectionData?.id))!")
             debugPrint(response)
             switch response.result {
             case .success(let val):
@@ -184,6 +184,7 @@ extension BBSSubjectListViewController:UITableViewDataSource {
 
 extension BBSSubjectListViewController:UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         let subject = subjects[indexPath.row]
         self.performSegue(withIdentifier: "showSubjectDetailSegue", sender: subject)
     }
