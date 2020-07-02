@@ -3,7 +3,6 @@
   "form": {
     "styles":{
       "background-color": "#ffffff",
-      "zoom" : "100%",
       "font-size" : "16px"
     }
   },
@@ -422,7 +421,7 @@
   },
   "personfield": {
     "styles": {
-      "border": "1px solid #979797",
+      "border": "0px",
       "border-radius": "0px",
       "color": "#000",
       "min-height": "40px",
