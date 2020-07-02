@@ -393,7 +393,7 @@ MWF.xApplication.TeamWork.ProjectList = new Class({
     addNewProject:function(){
         MWF.xDesktop.requireApp("TeamWork", "NewProject", function(){
             this.np = new MWF.xApplication.TeamWork.NewProject(this,{},
-                {"width": 350,"height": 430,
+                {"width": 350,"height": 470,
                     onPostOpen:function(){
                         this.np.formAreaNode.setStyles({"top":"10px"});
                         var fx = new Fx.Tween(this.np.formAreaNode,{duration:200});
