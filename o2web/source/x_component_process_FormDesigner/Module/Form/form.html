@@ -159,6 +159,22 @@
                     秒后自动关闭</b></td>
             </tr>
         </table>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">流转后:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'none');}" name="afterProcessAction" text{($.afterProcessAction!=='redirect')?'checked':''} type="radio" value="close"/>关闭窗口
+                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}afterProcessActionArea').setStyle('display', 'block'); }" name="afterProcessAction" text{($.afterProcessAction==='redirect')?'checked':''} type="radio" value="redirect"/>重定向
+                    <div>(仅用于新浏览器窗口打开时)</div>
+                </td>
+            </tr>
+        </table>
+        <div style="display: text{($.afterProcessAction=='redirect')?'block':'none'}" id="text{$.pid}afterProcessActionArea">
+            <div class="MWFScriptArea" name="afterProcessRedirectScript" title="重定向地址脚本"></div>
+            <span>(返回一个URL用于重定向)</span>
+        </div>
+
     </div>
     <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
         <div class="MWFDefaultActionArea" name="defaultTools" data-target="mobileForm"></div>
