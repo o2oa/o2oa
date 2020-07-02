@@ -13,7 +13,7 @@ import com.x.teamwork.core.entity.Attachment;
 import com.x.teamwork.core.entity.Chat;
 import com.x.teamwork.core.entity.Dynamic;
 import com.x.teamwork.core.entity.Project;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 import com.x.teamwork.core.entity.ProjectGroup;
 import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Task;
@@ -129,6 +129,75 @@ public class DynamicPersistService {
 	}
 	
 	/**
+	 * 恢复项目操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectRecoveryDynamic( Project object, EffectivePerson effectivePerson ) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getProjectRecoveryDynamic( object, effectivePerson );		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
+	 * 更改项目状态操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectCompleteDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		} 
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getCompleteDynamic( object, effectivePerson ,status);		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
+	 * 是否可创建任务操作动态
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectCreateableDynamic( Project object, EffectivePerson effectivePerson ,Boolean status) throws Exception {
+		if ( object == null) {
+			throw new Exception("object is null.");
+		} 
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}		
+		Dynamic dynamic = dynamicService.getCreateableDynamic( object, effectivePerson ,status);		
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	
+	/**
 	 * 保存项目扩展信息保存操作动态信息
 	 * @param object_old
 	 * @param object
@@ -136,7 +205,7 @@ public class DynamicPersistService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Dynamic projectExtFieldReleSaveDynamic( ProjectExtFieldRele object_old, ProjectExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
+	public Dynamic projectExtFieldReleSaveDynamic( CustomExtFieldRele object_old, CustomExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
 		if ( object == null) {
 			throw new Exception("object is null.");
 		}
@@ -153,13 +222,13 @@ public class DynamicPersistService {
 	}
 	
 	/**
-	 * 保存项目删除操作动态
+	 * 保存扩展属性信息删除操作动态
 	 * @param object
 	 * @param effectivePerson
 	 * @return
 	 * @throws Exception
 	 */
-	public Dynamic projectExtFieldReleDeleteDynamic( ProjectExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
+	public Dynamic projectExtFieldReleDeleteDynamic( CustomExtFieldRele object, EffectivePerson effectivePerson ) throws Exception {
 		if ( object == null) {
 			throw new Exception("object is null.");
 		}
@@ -401,6 +470,28 @@ public class DynamicPersistService {
 			throw new Exception("effectivePerson is null.");
 		}
 		Dynamic dynamic = dynamicService.getProjectGroupDeleteDynamic(object, effectivePerson);
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
+			dynamic = dynamicService.save( emc, dynamic, null );
+		} catch (Exception e) {
+			throw e;
+		}
+		return dynamic;
+	}
+	/**
+	 * 保存项目模板删除动态信息
+	 * @param object
+	 * @param effectivePerson
+	 * @return
+	 * @throws Exception
+	 */
+	public Dynamic projectTemplateDeleteDynamic( ProjectTemplate object, EffectivePerson effectivePerson ) throws Exception {
+		if ( object == null) {
+			throw new Exception("ProjectTemplate object is null.");
+		}
+		if ( effectivePerson == null ) {
+			throw new Exception("effectivePerson is null.");
+		}
+		Dynamic dynamic = dynamicService.getProjectTemplateDeleteDynamic(object, effectivePerson);
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
 			dynamic = dynamicService.save( emc, dynamic, null );
 		} catch (Exception e) {

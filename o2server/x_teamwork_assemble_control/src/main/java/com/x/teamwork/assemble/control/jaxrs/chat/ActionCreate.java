@@ -76,6 +76,7 @@ public class ActionCreate extends BaseAction {
 					chat.setProjectId( task.getProject() );
 					chat.setProjectTitle( task.getProjectName() );
 					chat.setTaskTitle( task.getName() );
+					chat.setTarget(effectivePerson.getDistinguishedName());
 				}
 			} catch (Exception e) {
 				check = false;

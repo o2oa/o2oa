@@ -368,6 +368,7 @@ public class ActionSave extends BaseAction {
 		ApplicationCache.notify( TaskView.class );
 		ApplicationCache.notify( Review.class );	
 		ApplicationCache.notify( TaskGroup.class );	
+		ApplicationCache.notify( TaskExtField.class );	
 		
 		dynamics.addAll( tagDynamics );
 		wo.setDynamics( WoDynamic.copier.copy( dynamics ) );
@@ -404,7 +405,7 @@ public class ActionSave extends BaseAction {
 		private String workStatus = "processing";
 
 		@FieldDescribe("工作优先级：普通 | 紧急 | 特急 ，非必填")
-		private String priority = "普通";
+		private String priority;
 
 		@FieldDescribe("提醒关联任务，非必填")
 		private Boolean remindRelevance;

@@ -104,17 +104,16 @@ public class ActionViewMyExecutListNextWithFilter extends BaseAction {
 								control = new WrapOutControl();
 								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getCreatorPerson() )
-										|| wo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
-									control.setDelete( true );
-									control.setEdit( true );
+										|| (ListTools.isNotEmpty(wo.getManageablePersonList()) && wo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() ))){
+									control.setDelete( true );									
 									control.setSortable( true );
 									control.setChangeExecutor(true);
 								}else{
 									control.setDelete( false );
-									control.setEdit( false );
 									control.setSortable( false );
 									control.setChangeExecutor(false);
 								}
+								control.setEdit( true );
 								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getExecutor())){
 									control.setChangeExecutor( true );
 								}

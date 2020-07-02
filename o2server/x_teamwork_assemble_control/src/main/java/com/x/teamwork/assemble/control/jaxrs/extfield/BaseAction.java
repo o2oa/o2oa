@@ -3,23 +3,25 @@ package com.x.teamwork.assemble.control.jaxrs.extfield;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.teamwork.assemble.control.service.DynamicPersistService;
-import com.x.teamwork.assemble.control.service.ProjectExtFieldRelePersistService;
-import com.x.teamwork.assemble.control.service.ProjectExtFieldReleQueryService;
+import com.x.teamwork.assemble.control.service.CustomExtFieldRelePersistService;
+import com.x.teamwork.assemble.control.service.CustomExtFieldReleQueryService;
 import com.x.teamwork.assemble.control.service.ProjectQueryService;
 import com.x.teamwork.assemble.control.service.SystemConfigQueryService;
-import com.x.teamwork.core.entity.ProjectExtFieldRele;
+import com.x.teamwork.assemble.control.service.TaskQueryService;
+import com.x.teamwork.core.entity.CustomExtFieldRele;
 
 import net.sf.ehcache.Ehcache;
 
 public class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache projectExtFieldReleCache = ApplicationCache.instance().getCache( ProjectExtFieldRele.class );
+	protected Ehcache customExtFieldReleCache = ApplicationCache.instance().getCache( CustomExtFieldRele.class );
 	
-	protected 	ProjectExtFieldReleQueryService projectExtFieldReleQueryService = new ProjectExtFieldReleQueryService();
+	protected 	CustomExtFieldReleQueryService customExtFieldReleQueryService = new CustomExtFieldReleQueryService();
 	
-	protected 	ProjectExtFieldRelePersistService projectExtFieldRelePersistService = new ProjectExtFieldRelePersistService();
+	protected 	CustomExtFieldRelePersistService customExtFieldRelePersistService = new CustomExtFieldRelePersistService();
 	
 	protected 	ProjectQueryService projectQueryService = new ProjectQueryService();
+	protected 	TaskQueryService taskQueryService = new TaskQueryService();
 	
 	protected 	DynamicPersistService dynamicPersistService = new DynamicPersistService();
 	
