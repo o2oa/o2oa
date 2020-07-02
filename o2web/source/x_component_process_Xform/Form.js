@@ -1506,7 +1506,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                             if (this.json.isPrompt !== false) {
                                 this.showSubmitedDialog(json.data);
                             } else {
-                                this.app.close();
+                                if (this.json.afterProcessAction=="redirect" && this.json.afterProcessRedirectScript.code){
+                                    var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+                                    (new URI(url)).go();
+                                }else{
+                                    this.app.close();
+                                }
                             }
                             //}
 
@@ -1591,7 +1596,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
         var _work = this;
         options.onPostLoad = function () {
-
+            debugger;
             var dialog = this;
             dialog.node.setStyle("display", "block");
             var nodeSize = div.getSize();
@@ -1615,12 +1620,26 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                             t = t - 1000;
                             window.setTimeout(countDown, 1000);
                         } else {
-                            dlg.close(); _work.app.close();
+                            dlg.close();
+
+                            if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript.code){
+                                var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
+                                (new URI(url)).go();
+                            }else{
+                                _work.app.close();
+                            }
                         }
                     };
                     window.setTimeout(countDown, 1000);
                 } else {
-                    window.setTimeout(function () { dlg.close(); _work.app.close(); }, t);
+                    window.setTimeout(function () {
+                        if (_work.json.afterProcessAction=="redirect" && _work.json.afterProcessRedirectScript.code){
+                            var url = _work.Macro.exec(_work.json.afterProcessRedirectScript.code, _work);
+                            (new URI(url)).go();
+                        }else{
+                            _work.app.close();
+                        }
+                    }, t);
                 }
             }
         };
