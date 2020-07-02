@@ -1739,8 +1739,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
         }
+        // if( this.category ){
+        //     this.category.checkSelectAll();
+        // }
     },
-
     setEvent: function(){
         this.node.addEvents({
             "mouseover": function(){
@@ -1864,6 +1866,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
 
+            if( this.category ){
+                this.category.checkSelectAll();
+            }
+
             this.selector.fireEvent("selectItem",[this])
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
@@ -1884,7 +1890,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
 
         if( this.category ){
-            this.category.checkSelectAll();
+            this.category.checkUnselectAll();
         }
 
         if( this.selector.searchItems && this.selector.searchItems.length ){
@@ -2351,6 +2357,26 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     checkSelectAll : function(){
+        if( this.isSelectedAll )return;
+        if( !this.selectAllNode )return;
+        if( !this.subItems )return;
+        var isAllItemSelected = true;
+        for( var i=0; i< this.subItems.length; i++ ){
+            if( !this.subItems[i].isSelected ){
+                isAllItemSelected = false;
+                break;
+            }
+        }
+        if( isAllItemSelected ){
+            if( this.selector.isFlatCategory ){
+                this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll_selected );
+            }else if( this.selector.css.selectorItemCategoryActionNode_selectAll_selected ){
+                this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+            }
+            this.isSelectedAll = true;
+        }
+    },
+    checkUnselectAll : function(){
         if( !this.isSelectedAll )return;
         if( !this.selectAllNode )return;
         if( !this.subItems )return;
