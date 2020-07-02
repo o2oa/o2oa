@@ -119,7 +119,6 @@ MWF.xApplication.IMV2.Main = new Class({
 	sendMsg: function () {
 		var text = this.chatBottomAreaTextareaNode.value;
 		if (text) {
-			console.log("发送文本消息");
 			this.chatBottomAreaTextareaNode.value = "";
 			this._newAndSendTextMsg(text, "text");
 		} else {
@@ -153,7 +152,6 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	//发送表情消息
 	sendEmojiMsg: function (emoji) {
-		console.log("发送表情消息");
 		this._newAndSendTextMsg(emoji.key, "emoji");
 	},
 	//点击创建单聊按钮
@@ -421,7 +419,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 	},
 	//图片 根据大小 url
-	_getFileUrlWithWH(id, width, height) {
+	_getFileUrlWithWH: function(id, width, height) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
 		var url = action.address + action.actions.imgFileDownloadWithWH.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
@@ -430,14 +428,14 @@ MWF.xApplication.IMV2.Main = new Class({
 		return url;
 	},
 	//file 下载的url
-	_getFileDownloadUrl(id) {
+	_getFileDownloadUrl: function(id) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
 		var url = action.address + action.actions.imgFileDownload.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
 		return url;
 	},
 	//百度地图打开地址
-	_getBaiduMapUrl(lat, longt, address, content) {
+	_getBaiduMapUrl: function(lat, longt, address, content) {
 		var url = "https://api.map.baidu.com/marker?location="+lat+","+longt+"&title="+address+"&content="+content+"&output=html&src=net.o2oa.map";
 		return url;
 	},
