@@ -35,24 +35,23 @@ class ActionReference extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Task task = emc.find(id, Task.class);
 			if (null == task) {
-				throw new ExceptionEntityNotExist(id,Task.class);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			if (effectivePerson.isNotPerson(effectivePerson.getDistinguishedName()) && effectivePerson.isNotManager()) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
 			Wo wo = new Wo();
-			/** 组装 Task 信息 */
+			// 组装 Task 信息
 			wo.setTask(WoTask.copier.copy(task));
 			Work work = emc.find(task.getWork(), Work.class);
-			/** 组装 Work */
+			// 组装 Work
 			if (null != work) {
 				wo.setWork(WoWork.copier.copy(work));
-				// wrap.put("work", workOutCopier.copy(work));
-				/** 组装 Attachment */
+				// 组装 Attachment
 				wo.setAttachmentList(this.listAttachment(business, work));
 			}
 			wo.setWorkCompletedList(this.listWorkCompleted(business, task));
-			/** 装载WorkLog 信息 */
+			// 装载WorkLog 信息
 			wo.setWorkLogList(this.listWorkLog(business, task));
 			result.setData(wo);
 			return result;
