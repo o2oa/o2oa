@@ -139,6 +139,14 @@ o2.widget.JavascriptEditor = new Class({
                     this.editor.updateOptions( {"fontSize": this.fontSize} );
                 }
 
+                this.editor.onDidFocusEditorText(function(e){
+                    o2.shortcut.keyboard.deactivate();
+                }.bind(this));
+                this.editor.onDidBlurEditorText(function(e){
+                    o2.shortcut.keyboard.activate();
+                }.bind(this));
+
+
                 o2.widget.JavascriptEditor.getCompletionEnvironment(this.options.runtime, function(){
                     this.monacoModel = this.editor.getModel();
                     this.monacoModel.o2Editor = this;
