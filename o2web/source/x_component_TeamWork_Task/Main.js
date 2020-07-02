@@ -23,19 +23,19 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 		//this.lp = MWF.xApplication.TeamWork.LP; debugger;
 		this.cssPath = "../x_component_TeamWork/$Task/"+this.options.style+"/css.wcss";
 
-
 		if (!this.status) {
 		} else {
-			this.options.workId = this.status.workId;
-			this.options.workCompletedId = this.status.workCompletedId;
-			this.options.jobId = this.status.jobId;
-			this.options.priorityWork = this.status.priorityWork;
-			this.options.readonly = (this.status.readonly === "true");
+			// this.options.workId = this.status.workId;
+			// this.options.workCompletedId = this.status.workCompletedId;
+			// this.options.jobId = this.status.jobId;
+			// this.options.priorityWork = this.status.priorityWork;
+			// this.options.readonly = (this.status.readonly === "true");
+			this.options.taskId = this.status.taskId;
+			this.options.project = this.status.project;
 		}
 
-
 		this.taskId = this.options.taskId || "";
-		this.projectId = this.options.project ||"";
+		this.projectId = this.options.project || "";
 
 		MWF.xDesktop.requireApp("TeamWork", "lp.zh-cn", {
 			"onRequestFailure": function(){
@@ -48,13 +48,10 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 
 	},
 	loadApplication: function(callback) {
-
 		this.rootActions = MWF.Actions.load("x_teamwork_assemble_control");
 		this.orgActions = MWF.Actions.load("x_organization_assemble_express");
 		//this.actions = this.rootActions.TaskAction;
 
-
-		//http://dev.o2oa.net../x_desktop/app.html?app=TeamWork.Task&status={"taskId":"abb0621d-c35c-4010-9cd3-49a439b36a09"}
 		this.node = new Element("div").inject(this.content);
 		//alert(this.taskId)
 
@@ -67,6 +64,7 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 			var opt={
 				"type":"window"
 			};
+
 			var task = new MWF.xApplication.TeamWork.Task(this,data,opt);
 			task.open();
 		}.bind(this));
@@ -171,5 +169,9 @@ MWF.xApplication.TeamWork.Task.Main = new Class({
 
 		}.bind(this));
 	},
+    recordStatus: function(){
+        debugger;
+        return {"taskId": this.options.taskId, "project": this.options.project};
+    }
 
 });
