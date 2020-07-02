@@ -23,6 +23,7 @@ import com.x.teamwork.core.entity.ProjectTemplate;
 import com.x.teamwork.core.entity.Project_;
 import com.x.teamwork.core.entity.TaskListTemplate;
 import com.x.teamwork.core.entity.TaskListTemplate_;
+import com.x.teamwork.core.entity.Task_;
 import com.x.teamwork.core.entity.tools.CriteriaBuilderTools;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 
@@ -54,14 +55,15 @@ public class TaskListTemplateFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public List<TaskListTemplate> list( String id ) throws Exception {
-		if( StringUtils.isNotEmpty( id ) ){
+		if( StringUtils.isEmpty( id ) ){
 			return new ArrayList<TaskListTemplate>();
 		}
-		EntityManager em = this.entityManagerContainer().get(Project.class);
+		EntityManager em = this.entityManagerContainer().get(TaskListTemplate.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<TaskListTemplate> cq = cb.createQuery(TaskListTemplate.class);
 		Root<TaskListTemplate> root = cq.from(TaskListTemplate.class);
-		Predicate p = cb.equal( root.get( TaskListTemplate_.id ), id ); 
+		Predicate p = cb.equal( root.get( TaskListTemplate_.projectTemplate ), id ); 
+		p = cb.and( p, cb.isFalse( root.get(TaskListTemplate_.deleted)));
 		cq.orderBy( cb.desc( root.get( TaskListTemplate_.updateTime ) ) ); 
 		return em.createQuery(cq.where(p)).getResultList();
 	}

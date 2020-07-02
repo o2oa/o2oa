@@ -20,16 +20,16 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
-@Table(name = PersistenceProperties.ProjectExtFieldRele.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.ProjectExtFieldRele.table + JpaObject.IndexNameMiddle
+@Table(name = PersistenceProperties.CustomExtFieldRele.table, uniqueConstraints = {
+		@UniqueConstraint(name = PersistenceProperties.CustomExtFieldRele.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class ProjectExtFieldRele extends SliceJpaObject {
+public class CustomExtFieldRele extends SliceJpaObject {
 
 	private static final long serialVersionUID = 3856138316794473794L;
 	
-	private static final String TABLE = PersistenceProperties.ProjectExtFieldRele.table;
+	private static final String TABLE = PersistenceProperties.CustomExtFieldRele.table;
 
 	public String getId() {
 		return id;
@@ -59,14 +59,14 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	 * =========================================================================
 	 * =========
 	 */	
-	public static final String projectId_FIELDNAME = "projectId";
-	@FieldDescribe("项目ID（必填）")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + projectId_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + projectId_FIELDNAME)
-	private String projectId;
+	public static final String correlationId_FIELDNAME = "correlationId";
+	@FieldDescribe("关联ID（非必填）")
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + correlationId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + correlationId_FIELDNAME)
+	private String correlationId;
 
 	public static final String extFieldName_FIELDNAME = "extFieldName";
-	@FieldDescribe("备用列名（必填）")
+	@FieldDescribe("扩展属性列名（必填）")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + extFieldName_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + extFieldName_FIELDNAME)
 	private String extFieldName;
@@ -78,9 +78,15 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	private String displayName;
 	
 	public static final String displayType_FIELDNAME = "displayType";
-	@FieldDescribe("显示方式：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|（必填）")
+	@FieldDescribe("类型：TEXT|SELECT|MUTISELECT|RICHTEXT|DATE|DATETIME|PERSON|IDENTITY|UNIT|GROUP|（必填）")
 	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + displayType_FIELDNAME)
 	private String displayType="TEXT";
+	
+	public static final String type_FIELDNAME = "type";
+	@FieldDescribe("类型：project|task（必填）")
+	@Column( length = JpaObject.length_64B, name = ColumnNamePrefix + type_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + type_FIELDNAME)
+	private String type;
 	
 	public static final String optionsData_FIELDNAME = "optionsData";
 	@FieldDescribe("选择荐的备选数据，数据Json， displayType=SELECT|MUTISELECT时必须填写，否则无选择项")
@@ -119,6 +125,14 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 	public void setDisplayType(String displayType) {
 		this.displayType = displayType;
 	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getOptionsData() {
 		return optionsData;
@@ -128,12 +142,12 @@ public class ProjectExtFieldRele extends SliceJpaObject {
 		this.optionsData = optionsData;
 	}
 
-	public String getProjectId() {
-		return projectId;
+	public String getCorrelationId() {
+		return correlationId;
 	}
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
+	public void setCorrelationId(String correlationId) {
+		this.correlationId = correlationId;
 	}
 
 	public String getExtFieldName() {

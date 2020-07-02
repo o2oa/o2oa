@@ -42,6 +42,18 @@ class TaskListTemplateService {
 	}
 	
 	/**
+	 * 根据项目的标识查询项目的信息
+	 * @param emc
+	 * @param flag  主要是ID
+	 * @return
+	 * @throws Exception 
+	 */
+	protected List<TaskListTemplate> getTaskListTemplateWithTemplateId(EntityManagerContainer emc, String flag) throws Exception {
+		Business business = new Business( emc );
+		return business.taskListTemplateFactory().list( flag ); 
+	}
+	
+	/**
 	 * 根据过滤条件查询符合要求的项目信息列表
 	 * @param emc
 	 * @param maxCount
