@@ -1362,7 +1362,12 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
     afterLoadSelectItem : function(){
-
+        if( this.items.length === 0 && this.subCategorys.length === 0 ){
+           this.noSelectableItemTextDiv = new Element("div", {
+               text : this.lp.noSelectableItemText
+           }).inject( this.itemAreaNode );
+        }
+        this.fireEvent("afterLoadSelectItem", [this]);
     },
     setSize : function(){
 
