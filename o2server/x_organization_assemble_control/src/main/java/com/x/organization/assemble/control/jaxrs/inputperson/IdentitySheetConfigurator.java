@@ -64,8 +64,8 @@ public class IdentitySheetConfigurator extends GsonPropertyObject {
 		}
 	}
 
-	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员编号 *", "员工账号 *", "unique" });
-	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号 *", "组织编号", "unitCode" });
+	private static List<String> uniqueItems = Arrays.asList(new String[] { "人员唯一编码 *", "员工账号 *", "unique" });
+	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号 *", "组织唯一编码 *", "unitCode" });
 	private static List<String> dutyCodeItems = Arrays.asList(new String[] { "职务编号", "dutyCode"});
 	private static List<String> majorItems = Arrays.asList(new String[] { "主兼职","major" });
 

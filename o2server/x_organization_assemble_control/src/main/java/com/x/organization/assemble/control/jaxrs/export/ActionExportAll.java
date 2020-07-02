@@ -222,7 +222,7 @@ public class ActionExportAll extends BaseAction {
 			// 先创建表头
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("组织名称 *");
-			row.createCell(1).setCellValue("组织编号 *");
+			row.createCell(1).setCellValue("唯一编码 *");
 			row.createCell(2).setCellValue("组织级别名称 *");
 			row.createCell(3).setCellValue("上级组织编号");
 			row.createCell(4).setCellValue("描述");
@@ -270,7 +270,7 @@ public class ActionExportAll extends BaseAction {
 			// 先创建表头
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("人员姓名 *");
-			row.createCell(1).setCellValue("员工账号 *");
+			row.createCell(1).setCellValue("唯一编码 *");
 			row.createCell(2).setCellValue("手机号码 *");
 			row.createCell(3).setCellValue("人员编号");
 			row.createCell(4).setCellValue("办公电话");
@@ -302,8 +302,8 @@ public class ActionExportAll extends BaseAction {
 			
 			// 先创建表头
 			row = sheet.createRow(0);
-			row.createCell(0).setCellValue("员工账号 *");
-			row.createCell(1).setCellValue("组织编号 *");
+			row.createCell(0).setCellValue("人员唯一编码 *");
+			row.createCell(1).setCellValue("组织唯一编码 *");
 			row.createCell(2).setCellValue("职务编号");
 			row.createCell(3).setCellValue("主兼职");
 
@@ -375,8 +375,8 @@ public class ActionExportAll extends BaseAction {
 			row = sheet.createRow(0);
 			row.createCell(0).setCellValue("群组名称 *");
 			row.createCell(1).setCellValue("群组编号 *");
-			row.createCell(2).setCellValue("人员编号");
-			row.createCell(3).setCellValue("组织编号");
+			row.createCell(2).setCellValue("人员唯一编码");
+			row.createCell(3).setCellValue("组织唯一编码");
 			row.createCell(4).setCellValue("子群组编号");
 			row.createCell(5).setCellValue("描述");
 
