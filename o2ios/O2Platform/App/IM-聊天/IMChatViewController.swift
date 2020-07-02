@@ -71,8 +71,9 @@ class IMChatViewController: UIViewController {
         self.tableView.register(UINib(nibName: "IMChatMessageViewCell", bundle: nil), forCellReuseIdentifier: "IMChatMessageViewCell")
         self.tableView.register(UINib(nibName: "IMChatMessageSendViewCell", bundle: nil), forCellReuseIdentifier: "IMChatMessageSendViewCell")
         self.tableView.separatorStyle = .none
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 144
+//        self.tableView.rowHeight = UITableView.automaticDimension
+//        self.tableView.estimatedRowHeight = 144
+        self.tableView.backgroundColor = UIColor(hex: "#f3f3f3")
         self.messageInputView.delegate = self
 
         //底部安全距离 老机型没有
@@ -521,6 +522,38 @@ extension IMChatViewController: UIImagePickerControllerDelegate & UINavigationCo
 // MARK: - 图片消息点击 delegate
 extension IMChatViewController: IMChatMessageDelegate {
     
+    func openApplication(storyboard: String) {
+        if storyboard == "mind" {
+            let flutterViewController = O2FlutterViewController()
+            flutterViewController.setInitialRoute("mindMap")
+            self.present(flutterViewController, animated: false, completion: nil)
+        }else {
+            let storyBoard = UIStoryboard(name: storyboard, bundle: nil)
+            guard let destVC = storyBoard.instantiateInitialViewController() else {
+                return
+            }
+            destVC.modalPresentationStyle = .fullScreen
+            if destVC.isKind(of: ZLNavigationController.self) {
+                self.show(destVC, sender: nil)
+            }else{
+                self.navigationController?.pushViewController(destVC, animated: true)
+            }
+        }
+    }
+    
+    func openWork(workId: String) {
+        let storyBoard = UIStoryboard(name: "task", bundle: nil)
+        let destVC = storyBoard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
+        let json = """
+        {"work":"\(workId)", "workCompleted":"", "title":""}
+        """
+        let todo = TodoTask(JSONString: json)
+        destVC.todoTask = todo
+        destVC.backFlag = 3 //隐藏就行
+        self.show(destVC, sender: nil)
+    }
+    
+    
     func openLocatinMap(info: IMMessageBodyInfo) {
         let map = IMShowLocationViewController()
         map.address = info.address
@@ -607,6 +640,34 @@ extension IMChatViewController: UITableViewDelegate, UITableViewDataSource {
         return UITableViewCell()
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let msg = self.chatMessageList[indexPath.row]
+        return cellHeight(item: msg)
+    }
+    
+    func cellHeight(item: IMMessageInfo) -> CGFloat {
+        if let jsonBody = item.body, let body = IMMessageBodyInfo.deserialize(from: jsonBody){
+            if body.type == o2_im_msg_type_emoji {
+                 // 上边距 69 + emoji高度 + 内边距 + 底部空白高度
+                 return 69 + 36 + 20 + 10
+            } else if body.type == o2_im_msg_type_image {
+                 // 上边距 69 + 图片高度 + 内边距 + 底部空白高度
+                 return 69 + 192 + 20 + 10
+            } else if o2_im_msg_type_audio == body.type {
+                 // 上边距 69 + audio高度 + 内边距 + 底部空白高度
+                 return 69 + IMAudioView.IMAudioView_height + 20 + 10
+            } else if o2_im_msg_type_location == body.type {
+                 // 上边距 69 + 位置图高度 + 内边距 + 底部空白高度
+                 return 69 + IMLocationView.IMLocationViewHeight + 20 + 10
+            } else {
+                let size = body.body!.getSizeWithMaxWidth(fontSize: 16, maxWidth: messageWidth)
+                // 上边距 69 + 文字高度 + 内边距 + 底部空白高度
+                return 69 + size.height + 28 + 10
+            }
+        }
+        return 132
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
     }

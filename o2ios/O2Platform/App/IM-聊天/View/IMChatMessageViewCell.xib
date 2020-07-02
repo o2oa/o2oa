@@ -13,7 +13,7 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="132" id="KGk-i7-Jjw" customClass="IMChatMessageViewCell" customModule="O2Platform" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="132"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="132"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -39,7 +39,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="姓名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2r2-Sl-HFm">
-                        <rect key="frame" x="72" y="31" width="29" height="24"/>
+                        <rect key="frame" x="72" y="37" width="29" height="24"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="24" id="4T7-qw-JEB"/>
                         </constraints>
@@ -48,7 +48,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jxc-0S-MrS">
-                        <rect key="frame" x="72" y="63" width="176" height="42"/>
+                        <rect key="frame" x="72" y="69" width="176" height="42"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="176" id="0aZ-iT-9wn"/>
                             <constraint firstAttribute="height" constant="42" id="ah6-qa-1tp"/>
@@ -59,14 +59,13 @@
                 <constraints>
                     <constraint firstItem="Mov-YP-dlA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="14" id="0dz-GG-NKV"/>
                     <constraint firstItem="fy3-Pu-FHB" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="14" id="33C-sl-5B1"/>
-                    <constraint firstItem="jxc-0S-MrS" firstAttribute="leading" secondItem="Mov-YP-dlA" secondAttribute="trailing" constant="10" id="3AB-04-3Ot"/>
                     <constraint firstAttribute="trailing" secondItem="fy3-Pu-FHB" secondAttribute="trailing" constant="14" id="AQO-Yx-K4D"/>
-                    <constraint firstItem="Mov-YP-dlA" firstAttribute="top" secondItem="fy3-Pu-FHB" secondAttribute="bottom" constant="8" id="Faw-qG-7Fy"/>
-                    <constraint firstItem="2r2-Sl-HFm" firstAttribute="top" secondItem="fy3-Pu-FHB" secondAttribute="bottom" constant="8" id="GtC-yx-sjT"/>
+                    <constraint firstItem="jxc-0S-MrS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="69" id="GLr-LT-32j"/>
                     <constraint firstItem="2r2-Sl-HFm" firstAttribute="leading" secondItem="Mov-YP-dlA" secondAttribute="trailing" constant="10" id="JYE-0i-s5S"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="jxc-0S-MrS" secondAttribute="bottom" constant="10" id="Tpo-I1-lKY"/>
                     <constraint firstItem="fy3-Pu-FHB" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="VVF-dB-vnY"/>
-                    <constraint firstItem="jxc-0S-MrS" firstAttribute="top" secondItem="2r2-Sl-HFm" secondAttribute="bottom" constant="8" id="gYS-LW-7T4"/>
+                    <constraint firstItem="jxc-0S-MrS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="72" id="iJn-Op-hcs"/>
+                    <constraint firstItem="Mov-YP-dlA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="31" id="ltH-hE-V43"/>
+                    <constraint firstItem="2r2-Sl-HFm" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="37" id="vM3-Gj-y2a"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

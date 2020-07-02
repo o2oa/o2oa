@@ -12,6 +12,8 @@ import CocoaLumberjack
 protocol IMChatMessageDelegate {
     func clickImageMessage(info: IMMessageBodyInfo)
     func openLocatinMap(info: IMMessageBodyInfo)
+    func openApplication(storyboard: String)
+    func openWork(workId: String)
 }
 
 class IMChatMessageViewCell: UITableViewCell {
@@ -22,7 +24,7 @@ class IMChatMessageViewCell: UITableViewCell {
     @IBOutlet weak var messageBackgroundView: UIView!
     @IBOutlet weak var messageBackgroundWidth: NSLayoutConstraint!
     @IBOutlet weak var messageBackgroundHeight: NSLayoutConstraint!
-    private let messageWidth = 176
+    
 
     private lazy var audioView: IMAudioView = {
         let view = Bundle.main.loadNibNamed("IMAudioView", owner: self, options: nil)?.first as! IMAudioView
@@ -56,7 +58,8 @@ class IMChatMessageViewCell: UITableViewCell {
         }
         self.messageBackgroundView.removeSubviews()
         if let msg = item.title {
-            textMsgRender(msg: msg)
+            let msgLabel = textMsgRender(msg: msg)
+            setColorAndClickEvent(item: item, label: msgLabel)
         }
         if let type = item.type {
             if type.starts(with: "task_") {
@@ -98,6 +101,135 @@ class IMChatMessageViewCell: UITableViewCell {
             }
         }
     }
+    
+    private func setcc(label:UILabel, clickEvent: ((UITapGestureRecognizer)->Void)?) {
+        if let textString = label.text {
+            let attributedString = NSMutableAttributedString(string: textString)
+            attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: attributedString.length))
+            attributedString.addAttribute(.foregroundColor, value: base_blue_color, range: NSRange(location: 0, length: attributedString.length))
+            label.attributedText = attributedString
+            label.addTapGesture(action: clickEvent)
+        }
+    }
+    
+    private func setColorAndClickEvent(item: InstantMessage, label:UILabel) {
+        
+        func parseWorkId(body: String) -> String? {
+            if let jsonData = String(body).data(using: .utf8) {
+                let dicArr = try! JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as! [String:AnyObject]
+                if let work = dicArr["work"] as? String {
+                    return work
+                }
+                if let workCompleted = dicArr["workCompleted"] as? String {
+                    return workCompleted
+                }
+            }
+            return nil
+        }
+        
+        if let type = item.type {
+            if type.starts(with: "task_") {
+                if !type.contains("_delete") {
+                    guard let body = item.body else {
+                        return
+                    }
+                    guard let workId = parseWorkId(body: body) else {
+                        return
+                    }
+                    setcc(label: label) { tap in
+                        //打开工作 ?
+                        self.delegate?.openWork(workId: workId)
+                    }
+                }
+            } else if type.starts(with: "taskCompleted_") {
+                if !type.contains("_delete") {
+                    guard let body = item.body else {
+                        return
+                    }
+                    guard let workId = parseWorkId(body: body) else {
+                        return
+                    }
+                    setcc(label: label) { tap in
+                        //打开已办
+                        self.delegate?.openWork(workId: workId)
+                    }
+                }
+            } else if type.starts(with: "read_") {
+                if !type.contains("_delete") {
+                    guard let body = item.body else {
+                        return
+                    }
+                    guard let workId = parseWorkId(body: body) else {
+                        return
+                    }
+                    setcc(label: label) { tap in
+                        //打开待阅
+                        self.delegate?.openWork(workId: workId)
+                    }
+                }
+            } else if type.starts(with: "readCompleted_") {
+                if !type.contains("_delete") {
+                    guard let body = item.body else {
+                        return
+                    }
+                    guard let workId = parseWorkId(body: body) else {
+                        return
+                    }
+                    setcc(label: label) { tap in
+                        //打开已阅
+                        self.delegate?.openWork(workId: workId)
+                    }
+                }
+            } else if type.starts(with: "review_") || type.starts(with: "work_") || type.starts(with: "process_") {
+                if !type.contains("_delete") {
+                    guard let body = item.body else {
+                        return
+                    }
+                    guard let workId = parseWorkId(body: body) else {
+                        return
+                    }
+                    setcc(label: label) { tap in
+                        //打开 其他工作
+                        self.delegate?.openWork(workId: workId)
+                    }
+                }
+            } else if type.starts(with: "meeting_") {
+                setcc(label: label) { tap in
+                    //打开会议模块
+                    self.delegate?.openApplication(storyboard: "meeting")
+                }
+            } else if type.starts(with: "attachment_") {
+                setcc(label: label) { tap in
+                    //打开云盘
+                    self.delegate?.openApplication(storyboard: "CloudFile")
+                }
+            } else if type.starts(with: "calendar_") {
+                setcc(label: label) { tap in
+                    //打开日历
+                    self.delegate?.openApplication(storyboard: "calendar")
+                }
+            } else if type.starts(with: "cms_") {
+                setcc(label: label) { tap in
+                    //打开cms
+                    self.delegate?.openApplication(storyboard: "information")
+                }
+            } else if type.starts(with: "bbs_") {
+               setcc(label: label) { tap in
+                    //打开论坛
+                self.delegate?.openApplication(storyboard: "bbs")
+                }
+            } else if type.starts(with: "mind_") {
+                setcc(label: label) { tap in
+                    //打开脑图
+                    self.delegate?.openApplication(storyboard: "mind")
+                }
+            } else {
+                
+            }
+        }
+    }
+    
+    
 
     //聊天消息
     func setContent(item: IMMessageInfo) {
@@ -131,7 +263,7 @@ class IMChatMessageViewCell: UITableViewCell {
             } else if o2_im_msg_type_location == body.type {
                 locationMsgRender(info: body)
             } else {
-                textMsgRender(msg: body.body!)
+                _ = textMsgRender(msg: body.body!)
             }
         }
     }
@@ -258,12 +390,12 @@ class IMChatMessageViewCell: UITableViewCell {
         self.constraintWithContent(contentView: emojiImage)
     }
 
-    private func textMsgRender(msg: String) {
-        let size = calTextSize(str: msg)
-        self.messageBackgroundWidth.constant = size.width + 20
-        self.messageBackgroundHeight.constant = size.height + 20
+    private func textMsgRender(msg: String) -> UILabel {
+        let size = msg.getSizeWithMaxWidth(fontSize: 16, maxWidth: messageWidth)
+        self.messageBackgroundWidth.constant = size.width + 28
+        self.messageBackgroundHeight.constant = size.height + 28
         //背景图片
-        let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: size.width + 20, height: size.height + 20))
+        let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: size.width + 28, height: size.height + 28))
         let insets = UIEdgeInsets(top: 28, left: 10, bottom: 5, right: 5); // 上、左、下、右
         var bubble = UIImage(named: "chat_bubble_incomming")
         bubble = bubble?.resizableImage(withCapInsets: insets, resizingMode: .stretch)
@@ -273,14 +405,16 @@ class IMChatMessageViewCell: UITableViewCell {
         let label = generateMessagelabel(str: msg, size: size)
         label.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(label)
-        let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
-        let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
-        let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
-        NSLayoutConstraint.activate([top, left, right])
+        self.constraintWithContent(contentView: label)
+        return label
+//        let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
+//        let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
+//        let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
+//        NSLayoutConstraint.activate([top, left, right])
     }
 
     private func generateMessagelabel(str: String, size: CGSize) -> UILabel {
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: size.width + 8, height: size.height + 8))
         label.text = str
         label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 0
@@ -290,10 +424,10 @@ class IMChatMessageViewCell: UITableViewCell {
     }
 
 
-    private func calTextSize(str: String) -> CGSize {
-        let size = CGSize(width: messageWidth.toCGFloat, height: CGFloat(MAXFLOAT))
-        return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil).size
-    }
+//    private func calTextSize(str: String) -> CGSize {
+//        let size = CGSize(width: messageWidth.toCGFloat, height: CGFloat(MAXFLOAT))
+//        return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil).size
+//    }
 
     //解析json为消息对象
     private func parseJson(msg: String) -> IMMessageBodyInfo? {

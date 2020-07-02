@@ -77,6 +77,8 @@ class IMChatMessageSendViewCell: UITableViewCell {
         }
     }
     
+    
+    
     //位置消息
     private func locationMsgRender(info: IMMessageBodyInfo) {
         self.messageBgWidth.constant = IMLocationView.IMLocationViewWidth + 20
@@ -199,11 +201,11 @@ class IMChatMessageSendViewCell: UITableViewCell {
     }
     
     private func textMsgRender(msg: String) {
-        let size = calTextSize(str: msg)
-        self.messageBgWidth.constant = size.width + 20
-        self.messageBgHeight.constant = size.height + 20
+        let size = msg.getSizeWithMaxWidth(fontSize: 16, maxWidth: messageWidth)
+        self.messageBgWidth.constant = size.width + 28
+        self.messageBgHeight.constant = size.height + 28
         //背景图片
-        let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: size.width + 20, height: size.height + 20))
+        let bgImg = UIImageView(frame: CGRect(x: 0, y: 0, width: size.width + 28, height: size.height + 28))
         let insets = UIEdgeInsets(top: 28, left: 5, bottom: 5, right: 10); // 上、左、下、右
         var bubble = UIImage(named: "chat_bubble_outgoing")
         bubble = bubble?.resizableImage(withCapInsets: insets, resizingMode: .stretch)
@@ -213,14 +215,15 @@ class IMChatMessageSendViewCell: UITableViewCell {
         let label = generateMessagelabel(str: msg, size: size)
         label.translatesAutoresizingMaskIntoConstraints = false
         self.messageBackgroundView.addSubview(label)
-        let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
-        let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
-        let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
-        NSLayoutConstraint.activate([top, left, right])
+        self.constraintWithContent(contentView: label)
+//        let top = NSLayoutConstraint(item: label, attribute: .top, relatedBy: .equal, toItem: label.superview!, attribute: .top, multiplier: 1, constant: 10)
+//        let left = NSLayoutConstraint(item: label, attribute: .leading, relatedBy: .equal, toItem: label.superview!, attribute: .leading, multiplier: 1, constant: 10)
+//        let right = NSLayoutConstraint(item: label.superview!, attribute: .trailing, relatedBy: .equal, toItem: label, attribute: .trailing, multiplier: 1, constant: 10)
+//        NSLayoutConstraint.activate([top, left, right])
     }
     
     private func generateMessagelabel(str: String, size: CGSize) -> UILabel {
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: size.width + 8, height: size.height + 8))
         label.text = str
         label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 0
@@ -230,10 +233,10 @@ class IMChatMessageSendViewCell: UITableViewCell {
     }
     
     
-    private func calTextSize(str: String) -> CGSize {
-        let size = CGSize(width: 176, height: CGFloat(MAXFLOAT))
-        return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil).size
-    }
+//    private func calTextSize(str: String) -> CGSize {
+//        let size = CGSize(width: 176, height: CGFloat(MAXFLOAT))
+//        return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil).size
+//    }
     
     //解析json为消息对象
     private func parseJson(msg: String) -> IMMessageBodyInfo? {
