@@ -47,14 +47,14 @@ public class ActionListWithTaskList extends BaseAction {
 		}
 		
 		if( Boolean.TRUE.equals( check ) ){
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithTaskList", taskListId );
+			/*cacheKey = ApplicationCache.concreteCacheKey( "ActionListWithTaskList", taskListId );
 			element = taskCache.get( cacheKey );
 			
 			if ((null != element) && (null != element.getObjectValue())) {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {
+			} else {*/
 				Business business = null;
 				try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 					business = new Business(bc);
@@ -81,17 +81,16 @@ public class ActionListWithTaskList extends BaseAction {
 								control = new WrapOutControl();
 								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getCreatorPerson() )
-										|| wo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )){
-									control.setDelete( true );
-									control.setEdit( true );
+										|| (ListTools.isNotEmpty(wo.getManageablePersonList()) && wo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() ))){
+									control.setDelete( true );									
 									control.setSortable( true );
 									control.setChangeExecutor(true);
 								}else{
 									control.setDelete( false );
-									control.setEdit( false );
 									control.setSortable( false );
 									control.setChangeExecutor(false);
 								}
+								control.setEdit( true );
 								if(effectivePerson.getDistinguishedName().equalsIgnoreCase( wo.getExecutor())){
 									control.setChangeExecutor( true );
 								}
@@ -110,7 +109,7 @@ public class ActionListWithTaskList extends BaseAction {
 						}
 					}					
 					resultObject = new ResultObject( total, wos );
-					taskCache.put(new Element( cacheKey, resultObject ));
+					//taskCache.put(new Element( cacheKey, resultObject ));
 					
 					result.setCount( resultObject.getTotal() );
 					result.setData( resultObject.getWos() );
@@ -120,7 +119,7 @@ public class ActionListWithTaskList extends BaseAction {
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}		
+			//}		
 		}
 		return result;
 	}
