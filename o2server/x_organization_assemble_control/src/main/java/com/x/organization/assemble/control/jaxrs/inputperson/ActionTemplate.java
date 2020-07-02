@@ -74,7 +74,7 @@ public class ActionTemplate extends BaseAction {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("组织名称 *");
 		cell = row.createCell(1);
-		cell.setCellValue("组织编号 *");
+		cell.setCellValue("唯一编码 *");
 		cell = row.createCell(2);
 		cell.setCellValue("组织级别名称 *");
 		cell = row.createCell(3);
@@ -96,7 +96,7 @@ public class ActionTemplate extends BaseAction {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("人员姓名 *");
 		cell = row.createCell(1);
-		cell.setCellValue("员工账号 *");
+		cell.setCellValue("唯一编码 *");
 		cell = row.createCell(2);
 		cell.setCellValue("手机号码 *");
 		cell = row.createCell(3);
@@ -118,9 +118,9 @@ public class ActionTemplate extends BaseAction {
 		XSSFSheet sheet = workbook.createSheet("人员身份信息");
 		Row row = sheet.createRow(0);
 		Cell cell = row.createCell(0);
-		cell.setCellValue("员工账号 *");
+		cell.setCellValue("人员唯一编码 *");
 		cell = row.createCell(1);
-		cell.setCellValue("组织编号 *");
+		cell.setCellValue("组织唯一编码 *");
 		cell = row.createCell(2);
 		cell.setCellValue("职务编号");
 		cell = row.createCell(3);
@@ -156,9 +156,9 @@ public class ActionTemplate extends BaseAction {
 		cell = row.createCell(1);
 		cell.setCellValue("群组编号 *");
 		cell = row.createCell(2);
-		cell.setCellValue("人员编号");
+		cell.setCellValue("人员唯一编码");
 		cell = row.createCell(3);
-		cell.setCellValue("组织编号");
+		cell.setCellValue("组织唯一编码");
 		cell = row.createCell(4);
 		cell.setCellValue("子群组编号");
 		cell = row.createCell(5);
