@@ -31,13 +31,25 @@ MWF.xApplication.Selector.Identity = new Class({
             this.loadInclude(afterLoadSelectItemFun);
         }else if (this.options.units.length){
             var unitLoaded = 0;
+
             var loadUnitSuccess = function () {
                 unitLoaded++;
                 if( unitLoaded === this.options.units.length ){
-                    this.loadInclude( afterLoadSelectItemFun );
+                    this.unitLoaded = true;
+                    if( this.includeLoaded ){
+                        if(afterLoadSelectItemFun)afterLoadSelectItemFun();
+                    }
                 }
             }.bind(this);
             var loadUnitFailure = loadUnitSuccess;
+
+            this.loadInclude( function () {
+                this.includeLoaded = true;
+                if( this.unitLoaded ){
+                    if(afterLoadSelectItemFun)afterLoadSelectItemFun();
+                }
+            }.bind(this));
+
             this.options.units.each(function(unit){
                 if (typeOf(unit)==="string"){
                     this.orgAction.getUnit(unit, function(json){
