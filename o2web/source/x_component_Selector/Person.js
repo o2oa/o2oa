@@ -1217,6 +1217,7 @@ MWF.xApplication.Selector.Person = new Class({
                         this.isItemLoaded = true;
                         this.loaddingItems = false;
                     }
+                    if( this.afterLoadSelectItem )this.afterLoadSelectItem();
                 }.bind(this));
             }else{
                 if (addToNext) this.loadItemsQueue++;
@@ -1359,6 +1360,9 @@ MWF.xApplication.Selector.Person = new Class({
                 if (!this.isItemLoaded) this.loadSelectItems();
             }
         }
+    },
+    afterLoadSelectItem : function(){
+
     },
     setSize : function(){
 
