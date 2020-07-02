@@ -30,6 +30,8 @@ let o2_im_msg_body_audio = "[语音]"
 let o2_im_msg_body_video = "[视频]"
 let o2_im_msg_body_location = "[位置]"
 
+let messageWidth: CGFloat = 176
+
 
 //表情的字符串转化为O2Emoji.bundle里面的图片路径 [01] -> im_emotion_01
 func o2ImEmojiPath(emojiBody: String) -> String {

@@ -84,6 +84,12 @@ extension String {
         return str.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize)], context: nil).size
     }
     
+    // MARK: - 根据固定宽度获取字符串在label中的size
+    func getSizeWithMaxWidth(fontSize:CGFloat, maxWidth: CGFloat) -> CGSize {
+        let size = CGSize(width: maxWidth, height: CGFloat(MAXFLOAT))
+        return self.boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize)], context: nil).size
+    }
+    
     // MARK:- 获取文本图片
     func getTextImage(_ size:CGSize,textColor tColor:UIColor,backColor bColor:UIColor,textFont tFont:UIFont) -> UIImage? {
         let label = UILabel(frame: CGRect(origin:CGPoint(x:0,y:0), size: size))
