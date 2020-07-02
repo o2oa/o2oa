@@ -21,6 +21,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.teamwork.assemble.control.Business;
 import com.x.teamwork.core.entity.Project;
+import com.x.teamwork.core.entity.ProjectConfig;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 import com.x.teamwork.core.entity.tools.filter.term.InTerm;
 
@@ -74,7 +75,8 @@ public class ActionListNextWithFilter extends BaseAction {
 		}
 		
 		if( Boolean.TRUE.equals( check ) ){
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
+			/*采用缓存
+			 * cacheKey = ApplicationCache.concreteCacheKey( "ActionListNextWithFilter", effectivePerson.getDistinguishedName(), flag, count, 
 					wrapIn.getOrderField(), wrapIn.getOrderType(), 	queryFilter.getContentSHA1() );
 			element = projectCache.get( cacheKey );
 			
@@ -82,7 +84,7 @@ public class ActionListNextWithFilter extends BaseAction {
 				resultObject = (ResultObject) element.getObjectValue();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
-			} else {
+			} else {*/
 				try {
 					//获取用户能查看的所有的项目信息ID列表，最多查询2000条数据
 					List<String>  projectIds = projectQueryService.listAllViewableProjectIds( effectivePerson, 2000, queryFilter );
@@ -104,13 +106,34 @@ public class ActionListNextWithFilter extends BaseAction {
 								try (EntityManagerContainer bc = EntityManagerContainerFactory.instance().create()) {
 									business = new Business(bc);
 								}
+								
+								//查询项目配置信息
+								List<ProjectConfig>  projectConfigs = null;
+								projectConfigs = projectConfigQueryService.getProjectConfigByProject( project.getId() );
+								
 								control = new WrapOutControl();
+								
+								if(ListTools.isNotEmpty(projectConfigs)){
+									ProjectConfig projectConfig = projectConfigs.get(0);
+									control.setTaskCreate(projectConfig.getTaskCreate());
+									control.setTaskCopy(projectConfig.getTaskCopy());
+									control.setTaskRemove(projectConfig.getTaskRemove());
+									control.setLaneCreate(projectConfig.getLaneCreate());
+									control.setLaneEdit(projectConfig.getLaneEdit());
+									control.setLaneRemove(projectConfig.getLaneRemove());
+									control.setAttachmentUpload(projectConfig.getAttachmentUpload());
+									control.setComment(projectConfig.getComment());
+								}else{
+									control.setTaskCreate(true);
+								}
+								
 								if( business.isManager(effectivePerson) 
 										|| effectivePerson.getDistinguishedName().equalsIgnoreCase( project.getCreatorPerson() )
 										|| project.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
 									control.setDelete( true );
 									control.setEdit( true );
 									control.setSortable( true );
+									control.setTaskCreate(true);
 								}else{
 									control.setDelete( false );
 									control.setEdit( false );
@@ -121,12 +144,15 @@ public class ActionListNextWithFilter extends BaseAction {
 								}else{
 									control.setFounder( false );
 								}
+								if(project.getDeleted() || project.getCompleted()){
+									control.setTaskCreate(false);
+								}
 								wo.setControl(control);
 								wos.add( wo );
 							}
 						}
 						resultObject = new ResultObject( total, wos );
-						projectCache.put(new Element( cacheKey, resultObject ));
+						//projectCache.put(new Element( cacheKey, resultObject ));
 						
 						result.setCount( resultObject.getTotal() );
 						result.setData( resultObject.getWos() );
@@ -137,7 +163,7 @@ public class ActionListNextWithFilter extends BaseAction {
 					result.error(e);
 					logger.error(e, effectivePerson, request, null);
 				}
-			}		
+			//}		
 		}
 		return result;
 	}

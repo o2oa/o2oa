@@ -14,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.TaskList;
 
 
@@ -32,7 +33,7 @@ public class ActionListWithTaskGroup extends BaseAction {
 
 		if ((null != element) && (null != element.getObjectValue())) {
 			System.out.println("111");
-			wos = (List<Wo>) element.getObjectValue();
+			wos = (List<Wo>) element.getObjectValue(); 
 			result.setData( wos );
 		} else {*/
 			if( Boolean.TRUE.equals( check ) ){
@@ -48,6 +49,11 @@ public class ActionListWithTaskGroup extends BaseAction {
 									wo.setControl( new Control(false, false, false, false ));
 								}else {
 									wo.setControl( new Control(true, true, true, true ));
+								}
+								Project project = null;
+								project = projectQueryService.get(wo.getProject());
+								if(project != null && (project.getDeleted() || project.getCompleted())){
+									wo.setControl( new Control(false, false, false, false ));
 								}
 							}
 						}
