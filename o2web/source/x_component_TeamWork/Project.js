@@ -649,14 +649,14 @@ MWF.xApplication.TeamWork.Project = new Class({
         });
         if(this.data.control && this.data.control.taskCreate == false){
             taskGroupItemTitleAdd.destroy();
-            delete taskGroupItemTitleAdd
+            delete taskGroupItemTitleAdd;
         }
 
         var taskGroupItemTitleReload = new Element("div.taskGroupItemTitleReload",{styles:this.css.taskGroupItemTitleReload, title:this.lp.reload}).inject(taskGroupItemTitleContainer);
         //if(!data.control.sortable) taskGroupItemTitleAdd.setStyle("margin-right","20px");
         taskGroupItemTitleReload.addEvents({
             click:function(){
-                this.createTaskGroupItemLayout(node,data)
+                this.createTaskGroupItemLayout(node,data);
             }.bind(this)
         });
 
@@ -1301,7 +1301,7 @@ MWF.xApplication.TeamWork.Project.NewTask = new Class({
                 var keycode = (e.event.keyCode ? e.event.keyCode : e.event.which);
                 //console.log(keycode)
                 if (keycode == 13 || keycode == 10) {
-                    this.okAction.click();
+                    //this.okAction.click();
                 }else if(keycode == 27){
                     this.closeAction.click();
                 }

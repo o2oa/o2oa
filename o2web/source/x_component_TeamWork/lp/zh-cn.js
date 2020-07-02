@@ -1,5 +1,5 @@
 MWF.xApplication.TeamWork.LP = {
-	"title": "TeamWork",
+	"title": "工作管理",
 	"bam":{
 		"title":"后台管理",
 		"backProject":"返回主页",
@@ -35,7 +35,7 @@ MWF.xApplication.TeamWork.LP = {
 	},
 	"ProjectList":{
 		"navi":{
-			"title":"TeamWork",
+			"title":"工作管理",
 			"bam":"后台管理",
 			"newItem":"新建项目",
 			"allItem":"全部项目",
@@ -112,7 +112,7 @@ MWF.xApplication.TeamWork.LP = {
 		"projectMore":"更多设置",
 		"auth":{
 			"task":"项目",
-			"taskCreate":"新建项目",
+			"taskCreate":"新建任务",
 			"taskCopy":"复制项目",
 			"taskDelete":"删除项目",
 			"list":"列表",
