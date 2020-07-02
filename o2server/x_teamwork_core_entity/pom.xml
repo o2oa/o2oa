@@ -82,7 +82,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>../store/jars</outputDirectory>
+							<outputDirectory>../../o2server/custom/jars</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target</directory>

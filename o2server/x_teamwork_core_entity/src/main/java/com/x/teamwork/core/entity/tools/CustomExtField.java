@@ -3,7 +3,7 @@ package com.x.teamwork.core.entity.tools;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectExtField {
+public class CustomExtField {
 
 	private static List<FieldInfo> fieldList = new ArrayList<>();
 	

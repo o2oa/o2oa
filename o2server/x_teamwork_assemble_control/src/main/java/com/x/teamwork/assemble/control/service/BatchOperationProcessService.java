@@ -204,17 +204,17 @@ public class BatchOperationProcessService {
 	 * @throws Exception 
 	 */
 	private void deleteTaskInProject( String id, String projectId ) throws Exception {
-		Integer totalWhileCount = 0;
+		/*Integer totalWhileCount = 0;
 		Integer currenteWhileCount = 0;
 		List<String> taskIds = null;
+		Task task = null;*/
 		BatchOperation batchOperation = null;
-		Task task = null;
 		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
+			//Business business = new Business(emc);
 			batchOperation = emc.find( id, BatchOperation.class );
 			
-			taskIds = business.taskFactory().listByProject(projectId);
+			/*taskIds = business.taskFactory().listByProject(projectId);
 			
 			if( ListTools.isNotEmpty( taskIds )) {
 				for( String taskId : taskIds ) {
@@ -227,7 +227,7 @@ public class BatchOperationProcessService {
 						logger.info( "deleteTaskInApp -> task processing batch operation: remove task("+ currenteWhileCount +"/" + totalWhileCount + "): " + taskId );
 					}
 				}
-			}
+			}*/
 			if( batchOperation != null ) {
 				emc.beginTransaction( BatchOperation.class );
 				emc.remove( batchOperation, CheckRemoveType.all );

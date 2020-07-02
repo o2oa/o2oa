@@ -20,6 +20,8 @@ import com.x.teamwork.core.entity.Dynamic_;
 import com.x.teamwork.core.entity.Project;
 import com.x.teamwork.core.entity.ProjectDetail;
 import com.x.teamwork.core.entity.Project_;
+import com.x.teamwork.core.entity.Task;
+import com.x.teamwork.core.entity.Task_;
 import com.x.teamwork.core.entity.tools.CriteriaBuilderTools;
 import com.x.teamwork.core.entity.tools.filter.QueryFilter;
 
@@ -156,6 +158,28 @@ public class ProjectFactory extends AbstractFactory {
 			cq.orderBy( orderWithField );
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
+	}
+	
+	/**
+	 *  根据条件查询符合条件的项目信息ID
+	 * @param projectId
+	 * @param deleted
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Task> listAllTasks(String projectId, Boolean deleted) throws Exception {
+		if( StringUtils.isEmpty( projectId ) ){
+			return new ArrayList<Task>();
+		}
+		EntityManager em = this.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
+		Root<Task> root = cq.from(Task.class);
+		Predicate p = root.get(Task_.project).in(projectId);
+		p = cb.and( p, cb.isFalse( root.get(Task_.deleted )));
+		
+		cq.orderBy( cb.desc( root.get( Task_.updateTime ) ) );
+		return em.createQuery(cq.where(p)).getResultList();
 	}
 	
 	/**

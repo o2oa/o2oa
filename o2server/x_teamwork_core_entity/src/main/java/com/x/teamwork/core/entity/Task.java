@@ -125,10 +125,10 @@ public class Task extends SliceJpaObject {
 	
 	public static final String priority_FIELDNAME = "priority";
 	@FieldDescribe("工作等级：普通 | 紧急 | 特急")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + priority_FIELDNAME)
+	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + priority_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + priority_FIELDNAME)
 	@CheckPersist( allowEmpty = true )
-	private String priority = "普通";
+	private String priority;
 	
 	public static final String workStatus_FIELDNAME = "workStatus";
 	@FieldDescribe("工作状态：执行中- processing | 已完成- completed | 已归档- archived")
@@ -176,6 +176,12 @@ public class Task extends SliceJpaObject {
 	@Column( name = ColumnNamePrefix + archive_FIELDNAME)
 	@Index( name = TABLE + IndexNameMiddle + archive_FIELDNAME )
 	private Boolean archive = false;
+	
+	public static final String relation_FIELDNAME = "relation";
+	@FieldDescribe("是否项目关联操作")
+	@Column( name = ColumnNamePrefix + relation_FIELDNAME)
+	@Index( name = TABLE + IndexNameMiddle + relation_FIELDNAME )
+	private Boolean relation = false;
 	
 	public static final String reviewed_FIELDNAME = "reviewed";
 	@FieldDescribe("是否检查过review信息")
@@ -345,6 +351,14 @@ public class Task extends SliceJpaObject {
 
 	public void setOvertime(Boolean overtime) {
 		this.overtime = overtime;
+	}
+	
+	public Boolean getRelation() {
+		return relation;
+	}
+
+	public void setRelation(Boolean relation) {
+		this.relation = relation;
 	}
 
 	public Boolean getRemindRelevance() {
