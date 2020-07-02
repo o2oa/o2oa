@@ -16,6 +16,7 @@ import android.os.HandlerThread
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2IM
 import org.json.JSONTokener
 import org.json.JSONObject
+import java.lang.Exception
 
 
 class WebSocketService : Service() {
@@ -150,11 +151,15 @@ class WebSocketService : Service() {
                 XLog.info("webSocket 收到消息， message:$text")
                 val json = JSONTokener(text).nextValue()
                 if (json is JSONObject) {
-                    val type = json.getString("type")
-                    //发送im消息
-                    if (type == "im_create") {
-                        val body = json.getJSONObject("body")
-                        sendIMMessageBroadcast(body.toString())
+                    try {
+                        val type = json.getString("type")
+                        //发送im消息
+                        if (type == "im_create") {
+                            val body = json.getJSONObject("body")
+                            sendIMMessageBroadcast(body.toString())
+                        }
+                    } catch (e: Exception) {
+                        XLog.error("", e)
                     }
                 }
             }
