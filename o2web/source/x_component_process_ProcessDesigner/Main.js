@@ -102,7 +102,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
         if (this.shortcut) {
             if (this.process) {
                 //       if (this.process.isFocus){
-                if (!this.paperInNode.contains(document.activeElement)) return false;
+                //if (!this.paperInNode.contains(document.activeElement)) return false;
                 if (this.process.selectedActivitys.length) {
                     var activitys = [];
                     var routes = [];
@@ -160,7 +160,7 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     pasteModule: function(){
         if (this.process){
             //        if (this.process.isFocus){
-            if (!this.paperInNode.contains(document.activeElement)) return false;
+            //if (!this.paperInNode.contains(document.activeElement)) return false;
 
             if (MWF.clipboard.data){
                 if (MWF.clipboard.data.type=="process"){
