@@ -19,6 +19,8 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectAllEnable" : true //分类是否允许全选下一层
     },
     loadSelectItems: function(addToNext){
+	    debugger;
+
 	    var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
@@ -37,7 +39,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 if( unitLoaded === this.options.units.length ){
                     this.unitLoaded = true;
                     if( this.includeLoaded ){
-                        if(afterLoadSelectItemFun)afterLoadSelectItemFun();
+                        afterLoadSelectItemFun();
                     }
                 }
             }.bind(this);
@@ -46,7 +48,7 @@ MWF.xApplication.Selector.Identity = new Class({
             this.loadInclude( function () {
                 this.includeLoaded = true;
                 if( this.unitLoaded ){
-                    if(afterLoadSelectItemFun)afterLoadSelectItemFun();
+                    afterLoadSelectItemFun();
                 }
             }.bind(this));
 
