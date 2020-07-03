@@ -219,6 +219,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
 
         this.check();
 
+        if(this.afterLoad)this.afterLoad();
+
         this.selector.fireEvent("postLoadItem",[this]);
     },
     _getShowName: function(){
@@ -237,7 +239,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.isExpand = (this.selector.options.expand);
         if ( this._hasChild() || this.selector.options.expandEmptyCategory ){
             if (this.selector.options.expand){
-                if (this.level===1 && this._hasChild() ){
+                if( typeOf(this.selector.options.defaultExpandLevel) === "number" ){
+                    if (this.level <= this.selector.options.defaultExpandLevel && this._hasChild() ){
+                        this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
+                        this.loadSubItems();
+                    }
+                }else if (this.level===1 && this._hasChild() ){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                     this.loadSubItems();
                 }else{
