@@ -50,7 +50,7 @@ class V2Reroute extends BaseAction {
 	private Work work;
 	private WorkLog workLog;
 	private Record record;
-	private Activity activity;
+	// private Activity activity;
 	private Activity destinationActivity;
 	private String series = StringTools.uniqueToken();
 	private List<String> existTaskIds = new ArrayList<>();
@@ -72,14 +72,14 @@ class V2Reroute extends BaseAction {
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
-			activity = business.getActivity(work);
+			// activity = business.getActivity(work);
 			destinationActivity = business.getActivity(wi.getActivity(), ActivityType.valueOf(wi.getActivityType()));
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowReroute())) {
 				throw new ExceptionRerouteDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						destinationActivity.getName());
 			}
-			if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
+			if (!StringUtils.equals(work.getProcess(), destinationActivity.getProcess())) {
 				throw new ExceptionProcessNotMatch();
 			}
 			existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
