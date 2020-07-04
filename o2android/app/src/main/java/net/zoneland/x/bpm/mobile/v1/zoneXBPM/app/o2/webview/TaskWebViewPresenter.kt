@@ -207,7 +207,6 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                         val info: AttachmentInfo? = response.data
                         if (info != null) {
                             val path = FileExtensionHelper.getXBPMWORKAttachmentFileByName(info.name)
-                            SDCardHelper.generateNewFile(path)
                             val downloadUrl = APIAddressHelper.instance()
                                     .getCommonDownloadUrl(APIDistributeTypeEnum.x_processplatform_assemble_surface, "jaxrs/attachment/download/$attachmentId/work/$workId/stream")
                             O2FileDownloadHelper.download(downloadUrl, path)
@@ -284,7 +283,7 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                         val info: AttachmentInfo? = response.data
                         if (info != null) {
                             val path = FileExtensionHelper.getXBPMWORKAttachmentFileByName(info.name)
-                            SDCardHelper.generateNewFile(path)
+
                             val downloadUrl = APIAddressHelper.instance()
                                     .getCommonDownloadUrl(APIDistributeTypeEnum.x_processplatform_assemble_surface, "jaxrs/attachment/download/$attachmentId/workcompleted/$workCompleted/stream")
                             O2FileDownloadHelper.download(downloadUrl, path)

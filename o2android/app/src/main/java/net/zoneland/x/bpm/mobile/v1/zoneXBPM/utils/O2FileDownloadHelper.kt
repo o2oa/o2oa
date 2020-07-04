@@ -24,6 +24,7 @@ object O2FileDownloadHelper {
                 subscriber.onCompleted()
             }else {
                 try {
+                    SDCardHelper.generateNewFile(outputFilePath)
                     val url = URL(downloadUrl)
                     val conn = url.openConnection() as HttpURLConnection
                     conn.setRequestProperty("Accept-Encoding", "identity")
