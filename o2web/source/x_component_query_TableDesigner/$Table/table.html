@@ -7,11 +7,17 @@
             </tr>
             <tr>
                 <td class="editTableTitle">名称:</td>
-                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+                <td class="editTableValue">
+                    <input type="text" name="name" value="text{$.name}" class="editTableInput" style="display: text{($.status=='build')?'none':''}"/>
+                    <div style="display: text{($.status=='build')?'':'none'}">text{$.name}</div>
+                </td>
             </tr>
             <tr>
                 <td class="editTableTitle">别名:</td>
-                <td class="editTableValue"><input type="text" name="alias" value="text{$.alias}" class="editTableInput"/></td>
+                <td class="editTableValue">
+                    <input type="text" name="alias" value="text{$.alias}" class="editTableInput" style="display: text{($.status=='build')?'none':''}"/>
+                    <div style="display: text{($.status=='build')?'':'none'}">text{$.alias}</div>
+                </td>
             </tr>
             <tr>
                 <td class="editTableTitle">描述:</td>
