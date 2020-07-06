@@ -45,7 +45,7 @@ public class CustomAction extends StandardJaxrsAction {
 	}
 	@JaxrsMethodDescribe(value = "获取指定用户的Custom。", action = ActionManagerGet.class)
 	@GET
-	@Path("{person}/{name}")
+	@Path("manager/person/{person}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managerGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
