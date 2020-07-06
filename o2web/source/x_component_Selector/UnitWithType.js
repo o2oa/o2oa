@@ -17,6 +17,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
     },
 
     loadSelectItems: function(addToNext){
+        var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
+
         var data = {};
         data.type = this.options.unitType;
         data.unitList = [];
@@ -35,6 +37,7 @@ MWF.xApplication.Selector.UnitWithType = new Class({
                     if( !this.isExcluded( data ) ) {
                         if ( !this.options.expandSubEnable || (!this.options.unitType) || data.typeList.indexOf(this.options.unitType)!==-1){
                             var unit = this._newItem(data, this, this.itemAreaNode, 1);
+                            this.items.push(unit);
                             this.subItems.push(unit);
                         }else{
                             if (data.woSubDirectUnitList.length){
@@ -45,7 +48,8 @@ MWF.xApplication.Selector.UnitWithType = new Class({
                     }
                 }.bind(this));
             }
-        }.bind(this), null, data);
+            afterLoadSelectItemFun();
+        }.bind(this), afterLoadSelectItemFun, data);
     },
 
     _scrollEvent: function(y){
@@ -190,6 +194,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                        this.selector.items.push( unit );
                         if( !this.subItems )this.subItems = [];
                         this.subItems.push( unit );
                     } else {
@@ -241,8 +246,9 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 if( !this.selector.isExcluded( subData ) ) {
                     if ((!this.selector.options.unitType) || subData.typeList.indexOf(this.selector.options.unitType) !== -1) {
                         var unit = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
-                        category.justItem = true;
-                        category.load();
+                        unit.justItem = true;
+                        unit.load();
+                        this.selector.items.push( unit );
                         if( !this.subItems )this.subItems = [];
                         this.subItems.push( unit );
                     }

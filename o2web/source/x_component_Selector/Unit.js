@@ -17,7 +17,19 @@ MWF.xApplication.Selector.Unit = new Class({
     },
 
     loadSelectItems: function(addToNext){
+        var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
+
         if (this.options.units.length){
+            var unitLoaded = 0;
+
+            var loadUnitSuccess = function () {
+                unitLoaded++;
+                if( unitLoaded === this.options.units.length ){
+                    afterLoadSelectItemFun();
+                }
+            }.bind(this);
+            var loadUnitFailure = loadUnitSuccess;
+
             this.options.units.each(function(unit){
 
                 var container = new Element("div").inject( this.itemAreaNode );
@@ -49,11 +61,13 @@ MWF.xApplication.Selector.Unit = new Class({
                                     }
                                 }else{
                                     var item = this._newItem( data, this, container );
+                                    this.items.push( item );
                                     this.subItems.push(item);
                                 }
                             }.bind(this));
                         }
-                    }.bind(this), null, unit);
+                        loadUnitSuccess();
+                    }.bind(this), loadUnitFailure, unit);
 
 
                 }else{
@@ -68,11 +82,13 @@ MWF.xApplication.Selector.Unit = new Class({
                                     }
                                 }else{
                                     var item = this._newItem(data, this, container );
+                                    this.items.push( item );
                                     this.subItems.push(item);
                                 }
                             }.bind(this));
                         }
-                    }.bind(this), null, unit.id);
+                        loadUnitSuccess();
+                    }.bind(this), loadUnitFailure, unit.id);
                     //if (unit.subDirectUnitCount) var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
                 }
 
@@ -89,6 +105,7 @@ MWF.xApplication.Selector.Unit = new Class({
                     // if (flag){
                     if( !this.isExcluded( data ) ) {
                         var unit = this._newItem(data, this, this.itemAreaNode, 1);
+                        this.items.push( unit );
                         this.subItems.push(unit);
                     }
                     //unit.loadSubItem();
@@ -97,6 +114,7 @@ MWF.xApplication.Selector.Unit = new Class({
                     // }
 
                 }.bind(this));
+                afterLoadSelectItemFun();
             }.bind(this));
         }
     },
@@ -234,7 +252,6 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
-        debugger;
         if( !this.selector.options.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
         if ( this._hasChild() || this.selector.options.expandEmptyCategory ){
@@ -243,6 +260,9 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     if (this.level <= this.selector.options.defaultExpandLevel && this._hasChild() ){
                         this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
                         this.loadSubItems();
+                    }else{
+                        this.isExpand = false;
+                        this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_collapse);
                     }
                 }else if (this.level===1 && this._hasChild() ){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
@@ -455,6 +475,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
+                        this.selector.items.push( category );
                         if( !this.subItems )this.subItems = [];
                         this.subItems.push( category );
                     }
@@ -637,6 +658,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                             var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
                             category.justItem = true;
                             category.load();
+                            this.selector.items.push( category );
                             if( !this.subItems )this.subItems = [];
                             this.subItems.push( category );
                         //}
@@ -684,6 +706,7 @@ MWF.xApplication.Selector.Unit.SearchItem = new Class({
                         }else{
                             category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this);
                         }
+                        this.selector.items.push( category );
                         if( !this.subItems )this.subItems = [];
                         this.subItems.push( category );
                     }
@@ -723,6 +746,7 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        this.selector.items.push( category );
                         if(this.subItems)this.subItems.push( category );
                         this.subCategorys.push( category );
                     }
@@ -783,6 +807,7 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
                         var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this, true);
                         category.justItem = true;
                         category.load();
+                        this.selector.items.push( category );
                         if(this.subItems)this.subItems.push( category );
                         //this.subCategorys.push( category );
                     }

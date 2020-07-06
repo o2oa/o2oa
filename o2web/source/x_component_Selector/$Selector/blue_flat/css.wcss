@@ -112,6 +112,12 @@
 		"overflow": "hidden",
 	  	"padding" : "20px"
 	},
+	"noSelectableItemText" : {
+		"margin" : "10px auto",
+		"text-align" : "center",
+		"width" : "200px",
+		"color" : "#999"
+	},
   "contentNode_embedded": {
 	"overflow": "hidden",
 	"padding" : "5px 0px 0px 0px"

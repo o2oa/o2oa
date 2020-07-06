@@ -1362,9 +1362,10 @@ MWF.xApplication.Selector.Person = new Class({
         }
     },
     afterLoadSelectItem : function(){
-        if( this.items.length === 0  ){ //&& this.subCategorys.length === 0
+        if( this.subItems.length === 0 && this.subCategorys.length === 0  ){
            this.noSelectableItemTextDiv = new Element("div", {
-               text : this.lp.noSelectableItemText
+               text : MWF.SelectorLP.noSelectableItemText,
+               styles : this.css.noSelectableItemText
            }).inject( this.itemAreaNode );
         }
         this.fireEvent("afterLoadSelectItem", [this]);
@@ -1748,9 +1749,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
         }
-        // if( this.category ){
-        //     this.category.checkSelectAll();
-        // }
+        if( this.category ){
+            this.category.checkSelectAll();
+        }
     },
     setEvent: function(){
         this.node.addEvents({
@@ -1875,9 +1876,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.check();
             this.selector.selectedItems.push(this.selectedItem);
 
-            if( this.category ){
-                this.category.checkSelectAll();
-            }
+            // if( this.category ){
+            //     this.category.checkSelectAll();
+            // }
 
             this.selector.fireEvent("selectItem",[this])
         }else{
@@ -2256,21 +2257,27 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }).inject(this.node, "after");
         if (!this.selector.options.expand) this.children.setStyle("display", "none");
 
-        var subIdList = this.selector._getChildrenItemIds(this.data);
-        if (subIdList){
-            var count = subIdList.length;
-            this.childrenHeight = count*this.selector.options.itemHeight;
-            this.children.setStyle("height", ""+this.childrenHeight+"px");
-        }
+        if( this.selector.options.expandEmptyCategory && !this._hasChildItem() ){ //点击允许展开空分类
+            this.children.hide();
+            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+            this.isExpand = false;
+        }else{
+            var subIdList = this.selector._getChildrenItemIds(this.data);
+            if (subIdList){
+                var count = subIdList.length;
+                this.childrenHeight = count*this.selector.options.itemHeight;
+                this.children.setStyle("height", ""+this.childrenHeight+"px");
+            }
 
-        if (!this._hasChild()){
-            this.actionNode.setStyle("background", "transparent");
-            this.textNode.setStyle("color", "#777");
-        }
+            if ( !this._hasChild()){
+                this.actionNode.setStyle("background", "transparent");
+                this.textNode.setStyle("color", "#777");
+            }
 
-        if( this.selectAllNode ){
-            if( this.selector.options.selectAllRange === "direct" && !this._hasChildItem() ){
-                this.selectAllNode.setStyle("display", "none");
+            if( this.selectAllNode ){
+                if( this.selector.options.selectAllRange === "direct" && !this._hasChildItem() ){
+                    this.selectAllNode.setStyle("display", "none");
+                }
             }
         }
 
@@ -2433,7 +2440,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     clickItem: function( callback ){
-        if (this._hasChild()){
+        if (this._hasChild() || this.selector.options.expandEmptyCategory ){
             if (!this.fx){
                 this.fx = new Fx.Tween(this.children, {
                     "duration": 200
