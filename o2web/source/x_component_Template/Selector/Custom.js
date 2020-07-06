@@ -55,7 +55,9 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         "category": false,
         "expand": true,
         "categorySelectable" : false,
-        "expandSubEnable" : true
+        "expandSubEnable" : true,
+        "uniqueFlag" : false,
+        "defaultExpandLevel" : 1
     },
     initialize: function (container, options) {
         this.setOptions(options);
@@ -66,31 +68,36 @@ MWF.xApplication.Template.Selector.Custom = new Class({
         this.container = $(container);
         this.selectedItems = [];
         this.items = [];
-        this.categorys = [];
+        // this.categorys = [];
+
+        this.subCategorys = []; //直接的分类
+        this.subItems = []; //直接的选择项
     },
     loadSelectItems: function (addToNext) {
-        debugger;
         if (!this.options.category) {
             this.options.selectableItems.each(function (it) {
                 var name = typeOf(it) === "string" ? it : it.name;
                 var id = typeOf(it) === "string" ? it : it.id;
                 var item = this._newItem({name: name, id: id}, this, this.itemAreaNode);
                 this.items.push(item);
+                this.subItems.push( item );
             }.bind(this))
         } else {
             this.options.selectableItems.each(function (item, index) {
                 if (item.isItem) {
                     var item = this._newItem(item, this, this.itemAreaNode);
                     this.items.push(item);
+                    this.subItems.push( item );
                 }else{
                     // if ( (item.subItemList && item.subItemList.length > 0) || item.subCategoryList && item.subCategoryList.length > 0 ) {
                     if( this.options.categorySelectable ){
                         var category = this._newItemCategorySelectable(item, this, this.itemAreaNode);
                         this.items.push(category);
-                        this.categorys.push( category );
+                        this.subItems.push( category );
+                        this.subCategorys.push( category );
                     }else{
                         var category = this._newItemCategory(item, this, this.itemAreaNode);
-                        this.categorys.push( category );
+                        this.subCategorys.push( category );
                     }
                         // item.subItemList.each(function (subItem, index) {
                         //     var item = this._newItem(subItem, this, category.children, 2, category);
@@ -101,6 +108,7 @@ MWF.xApplication.Template.Selector.Custom = new Class({
                 }
             }.bind(this));
         }
+        if(this.afterLoadSelectItem)this.afterLoadSelectItem();
     },
     _scrollEvent: function (y) {
         return true;
@@ -210,8 +218,14 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
     },
     checkSelectedSingle: function () {
         var selectedItem = this.selector.options.values.filter(function (item, index) {
-            if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
-            if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
+            if( this.selector.options.uniqueFlag ){
+                var flag = this.selector.options.uniqueFlag;
+                if (typeOf(item) === "object") return ( this.data[flag] && this.data[flag] === item[flag] );
+                if (typeOf(item) === "string") return ( this.data[flag] && this.data[flag] === item );
+            }else{
+                if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
+                if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
+            }
             return false;
         }.bind(this));
         if (selectedItem.length) {
@@ -220,7 +234,12 @@ MWF.xApplication.Template.Selector.Custom.Item = new Class({
     },
     checkSelected: function () {
         var selectedItem = this.selector.selectedItems.filter(function (item, index) {
-            return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+            if( this.selector.options.uniqueFlag ){
+                var flag = this.selector.options.uniqueFlag;
+                return ( item.data[flag] && item.data[flag] === this.data[flag]);
+            }else{
+                return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+            }
         }.bind(this));
         if (selectedItem.length) {
             //selectedItem[0].item = this;
@@ -261,7 +280,12 @@ MWF.xApplication.Template.Selector.Custom.ItemSelected = new Class({
     check: function () {
         if (this.selector.items.length) {
             var items = this.selector.items.filter(function (item, index) {
-                return (item.data.id === this.data.id) || (item.data.name === this.data.name);
+                if( this.selector.options.uniqueFlag ){
+                    var flag = this.selector.options.uniqueFlag;
+                    return ( item.data[flag] && item.data[flag] === this.data[flag]);
+                }else{
+                    return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+                }
             }.bind(this));
             this.items = items;
             if (items.length) {
@@ -292,22 +316,32 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         return this.data.name;
     },
     clickItem: function (callback) {
-        if (this._hasChild()) {
+        if (this._hasChild() || this.selector.options.expandEmptyCategory ) {
             var firstLoaded = !this.loaded;
+            if( !firstLoaded || this.selector.options.expandEmptyCategory  ){
+                if(this.isExpand){
+                    this.selector.fireEvent("collapse", [this] );
+                }else{
+                    this.selector.fireEvent("expand", [this] );
+                }
+            }
             this.loadSub(function () {
-                if (firstLoaded) {
+                if (firstLoaded && this._hasChild() ) {
                     if (!this.selector.isFlatCategory) {
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                     }
+                    // this.checkSelectAll();
                 } else {
                     var display = this.children.getStyle("display");
                     if (display === "none") {
+                        // this.selector.fireEvent("expand", [this] );
                         this.children.setStyles({"display": "block", "height": "auto"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                     } else {
+                        // this.selector.fireEvent("collapse", [this] );
                         this.children.setStyles({"display": "none", "height": "0px"});
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
                         this.isExpand = false;
@@ -370,6 +404,15 @@ MWF.xApplication.Template.Selector.Custom.ItemCategory = new Class({
         return this._hasChildCategory() || this._hasChildItem();
     },
     check: function () {
+    },
+    afterLoad: function(){
+        if ( this.level <= this.selector.options.defaultExpandLevel && (this._hasChild())  ){
+            this.clickItem();
+        }else{
+            this.children.hide();
+            this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+            this.isExpand = false;
+        }
     }
 });
 
@@ -495,8 +538,14 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     },
     checkSelectedSingle: function () {
         var selectedItem = this.selector.options.values.filter(function (item, index) {
-            if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
-            if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
+            if( this.selector.options.uniqueFlag ){
+                var flag = this.selector.options.uniqueFlag;
+                if (typeOf(item) === "object") return ( this.data[flag] && this.data[flag] === item[flag] );
+                if (typeOf(item) === "string") return ( this.data[flag] && this.data[flag] === item );
+            }else{
+                if (typeOf(item) === "object") return ( this.data.id && this.data.id === item.id) || (this.data.name && this.data.name === item.name);
+                if (typeOf(item) === "string") return ( this.data.id && this.data.id === item) || (this.data.name && this.data.name === item);
+            }
             return false;
         }.bind(this));
         if (selectedItem.length) {
@@ -505,7 +554,12 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     },
     checkSelected: function () {
         var selectedItem = this.selector.selectedItems.filter(function (item, index) {
-            return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+            if( this.selector.options.uniqueFlag ){
+                var flag = this.selector.options.uniqueFlag;
+                return ( item.data[flag] && item.data[flag] === this.data[flag]);
+            }else{
+                return ( item.data.id && item.data.id === this.data.id) || (item.data.name && item.data.name === this.data.name);
+            }
         }.bind(this));
         if (selectedItem.length) {
             //selectedItem[0].item = this;
@@ -516,5 +570,8 @@ MWF.xApplication.Template.Selector.Custom.ItemCategorySelectable = new Class({
     },
     check: function () {
         this.checkSelected();
+    },
+    afterLoad : function () {
+
     }
 });

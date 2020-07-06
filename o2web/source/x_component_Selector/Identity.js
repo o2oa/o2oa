@@ -19,6 +19,9 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectAllEnable" : true //分类是否允许全选下一层
     },
     loadSelectItems: function(addToNext){
+	    debugger;
+
+	    var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
                 this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
@@ -27,33 +30,36 @@ MWF.xApplication.Selector.Identity = new Class({
             }
         }
         if(this.options.noUnit){
-            this.loadInclude();
+            this.loadInclude(afterLoadSelectItemFun);
         }else if (this.options.units.length){
-            // var units = [];
-            // this.options.units.each(function(u){
-            //     if (typeOf(u)==="string"){
-            //         units.push(u);
-            //     }else{
-            //         units.push(u.distinguishedName)
-            //     }
-            // });
-            // this.org2Action.listUnit({"unitList":units}, function(json){
-            //     json.data.each(function(d){
-            //         var category = this._newItemCategory("ItemUnitCategory", d, this, this.itemAreaNode);
-            //         this.subCategorys.push( category );
-            //     }.bind(this));
-            // }.bind(this));
+            var unitLoaded = 0;
+
+            var loadUnitSuccess = function () {
+                unitLoaded++;
+                if( unitLoaded === this.options.units.length ){
+                    this.unitLoaded = true;
+                    if( this.includeLoaded ){
+                        afterLoadSelectItemFun();
+                    }
+                }
+            }.bind(this);
+            var loadUnitFailure = loadUnitSuccess;
+
+            this.loadInclude( function () {
+                this.includeLoaded = true;
+                if( this.unitLoaded ){
+                    afterLoadSelectItemFun();
+                }
+            }.bind(this));
+
             this.options.units.each(function(unit){
                 if (typeOf(unit)==="string"){
-
-
                     this.orgAction.getUnit(unit, function(json){
                         if (json.data){
-
                             var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
                             this.subCategorys.push( category );
                         }
-                        this.loadInclude();
+                        loadUnitSuccess();
                     }.bind(this), function(){
                         this.orgAction.listUnitByKey(function(json){
                             if (json.data.length){
@@ -62,8 +68,8 @@ MWF.xApplication.Selector.Identity = new Class({
                                     this.subCategorys.push( category );
                                 }.bind(this))
                             }
-                            this.loadInclude();
-                        }.bind(this), null, unit);
+                            loadUnitSuccess();
+                        }.bind(this), loadUnitFailure, unit);
                     }.bind(this));
                 }else{
                     this.orgAction.getUnit(function(json){
@@ -71,13 +77,20 @@ MWF.xApplication.Selector.Identity = new Class({
                             var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
                             this.subCategorys.push( category );
                         }
-                        this.loadInclude();
-                    }.bind(this), null, unit.distinguishedName);
+                        loadUnitSuccess();
+                    }.bind(this), loadUnitFailure, unit.distinguishedName);
                     //var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
                 }
 
             }.bind(this));
         }else{
+            // this.loadInclude( function () {
+            //     this.includeLoaded = true;
+            //     if( this.unitLoaded ){
+            //         afterLoadSelectItemFun();
+            //     }
+            // }.bind(this));
+
             this.orgAction.listTopUnit(function(json){
                 json.data.each(function(data){
                     if( !this.isExcluded( data ) ){
@@ -85,17 +98,23 @@ MWF.xApplication.Selector.Identity = new Class({
                         this.subCategorys.push( category );
                     }
                 }.bind(this));
-                this.loadInclude();
+
+                // this.unitLoaded = true;
+                // if( this.includeLoaded ){
+                    afterLoadSelectItemFun();
+                // }
+
             }.bind(this));
         }
     },
 
-    loadInclude: function() {
+    loadInclude: function(afterLoadFun) {
         if (!this.includeObject){
             this.includeObject = new MWF.xApplication.Selector.Identity.Include(this, this.itemAreaNode, {
                 "include": this.options.include, //增加的可选项
                 "resultType": this.options.resultType, //可以设置成个人，那么结果返回个人
-                "expandSubEnable": this.options.expandSubEnable //是否允许展开下一层
+                "expandSubEnable": this.options.expandSubEnable, //是否允许展开下一层
+                "onAfterLoad" : afterLoadFun
             });
         }
         this.includeObject.load();
@@ -412,6 +431,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                     }
+                    // this.checkSelectAll();
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
@@ -447,10 +467,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             if(this.subItems)this.subItems.push( item );
                             object[ idSubData.id || idSubData.distinguishedName ] = true;
                         }
-                        if( !this.selector.options.expandSubEnable ){
-                            this.loaded = true;
-                            if (callback) callback();
-                        }
                     }.bind(this));
                 }.bind(this));
 
@@ -463,8 +479,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             }
                         }.bind(this));
                         this.loaded = true;
-                        if (callback) callback();
+                        if(callback)callback();
                     }.bind(this), null, this.data.distinguishedName);
+                }else{
+                    this.loaded = true;
+                    if(callback)callback();
                 }
             }else{
 
@@ -474,10 +493,6 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             var item = this.selector._newItem(idSubData, this.selector, this.children, this.level + 1, this);
                             this.selector.items.push(item);
                             if(this.subItems)this.subItems.push( item );
-                        }
-                        if( !this.selector.options.expandSubEnable ){
-                            this.loaded = true;
-                            if (callback) callback();
                         }
                     }.bind(this));
 
@@ -492,6 +507,9 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                             this.loaded = true;
                             if (callback) callback();
                         }.bind(this), null, this.data.distinguishedName);
+                    }else{
+                        this.loaded = true;
+                        if (callback) callback();
                     }
                 }.bind(this), null, this.data.distinguishedName);
             }
@@ -583,8 +601,8 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         }
                         this.itemLoaded = true;
                     }.bind(this));
-                    if (callback) callback();
                 }.bind(this));
+                if (callback) callback();
             }else{
                 this.selector.orgAction.listIdentityWithUnit(function(idJson){
                     idJson.data.each(function(idSubData){
@@ -968,8 +986,22 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         this.itemAreaNode = $(itemAreaNode);
         this.orgAction = MWF.Actions.get("x_organization_assemble_control");
     },
-    load : function(){
-        if( !this.options.include || this.options.include.length === 0 )return;
+    load : function( callback ){
+        if( !this.options.include || this.options.include.length === 0 ){
+            this.fireEvent("afterLoad");
+            if(callback)callback();
+            return;
+        }
+
+
+        var count = 0;
+        var checkCallback = function () {
+            count++;
+            if( count === this.options.include.length ){
+                this.fireEvent("afterLoad");
+                if(callback)callback();
+            }
+        }.bind(this);
 
         this.includeAreaNode = new Element( "div.includeAreaNode").inject( this.itemAreaNode, "top" );
 
@@ -996,34 +1028,41 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 if( flag === "u" ){
                     this.orgAction.listUnitByKey(function(json){
                         this.loadUnitItem(json, container, null, null, flatCategoryContainer);
-                    }.bind(this), null, d);
+                        checkCallback();
+                    }.bind(this), checkCallback, d);
                 }else if( flag === "i" ) {
                     this.orgAction.listIdentityByKey(function (json) {
-                        this.loadIdentityItem(json, container, null, null, true )
-                    }.bind(this), null, d);
+                        this.loadIdentityItem(json, container, null, null, true );
+                        checkCallback();
+                    }.bind(this), checkCallback, d);
                 }else if( flag === "g" ){
                     this.orgAction.listGroupByKey(function(json){
-                        this.loadGroupItem( json , container, null, null, flatCategoryContainer)
-                    }.bind(this), null, d);
+                        this.loadGroupItem( json , container, null, null, flatCategoryContainer);
+                        checkCallback();
+                    }.bind(this), checkCallback, d);
                 }else if( flag === "p" ){
                     if( this.options.resultType === "person" ){
                         this.orgAction.getPerson(function (json){
-                            this.loadPersonItem( json , container, null, null, true)
-                        }.bind(this), null, d);
+                            this.loadPersonItem( json , container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d);
                     }else{
                         this.orgAction.listIdentityByPerson(function(json){
-                            this.loadIdentityItem(json, container , null, null, true)
-                        }.bind(this), null, d);
+                            this.loadIdentityItem(json, container , null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d);
                     }
                 }else{
                     if( this.options.resultType === "person" ){
                         this.orgAction.listPersonByKey(function (json) {
-                            this.loadPersonItem( json , container, null, null, true)
-                        }.bind(this), null, d);
+                            this.loadPersonItem( json , container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d);
                     }else{
                         this.orgAction.listIdentityByKey(function(json){
-                            this.loadIdentityItem(json, container, null, null, true)
-                        }.bind(this), null, d);
+                            this.loadIdentityItem(json, container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d);
                     }
                 }
             }else{
@@ -1032,34 +1071,41 @@ MWF.xApplication.Selector.Identity.Include = new Class({
                 if( flag === "u" ) {
                     this.orgAction.getUnit(function (json) {
                         this.loadUnitItem(json, container, null, null, flatCategoryContainer);
-                    }.bind(this), null, d.distinguishedName);
+                        checkCallback();
+                    }.bind(this), checkCallback, d.distinguishedName);
                 }else if( flag === "i" ){
                     this.orgAction.getIdentity(function (json) {
-                        this.loadIdentityItem(json, container, null, null, true)
-                    }.bind(this), null, d.distinguishedName);
+                        this.loadIdentityItem(json, container, null, null, true);
+                        checkCallback();
+                    }.bind(this), checkCallback, d.distinguishedName);
                 }else if( flag === "g" ){
                     this.orgAction.getGroup(function(json){
-                        this.loadGroupItem( json , container, null, null, flatCategoryContainer)
-                    }.bind(this), null, d.distinguishedName, null, null, true);
+                        this.loadGroupItem( json , container, null, null, flatCategoryContainer);
+                        checkCallback();
+                    }.bind(this), checkCallback, d.distinguishedName, null, null, true);
                 }else if( flag === "p" ){
                     if( this.options.resultType === "person" ){
                         this.orgAction.getPerson(function (json) {
-                            this.loadPersonItem(json, container, null, null, true)
-                        }.bind(this), null, d.distinguishedName);
+                            this.loadPersonItem(json, container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d.distinguishedName);
                     }else{
                         this.orgAction.listIdentityByPerson(function(json){
-                            this.loadIdentityItem(json, container, null, null, true)
-                        }.bind(this), null, d.distinguishedName);
+                            this.loadIdentityItem(json, container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d.distinguishedName);
                     }
                 }else{
                     if( this.options.resultType === "person" ){
                         this.orgAction.getPerson(function (json) {
-                            this.loadPersonItem(json, container, null, null, true)
-                        }.bind(this), null, d.distinguishedName);
+                            this.loadPersonItem(json, container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d.distinguishedName);
                     }else{
                         this.orgAction.getIdentity(function (json) {
-                            this.loadIdentityItem(json, container, null, null, true)
-                        }.bind(this), null, d.distinguishedName);
+                            this.loadIdentityItem(json, container, null, null, true);
+                            checkCallback();
+                        }.bind(this), checkCallback, d.distinguishedName);
                     }
                 }
                 //var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
