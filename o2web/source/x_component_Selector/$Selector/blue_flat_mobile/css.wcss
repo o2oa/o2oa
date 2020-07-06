@@ -85,6 +85,9 @@
 	"contentNode": {
 		"overflow": "hidden"
 	},
+	"noSelectableItemText" : {
+		"display" : "none"
+	},
   "contentNode_embedded": {
 	"overflow": "hidden",
 	"padding" : "5px 0px 0px 0px"

@@ -30,7 +30,12 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         }
 
         if (this.options.dutys.length){
-            this.loadInclude();
+            this.loadInclude( function () {
+                this.includeLoaded = true;
+                if( this.dutyLoaded ){
+                    this.afterLoadSelectItem();
+                }
+            }.bind(this));
             if( this.options.units.length ){
 
                 var units = [];
@@ -90,6 +95,11 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
             this._loadSelectItemsByDutyUnit(unitTree);
         }else{
             this._loadSelectItemsByIdentityUnit(unitTree);
+        }
+
+        this.dutyLoaded = true;
+        if( this.includeLoaded ){
+            this.afterLoadSelectItem();
         }
     },
     _loadSelectItemsByIdentityUnit : function( unitTree ){
