@@ -161,4 +161,5 @@ typings/
 
 #pom.xml.versionsBackup
 *.versionsBackup
-
+*netbean
+**/target/
