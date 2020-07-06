@@ -2,6 +2,7 @@ package com.x.query.assemble.surface.jaxrs.segment;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -31,12 +32,16 @@ class ActionCrawlEnable extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		@FieldDescribe("是否启用,cms,work,workCompleted中有任意一项启用即为启用.")
 		private Boolean enable;
 
+		@FieldDescribe("是否启用cms检索")
 		private Boolean cms;
 
+		@FieldDescribe("是否启用work检索")
 		private Boolean work;
 
+		@FieldDescribe("是否启用workCompleted检索")
 		private Boolean workCompleted;
 
 		public Boolean getEnable() {
