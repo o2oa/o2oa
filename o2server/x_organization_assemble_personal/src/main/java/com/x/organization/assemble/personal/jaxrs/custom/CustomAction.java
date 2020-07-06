@@ -43,6 +43,24 @@ public class CustomAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	@JaxrsMethodDescribe(value = "获取指定用户的Custom。", action = ActionManagerGet.class)
+	@GET
+	@Path("manager/person/{person}/name/{name}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void managerGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("用户") @PathParam("person") String person,
+					@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
+		ActionResult<String> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManagerGet().execute(effectivePerson,person, name);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "更新指定名称的Custom.", action = ActionEdit.class)
 	@PUT
