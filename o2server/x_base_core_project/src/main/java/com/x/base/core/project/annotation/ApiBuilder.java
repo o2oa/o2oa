@@ -75,7 +75,7 @@ public class ApiBuilder {
 
 		builder.scan(dir);
 
-		FileUtils.copyDirectory(sourcedir, new File(dir, "sources"));
+		//FileUtils.copyDirectory(sourcedir, new File(dir, "sources"));
 
 	}
 
