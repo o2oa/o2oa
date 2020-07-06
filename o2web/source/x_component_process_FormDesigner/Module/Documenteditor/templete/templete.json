@@ -29,6 +29,12 @@
     "layouts": {
     }
   },
+  "party": {
+    "name": "党委纪委类",
+    "file": "party.html",
+    "layouts": {
+    }
+  },
   "combine": {
     "name": "联合发文类",
     "file": "combine.html",
