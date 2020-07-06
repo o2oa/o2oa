@@ -10,6 +10,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
@@ -58,6 +59,12 @@ class BaseAction extends StandardJaxrsAction {
 			for (String str : group.getUnitList()) {
 				Unit o = business.unit().pick(str);
 				t.getUnitList().add(o.getDistinguishedName());
+			}
+		}
+		if (ListTools.isNotEmpty(group.getIdentityList())) {
+			for (String str : group.getIdentityList()) {
+				Identity o = business.identity().pick(str);
+				t.getIdentityList().add(o.getDistinguishedName());
 			}
 		}
 		return t;
