@@ -573,6 +573,9 @@ MWF.xApplication.Org.$Explorer = new Class({
     openUnit: function(data, node){
         this.openContent("UnitExplorer", "UnitContent", data, node);
     },
+    openRole: function(data, node){
+        this.openContent("RoleExplorer", "RoleContent", data, node);
+    },
     openContent: function(explorerClazz, contentClazz, data, node){
         MWF.xDesktop.requireApp("Org", explorerClazz, function(){
             var contentNode = new Element("div", {"styles": this.css.popContentNode}).inject(this.propertyContentNode, "top");
