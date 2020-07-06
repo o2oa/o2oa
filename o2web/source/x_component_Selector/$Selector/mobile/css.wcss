@@ -47,6 +47,12 @@
 	"contentNode": {
 		"overflow": "hidden"
 	},
+	"noSelectableItemText" : {
+		"margin" : "10px auto",
+		"text-align" : "center",
+		"width" : "200px",
+		"color" : "#999"
+	},
 	"selectNode": {
 		"width": "40%",
 		"height": "80%",

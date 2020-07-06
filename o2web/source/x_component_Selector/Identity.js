@@ -84,6 +84,13 @@ MWF.xApplication.Selector.Identity = new Class({
 
             }.bind(this));
         }else{
+            // this.loadInclude( function () {
+            //     this.includeLoaded = true;
+            //     if( this.unitLoaded ){
+            //         afterLoadSelectItemFun();
+            //     }
+            // }.bind(this));
+
             this.orgAction.listTopUnit(function(json){
                 json.data.each(function(data){
                     if( !this.isExcluded( data ) ){
@@ -91,8 +98,13 @@ MWF.xApplication.Selector.Identity = new Class({
                         this.subCategorys.push( category );
                     }
                 }.bind(this));
-                loadUnitSuccess();
-            }.bind(this), loadUnitFailure);
+
+                // this.unitLoaded = true;
+                // if( this.includeLoaded ){
+                    afterLoadSelectItemFun();
+                // }
+
+            }.bind(this));
         }
     },
 
@@ -419,6 +431,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
                         this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                         this.isExpand = true;
                     }
+                    // this.checkSelectAll();
                 }else{
                     var display = this.children.getStyle("display");
                     if (display === "none"){
