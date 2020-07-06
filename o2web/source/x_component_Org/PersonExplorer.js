@@ -137,6 +137,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this.identityContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.identityPage = this.propertyTab.addTab(this.identityContentNode, this.explorer.app.lp.personIdentityText);
 
+        this.roleContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
+        this.rolePage = this.propertyTab.addTab(this.roleContentNode, this.explorer.app.lp.personRoleText);
+
         // this.managerContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         // this.managerPage = this.propertyTab.addTab(this.managerContentNode, this.explorer.app.lp.controllerListText);
     },
@@ -144,6 +147,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this._listBaseInfor();
         this._listAttribute();
         this._listIdentity();
+        this._listRole();
         this.loadListCount();
 
         //
@@ -421,6 +425,86 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                 }.bind(this), null, this.data.id);
             }.bind(this));
         }
+    },
+    _listRole: function(){
+        var _self = this;
+        this.roleList = new MWF.xApplication.Org.List(this.roleContentNode, this, {
+            "action": false,
+            "canEdit": false,
+            "saveAction": "saveIdentity",
+            "data": {
+                "person": this.data.id,
+                "name": "",
+                "attributeList": []
+            },
+            "attr": ["name", {
+                "get": function(){ return ""; },
+                "events": {
+                    "init": function(){
+                        var contentNode = this.td;
+                        new MWF.widget.O2Unit(this.data.woUnit, contentNode, {"style": "xform"});
+                    }
+                }
+            }, {
+                "get": function(){ return this.distinguishedName; },
+                "set": function(value){ this.distinguishedName = value; }
+            }, {
+                "get": function(){ return ""; },
+                "events": {
+                    "init": function(){
+                        var contentNode = this.td;
+                        if (this.data.woUnitDutyList){
+                            this.data.woUnitDutyList.each(function(duty){
+                                new MWF.widget.O2Duty(duty, contentNode, {"style": "xform"});
+                            }.bind(this));
+                        }
+                    }
+                }
+            }, {
+                "getHtml": function(){
+                    if (this.major){
+                        return "<div style='width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
+                            _self.explorer.app.options.style+"/icon/mainid.png) center center no-repeat'></div>";
+                    }else{
+                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
+                            _self.explorer.app.options.style+"/icon/select.png) center center no-repeat'></div>";
+                    }
+                },
+                "events": {
+                    "click": function(){
+                        if (!this.data.major){
+                            if (_self.data.control.allowEdit){_self.setMainIdentity(this.data, this.td, this.item);}
+                        }
+                    }
+                }
+            },{
+                "getHtml": function(){
+                    if (_self.data.control.allowEdit){
+                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
+                            _self.explorer.app.options.style+"/icon/edit.png) center center no-repeat'></div>";
+                    }
+                    return "";
+                },
+                "events": {
+                    "click": function(){
+                        debugger;
+                        if (_self.data.control.allowEdit){_self.editIdentity(this.data, this.td, this.item);}
+                    }
+                }
+            }]
+        });
+        this.identityList.load([
+            {"style": "width: 12%", "text": this.explorer.app.lp.IdentityName},
+            {"style": "width: 12%", "text": this.explorer.app.lp.IdentityInUnit},
+            {"style": "width: 44%", "text": this.explorer.app.lp.personUnique},
+            {"style": "width: 20%", "text": this.explorer.app.lp.IdentityDuty},
+            {"style": "width: 10%", "text": this.explorer.app.lp.IdentityMain},
+            {"style": "width: 30px", "text": ""}
+        ]);
+
+        this.data.woIdentityList.each(function(item){
+            this.identityList.push(item);
+        }.bind(this));
     }
 });
 MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
