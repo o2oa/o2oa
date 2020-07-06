@@ -19,6 +19,9 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
         "exclude" : []
     },
     loadSelectItems: function(addToNext){
+
+        var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
+
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
                 this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
@@ -27,7 +30,27 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             }
         }
         if (this.options.dutys.length){
-            this.loadInclude();
+            var dutyLoaded = 0;
+
+            var loadDutySuccess = function () {
+                dutyLoaded++;
+                if( dutyLoaded === this.options.dutys.length ){
+                    this.dutyLoaded = true;
+                    if( this.includeLoaded ){
+                        afterLoadSelectItemFun();
+                    }
+                }
+            }.bind(this);
+
+            this.loadInclude( function () {
+                this.includeLoaded = true;
+                if( this.dutyLoaded ){
+                    afterLoadSelectItemFun();
+                }
+            }.bind(this));
+
+
+            // this.loadInclude();
             this.options.dutys.each(function(duty){
                 var data = {"name": duty, "id":duty};
                 var category = this._newItemCategory("ItemCategory",data, this, this.itemAreaNode);
@@ -37,6 +60,7 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                 // this.action.getUnitduty(function(dutyData){
                 //     var category = this._newItemCategory("ItemCategory", dutyData.data, this, this.itemAreaNode);
                 // }.bind(this), null, duty);
+                loadDutySuccess();
             }.bind(this));
         }
     },
