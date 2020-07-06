@@ -9,23 +9,23 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.http.HttpHeader;
-
 import com.x.base.core.project.exception.CallbackPromptException;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.tools.DefaultCharset;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.HttpHeader;
+
 public class ResponseFactory {
 
 	private static CacheControl defaultCacheControl = CacheControlFactory.getDefault();
 
 	public static final String Content_Disposition = "Content-Disposition";
-	// public static final String Content_Length = "Content-Length";
 	public static final String Accept_Ranges = "Accept-Ranges";
 	public static final String Content_Type = "Content-Type";
+	public static final String Content_Length = "Content-Length";
 
 	public static <T> Response getDefaultActionResultResponse(ActionResult<T> result) {
 		if (result.getType().equals(ActionResult.Type.error)) {
@@ -38,7 +38,8 @@ public class ResponseFactory {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
 				WoFile wo = (WoFile) result.getData();
 				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").build();
+						.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
+						.header(Accept_Ranges, "bytes").build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				WoText wo = (WoText) result.getData();
 				return Response.ok(wo.getText()).cacheControl(defaultCacheControl).type(HttpMediaType.TEXT_PLAIN_UTF_8)
@@ -86,7 +87,8 @@ public class ResponseFactory {
 					return Response.notModified().tag(tag).build();
 				}
 				return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-						.header(Content_Type, wo.getContentType()).header(Accept_Ranges, "bytes").tag(tag).build();
+						.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
+						.header(Accept_Ranges, "bytes").tag(tag).build();
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				/* 纯文本text */
 				WoText wo = (WoText) result.getData();
