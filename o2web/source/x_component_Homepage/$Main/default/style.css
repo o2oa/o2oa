@@ -173,7 +173,7 @@
     height: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
-
+    word-break: break-all;
     word-wrap: normal;
     margin-right: 10px;
 }
