@@ -713,9 +713,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         if (!tmp){
                             var text = cell.get("text").trim();
                             var l = 14*text.length;
+                            var wl = 19*text.length;
                             cell.setStyles({
                                 "max-width": ""+l+"pt",
-                                "min-width": ""+l+"pt"
+                                "min-width": ""+l+"pt",
+                                "width": ""+wl+"pt"
                             });
                         }
                     }
@@ -2405,9 +2407,11 @@ debugger;
                         if (!tmp){
                             var text = cell.get("text").trim();
                             var l = 14*text.length;
+                            var wl = 19*text.length;
                             cell.setStyles({
-                                "max-width": ""+l+"pt",
-                                "min-width": ""+l+"pt"
+                                "max-width": ""+l+"pt !important",
+                                "min-width": ""+l+"pt !important",
+                                "width": ""+wl+"pt"
                             });
                         }
 
