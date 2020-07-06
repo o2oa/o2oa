@@ -1749,9 +1749,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single_selected  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
         }
-        if( this.category ){
-            this.category.checkSelectAll();
-        }
+        // if( this.category ){
+        //     this.category.checkSelectAll();
+        // }
     },
     setEvent: function(){
         this.node.addEvents({
