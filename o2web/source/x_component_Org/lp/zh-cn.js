@@ -220,6 +220,7 @@ MWF.xApplication.Org.LP = {
     "personAttributeText": "个人属性",
     "personIdentityText": "个人身份",
     "controllerListText": "管理者",
+    "personRoleText" : "个人角色",
 
     "IdentityName": "身份名称",
     "IdentityInUnit": "所在组织",
