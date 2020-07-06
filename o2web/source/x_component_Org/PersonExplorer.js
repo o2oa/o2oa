@@ -127,6 +127,18 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
     _showItemPropertyBottom: function(){
         this.bottomInfor = new MWF.xApplication.Org.PersonExplorer.PersonContent.BottomInfor(this);
     },
+    loadItemPropertyTab: function(callback){
+        this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
+
+        MWF.require("MWF.widget.Tab", function(){
+            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "unit"});
+            this.propertyTab.load();
+
+            this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);
+            this.propertyTab.tabNodeContainer.setStyle("width","480px");
+            if (callback) callback();
+        }.bind(this));
+    },
     _loadTabs: function(){
         this.baseContentNode = new Element("div", {"styles": this.item.style.tabContentNode});
         this.basePage = this.propertyTab.addTab(this.baseContentNode, this.explorer.app.lp.personBaseText);
@@ -177,6 +189,19 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                 }
             }else{
                 if (this.attributeCountNode) this.attributeCountNode.destroy();
+            }
+        }
+
+        if( this.roleDataList ){
+            var roleCount = this.roleDataList.length;
+            if (roleCount){
+                if (!this.roleCountNode){
+                    this.roleCountNode = new Element("div", {"styles": this.item.style.tabCountNode, "text": roleCount}).inject(this.rolePage.tabNode);
+                }else{
+                    this.roleCountNode.set("text", roleCount);
+                }
+            }else{
+                if (this.roleCountNode) this.roleCountNode.destroy();
             }
         }
 
@@ -431,80 +456,49 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this.roleList = new MWF.xApplication.Org.List(this.roleContentNode, this, {
             "action": false,
             "canEdit": false,
-            "saveAction": "saveIdentity",
             "data": {
-                "person": this.data.id,
-                "name": "",
-                "attributeList": []
+                // "person": this.data.id,
+                // "name": "",
+                // "unique": "",
+                // "orderNumber": "",
+                // "attributeList": [],
+                // "description":""
             },
-            "attr": ["name", {
-                "get": function(){ return ""; },
-                "events": {
-                    "init": function(){
-                        var contentNode = this.td;
-                        new MWF.widget.O2Unit(this.data.woUnit, contentNode, {"style": "xform"});
-                    }
-                }
-            }, {
-                "get": function(){ return this.distinguishedName; },
-                "set": function(value){ this.distinguishedName = value; }
-            }, {
-                "get": function(){ return ""; },
-                "events": {
-                    "init": function(){
-                        var contentNode = this.td;
-                        if (this.data.woUnitDutyList){
-                            this.data.woUnitDutyList.each(function(duty){
-                                new MWF.widget.O2Duty(duty, contentNode, {"style": "xform"});
-                            }.bind(this));
+            "attr": ["name",
+                "distinguishedName",
+                "description",{
+                    "getHtml": function(){
+                        if (_self.data.control.allowEdit){
+                            return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
+                                _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
+                        }
+                        return "";
+                    },
+                    "events": {
+                        "click": function(){
+                            debugger;
+                            _self.explorer.openRole(this.data, this.td);
                         }
                     }
-                }
-            }, {
-                "getHtml": function(){
-                    if (this.major){
-                        return "<div style='width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
-                            _self.explorer.app.options.style+"/icon/mainid.png) center center no-repeat'></div>";
-                    }else{
-                        return "<div title='"+_self.explorer.app.lp.setIdentityMain+"' style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
-                            _self.explorer.app.options.style+"/icon/select.png) center center no-repeat'></div>";
-                    }
-                },
-                "events": {
-                    "click": function(){
-                        if (!this.data.major){
-                            if (_self.data.control.allowEdit){_self.setMainIdentity(this.data, this.td, this.item);}
-                        }
-                    }
-                }
-            },{
-                "getHtml": function(){
-                    if (_self.data.control.allowEdit){
-                        return "<div style='width:24px; height:24px; cursor: pointer; background:url(../x_component_Org/$Explorer/"+
-                            _self.explorer.app.options.style+"/icon/edit.png) center center no-repeat'></div>";
-                    }
-                    return "";
-                },
-                "events": {
-                    "click": function(){
-                        debugger;
-                        if (_self.data.control.allowEdit){_self.editIdentity(this.data, this.td, this.item);}
-                    }
-                }
-            }]
+                }]
         });
-        this.identityList.load([
-            {"style": "width: 12%", "text": this.explorer.app.lp.IdentityName},
-            {"style": "width: 12%", "text": this.explorer.app.lp.IdentityInUnit},
-            {"style": "width: 44%", "text": this.explorer.app.lp.personUnique},
-            {"style": "width: 20%", "text": this.explorer.app.lp.IdentityDuty},
-            {"style": "width: 10%", "text": this.explorer.app.lp.IdentityMain},
+        this.roleList.load([
+            {"style": "width: 15%", "text": this.explorer.app.lp.roleName},
+            {"style": "width: 30%", "text": this.explorer.app.lp.roleFullName},
+            {"style": "", "text": this.explorer.app.lp.description},
             {"style": "width: 30px", "text": ""}
         ]);
 
-        this.data.woIdentityList.each(function(item){
-            this.identityList.push(item);
-        }.bind(this));
+        o2.Actions.load("x_organization_assemble_control").RoleAction.listWithPerson(this.data.id, function (json) {
+            this.roleDataList = json.data;
+            json.data.each( function ( item ) {
+                this.roleList.push(item);
+            }.bind(this))
+        }.bind(this), null, false);
+
+        // this.data.woPersonAttributeList.each(function(item){
+        //     this.roleList.push(item);
+        // }.bind(this));
     }
 });
 MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
