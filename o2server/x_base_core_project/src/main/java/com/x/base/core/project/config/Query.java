@@ -105,11 +105,11 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "30 30 7-21 * * ?";
+		public final static String DEFAULT_CRON = "30 30 9,12,15,18 * * ?";
 
-		public final static Integer DEFAULT_CONUT = 100;
+		public final static Integer DEFAULT_CONUT = 30;
 
 		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
 
@@ -119,7 +119,7 @@ public class Query extends ConfigObject {
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为100,同时每次将重爬最旧的50%,按时间轮询50%.")
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为30,同时每次将重爬最旧的50%,按时间轮询50%.")
 		private Integer count = DEFAULT_CONUT;
 
 		@FieldDescribe("忽略附件名称.")
@@ -180,12 +180,12 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "40 40 7-21 * * ?";
+		public final static String DEFAULT_CRON = "40 40 10,12,14,16 * * ?";
 
 		/* 由于每小时运行,那么每次更新100份 */
-		public final static Integer DEFAULT_CONUT = 100;
+		public final static Integer DEFAULT_CONUT = 50;
 
 		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
 
@@ -195,7 +195,7 @@ public class Query extends ConfigObject {
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为100,同时每次将重爬最旧的50%,按时间轮询50%.")
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为50,同时每次将重爬最旧的50%,按时间轮询50%.")
 		private Integer count = DEFAULT_CONUT;
 
 		@FieldDescribe("忽略附件名称.")
@@ -268,11 +268,11 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = false;
+		public final static Boolean DEFAULT_ENABLE = true;
 
-		public final static String DEFAULT_CRON = "50 50 22 * * ?";
+		public final static String DEFAULT_CRON = "50 50 21 * * ?";
 
-		public final static Integer DEFAULT_CONUT = 2000;
+		public final static Integer DEFAULT_CONUT = 500;
 
 		public final static Integer DEFAULT_MAXATTACHMENTSIZE = 1024 * 1024 * 5;
 
@@ -282,7 +282,7 @@ public class Query extends ConfigObject {
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
 
-		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为2000,同时每次将重爬最旧的25%,按时间轮询25%.")
+		@FieldDescribe("每次处理的数量,默认每小时处理所以默认为500,同时每次将重爬最旧的25%,按时间轮询25%.")
 		private Integer count = DEFAULT_CONUT;
 
 		@FieldDescribe("忽略附件名称.")
