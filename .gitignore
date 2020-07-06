@@ -162,3 +162,4 @@ typings/
 #pom.xml.versionsBackup
 *.versionsBackup
 
+/nbproject/private/
