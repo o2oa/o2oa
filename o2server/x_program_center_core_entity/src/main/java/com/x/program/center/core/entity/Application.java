@@ -10,7 +10,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
 import javax.persistence.*;
 import java.util.Date;
 
-@ContainerEntity
+@ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Application.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Application.table + JpaObject.IndexNameMiddle
@@ -116,6 +116,12 @@ public class Application extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + grade_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + grade_FIELDNAME)
 	private Double grade;
+
+	public static final String commentCount_FIELDNAME = "commentCount";
+	@FieldDescribe("评论数")
+	@Column(name = ColumnNamePrefix + commentCount_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + commentCount_FIELDNAME)
+	private Integer commentCount;
 
 	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号,升序排列,为空在最后")
@@ -259,5 +265,13 @@ public class Application extends SliceJpaObject {
 
 	public void setGrade(Double grade) {
 		this.grade = grade;
+	}
+
+	public Integer getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(Integer commentCount) {
+		this.commentCount = commentCount;
 	}
 }
