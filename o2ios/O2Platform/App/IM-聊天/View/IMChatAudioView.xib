@@ -14,7 +14,7 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="196"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wVh-0l-AFu">
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wVh-0l-AFu">
                     <rect key="frame" x="158" y="49" width="98" height="98"/>
                     <color key="backgroundColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
@@ -34,17 +34,28 @@
                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOK-Ap-tLT">
+                    <rect key="frame" x="158" y="49" width="98" height="98"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="98" id="Gqq-bx-nM3"/>
+                        <constraint firstAttribute="height" constant="98" id="lyM-c3-YEW"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
                 <constraint firstItem="wVh-0l-AFu" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="6cB-Al-ASy"/>
+                <constraint firstItem="MOK-Ap-tLT" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="CN5-RX-Veu"/>
                 <constraint firstItem="Ofc-kF-lNX" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="SHl-b2-znG"/>
+                <constraint firstItem="MOK-Ap-tLT" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="XX5-a9-CHV"/>
                 <constraint firstItem="wVh-0l-AFu" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="tyc-Iy-wZR"/>
                 <constraint firstItem="Ofc-kF-lNX" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="wVW-4b-Vj0"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="audioBtnContainer" destination="MOK-Ap-tLT" id="bvP-Da-pr4"/>
                 <outlet property="audioRecordBtn" destination="wVh-0l-AFu" id="85j-KR-mnf"/>
                 <outlet property="audioViewTitle" destination="Ofc-kF-lNX" id="K6i-qG-CmP"/>
             </connections>

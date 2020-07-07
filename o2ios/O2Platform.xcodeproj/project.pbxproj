@@ -247,6 +247,7 @@
 		B1D1BC8B234C5C49002025DA /* CloudFileShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D1BC8A234C5C49002025DA /* CloudFileShareViewController.swift */; };
 		B1D1BC8D234C7EC9002025DA /* CloudFileFolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D1BC8C234C7EC9002025DA /* CloudFileFolderCell.swift */; };
 		B1D1BC8F234C8349002025DA /* CloudFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D1BC8E234C8349002025DA /* CloudFileCell.swift */; };
+		B1D4AFED24B409A9004E648E /* AudioTouchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D4AFEC24B409A9004E648E /* AudioTouchButton.swift */; };
 		B1DA305F2282754500669418 /* QCalendarPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DA305E2282754500669418 /* QCalendarPicker.swift */; };
 		B1DB6EA5237E6F2C00D7BA94 /* O2VersionInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DB6EA4237E6F2C00D7BA94 /* O2VersionInfoModel.swift */; };
 		B1DE853823602D36003C36E2 /* Languager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DE853723602D36003C36E2 /* Languager.swift */; };
@@ -1583,6 +1584,7 @@
 		B1D1BC8A234C5C49002025DA /* CloudFileShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileShareViewController.swift; sourceTree = "<group>"; };
 		B1D1BC8C234C7EC9002025DA /* CloudFileFolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileFolderCell.swift; sourceTree = "<group>"; };
 		B1D1BC8E234C8349002025DA /* CloudFileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileCell.swift; sourceTree = "<group>"; };
+		B1D4AFEC24B409A9004E648E /* AudioTouchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTouchButton.swift; sourceTree = "<group>"; };
 		B1DA305E2282754500669418 /* QCalendarPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCalendarPicker.swift; sourceTree = "<group>"; };
 		B1DB6EA4237E6F2C00D7BA94 /* O2VersionInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2VersionInfoModel.swift; sourceTree = "<group>"; };
 		B1DE853723602D36003C36E2 /* Languager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Languager.swift; sourceTree = "<group>"; };
@@ -2660,6 +2662,7 @@
 				B15BE10D249A107C008CD1DB /* IMAudioView.swift */,
 				B183987C249AFF64001C6FAA /* IMLocationView.xib */,
 				B18398AC249B00AA001C6FAA /* IMLocationView.swift */,
+				B1D4AFEC24B409A9004E648E /* AudioTouchButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -6131,6 +6134,7 @@
 				E4B7816F1DF8F359007B58A9 /* CMSCategoryItemCell.swift in Sources */,
 				E41512631ED80AF3006531B0 /* ZoneNavigationBarManager.swift in Sources */,
 				E4B888771D9D48F1002E1A46 /* Group.swift in Sources */,
+				B1D4AFED24B409A9004E648E /* AudioTouchButton.swift in Sources */,
 				E4B888911D9D48F1002E1A46 /* UIViewExt.m in Sources */,
 				B1BA42B824133AC40081CED8 /* TaskCreateData.swift in Sources */,
 				09E02E871F16319600579887 /* DiskCache.swift in Sources */,

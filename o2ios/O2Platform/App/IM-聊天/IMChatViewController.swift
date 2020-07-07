@@ -42,6 +42,12 @@ class IMChatViewController: UIViewController {
         view.delegate = self
         return view
     }()
+    //录音的时候显示的view
+    private var voiceIconImage: UIImageView?
+    private var voiceIocnTitleLable: UILabel?
+    private var voiceImageSuperView: UIView?
+    
+    
     //预览文件
     private lazy var previewVC: CloudFilePreviewController = {
         return CloudFilePreviewController()
@@ -473,6 +479,55 @@ class IMChatViewController: UIViewController {
 
 // MARK: - 录音delegate
 extension IMChatViewController: IMChatAudioViewDelegate {
+    
+    func showAudioRecordingView() {
+        if self.voiceIconImage == nil {
+            self.voiceImageSuperView = UIView()
+            self.view.addSubview(self.voiceImageSuperView!)
+            self.voiceImageSuperView?.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.6)
+             
+            self.voiceImageSuperView?.snp_makeConstraints { (make) in
+                make.center.equalTo(self.view)
+                make.size.equalTo(CGSize(width:140, height:140))
+            }
+        
+            self.voiceIconImage = UIImageView()
+            self.voiceImageSuperView?.addSubview(self.voiceIconImage!)
+            self.voiceIconImage?.snp_makeConstraints { (make) in
+                make.top.left.equalTo(self.voiceImageSuperView!).inset(UIEdgeInsets(top: 20, left: 35, bottom: 0, right: 0))
+                make.size.equalTo(CGSize(width: 70, height: 70))
+            }
+            let voiceIconTitleLabel = UILabel()
+            self.voiceIocnTitleLable = voiceIconTitleLabel
+            self.voiceIconImage?.addSubview(voiceIconTitleLabel)
+            voiceIconTitleLabel.textColor = UIColor.white
+            voiceIconTitleLabel.font = .systemFont(ofSize: 12)
+            voiceIconTitleLabel.text = "松开发送，上滑取消"
+            voiceIconTitleLabel.snp_makeConstraints { (make) in
+                make.bottom.equalTo(self.voiceImageSuperView!).offset(-15)
+                make.centerX.equalTo(self.voiceImageSuperView!)
+            }
+        }
+        self.voiceImageSuperView?.isHidden = false
+        self.voiceIconImage?.image = UIImage(named: "chat_audio_voice")
+        self.voiceIocnTitleLable?.text = "松开发送，上滑取消";
+       
+    }
+    
+    func hideAudioRecordingView() {
+        self.voiceImageSuperView?.isHidden = true
+    }
+    
+    func changeRecordingView2uplide() {
+        self.voiceIocnTitleLable?.text = "松开手指，取消发送";
+        self.voiceIconImage?.image = UIImage(named: "chat_audio_cancel")
+    }
+    
+    func changeRecordingView2down() {
+        self.voiceIconImage?.image = UIImage(named: "chat_audio_voice")
+        self.voiceIocnTitleLable?.text = "松开发送，上滑取消";
+    }
+    
     func sendVoice(path: String, voice: Data, duration: String) {
         let msg = IMMessageBodyInfo()
         msg.fileTempPath = path
@@ -484,6 +539,7 @@ extension IMChatViewController: IMChatAudioViewDelegate {
         DDLogDebug("音频文件：\(fileName)")
         self.uploadFileAndSendMsg(messageId: msgId, data: voice, fileName: fileName, type: o2_im_msg_type_audio)
     }
+    
 }
 
 // MARK: - 拍照delegate
