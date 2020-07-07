@@ -17,6 +17,7 @@ public class OscarDictionary extends DBDictionary {
 		maxConstraintNameLength = 128;
 		maxEmbeddedClobSize = -1;
 		maxEmbeddedBlobSize = -1;
+		doubleTypeName = "DOUBLE PRECISION";
 	}
 
 }
