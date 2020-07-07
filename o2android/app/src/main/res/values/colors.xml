@@ -19,6 +19,7 @@
     <color name="z_color_gray">#888888</color>
     <color name="z_color_gray_600">#999999</color>
     <color name="z_color_gray_light">#82a3a3a3</color>
+    <color name="z_color_black_alpha">#61000000</color>
 
 
     <!-- refresh layout loading color -->
