@@ -177,7 +177,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var style = pageContentNode.getLast("style");
         if (style){
             var origin = window.location.origin;
-            var header = o2.filterUrl(origin+"/x_component_process_FormDesigner/Module/Documenteditor/templete/header.htm");
+            var header = o2.filterUrl(origin+"/x_component_process_FormDesigner/Module/Documenteditor/header.htm");
 
             var text = style.get("html");
             var pageRex = /(?:@page\s*\{)([\s\S]*?)(?:\})/;
