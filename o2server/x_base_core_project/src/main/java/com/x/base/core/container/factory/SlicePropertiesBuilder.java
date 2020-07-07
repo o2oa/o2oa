@@ -19,6 +19,7 @@ public class SlicePropertiesBuilder {
 	public static String driver_gbase = "com.gbasedbt.jdbc.IfxDriver";
 	public static String driver_kingbase = "com.kingbase.Driver";
 	public static String driver_kingbase8 = "com.kingbase8.Driver";
+	public static String driver_oscar = "com.oscar.Driver";
 	/* 避免db2在aix版本和lwl版本字段长度不一致的问题 */
 	public static String dictionary_db2 = "db2(createPrimaryKeys=false,characterColumnSize=255,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128)";
 	public static String dictionary_oracle = "oracle(maxTableNameLength=128,maxColumnNameLength=128,maxIndexNameLength=128,maxConstraintNameLength=128,maxEmbeddedClobSize=-1,maxEmbeddedBlobSize=-1)";
@@ -31,6 +32,7 @@ public class SlicePropertiesBuilder {
 	public static String dictionary_gbase = "com.x.base.core.openjpa.jdbc.sql.GBaseDictionary";
 	public static String dictionary_kingbase = "com.x.base.core.openjpa.jdbc.sql.KingbaseDictionary";
 	public static String dictionary_kingbase8 = "com.x.base.core.openjpa.jdbc.sql.Kingbase8Dictionary";
+	public static String dictionary_oscar = "com.x.base.core.openjpa.jdbc.sql.OscarDictionary";
 
 	public static String validationQuery_db2 = "select 1 from sysibm.sysdummy1";
 	public static String validationQuery_oracle = "select 1 from dual";
@@ -43,6 +45,7 @@ public class SlicePropertiesBuilder {
 	public static String validationQuery_gbase = "select 1";
 	public static String validationQuery_kingbase = "select now()";
 	public static String validationQuery_kingbase8 = "select now()";
+	public static String validationQuery_oscar = "select 1 from dual";
 
 	// 单个slice名称
 	public static String getName(Integer i) throws Exception {
@@ -76,6 +79,8 @@ public class SlicePropertiesBuilder {
 			return driver_kingbase;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
 			return driver_kingbase8;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
+			return driver_oscar;
 		}
 		throw new Exception("can not get driverClassName of url: " + url + ".");
 	}
@@ -103,6 +108,8 @@ public class SlicePropertiesBuilder {
 			return dictionary_kingbase;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
 			return dictionary_kingbase8;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
+			return dictionary_oscar;
 		}
 		throw new Exception("can not get dictionary of url: " + url + ".");
 	}
@@ -129,6 +136,8 @@ public class SlicePropertiesBuilder {
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase:")) {
 			return true;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
+			return true;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
 			return true;
 		}
 		throw new Exception("can not get schema of url: " + url + ".");
@@ -157,6 +166,8 @@ public class SlicePropertiesBuilder {
 			return validationQuery_kingbase;
 		} else if (StringUtils.containsIgnoreCase(url, "jdbc:kingbase8:")) {
 			return validationQuery_kingbase8;
+		} else if (StringUtils.containsIgnoreCase(url, "jdbc:oscar:")) {
+			return validationQuery_oscar;
 		}
 		throw new Exception("can not get schema of url: " + url + ".");
 	}
