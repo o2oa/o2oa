@@ -72,6 +72,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static final String table = "CTE_ATTACHMENT";
 	}
 
+	public static class InstallLog {
+		public static final String table = "CTE_INSTALL_LOG";
+	}
+
 	public static class Validation {
 		public static class Meta {
 			public static final String table = "VAL_META";

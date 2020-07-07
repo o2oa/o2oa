@@ -21,13 +21,16 @@ import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.mina.core.session.IoSession;
 
 public class ConnectionAction {
 
@@ -194,6 +197,32 @@ public class ConnectionAction {
 		return read(response, connection);
 	}
 
+	public static byte[] getFile(String address, List<NameValuePair> heads) throws Exception {
+		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
+			HttpGet httpget = new HttpGet(address);
+			if (ListTools.isNotEmpty(heads)) {
+				String name;
+				String value;
+				for (NameValuePair o : heads) {
+					name = Objects.toString(o.getName(), "");
+					value = Objects.toString(o.getValue(), "");
+					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+						httpget.addHeader(name, value);
+					}
+				}
+			}
+			HttpResponse response = httpclient.execute(httpget);
+			HttpEntity entity = response.getEntity();
+			if(entity!=null) {
+				InputStream in = entity.getContent();
+				if (in != null){
+					return IOUtils.toByteArray(in);
+				}
+			}
+		}
+		return null;
+	}
+
 	public static ActionResponse multiFormPost(String address, List<NameValuePair> heads, String fileName, byte[] bytes,
 			Map<String, String> map) throws Exception {
 		ActionResponse response = new ActionResponse();
@@ -231,6 +260,7 @@ public class ConnectionAction {
 				response.setMessage("convert to json error, address:" + address + ", method: multiFormPost, because:"
 						+ e.getMessage() + ", value:" + value + ".");
 			}
+			httpClient.close();
 		} catch (Exception e) {
 			response.setType(ActionResponse.Type.connectFatal);
 			response.setMessage(
