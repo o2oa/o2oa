@@ -153,6 +153,23 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="DialogManage">
+        <!--Dialog的windowFrame为空-->
+        <item name="android:windowFrame">@null</item>
+        <!--是否悬浮在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否半透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!--是否显示title-->
+        <item name="android:windowNoTitle">true</item>
+        <!--是否有遮盖-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!--半透明背景是否可用-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
 
     <style name="shareDialogTheme" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>
