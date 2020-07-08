@@ -568,7 +568,7 @@ MWF.xApplication.Meeting.RoomTooltip = new Class({
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:20px";
         var device = [];
-        data.device.split("#").each( function( d ){
+        ( data.device || "" ).split("#").each( function( d ){
             device.push( lp[d] );
         }.bind(this));
 
@@ -1060,7 +1060,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
 
         var iconsNode = new Element("div", {"styles": this.css.roomTitleIconsNode}).inject(inforNode);
 
-        var deviceList = room.device.split("#");
+        var deviceList = ( room.device || "" ).split("#");
         deviceList.each(function(name){
             if( name ){
                 var node = new Element("div", {"styles": this.css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
