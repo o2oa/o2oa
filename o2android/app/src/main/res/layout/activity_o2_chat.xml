@@ -10,14 +10,21 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_o2_chat_messages"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sr_o2_chat_message_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/ll_o2_chat_input_layout"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet" />
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_o2_chat_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.KeyboardLayout
         android:id="@+id/rv_o2_chat_emoji_box_out"
@@ -37,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_o2_chat_messages"
+        app:layout_constraintTop_toBottomOf="@+id/sr_o2_chat_message_layout"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
