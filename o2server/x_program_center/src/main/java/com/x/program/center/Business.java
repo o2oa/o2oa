@@ -1,7 +1,12 @@
 package com.x.program.center;
 
 import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Nodes;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.TokenType;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,10 +18,18 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.program.center.factory.PersonFactory;
 import com.x.program.center.factory.UnitFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Business {
+
+	private static Logger logger = LoggerFactory.getLogger(Business.class);
 
 	private EntityManagerContainer emc;
 
@@ -143,6 +156,61 @@ public class Business {
 			this.tokenType = tokenType;
 		}
 
+	}
+
+	public static List<String> dispatch(boolean asNew, String fileName, String filePath, byte[] bytes) throws Exception{
+		List<String> list = new ArrayList<>();
+		Nodes nodes = Config.nodes();
+		for (String node : nodes.keySet()){
+			boolean flag = false;
+
+			try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
+				socket.setKeepAlive(true);
+				socket.setSoTimeout(10000);
+				try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+					 DataInputStream dis = new DataInputStream(socket.getInputStream())){
+					Map<String, Object> commandObject = new HashMap<>();
+					commandObject.put("command", "uploadResource:"+fileName);
+					commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+
+					Map<String, Object> param = new HashMap<>();
+					param.put("fileName", fileName);
+					param.put("asNew", asNew);
+					if(StringUtils.isNotEmpty(filePath)){
+						param.put("filePath", filePath);
+					}
+					commandObject.put("param", param);
+					dos.writeUTF(XGsonBuilder.toJson(commandObject));
+					dos.flush();
+					dos.writeInt(bytes.length);
+					dos.flush();
+
+					try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)){
+						byte[] onceBytes = new byte[1024];
+						int length = 0;
+						while((length = bis.read(onceBytes, 0, onceBytes.length)) != -1) {
+							dos.write(onceBytes, 0, length);
+							dos.flush();
+						}
+					}
+
+					String result = dis.readUTF();
+					logger.print("socket dispatch resource {} to {}:{} result={}", fileName, node, nodes.get(node).nodeAgentPort(), result);
+					if("success".equals(result)){
+						flag = true;
+						list.add(node+":success");
+					}else{
+						list.add(node + ":failure");
+					}
+				}
+
+			} catch (Exception ex) {
+				list.add(node + ":failure-"+ex.getMessage());
+				logger.print("socket dispatch resource to {}:{} error={}", node, nodes.get(node).nodeAgentPort(), ex.getMessage());
+			}
+
+		}
+		return list;
 	}
 
 }

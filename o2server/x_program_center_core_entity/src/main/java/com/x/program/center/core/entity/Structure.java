@@ -197,6 +197,7 @@ public class Structure extends StorageObject {
 	private String description;
 
 	public static final String descriptionLob_FIELDNAME = "descriptionLob";
+	@FieldDescribe("详细描述.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + descriptionLob_FIELDNAME)

@@ -87,24 +87,27 @@ class ActionCover extends BaseAction {
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Application application = business.entityManagerContainer().find(wi.getId(), Application.class);
-			if (null == application) {
-				throw new ExceptionApplicationNotExist(wi.getId());
-			}
-			if (!business.editable(effectivePerson, application)) {
-				throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), application.getName(),
-						application.getId());
-			}
-			this.cover(business, wi, application, effectivePerson);
+
+			Application application = this.cover(business, wi, effectivePerson);
 			wo.setId(application.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private void cover(Business business, Wi wi, Application application, EffectivePerson effectivePerson) throws Exception {
+	private Application cover(Business business, Wi wi, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
 		List<JpaObject> removeObjects = new ArrayList<>();
+		Application application = business.entityManagerContainer().find(wi.getId(), Application.class);
+		if (null == application) {
+			application = WrapProcessPlatform.inCopier.copy(wi);
+			application.setName(this.idleApplicationName(business, application.getName(), application.getId()));
+			application.setAlias(this.idleApplicationAlias(business, application.getAlias(), application.getId()));
+			persistObjects.add(application);
+		}else if (!business.editable(effectivePerson, application)) {
+			throw new ExceptionApplicationAccessDenied(effectivePerson.getName(), application.getName(),
+					application.getId());
+		}
 		for (WrapForm _o : wi.getFormList()) {
 			Form form = business.entityManagerContainer().find(_o.getId(), Form.class);
 			if (null != form) {
@@ -328,6 +331,8 @@ class ActionCover extends BaseAction {
 		ApplicationCache.notify(Script.class);
 		ApplicationCache.notify(Process.class);
 		ApplicationCache.notify(Application.class);
+
+		return application;
 	}
 
 	private <T extends JpaObject, W extends JpaObject> List<T> orphanFormElement(Business business, List<W> list,
