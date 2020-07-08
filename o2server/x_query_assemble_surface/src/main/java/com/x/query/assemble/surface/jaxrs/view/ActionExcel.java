@@ -50,7 +50,7 @@ class ActionExcel extends BaseAction {
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount());
+					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 			Plan plan = this.accessPlan(business, view, runtime);
 			String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view);
