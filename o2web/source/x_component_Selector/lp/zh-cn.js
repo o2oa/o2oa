@@ -16,6 +16,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectCMSApplication": "选择内容管理应用",
     "selectCMSCategory": "选择内容管理栏目",
     "noSelectableItemText" : "无待选项",
+    "selectScript" : "选择脚本",
 
     "searchDescription" : "搜索内容",
 

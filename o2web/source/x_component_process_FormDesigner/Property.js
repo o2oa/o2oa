@@ -1210,6 +1210,7 @@ debugger;
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
+        var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
@@ -1275,6 +1276,15 @@ debugger;
                     "count": 1,
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            scriptNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "Script",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){this.saveScriptSelectItem(node, ids);}.bind(this)
                 });
             }.bind(this));
 
@@ -1349,6 +1359,23 @@ debugger;
     },
     removeViewItem: function(node, item){
 
+    },
+    saveScriptSelectItem: function(node, ids){
+        if (ids[0]){
+            var view = ids[0].data;
+            var data = {
+                "name": view.name,
+                "alias": view.alias,
+                "id": view.id,
+                "appName" : view.appName || view.applicationName || view.query,
+                "appId": view.appId,
+                "application": view.application || view.query
+            };
+            this.data[node.get("name")] = data;
+        }else{
+            this.data[node.get("name")] = null;
+        }
+        // if (this.module._checkView) this.module._checkView();
     },
     removeDutyItem: function(node, item){
         if (item.data.id){
