@@ -62,7 +62,7 @@ class IMChatViewController: UIViewController {
     
     //private
     private var chatMessageList: [IMMessageInfo] = []
-    private var page = 1
+    private var page = 0
     private var isShowEmoji = false
     private var isShowAudioView = false
     private var bottomBarHeight = 64 //底部输入框 表情按钮 的高度
@@ -80,6 +80,10 @@ class IMChatViewController: UIViewController {
 //        self.tableView.rowHeight = UITableView.automaticDimension
 //        self.tableView.estimatedRowHeight = 144
         self.tableView.backgroundColor = UIColor(hex: "#f3f3f3")
+        self.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
+           self.loadMsgList()
+        })
+        
         self.messageInputView.delegate = self
 
         //底部安全距离 老机型没有
@@ -111,7 +115,7 @@ class IMChatViewController: UIViewController {
         }
         
         //获取聊天数据
-        self.loadMsgList(page: page)
+        self.loadMsgList()
         //阅读
         self.viewModel.readConversation(conversationId: self.conversation?.id)
     }
@@ -204,11 +208,29 @@ class IMChatViewController: UIViewController {
     }
 
     //获取消息
-    private func loadMsgList(page: Int) {
+    private func loadMsgList() {
         if let c = self.conversation, let id = c.id {
-            self.viewModel.myMsgPageList(page: page, conversationId: id).then { (list) in
-                self.chatMessageList = list
-                self.scrollMessageToBottom()
+            self.viewModel.myMsgPageList(page: self.page + 1, conversationId: id).then { (list) in
+                if !list.isEmpty {
+                    self.page += 1
+                    self.chatMessageList.insert(contentsOf: list, at: 0)
+                    if self.page ==  1 {
+                        self.scrollMessageToBottom()
+                    }else {
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    }
+                }
+                if self.tableView.mj_header.isRefreshing(){
+                    self.tableView.mj_header.endRefreshing()
+                }
+                
+            }.catch { (error) in
+                DDLogError(error.localizedDescription)
+                if self.tableView.mj_header.isRefreshing(){
+                    self.tableView.mj_header.endRefreshing()
+                }
             }
         } else {
             self.showError(title: "参数错误！！！")

@@ -59,6 +59,7 @@ class IMConversationListViewController: UIViewController {
     }
     
     func getInstantMsgList() {
+        self.showLoading()
         viewModel.getInstantMsgList().then { (list) in
             self.instantMsgList = list
             self.getConversationList()
@@ -77,7 +78,8 @@ class IMConversationListViewController: UIViewController {
                 }
             }
             DispatchQueue.main.async {
-                if self.conversationList.count > 0 || self.instantMsgList.count > 0{
+                self.hideLoading()
+                if self.conversationList.count > 0 || self.instantMsgList.count > 0 {
                     self.emptyView.isHidden = true
                 } else {
                     self.emptyView.isHidden = false
@@ -87,7 +89,13 @@ class IMConversationListViewController: UIViewController {
             }
 
         }.catch { (err) in
-            DispatchQueue.main.async { self.emptyView.isHidden = false }
+            DDLogError(err.localizedDescription)
+            DispatchQueue.main.async {
+                self.hideLoading()
+                if self.conversationList.count > 0 || self.instantMsgList.count > 0 {
+                    self.emptyView.isHidden = false
+                }
+            }
         }
     }
 

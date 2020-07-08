@@ -137,7 +137,18 @@ extension IMViewModel {
                 let response = OOResult<BaseModelClass<[IMConversationInfo]>>(result)
                 if response.isResultSuccess() {
                     if let list = response.model?.data {
-                        fulfill(list)
+                        let rList = list.sorted { (f, s) -> Bool in
+                            let ft = f.lastMessage?.createTime ?? ""
+                            let st = s.lastMessage?.createTime ?? ""
+                            if ft == "" {
+                                return true
+                            }
+                            if st == "" {
+                                return false
+                            }
+                            return ft.toDate(formatter: "yyyy-MM-dd HH:mm:ss") > st.toDate(formatter: "yyyy-MM-dd HH:mm:ss")
+                        }
+                        fulfill(rList)
                     } else {
                         reject(OOAppError.apiEmptyResultError)
                     }
@@ -150,7 +161,7 @@ extension IMViewModel {
     //查询消息列表
     func myMsgPageList(page: Int, conversationId: String) -> Promise<[IMMessageInfo]> {
         return Promise { fulfill, reject in
-            self.communicateAPI.request(.msgListByPaging(page, 40, conversationId), completion: { result in
+            self.communicateAPI.request(.msgListByPaging(page, 15, conversationId), completion: { result in
                     let response = OOResult<BaseModelClass<[IMMessageInfo]>>(result)
                     if response.isResultSuccess() {
                         if let list = response.model?.data {
@@ -174,7 +185,7 @@ extension IMViewModel {
     
     func getInstantMsgList() -> Promise<[InstantMessage]> {
         return Promise { fulfill, reject in
-            self.communicateAPI.request(.instantMessageList(100), completion: { result in
+            self.communicateAPI.request(.instantMessageList(50), completion: { result in
                     let response = OOResult<BaseModelClass<[InstantMessage]>>(result)
                     if response.isResultSuccess() {
                         if let list = response.model?.data {
