@@ -37,6 +37,19 @@ class OOAttandanceTotalItemCell: UITableViewCell,Configurable {
         checkinDateLabel.text = model.recordDateString
         startTimeLabel.text = model.onDutyTime
         endTimeLabel.text = model.offDutyTime
+        if model.isLate == true {
+            self.iconLabel.text = "迟"
+            self.iconLabel.backgroundColor = UIColor(hex: "#F5A623")
+        }else if model.isLeaveEarlier  == true {
+            self.iconLabel.text = "早"
+            self.iconLabel.backgroundColor = UIColor(hex: "#AC71E3")
+        }else if model.isGetSelfHolidays  == true {
+            self.iconLabel.text = "假"
+            self.iconLabel.backgroundColor = UIColor(hex: "#4FB2E3")
+        }else {
+            self.iconLabel.text = "正"
+            self.iconLabel.backgroundColor = UIColor(hex: "#FB4747")
+        }
     }
     
 }

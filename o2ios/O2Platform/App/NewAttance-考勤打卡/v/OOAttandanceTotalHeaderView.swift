@@ -59,10 +59,11 @@ class OOAttandanceTotalHeaderView: UIView,Configurable {
         guard let model = item as? OOAttandanceAnalyze else {
             return
         }
-        normalLabel.text = String(model.onDutyTimes! < model.offDutyTimes! ? model.onDutyTimes! : model.offDutyTimes!)
+        
+        normalLabel.text = String(model.onDutyTimes!)
         lateLabel.text = String(model.lateTimes!)
         leaveLabel.text = String(model.leaveEarlyTimes!)
-        abnormalLabel.text = String(model.abNormalDutyCount!)
+        abnormalLabel.text = String(model.onSelfHolidayCount!)
         
     }
     
