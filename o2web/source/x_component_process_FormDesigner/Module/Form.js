@@ -1063,11 +1063,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	resumeForm : function(version){
 		this.action.FormVersionAction.get(version.id, function( json ){
 			var formData = JSON.parse(json.data.data);
-			this.action.FormAction.update(version.form, formData,function( json ){
+			//this.action.FormAction.update(version.form, formData,function( json ){
 				this.designer.notice(MWF.APPFD.LP.version["resumeSuccess"]);
 				this.reload(JSON.decode(MWF.decodeJsonString(formData.data)));
 				this.dlg.close();
-			}.bind(this), null, false);
+			//}.bind(this), null, false);
 		}.bind(this), null, false);
 	},
 	deletePropertiesOrStyles: function(name, key){
