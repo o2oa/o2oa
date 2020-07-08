@@ -146,6 +146,10 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
             finish()
         }
         //消息列表初始化
+        sr_o2_chat_message_layout.setOnRefreshListener {
+            XLog.debug("下啦零零落落零零落落来了")
+            getPageData()
+        }
         rv_o2_chat_messages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_o2_chat_messages.adapter = adapter
         adapter.eventListener = object : O2ChatMessageAdapter.MessageEventListener {
@@ -188,6 +192,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
 
         initListener()
 
+        sr_o2_chat_message_layout.isRefreshing = true
         getPageData()
 
         //录音格式
@@ -389,6 +394,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
     }
 
     override fun backPageMessages(list: List<IMMessage>) {
+        sr_o2_chat_message_layout.isRefreshing = false
         if (list.isNotEmpty()) {
             page++
             adapter.addPageMessage(list)

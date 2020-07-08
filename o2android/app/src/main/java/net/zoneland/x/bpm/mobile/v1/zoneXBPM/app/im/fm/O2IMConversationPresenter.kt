@@ -72,10 +72,18 @@ class O2IMConversationPresenter : BasePresenterImpl<O2IMConversationContract.Vie
         val service = getMessageCommunicateService(mView?.getContext())
         service?.let {
             it.myConversationList().subscribeOn(Schedulers.io())
+                    .flatMap { res ->
+                        val list = res.data
+                        if ( list != null && list.isNotEmpty()) {
+                            val newList = list.sortedByDescending { c -> c.lastMessage?.createTime  }
+                            Observable.just(newList)
+                        }else {
+                            Observable.just(ArrayList())
+                        }
+                    }
                     .observeOn(AndroidSchedulers.mainThread())
                     .o2Subscribe {
-                        onNext { res->
-                            val list = res.data
+                        onNext { list->
                             if (list != null) {
                                 mView?.myConversationList(list)
                             }else{
