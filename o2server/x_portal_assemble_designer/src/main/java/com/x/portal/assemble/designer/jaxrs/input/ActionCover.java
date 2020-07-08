@@ -46,23 +46,26 @@ class ActionCover extends BaseAction {
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Portal portal = business.entityManagerContainer().find(wi.getId(), Portal.class);
-			if (null == portal) {
-				throw new ExceptionPortalNotExist(wi.getId());
-			}
-			if (!business.editable(effectivePerson, portal)) {
-				throw new ExceptionPortalAccessDenied(effectivePerson.getName(), portal.getName(), portal.getId());
-			}
 
-			this.cover(business, wi, portal);
+			Portal portal = this.cover(business, wi, effectivePerson);
 			wo.setId(portal.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private void cover(Business business, Wi wi, Portal portal) throws Exception {
+	private Portal cover(Business business, Wi wi, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
+
+		Portal portal = business.entityManagerContainer().find(wi.getId(), Portal.class);
+		if (null == portal) {
+			portal = WrapPortal.inCopier.copy(wi);
+			portal.setName(this.idlePortalName(business, portal.getName(), portal.getId()));
+			portal.setAlias(this.idlePortalAlias(business, portal.getAlias(), portal.getId()));
+			persistObjects.add(portal);
+		}else if (!business.editable(effectivePerson, portal)) {
+			throw new ExceptionPortalAccessDenied(effectivePerson.getName(), portal.getName(), portal.getId());
+		}
 
 		for (WrapWidget _o : wi.getWidgetList()) {
 			Widget obj = business.entityManagerContainer().find(_o.getId(), Widget.class);
@@ -147,6 +150,8 @@ class ActionCover extends BaseAction {
 		ApplicationCache.notify(Page.class);
 		ApplicationCache.notify(Widget.class);
 		ApplicationCache.notify(Portal.class);
+
+		return portal;
 	}
 
 	private <T extends JpaObject> String idleNameWithPortal(Business business, String portalId, String name,

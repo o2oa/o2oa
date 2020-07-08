@@ -67,6 +67,13 @@ public class InstallLog extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String status;
 
+	public static final String data_FIELDNAME = "data";
+	@FieldDescribe("安装概要内容.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + data_FIELDNAME)
+	private String data;
+
 	public static final String installPerson_FIELDNAME = "installPerson";
 	@FieldDescribe("安装用户.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + installPerson_FIELDNAME)
@@ -123,6 +130,14 @@ public class InstallLog extends SliceJpaObject {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 
 	public String getInstallPerson() {
