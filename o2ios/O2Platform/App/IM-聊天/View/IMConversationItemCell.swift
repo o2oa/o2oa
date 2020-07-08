@@ -78,7 +78,6 @@ class IMConversationItemCell: UITableViewCell {
         }
         // message
         if let msgBody = conversation.lastMessage?.body, let body = parseJson(msg: msgBody) {
-            
             if body.type == o2_im_msg_type_text || body.type == o2_im_msg_type_image
                 || body.type == o2_im_msg_type_audio || body.type == o2_im_msg_type_location {
                 self.messageLabel.text = body.body
