@@ -39,7 +39,7 @@ class ActionBundle extends BaseAction {
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount());
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount(), true);
 
 			List<String> os = null;
 			switch (StringUtils.trimToEmpty(view.getType())) {
