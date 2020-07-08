@@ -160,8 +160,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.getTempleteJson(function(){
                 var templete = this.json.documentTempleteName || "standard";
                 pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file), function(){
-                    debugger;
-                    this.doPageStyles(pageContentNode);
+                    if (this.json.toWordPageNumber!="n") this.doPageStyles(pageContentNode);
 
                     if (this.attachmentTemplete){
                         var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
