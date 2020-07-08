@@ -468,7 +468,8 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
 	},
 	loadOrgWidget: function(value, node){
-		var options = {"style": "xform", "canRemove":false , "onRemove" : this.removeItem};
+        var disableInfor = layout.mobile ? true : false;
+		var options = {"style": "xform", "canRemove":false , "onRemove" : this.removeItem,"disableInfor" : disableInfor};
 		value.each(function(data){
 			if( data.distinguishedName ){
 				var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);

@@ -869,6 +869,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         return (this.json.selectType==="unit") ? "getUnit" : "getIdentity";
     },
     loadOrgWidget: function(value, node){
+        var disableInfor = layout.mobile ? true : false;
         var height = node.getStyle("height").toInt();
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
@@ -877,19 +878,19 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 var copyData = Object.clone(data);
                 switch (flag.toLowerCase()){
                     case "@i":
-                        new MWF.widget.O2Identity(copyData, node, {"style": "xform"});
+                        new MWF.widget.O2Identity(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "@p":
-                        new MWF.widget.O2Person(copyData, node, {"style": "xform"});
+                        new MWF.widget.O2Person(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "@u":
-                        new MWF.widget.O2Unit(copyData, node, {"style": "xform"});
+                        new MWF.widget.O2Unit(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     case "@g":
-                        new MWF.widget.O2Group(copyData, node, {"style": "xform"});
+                        new MWF.widget.O2Group(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                         break;
                     default:
-                        new MWF.widget.O2Other(copyData, node, {"style": "xform"});
+                        new MWF.widget.O2Other(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
                 }
             }.bind(this));
         }
