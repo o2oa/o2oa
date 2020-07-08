@@ -43,22 +43,27 @@ class ActionCover extends BaseAction {
 			Wo wo = new Wo();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			Query query = business.entityManagerContainer().find(wi.getId(), Query.class);
-			if (null == query) {
-				throw new ExceptionQueryNotExist(wi.getId());
-			}
-			if (!business.editable(effectivePerson, query)) {
-				throw new ExceptionQueryAccessDenied(effectivePerson.getName(), query.getName(), query.getId());
-			}
-			this.cover(business, wi, query);
+
+			Query query = this.cover(business, wi, effectivePerson);
 			wo.setId(query.getId());
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	private void cover(Business business, Wi wi, Query query) throws Exception {
+	private Query cover(Business business, Wi wi, EffectivePerson effectivePerson) throws Exception {
 		List<JpaObject> persistObjects = new ArrayList<>();
+
+		Query query = business.entityManagerContainer().find(wi.getId(), Query.class);
+		if(query == null){
+			query = WrapQuery.inCopier.copy(wi);
+			query.setName(this.idleQueryName(business, query.getName(), query.getId()));
+			query.setAlias(this.idleQueryAlias(business, query.getAlias(), query.getId()));
+			persistObjects.add(query);
+		}else if (!business.editable(effectivePerson, query)) {
+			throw new ExceptionQueryAccessDenied(effectivePerson.getName(), query.getName(), query.getId());
+		}
+
 		for (WrapView _o : wi.getViewList()) {
 			View obj = business.entityManagerContainer().find(_o.getId(), View.class);
 			if (null != obj) {
@@ -169,6 +174,8 @@ class ActionCover extends BaseAction {
 		if(!wi.getRevealList().isEmpty()){
 			ApplicationCache.notify(Reveal.class);
 		}
+
+		return query;
 	}
 
 	private <T extends JpaObject> String idleNameWithQuery(Business business, String queryId, String name, Class<T> cls,
