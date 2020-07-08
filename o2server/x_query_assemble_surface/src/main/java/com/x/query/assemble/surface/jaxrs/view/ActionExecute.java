@@ -55,7 +55,7 @@ class ActionExecute extends BaseAction {
 				wi = new Wi();
 			}
 			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount());
+					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 			Plan plan = this.accessPlan(business, view, runtime);
 			result.setData(plan);

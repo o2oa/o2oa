@@ -51,7 +51,7 @@ class ActionBundleWithQuery extends BaseAction {
 				wi = new Wi();
 			}
 			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount());
+					wi.getCount(), true);
 			Wo wo = new Wo();
 			wo.setValueList(this.fetchBundle(business, view, runtime));
 			result.setData(wo);

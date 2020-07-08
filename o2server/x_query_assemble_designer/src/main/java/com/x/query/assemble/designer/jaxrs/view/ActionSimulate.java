@@ -41,7 +41,7 @@ class ActionSimulate extends BaseAction {
 			if (wi == null) {
 				wi = new Wi();
 			}
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount());
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 			switch (StringUtils.trimToEmpty(view.getType())) {
 
