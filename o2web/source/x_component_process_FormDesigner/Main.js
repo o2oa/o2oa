@@ -1603,6 +1603,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 	recordStatus: function(){
 		return {"id": this.options.id};
 	},
+    showFormVersion: function(){
+        this.form.showFormVersion();
+    },
     onPostClose: function(){
         if (this.pcForm){
             MWF.release(this.pcForm.moduleList);
