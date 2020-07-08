@@ -123,6 +123,14 @@
 					<td class="editTableValue"><input type="text" name="toWordSite" value="text{$.toWordSite || '$doc'}" class="editTableInput"/></td>
 				</tr>
 				<tr>
+					<td class="editTableTitle">添加页码:</td>
+					<td class="editTableValue">
+						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber!=='n')?'checked':''} type="radio" value="y"/>是
+						<input class="editTableRadio" name="toWordPageNumber" text{($.toWordPageNumber=='n')?'checked':''} type="radio" value="n"/>否
+						<div>转换Word后是否要添加页码</div>
+					</td>
+				</tr>
+				<tr>
 					<td class="editTableTitle">何时转换:</td>
 					<td class="editTableValue">
 						<input class="editTableRadio" name="toWordTrigger" text{($.toWordTrigger!='save' && $.toWordTrigger!=='open')?'checked':''} type="radio" value="submit"/>提交时
