@@ -22,44 +22,59 @@ class OOAttanceTotalController: UITableViewController {
     }()
     
     private var models:[OOAttandanceCheckinTotal] = []
+    
+    private var year: String = {
+        let currentDate = Date()
+        return String(currentDate.year)
+    }()
+    private var month: String = {
+        let currentDate = Date()
+        return currentDate.month > 9 ? "\(currentDate.month)" : "0\(currentDate.month)"
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
 //        title = "统计"
         NotificationCenter.default.addObserver(self, selector: #selector(showDatePicker(_:)), name: OONotification.staticsTotal.notificationName, object: nil)
         tableView.register(UINib.init(nibName: "OOAttandanceTotalItemCell", bundle: nil), forCellReuseIdentifier: "OOAttandanceTotalItemCell")
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "关闭", style: .plain, target: self, action: #selector(closeWindow))
-        let currentDate = Date()
-        let year = String(currentDate.year)
-        let month = currentDate.month > 9 ? "\(currentDate.month)" : "0\(currentDate.month)"
-        getTotalDetailList(year, month)
         tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
-            self.getTotalDetailList(year, month)
+            self.getTotalDetailList()
         })
-        
+        getTotalDetailList()
     }
     
     @objc private func showDatePicker(_ notification:Notification) {
         self.datePickerTapped("选择日期", .date, "yyyy-MM") { (result) in
-            let year = result.toString("yyyy")
-            let month = result.toString("MM")
+            self.year = result.toString("yyyy")
+            self.month = result.toString("MM")
             DispatchQueue.main.async {
-                self.getTotalDetailList(year, month)
+                self.getTotalDetailList()
             }
         }
     }
     
-    func getTotalDetailList(_ year:String,_ month:String){
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
-        viewModel.getCheckinCycle(year,month).then { (cycleDetail) -> Promise<(OOAttandanceAnalyze,[OOAttandanceCheckinTotal])> in
-             self.headerView.requestBean = cycleDetail
+    func getTotalDetailList(){
+        self.showLoading()
+        viewModel.getCheckinCycle(self.year, self.month).then { (cycleDetail) -> Promise<(OOAttandanceAnalyze,[OOAttandanceCheckinTotal])> in
+                self.headerView.requestBean = cycleDetail
                return all(self.viewModel.getCheckinAnalyze(cycleDetail), self.viewModel.getCheckinTotal(cycleDetail))
             }.then { (result) in
                 self.headerView.config(withItem: result.0)
+                let list = result.1
                 self.models.removeAll()
-                self.models.append(contentsOf: result.1)
+                if !list.isEmpty {
+                    let newList = list.sorted { (f, s) -> Bool in
+                        if let fd = f.recordDateString, let sd = s.recordDateString {
+                            return fd.toDate(formatter: "yyyy-MM-dd") < sd.toDate(formatter: "yyyy-MM-dd")
+                        }else {
+                            return false
+                        }
+                    }
+                    self.models.append(contentsOf: newList)
+                }
+                
             }.always {
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
                 self.tableView.reloadData()
                 if self.tableView.mj_header.isRefreshing() {
                     self.tableView.mj_header.endRefreshing()
@@ -67,7 +82,8 @@ class OOAttanceTotalController: UITableViewController {
                 
             }.catch { (myError) in
                 let customError = myError as? OOAppError
-                MBProgressHUD_JChat.show(text:(customError?.failureReason)! , view: self.view)
+                self.showError(title: (customError?.failureReason)!)
+                
         }
     }
     

@@ -93,6 +93,9 @@ class IMConversationItemCell: UITableViewCell {
                 self.messageLabel.isHidden = true
                 self.emojiImg.isHidden = true
             }
+        }else {
+            self.messageLabel.isHidden = true
+            self.emojiImg.isHidden = true
         }
         //unread number
         let number = conversation.unreadNumber ?? 0
