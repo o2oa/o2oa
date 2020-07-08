@@ -485,7 +485,7 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
             "styles": this.css.roomItemTitleIconsNode
         }).inject(this.middleNode);
 
-        var deviceList = this.data.device.split("#");
+        var deviceList = ( this.data.device || "" ).split("#");
         deviceList.each(function(name){
             var node = new Element("div", {"styles": this.css.roomItemIconNode, "title": this.app.lp.device[name]}).inject(this.iconsNode);
             node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+  name + ( this.enable ? "" : "_disable" ) +".png)");
