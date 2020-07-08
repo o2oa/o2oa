@@ -12,7 +12,17 @@ MWF.xApplication.process.FormDesigner.LP = {
 			"ok": "确定",
 			"cancel": "取消"
 		},
-		
+        "version" : {
+            "title" : "查看表单版本记录",
+            "close" : "关闭",
+            "no":"序号",
+            "updateTime":"更新时间",
+            "op":"操作",
+            "resume" : "恢复",
+            "resumeConfirm" : "恢复确认",
+            "resumeInfo" : "您确认是否需要执行表单恢复操作？确认恢复后当前表单会更新，需要手动保存当前表单才会生效。",
+            "resumeSuccess" :"恢复成功"
+        },
 		"notice": {
 			"save_success": "表单保存成功！",
             "saveTemplate_success": "表单模板保存成功！",
