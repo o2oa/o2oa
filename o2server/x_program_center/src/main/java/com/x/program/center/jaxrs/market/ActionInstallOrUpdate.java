@@ -64,7 +64,7 @@ class ActionInstallOrUpdate extends BaseAction {
 			if(BooleanUtils.isTrue(Config.collect().getEnable())) {
 				String token = business.loginCollect();
 				if(StringUtils.isNotEmpty(token)){
-					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN),
+					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 					if(bytes!=null){
 						WrapModule module = this.install(bytes);
