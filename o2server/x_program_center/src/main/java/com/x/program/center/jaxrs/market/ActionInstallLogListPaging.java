@@ -13,9 +13,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.Business;
-import com.x.program.center.core.entity.Application;
-import com.x.program.center.core.entity.Application_;
-import org.apache.commons.lang3.BooleanUtils;
+import com.x.program.center.core.entity.InstallLog;
+import com.x.program.center.core.entity.InstallLog_;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -24,11 +23,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-class ActionListPaging extends BaseAction {
+class ActionInstallLogListPaging extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
@@ -37,45 +34,40 @@ class ActionListPaging extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
-			String orderBy = Application.createTime_FIELDNAME;
-			if(StringUtils.isNotEmpty(wi.getOrderBy())){
-				orderBy = wi.getOrderBy();
-			}
-			List<Wo> wos = new ArrayList<>();
-			if(BooleanUtils.isTrue(wi.getAsc())){
-				emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
-			}else {
-				wos = emc.fetchDescPaging(Application.class, Wo.copier, p, page, size, orderBy);
-			}
+			List<Wo> wos = emc.fetchDescPaging(InstallLog.class, Wo.copier, p, page, size, InstallLog.createTime_FIELDNAME);
 			result.setData(wos);
-			result.setCount(emc.count(Application.class, p));
+			result.setCount(emc.count(InstallLog.class, p));
 			return result;
 		}
 	}
 
 	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Application.class);
+		EntityManager em = business.entityManagerContainer().get(InstallLog.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Application> root = cq.from(Application.class);
+		Root<InstallLog> root = cq.from(InstallLog.class);
 		Predicate p = cb.conjunction();
 
 		if(StringUtils.isNotEmpty(wi.getName())){
 			String key = StringTools.escapeSqlLikeKey(wi.getName());
 			if (StringUtils.isNotEmpty(key)) {
-				p = cb.and(p,cb.like(root.get(Application_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+				p = cb.and(p,cb.like(root.get(InstallLog_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 			}
 		}
 
+		if(StringUtils.isNotEmpty(wi.getStatus())){
+			p = cb.and(p, cb.equal(root.get(InstallLog_.status), wi.getStatus()));
+		}
+
 		if(StringUtils.isNotEmpty(wi.getCategory())){
-			p = cb.and(p, cb.equal(root.get(Application_.category), wi.getCategory()));
+			p = cb.and(p, cb.equal(root.get(InstallLog_.category), wi.getCategory()));
 		}
 
 		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Application_.createTime), DateTools.parse(wi.getStartTime())));
+			p = cb.and(p, cb.greaterThan(root.get(InstallLog_.createTime), DateTools.parse(wi.getStartTime())));
 		}
 		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Application_.createTime), DateTools.parse(wi.getEndTime())));
+			p = cb.and(p, cb.lessThan(root.get(InstallLog_.createTime), DateTools.parse(wi.getEndTime())));
 		}
 		return p;
 	}
@@ -88,11 +80,8 @@ class ActionListPaging extends BaseAction {
 		@FieldDescribe("分类")
 		private String category;
 
-		@FieldDescribe("排序字段：createTime（创建时间，默认）|orderNumber（排序）|recommend（推荐指数）")
-		private String orderBy;
-
-		@FieldDescribe("是否是升序排序：true|false")
-		private Boolean isAsc;
+		@FieldDescribe("状态:1(正常)|0(失效)")
+		private String status;
 
 		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
 		private String startTime;
@@ -116,20 +105,12 @@ class ActionListPaging extends BaseAction {
 			this.category = category;
 		}
 
-		public String getOrderBy() {
-			return orderBy;
+		public String getStatus() {
+			return status;
 		}
 
-		public void setOrderBy(String orderBy) {
-			this.orderBy = orderBy;
-		}
-
-		public Boolean getAsc() {
-			return isAsc;
-		}
-
-		public void setAsc(Boolean asc) {
-			isAsc = asc;
+		public void setStatus(String status) {
+			this.status = status;
 		}
 
 		public String getStartTime() {
@@ -149,12 +130,12 @@ class ActionListPaging extends BaseAction {
 		}
 	}
 
-	public static class Wo extends Application {
+	public static class Wo extends InstallLog {
 
-		private static final long serialVersionUID = 9206739553467260926L;
+		private static final long serialVersionUID = -2553925573532406246L;
 
-		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class,
-				JpaObject.singularAttributeField(Application.class, true, false), Arrays.asList("abort", "installSteps"));
+		static WrapCopier<InstallLog, Wo> copier = WrapCopierFactory.wo(InstallLog.class, Wo.class,
+				JpaObject.singularAttributeField(InstallLog.class, true, true), null);
 
 
 	}
