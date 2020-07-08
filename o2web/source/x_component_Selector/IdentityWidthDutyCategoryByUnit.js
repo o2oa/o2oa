@@ -1,7 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "IdentityWidthDuty", null, false);
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
-	Extends: MWF.xApplication.Selector.IdentityWidthDuty,
+    Extends: MWF.xApplication.Selector.IdentityWidthDuty,
     options: {
         "style": "default",
         "count": 0,
@@ -92,6 +92,11 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         //this.listAllIdentityInUnitObject( identityList );
         var unitTree = this.listNestedUnitByIdentity( identityList );
         if( this.options.dutyUnitLevelBy === "duty" ){
+            this.level1Container = [];
+            if( this.options.units && this.options.units.length ){
+                var div = new Element( "div" ).inject(this.itemAreaNode);
+                this.level1Container.push(div);
+            }
             this._loadSelectItemsByDutyUnit(unitTree);
         }else{
             this._loadSelectItemsByIdentityUnit(unitTree);
@@ -136,12 +141,17 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     },
     _loadSelectItemsByDutyUnit : function( unitTree ){
         if( !unitTree.unitList )return;
-        this.sortUnit( unitTree.unitList );
+        // this.sortUnit( unitTree.unitList );
         for( var i=0; i< unitTree.unitList.length; i++ ){
             var unit = unitTree.unitList[i];
             if( this.isUnitContain( unit ) ){
                 if( !this.isExcluded( unit ) ) {
-                    var category = this._newItemCategory("ItemCategory",unit, this, this.itemAreaNode);
+                    var container = this.itemAreaNode;
+                    if( this.level1Container && this.level1Container.length ){
+                        var index = this.getIndexFromUnitOption( unit );
+                        if( index > -1 && (this.level1Container.length > index) && this.level1Container[i] )container = this.level1Container[i];
+                    }
+                    var category = this._newItemCategory("ItemCategory",unit, this, container );
                     this.subCategorys.push(category);
                 }
             }else{
@@ -333,14 +343,14 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
     //}
 });
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.Item = new Class({
-	Extends: MWF.xApplication.Selector.IdentityWidthDuty.Item
+    Extends: MWF.xApplication.Selector.IdentityWidthDuty.Item
 });
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.SearchItem = new Class({
     Extends: MWF.xApplication.Selector.IdentityWidthDuty.SearchItem
 });
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected
+    Extends: MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected
 });
 
 MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemCategory = new Class({

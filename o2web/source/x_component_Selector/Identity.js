@@ -1,7 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "Person", null, false);
 MWF.xApplication.Selector.Identity = new Class({
-	Extends: MWF.xApplication.Selector.Person,
+    Extends: MWF.xApplication.Selector.Person,
     options: {
         "style": "default",
         "count": 0,
@@ -19,9 +19,9 @@ MWF.xApplication.Selector.Identity = new Class({
         "selectAllEnable" : true //分类是否允许全选下一层
     },
     loadSelectItems: function(addToNext){
-	    debugger;
+        debugger;
 
-	    var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
+        var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
         if( this.options.resultType === "person" ){
             if( this.titleTextNode ){
                 this.titleTextNode.set("text", MWF.xApplication.Selector.LP.selectPerson );
@@ -52,11 +52,15 @@ MWF.xApplication.Selector.Identity = new Class({
                 }
             }.bind(this));
 
+
             this.options.units.each(function(unit){
+
+                var container = new Element("div").inject( this.itemAreaNode );
+
                 if (typeOf(unit)==="string"){
                     this.orgAction.getUnit(unit, function(json){
                         if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
+                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
                             this.subCategorys.push( category );
                         }
                         loadUnitSuccess();
@@ -64,7 +68,7 @@ MWF.xApplication.Selector.Identity = new Class({
                         this.orgAction.listUnitByKey(function(json){
                             if (json.data.length){
                                 json.data.each(function(data){
-                                    var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode);
+                                    var category = this._newItemCategory("ItemUnitCategory", data, this, container);
                                     this.subCategorys.push( category );
                                 }.bind(this))
                             }
@@ -74,7 +78,7 @@ MWF.xApplication.Selector.Identity = new Class({
                 }else{
                     this.orgAction.getUnit(function(json){
                         if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, this.itemAreaNode);
+                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
                             this.subCategorys.push( category );
                         }
                         loadUnitSuccess();
@@ -101,7 +105,7 @@ MWF.xApplication.Selector.Identity = new Class({
 
                 // this.unitLoaded = true;
                 // if( this.includeLoaded ){
-                    afterLoadSelectItemFun();
+                afterLoadSelectItemFun();
                 // }
 
             }.bind(this));
@@ -238,7 +242,7 @@ MWF.xApplication.Selector.Identity = new Class({
 
 
 MWF.xApplication.Selector.Identity.Item = new Class({
-	Extends: MWF.xApplication.Selector.Person.Item,
+    Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
         return this.data.name;
     },
@@ -325,7 +329,7 @@ MWF.xApplication.Selector.Identity.SearchItem = new Class({
 });
 
 MWF.xApplication.Selector.Identity.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.Person.ItemSelected,
+    Extends: MWF.xApplication.Selector.Person.ItemSelected,
     getData: function(callback){
         if( this.selector.options.resultType === "person" ){
             var isPerson = false;
@@ -893,7 +897,7 @@ MWF.xApplication.Selector.Identity.ItemGroupCategory = new Class({
                     //根据身份id批量获取身份对象
                     o2.Actions.load("x_organization_assemble_express").IdentityAction.listObject({
                         identityList : this.data.identityList
-                }, function (json) {
+                    }, function (json) {
                         this.selector.includeObject.loadIdentityItem( json, identityContainer, this.level + 1, this);
                         checkCallback("identity", this.data.identityList.length )
                     }.bind(this), function () {
