@@ -216,8 +216,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     if (last!==";") cssText = cssText+";";
                     cssText += "mso-header-margin:42.55pt;\n" +
                         "        mso-footer-margin:70.9pt;\n" +
-                        "        mso-even-footer:url(\"http://develop.o2oa.net/x_component_process_FormDesigner/Module/Documenteditor/templete/header.htm\") ef1;\n" +
-                        "        mso-footer:url(\"http://develop.o2oa.net/x_component_process_FormDesigner/Module/Documenteditor/templete/header.htm\") f1;\n" +
+                        "        mso-even-footer:url(\""+header+"\") ef1;\n" +
+                        "        mso-footer:url(\""+header+"\") f1;\n" +
                         "        mso-paper-source:0;";
                     text = text.replace(arr[0], arr[1]+cssText+arr[3]);
                 }
@@ -232,8 +232,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     "        letter-spacing:-0.4pt;\n" +
                     "        mso-header-margin:42.55pt;\n" +
                     "        mso-footer-margin:70.9pt;\n" +
-                    "        mso-even-footer:url(\"http://develop.o2oa.net/x_component_process_FormDesigner/Module/Documenteditor/templete/header.htm\") ef1;\n" +
-                    "        mso-footer:url(\"http://develop.o2oa.net/x_component_process_FormDesigner/Module/Documenteditor/templete/header.htm\") f1;\n" +
+                    "        mso-even-footer:url(\""+header+"\") ef1;\n" +
+                    "        mso-footer:url(\""+header+"\") f1;\n" +
                     "        mso-paper-source:0;\n" +
                     "    }"
             }
