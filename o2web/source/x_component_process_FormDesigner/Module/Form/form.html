@@ -24,9 +24,26 @@
                 <!--</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">表单样式:</td>
+                <td class="editTableTitle" rowspan="2">表单样式:</td>
+                <td class="editTableValue">
+                    <input type="radio" onclick="if (this.checked) {
+                        $('text{$.pid}formStyleTypeTr').setStyle('display', '');
+                        $('text{$.pid}formStyleTypeCustomTr').setStyle('display', 'none');
+                    }" name="formStyleTypeType" value="default" text{($.formStyleTypeType!='custom' )?'checked':''}/>系统
+                    <input type="radio" onclick="if (this.checked) {
+                        $('text{$.pid}formStyleTypeTr').setStyle('display', 'none');
+                        $('text{$.pid}formStyleTypeCustomTr').setStyle('display', '');
+                    }" name="formStyleTypeType" value="custom" text{($.formStyleTypeType=='custom')?'checked':''}/>自定义
+                </td>
+            </tr>
+            <tr id="text{$.pid}formStyleTypeTr" style="display: text{($.submitFormType!='custom')?'':'none'}">
                 <td class="editTableValue">
                     <select class="MWFFormStyle" name="formStyleType"></select>
+                </td>
+            </tr>
+            <tr id="text{$.pid}formStyleTypeCustomTr" style="display: text{($.submitFormType=='custom')?'':'none'}">
+                <td class="editTableValue">
+                   <div class="MWFScriptSelect" name="formStyleCustom"></div>
                 </td>
             </tr>
             <tr>
