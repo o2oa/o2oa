@@ -202,7 +202,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
-			List<FilterEntry> filterList, Map<String, String> parameter, Integer count) throws Exception {
+			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
 		runtime.person = effectivePerson.getDistinguishedName();
 		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
@@ -258,14 +258,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		runtime.parameter = parameter;
 		runtime.filterList = filterList;
-		runtime.count = this.getCount(view, count);
+		runtime.count = this.getCount(view, count, isBundle);
 		return runtime;
 	}
 
-	protected Integer getCount(View view, Integer count) {
+	protected Integer getCount(View view, Integer count, boolean isBundle) {
 		Integer viewCount = view.getCount();
-		Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
-		return NumberUtils.min(viewCount, wiCount);
+		if(isBundle) {
+			if(viewCount==null || viewCount < 1){
+				viewCount = View.MAX_COUNT;
+			}
+			Integer wiCount = ((count == null) || (count < 1)) ? viewCount : count;
+			return wiCount;
+		}else{
+			Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
+			return NumberUtils.min(viewCount, wiCount);
+		}
 	}
 
 }
