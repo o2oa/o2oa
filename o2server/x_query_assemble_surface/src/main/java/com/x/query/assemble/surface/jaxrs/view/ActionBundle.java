@@ -53,7 +53,7 @@ class ActionBundle extends BaseAction {
 				wi = new Wi();
 			}
 			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount());
+					wi.getCount(), true);
 			List<String> os = this.fetchBundle(business, view, runtime);
 			Wo wo = new Wo();
 			wo.setValueList(os);
