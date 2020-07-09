@@ -12,11 +12,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,41 +19,16 @@ import javax.persistence.Lob;
 import javax.persistence.OrderColumn;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import 	org.apache.openjpa.persistence.jdbc.ContainerTable;
 
 import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.DescribeBuilder.JaxrsMethod;
-import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -141,6 +111,10 @@ public class TableBuilder {
 			
 			Column column = field.getAnnotation(Column.class);
 			FieldDescribe fieldDescribe = field.getAnnotation(FieldDescribe.class);
+			String  strFieldDescribe = "";
+			if(fieldDescribe != null) {
+				strFieldDescribe = fieldDescribe.value();
+			}
 			Lob lob = field.getAnnotation(Lob.class); 
 			ContainerTable containerTable = field.getAnnotation(ContainerTable.class);
 			
@@ -153,7 +127,7 @@ public class TableBuilder {
 					columnElement.setType(javaTypeToSqlType(field.getType().getCanonicalName()));
 				}
 				columnElement.setLength(column.length()+"");
-				columnElement.setRemark(fieldDescribe.value());
+				columnElement.setRemark(strFieldDescribe);
 				jaxrsClass.getColumn().add(columnElement);
 			}else {
 				//关联表
@@ -162,7 +136,7 @@ public class TableBuilder {
 					 columnElement.setName(field.getName());
 					 columnElement.setType("ContainerTable");
 					 columnElement.setLength("");
-					 columnElement.setRemark(fieldDescribe.value());
+					 columnElement.setRemark(strFieldDescribe);
 					 
 					 ContainerTableProperty containerTableProperty = new ContainerTableProperty();
 					 containerTableProperty.setName(containerTable.name());
