@@ -10,6 +10,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Attachment;
+import com.x.program.center.core.entity.InstallLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,13 @@ class ActionGet extends BaseAction {
 			}
 			Wo wo = Wo.copier.copy(app);
 			wo.setAttList(emc.listEqual(Attachment.class, Attachment.application_FIELDNAME, wo.getId()));
+
+			InstallLog installLog = emc.find(id, InstallLog.class);
+			if(installLog!=null){
+				wo.setInstalledVersion(installLog.getVersion());
+			}else{
+				wo.setInstalledVersion("");
+			}
 			result.setData(wo);
 			return result;
 		}
@@ -38,12 +46,23 @@ class ActionGet extends BaseAction {
 		@FieldDescribe("图片列表")
 		private List<Attachment> attList = new ArrayList<>();
 
+		@FieldDescribe("已安装的版本，空表示未安装")
+		private String installedVersion;
+
 		public List<Attachment> getAttList() {
 			return attList;
 		}
 
 		public void setAttList(List<Attachment> attList) {
 			this.attList = attList;
+		}
+
+		public String getInstalledVersion() {
+			return installedVersion;
+		}
+
+		public void setInstalledVersion(String installedVersion) {
+			this.installedVersion = installedVersion;
 		}
 	}
 }
