@@ -64,7 +64,7 @@ class ActionInstallOrUpdate extends BaseAction {
 			if(BooleanUtils.isTrue(Config.collect().getEnable())) {
 				String token = business.loginCollect();
 				if(StringUtils.isNotEmpty(token)){
-					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN),
+					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 					if(bytes!=null){
 						WrapModule module = this.install(bytes);
@@ -144,6 +144,7 @@ class ActionInstallOrUpdate extends BaseAction {
 							.putQuery(x_processplatform_assemble_designer.class,
 									Applications.joinQueryUri("input", "cover"), obj)
 							.getData(WoId.class).getId());
+			obj.setIcon(null);
 			obj.setApplicationDictList(null);
 			obj.setFileList(null);
 			obj.setFormList(null);
@@ -156,6 +157,7 @@ class ActionInstallOrUpdate extends BaseAction {
 							.putQuery(x_cms_assemble_control.class,
 									Applications.joinQueryUri("input", "cover"), obj)
 							.getData(WoId.class).getId());
+			obj.setAppIcon(null);
 			obj.setAppDictList(null);
 			obj.setCategoryInfoList(null);
 			obj.setFileList(null);
@@ -168,6 +170,7 @@ class ActionInstallOrUpdate extends BaseAction {
 							.putQuery(x_portal_assemble_designer.class,
 									Applications.joinQueryUri("input", "cover"), obj)
 							.getData(WoId.class).getId());
+			obj.setIcon(null);
 			obj.setFileList(null);
 			obj.setPageList(null);
 			obj.setScriptList(null);
@@ -180,6 +183,7 @@ class ActionInstallOrUpdate extends BaseAction {
 								.putQuery(x_query_assemble_designer.class,
 										Applications.joinQueryUri("input", "cover"), obj)
 								.getData(WoId.class).getId());
+				obj.setIcon(null);
 				obj.setRevealList(null);
 				obj.setViewList(null);
 				obj.setStatementList(null);
