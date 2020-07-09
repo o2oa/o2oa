@@ -48,6 +48,9 @@ public class CreateWebXml {
 			sb.append("<param-name>project</param-name>");
 			sb.append("<param-value>" + moduleClassName + "</param-value>");
 			sb.append("</context-param>");
+			sb.append("<welcome-file-list>");
+			sb.append("<welcome-file>/index.html</welcome-file>");
+			sb.append("</welcome-file-list>");
 			sb.append("</web-app>");
 			return sb.toString();
 		}
