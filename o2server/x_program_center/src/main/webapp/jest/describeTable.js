@@ -46,13 +46,13 @@ Describe.prototype = {
 							function() {
 								$('#result').html('');
 								 var txt = "";
-								 txt += '<table>';	
-								 txt += '<tr><td width ="3%"><b>序号</b></td><td width ="10%"><b>列名</b></td><td width ="5%"><b>类型</b></td><td width ="5%"><b>长度</b></td><td width ="*"><b>用途</b></td></tr>';
+								 txt += '<table style="table-layout:word-wrap:break-word;word-break:break-all;">';	
+								 txt += '<tr style="height:28px"><td width ="5%"><b>序号</b></td><td width ="20%"><b>列名</b></td><td style="word-wrap:break-word;word-break:break-all;width:20%"><b>类型</b></td><td width ="10%"><b>长度</b></td><td width ="*"><b>用途</b></td></tr>';
 								$.each(m.columnProperty, function(ci, c) {
 									 if(c.type == "ContainerTable"){
-								        txt += '<tr><td>'+(ci+1)+'</td><td>'+c.name+'</td><td>'+c.type+'</td><td>'+c.length+'</td><td>'+c.remark+ "("+ c.containerTableProperty.name+')</td><td>'
+								        txt += '<tr><td>'+(ci+1)+'</td><td>'+c.name+'</td><td >'+c.type+'</td><td>'+c.length+'</td><td>'+c.remark+ "("+ c.containerTableProperty.name+')</td><td>'
 										txt +='</td></tr>';
-										txt += '<tr><td></td><td colspan="4"><table><tr><td width ="3%"><b>序号</b></td><td width ="8%"><b>列名</b></td><td width ="5%"><b>类型</b></td><td width ="*"><b>用途</b></td></tr>';
+										txt += '<tr><td></td><td colspan="4"><table style="width: 600px;font-style:italic"><tr><td width ="5%"><b>序号</b></td><td width ="30%"><b>列名</b></td><td width ="20%"><b>类型</b></td><td width ="*"><b>用途</b></td></tr>';
 										$.each(c.containerTableProperty.containerTableColumnProperty, function(cti, ct) {
 										  txt += '<tr><td>'+(cti+1)+'</td><td>'+ct.name+'</td><td>'+ct.type+'</td><td>'+ct.remark+'</td></tr>';
 										});
@@ -60,7 +60,7 @@ Describe.prototype = {
 										txt +='</table></td></tr>';
 										
 									 }else{
-										  txt += '<tr><td>'+(ci+1)+'</td><td>'+c.name+'</td><td>'+c.type+'</td><td>'+c.length+'</td><td>'+c.remark+'</td><td></td></tr>';
+										  txt += '<tr  style="height:28px"><td>'+(ci+1)+'</td><td>'+c.name+'</td><td style="word-wrap:break-word;word-break:break-all;">'+c.type+'</td><td>'+c.length+'</td><td>'+c.remark+'</td><td></td></tr>';
 									 }
                                  });
 								 
