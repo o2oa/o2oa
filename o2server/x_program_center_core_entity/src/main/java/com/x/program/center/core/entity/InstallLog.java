@@ -71,7 +71,7 @@ public class InstallLog extends SliceJpaObject {
 	@FieldDescribe("安装概要内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_2K, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + data_FIELDNAME)
 	private String data;
 
 	public static final String installPerson_FIELDNAME = "installPerson";
