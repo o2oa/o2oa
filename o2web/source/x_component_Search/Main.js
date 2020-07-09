@@ -194,7 +194,7 @@ MWF.xApplication.Search.ResaultItem = new Class({
             }
             if (this.data.type==="cms"){
                 //getDocumentControl
-                MWF.Actions.get("x_cms_assemble_control").getDocumentControl(this.data.reference, function(){
+                MWF.Actions.get("x_cms_assemble_control").getDocumentControl(this.data.reference, function(json){
                     if (json.data.control.allowVisit){
                         this.data.permission = "y";
                     }else{
