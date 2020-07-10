@@ -840,6 +840,24 @@ MWF.xScript.PageEnvironment = function (ev) {
         MWF.defineProperties(this, o);
     }.bind(this);
 
+    //如果前端事件有异步调用，想要在异步调用结束后继续运行页面加载，
+    //可在调用前执行 var resolve = this.wait();
+    //在异步调用结束后 执行 resolve.cb()；
+    //目前只有表单的queryload事件支持此方法。
+    this.wait = function(){
+        resolve = {};
+        var setResolve = function(callback){
+            resolve.cb = callback;
+        }.bind(this);
+        this.target.event_resolve = setResolve;
+        return resolve;
+    };
+    //和this.wait配合使用，
+    //如果没有异步，则resolve.cb方法不存在，
+    //所以在回调中中使用this.goon();使表单继续加载
+    this.goon = function(){
+        this.target.event_resolve = null;
+    };
 
     //仅前台对象-----------------------------------------
     //form

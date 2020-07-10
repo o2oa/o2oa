@@ -878,7 +878,7 @@ MWF.xScript.Environment = function(ev){
     //     var includedScripts = window.includedScripts;
     // }
     var includedScripts = [];
-    this.include = function( optionsOrName , callback ){
+    var _includeSingle = function( optionsOrName , callback, async){
         var options = optionsOrName;
         if( typeOf( options ) == "string" ){
             options = { name : options };
@@ -922,6 +922,7 @@ MWF.xScript.Environment = function(ev){
                 }
                 break;
         }
+debugger;
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
                 includedScripts.push( key );
@@ -931,7 +932,29 @@ MWF.xScript.Environment = function(ev){
             }else{
                 if (callback) callback.apply(this);
             }
-        }.bind(this), null, false);
+        }.bind(this), null, !!async);
+    }
+    this.include = function( optionsOrName , callback, async){
+        if (o2.typeOf(optionsOrName)=="array"){
+            if (!!async){
+                var count = optionsOrName.length;
+                var loaded = 0;
+                optionsOrName.each(function(option){
+                    _includeSingle.apply(this, [option, function(){
+                        loaded++;
+                        if (loaded>=count) if (callback) callback.apply(this);;
+                    }.bind(this), true]);
+                }.bind(this));
+
+            }else{
+                optionsOrName.each(function(option){
+                    _includeSingle.apply(this, [option]);
+                    if (callback) callback.apply(this);
+                }.bind(this));
+            }
+        }else{
+            _includeSingle.apply(this, [optionsOrName , callback, async])
+        }
     };
 
     this.define = function(name, fun, overwrite){
@@ -941,6 +964,25 @@ MWF.xScript.Environment = function(ev){
         o[name] = {"value": fun, "configurable": over};
         MWF.defineProperties(this, o);
     }.bind(this);
+
+    //如果前端事件有异步调用，想要在异步调用结束后继续运行页面加载，
+    //可在调用前执行 var resolve = this.wait();
+    //在异步调用结束后 执行 resolve.cb()；
+    //目前只有表单的queryload事件支持此方法。
+    this.wait = function(){
+        resolve = {};
+        var setResolve = function(callback){
+            resolve.cb = callback;
+        }.bind(this);
+        this.target.event_resolve = setResolve;
+        return resolve;
+    }
+    //和this.wait配合使用，
+    //如果没有异步，则resolve.cb方法不存在，
+    //所以在回调中中使用this.goon();使表单继续加载
+    this.goon = function(){
+        this.target.event_resolve = null;
+    }
 
 
     //仅前台对象-----------------------------------------
@@ -1582,7 +1624,7 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
 //        this.destory = this["delete"];
 //    }
 //};
-
+var dictLoaded = {};
 MWF.xScript.createDict = function(application){
     //optionsOrName : {
     //  type : "", //默认为process, 可以为  process  cms
@@ -1601,6 +1643,10 @@ MWF.xScript.createDict = function(application){
         var applicationId = options.application || application;
         var enableAnonymous = options.enableAnonymous || false;
 
+        var key = name+type+applicationId+enableAnonymous
+        if (!dictLoaded[key]) dictLoaded[key] = {};
+        this.dictData = dictLoaded[key];
+
         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
         if( type == "cms" ){
             var action = MWF.Actions.get("x_cms_assemble_control");
@@ -1616,24 +1662,35 @@ MWF.xScript.createDict = function(application){
             return ar.join("/");
         };
 
-        this.get = function(path, success, failure){
+        this.get = function(path, success, failure, async){
             var value = null;
             if (path){
+                if (this.dictData[path]){
+                    if (success) success(this.dictData[path]);
+                    return this.dictData[path];
+                }
+
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
                     value = json.data;
+                    this.dictData[path] = value;
                     if (success) success(json.data);
-                }, function(xhr, text, error){
+                }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false, false);
+                }, !!async, false);
             }else{
+                if (this.dictData["root"]){
+                    if (success) success(this.dictData["root"]);
+                    return this.dictData["root"];
+                }
                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
                     value = json.data;
+                    this.dictData["root"] = value;
                     if (success) success(json.data);
-                }, function(xhr, text, error){
+                }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false);
+                }, !!async);
             }
 
             return value;

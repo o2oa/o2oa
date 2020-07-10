@@ -1,20 +1,22 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.require("MWF.widget.Tree", null, false);
 MWF.xApplication.process.Xform.Tree = MWF.APPTree =  new Class({
 	Extends: MWF.APP$Module,
 
 	_loadUserInterface: function(){
 		this.node.empty();
-		this.tree = new MWF.widget.Tree(this.node, {"style":"form"});
-        this.tree.form = this.form;
 
-		this._setTreeWidgetStyles();
+		MWF.require("MWF.widget.Tree", function(){
+			this.tree = new MWF.widget.Tree(this.node, {"style":"form"});
+			this.tree.form = this.form;
+
+			this._setTreeWidgetStyles();
 
 
-        var treeData = this.json.data;
-        if (this.json.dataType == "script") treeData = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
+			var treeData = this.json.data;
+			if (this.json.dataType == "script") treeData = this.form.Macro.exec(((this.json.dataScript) ? this.json.dataScript.code : ""), this);
 
-		this.tree.load(treeData);
+			this.tree.load(treeData);
+		}.bind(this));
 	},
 	_setTreeWidgetStyles: function(){
 		this.tree.css.areaNode = this.json.areaNodeStyle;

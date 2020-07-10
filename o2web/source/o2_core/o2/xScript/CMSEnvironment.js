@@ -906,7 +906,24 @@ MWF.xScript.CMSEnvironment = function(ev){
         o[name] = {"value": fun, "configurable": over};
         MWF.defineProperties(this, o);
     }.bind(this);
-    
+    //如果前端事件有异步调用，想要在异步调用结束后继续运行页面加载，
+    //可在调用前执行 var resolve = this.wait();
+    //在异步调用结束后 执行 resolve.cb()；
+    //目前只有表单的queryload事件支持此方法。
+    this.wait = function(){
+        resolve = {};
+        var setResolve = function(callback){
+            resolve.cb = callback;
+        }.bind(this);
+        this.target.event_resolve = setResolve;
+        return resolve;
+    };
+    //和this.wait配合使用，
+    //如果没有异步，则resolve.cb方法不存在，
+    //所以在回调中中使用this.goon();使表单继续加载
+    this.goon = function(){
+        this.target.event_resolve = null;
+    };
 
     //仅前台对象-----------------------------------------
     //form
@@ -1511,10 +1528,10 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent){
 //        this.destory = this["delete"];
 //    }
 //};
-
-MWF.xScript.createCMSDict = function(application){
+var dictLoaded = {};
+MWF.xScript.createDict = function(application){
     //optionsOrName : {
-    //  type : "", //默认为cms, 可以为  process  cms
+    //  type : "", //默认为process, 可以为  process  cms
     //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
     //  name : "", // 数据字典名称/别名/id
     //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
@@ -1526,9 +1543,13 @@ MWF.xScript.createCMSDict = function(application){
             options = { name : options };
         }
         var name = this.name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "cms";
+        var type = ( options.type && options.application ) ?  options.type : "process";
         var applicationId = options.application || application;
         var enableAnonymous = options.enableAnonymous || false;
+
+        var key = name+type+applicationId+enableAnonymous
+        if (!dictLoaded[key]) dictLoaded[key] = {};
+        this.dictData = dictLoaded[key];
 
         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
         if( type == "cms" ){
@@ -1545,24 +1566,35 @@ MWF.xScript.createCMSDict = function(application){
             return ar.join("/");
         };
 
-        this.get = function(path, success, failure){
+        this.get = function(path, success, failure, async){
             var value = null;
             if (path){
+                if (this.dictData[path]){
+                    if (success) success(this.dictData[path]);
+                    return this.dictData[path];
+                }
+
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
                     value = json.data;
+                    this.dictData[path] = value;
                     if (success) success(json.data);
-                }, function(xhr, text, error){
+                }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false, false);
+                }, !!async, false);
             }else{
-                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](encodeURIComponent(this.name), applicationId, function(json){
+                if (this.dictData["root"]){
+                    if (success) success(this.dictData["root"]);
+                    return this.dictData["root"];
+                }
+                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
                     value = json.data;
+                    this.dictData["root"] = value;
                     if (success) success(json.data);
-                }, function(xhr, text, error){
+                }.bind(this), function(xhr, text, error){
                     if (failure) failure(xhr, text, error);
-                }, false);
+                }, !!async);
             }
 
             return value;
@@ -1598,4 +1630,91 @@ MWF.xScript.createCMSDict = function(application){
         this.destory = this["delete"];
     }
 };
+
+// MWF.xScript.createCMSDict = function(application){
+//     //optionsOrName : {
+//     //  type : "", //默认为cms, 可以为  process  cms
+//     //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+//     //  name : "", // 数据字典名称/别名/id
+//     //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+//     //}
+//     //或者name: "" // 数据字典名称/别名/id
+//     return function(optionsOrName){
+//         var options = optionsOrName;
+//         if( typeOf( options ) == "string" ){
+//             options = { name : options };
+//         }
+//         var name = this.name = options.name;
+//         var type = ( options.type && options.application ) ?  options.type : "cms";
+//         var applicationId = options.application || application;
+//         var enableAnonymous = options.enableAnonymous || false;
+//
+//         //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+//         if( type == "cms" ){
+//             var action = MWF.Actions.get("x_cms_assemble_control");
+//         }else{
+//             var action = MWF.Actions.get("x_processplatform_assemble_surface");
+//         }
+//
+//         var encodePath = function( path ){
+//             var arr = path.split(/\./g);
+//             var ar = arr.map(function(v){
+//                 return encodeURIComponent(v);
+//             });
+//             return ar.join("/");
+//         };
+//
+//         this.get = function(path, success, failure){
+//             var value = null;
+//             if (path){
+//                 var p = encodePath( path );
+//                 //var p = path.replace(/\./g, "/");
+//                 action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+//                     value = json.data;
+//                     if (success) success(json.data);
+//                 }, function(xhr, text, error){
+//                     if (failure) failure(xhr, text, error);
+//                 }, false, false);
+//             }else{
+//                 action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](encodeURIComponent(this.name), applicationId, function(json){
+//                     value = json.data;
+//                     if (success) success(json.data);
+//                 }, function(xhr, text, error){
+//                     if (failure) failure(xhr, text, error);
+//                 }, false);
+//             }
+//
+//             return value;
+//         };
+//
+//         this.set = function(path, value, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this.add = function(path, value, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this["delete"] = function(path, success, failure){
+//             var p = encodePath( path );
+//             //var p = path.replace(/\./g, "/");
+//             action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+//                 if (success) success(json.data);
+//             }, function(xhr, text, error){
+//                 if (failure) failure(xhr, text, error);
+//             }, false, false);
+//         };
+//         this.destory = this["delete"];
+//     }
+// };
 

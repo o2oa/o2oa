@@ -1,5 +1,4 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
 //MWF.xDesktop.requireApp("process.Xform", "widget.View", null, false);
 MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
 	Extends: MWF.APP$Module,
@@ -8,6 +7,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
     },
 
     _loadUserInterface: function(){
+        MWF.xDesktop.requireApp("query.Query", "Viewer", null, false);
         this.node.empty();
     },
     _afterLoaded: function(){
