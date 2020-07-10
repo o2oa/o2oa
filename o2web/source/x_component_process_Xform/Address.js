@@ -1,4 +1,4 @@
-MWF.require("MWF.widget.PinYin", null, false);
+//MWF.require("MWF.widget.PinYin", null, false);
 MWF.xDesktop.requireApp("process.Xform", "Combox", null, false);
 MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
 	Implements: [Events],
@@ -28,7 +28,7 @@ MWF.xApplication.process.Xform.Address = MWF.APPAddress =  new Class({
     _loadNodeEdit: function(){
         this.node.empty();
 
-        MWF.require("MWF.widget.Combox", function(){
+        MWF.require(["MWF.widget.Combox","MWF.widget.PinYin"], function(){
             this.combox = new MWF.widget.Combox({
                 "style": "blue",
                 "onlySelect": true,
