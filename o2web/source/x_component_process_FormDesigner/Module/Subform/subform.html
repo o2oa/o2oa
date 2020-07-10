@@ -13,6 +13,13 @@
 		    <td class="editTableTitle">描述:</td>
 		    <td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
 		  </tr>
+			<tr title="延时加载为是时，需要使用this.form.get(subformId).active()加载">
+				<td class="editTableTitle">延时加载:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isDelay" value="true" text{($.isDelay)?'checked':''}/>是
+					<input type="radio" name="isDelay" value="false" text{(!$.isDelay)?'checked':''}/>否
+				</td>
+			</tr>
 		  <!--<tr>-->
 		    <!--<td class="editTableTitle">Class:</td>-->
 		    <!--<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>-->
