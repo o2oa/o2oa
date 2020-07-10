@@ -127,7 +127,7 @@ public class ModuleAction extends StandardJaxrsAction {
 	@Path("write/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void write(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public synchronized void write(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("输出文件标识") @PathParam("flag") String flag, JsonElement jsonElement) {
 		ActionResult<ActionWrite.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
