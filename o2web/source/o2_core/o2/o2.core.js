@@ -291,7 +291,7 @@
     //    /jaxrs\/script/ig,
         /jaxrs\/script\/.+\/app\/.+\/imported/ig,
         /jaxrs\/script\/portal\/.+\/name\/.+\/imported/ig,
-        /jaxrs\/script\/.+\/application\/.+\/imported/ig,
+        /jaxrs\/script\/[\S\s]+\/application\/[\S\s]+\/imported/,
         /jaxrs\/page\/.+\/portal\/.+/ig
         // /jaxrs\/authentication/ig
         // /jaxrs\/statement\/.*\/execute\/page\/.*\/size\/.*/ig
