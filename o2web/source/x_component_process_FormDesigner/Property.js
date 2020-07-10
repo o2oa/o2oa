@@ -1135,6 +1135,7 @@ debugger;
         }.bind(this));
     },
     loadStylesList: function(){
+	    var _self = this;
         var styleSelNodes = this.propertyContent.getElements(".MWFFormStyle");
         styleSelNodes.each(function(node){
             if (this.module.form.stylesList){
@@ -1152,6 +1153,11 @@ debugger;
             }else{
                 node.getParent("tr").setStyle("display", "none");
             }
+
+            var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node, "after");
+            refreshNode.addEvent("click", function(e){
+                _self.changeData(this.get("name"), this );
+            }.bind(node));
         }.bind(this));
     },
     loadDivTemplateType: function(){
@@ -1279,6 +1285,7 @@ debugger;
                 });
             }.bind(this));
 
+            var _self = this;
             scriptNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
@@ -1286,6 +1293,14 @@ debugger;
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveScriptSelectItem(node, ids);}.bind(this)
                 });
+
+                var next = node.getNext();
+                if( next && next.get("class") === "MWFScriptSelectRefresh" ){
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(next);
+                    refreshNode.addEvent("click", function(e){
+                        _self.changeData(this.get("name"), this );
+                    }.bind(node));
+                }
             }.bind(this));
 
             fileNodes.each(function(node){

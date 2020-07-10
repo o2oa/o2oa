@@ -106,14 +106,15 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
 		this.container.set("html", this.html);
 		this.loadStylesList(function(){
-			if( this.json.formStyleTypeType === "custom"){ //如果是自定义表单样式
-				this.currentFormStyleType = this.json.formStyleCustom;
-				this.loadCustomTemplateStyles( this.json.formStyleCustom, function ( templateStyles ) {
+			if( typeOf(this.json.currentFormStyle) === "object"  ){ //如果是自定义表单样式
+				this.loadCustomTemplateStyles( this.json.currentFormStyle, function ( templateStyles ) {
 					this._load( templateStyles );
 				}.bind(this))
 			}else {
 				var oldStyleValue = "";
-				if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]) this.json.formStyleType = "blue-simple";
+				if ((!this.json.formStyleType) || !this.stylesList[this.json.formStyleType]){
+					this.json.formStyleType = "blue-simple";
+				}
 				if (this.options.mode == "Mobile") {
 					if (this.json.formStyleType != "defaultMobile") {
 						var styles = this.stylesList[this.json.formStyleType];
@@ -123,7 +124,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 						}
 					}
 				}
-				this.currentFormStyleType = this.json.formStyleType;
+				if( !this.json.currentFormStyle )this.json.currentFormStyle = this.json.formStyleType;
 
 				this.loadTemplateStyles(this.stylesList[this.json.formStyleType].file, this.stylesList[this.json.formStyleType].extendFile, function (templateStyles) {
 					//this.templateStyles = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
@@ -1160,22 +1161,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         if (name=="formStyleType" || name=="formStyleCustom" ){
 
 			var loadOldTemplateStyle = function () {
-				if( typeOf(this.currentFormStyleType) === "object" ){ //如果是自定义表单样式
-					this.loadCustomTemplateStyles( this.json.formStyleCustom , function (oldTemplateStyles) {
-						this.json.styleConfig = this.json.formStyleCustom;
+				if( typeOf(this.json.currentFormStyle) === "object" ){ //如果原来是自定义表单样式
+					this.loadCustomTemplateStyles( this.json.currentFormStyle , function (oldTemplateStyles) {
 						this.switchTemplateStyles( oldTemplateStyles );
-						this.currentFormStyleType = this.json.formStyleCustom;
+						this.setCurrentFormStyle( name );
 					}.bind(this))
 				}else{
+					if( !oldValue )oldValue = this.json.currentFormStyle;
 					var oldFile, oldExtendFile;
 					if( oldValue && this.stylesList[oldValue] ){
 						oldFile = this.stylesList[oldValue].file;
 						oldExtendFile = this.stylesList[oldValue].extendFile;
 					}
 					this.loadTemplateStyles( oldFile, oldExtendFile, function( oldTemplateStyles ){
-						this.json.styleConfig = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
 						this.switchTemplateStyles( oldTemplateStyles );
-						this.currentFormStyleType = this.json.formStyleCustom;
+						this.setCurrentFormStyle( name );
 					}.bind(this))
 				}
 			}.bind(this);
@@ -1212,6 +1212,15 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			module.setStyleTemplate();
 			module.setAllStyles();
 		}.bind(this));
+	},
+	setCurrentFormStyle : function ( name ) {
+		if( name=="formStyleCustom" ){
+			this.json.styleConfig = this.json.formStyleCustom;
+			this.json.currentFormStyle = this.json.formStyleCustom;
+		}else{
+			this.json.styleConfig = (this.stylesList && this.json.formStyleType) ? this.stylesList[this.json.formStyleType] : null;
+			this.json.currentFormStyle = this.json.formStyleType;
+		}
 	},
 
     parseCSS: function(css){
