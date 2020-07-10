@@ -1361,21 +1361,28 @@ debugger;
 
     },
     saveScriptSelectItem: function(node, ids){
+	    debugger;
         if (ids[0]){
-            var view = ids[0].data;
+            var script = ids[0].data;
             var data = {
-                "name": view.name,
-                "alias": view.alias,
-                "id": view.id,
-                "appName" : view.appName || view.applicationName || view.query,
-                "appId": view.appId,
-                "application": view.application || view.query
+                "type" : "script",
+                "name": script.name,
+                "alias": script.alias,
+                "id": script.id,
+                "appName" : script.appName || script.applicationName,
+                "appId": script.appId,
+                "application": script.application
             };
-            this.data[node.get("name")] = data;
+
+            var name = node.get("name");
+            var oldValue = this.data[name];
+            this.data[name] = data;
+
+            // this.changeJsonDate(name, data );
+            this.changeData(name, node, oldValue);
         }else{
-            this.data[node.get("name")] = null;
+            // this.data[node.get("name")] = null;
         }
-        // if (this.module._checkView) this.module._checkView();
     },
     removeDutyItem: function(node, item){
         if (item.data.id){

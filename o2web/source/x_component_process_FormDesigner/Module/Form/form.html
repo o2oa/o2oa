@@ -36,12 +36,12 @@
                     }" name="formStyleTypeType" value="custom" text{($.formStyleTypeType=='custom')?'checked':''}/>自定义
                 </td>
             </tr>
-            <tr id="text{$.pid}formStyleTypeTr" style="display: text{($.submitFormType!='custom')?'':'none'}">
+            <tr id="text{$.pid}formStyleTypeTr" style="display: text{($.formStyleTypeType!='custom')?'':'none'}">
                 <td class="editTableValue">
                     <select class="MWFFormStyle" name="formStyleType"></select>
                 </td>
             </tr>
-            <tr id="text{$.pid}formStyleTypeCustomTr" style="display: text{($.submitFormType=='custom')?'':'none'}">
+            <tr id="text{$.pid}formStyleTypeCustomTr" style="display: text{($.formStyleTypeType=='custom')?'':'none'}">
                 <td class="editTableValue">
                    <div class="MWFScriptSelect" name="formStyleCustom"></div>
                 </td>
