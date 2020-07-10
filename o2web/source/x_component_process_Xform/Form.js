@@ -172,10 +172,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.businessData.control.allowAddSplit = false;
                 this.businessData.control.allowRetract = false;
                 this.businessData.control.allowRollback = false;
-                var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
-                text = text.replace("{name}", o2.name.cn(lockData.person));
-                var title = MWF.xApplication.process.Xform.LP.keyLockTitle;
-                this.app.alert("info", "center", title, text, 400, 160);
+                this.lockDataPerson = lockData.person;
+                // var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
+                // text = text.replace("{name}", o2.name.cn(lockData.person));
+                // var title = MWF.xApplication.process.Xform.LP.keyLockTitle;
+                // this.app.alert("info", "center", title, text, 400, 160);
 
                 // o2.DL.open({
                 //     "title": title,
@@ -215,6 +216,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this._loadEvents();
 
                 if (this.fireEvent("queryLoad")) {
+
+                    if (this.lockDataPerson){
+                        var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
+                        text = text.replace("{name}", o2.name.cn(this.lockDataPerson));
+                        var title = MWF.xApplication.process.Xform.LP.keyLockTitle;
+                        this.app.alert("info", "center", title, text, 400, 160);
+                    }
+
                     if (this.app) if (this.app.fireEvent) this.app.fireEvent("queryLoad");
                     this._loadBusinessData();
                     this.fireEvent("beforeLoad");
