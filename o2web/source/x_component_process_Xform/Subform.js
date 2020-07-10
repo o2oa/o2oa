@@ -18,15 +18,18 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             }.bind(this));
         }
     },
-    active: function () {
+    active: function ( callback ) {
         if (!this.loaded) {
-            this.reload()
+            this.reload( callback )
+        }else{
+            if(callback)callback();
         }
     },
-    reload: function () {
+    reload: function ( callback ) {
         this.node.empty();
         this.getSubform(function () {
             this.loadSubform();
+            if(callback)callback();
         }.bind(this));
     }
     ,
@@ -143,8 +146,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
         //console.log( "add subformLoadedCount , this.form.subformLoadedCount = "+ this.form.subformLoadedCount)
         this.loaded = true;
         this.checked = true;
-    }
-    ,
+    },
     getSubform: function (callback) {
         var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm" : "getFormMobile";
 
