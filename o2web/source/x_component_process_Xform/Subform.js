@@ -1,21 +1,40 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
+MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
     Extends: MWF.APP$Module,
 
-    _loadUserInterface: function(){
+    _loadUserInterface: function () {
         this.node.empty();
-        this.getSubform(function(){
-            this.loadSubform();
-        }.bind(this));
+        if (this.json.isDelay) {
+            if (this.form.subformLoadedCount) {
+                this.form.subformLoadedCount++;
+            } else {
+                this.form.subformLoadedCount = 1
+            }
+            this.form.checkSubformLoaded();
+            this.checked = true;
+        } else {
+            this.getSubform(function () {
+                this.loadSubform();
+            }.bind(this));
+        }
     },
-    reload: function(){
+    active: function ( callback ) {
+        if (!this.loaded) {
+            this.reload( callback )
+        }else{
+            if(callback)callback();
+        }
+    },
+    reload: function ( callback ) {
         this.node.empty();
-        this.getSubform(function(){
+        this.getSubform(function () {
             this.loadSubform();
+            if(callback)callback();
         }.bind(this));
-    },
-    loadCss: function(){
-        if (this.subformData.json.css && this.subformData.json.css.code){
+    }
+    ,
+    loadCss: function () {
+        if (this.subformData.json.css && this.subformData.json.css.code) {
             var cssText = this.form.parseCSS(this.subformData.json.css.code);
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
@@ -27,57 +46,61 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                 rex.lastIndex = rex.lastIndex + prefix.length;
             }
 
-            var styleNode = $("style"+this.form.json.id);
-            if (!styleNode){
+            var styleNode = $("style" + this.form.json.id);
+            if (!styleNode) {
                 var styleNode = document.createElement("style");
                 styleNode.setAttribute("type", "text/css");
-                styleNode.id="style"+this.form.json.id;
+                styleNode.id = "style" + this.form.json.id;
                 styleNode.inject(this.form.container, "before");
             }
 
-            if(styleNode.styleSheet){
-                var setFunc = function(){
+            if (styleNode.styleSheet) {
+                var setFunc = function () {
                     styleNode.styleSheet.cssText += cssText;
                 };
-                if(styleNode.styleSheet.disabled){
+                if (styleNode.styleSheet.disabled) {
                     setTimeout(setFunc, 10);
-                }else{
+                } else {
                     setFunc();
                 }
-            }else{
+            } else {
                 var cssTextNode = document.createTextNode(cssText);
                 styleNode.appendChild(cssTextNode);
             }
         }
-    },
-    checkSubformNested : function( id ){
-        if( this.parentformIdList ){
-            return !this.parentformIdList.contains( id );
-        }else{
-            return ![ this.form.json.id ].contains( id );
+    }
+    ,
+    checkSubformNested: function (id) {
+        if (this.parentformIdList) {
+            return !this.parentformIdList.contains(id);
+        } else {
+            return ![this.form.json.id].contains(id);
         }
-    },
-    checkSubformUnique : function( id ){
-        if( !this.form.subformLoaded )return true;
-        return !this.form.subformLoaded.contains( id );
-    },
-    getParentformIdList : function(){
+    }
+    ,
+    checkSubformUnique: function (id) {
+        if (!this.form.subformLoaded)return true;
+        return !this.form.subformLoaded.contains(id);
+    }
+    ,
+    getParentformIdList: function () {
         var parentformIdList;
-        if( this.parentformIdList ){
-            parentformIdList = Array.clone( this.parentformIdList );
-            parentformIdList.push( this.subformData.json.id )
-        }else{
-            parentformIdList = [ this.form.json.id, this.subformData.json.id ];
+        if (this.parentformIdList) {
+            parentformIdList = Array.clone(this.parentformIdList);
+            parentformIdList.push(this.subformData.json.id)
+        } else {
+            parentformIdList = [this.form.json.id, this.subformData.json.id];
         }
         return parentformIdList;
-    },
-    loadSubform: function(){
-        if (this.subformData){
-            if( !this.checkSubformNested( this.subformData.json.id ) ){
+    }
+    ,
+    loadSubform: function () {
+        if (this.subformData) {
+            if (!this.checkSubformNested(this.subformData.json.id)) {
                 this.form.notice(MWF.xApplication.process.Xform.LP.subformNestedError, "error");
-            }else if( !this.checkSubformUnique( this.subformData.json.id ) ){
+            } else if (!this.checkSubformUnique(this.subformData.json.id)) {
                 this.form.notice(MWF.xApplication.process.Xform.LP.subformUniqueError, "error");
-            }else{
+            } else {
                 //this.form.addEvent("postLoad", function(){
 
                 this.loadCss();
@@ -100,72 +123,77 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
                         var _self = this;
                         var json = this.form._getDomjson(node);
                         //if( json.type === "Subform" || json.moduleName === "subform" )this.form.subformCount++;
-                        var module = this.form._loadModule(json, node, function(){
+                        var module = this.form._loadModule(json, node, function () {
                             this.parentformIdList = _self.getParentformIdList();
                         });
                         this.form.modules.push(module);
                     }
                 }.bind(this));
 
-                this.form.subformLoaded.push( this.subformData.json.id );
+                this.form.subformLoaded.push(this.subformData.json.id);
 
                 //}.bind(this));
             }
         }
-        if( this.form.subformLoadedCount ){
-            this.form.subformLoadedCount++;
-        }else{
-            this.form.subformLoadedCount = 1
+        if (!this.checked) {
+            if (this.form.subformLoadedCount) {
+                this.form.subformLoadedCount++;
+            } else {
+                this.form.subformLoadedCount = 1
+            }
+            this.form.checkSubformLoaded();
         }
         //console.log( "add subformLoadedCount , this.form.subformLoadedCount = "+ this.form.subformLoadedCount)
-        this.form.checkSubformLoaded();
+        this.loaded = true;
+        this.checked = true;
     },
-    getSubform: function(callback){
-        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm": "getFormMobile";
+    getSubform: function (callback) {
+        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm" : "getFormMobile";
 
-        if (this.json.subformType==="script"){
-            if (this.json.subformScript && this.json.subformScript.code){
+        if (this.json.subformType === "script") {
+            if (this.json.subformScript && this.json.subformScript.code) {
                 var data = this.form.Macro.exec(this.json.subformScript.code, this);
-                if (data){
+                if (data) {
                     var formName, app;
-                    if( typeOf( data ) === "string" ){
+                    if (typeOf(data) === "string") {
                         formName = data;
-                    }else{
-                        if( data.application )app = data.application;
-                        if( data.subform )formName = data.subform;
+                    } else {
+                        if (data.application)app = data.application;
+                        if (data.subform)formName = data.subform;
                     }
-                    if( formName ){
-                        if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
-                        MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function(json){
+                    if (formName) {
+                        if (!app)app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                        MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function (json) {
                             this.getSubformData(json.data);
                             if (callback) callback();
                         }.bind(this));
-                    }else{
+                    } else {
                         if (callback) callback();
                     }
-                }else{
+                } else {
                     if (callback) callback();
                 }
             }
-        }else{
-            if (this.json.subformSelected && this.json.subformSelected!=="none"){
+        } else {
+            if (this.json.subformSelected && this.json.subformSelected !== "none") {
                 var app;
-                if( this.json.subformAppSelected ){
+                if (this.json.subformAppSelected) {
                     app = this.json.subformAppSelected;
-                }else{
+                } else {
                     app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
                 }
-                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.subformSelected, app, function(json){
+                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.subformSelected, app, function (json) {
                     this.getSubformData(json.data);
                     if (callback) callback();
                 }.bind(this));
-            }else{
+            } else {
                 if (callback) callback();
             }
         }
-    },
-    getSubformData: function(data){
-        if( !data || typeOf(data)!=="object" )return;
+    }
+    ,
+    getSubformData: function (data) {
+        if (!data || typeOf(data) !== "object")return;
         var subformDataStr = null;
         // if ( this.form.json.mode !== "Mobile" && !layout.mobile){
         //     subformDataStr = data.data;
@@ -174,7 +202,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
         // }
         subformDataStr = data.data;
         this.subformData = null;
-        if (subformDataStr){
+        if (subformDataStr) {
             this.subformData = JSON.decode(MWF.decodeJsonString(subformDataStr));
             this.subformData.updateTime = data.updateTime;
         }
@@ -184,19 +212,19 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform =  new Class({
 
 MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
     Extends: MWF.APPSubform,
-    _loadUserInterface: function(){
+    _loadUserInterface: function () {
         // this.node.empty();
-        this.getSubform(function(){
+        this.getSubform(function () {
             this.loadSubform();
         }.bind(this));
     },
-    reload: function(){
+    reload: function () {
         // this.node.empty();
-        this.getSubform(function(){
+        this.getSubform(function () {
             this.loadSubform();
         }.bind(this));
     },
-    show : function(){
+    show: function () {
         if (this.json.submitScript && this.json.submitScript.code) {
             this.form.Macro.exec(this.json.submitScript.code, this);
         }
@@ -208,15 +236,15 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
     //         this.form.Macro.exec(events[name]["code"], this);
     //     }
     // },
-    loadSubform: function(){
-        if (this.subformData){
-            if( !this.checkSubformUnique( this.subformData.json.id ) ){ //如果提交表单已经嵌入到表单中，那么把这个表单弹出来
+    loadSubform: function () {
+        if (this.subformData) {
+            if (!this.checkSubformUnique(this.subformData.json.id)) { //如果提交表单已经嵌入到表单中，那么把这个表单弹出来
                 // this.form.notice(MWF.xApplication.process.Xform.LP.subformUniqueError, "error");
                 this.isEmbedded = true;
                 this.fireEvent("afterModulesLoad");
-            }else if( !this.checkSubformNested( this.subformData.json.id ) ){
+            } else if (!this.checkSubformNested(this.subformData.json.id)) {
                 this.form.notice(MWF.xApplication.process.Xform.LP.subformNestedError, "error");
-            }else{
+            } else {
                 //this.form.addEvent("postLoad", function(){
 
                 // this.fireSubFormEvent("queryLoad");
@@ -240,14 +268,14 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
                         var _self = this;
                         var json = this.form._getDomjson(node);
                         //if( json.type === "Subform" || json.moduleName === "subform" )this.form.subformCount++;
-                        var module = this.form._loadModule(json, node, function(){
+                        var module = this.form._loadModule(json, node, function () {
                             this.parentformIdList = _self.getParentformIdList();
                         });
                         this.form.modules.push(module);
                     }
                 }.bind(this));
 
-                this.form.subformLoaded.push( this.subformData.json.id );
+                this.form.subformLoaded.push(this.subformData.json.id);
                 this.fireEvent("afterModulesLoad");
                 // this.fireSubFormEvent("postLoad");
                 // this.fireSubFormEvent("load");
@@ -261,45 +289,45 @@ MWF.xApplication.process.Xform.SubmitForm = MWF.APPSubmitform = new Class({
         // }
         // this.form.checkSubformLoaded();
     },
-    getSubform: function(callback){
-        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm": "getFormMobile";
-        if (this.json.submitFormType==="script"){
-            if (this.json.submitFormScript && this.json.submitFormScript.code){
+    getSubform: function (callback) {
+        var method = (this.form.json.mode !== "Mobile" && !layout.mobile) ? "getForm" : "getFormMobile";
+        if (this.json.submitFormType === "script") {
+            if (this.json.submitFormScript && this.json.submitFormScript.code) {
                 var data = this.form.Macro.exec(this.json.submitFormScript.code, this);
-                if (data){
+                if (data) {
                     var formName, app;
-                    if( typeOf( data ) === "string" ){
+                    if (typeOf(data) === "string") {
                         formName = data;
-                    }else{
-                        if( data.application )app = data.application;
-                        if( data.form )formName = data.form;
+                    } else {
+                        if (data.application)app = data.application;
+                        if (data.form)formName = data.form;
                     }
-                    if( formName ){
-                        if( !app )app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
-                        MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function(json){
+                    if (formName) {
+                        if (!app)app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                        MWF.Actions.get("x_processplatform_assemble_surface")[method](formName, app, function (json) {
                             this.getSubformData(json.data);
                             if (callback) callback();
                         }.bind(this));
-                    }else{
+                    } else {
                         if (callback) callback();
                     }
-                }else{
+                } else {
                     if (callback) callback();
                 }
             }
-        }else{
-            if (this.json.submitFormSelected && this.json.submitFormSelected!=="none"){
+        } else {
+            if (this.json.submitFormSelected && this.json.submitFormSelected !== "none") {
                 var app;
-                if( this.json.submitFormAppSelected ){
+                if (this.json.submitFormAppSelected) {
                     app = this.json.submitFormAppSelected;
-                }else{
+                } else {
                     app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
                 }
-                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.submitFormSelected, app, function(json){
+                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.submitFormSelected, app, function (json) {
                     this.getSubformData(json.data);
                     if (callback) callback();
                 }.bind(this));
-            }else{
+            } else {
                 if (callback) callback();
             }
         }
