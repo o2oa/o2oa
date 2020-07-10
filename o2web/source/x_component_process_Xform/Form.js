@@ -1,4 +1,5 @@
-MWF.require(["MWF.widget.Common", "MWF.widget.Identity", "MWF.widget.O2Identity"], null, false);
+//MWF.require(["MWF.widget.Common", "MWF.widget.Identity", "MWF.widget.O2Identity"], null, false);
+MWF.require(["MWF.widget.Common", "MWF.widget.O2Identity"], null, false);
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Xform = MWF.xApplication.process.Xform || {};
 MWF.xDesktop.requireApp("process.Xform", "lp." + MWF.language, null, false);
@@ -215,23 +216,30 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                 this._loadEvents();
 
-                if (this.fireEvent("queryLoad")) {
-
-                    if (this.lockDataPerson){
-                        var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
-                        text = text.replace("{name}", o2.name.cn(this.lockDataPerson));
-                        var title = MWF.xApplication.process.Xform.LP.keyLockTitle;
-                        this.app.alert("info", "center", title, text, 400, 160);
-                    }
-
-                    if (this.app) if (this.app.fireEvent) this.app.fireEvent("queryLoad");
-                    this._loadBusinessData();
-                    this.fireEvent("beforeLoad");
-                    if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
-                    this.loadContent(callback);
+                this.fireEvent("queryLoad");
+                if (this.event_resolve){
+                    this.event_resolve(function(){
+                        this.loadForm(callback)
+                    }.bind(this));
+                }else{
+                    this.loadForm(callback);
                 }
             }.bind(this));
         }.bind(this))
+    },
+    loadForm: function(callback){
+        if (this.lockDataPerson){
+            var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
+            text = text.replace("{name}", o2.name.cn(this.lockDataPerson));
+            var title = MWF.xApplication.process.Xform.LP.keyLockTitle;
+            this.app.alert("info", "center", title, text, 400, 160);
+        }
+
+        if (this.app) if (this.app.fireEvent) this.app.fireEvent("queryLoad");
+        this._loadBusinessData();
+        this.fireEvent("beforeLoad");
+        if (this.app) if (this.app.fireEvent) this.app.fireEvent("beforeLoad");
+        this.loadContent(callback);
     },
     loadExtendStyle: function (callback) {
         if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
