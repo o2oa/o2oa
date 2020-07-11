@@ -1135,7 +1135,7 @@ debugger;
         }.bind(this));
     },
     loadStylesList: function(){
-	    var _self = this;
+        var _self = this;
         var styleSelNodes = this.propertyContent.getElements(".MWFFormStyle");
         styleSelNodes.each(function(node){
             if (this.module.form.stylesList){
@@ -1160,6 +1160,32 @@ debugger;
             }.bind(node));
         }.bind(this));
     },
+    // loadStylesList: function(){
+	//     var _self = this;
+    //     var styleSelNodes = this.propertyContent.getElements(".MWFFormStyle");
+    //     styleSelNodes.each(function(node){
+    //         if (this.module.form.stylesList){
+    //             if (!this.data.formStyleType) this.data.formStyleType = "default";
+    //             var mode = ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc";
+    //             Object.each(this.module.form.stylesList, function(s, key){
+    //                 if( s.mode.contains( mode ) ){
+    //                     new Element("option", {
+    //                         "text": s.name,
+    //                         "value": key,
+    //                         "selected": ((!this.data.formStyleType && key=="default") || (this.data.formStyleType==key))
+    //                     }).inject(node)
+    //                 }
+    //             }.bind(this));
+    //         }else{
+    //             node.getParent("tr").setStyle("display", "none");
+    //         }
+    //
+    //         var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node, "after");
+    //         refreshNode.addEvent("click", function(e){
+    //             _self.changeData(this.get("name"), this );
+    //         }.bind(node));
+    //     }.bind(this));
+    // },
     loadDivTemplateType: function(){
         var nodes = this.propertyContent.getElements(".MWFDivTemplate");
         if (nodes.length){
@@ -1217,6 +1243,7 @@ debugger;
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
         var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
+        var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
@@ -1285,13 +1312,46 @@ debugger;
                 });
             }.bind(this));
 
-            var _self = this;
             scriptNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
                     "count": 1,
                     "names": [this.data[node.get("name")]],
-                    "onChange": function(ids){this.saveScriptSelectItem(node, ids);}.bind(this)
+                    "onChange": function(ids){
+                        this.saveScriptSelectItem(node, ids);
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            var _self = this;
+            formStyleNodes.each(function(node){
+                var data = this.data[node.get("name")];
+                if( typeOf( data ) === "string" ){
+                    for( var key in this.module.form.stylesList ){
+                        var s = this.module.form.stylesList[key];
+                        if( ((!data && key=="default") || (data==key)) ){
+                            data = {
+                                name : s.name,
+                                id : key
+                            };
+                            break;
+                        }
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "FormStyle",
+                    "count": 1,
+                    "names": [data],
+                    "onChange": function(ids){
+                        if( ids.length === 0 ){
+                            this.designer.notice(MWF.APPFD.LP.mustSelectFormStyle, "error", this.module.form.designer.propertyContentArea, {
+                                x: "right",
+                                y: "bottom"
+                            });
+                        }else{
+                            this.saveFormStyleItem(node, ids);
+                        }
+                    }.bind(this)
                 });
 
                 var next = node.getNext();
@@ -1388,6 +1448,34 @@ debugger;
                 "appId": script.appId,
                 "application": script.application
             };
+
+            var name = node.get("name");
+            var oldValue = this.data[name];
+            this.data[name] = data;
+
+            // this.changeJsonDate(name, data );
+            this.changeData(name, node, oldValue);
+        }else{
+            // this.data[node.get("name")] = null;
+        }
+    },
+    saveFormStyleItem: function(node, ids){
+        debugger;
+        if (ids[0]){
+            var d = ids[0].data;
+            if( d.type === "script" ){
+                var data = d;
+            }else{
+                var data = {
+                    "type" : "script",
+                    "name": d.name,
+                    "alias": d.alias,
+                    "id": d.id,
+                    "appName" : d.appName || d.applicationName,
+                    "appId": d.appId,
+                    "application": d.application
+                };
+            }
 
             var name = node.get("name");
             var oldValue = this.data[name];
