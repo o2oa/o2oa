@@ -1135,6 +1135,7 @@ debugger;
         }.bind(this));
     },
     loadStylesList: function(){
+        var _self = this;
         var styleSelNodes = this.propertyContent.getElements(".MWFFormStyle");
         styleSelNodes.each(function(node){
             if (this.module.form.stylesList){
@@ -1152,8 +1153,39 @@ debugger;
             }else{
                 node.getParent("tr").setStyle("display", "none");
             }
+
+            var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node, "after");
+            refreshNode.addEvent("click", function(e){
+                _self.changeData(this.get("name"), this );
+            }.bind(node));
         }.bind(this));
     },
+    // loadStylesList: function(){
+	//     var _self = this;
+    //     var styleSelNodes = this.propertyContent.getElements(".MWFFormStyle");
+    //     styleSelNodes.each(function(node){
+    //         if (this.module.form.stylesList){
+    //             if (!this.data.formStyleType) this.data.formStyleType = "default";
+    //             var mode = ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc";
+    //             Object.each(this.module.form.stylesList, function(s, key){
+    //                 if( s.mode.contains( mode ) ){
+    //                     new Element("option", {
+    //                         "text": s.name,
+    //                         "value": key,
+    //                         "selected": ((!this.data.formStyleType && key=="default") || (this.data.formStyleType==key))
+    //                     }).inject(node)
+    //                 }
+    //             }.bind(this));
+    //         }else{
+    //             node.getParent("tr").setStyle("display", "none");
+    //         }
+    //
+    //         var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node, "after");
+    //         refreshNode.addEvent("click", function(e){
+    //             _self.changeData(this.get("name"), this );
+    //         }.bind(node));
+    //     }.bind(this));
+    // },
     loadDivTemplateType: function(){
         var nodes = this.propertyContent.getElements(".MWFDivTemplate");
         if (nodes.length){
@@ -1210,6 +1242,8 @@ debugger;
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
+        var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
+        var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
 
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
@@ -1276,6 +1310,97 @@ debugger;
                     "names": [this.data[node.get("name")]],
                     "onChange": function(ids){this.saveViewItem(node, ids);}.bind(this)
                 });
+            }.bind(this));
+
+            scriptNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "Script",
+                    "count": 1,
+                    "names": [this.data[node.get("name")]],
+                    "onChange": function(ids){
+                        this.saveScriptSelectItem(node, ids);
+                    }.bind(this)
+                });
+            }.bind(this));
+
+            var _self = this;
+            formStyleNodes.each(function(node){
+                debugger;
+                var data = this.data[node.get("name")];
+                if( typeOf( data ) === "string" ){
+                    for( var key in this.module.form.stylesList ){
+                        var s = this.module.form.stylesList[key];
+                        if( ((!data && key=="default") || (data==key)) ){
+                            data = {
+                                name : s.name,
+                                id : key
+                            };
+                            break;
+                        }
+                    }
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "FormStyle",
+                    "count": 1,
+                    "names": [data],
+                    "selectorOptions" : {
+                        "mode" : ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc"
+                    },
+                    "validFun" : function (ids) {
+                        var flag = true;
+                        if( ids.length === 0 ){
+                            this.designer.notice(MWF.APPFD.LP.mustSelectFormStyle, "error");
+                            flag = false;
+                        }else if( ids[0].data.type === "script" ){
+                            this.designer.actions.getScriptByName(  ids[0].data.name, ids[0].data.application,  function( json ) {
+                                debugger;
+                                try{
+                                    var f = eval("(function(){\n return "+json.data.text+"\n})");
+                                    var j = f();
+                                    if( typeOf(j) !== "object" ){
+                                        this.designer.notice( MWF.APPFD.LP.notValidJson, "error" );
+                                        flag = false;
+                                    }
+                                }catch (e) {
+                                    this.designer.notice( MWF.APPFD.LP.notValidJson +"："+ e.message, "error" );
+                                    flag = false;
+                                }
+                            }.bind(this), function () {
+                                flag = false;
+                            }, false);
+                        }
+                        return flag;
+                    }.bind(this),
+                    "onChange": function(ids){
+                        var d = ids[0].data;
+                        var data;
+                        if( d.type === "script" ){
+                            data = {
+                                "type" : "script",
+                                "name": d.name,
+                                "alias": d.alias,
+                                "id": d.id,
+                                "appName" : d.appName || d.applicationName,
+                                "appId": d.appId,
+                                "application": d.application
+                            };
+                        }else{
+                            data = d.id;
+                        }
+                        var name = node.get("name");
+                        var oldValue = this.data[name];
+                        this.data[name] = data;
+                        this.changeData(name, node, oldValue);
+                    }.bind(this)
+                });
+
+                var next = node.getNext();
+                if( next && next.get("class") === "MWFScriptSelectRefresh" ){
+                    var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(next);
+                    refreshNode.addEvent("click", function(e){
+                        _self.changeData(this.get("name"), this );
+                    }.bind(node));
+                }
             }.bind(this));
 
             fileNodes.each(function(node){
@@ -1349,6 +1474,30 @@ debugger;
     },
     removeViewItem: function(node, item){
 
+    },
+    saveScriptSelectItem: function(node, ids){
+	    debugger;
+        if (ids[0]){
+            var script = ids[0].data;
+            var data = {
+                "type" : "script",
+                "name": script.name,
+                "alias": script.alias,
+                "id": script.id,
+                "appName" : script.appName || script.applicationName,
+                "appId": script.appId,
+                "application": script.application
+            };
+
+            var name = node.get("name");
+            var oldValue = this.data[name];
+            this.data[name] = data;
+
+            // this.changeJsonDate(name, data );
+            this.changeData(name, node, oldValue);
+        }else{
+            // this.data[node.get("name")] = null;
+        }
     },
     removeDutyItem: function(node, item){
         if (item.data.id){
