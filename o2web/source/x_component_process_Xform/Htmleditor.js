@@ -37,7 +37,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class({
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){
                 if (this.json.config.code){
-                    var obj = MWF.Macro.exec(this.json.config.code, this);
+                    var obj = this.form.Macro.exec(this.json.config.code, this);
                     Object.each(obj, function(v, k){
                         config[k] = v;
                     });
