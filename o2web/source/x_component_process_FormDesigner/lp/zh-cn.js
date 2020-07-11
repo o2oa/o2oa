@@ -145,6 +145,7 @@ MWF.xApplication.process.FormDesigner.LP = {
     "save": "保存",
     "cancel": "取消",
     "newCategory": "新分类",
+    "mustSelectFormStyle" : "必须选择一种表单样式",
 
     "imageClipper" : "图片编辑",
 
