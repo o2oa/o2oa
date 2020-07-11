@@ -214,16 +214,19 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		// 	"application": script.application
 		// }
 		this.designer.actions.getScriptByName(  scriptObject.name, scriptObject.application,  function( json ) {
-			debugger;
 			try{
 				var f = eval("(function(){\n return "+json.data.text+"\n})");
 				var j = f();
-				if(callback)callback(j);
+				if( typeOf(j) !== "object" ){
+					this.designer.notice( MWF.APPFD.LP.notValidJson, "error" );
+				}else{
+					if(callback)callback(j);
+				}
 			}catch (e) {
 				this.designer.notice( e.message, "error" )
 			}
 		}.bind(this), function( responseJSON ){
-			this.designer.notice( JSON.parse(responseJSON.responseText).message, "error" )
+			this.designer.notice( JSON.parse(responseJSON.responseText).message, "error" );
 			if(callback)callback({});
 		}.bind(this))
 	},
