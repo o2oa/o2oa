@@ -13,9 +13,11 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectProcess": "选择流程",
     "selectView": "选择视图",
     "selectTable": "选择数据表",
+    "selectFormStyle" : "选择表单样式",
     "selectCMSApplication": "选择内容管理应用",
     "selectCMSCategory": "选择内容管理栏目",
     "noSelectableItemText" : "无待选项",
+    "selectScript" : "选择脚本",
 
     "searchDescription" : "搜索内容",
 

@@ -23,10 +23,36 @@
                     <!--<select class="" name="titleField"></select>-->
                 <!--</td>-->
             <!--</tr>-->
+<!--            <tr>-->
+<!--                <td class="editTableTitle" rowspan="2">表单样式:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input type="radio" onclick="if (this.checked) {-->
+<!--                        $('text{$.pid}formStyleTypeTr').setStyle('display', '');-->
+<!--                        $('text{$.pid}formStyleTypeCustomTr').setStyle('display', 'none');-->
+<!--                    }" name="formStyleTypeRadio" value="default" text{(typeOf($.currentFormStyle)!='object' )?'checked':''}/>系统-->
+<!--                    <input type="radio" onclick="if (this.checked) {-->
+<!--                        $('text{$.pid}formStyleTypeTr').setStyle('display', 'none');-->
+<!--                        $('text{$.pid}formStyleTypeCustomTr').setStyle('display', '');-->
+<!--                    }" name="formStyleTypeRadio" value="custom" text{(typeOf($.currentFormStyle)=='object')?'checked':''}/>自定义-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr id="text{$.pid}formStyleTypeCustomTr" style="display: text{(typeOf($.currentFormStyle)=='object')?'':'none'}">-->
+<!--                <td class="editTableValue">-->
+<!--                    <div class="MWFScriptSelect" name="formStyleCustom"></div>-->
+<!--                    <div class="MWFScriptSelectRefresh"></div>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr id="text{$.pid}formStyleTypeTr" style="display: text{(typeOf($.currentFormStyle)!='object')?'':'none'}">-->
+<!--                <td class="editTableValue">-->
+<!--                    <select class="MWFFormStyle" name="formStyleType"></select>-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
                 <td class="editTableTitle">表单样式:</td>
                 <td class="editTableValue">
-                    <select class="MWFFormStyle" name="formStyleType"></select>
+                    <!--                    <select class="MWFFormStyle" name="formStyleType"></select>-->
+                    <div class="MWFFormStyleSelect" name="formStyleType"></div>
+                    <div class="MWFScriptSelectRefresh"></div>
                 </td>
             </tr>
             <tr>
