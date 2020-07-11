@@ -1325,6 +1325,7 @@ debugger;
 
             var _self = this;
             formStyleNodes.each(function(node){
+                debugger;
                 var data = this.data[node.get("name")];
                 if( typeOf( data ) === "string" ){
                     for( var key in this.module.form.stylesList ){
@@ -1342,15 +1343,54 @@ debugger;
                     "type": "FormStyle",
                     "count": 1,
                     "names": [data],
-                    "onChange": function(ids){
+                    "selectorOptions" : {
+                        "mode" : ( this.form.options.mode || "" ).toLowerCase() === "mobile" ? "mobile" : "pc"
+                    },
+                    "validFun" : function (ids) {
+                        var flag = true;
                         if( ids.length === 0 ){
-                            this.designer.notice(MWF.APPFD.LP.mustSelectFormStyle, "error", this.module.form.designer.propertyContentArea, {
-                                x: "right",
-                                y: "bottom"
-                            });
-                        }else{
-                            this.saveFormStyleItem(node, ids);
+                            this.designer.notice(MWF.APPFD.LP.mustSelectFormStyle, "error");
+                            flag = false;
+                        }else if( ids[0].data.type === "script" ){
+                            this.designer.actions.getScriptByName(  ids[0].data.name, ids[0].data.application,  function( json ) {
+                                debugger;
+                                try{
+                                    var f = eval("(function(){\n return "+json.data.text+"\n})");
+                                    var j = f();
+                                    if( typeOf(j) !== "object" ){
+                                        this.designer.notice( MWF.APPFD.LP.notValidJson, "error" );
+                                        flag = false;
+                                    }
+                                }catch (e) {
+                                    this.designer.notice( MWF.APPFD.LP.notValidJson +"："+ e.message, "error" );
+                                    flag = false;
+                                }
+                            }.bind(this), function () {
+                                flag = false;
+                            }, false);
                         }
+                        return flag;
+                    }.bind(this),
+                    "onChange": function(ids){
+                        var d = ids[0].data;
+                        var data;
+                        if( d.type === "script" ){
+                            data = {
+                                "type" : "script",
+                                "name": d.name,
+                                "alias": d.alias,
+                                "id": d.id,
+                                "appName" : d.appName || d.applicationName,
+                                "appId": d.appId,
+                                "application": d.application
+                            };
+                        }else{
+                            data = d.id;
+                        }
+                        var name = node.get("name");
+                        var oldValue = this.data[name];
+                        this.data[name] = data;
+                        this.changeData(name, node, oldValue);
                     }.bind(this)
                 });
 
@@ -1448,34 +1488,6 @@ debugger;
                 "appId": script.appId,
                 "application": script.application
             };
-
-            var name = node.get("name");
-            var oldValue = this.data[name];
-            this.data[name] = data;
-
-            // this.changeJsonDate(name, data );
-            this.changeData(name, node, oldValue);
-        }else{
-            // this.data[node.get("name")] = null;
-        }
-    },
-    saveFormStyleItem: function(node, ids){
-        debugger;
-        if (ids[0]){
-            var d = ids[0].data;
-            if( d.type === "script" ){
-                var data = d;
-            }else{
-                var data = {
-                    "type" : "script",
-                    "name": d.name,
-                    "alias": d.alias,
-                    "id": d.id,
-                    "appName" : d.appName || d.applicationName,
-                    "appId": d.appId,
-                    "application": d.application
-                };
-            }
 
             var name = node.get("name");
             var oldValue = this.data[name];
