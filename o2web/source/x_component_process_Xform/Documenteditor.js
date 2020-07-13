@@ -2028,7 +2028,7 @@ debugger;
                 this._computeItemFieldData(name, dataItem);
                 //if (this.data[name]){
                 if (this[dom]){
-                    if (dom=="layout_redHeader" || dom=="layout_subject"){
+                    if (dom=="layout_redHeader" || dom=="layout_subject" || dom=="layout_issuanceUnit" || dom=="layout_meetingAttendContent" || dom=="layout_meetingLeaveContent" || dom=="layout_meetingSitContent" || dom=="layout_meetingRecordContent"){
                         this[dom].set("html", this.data[name]|| "");
                     }else if (dom=="layout_attachment"){
                         this.setAttachmentData();
@@ -2178,6 +2178,7 @@ debugger;
                 this._computeItemFieldData(name, null, dataItem);
                 //if (this.data[name]){
                 if (this[dom]){
+                    debugger;
                     if (dom=="layout_redHeader" || dom=="layout_subject" || dom=="layout_issuanceUnit"){
                         this[dom].set("html", this.data[name]|| "");
                     }else if (dom=="layout_attachment"){
