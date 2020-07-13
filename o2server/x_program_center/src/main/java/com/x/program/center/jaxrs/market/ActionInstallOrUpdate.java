@@ -12,6 +12,7 @@ import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -58,6 +59,9 @@ class ActionInstallOrUpdate extends BaseAction {
 			if (null == app) {
 				throw new ExceptionEntityNotExist(id, Application.class);
 			}
+			if(!hasAuth(effectivePerson, null)){
+				throw new ExceptionAccessDenied(effectivePerson, app);
+			}
 			logger.print("{}发起安装或更新应用：{}", effectivePerson.getDistinguishedName(), app.getName());
 			Wo wo = new Wo();
 			wo.setValue(false);
@@ -67,7 +71,7 @@ class ActionInstallOrUpdate extends BaseAction {
 					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 					if(bytes!=null){
-						WrapModule module = this.install(bytes);
+						WrapModule module = this.install(id, bytes);
 						if(module!=null) {
 							wo.setValue(true);
 							emc.beginTransaction(InstallLog.class);
@@ -101,12 +105,12 @@ class ActionInstallOrUpdate extends BaseAction {
 		}
 	}
 
-	private WrapModule install(byte[] bytes) throws Exception{
+	private WrapModule install(String id, byte[] bytes) throws Exception{
 		WrapModule module = null;
 		File tempFile = new File(Config.base(), "local/temp/install");
 		FileTools.forceMkdir(tempFile);
 		FileUtils.cleanDirectory(tempFile);
-		File zipFile = new File(tempFile.getAbsolutePath(), UUID.randomUUID().toString()+".zip");
+		File zipFile = new File(tempFile.getAbsolutePath(), id+".zip");
 		FileUtils.writeByteArrayToFile(zipFile, bytes);
 		File dist = new File(tempFile.getAbsolutePath(), "data");
 		FileTools.forceMkdir(dist);
@@ -125,56 +129,63 @@ class ActionInstallOrUpdate extends BaseAction {
 				if(file.getName().toLowerCase().endsWith(".zip")){
 					logger.print("开始安装静态资源");
 					try {
-						Business.dispatch(true, file.getName(), "", FileUtils.readFileToByteArray(file));
+						Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
 					} catch (Exception e) {
 						logger.print("模块安装成功但静态资源安装失败:{}",e.getMessage());
 					}
 				}
 			}
 		}
+		FileUtils.cleanDirectory(tempFile);
 		return module;
 	}
 
 	private InstallWo installModule(WrapModule module) throws Exception{
 		InstallWo wo = new InstallWo();
 		logger.print("开始安装应用");
-		for (WrapProcessPlatform obj : module.getProcessPlatformList()) {
-			wo.getProcessPlatformList()
-					.add(ThisApplication.context().applications()
-							.putQuery(x_processplatform_assemble_designer.class,
-									Applications.joinQueryUri("input", "cover"), obj)
-							.getData(WoId.class).getId());
-			obj.setIcon(null);
-			obj.setApplicationDictList(null);
-			obj.setFileList(null);
-			obj.setFormList(null);
-			obj.setProcessList(null);
-			obj.setScriptList(null);
+		if(module.getProcessPlatformList()!=null) {
+			for (WrapProcessPlatform obj : module.getProcessPlatformList()) {
+				wo.getProcessPlatformList()
+						.add(ThisApplication.context().applications()
+								.putQuery(x_processplatform_assemble_designer.class,
+										Applications.joinQueryUri("input", "cover"), obj)
+								.getData(WoId.class).getId());
+				obj.setIcon(null);
+				obj.setApplicationDictList(null);
+				obj.setFileList(null);
+				obj.setFormList(null);
+				obj.setProcessList(null);
+				obj.setScriptList(null);
+			}
 		}
-		for (WrapCms obj : module.getCmsList()) {
-			wo.getCmsList()
-					.add(ThisApplication.context().applications()
-							.putQuery(x_cms_assemble_control.class,
-									Applications.joinQueryUri("input", "cover"), obj)
-							.getData(WoId.class).getId());
-			obj.setAppIcon(null);
-			obj.setAppDictList(null);
-			obj.setCategoryInfoList(null);
-			obj.setFileList(null);
-			obj.setFormList(null);
-			obj.setScriptList(null);
+		if(module.getCmsList()!=null) {
+			for (WrapCms obj : module.getCmsList()) {
+				wo.getCmsList()
+						.add(ThisApplication.context().applications()
+								.putQuery(x_cms_assemble_control.class,
+										Applications.joinQueryUri("input", "cover"), obj)
+								.getData(WoId.class).getId());
+				obj.setAppIcon(null);
+				obj.setAppDictList(null);
+				obj.setCategoryInfoList(null);
+				obj.setFileList(null);
+				obj.setFormList(null);
+				obj.setScriptList(null);
+			}
 		}
-		for (WrapPortal obj : module.getPortalList()) {
-			wo.getPortalList()
-					.add(ThisApplication.context().applications()
-							.putQuery(x_portal_assemble_designer.class,
-									Applications.joinQueryUri("input", "cover"), obj)
-							.getData(WoId.class).getId());
-			obj.setIcon(null);
-			obj.setFileList(null);
-			obj.setPageList(null);
-			obj.setScriptList(null);
-			obj.setWidgetList(null);
+		if(module.getPortalList()!=null) {
+			for (WrapPortal obj : module.getPortalList()) {
+				wo.getPortalList()
+						.add(ThisApplication.context().applications()
+								.putQuery(x_portal_assemble_designer.class,
+										Applications.joinQueryUri("input", "cover"), obj)
+								.getData(WoId.class).getId());
+				obj.setIcon(null);
+				obj.setFileList(null);
+				obj.setPageList(null);
+				obj.setScriptList(null);
+				obj.setWidgetList(null);
+			}
 		}
 		if(module.getQueryList()!=null){
 			for (WrapQuery obj : module.getQueryList()) {
