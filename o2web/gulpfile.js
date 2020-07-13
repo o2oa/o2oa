@@ -141,6 +141,10 @@ function createXFormConcatTask(path, isMin, thisOptions) {
     gulp.task(path+" : concat", function(){
         var option = thisOptions || options;
         var src = [
+            'source/o2_core/o2/widget/AttachmentController.js',
+            'source/o2_core/o2/xScript/Macro.js',
+            'source/o2_core/o2/widget/Tab.js',
+            'source/o2_core/o2/widget/O2Identity.js',
             'source/' + path + '/Form.js',
             'source/' + path + '/$Module.js',
             'source/' + path + '/$Input.js',

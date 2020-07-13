@@ -1,6 +1,4 @@
 MWF.xScript = MWF.xScript || {};
-MWF.require("MWF.xScript.Environment", null, false);
-MWF.require("MWF.xScript.PageEnvironment", null, false);
 MWF.xScript.Macro = MWF.Macro = {
 	"swapSpace": {},
 	
@@ -87,6 +85,7 @@ MWF.Macro.FormContext = new Class({
             "target": null,
             "event": null
         };
+        MWF.require("MWF.xScript.Environment", null, false);
         this.environment = new MWF.xScript.Environment(environment);
     },
     setTarget: function(target){
@@ -133,6 +132,7 @@ MWF.Macro.PageContext = new Class({
             "target": null,
             "event": null
         };
+        MWF.require("MWF.xScript.PageEnvironment", null, false);
         this.environment = new MWF.xScript.PageEnvironment(environment);
     },
     setTarget: function(target){

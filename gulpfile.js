@@ -447,6 +447,10 @@ function build_concat_desktop(){
 function build_concat_xform(){
     let path = "x_component_process_Xform";
     var src = [
+        'o2web/source/o2_core/o2/widget/AttachmentController.js',
+        'o2web/source/o2_core/o2/xScript/Macro.js',
+        'o2web/source/o2_core/o2/widget/Tab.js',
+        'o2web/source/o2_core/o2/widget/O2Identity.js',
         'o2web/source/' + path + '/Form.js',
         'o2web/source/' + path + '/$Module.js',
         'o2web/source/' + path + '/$Input.js',

@@ -35,8 +35,9 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         if (!baseObject.options) baseObject.options = Object.clone(o2.xApplication.Common.options);
 
         var _lpLoaded = false;
+
         o2.xDesktop.requireApp(appNames, "lp." + o2.language, {
-            "failure": function () {
+            "onFailure": function () {
                 o2.xDesktop.requireApp(appNames, "lp.zh-cn", null, false);
             }.bind(this)
         }, false);
