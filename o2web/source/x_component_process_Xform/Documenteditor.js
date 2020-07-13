@@ -2679,7 +2679,10 @@ debugger;
             var content = "<html xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\" /></head><body>"+tmpNode.get("html")+"</body></html>";
 
             var fileName = docNmae || this.json.toWordFilename || "$doc";
-            fileName = fileName+".doc";
+            var n = fileName.lastIndexOf(".");
+            var ex = fileName.substring(n, fileName.length).toLowerCase();
+            if (ex!==".doc" && ex!==".docx") fileName = fileName+".doc";
+
             var body = {
                 "fileName": fileName,
                 "site": this.json.toWordSite || "$doc",
