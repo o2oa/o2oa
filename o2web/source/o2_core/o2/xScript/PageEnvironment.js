@@ -263,6 +263,14 @@ MWF.xScript.PageEnvironment = function (ev) {
             orgActions.listPersonWithIdentity(data, function (json) { v = json.data; }, null, false);
             return v;
         },
+        //获取身份的所有人员--返回人员的对象数组或人员对象
+        getPersonWithIdentity: function(name){
+            getOrgActions();
+            var data = {"identityList": getNameFlag(name)};
+            var v = null;
+            orgActions.listPersonWithIdentity(data, function(json){v = json.data;}, null, false);
+            return (v && v.length===1) ? v[0] : v;
+        },
         //查询组织成员的人员--返回人员的对象数组
         //nested  布尔  true嵌套的所有成员；false直接成员；默认false；
         listPersonWithUnit: function (name, nested) {
@@ -756,16 +764,16 @@ MWF.xScript.PageEnvironment = function (ev) {
     //     var includedScripts = window.includedScripts;
     // }
     var includedScripts = [];
-    this.include = function (optionsOrName, callback) {
+    var _includeSingle = function( optionsOrName , callback, async){
         var options = optionsOrName;
-        if (typeOf(options) == "string") {
-            options = { name: options };
+        if( typeOf( options ) == "string" ){
+            options = { name : options };
         }
         var name = options.name;
-        var type = (options.type && options.application) ? options.type : "portal";
+        var type = ( options.type && options.application ) ?  options.type : "process";
         var application = options.application || _form.json.application;
-        var key = type + "-" + application + "-" + name;
-        if (includedScripts.indexOf(key) > -1) {
+        var key = type +"-" + application + "-"  + name;
+        if (includedScripts.indexOf( key )> -1){
             if (callback) callback.apply(this);
             return;
         }
@@ -774,63 +782,65 @@ MWF.xScript.PageEnvironment = function (ev) {
         //    return;
         //}
         var scriptAction;
-        switch (type) {
-            case "portal":
-                if (this.scriptActionPortal) {
+        switch ( type ){
+            case "portal" :
+                if( this.scriptActionPortal ){
                     scriptAction = this.scriptActionPortal;
-                } else {
+                }else{
                     MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
                     scriptAction = this.scriptActionPortal = new MWF.xScript.Actions.PortalScriptActions();
                 }
                 break;
-            case "process":
-                if (this.scriptActionProcess) {
+            case "process" :
+                if( this.scriptActionProcess ){
                     scriptAction = this.scriptActionProcess;
-                } else {
+                }else{
                     MWF.require("MWF.xScript.Actions.ScriptActions", null, false);
                     scriptAction = this.scriptActionProcess = new MWF.xScript.Actions.ScriptActions();
                 }
                 break;
-            case "cms":
-                if (this.scriptActionCMS) {
+            case "cms" :
+                if( this.scriptActionCMS ){
                     scriptAction = this.scriptActionCMS;
-                } else {
+                }else{
                     MWF.require("MWF.xScript.Actions.CMSScriptActions", null, false);
                     scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                 }
                 break;
         }
-        scriptAction.getScriptByName(application, name, includedScripts, function (json) {
-            if (json.data) {
-                includedScripts.push(key);
+        scriptAction.getScriptByName( application, name, includedScripts, function(json){
+            if (json.data){
+                includedScripts.push( key );
                 includedScripts = includedScripts.concat(json.data.importedList);
                 MWF.Macro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
-            } else {
+            }else{
                 if (callback) callback.apply(this);
             }
-        }.bind(this), null, false);
+        }.bind(this), null, !!async);
+    }
+    this.include = function( optionsOrName , callback, async){
+        if (o2.typeOf(optionsOrName)=="array"){
+            if (!!async){
+                var count = optionsOrName.length;
+                var loaded = 0;
+                optionsOrName.each(function(option){
+                    _includeSingle.apply(this, [option, function(){
+                        loaded++;
+                        if (loaded>=count) if (callback) callback.apply(this);;
+                    }.bind(this), true]);
+                }.bind(this));
+
+            }else{
+                optionsOrName.each(function(option){
+                    _includeSingle.apply(this, [option]);
+                    if (callback) callback.apply(this);
+                }.bind(this));
+            }
+        }else{
+            _includeSingle.apply(this, [optionsOrName , callback, async])
+        }
     };
-    //var includedScripts = [];
-    //this.include = function(name, callback){
-    //    if (includedScripts.indexOf(name)==-1){
-    //        if (!this.scriptAction){
-    //            MWF.require("MWF.xScript.Actions.PortalScriptActions", null, false);
-    //            this.scriptAction = new MWF.xScript.Actions.PortalScriptActions();
-    //        }
-    //        this.scriptAction.getScriptByName(_form.json.application, name, includedScripts, function(json){
-    //            if (json.data){
-    //                includedScripts = includedScripts.concat(json.data.importedList);
-    //                MWF.Macro.exec(json.data.text, this);
-    //                if (callback) callback.apply(this);
-    //            }else{
-    //                if (callback) callback.apply(this);
-    //            }
-    //        }.bind(this), null, false);
-    //    }else{
-    //        if (callback) callback.apply(this);
-    //    }
-    //}.bind(this);
 
     this.define = function (name, fun, overwrite) {
         var over = true;
@@ -1127,7 +1137,6 @@ MWF.xScript.PageEnvironment = function (ev) {
             })
         },
         "startProcess": function (app, process, data, identity, callback, target, latest) {
-            debugger;
             if (arguments.length > 2) {
                 for (var i = 2; i < arguments.length; i++) {
                     if (typeOf(arguments[i]) == "boolean") {
@@ -1208,3 +1217,229 @@ MWF.xScript.PageEnvironment = function (ev) {
     this.Table = MWF.xScript.createTable();
 };
 
+MWF.xScript.createTable = function(){
+    return function(name){
+        this.name = name;
+        this.action = o2.Actions.get("x_query_assemble_surface");
+
+        this.listRowNext = function(id, count, success, error, async){
+            this.action.listRowNext(this.name, id, count, success, error, async);
+        };
+        this.listRowPrev = function(id, count, success, error, async){
+            this.action.listRowPrev(this.name, id, count, success, error, async);
+        };
+        this.listRowPrev = function(id, count, success, error, async){
+            this.action.listRowPrev(this.name, id, count, success, error, async);
+        };
+        this.listRowSelectWhere = function(where, success, error, async){
+            this.action.listRowSelectWhere(this.name, where, success, error, async);
+        };
+        this.listRowCountWhere = function(where, success, error, async){
+            this.action.listRowCountWhere(this.name, where, success, error, async);
+        };
+        this.deleteRow = function(id, success, error, async){
+            this.action.deleteRow(this.name, id, success, error, async);
+        };
+        this.deleteAllRow = function(success, error, async){
+            this.action.deleteAllRow(this.name, success, error, async);
+        };
+        this.getRow = function(id, success, error, async){
+            this.action.getRow(this.name, id, success, error, async);
+        };
+        this.insertRow = function(data, success, error, async){
+            this.action.insertRow(this.name, data, success, error, async);
+        };
+        this.updateRow = function(id, data, success, error, async){
+            this.action.updateRow(this.name, id, data, success, error, async);
+        };
+    }
+};
+MWF.xScript.JSONData = function(data, callback, key, parent, _form){
+    var getter = function(data, callback, k, _self){
+        return function(){return (["array","object"].indexOf(typeOf(data[k]))===-1) ? data[k] : new MWF.xScript.JSONData(data[k], callback, k, _self, _form);};
+    };
+    var setter = function(data, callback, k, _self){
+        return function(v){
+            data[k] = v;
+            //debugger;
+            //this.add(k, v, true);
+            if (callback) callback(data, k, _self);
+        }
+    };
+    var define = function(){
+        var o = {};
+        for (var k in data) o[k] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, k, this]),"set": setter.apply(this, [data, callback, k, this])};
+        o["length"] = {"get": function(){return Object.keys(data).length;}};
+        MWF.defineProperties(this, o);
+
+        var methods = {
+            "getKey": {"value": function(){ return key; }},
+            "getParent": {"value": function(){ return parent; }},
+            "toString": {"value": function() { return data.toString();}},
+            "setSection": {"value": function(newKey, newValue){
+                    this.add(newKey, newValue, true);
+                    try {
+                        var path = [this.getKey()];
+                        p = this.getParent();
+                        while (p && p.getKey()){
+                            path.unshift(p.getKey());
+                            p = p.getParent();
+                        }
+                        if (path.length) _form.sectionListObj[path.join(".")] = newKey;
+                    }catch(e){
+                        debugger;
+                    }
+                }},
+            "add": {"value": function(newKey, newValue, overwrite){
+                    var flag = true;
+                    var type = typeOf(data);
+                    if (type==="array"){
+                        if (arguments.length<2){
+                            data.push(newKey);
+                            newValue = newKey;
+                            newKey = data.length-1;
+                        }else{
+                            if (!newKey && newKey!==0){
+                                data.push(newValue);
+                                newKey = data.length-1;
+                            }else{
+                                flag = false;
+                            }
+                        }
+                        if (flag){
+                            var o = {};
+                            o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                            MWF.defineProperties(this, o);
+                        }
+                        this[newKey] = newValue;
+                    }else if (type==="object"){
+                        if (!this.hasOwnProperty(newKey)){
+                            data[newKey] = newValue;
+
+                            if (flag){
+                                var o = {};
+                                o[newKey] = {"configurable": true, "enumerable": true, "get": getter.apply(this, [data, callback, newKey, this]),"set": setter.apply(this, [data, callback, newKey, this])};
+                                MWF.defineProperties(this, o);
+                            }
+                            this[newKey] = newValue;
+                        }else{
+                            if (overwrite) this[newKey] = newValue;
+                        }
+                    }
+
+                    return this[newKey];
+                }},
+            "del": {"value": function(delKey){
+                    if (!this.hasOwnProperty(delKey)) return null;
+                    delete data[delKey];
+                    delete this[delKey];
+                    return this;
+                }}
+        };
+        MWF.defineProperties(this, methods);
+    };
+    var type = typeOf(data);
+    if (type==="object" || type==="array") define.apply(this);
+};
+var dictLoaded = {};
+MWF.xScript.createDict = function(application){
+    //optionsOrName : {
+    //  type : "", //默认为process, 可以为  process  cms
+    //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+    //  name : "", // 数据字典名称/别名/id
+    //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+    //}
+    //或者name: "" // 数据字典名称/别名/id
+    return function(optionsOrName){
+        var options = optionsOrName;
+        if( typeOf( options ) == "string" ){
+            options = { name : options };
+        }
+        var name = this.name = options.name;
+        var type = ( options.type && options.application ) ?  options.type : "process";
+        var applicationId = options.application || application;
+        var enableAnonymous = options.enableAnonymous || false;
+
+        var key = name+type+applicationId+enableAnonymous
+        if (!dictLoaded[key]) dictLoaded[key] = {};
+        this.dictData = dictLoaded[key];
+
+        //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+        if( type == "cms" ){
+            var action = MWF.Actions.get("x_cms_assemble_control");
+        }else{
+            var action = MWF.Actions.get("x_processplatform_assemble_surface");
+        }
+
+        var encodePath = function( path ){
+            var arr = path.split(/\./g);
+            var ar = arr.map(function(v){
+                return encodeURIComponent(v);
+            });
+            return ar.join("/");
+        };
+
+        this.get = function(path, success, failure, async){
+            var value = null;
+            if (path){
+                if (this.dictData[path]){
+                    if (success) success(this.dictData[path]);
+                    return this.dictData[path];
+                }
+
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+                    value = json.data;
+                    this.dictData[path] = value;
+                    if (success) success(json.data);
+                }.bind(this), function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, !!async, false);
+            }else{
+                if (this.dictData["root"]){
+                    if (success) success(this.dictData["root"]);
+                    return this.dictData["root"];
+                }
+                action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+                    value = json.data;
+                    this.dictData["root"] = value;
+                    if (success) success(json.data);
+                }.bind(this), function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, !!async);
+            }
+
+            return value;
+        };
+
+        this.set = function(path, value, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this.add = function(path, value, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this["delete"] = function(path, success, failure){
+            var p = encodePath( path );
+            //var p = path.replace(/\./g, "/");
+            action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        };
+        this.destory = this["delete"];
+    }
+};
