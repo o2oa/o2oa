@@ -50,7 +50,7 @@ public class MarketAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+					@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -68,7 +68,7 @@ public class MarketAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getCoverPic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+					@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
 		ActionResult<ActionGetCoverPic.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -102,8 +102,8 @@ public class MarketAction extends StandardJaxrsAction {
 	@Path("{flag}/install/or/update")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void installOrUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("标识") @PathParam("flag") String flag) {
+	public synchronized void installOrUpdate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
 		ActionResult<ActionInstallOrUpdate.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -180,6 +180,24 @@ public class MarketAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetInstalledVersion().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "卸载应用.", action = ActionUninstall.class)
+	@GET
+	@Path("{flag}/uninstall")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public synchronized void uninstall(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
+		ActionResult<ActionUninstall.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUninstall().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
