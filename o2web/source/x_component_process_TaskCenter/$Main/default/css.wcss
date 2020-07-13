@@ -196,7 +196,7 @@
         "border-radius": "6px",
         "overflow": "hidden",
         //"width": "auto",
-        "box-shadow": "2px 2px 10px #cccccc",
+        "box-shadow": "2px 2px 10px #cccccc"
     },
     "itemMainContentAreaNode_selected": {
         //"border-top": "4px solid #44a217",
@@ -207,7 +207,7 @@
         "border-radius": "6px",
         "overflow": "hidden",
         //"width": "auto",
-        "box-shadow": "0px 0px 0px #cccccc",
+        "box-shadow": "0px 0px 0px #cccccc"
     },
     "itemTimeContentAreaNode": {
         "height": "28px",
@@ -226,7 +226,7 @@
         "margin": "10px 0px",
         "height": "112px",
         "width": "24px",
-        "float": "right",
+        "float": "right"
 
     },
     "itemMainRightContentAreaNode": {
@@ -264,6 +264,7 @@
         "height": "44px",
         "padding": "3px 0px",
         "line-height": "22px",
+        "word-break": "break-all",
         "overflow": "hidden"
     },
     "itemActivityNode": {
@@ -325,7 +326,7 @@
         "background-color": "#FFF",
         "border-radius": "0px",
         "overflow": "hidden",
-        "box-shadow": "0px 0px 0px #cccccc",
+        "box-shadow": "0px 0px 0px #cccccc"
     },
     "itemNode_edit": {
         "position": "absolute",
@@ -347,7 +348,7 @@
     },
     "processNode": {
         "margin-top": "4px",
-        "overflow": "hidden"
+        "overflow": "auto"
     },
     "flowInforLeftNode":{
         "height": "68px",
