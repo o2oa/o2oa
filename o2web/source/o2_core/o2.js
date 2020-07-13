@@ -1010,7 +1010,17 @@
                 //}
             },
             onFailure: function(r){
-                o2.runCallback(callback, "failure", [r]);
+                var rex = /lp\/.+\.js/;
+                if (rex.test(url)){
+                    var zhcnUrl = url.replace(rex, "lp/zh-cn.js");
+                    if (zhcnUrl!==url){
+                        _requireJs(zhcnUrl, callback, async, compression, module)
+                    }else{
+                        o2.runCallback(callback, "failure", [r]);
+                    }
+                }else{
+                    o2.runCallback(callback, "failure", [r]);
+                }
             }
         });
         xhr.send();
@@ -1217,7 +1227,11 @@
                 }catch (e){}
             },
             onFailure: function(xhr){
-                throw "loadLP Error: "+xhr.responseText;
+                if (name!="zh-cn"){
+                    _loadLP("zh-cn");
+                }else{
+                    throw "loadLP Error: "+xhr.responseText;
+                }
             }
         });
         r.send();
