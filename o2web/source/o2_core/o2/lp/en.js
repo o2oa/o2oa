@@ -1,6 +1,9 @@
 MWF.LP = window.LP || {
 	"name": "Name",
-	"description": "Description"
+	"description": "Description",
+	"searchKey": "请输入搜索关键字",
+	"desktop_style": "桌面风格",
+	"flat_style": "扁平风格"
 };
 
 MWF.LP.process = {
@@ -120,6 +123,7 @@ MWF.LP.process = {
 	}
 };
 MWF.LP.desktop = {
+	"homepage": "首页",
 	"loadding": "System is loadding, please wait......",
 	"lowBrowser": " Your browser version is too low! ~ IE8 and the following versions are not supported!",
 	"upgradeBrowser": "Please upgrade your browser：",
@@ -141,9 +145,19 @@ MWF.LP.desktop = {
 	"say": "Say",
 	"clearMessage": "Clear Message",
 
+	"lnkAppTitle": "常用应用",
+	"deleteLnk": "删除常用应用快捷方式",
+	"addLnk": "添加常用应用快捷方式",
+
+	"changeViewTitle": "切换视图样式确认",
+	"changeView": "您确定要切换视图样式吗？<br><br>如果您选择“确定”，页面将直接刷新，未保存的数据可能丢失。",
+
 	"messsage": {
 		"appliction": "Application",
+		"application": "app",
 		"process": "Process",
+		"infor": "info",
+		"query": "data",
 		"taskMessage": "Task Reminders",
 		"receiveTask": "You get a Task, The title is: ",
 		"activity": "Activity",
@@ -186,7 +200,6 @@ MWF.LP.desktop = {
 
 		"customMessageTitle": "消息提醒：",
 		"customMessage": "您收到一条消息："
-
 	},
 	"styleMenu": {
 		"default": "default",
@@ -200,9 +213,23 @@ MWF.LP.desktop = {
 		"panda": "panda",
 		"star": "star"
 	},
+	"styleFlatMenu": {
+		"blue": "blue",
+		"red": "red",
+		"orange": "orange",
+		"green": "green",
+		"cyan": "cyan",
+		"purple": "purple",
+		"gray": "gray",
+		"darkgreen": "darkgreen",
+		"tan": "tan",
+		"navy": "navy"
+	},
 	"notice": {
 		"unload": "If you close or refresh the current page, the content is not saved is lost, please make sure your operation",
-		"changePassword": "Your password has expired, please do not hesitate to change the password"
+		"changePassword": "Your password has expired, please do not hesitate to change the password",
+		"errorConnectCenter1": "无法连接到应用中心服务器，请确保下列地址其中之一可以访问：",
+		"errorConnectCenter2": "如果以上地址都无法访问，请检查您的网络，或联系管理员！"
 	},
 	"login": {
 		"title": "User Login",
@@ -256,6 +283,7 @@ MWF.LP.desktop = {
 		"collectNotConnectedText": "Failed to connect O2 cloud, Please check the server network!"
 	}
 };
+o2.LP.desktop.message = o2.LP.desktop.messsage;
 MWF.LP.widget = {
 	"upload": "Upload",
 	"uploadTitle": "Upload File",
@@ -271,10 +299,13 @@ MWF.LP.widget = {
 	"createFolder": "Create Folder",
 	"rename": "Rename",
 	"property": "Property",
+	"refuseUpload": "禁止文件上传",
 
 	"list": "List",
+	"sequence": "序列",
 	"icon": "Icon",
 	"preview": "Preview",
+
 
 	"min": "Simple Mode",
 	"max": "Full Mode",
@@ -290,20 +321,33 @@ MWF.LP.widget = {
 	"pictureSize": "Width {width}px, Height {height}px",
 	"pictureRatio": "图片宽高比为{ratio}",
 
-	"checkOcrText": "纠正自动识别的图片中的文字",
-	"order": "order",
-
 	"ok": "Ok",
 	"cancel": "Cancel",
 	"refresh": "Refresh",
 	"close": "close",
 	"open": "open",
 	"choiceWork": "choice document open",
+	"workcompleted": "流转完成",
 
 	"months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 	"days_abbr": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 
-	"unknow": "unknow"
+	"unknow": "unknow",
+	"uploadImg": "uploadImg",
+	"clearImg": "清除图片",
+	"clearImg_confirmTitle": "清除图片确认",
+	"clearImg_confirm": "您确定要清除图片吗？",
+	"office": "在文档控件中打开",
+	"closeOffice": "关闭附件",
+	"configAttachment": "设置附件权限",
+	"configAttachmentText": "设置",
+	"checkOcrText": "纠正自动识别的图片中的文字",
+	"order": "附件排序",
+
+	"record": "录音",
+	"stop": "停止",
+	"play": "播放",
+	"save": "保存"
 };
 
 MWF.LP.widget.SimpleEditor = {
@@ -315,6 +359,7 @@ MWF.LP.authentication = {
 	"LoginFormTitle": "Welcome",
 	"SignUpFormTitle": "Welcome",
 	"ResetPasswordFormTitle": "Retrieve Password",
+	"ChangePasswordFormTitle" : "密码已过期",
 	"userName": "Username",
 	"password": "Password",
 	"verificationCode": "CAPTCHA",
@@ -368,5 +413,16 @@ MWF.LP.authentication = {
 	"resetPasswordSuccessWord": "Please remember your new password.",
 	"resetPasswordFailWord": "Please check your username and message authentication codes.",
 	"backtoModify": "Return for correction",
-	"pageNotFound": "404 error, the service was not found or the server has been disconnected"
+	"pageNotFound": "404 error, the service was not found or the server has been disconnected",
+	"submitAction" : "确定",
+	"oldPassword" : "原密码",
+	"inputYourOldPassword" : "请输入原密码",
+	"newPassword" : "新密码",
+	"inputYourNewPassword" : "请输入新密码",
+	"changePasswordSuccess" : "修改密码成功"
+
+
+};
+o2.LP.script = {
+	"error": "脚本运行错误，请查看以下详细信息"
 };
