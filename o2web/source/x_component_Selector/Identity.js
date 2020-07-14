@@ -1206,6 +1206,7 @@ MWF.xApplication.Selector.Identity.Include = new Class({
     },
 
     listByFilter : function( type, key, callback ){
+        debugger;
         var arr1 = this.listByFilterPerson(key) || [];
         this.listByFilterUnitAndGroup( type, key, function(arr2){
             this.listByFilterGroup( type, key, function(arr3){
