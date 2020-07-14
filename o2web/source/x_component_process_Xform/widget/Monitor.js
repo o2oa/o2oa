@@ -248,6 +248,22 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 route.arrow.attr(this.process.css.route.arrow.normal);
             }
 
+            if (log.taskCompletedList && log.taskCompletedList.length){
+                log.taskCompletedList.each(function(tc){
+                    if (tc.processingType === "appendTask"){
+                        if (activity.routes && activity.routes.length){
+                            activity.routes.each(function(r){
+                                if (tc.routeName === r.data.name){
+                                    r.line.attr(this.process.css.route.line.normal);
+                                    r.point.attr(this.process.css.route.decision.normal);
+                                    r.arrow.attr(this.process.css.route.arrow.normal);
+                                }
+                            }.bind(this));
+                        }
+                    }
+                }.bind(this));
+            }
+
             if (activity.countSet) activity.countSet.remove();
         }.bind(this));
 
@@ -311,6 +327,24 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 route.point.attr(this.css.passedRouteFillShap);
                 route.arrow.attr(this.css.passedRouteFillShap);
             }
+            debugger;
+
+            if (log.taskCompletedList && log.taskCompletedList.length){
+                log.taskCompletedList.each(function(tc){
+                    if (tc.processingType === "appendTask"){
+                        if (activity.routes && activity.routes.length){
+                            activity.routes.each(function(r){
+                                if (tc.routeName === r.data.name){
+                                    r.line.attr(this.css.passedRouteShap);
+                                    r.point.attr(this.css.passedRouteFillShap);
+                                    r.arrow.attr(this.css.passedRouteFillShap);
+                                }
+                            }.bind(this));
+                        }
+                    }
+                }.bind(this));
+            }
+
 
             var passedCount = log.taskCompletedList.length;
             //var passedCount = log.taskCompletedList.length || 1;
