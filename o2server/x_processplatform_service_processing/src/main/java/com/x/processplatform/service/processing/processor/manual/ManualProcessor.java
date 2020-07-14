@@ -613,10 +613,10 @@ public class ManualProcessor extends AbstractManualProcessor {
 
 	private void expireAppointNaturalDay(Task task, Manual manual) throws Exception {
 		Integer m = 0;
-		if (NumberTools.greaterThan(manual.getTaskExpireDay(), 0)) {
+		if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireDay(), 0))) {
 			m += manual.getTaskExpireDay() * 60 * 24;
 		}
-		if (NumberTools.greaterThan(manual.getTaskExpireHour(), 0)) {
+		if (BooleanUtils.isTrue(NumberTools.greaterThan(manual.getTaskExpireHour(), 0))) {
 			m += manual.getTaskExpireHour() * 60;
 		}
 		if (m > 0) {
