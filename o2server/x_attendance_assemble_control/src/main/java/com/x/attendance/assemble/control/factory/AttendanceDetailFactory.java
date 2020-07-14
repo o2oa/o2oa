@@ -983,7 +983,7 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
 		cq.select(root.get(AttendanceDetail_.id));
-		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDate ), recordDate );
+		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate );
 		Predicate offDutyTime_1 = cb.isNull(root.get( AttendanceDetail_.offDutyTime ));
 		Predicate offDutyTime_2 = cb.equal( root.get( AttendanceDetail_.offDutyTime ), "" );
 		p = cb.and( p, cb.or( offDutyTime_1, offDutyTime_2 ));
@@ -991,4 +991,29 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	}
 
 
+    public List<String> listSignedPersonsWithDeadLine( String deadline ) throws Exception {
+		DateOperation dateOperation = new DateOperation();
+		if( StringUtils.isEmpty( deadline )){
+			deadline = dateOperation.getNowDateTime();
+		}
+		Date deadlineDate = dateOperation.getDateFromString( deadline, "yyyy-MM-dd HH:mm:ss");
+		String recordDate = dateOperation.getDate( deadlineDate, "yyyy-MM-dd");
+		String deadlineTime = dateOperation.getDate( deadlineDate, "HH:mm:ss");
+
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		cq.select(root.get(AttendanceDetail_.id));
+		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate );
+		Predicate p_or = cb.or(
+				cb.lessThan( root.get( AttendanceDetail_.onDutyTime ), deadlineTime),
+				cb.lessThan(root.get( AttendanceDetail_.morningOffDutyTime ), deadlineTime),
+				cb.lessThan(root.get( AttendanceDetail_.afternoonOnDutyTime ), deadlineTime),
+				cb.lessThan(root.get( AttendanceDetail_.offDutyTime ), deadlineTime)
+		);
+		p = cb.and( p, p_or );
+		cq.distinct(true).select(root.get(AttendanceDetail_.empName));
+		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
+	}
 }

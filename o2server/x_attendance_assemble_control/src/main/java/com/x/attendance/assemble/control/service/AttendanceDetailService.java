@@ -321,4 +321,9 @@ public class AttendanceDetailService {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().listRecordWithDateAndNoOffDuty( dateString );
     }
+
+    public List<String> listSignedPersonsWithDeadLine(EntityManagerContainer emc, String deadline) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().listSignedPersonsWithDeadLine( deadline );
+    }
 }
