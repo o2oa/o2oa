@@ -8,19 +8,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -72,13 +71,9 @@ public class PassExpired extends AbstractJob {
 					if (!targets.isEmpty()) {
 						sequence = targets.get(targets.size() - 1).getSequence();
 						for (Task task : targets) {
-							try {
-								logger.print("执行超时工作默认路由流转:{}, id:{}.", task.getTitle(), task.getId());
-								this.execute(task);
-								count.incrementAndGet();
-							} catch (Exception e) {
-								logger.error(e);
-							}
+							logger.print("执行超时工作默认路由流转:{}, id:{}.", task.getTitle(), task.getId());
+							this.executeWithLogException(task);
+							count.incrementAndGet();
 						}
 					}
 				} while (!targets.isEmpty());
@@ -87,6 +82,15 @@ public class PassExpired extends AbstractJob {
 		} catch (Exception e) {
 			throw new JobExecutionException(e);
 		}
+	}
+
+	private void executeWithLogException(Task task) {
+		try {
+			this.execute(task);
+		} catch (Exception e) {
+			logger.error(e);
+		}
+
 	}
 
 	private void execute(Task task) throws Exception {
@@ -211,7 +215,7 @@ public class PassExpired extends AbstractJob {
 		/* 记录上一处理人信息 */
 		if (ListTools.isNotEmpty(list)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
-			req.setTaskList(ListTools.extractProperty(list, Task.id_FIELDNAME, String.class, true, true));
+			req.setTaskList(ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, true, true));
 			req.getPrevTaskIdentityList().add(task.getIdentity());
 			ThisApplication.context().applications()
 					.putQuery(x_processplatform_service_processing.class,
@@ -282,37 +286,23 @@ public class PassExpired extends AbstractJob {
 			throws Exception {
 		EntityManager em = emc.get(Task.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		CriteriaQuery<Task> cq = cb.createQuery(Task.class);
 		Root<Task> root = cq.from(Task.class);
-		Path<String> id_path = root.get(Task_.id);
-		Path<String> job_path = root.get(Task_.job);
-		Path<String> sequence_path = root.get(Task_.sequence);
-		Path<String> work_path = root.get(Task_.work);
 		Predicate p = cb.equal(root.get(Task_.expired), true);
 		p = cb.and(p, root.get(Task_.activity).in(manualToRoute.keySet()));
 		if (StringUtils.isNotEmpty(sequence)) {
-			p = cb.and(p, cb.greaterThan(sequence_path, sequence));
+			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.sequence), sequence));
 		}
-		cq.multiselect(id_path, job_path, sequence_path, work_path).where(p).orderBy(cb.asc(sequence_path));
-		List<Tuple> os = em.createQuery(cq).setMaxResults(200).getResultList();
-		List<Task> list = new ArrayList<>();
-		for (Tuple o : os) {
-			Task task = new Task();
-			task.setId(o.get(id_path));
-			task.setJob(o.get(job_path));
-			task.setSequence(o.get(sequence_path));
-			task.setWork(o.get(work_path));
-			list.add(task);
-		}
-		return list;
+		return em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.sequence))))
+				.setMaxResults(200).getResultList();
 	}
 
 	private Map<String, Route> linkPassExpiredManualToRoute(EntityManagerContainer emc) throws Exception {
 		List<Route> routes = emc.fetchEqual(Route.class,
-				ListTools.toList(Route.id_FIELDNAME, Route.name_FIELDNAME, Route.opinion_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Route.name_FIELDNAME, Route.opinion_FIELDNAME),
 				Route.passExpired_FIELDNAME, true);
 		List<Manual> manuals = emc.fetchIn(Manual.class, Manual.routeList_FIELDNAME,
-				ListTools.extractProperty(routes, Route.id_FIELDNAME, String.class, true, true));
+				ListTools.extractProperty(routes, JpaObject.id_FIELDNAME, String.class, true, true));
 		List<String> ids = new ArrayList<>();
 		for (Manual m : manuals) {
 			ids.add(m.getId());
