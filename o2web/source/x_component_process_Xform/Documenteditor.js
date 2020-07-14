@@ -370,6 +370,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_signer = this.contentNode.getElement(".doc_layout_filenoup_signerContent");
         if (this.layout_signer) this.layout_signer.setStyles(this.css.doc_layout_filenoup_signerContent);
+
+        if (!this.layout_fileno){
+            this.layout_fileNoUpTable = this.contentNode.getElement(".doc_layout_filenoup");
+            this.layout_filenoArea = this.contentNode.getElement(".doc_layout_fileno_area");
+            this.layout_fileno = this.contentNode.getElement(".doc_layout_fileno");
+            if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_fileno);
+        }
     },
 
     //文号
@@ -393,6 +400,18 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_signer = this.contentNode.getElement(".doc_layout_filenoup_signerContent");
         if (this.layout_signer) this.layout_signer.setStyles(this.css.doc_layout_filenoup_signerContent);
+
+        if (!this.layout_fileno){
+            this.layout_filenoArea = this.contentNode.getElement(".doc_layout_fileno_area");
+            this.layout_fileNoUpTable = this.contentNode.getElement(".doc_layout_filenoup");
+            if (this.layout_fileNoUpTable) this.layout_fileNoUpTable.setStyles(this.css.doc_layout_filenoup);
+
+            var td = this.contentNode.getElement(".doc_layout_filenoup_fileno_td");
+            if (td) td.setStyles(this.css.doc_layout_filenoup_fileno_td);
+
+            this.layout_fileno = this.contentNode.getElement(".doc_layout_filenoup_fileno");
+            if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_filenoup_fileno);
+        }
     },
 
     //红线
