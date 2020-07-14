@@ -110,6 +110,8 @@ class ActionListPinyinInitial extends BaseAction {
 		Predicate p = cb.like(root.get(Person_.pinyinInitial), str + "%", StringTools.SQL_ESCAPE_CHAR);
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
+		}else{
+			return wos;
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
