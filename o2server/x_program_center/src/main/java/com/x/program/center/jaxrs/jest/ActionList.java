@@ -19,7 +19,7 @@ class ActionList extends BaseAction {
 	ActionResult<List<Wo>> execute(HttpServletRequest request, String source) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
-		Boolean fromProxy = this.formProxy(request, source);
+		Boolean fromProxy = this.formProxy(request, this.getHost(request));
 		String httpProtocol = "http://"; //O2LEE，修正如果开启SSL，x_program_center/jest/list.html 给出的URL都是HTTP协议的，无法访问的问题
 		for (Entry<String, CopyOnWriteArrayList<Application>> en : ThisApplication.context().applications()
 				.entrySet()) {
