@@ -316,4 +316,20 @@ public class AttendanceDetailServiceAdv {
 			throw e;
 		}
 	}
+
+	/**
+	 * 查询在指定截止日期前已经打过卡的人员
+	 * @param deadline
+	 * @return
+	 */
+    public List<String> listSignedPersonsWithDeadLine( String deadline ) throws Exception {
+		if( StringUtils.isEmpty( deadline )){
+			deadline = dateOperation.getNowDateTime();
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.listSignedPersonsWithDeadLine( emc, deadline );
+		} catch ( Exception e ) {
+			throw e;
+		}
+    }
 }
