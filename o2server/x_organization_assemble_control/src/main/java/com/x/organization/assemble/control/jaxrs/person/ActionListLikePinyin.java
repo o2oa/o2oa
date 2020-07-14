@@ -102,6 +102,8 @@ class ActionListLikePinyin extends BaseAction {
 		p = cb.or(p, cb.like(root.get(Person_.pinyinInitial), str + "%"));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
+		}else{
+			return wos;
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePerson));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
