@@ -378,6 +378,21 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.layout_filenoArea = this.contentNode.getElement(".doc_layout_fileno_area");
         this.layout_fileno = this.contentNode.getElement(".doc_layout_fileno");
         if (this.layout_fileno) this.layout_fileno.setStyles(this.css.doc_layout_fileno);
+
+        td = this.contentNode.getElement(".doc_layout_filenoup_signer_td");
+        if (td) td.setStyles(this.css.doc_layout_filenoup_signer_td);
+
+        var node = this.contentNode.getElement(".doc_layout_filenoup_signer_table");
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signer_table);
+        node = this.contentNode.getElement(".doc_layout_filenoup_signerTitle_td");
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signerTitle_td);
+        this.layout_signerTitle = this.contentNode.getElement(".doc_layout_filenoup_signer");
+        if (this.layout_signerTitle) this.layout_signerTitle.setStyles(this.css.doc_layout_filenoup_signer);
+        node = this.contentNode.getElement(".doc_layout_filenoup_signerContent_td");
+        if (node) node.setStyles(this.css.doc_layout_filenoup_signerContent_td);
+
+        this.layout_signer = this.contentNode.getElement(".doc_layout_filenoup_signerContent");
+        if (this.layout_signer) this.layout_signer.setStyles(this.css.doc_layout_filenoup_signerContent);
     },
 
     //红线
@@ -622,6 +637,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         if (this.layout_fileNoUpTable) this.layout_fileNoUpTable[m("signer")]();
         if (this.layout_filenoArea) this.layout_filenoArea[(!control.signer) ? "show" : "hide"]();
+
+        debugger;
+        if (this.layout_signerTitle) this.layout_signerTitle[m("signer")]();
+        if (this.layout_signer) this.layout_signer[m("signer")]();
+
 
         if (this.layout_fileno) this.layout_fileno[m("fileno")]();
         if (this.layout_subject) this.layout_subject[m("subject")]();
