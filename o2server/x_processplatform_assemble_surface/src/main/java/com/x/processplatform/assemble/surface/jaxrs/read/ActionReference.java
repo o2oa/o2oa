@@ -36,7 +36,7 @@ class ActionReference extends BaseAction {
 			Business business = new Business(emc);
 			Read read = emc.find(id, Read.class);
 			if (null == read) {
-				throw new ExceptionEntityNotExist(id,Read.class);
+				throw new ExceptionEntityNotExist(id, Read.class);
 			}
 			Wo wo = new Wo();
 			wo.setRead(WoRead.copier.copy(read));
@@ -229,15 +229,15 @@ class ActionReference extends BaseAction {
 		List<WoTaskCompleted> list = new ArrayList<>();
 		for (WoTaskCompleted o : wos) {
 			list.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				list.add(retract);
-			}
+			// if (o.getProcessingType().equals(ProcessingType.retract)) {
+			// WoTaskCompleted retract = new WoTaskCompleted();
+			// o.copyTo(retract);
+			// retract.setRouteName("撤回");
+			// retract.setOpinion("撤回");
+			// retract.setStartTime(retract.getRetractTime());
+			// retract.setCompletedTime(retract.getRetractTime());
+			// list.add(retract);
+			// }
 		}
 		wo.setTaskCompletedList(list);
 	}
@@ -254,20 +254,28 @@ class ActionReference extends BaseAction {
 		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
 			workIds.add(o.getWork());
 		}
-		List<WoWork> wos = WoWork.copier.copy(business.entityManagerContainer().list(Work.class, workIds));
+		List<WoWork> wos = WoWork.copier
+				.copy(business.entityManagerContainer().listEqual(Work.class, Work.job_FIELDNAME, read.getJob()));
+		// List<WoWork> wos =
+		// WoWork.copier.copy(business.entityManagerContainer().list(Work.class,
+		// workIds));
 		wos = wos.stream().sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());
 		return wos;
 	}
 
 	private List<WoWorkCompleted> listWorkCompleted(Business business, Read read) throws Exception {
-		List<WoWorkCompleted> wos = new ArrayList<>();
-		if (BooleanUtils.isTrue(read.getCompleted())) {
-			WorkCompleted o = business.entityManagerContainer().find(read.getWorkCompleted(), WorkCompleted.class);
-			if (null != o) {
-				wos.add(WoWorkCompleted.copier.copy(o));
-			}
-		}
+		List<WoWorkCompleted> wos = WoWorkCompleted.copier.copy(business.entityManagerContainer()
+				.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, read.getJob()));
+		// List<WoWorkCompleted> wos = new ArrayList<>();
+		// if (BooleanUtils.isTrue(read.getCompleted())) {
+		// WorkCompleted o =
+		// business.entityManagerContainer().find(read.getWorkCompleted(),
+		// WorkCompleted.class);
+		// if (null != o) {
+		// wos.add(WoWorkCompleted.copier.copy(o));
+		// }
+		// }
 		wos = wos.stream()
 				.sorted(Comparator.comparing(WorkCompleted::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());
