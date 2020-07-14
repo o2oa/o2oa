@@ -126,7 +126,6 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             redirectlink = encodeURIComponent(redirectlink);
         }
         if (options.workId) {
-            o2.
             window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
         } else if (options.workCompletedId) {
             window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
