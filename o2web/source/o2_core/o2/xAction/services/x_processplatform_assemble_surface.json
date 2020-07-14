@@ -310,7 +310,7 @@
   "manageListWorkFilterByPage": {"uri": "/jaxrs/work/list/filter/{page}/size/{pageSize}/manage", "method": "POST"},
   "manageListWorkCompletedFilterByPage": {"uri": "/jaxrs/workcompleted/list/filter/{page}/size/{pageSize}/manage", "method": "POST"},
 
-  "docToWord": {"uri": "/jaxrs/attachment/doc/to/word/work/{workId}", "method": "POST"},
+  "docToWord": {"uri": "/jaxrs/attachment/doc/to/word/workorworkcompleted/{workId}", "method": "POST"},
 
   "getRouteSelectConfig" : {"uri":"/jaxrs/route/{id}/selectconfig"},
   "listRoute" : {"uri":"/jaxrs/route/list", "method":"PUT"},
