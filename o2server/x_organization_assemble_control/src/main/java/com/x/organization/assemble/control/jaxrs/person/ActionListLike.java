@@ -106,6 +106,8 @@ class ActionListLike extends BaseAction {
 		p = cb.or(p, cb.like(cb.lower(root.get(Person_.distinguishedName)), str + "%", StringTools.SQL_ESCAPE_CHAR));
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
+		}else{
+			return wos;
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
