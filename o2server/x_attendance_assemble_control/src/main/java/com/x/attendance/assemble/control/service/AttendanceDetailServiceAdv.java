@@ -104,6 +104,15 @@ public class AttendanceDetailServiceAdv {
 			throw e;
 		}
 	}
+	
+	//根据人员和打卡日期查找打卡记录  
+	public List<String> listDetailByNameAndDate( String q_empName, String datestr )  throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.listDetailByNameAndDate( emc, q_empName, datestr);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 
 	public List<String> listUserAttendanceDetailByCycleYearAndMonth( String q_empName, String cycleYear, String cycleMonth ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -184,6 +193,17 @@ public class AttendanceDetailServiceAdv {
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return attendanceDetailService.save( emc, attendanceDetail );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public synchronized AttendanceDetail saveSingle(AttendanceDetail attendanceDetail) throws Exception {
+		if( attendanceDetail == null ){
+			throw new Exception("attendanceDetail is null!");
+		}
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.saveSingle( emc, attendanceDetail );
 		} catch ( Exception e ) {
 			throw e;
 		}
