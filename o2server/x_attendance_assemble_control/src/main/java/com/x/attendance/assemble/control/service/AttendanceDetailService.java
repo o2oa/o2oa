@@ -109,6 +109,12 @@ public class AttendanceDetailService {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().listDetailByCycleYearAndMonthWithOutStatus( user, year, month );
 	}
+	
+	//根据人员和打卡日期查找打卡记录  
+	public List<String> listDetailByNameAndDate( EntityManagerContainer emc, String user, String datestr )  throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().listDetailByNameAndDate( user, datestr );
+	}
 
 	public List<String> listUserAttendanceDetailByCycleYearAndMonth(EntityManagerContainer emc, String q_empName, String cycleYear,
 			String cycleMonth) throws Exception {
@@ -206,9 +212,10 @@ public class AttendanceDetailService {
 			attendanceDetail_old.setRecordDateString( attendanceDetail.getRecordDateString() );
 			attendanceDetail_old.setRecordStatus( 0 );
 			attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
-			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOnWorkTime() );
+			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOffDutyTime() );
 			
-			emc.beginTransaction( AttendanceSetting.class );
+			//emc.beginTransaction( AttendanceSetting.class );
+			emc.beginTransaction( AttendanceDetail.class );
 			emc.check( attendanceDetail_old, CheckPersistType.all);	
 			emc.commit();
 			attendanceDetail = attendanceDetail_old;
@@ -221,6 +228,17 @@ public class AttendanceDetailService {
 			emc.persist( attendanceDetail, CheckPersistType.all);	
 			emc.commit();
 		}
+		return attendanceDetail;
+	}
+	
+	public AttendanceDetail saveSingle( EntityManagerContainer emc, AttendanceDetail attendanceDetail ) throws Exception {
+		if( attendanceDetail == null ){
+			throw new Exception("attendanceDetail can not be null!");
+		}
+		
+		emc.beginTransaction( AttendanceDetail.class );
+		emc.persist( attendanceDetail, CheckPersistType.all);	
+		emc.commit();
 		return attendanceDetail;
 	}
 	
