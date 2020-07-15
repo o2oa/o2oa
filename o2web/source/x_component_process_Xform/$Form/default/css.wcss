@@ -174,14 +174,14 @@
 	    "clear": "both",
     	"overflow": "hidden",
     	"background-color": "#ffffff",
-    	"height": "30px",
+    	"min-height": "30px",
     	"line-height": "30px"
 	},
 	"logActivityChildRecordNode_even": {
         "clear": "both",
         "overflow": "hidden",
         "background-color": "#f6f6f6",
-    	"height": "30px",
+    	"min-height": "30px",
     	"line-height": "40px"
     },
 	"logActivityIconNode": {
