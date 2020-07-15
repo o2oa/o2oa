@@ -607,7 +607,9 @@ class ActionInputAll extends BaseAction {
 						}
 					}
 				}
-				
+				if(!validate){
+					continue;
+				}
 				Unit p = null;
 				p = emc.flag(o.getUnique(), Unit.class);
 				if (null != p) {
@@ -648,6 +650,11 @@ class ActionInputAll extends BaseAction {
 				validate = false;
 				continue;
 			}
+			if(!this.checkMobile(business, o.getMobile())){
+				this.setPersonMemo(workbook, configurator, o, "手机号码不符合指定规则.");
+				validate = false;
+				continue;
+			}
 			this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			/*if(o.getAttributes().isEmpty()|| StringUtils.isEmpty(o.getAttributes().get("idNumber"))){
 				this.setPersonMemo(workbook, configurator, o, "身份证号不能为空.");
@@ -664,7 +671,16 @@ class ActionInputAll extends BaseAction {
 							validate = false;
 							continue;
 						}
+						if (StringUtils.isNotEmpty(o.getMobile()) && StringUtils.equals(o.getMobile(), item.getMobile())) {
+							this.setPersonMemo(workbook, configurator, o, "手机号码冲突,本次导入中不唯一."); 
+							validate = false;
+							continue;
+						}
 					}
+				}
+				
+				if(!validate){
+					continue;
 				}
 				Person p = null;
 				p = emc.flag(o.getUnique(), Person.class);
@@ -673,6 +689,16 @@ class ActionInputAll extends BaseAction {
 					validate = false;
 					continue;
 				}
+				
+				Person pc = null;
+				pc = emc.flag(o.getMobile(), Person.class);
+				if (null != pc) {
+					System.out.println("手机号码: " + o.getMobile() + " 与已经存在手机号码: " + pc.getMobile() + " 冲突.");
+					this.setPersonMemo(workbook, configurator, o, "手机号码: " + o.getMobile() + " 与已经存在手机号码: " + pc.getMobile() + " 冲突.");
+					validate = false;
+					continue;
+				}
+				
 				this.setPersonMemo(workbook, configurator, o, "校验通过.");
 			}
 		}
