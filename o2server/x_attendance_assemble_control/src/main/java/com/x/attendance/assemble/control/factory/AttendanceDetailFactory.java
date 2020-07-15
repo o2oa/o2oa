@@ -990,8 +990,14 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
 	}
 
-
-    public List<String> listSignedPersonsWithDeadLine( String deadline ) throws Exception {
+	/**
+	 * 查询在指定截止日期前已经打过卡的人员
+	 * @param deadline
+	 * @param type:all#onDuty#offDuty#morningOffDuty#afternoonOnDuty
+	 * @return
+	 * @throws Exception
+	 */
+    public List<String> listSignedPersonsWithDeadLine( String deadline, String type ) throws Exception {
 		DateOperation dateOperation = new DateOperation();
 		if( StringUtils.isEmpty( deadline )){
 			deadline = dateOperation.getNowDateTime();
@@ -1006,13 +1012,27 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
 		cq.select(root.get(AttendanceDetail_.id));
 		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate );
-		Predicate p_or = cb.or(
-				cb.lessThan( root.get( AttendanceDetail_.onDutyTime ), deadlineTime),
-				cb.lessThan(root.get( AttendanceDetail_.morningOffDutyTime ), deadlineTime),
-				cb.lessThan(root.get( AttendanceDetail_.afternoonOnDutyTime ), deadlineTime),
-				cb.lessThan(root.get( AttendanceDetail_.offDutyTime ), deadlineTime)
-		);
-		p = cb.and( p, p_or );
+		if( StringUtils.equalsAnyIgnoreCase("onDuty")){
+			Predicate p_type = cb.lessThan( root.get( AttendanceDetail_.onDutyTime ), deadlineTime);
+			p = cb.and( p, p_type );
+		}else if(StringUtils.equalsAnyIgnoreCase("offDuty")){
+			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.offDutyTime ), deadlineTime);
+			p = cb.and( p, p_type );
+		}else if(StringUtils.equalsAnyIgnoreCase("morningOffDuty")){
+			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.morningOffDutyTime ), deadlineTime);
+			p = cb.and( p, p_type );
+		}else if(StringUtils.equalsAnyIgnoreCase("afternoonOnDuty")){
+			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.afternoonOnDutyTime ), deadlineTime);
+			p = cb.and( p, p_type );
+		}else{
+			Predicate p_or = cb.or(
+					cb.lessThan( root.get( AttendanceDetail_.onDutyTime ), deadlineTime),
+					cb.lessThan(root.get( AttendanceDetail_.morningOffDutyTime ), deadlineTime),
+					cb.lessThan(root.get( AttendanceDetail_.afternoonOnDutyTime ), deadlineTime),
+					cb.lessThan(root.get( AttendanceDetail_.offDutyTime ), deadlineTime)
+			);
+			p = cb.and( p, p_or );
+		}
 		cq.distinct(true).select(root.get(AttendanceDetail_.empName));
 		return em.createQuery(cq.where(p)).setMaxResults(100000).getResultList();
 	}
