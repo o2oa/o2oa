@@ -17,9 +17,7 @@ import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 获取上班时间前X分钟未打卡人员信息的接口
@@ -39,9 +37,11 @@ public class ActionNoneSignPersons extends BaseAction {
 		Boolean check = true;
 		DateOperation dateOperation = new DateOperation();
 		List<String> allNeedSignPersons = new ArrayList<>();
-		List<String> signedPersons = null;
+		List<String> signedPersons = new ArrayList<>();
 		List<String> wos = new ArrayList<>();
-
+		String signType = "all";
+		String[] signTypeArray = null;
+		List<String> signTypeList = new ArrayList<>();
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
@@ -53,6 +53,17 @@ public class ActionNoneSignPersons extends BaseAction {
 
 		if( StringUtils.isEmpty( wrapIn.getDeadline() ) ) {
 			wrapIn.setDeadline( dateOperation.getNowDateTime() );
+		}
+
+		if( StringUtils.isEmpty( wrapIn.getSignType() )){
+			signType = "all";
+		}else{
+			signType = wrapIn.getSignType();
+		}
+
+		signTypeArray = signType.split("#");
+		for( String type : signTypeArray ){
+			signTypeList.add( type );
 		}
 
 		if ( check ) {
@@ -81,7 +92,50 @@ public class ActionNoneSignPersons extends BaseAction {
 
 		if (check) {
 			//查询在指定截止日期前已经打过卡的人员
-			signedPersons = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline() );
+			if( signTypeList.contains( "all" )){
+				signedPersons = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline(), "all" );
+			}else {
+				if( signTypeList.contains( "onDuty" )){
+					List<String> signedPersons_tmp = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline(), "onDuty" );
+					if(ListTools.isNotEmpty( signedPersons_tmp )){
+						for( String tmp : signedPersons_tmp ){
+							if( !signedPersons.contains( tmp )){
+								signedPersons.add( tmp );
+							}
+						}
+					}
+				}
+				if( signTypeList.contains( "offDuty" )){
+					List<String> signedPersons_tmp = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline(), "offDuty" );
+					if(ListTools.isNotEmpty( signedPersons_tmp )){
+						for( String tmp : signedPersons_tmp ){
+							if( !signedPersons.contains( tmp )){
+								signedPersons.add( tmp );
+							}
+						}
+					}
+				}
+				if( signTypeList.contains( "morningOffDuty" )){
+					List<String> signedPersons_tmp = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline(), "morningOffDuty" );
+					if(ListTools.isNotEmpty( signedPersons_tmp )){
+						for( String tmp : signedPersons_tmp ){
+							if( !signedPersons.contains( tmp )){
+								signedPersons.add( tmp );
+							}
+						}
+					}
+				}
+				if( signTypeList.contains( "afternoonOnDuty" )){
+					List<String> signedPersons_tmp = attendanceDetailServiceAdv.listSignedPersonsWithDeadLine( wrapIn.getDeadline(), "afternoonOnDuty" );
+					if(ListTools.isNotEmpty( signedPersons_tmp )){
+						for( String tmp : signedPersons_tmp ){
+							if( !signedPersons.contains( tmp )){
+								signedPersons.add( tmp );
+							}
+						}
+					}
+				}
+			}
 		}
 
 		if (check) {
@@ -104,8 +158,12 @@ public class ActionNoneSignPersons extends BaseAction {
 	}
 
 	public static class Wi{
+
 		@FieldDescribe( "截止时间点，如果不填写，则以当前时间作为截止时间" )
 		private String deadline = null;
+
+		@FieldDescribe( "未打卡类型：all#onDuty#offDuty#morningOffDuty#afternoonOnDuty, 可以多选#分隔" )
+		private String signType = null;
 
 		public String getDeadline() {
 			return deadline;
@@ -114,6 +172,10 @@ public class ActionNoneSignPersons extends BaseAction {
 		public void setDeadline(String deadline) {
 			this.deadline = deadline;
 		}
+
+		public String getSignType() { return signType; }
+
+		public void setSignType(String signType) { this.signType = signType; }
 	}
 
 	public static class Wo extends WoText {
