@@ -326,7 +326,7 @@ MWF.xApplication.process.TaskCenter.TaskCompletedList.Item = new Class({
             //         var log = data.workLogTokenList[work.activityToken];
             //         if (log){
             var html = "<table border=\"0\" width=\"90%\" align=\"center\"><tr>" +
-                "<td>“"+work.title+"”"+lp.fileat+""+work.completedTime+""+lp.completed+"</td>" +
+                "<td style=\"white-space: normal;word-break: break-all;word-wrap:break-word;\">"+work.title+"”"+lp.fileat+""+work.completedTime+""+lp.completed+"</td>" +
                 "<td><div id=\""+work.id+"\">打开</div></td>" +
                 "</tr></table>";
 
