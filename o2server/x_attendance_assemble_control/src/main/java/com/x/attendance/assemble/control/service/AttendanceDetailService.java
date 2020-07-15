@@ -322,8 +322,15 @@ public class AttendanceDetailService {
 		return business.getAttendanceDetailFactory().listRecordWithDateAndNoOffDuty( dateString );
     }
 
-    public List<String> listSignedPersonsWithDeadLine(EntityManagerContainer emc, String deadline) throws Exception {
+	/**
+	 * 查询在指定截止日期前已经打过卡的人员
+	 * @param deadline
+	 * @param type:all#onDuty#offDuty#morningOffDuty#afternoonOnDuty
+	 * @return
+	 * @throws Exception
+	 */
+    public List<String> listSignedPersonsWithDeadLine(EntityManagerContainer emc, String deadline, String type) throws Exception {
 		Business business =  new Business( emc );
-		return business.getAttendanceDetailFactory().listSignedPersonsWithDeadLine( deadline );
+		return business.getAttendanceDetailFactory().listSignedPersonsWithDeadLine( deadline, type );
     }
 }
