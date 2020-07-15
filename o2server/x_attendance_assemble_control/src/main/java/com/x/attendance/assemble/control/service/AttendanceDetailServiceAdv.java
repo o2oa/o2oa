@@ -320,14 +320,19 @@ public class AttendanceDetailServiceAdv {
 	/**
 	 * 查询在指定截止日期前已经打过卡的人员
 	 * @param deadline
+	 * @param type:all#onDuty#offDuty#morningOffDuty#afternoonOnDuty
 	 * @return
+	 * @throws Exception
 	 */
-    public List<String> listSignedPersonsWithDeadLine( String deadline ) throws Exception {
+    public List<String> listSignedPersonsWithDeadLine( String deadline, String type ) throws Exception {
 		if( StringUtils.isEmpty( deadline )){
 			deadline = dateOperation.getNowDateTime();
 		}
+		if( StringUtils.isEmpty( type )){
+			type = "all";
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return attendanceDetailService.listSignedPersonsWithDeadLine( emc, deadline );
+			return attendanceDetailService.listSignedPersonsWithDeadLine( emc, deadline, type );
 		} catch ( Exception e ) {
 			throw e;
 		}
