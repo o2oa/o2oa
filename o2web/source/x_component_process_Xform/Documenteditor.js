@@ -899,7 +899,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.allowPrint = this._isAllowPrint();
         this.allowHistory = this._isAllowHistory();
         this.toolNode = new Element("div", {"styles": this.css.doc_toolbar}).inject(this.node);
-        this.contentNode = new Element("div", {"styles": this.css.doc_content}).inject(this.node);
+        this.contentNode = new Element("div#doc_content", {"styles": this.css.doc_content}).inject(this.node);
 
         if (!this.form.isLoaded){
             this.form.addEvent("afterModulesLoad", function(){this.loadDocumentEditor(callback);}.bind(this));
@@ -1128,13 +1128,23 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     zoom: function(scale){
         if (scale) this.scale = scale;
 
+        if (this.zoomSelectAction){
+            for (var i=0; i<this.zoomSelectAction.options.length; i++){
+                var option = this.zoomSelectAction.options[i];
+                if (Math.abs(this.scale-option.value.toFloat())<0.05){
+                    option.set("selected", true);
+                    break;
+                }
+            }
+        }
+
         var w = this.node.getSize().x;
         if (this.history && this.history.historyListAreaNode) w = w-this.history.historyListAreaNode.getComputedSize().totalWidth-2;
         w = w/this.scale;
         this.contentNode.setStyles({
             "transform":"scale("+this.scale+")",
             "transform-origin": "0px 0px",
-            "overflow": "hidden",
+            "overflow": "auto",
             "width": ""+w+"px"
         });
     },
@@ -1144,7 +1154,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._readFiletext();
             if (this.allowEdit) {
                 var button = this.toolbar.childrenButton[0];
-                button.setText(MWF.xApplication.process.Xform.LP.editdoc);
+                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
                 button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
                 //this.getFullWidthFlagNode().dispose();
             }
@@ -1153,7 +1163,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._editFiletext();
             if (this.allowEdit) {
                 var button = this.toolbar.childrenButton[0];
-                button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
                 button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
                 //this.toolbar.node.inject(this.getFullWidthFlagNode());
 
@@ -1167,12 +1177,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.allowEdit){
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
-                    button.setText(MWF.xApplication.process.Xform.LP.editdoc);
+                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
                     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
                     //this.getFullWidthFlagNode().dispose();
                 }
                 button = this.toolbar.childrenButton[0];
-                button.setText(MWF.xApplication.process.Xform.LP.editdoc);
+                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
                 button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc.png");
                 //this.getFullWidthFlagNode().dispose();
 
@@ -1186,12 +1196,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (this.allowEdit){
                 if (!layout.mobile) {
                     var button = this.sideToolbar.childrenButton[0];
-                    button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+                    button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
                     button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
                     //this.toolbar.node.inject(this.getFullWidthFlagNode());
                 }
                 button = this.toolbar.childrenButton[0];
-                button.setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
+                button.setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdocCompleted_mobile : MWF.xApplication.process.Xform.LP.editdocCompleted);
                 button.picNode.getElement("img").set("src", "../x_component_process_Xform/$Form/default/icon/editdoc_completed.png");
                 //this.toolbar.node.inject(this.getFullWidthFlagNode());
                 // if (!layout.mobile) this.sideToolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdocCompleted);
@@ -1345,7 +1355,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.filetextToolbarNode){
             if (!this.filetextScrollNode){
                 var scrollNode = this.contentNode;
-                while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("overflow-y")!=="auto"))){
+                while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
                     scrollNode = scrollNode.getParent();
                 }
                 this.filetextScrollNode = scrollNode;
@@ -1456,16 +1466,27 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _loadToolbars: function(){
         var html ="";
+        var editdoc, printdoc, history;
+
+        if (layout.mobile){
+            editdoc = MWF.xApplication.process.Xform.LP.editdoc_mobile;
+            printdoc = MWF.xApplication.process.Xform.LP.printdoc_mobile;
+            history = MWF.xApplication.process.Xform.LP.history_mobile;
+        }else{
+            editdoc = MWF.xApplication.process.Xform.LP.editdoc;
+            printdoc = MWF.xApplication.process.Xform.LP.printdoc;
+            history = MWF.xApplication.process.Xform.LP.history;
+        }
         if (this.allowEdit){
             //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEdit\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
-            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.editdoc+"\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/editdoc.png\" title=\""+editdoc+"\" MWFButtonAction=\"_switchReadOrEditInline\" MWFButtonText=\""+editdoc+"\"></span>";
             //html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/headerdoc.png\" title=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\" MWFButtonAction=\"_redheaderDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.headerdoc+"\"></span>";
         }
         if (this.allowPrint){
-            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/print.png\" title=\""+MWF.xApplication.process.Xform.LP.printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.printdoc+"\"></span>";
+            html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/print.png\" title=\""+printdoc+"\" MWFButtonAction=\"_printDoc\" MWFButtonText=\""+printdoc+"\"></span>";
         }
         if (this.allowHistory){
-           html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+MWF.xApplication.process.Xform.LP.history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+MWF.xApplication.process.Xform.LP.history+"\"></span>";
+           html += "<span MWFnodetype=\"MWFToolBarButton\" MWFButtonImage=\"../x_component_process_Xform/$Form/default/icon/versions.png\" title=\""+history+"\" MWFButtonAction=\"_historyDoc\" MWFButtonText=\""+history+"\"></span>";
         }
 
         // if (this.json.fullWidth=="y"){
@@ -1496,24 +1517,144 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._singlePage();
             }
         }.bind(this));
+        if (layout.mobile) this.doublePageAction.hide();
+
+
+        this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
+        this.zoomAddAction = new Element("div", {
+            "styles": {
+                "float": "right",
+                "margin-top": "3px",
+                "height": "20px",
+                "width": "20px",
+                "text-align": "center",
+                "line-height": "20px",
+                "border": "1px solid #cccccc",
+                "background-color": "#ffffff",
+                "margin-left": "5px"
+            },
+            "text": "+"
+        }).inject(this.toolbarNode);
+
+        this.zoomSelectAction = new Element("select", {
+            "styles": {
+                "float": "right",
+                "margin-top": "3px",
+                "height": "20px",
+                "width": "60px",
+                "text-align": "center",
+                "line-height": "20px",
+                "border": "1px solid #cccccc",
+                "background-color": "#ffffff",
+                "margin-left": "5px"
+            },
+            "text": "100%"
+        }).inject(this.toolbarNode);
+
+        this.zoomSubAction = new Element("div", {
+            "styles": {
+                "float": "right",
+                "margin-top": "3px",
+                "height": "20px",
+                "width": "20px",
+                "text-align": "center",
+                "line-height": "20px",
+                "border": "1px solid #cccccc",
+                "background-color": "#ffffff",
+                "margin-left": "5px"
+            },
+            "text": "-"
+        }).inject(this.toolbarNode);
+
 
 
         // this.zoomSelectAction =  new Element("select", {"styles": {"float": "right"}}).inject(this.toolbarNode);
-        // var options = "<option value='2'>200%</option> " +
-        //     "<option value='1.75'>175%</option>" +
-        //     "<option value='1.5'>150%</option>" +
-        //     "<option value='1' selected>100%</option>" +
-        //     "<option value='0.75'>75%</option>" +
-        //     "<option value='0.5'>50%</option>" +
-        //     "<option value='0.25'>25%</option>"
-        // this.zoomSelectAction.set("html", options);
-        // this.zoomSelectAction.addEvent("change", function(e){
-        //     this._returnScale();
-        //     this.scale = e.target.options[e.target.selectedIndex].value;
-        //     this.zoom();
-        // }.bind(this));
+        var options = "<option value='2'>200%</option> " +
+            "<option value='1.95'>195%</option>" +
+            "<option value='1.9'>190%</option>" +
+            "<option value='1.85'>185%</option>" +
+            "<option value='1.8'>180%</option>" +
+            "<option value='1.75'>175%</option>" +
+            "<option value='1.7'>170%</option>" +
+            "<option value='1.65'>165%</option>" +
+            "<option value='1.6'>160%</option>" +
+            "<option value='1.55'>155%</option>" +
+            "<option value='1.5'>150%</option> " +
+            "<option value='1.45'>145%</option>" +
+            "<option value='1.4'>140%</option>" +
+            "<option value='1.35'>135%</option>" +
+            "<option value='1.3'>130%</option>" +
+            "<option value='1.25'>125%</option>" +
+            "<option value='1.2'>120%</option>" +
+            "<option value='1.15'>115%</option>" +
+            "<option value='1.1'>110%</option>" +
+            "<option value='1.05'>105%</option>" +
+            "<option value='1' selected>100%</option>" +
+            "<option value='0.95'>95%</option>" +
+            "<option value='0.90'>90%</option>" +
+            "<option value='0.85'>85%</option>" +
+            "<option value='0.80'>80%</option>" +
+            "<option value='0.75'>75%</option>" +
+            "<option value='0.70'>70%</option>" +
+            "<option value='0.65'>65%</option>" +
+            "<option value='0.6'>60%</option>" +
+            "<option value='0.55'>55%</option>" +
+            "<option value='0.5'>50%</option>";
+        this.zoomSelectAction.set("html", options);
+        this.zoomSelectAction.addEvent("change", function(e){
+            this.scaleTo(e.target.options[e.target.selectedIndex].value);
+        }.bind(this));
+
+        this.zoomAddAction.addEvent("click", function(){
+            debugger;
+            var i = (this.scale/0.05).toInt();
+            if (i*0.05<this.scale) i++;
+            var v = i*0.05;
+            //var v = this.zoomSelectAction.options[this.zoomSelectAction.selectedIndex].value.toFloat();
+            v = v+0.05;
+            if (v<0.5) v = 0.5;
+            if (v>2) v = 2;
+            this.scaleTo(v);
+        }.bind(this));
+        this.zoomSubAction.addEvent("click", function(){
+            var i = (this.scale/0.05).toInt();
+            if (i*0.05<this.scale) i++;
+            var v = i*0.05;
+            //var v = this.zoomSelectAction.options[this.zoomSelectAction.selectedIndex].value.toFloat();
+            v = v-0.05;
+            if (v<0.5) v = 0.5;
+            if (v>2) v = 2;
+            this.scaleTo(v);
+        }.bind(this));
 
     },
+    scaleTo: function(scale){
+        this._returnScale();
+        this.scale = scale;
+        this.zoom();
+        var w = this.contentNode.getSize().x;
+        var count = 1;
+        var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
+        var pageWidth = count * docPageFullWidth;
+        var margin = (w-pageWidth)/(count+1);
+        if (this.isScale){
+            margin = "10";
+        }
+        if (this.scale) margin = margin/this.scale;
+        if (margin < 10){
+            var offset = 10-margin;
+            margin = 10;
+            this.contentNode.scrollTo(offset, 0);
+        }
+        this.pages.each(function(page, i){
+            page.setStyles({
+                "float": "left",
+                "margin-left": ""+margin+"px"
+            });
+        });
+        this.resetNodeSize();
+    },
+
     _repage: function(delay){
         if (this.options.pageShow!=="double"){
             this._singlePage();
@@ -1572,6 +1713,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.node.setStyles({
             "height":""+h+"px"
         });
+        this.resizeSidebar();
     },
     createWaitSplitPage: function(){
         this.node.mask({
@@ -2285,7 +2427,7 @@ debugger;
 
         this.pages = [];
         this.contentNode.empty();
-        if (this.allowEdit) this.toolbar.childrenButton[0].setText(MWF.xApplication.process.Xform.LP.editdoc);
+        if (this.allowEdit) this.toolbar.childrenButton[0].setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
         this.editMode = false;
 
         this._createPage(function(control){
@@ -2753,7 +2895,6 @@ debugger;
         }.bind(this));
     },
     docToWord: function(){
-        debugger;
         var flag = true;
         if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
             flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
@@ -2762,12 +2903,25 @@ debugger;
             this.toWord();
         }
     },
-    showToWord: function(att){
+    showToWord: function(att_word){
         var site = this.json.toWordSite || "$doc";
         var attModule = this.form.all[site];
         if (attModule){
+            var atts = [];
+            attModule.attachmentController.attachments.each(function(att){
+                if (att.data.name!==att_word.name){
+                    atts.push(att.data)
+                }
+            }.bind(this));
+
             attModule.attachmentController.clear();
-            attModule.attachmentController.addAttachment(att);
+
+            atts.each(function (att) {
+                //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
+                if ((att.site === attModule.json.id) && att.name!==att_word.name) attModule.attachmentController.addAttachment(att);
+            }.bind(this));
+            // attModule.attachmentController.reloadAttachments();
+            attModule.attachmentController.addAttachment(att_word);
         }
     }
 });
