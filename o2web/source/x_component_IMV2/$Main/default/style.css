@@ -10,6 +10,11 @@
     float: left; 
     width: 257px; 
     height: 100%; 
+    display: flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+    flex-direction: column;
+    -ms-flex-direction: column;
 }
 .o2_im_chat_list_top {
     margin-bottom: 20px;
@@ -25,7 +30,21 @@
     text-align: center;
     line-height: 40px;
     color: #848484;
+    padding-left: 24px;
+    float: left;
 }
+
+.o2_im_chat_list_top .group {
+  height: 40px;
+  cursor: pointer;
+  margin-left: 14px;
+  text-align: center;
+  line-height: 40px;
+  color: #848484;
+  padding-left: 24px;
+  float: left;
+}
+
 .o2_im_chat_list_top .search_out {
     margin-right: 40px; 
     height: 40px;
@@ -146,6 +165,10 @@
     white-space: nowrap;
     text-overflow:ellipsis;
 }
+.o2_im_chat_list_conv {
+  flex: 1;
+  overflow: auto;
+}
 
 
 .o2_im_chat_content {
@@ -159,6 +182,35 @@
     display: -webkit-flex;
     flex-direction: column;
     -ms-flex-direction: column;
+}
+
+.o2_im_chat_content_title_more {
+  background-image: url(../x_component_IMV2/$Main/default/icons/more.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 64px;
+  float: right;
+  cursor: pointer;
+  display: none;
+}
+
+.o2_im_chat_content_title_menu {
+    width: 98px;
+    position: absolute;
+    right: 24px;
+    top: 61px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 10000;
+}
+.o2_im_chat_content_title_menu_item {
+  height: 48px;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
 }
 
 
