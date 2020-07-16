@@ -1097,3 +1097,110 @@ MWF.xScript.ViewEnvironment = function (ev) {
     // this.Table = MWF.xScript.createTable();
 };
 
+
+var dictLoaded = {};
+if( !MWF.xScript.createDict ){
+    MWF.xScript.createDict = function(application){
+        //optionsOrName : {
+        //  type : "", //默认为process, 可以为  process  cms
+        //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
+        //  name : "", // 数据字典名称/别名/id
+        //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+        //}
+        //或者name: "" // 数据字典名称/别名/id
+        return function(optionsOrName){
+            var options = optionsOrName;
+            if( typeOf( options ) == "string" ){
+                options = { name : options };
+            }
+            var name = this.name = options.name;
+            var type = ( options.type && options.application ) ?  options.type : "process";
+            var applicationId = options.application || application;
+            var enableAnonymous = options.enableAnonymous || false;
+
+            var key = name+type+applicationId+enableAnonymous
+            if (!dictLoaded[key]) dictLoaded[key] = {};
+            this.dictData = dictLoaded[key];
+
+            //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+            if( type == "cms" ){
+                var action = MWF.Actions.get("x_cms_assemble_control");
+            }else{
+                var action = MWF.Actions.get("x_processplatform_assemble_surface");
+            }
+
+            var encodePath = function( path ){
+                var arr = path.split(/\./g);
+                var ar = arr.map(function(v){
+                    return encodeURIComponent(v);
+                });
+                return ar.join("/");
+            };
+
+            this.get = function(path, success, failure, async){
+                var value = null;
+                if (path){
+                    if (this.dictData[path]){
+                        if (success) success(this.dictData[path]);
+                        return this.dictData[path];
+                    }
+
+                    var p = encodePath( path );
+                    //var p = path.replace(/\./g, "/");
+                    action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, function(json){
+                        value = json.data;
+                        this.dictData[path] = value;
+                        if (success) success(json.data);
+                    }.bind(this), function(xhr, text, error){
+                        if (failure) failure(xhr, text, error);
+                    }, !!async, false);
+                }else{
+                    if (this.dictData["root"]){
+                        if (success) success(this.dictData["root"]);
+                        return this.dictData["root"];
+                    }
+                    action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, function(json){
+                        value = json.data;
+                        this.dictData["root"] = value;
+                        if (success) success(json.data);
+                    }.bind(this), function(xhr, text, error){
+                        if (failure) failure(xhr, text, error);
+                    }, !!async);
+                }
+
+                return value;
+            };
+
+            this.set = function(path, value, success, failure){
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false, false);
+            };
+            this.add = function(path, value, success, failure){
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false, false);
+            };
+            this["delete"] = function(path, success, failure){
+                var p = encodePath( path );
+                //var p = path.replace(/\./g, "/");
+                action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false, false);
+            };
+            this.destory = this["delete"];
+        }
+    };
+}
+
+
