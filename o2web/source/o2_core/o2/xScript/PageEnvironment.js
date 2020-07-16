@@ -770,7 +770,7 @@ MWF.xScript.PageEnvironment = function (ev) {
             options = { name : options };
         }
         var name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "process";
+        var type = ( options.type && options.application ) ?  options.type : "portal";
         var application = options.application || _form.json.application;
         var key = type +"-" + application + "-"  + name;
         if (includedScripts.indexOf( key )> -1){
