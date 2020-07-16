@@ -14,6 +14,7 @@
 /o2server/jvm/
 /o2server/local/
 /o2server/*/src/main/webapp/describe/
+/o2server/*/src/main/webapp/WEB-INF/
 **/.settings/
 **/.classpath
 **/.project
