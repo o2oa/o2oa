@@ -54,6 +54,11 @@ public class ActionConversationUpdate extends BaseAction {
             }
             if (wi.getPersonList() != null && !wi.getPersonList().isEmpty()) {
                 conversation.setPersonList(wi.getPersonList());
+                if (!conversation.getPersonList().contains(effectivePerson.getDistinguishedName())) {
+                    List<String> list = conversation.getPersonList();
+                    list.add(effectivePerson.getDistinguishedName());
+                    conversation.setPersonList(list);
+                }
             }
             conversation.setUpdateTime(new Date());
             emc.check(conversation, CheckPersistType.all);
