@@ -9,6 +9,7 @@ import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.LoggerFactory;
 
 public class MessageConnector {
 
@@ -94,17 +95,17 @@ public class MessageConnector {
 	public static final String TYPE_CALENDAR_ALARM = "calendar_alarm";
 
 	public static final String TYPE_CUSTOM_CREATE = "custom_create";
-
+	
 	public static final String TYPE_TEAMWORK_TASKCREATE = "teamwork_taskCreate";
-
+	
 	public static final String TYPE_TEAMWORK_TASKUPDATE = "teamwork_taskUpdate";
-
+	
 	public static final String TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelelte";
-
+	
 	public static final String TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime";
-
+	
 	public static final String TYPE_TEAMWORK_CHAT = "teamwork_taskChat";
-
+	
 	public static final String TYPE_CMS_PUBLISH = "cms_publish";
 
 	public static final String TYPE_BBS_SUBJECTCREATE = "bbs_subjectCreate";
@@ -115,7 +116,7 @@ public class MessageConnector {
 
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
-	// IM 聊天消息发送
+	//IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
 	public static final String CONSUME_WS = "ws";

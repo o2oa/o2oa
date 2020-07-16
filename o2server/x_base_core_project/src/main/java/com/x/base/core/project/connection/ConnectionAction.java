@@ -1,53 +1,49 @@
 package com.x.base.core.project.connection;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.http.ActionResult.Type;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 public class ConnectionAction {
 
-	private ConnectionAction() {
-	}
+	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
+	public static final String Access_Control_Allow_Credentials_Value = "true";
+	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
+	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
+	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
+	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
 
-	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
-	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = "true";
-	public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-	public static final String ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "x-requested-with, x-request, x-token,Content-Type, x-cipher, x-client";
-	public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
-	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
-
-	public static final String CACHE_CONTROL = "Cache-Control";
-	public static final String CACHE_CONTROL_VALUE = "no-cache, no-transform";
-	public static final String CONTENT_TYPE = "Content-Type";
-	public static final String CONTENT_TYPE_VALUE = "application/json;charset=UTF-8";
-	public static final String CONTENT_LENGTH = "Content-Length";
+	public static final String Cache_Control = "Cache-Control";
+	public static final String Cache_Control_Value = "no-cache, no-transform";
+	public static final String Content_Type = "Content-Type";
+	public static final String Content_Type_Value = "application/json;charset=UTF-8";
 
 	public static final String METHOD_PUT = "PUT";
 	public static final String METHOD_POST = "POST";
@@ -56,140 +52,89 @@ public class ConnectionAction {
 
 	private static Gson gson = XGsonBuilder.instance();
 
-	private static ActionResponse getDelete(String address, String method, List<NameValuePair> heads) throws Exception {
+	public static ActionResponse get(String address, List<NameValuePair> heads) throws Exception {
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
 		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(String.format("%s create connection error, address: %s, because: %s.", method, address,
-					e.getMessage()));
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction get create connection error, address:" + address + ", because:" + e.getMessage());
 			return response;
 		}
 		addHeads(connection, heads);
-		connection.setRequestMethod(method);
+		connection.setRequestMethod(METHOD_GET);
 		connection.setUseCaches(false);
 		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		try {
+			/** 访问主机上的端口 */
 			connection.connect();
 		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(String.format("%s connect connection error, address: %s, because: %s.", method, address,
-					e.getMessage()));
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction get connect error, address:" + address + ", because:" + e.getMessage());
 			return response;
 		}
 		return read(response, connection);
 	}
 
-	public static ActionResponse get(String address, List<NameValuePair> heads) throws Exception {
-		return getDelete(address, METHOD_GET, heads);
-	}
-
 	public static ActionResponse delete(String address, List<NameValuePair> heads) throws Exception {
-		return getDelete(address, METHOD_DELETE, heads);
-	}
-
-	private static byte[] getDeleteBinary(String address, String method, List<NameValuePair> heads) throws Exception {
-		HttpURLConnection connection = null;
-		try {
-			URL url = new URL(address);
-			connection = (HttpURLConnection) url.openConnection();
-		} catch (Exception e) {
-			throw new ExceptionGetBinary(e, connection);
-		}
-		addHeads(connection, heads);
-		connection.setRequestMethod(method);
-		connection.setUseCaches(false);
-		connection.setDoOutput(false);
-		connection.setDoInput(true);
-		try {
-			connection.connect();
-		} catch (Exception e) {
-			throw new ExceptionGetBinary(e, connection);
-		}
-		return readBinary(connection);
-	}
-
-	public static byte[] getBinary(String address, List<NameValuePair> heads) throws Exception {
-		return getDeleteBinary(address, METHOD_GET, heads);
-	}
-
-	public static byte[] deleteBinary(String address, List<NameValuePair> heads) throws Exception {
-		return getDeleteBinary(address, METHOD_DELETE, heads);
-	}
-
-	public static ActionResponse postPut(String address, String method, List<NameValuePair> heads, Object body)
-			throws Exception {
 		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
 		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(String.format("%s create connection error, address: %s, because: %s.", method, address,
-					e.getMessage()));
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage("ConnectionAction delete create connection error, address:" + address + ", because:"
+					+ e.getMessage());
 			return response;
 		}
 		addHeads(connection, heads);
-		connection.setRequestMethod(method);
+		connection.setRequestMethod(METHOD_DELETE);
 		connection.setUseCaches(false);
-		connection.setDoOutput(true);
+		connection.setDoOutput(false);
 		connection.setDoInput(true);
 		try {
+			/** 访问主机上的端口 */
 			connection.connect();
 		} catch (Exception e) {
-			response.setType(Type.connectFatal);
+			response.setType(ActionResponse.Type.connectFatal);
 			response.setMessage(
-					String.format("%s connect error, address: %s, because: %s.", method, address, e.getMessage()));
-			return response;
-		}
-		try (OutputStream output = connection.getOutputStream()) {
-			if (null != body) {
-				if (body instanceof CharSequence) {
-					IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
-				} else {
-					IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
-				}
-			}
-		} catch (Exception e) {
-			response.setType(Type.connectFatal);
-			response.setMessage(
-					String.format("%s ouput error, address: %s, because: %s.", method, address, e.getMessage()));
+					"ConnectionAction delete connect error, address:" + address + ", because:" + e.getMessage());
 			return response;
 		}
 		return read(response, connection);
 	}
 
 	public static ActionResponse post(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPut(address, METHOD_POST, heads, body);
-	}
-
-	public static ActionResponse put(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPut(address, METHOD_PUT, heads, body);
-	}
-
-	private static byte[] postPutBinary(String address, String method, List<NameValuePair> heads, Object body)
-			throws Exception {
+		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
 		} catch (Exception e) {
-			throw new ExceptionBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage("create connection error, address:" + Objects.toString(connection.getURL())
+					+ ", method:" + connection.getRequestMethod() + ", because:" + e.getMessage() + ".");
+			return response;
 		}
 		addHeads(connection, heads);
-		connection.setRequestMethod(method);
+		connection.setRequestMethod(METHOD_POST);
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		try {
+			/** 访问主机上的端口 */
 			connection.connect();
 		} catch (Exception e) {
-			throw new ExceptionBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage("connect error, address:" + Objects.toString(connection.getURL()) + ", method:"
+					+ connection.getRequestMethod() + ", because:" + e.getMessage() + ".");
+			return response;
 		}
 		try (OutputStream output = connection.getOutputStream()) {
 			if (null != body) {
@@ -200,114 +145,59 @@ public class ConnectionAction {
 				}
 			}
 		} catch (Exception e) {
-			throw new ExceptionBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage("output error, address:" + Objects.toString(connection.getURL()) + ", method:"
+					+ connection.getRequestMethod() + ", because:" + e.getMessage() + ".");
+			return response;
 		}
-		return readBinary(connection);
+		return read(response, connection);
 	}
 
-	public static byte[] postBinary(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPutBinary(address, METHOD_POST, heads, body);
-	}
-
-	public static byte[] putBinary(String address, List<NameValuePair> heads, Object body) throws Exception {
-		return postPutBinary(address, METHOD_PUT, heads, body);
-	}
-
-	private static byte[] postPutMultiPartBinary(String address, String method, List<NameValuePair> heads,
-			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
+	public static ActionResponse put(String address, List<NameValuePair> heads, Object body) throws Exception {
+		ActionResponse response = new ActionResponse();
 		HttpURLConnection connection = null;
-		String boundary = StringTools.TWO_HYPHENS + StringTools.TWO_HYPHENS + System.currentTimeMillis();
 		try {
 			URL url = new URL(address);
 			connection = (HttpURLConnection) url.openConnection();
 		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction put create connection error, address:" + address + ", because:" + e.getMessage());
+			return response;
 		}
-		byte[] bytes = null;
-		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-			if (null != fileParts) {
-				for (FilePart filePart : fileParts) {
-					writeFilePart(byteArrayOutputStream, filePart, boundary);
-				}
-			}
-			if (null != formFields) {
-				for (FormField formField : formFields) {
-					writeFormField(byteArrayOutputStream, formField, boundary);
-				}
-			}
-			IOUtils.write(StringTools.TWO_HYPHENS + boundary + StringTools.TWO_HYPHENS, byteArrayOutputStream,
-					DefaultCharset.charset_utf_8);
-			bytes = byteArrayOutputStream.toByteArray();
-		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
-		}
-		addHeadsMultiPart(connection, heads, boundary);
-		connection.setRequestProperty(CONTENT_LENGTH, bytes.length + "");
-		connection.setRequestMethod(method);
+		addHeads(connection, heads);
+		connection.setRequestMethod(METHOD_PUT);
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		try {
+			/** 访问主机上的端口 */
 			connection.connect();
 		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction put connect error, address:" + address + ", because:" + e.getMessage());
+			return response;
 		}
 		try (OutputStream output = connection.getOutputStream()) {
-			IOUtils.write(bytes, output);
+			if (null != body) {
+				if (body instanceof CharSequence) {
+					IOUtils.write(Objects.toString(body), output, StandardCharsets.UTF_8);
+				} else {
+					IOUtils.write(gson.toJson(body), output, StandardCharsets.UTF_8);
+				}
+			}
 		} catch (Exception e) {
-			throw new ExceptionMultiPartBinary(e, connection);
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction put output error: [" + address + "], " + e.getClass().getName() + ".");
+			return response;
 		}
-		return readBinary(connection);
-	}
-
-	public static byte[] postMultiPartBinary(String address, List<NameValuePair> heads,
-			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
-		return postPutMultiPartBinary(address, METHOD_POST, heads, formFields, fileParts);
-	}
-
-	public static byte[] putMultiPartBinary(String address, List<NameValuePair> heads, Collection<FormField> formFields,
-			Collection<FilePart> fileParts) throws Exception {
-		return postPutMultiPartBinary(address, METHOD_PUT, heads, formFields, fileParts);
-	}
-
-	private static void writeFormField(OutputStream output, FormField formField, String boundary) throws IOException {
-		IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Disposition: form-data; name=\"" + formField.getName() + "\"", output,
-				StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Length: " + formField.getValue().getBytes(StandardCharsets.UTF_8).length, output,
-				StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Type: text/plain; charset=" + StandardCharsets.UTF_8.name(), output,
-				StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(formField.getValue().getBytes(StandardCharsets.UTF_8), output);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-	}
-
-	public static void writeFilePart(OutputStream output, FilePart filePart, String boundary) throws IOException {
-		IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(
-				"Content-Disposition: form-data; name=\"" + filePart.getName().getBytes(StandardCharsets.UTF_8)
-						+ "\"; filename=\"" + filePart.getFileName().getBytes(StandardCharsets.UTF_8) + "\"",
-				output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Length: " + filePart.getBytes().length, output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write("Content-Type: " + filePart.getContentType(), output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(String.format("Content-Length: %d", filePart.getBytes().length), output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
-		IOUtils.write(filePart.getBytes(), output);
-		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
+		return read(response, connection);
 	}
 
 	public static byte[] getFile(String address, List<NameValuePair> heads) throws Exception {
-		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
 			HttpGet httpget = new HttpGet(address);
 			if (ListTools.isNotEmpty(heads)) {
 				String name;
@@ -322,14 +212,61 @@ public class ConnectionAction {
 			}
 			HttpResponse response = httpclient.execute(httpget);
 			HttpEntity entity = response.getEntity();
-			if (entity != null) {
+			if(entity!=null) {
 				InputStream in = entity.getContent();
-				if (in != null) {
+				if (in != null){
 					return IOUtils.toByteArray(in);
 				}
 			}
 		}
 		return null;
+	}
+
+	public static ActionResponse multiFormPost(String address, List<NameValuePair> heads, String fileName, byte[] bytes,
+			Map<String, String> map) throws Exception {
+		ActionResponse response = new ActionResponse();
+		try {
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost uploadFile = new HttpPost(address);
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			builder.addTextBody("fileName", fileName, ContentType.TEXT_PLAIN);
+			if (map != null) {
+				for (String key : map.keySet()) {
+					builder.addTextBody(key, map.get(key), ContentType.TEXT_PLAIN);
+				}
+			}
+			builder.addBinaryBody("file", bytes, ContentType.APPLICATION_OCTET_STREAM, fileName);
+			HttpEntity multipart = builder.build();
+			uploadFile.setEntity(multipart);
+			if (ListTools.isNotEmpty(heads)) {
+				String name;
+				String value;
+				for (NameValuePair o : heads) {
+					name = Objects.toString(o.getName(), "");
+					value = Objects.toString(o.getValue(), "");
+					if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+						uploadFile.addHeader(name, value);
+					}
+				}
+			}
+			CloseableHttpResponse httpResponse = httpClient.execute(uploadFile);
+			HttpEntity responseEntity = httpResponse.getEntity();
+			String value = EntityUtils.toString(responseEntity, DefaultCharset.name);
+			try {
+				response = gson.fromJson(value, ActionResponse.class);
+			} catch (Exception e) {
+				response.setType(ActionResponse.Type.connectFatal);
+				response.setMessage("convert to json error, address:" + address + ", method: multiFormPost, because:"
+						+ e.getMessage() + ", value:" + value + ".");
+			}
+			httpClient.close();
+		} catch (Exception e) {
+			response.setType(ActionResponse.Type.connectFatal);
+			response.setMessage(
+					"ConnectionAction multiFormPost output error: [" + address + "], " + e.getClass().getName() + ".");
+			return response;
+		}
+		return response;
 	}
 
 	private static String extractErrorMessageIfExist(String str) {
@@ -345,7 +282,9 @@ public class ConnectionAction {
 				}
 			}
 		} catch (JsonParseException e) {
-			// nothing
+			/*
+			 * pass
+			 */
 		}
 		return str;
 	}
@@ -356,85 +295,55 @@ public class ConnectionAction {
 			try (InputStream input = connection.getErrorStream()) {
 				byte[] buffer = IOUtils.toByteArray(input);
 				response.setMessage(extractErrorMessageIfExist(new String(buffer, DefaultCharset.name)));
-				response.setType(Type.error);
+				response.setType(ActionResponse.Type.error);
+			} catch (Exception e) {
+				response.setType(ActionResponse.Type.connectFatal);
+				response.setMessage("read input error, address:" + Objects.toString(connection.getURL()) + ", method:"
+						+ connection.getRequestMethod() + ", because:" + e.getMessage() + ".");
 			}
 		} else if (code >= 400) {
-			response.setMessage(String.format("url invalid error, address: %s, method: %s, code: %d.",
-					Objects.toString(connection.getURL()), connection.getRequestMethod(), code));
-			response.setType(Type.error);
+			response.setMessage(" url invalid error, address:" + Objects.toString(connection.getURL()) + ", method:"
+					+ connection.getRequestMethod() + ".");
+			response.setType(ActionResponse.Type.error);
 		} else if (code == 200) {
 			try (InputStream input = connection.getInputStream()) {
 				byte[] buffer = IOUtils.toByteArray(input);
 				String value = new String(buffer, DefaultCharset.name);
-				response = gson.fromJson(value, ActionResponse.class);
+				try {
+					response = gson.fromJson(value, ActionResponse.class);
+				} catch (Exception e) {
+					response.setType(ActionResponse.Type.connectFatal);
+					response.setMessage("convert to json error, address:" + Objects.toString(connection.getURL())
+							+ ", method:" + connection.getRequestMethod() + ", because:" + e.getMessage() + ", value:"
+							+ value + ".");
+				}
 			} catch (Exception e) {
-				response.setType(Type.connectFatal);
-				response.setMessage(String.format(
-						"convert input to json error, address: %s, method: %s, code: %d, because: %s.",
-						Objects.toString(connection.getURL()), connection.getRequestMethod(), code, e.getMessage()));
+				response.setType(ActionResponse.Type.connectFatal);
+				response.setMessage("read input error, address:" + Objects.toString(connection.getURL()) + ", method:"
+						+ connection.getRequestMethod() + ", because:" + e.getMessage() + ".");
 			}
 		}
 		connection.disconnect();
 		return response;
 	}
 
-	private static byte[] readBinary(HttpURLConnection connection) throws Exception {
-		int code = connection.getResponseCode();
-		byte[] bytes = null;
-		if (code >= 500) {
-			try (InputStream input = connection.getErrorStream()) {
-				byte[] buffer = IOUtils.toByteArray(input);
-				throw new ExceptionReadBinary(connection.getURL(), connection.getRequestMethod(), code, buffer);
-			}
-		} else if (code >= 400) {
-			throw new ExceptionReadBinary(connection.getURL(), connection.getRequestMethod(), code);
-		} else if (code == 200) {
-			try (InputStream input = connection.getInputStream()) {
-				bytes = IOUtils.toByteArray(input);
-			} catch (Exception e) {
-				throw new ExceptionReadBinary(e, connection, code);
-			}
-		}
-		connection.disconnect();
-		return bytes;
-	}
-
 	private static void addHeads(HttpURLConnection connection, List<NameValuePair> heads) {
-		Map<String, String> map = new TreeMap<>();
-		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
-		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
-		map.put(CONTENT_TYPE, CONTENT_TYPE_VALUE);
+		connection.setRequestProperty(Access_Control_Allow_Credentials, Access_Control_Allow_Credentials_Value);
+		connection.setRequestProperty(Access_Control_Allow_Headers, Access_Control_Allow_Headers_Value);
+		connection.setRequestProperty(Access_Control_Allow_Methods, Access_Control_Allow_Methods_Value);
+		connection.setRequestProperty(Cache_Control, Cache_Control_Value);
+		connection.setRequestProperty(Content_Type, Content_Type_Value);
 		if (ListTools.isNotEmpty(heads)) {
+			String name;
 			String value;
 			for (NameValuePair o : heads) {
+				name = Objects.toString(o.getName(), "");
 				value = Objects.toString(o.getValue(), "");
-				if (StringUtils.isNotEmpty(o.getName()) && StringUtils.isNotEmpty(value)) {
-					map.put(o.getName(), value);
+				if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+					connection.setRequestProperty(name, value);
 				}
 			}
 		}
-		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
-	}
-
-	private static void addHeadsMultiPart(HttpURLConnection connection, List<NameValuePair> heads, String boundary) {
-		Map<String, String> map = new TreeMap<>();
-		map.put(ACCESS_CONTROL_ALLOW_CREDENTIALS, ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
-		map.put(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
-		map.put(CACHE_CONTROL, CACHE_CONTROL_VALUE);
-		connection.setRequestProperty(CONTENT_TYPE, String.format("multipart/form-data; boundary=%s", boundary));
-		if (ListTools.isNotEmpty(heads)) {
-			String value;
-			for (NameValuePair o : heads) {
-				value = Objects.toString(o.getValue(), "");
-				if (StringUtils.isNotEmpty(o.getName()) && StringUtils.isNotEmpty(value)) {
-					map.put(o.getName(), value);
-				}
-			}
-		}
-		map.entrySet().forEach((o -> connection.addRequestProperty(o.getKey(), o.getValue())));
 	}
 
 }
