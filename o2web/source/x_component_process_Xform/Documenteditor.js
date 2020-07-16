@@ -149,6 +149,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         if (this.json.documentTempleteType=="cus"){
             pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
+                if (this.json.toWordPageNumber!="n") this.doPageStyles(pageContentNode);
+
                 if (this.attachmentTemplete){
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                     if (attNode) attNode.empty();
