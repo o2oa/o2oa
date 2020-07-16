@@ -2,6 +2,7 @@ package com.x.base.core.project;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +17,8 @@ import java.util.zip.CRC32;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
+import com.x.base.core.project.connection.FilePart;
+import com.x.base.core.project.connection.FormField;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -108,7 +111,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("getQuery can not find application with name:" + applicationName + ".");
+			throw new ExceptionFindApplicationName(applicationName);
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
@@ -121,6 +124,59 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			application = this.randomWithSeed(name, seed);
 		}
 		return CipherConnectionAction.get(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	public byte[] getQueryBinary(Class<?> applicationClass, String uri) throws Exception {
+		return this.getQueryBinary(false, applicationClass.getName(), uri, null);
+	}
+
+	public byte[] getQueryBinary(Class<?> applicationClass, String uri, String seed) throws Exception {
+		return this.getQueryBinary(false, applicationClass.getName(), uri, seed);
+	}
+
+	public byte[] getQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
+		return this.getQueryBinary(xdebugger, applicationClass.getName(), uri, null);
+	}
+
+	public byte[] getQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri, String seed)
+			throws Exception {
+		return this.getQueryBinary(xdebugger, applicationClass.getName(), uri, seed);
+	}
+
+	public byte[] getQueryBinary(Application application, String uri) throws Exception {
+		return this.getQueryBinary(false, application, uri);
+	}
+
+	public byte[] getQueryBinary(Boolean xdebugger, Application application, String uri) throws Exception {
+		return CipherConnectionAction.getBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	public byte[] getQueryBinary(String applicationName, String uri) throws Exception {
+		return getQueryBinary(false, applicationName, uri, null);
+	}
+
+	public byte[] getQueryBinary(String applicationName, String uri, String seed) throws Exception {
+		return getQueryBinary(false, applicationName, uri, seed);
+	}
+
+	public byte[] getQueryBinary(Boolean xdebugger, String applicationName, String uri, String seed) throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new ExceptionFindApplicationName(applicationName);
+		}
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
+		return CipherConnectionAction.getBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
 	public ActionResponse deleteQuery(Class<?> applicationClass, String uri) throws Exception {
@@ -161,7 +217,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("deleteQuery can not find application with name:" + applicationName + ".");
+			throw new ExceptionFindApplicationName(applicationName);
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
@@ -174,6 +230,60 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			application = this.randomWithSeed(name, seed);
 		}
 		return CipherConnectionAction.delete(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	public byte[] deleteQueryBinary(Class<?> applicationClass, String uri) throws Exception {
+		return this.deleteQueryBinary(false, applicationClass.getName(), uri, null);
+	}
+
+	public byte[] deleteQueryBinary(Class<?> applicationClass, String uri, String seed) throws Exception {
+		return this.deleteQueryBinary(false, applicationClass.getName(), uri, seed);
+	}
+
+	public byte[] deleteQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri) throws Exception {
+		return this.deleteQueryBinary(xdebugger, applicationClass.getName(), uri, null);
+	}
+
+	public byte[] deleteQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri, String seed)
+			throws Exception {
+		return this.deleteQueryBinary(xdebugger, applicationClass.getName(), uri, seed);
+	}
+
+	public byte[] deleteQueryBinary(Application application, String uri) throws Exception {
+		return this.deleteQueryBinary(false, application, uri);
+	}
+
+	public byte[] deleteQueryBinary(Boolean xdebugger, Application application, String uri) throws Exception {
+		return CipherConnectionAction.deleteBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
+	}
+
+	public byte[] deleteQueryBinary(String applicationName, String uri) throws Exception {
+		return deleteQueryBinary(false, applicationName, uri, null);
+	}
+
+	public byte[] deleteQueryBinary(String applicationName, String uri, String seed) throws Exception {
+		return deleteQueryBinary(false, applicationName, uri, seed);
+	}
+
+	public byte[] deleteQueryBinary(Boolean xdebugger, String applicationName, String uri, String seed)
+			throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new ExceptionFindApplicationName(applicationName);
+		}
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
+		return CipherConnectionAction.deleteBinary(xdebugger,
 				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri));
 	}
 
@@ -217,7 +327,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("postQuery can not find application with name:" + applicationName + ".");
+			throw new ExceptionFindApplicationName(applicationName);
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
@@ -231,6 +341,123 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		}
 		return CipherConnectionAction.post(xdebugger, application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri),
 				body);
+	}
+
+	public byte[] postQueryBinary(Class<?> applicationClass, String uri, Object body) throws Exception {
+		return this.postQueryBinary(false, applicationClass.getName(), uri, body, null);
+	}
+
+	public byte[] postQueryBinary(Class<?> applicationClass, String uri, Object body, String seed) throws Exception {
+		return this.postQueryBinary(false, applicationClass.getName(), uri, body, seed);
+	}
+
+	public byte[] postQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri, Object body)
+			throws Exception {
+		return this.postQueryBinary(xdebugger, applicationClass.getName(), uri, body, null);
+	}
+
+	public byte[] postQueryBinary(Boolean xdebugger, Class<?> applicationClass, String uri, Object body, String seed)
+			throws Exception {
+		return this.postQueryBinary(xdebugger, applicationClass.getName(), uri, body, seed);
+	}
+
+	public byte[] postQueryBinary(Application application, String uri, Object body) throws Exception {
+		return this.postQueryBinary(false, application, uri, body);
+	}
+
+	public byte[] postQueryBinary(Boolean xdebugger, Application application, String uri, Object body)
+			throws Exception {
+		return CipherConnectionAction.postBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), body);
+	}
+
+	public byte[] postQueryBinary(String applicationName, String uri, Object body) throws Exception {
+		return this.postQueryBinary(false, applicationName, uri, body, null);
+	}
+
+	public byte[] postQueryBinary(String applicationName, String uri, Object body, String seed) throws Exception {
+		return this.postQueryBinary(false, applicationName, uri, body, seed);
+	}
+
+	public byte[] postQueryBinary(Boolean xdebugger, String applicationName, String uri, Object body, String seed)
+			throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new ExceptionFindApplicationName(applicationName);
+		}
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
+		return CipherConnectionAction.postBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), body);
+	}
+
+	public byte[] postQueryMultiPartinary(Class<?> applicationClass, String uri, Collection<FormField> formFields,
+			Collection<FilePart> fileParts) throws Exception {
+		return this.postQueryMultiPartBinary(false, applicationClass.getName(), uri, formFields, fileParts, null);
+	}
+
+	public byte[] postQueryMultiPartBinary(Class<?> applicationClass, String uri, Collection<FormField> formFields,
+			Collection<FilePart> fileParts, String seed) throws Exception {
+		return this.postQueryMultiPartBinary(false, applicationClass.getName(), uri, formFields, fileParts, seed);
+	}
+
+	public byte[] postQueryMultiPartBinary(Boolean xdebugger, Class<?> applicationClass, String uri,
+			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
+		return this.postQueryMultiPartBinary(xdebugger, applicationClass.getName(), uri, formFields, fileParts, null);
+	}
+
+	public byte[] postQueryMultiPartBinary(Boolean xdebugger, Class<?> applicationClass, String uri,
+			Collection<FormField> formFields, Collection<FilePart> fileParts, String seed) throws Exception {
+		return this.postQueryMultiPartBinary(xdebugger, applicationClass.getName(), uri, formFields, fileParts, seed);
+	}
+
+	public byte[] postQueryMultiPartBinary(Application application, String uri, Collection<FormField> formFields,
+			Collection<FilePart> fileParts) throws Exception {
+		return this.postQueryMultiPartBinary(false, application, uri, formFields, fileParts);
+	}
+
+	public byte[] postQueryMultiPartBinary(Boolean xdebugger, Application application, String uri,
+			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
+		return CipherConnectionAction.postMultiPartBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), formFields, fileParts);
+	}
+
+	public byte[] postQueryMultiPartBinary(String applicationName, String uri, Collection<FormField> formFields,
+			Collection<FilePart> fileParts) throws Exception {
+		return this.postQueryMultiPartBinary(false, applicationName, uri, formFields, fileParts, null);
+	}
+
+	public byte[] postQueryMultiPartBinary(String applicationName, String uri, Collection<FormField> formFields,
+			Collection<FilePart> fileParts, String seed) throws Exception {
+		return this.postQueryMultiPartBinary(false, applicationName, uri, formFields, fileParts, seed);
+	}
+
+	public byte[] postQueryMultiPartBinary(Boolean xdebugger, String applicationName, String uri,
+			Collection<FormField> formFields, Collection<FilePart> fileParts, String seed) throws Exception {
+		String name = this.findApplicationName(applicationName);
+		if (StringUtils.isEmpty(name)) {
+			throw new ExceptionFindApplicationName(applicationName);
+		}
+		Application application = null;
+		if (StringUtils.isEmpty(seed)) {
+			// 如果随机种子是空,那么优先使用本机
+			application = this.findApplicationWithNode(name, Config.node());
+			if (null == application) {
+				application = this.randomWithWeight(name);
+			}
+		} else {
+			application = this.randomWithSeed(name, seed);
+		}
+		return CipherConnectionAction.postMultiPartBinary(xdebugger,
+				application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri), formFields, fileParts);
 	}
 
 	public ActionResponse putQuery(Class<?> applicationClass, String uri, Object body) throws Exception {
@@ -273,7 +500,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 			throws Exception {
 		String name = this.findApplicationName(applicationName);
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("putQuery can not find application with name:" + applicationName + ".");
+			throw new ExceptionFindApplicationName(applicationName);
 		}
 		Application application = null;
 		if (StringUtils.isEmpty(seed)) {
