@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -14,10 +13,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform;
-import com.x.base.core.project.config.ProcessPlatform.WorkCompletedExtensionEvent;
-import com.x.base.core.project.config.ProcessPlatform.WorkExtensionEvent;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -71,72 +67,15 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
 	}
 
-	private byte[] workConvert(EffectivePerson effectivePerson, Wi wi, String application, String process,
-			String activity) throws Exception {
-		byte[] bytes = null;
-		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
-				.bind(application, process, activity);
-		if (event.isPresent()) {
-			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get());
-		} else {
-			if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
-				bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
-			} else {
-				bytes = this.local(wi);
-			}
-		}
-		return bytes;
-	}
-
-	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event)
-			throws Exception {
-		byte[] bytes = null;
-		Req req = new Req();
-		req.setContent(content);
-		req.setPerson(effectivePerson.getDistinguishedName());
-		if (StringUtils.isNotEmpty(event.getCustom())) {
-			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
-		} else {
-			bytes = CipherConnectionAction.postBinary(effectivePerson.getDebugger(), event.getUrl(), req);
-		}
-		return bytes;
-	}
-
-	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process)
-			throws Exception {
-		byte[] bytes = null;
-		Optional<WorkCompletedExtensionEvent> event = Config.processPlatform().getExtensionEvents()
-				.getWorkCompletedDocToWordEvents().bind(application, process);
-		if (event.isPresent()) {
-			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get());
-		} else {
-			if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
-				bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
-			} else {
-				bytes = this.local(wi);
-			}
-		}
-		return bytes;
-	}
-
-	private byte[] workCompletedExtensionService(EffectivePerson effectivePerson, String content,
-			WorkCompletedExtensionEvent event) throws Exception {
-		byte[] bytes = null;
-		Req req = new Req();
-		req.setContent(content);
-		req.setPerson(effectivePerson.getDistinguishedName());
-		if (StringUtils.isNotEmpty(event.getCustom())) {
-			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
-		} else {
-			bytes = CipherConnectionAction.postBinary(effectivePerson.getDebugger(), event.getUrl(), req);
-		}
-		return bytes;
-	}
-
 	private Wo work(EffectivePerson effectivePerson, Wi wi, Work work) throws Exception {
 		String person = effectivePerson.isCipher() ? work.getCreatorPerson() : effectivePerson.getDistinguishedName();
-		byte[] bytes = this.workConvert(effectivePerson, wi, work.getApplication(), work.getProcess(),
-				work.getActivity());
+		byte[] bytes = null;
+
+		if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
+			bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
+		} else {
+			bytes = this.local(wi);
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob());
 			Attachment attachment = null;
@@ -188,8 +127,13 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	private Wo workCompleted(EffectivePerson effectivePerson, Wi wi, WorkCompleted workCompleted) throws Exception {
 		String person = effectivePerson.isCipher() ? workCompleted.getCreatorPerson()
 				: effectivePerson.getDistinguishedName();
-		byte[] bytes = this.workCompletedConvert(effectivePerson, wi, workCompleted.getApplication(),
-				workCompleted.getProcess());
+		byte[] bytes = null;
+
+		if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
+			bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
+		} else {
+			bytes = this.local(wi);
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME,
 					workCompleted.getJob());
@@ -226,6 +170,8 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 				attachment.setJob(workCompleted.getJob());
 				attachment.setActivity(workCompleted.getActivity());
 				attachment.setActivityName(workCompleted.getActivityName());
+				// attachment.setActivityToken(workCompleted.getActivityToken());
+				// attachment.setActivityType(workCompleted.getActivityType());
 				attachment.saveContent(mapping, bytes, wi.getFileName());
 				attachment.setType((new Tika()).detect(bytes, wi.getFileName()));
 				emc.persist(attachment, CheckPersistType.all);
@@ -284,28 +230,4 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		}
 
 	}
-
-	public static class Req {
-
-		private String person;
-
-		private String content;
-
-		public String getPerson() {
-			return person;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
-
-		public String getContent() {
-			return content;
-		}
-
-		public void setContent(String content) {
-			this.content = content;
-		}
-	}
-
 }
