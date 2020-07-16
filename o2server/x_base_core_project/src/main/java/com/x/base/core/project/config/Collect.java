@@ -173,14 +173,14 @@ public class Collect extends ConfigObject {
 		try {
 			URL url = new URL(this.url("/o2_collect_assemble/jaxrs/collect/validate"));
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestProperty(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
-					ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-			connection.setRequestProperty(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
-					ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
-			connection.setRequestProperty(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS,
-					ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
-			connection.setRequestProperty(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
-			connection.setRequestProperty(ConnectionAction.CONTENT_TYPE, ConnectionAction.CONTENT_TYPE_VALUE);
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Credentials,
+					ConnectionAction.Access_Control_Allow_Credentials_Value);
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Headers,
+					ConnectionAction.Access_Control_Allow_Headers_Value);
+			connection.setRequestProperty(ConnectionAction.Access_Control_Allow_Methods,
+					ConnectionAction.Access_Control_Allow_Methods_Value);
+			connection.setRequestProperty(ConnectionAction.Cache_Control, ConnectionAction.Cache_Control_Value);
+			connection.setRequestProperty(ConnectionAction.Content_Type, ConnectionAction.Content_Type_Value);
 			connection.setRequestMethod("POST");
 			connection.setUseCaches(false);
 			connection.setDoOutput(true);
@@ -208,7 +208,7 @@ public class Collect extends ConfigObject {
 		return true;
 	}
 
-	public boolean connect() throws Exception {
+	public boolean connect() throws Exception{
 		if (!Config.collect().getEnable()) {
 			throw new ExceptionCollectDisable();
 		}
