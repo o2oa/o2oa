@@ -900,7 +900,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                     var key = layout.desktop.session.user.id;
                     if( typeOf( data[id] ) === "object" && typeOf(data[id][key])==="string" ){
-                        delete data[id][key]
+                        data[id][key]= "";
+                    }else if( typeOf( data[id] ) === "string" ){
+                        data[id] = "";
                     }
                     // delete data[id];
                 } else {
