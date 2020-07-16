@@ -219,18 +219,17 @@ public class Business {
 		List<Table> tables = emc.listEqual(Table.class, Table.status_FIELDNAME, Table.STATUS_build);
 		/* 产生用于创建persistence.xml */
 		List<String> classNames = new ArrayList<>();
-		for (Table table : tables) {
+		for (Table t : tables) {
 			try {
 				emc.beginTransaction(Table.class);
-				if (StringUtils.isNotEmpty(table.getData())) {
-					DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(table.getData(),
-							DynamicEntity.class);
-					dynamicEntity.setName(table.getName());
+				if (StringUtils.isNotEmpty(t.getData())) {
+					DynamicEntity dynamicEntity = XGsonBuilder.instance().fromJson(t.getData(), DynamicEntity.class);
+					dynamicEntity.setName(t.getName());
 					DynamicEntityBuilder builder = new DynamicEntityBuilder(dynamicEntity, src);
 					builder.build();
 					classNames.add(dynamicEntity.className());
 				}
-				table.setBuildSuccess(true);
+				t.setBuildSuccess(true);
 				emc.commit();
 			} catch (Exception e) {
 				logger.error(e);
