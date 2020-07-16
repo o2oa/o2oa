@@ -927,6 +927,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                 };
                                 if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
                                 if (layout.desktop.message) layout.desktop.message.addMessage(msg);
+                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("error", {"x": "right", "y": "top"}, "文件：“"+file.name+"”不符合允许上传类型", this.node);
                             }else if (size && file.size> size*1024*1024){
                                 var msg = {
                                     "subject": o2.LP.widget.refuseUpload,
@@ -934,6 +935,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                 };
                                 if (layout.desktop.message) layout.desktop.message.addTooltip(msg);
                                 if (layout.desktop.message) layout.desktop.message.addMessage(msg);
+                                if (o2 && o2.xDesktop && o2.xDesktop.notice) o2.xDesktop.notice("error", {"x": "right", "y": "top"}, "文件：“"+file.name+"”超出允许的大小，（仅允许上传小于"+size+"M的文件）", this.node);
                             }else{
                                 var formData = new FormData();
                                 Object.each(obj, function(v, k){
@@ -1011,6 +1013,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                                     }.bind(this),null,false);
 
                                 }else{
+                                    restActions.targetModule = {"module": this, "file": file};
                                     restActions.invoke({
                                         "name": invokeUrl,
                                         "async": true,
@@ -1038,6 +1041,21 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         this.fileUploadNode.click();
     },
 
+    addFormDataMessage: function(file){
+        return this.addAttachmentMessage(file);
+    },
+
+    addAttachmentMessage: function(file){
+        var messageItem;
+        if (this.options.size=="min"){
+            messageItem = new o2.widget.AttachmentController.AttachmentMessageMin(file, this);
+        }else{
+            messageItem = new o2.widget.AttachmentController.AttachmentMessage(file, this);
+        }
+        if (!this.messageItemList) this.messageItemList = {};
+        this.messageItemList[messageItem.data.id] = messageItem;
+        return messageItem;
+    },
 
     openInOfficeControl: function(e, node){},
     deleteAttachment: function(e, node){
@@ -1127,11 +1145,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         return names;
     },
 
-    addAttachment: function(data){
+    addAttachment: function(data, messageId){
         if (this.options.size=="min"){
-            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this));
+            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId));
         }else{
-            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this));
+            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId));
         }
         this.checkActions();
     },
@@ -1164,7 +1182,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
 o2.widget.AttachmentController.Attachment = new Class({
 	Implements: [Events],
-	initialize: function(data, controller){
+	initialize: function(data, controller, messageId){
 		this.data = data;
 
         if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
@@ -1176,6 +1194,11 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.isSelected = false;
         this.seq = this.controller.attachments.length+1;
         this.actions = [];
+
+        if (messageId && this.controller.messageItemList) {
+            this.message = this.controller.messageItemList[messageId];
+        }
+
         this.load();
 	},
     _getLnkPar: function(url){
@@ -1186,7 +1209,14 @@ o2.widget.AttachmentController.Attachment = new Class({
         };
     },
     load: function(){
-        this.node = new Element("div").inject(this.content);
+	    if (this.message){
+            this.node = new Element("div").inject(this.message.node, "after");
+            this.message.node.destroy();
+            delete this.controller.messageItemList[this.message.data.id];
+        }else{
+            this.node = new Element("div").inject(this.content);
+        }
+
         switch (this.controller.options.listStyle){
             case "list":
                 this.loadList();
@@ -1619,7 +1649,7 @@ o2.widget.AttachmentController.Attachment = new Class({
 o2.widget.AttachmentController.AttachmentMin = new Class({
     Extends: o2.widget.AttachmentController.Attachment,
 
-    initialize: function(data, controller){
+    initialize: function(data, controller, messageId){
         this.data = data;
 
         if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
@@ -1629,10 +1659,23 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.content = this.controller.minContent;
         this.isSelected = false;
         this.seq = this.controller.attachments.length+1;
+
+        if (messageId && this.controller.messageItemList) {
+            this.message = this.controller.messageItemList[messageId];
+        }
+
         this.load();
     },
     load: function(){
-        this.node = new Element("div").inject(this.content);
+        if (this.message){
+            this.node = new Element("div").inject(this.message.node, "after");
+            this.message.node.destroy();
+            delete this.controller.messageItemList[this.message.data.id];
+        }else{
+            this.node = new Element("div").inject(this.content);
+        }
+
+        //this.node = new Element("div").inject(this.content);
         //this.loadList();
         switch (this.controller.options.listStyle){
             case "list":
@@ -1853,4 +1896,275 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.controller.selectedAttachments.erase(this);
     }
 
+});
+
+o2.widget.AttachmentController.AttachmentMessage = new Class({
+    Extends: o2.widget.AttachmentController.Attachment,
+    Implements: [Events],
+    initialize: function(file, controller){
+        var d = (new Date).format("db");
+        var extension = file.name.substring(file.name.lastIndexOf(".")+1, file.name.length);
+        this.file = file;
+        this.data = {
+            activity: "",
+            activityName: "",
+            activityToken: "",
+            activityType: "manual",
+            application: "",
+            completed: false,
+            control: {allowRead:true, allowEdit:false, allowControl:false},
+            controllerIdentityList: [],
+            controllerUnitList: [],
+            createTime: d,
+            deepPath: false,
+            divisionList: [],
+            editIdentityList: [],
+            editUnitList: [],
+            extension: extension,
+            id: (new o2.widget.UUID()).toString(),
+            job: "",
+            lastUpdatePerson: (layout) ? layout.session.user.name : "",
+            lastUpdateTime: d,
+            length: file.size,
+            name: file.name,
+            person: (layout) ? layout.session.user.name : "",
+            process: "",
+            readIdentityList: [],
+            readUnitList: [],
+            site: "$doc",
+            storage: file.size,
+            type: "",
+            updateTime: d,
+            workCreateTime: ""
+        }
+
+
+        if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
+
+        this.controller = controller;
+        this.css = this.controller.css;
+        this.listStyle = this.controller.options.listStyle;
+        this.content = this.controller.content;
+        this.isSelected = false;
+        this.seq = this.controller.attachments.length+1;
+        this.actions = [];
+        this.load();
+    },
+    load: function(){
+        this.node = new Element("div").inject(this.content);
+        switch (this.controller.options.listStyle){
+            case "list":
+                this.loadList();
+                break;
+            case "icon":
+                this.loadIcon();
+                break;
+            case "preview":
+                this.loadPreview();
+                break;
+            case "sequence":
+                this.loadSequence();
+                break;
+        }
+
+        this.setEvent();
+        this.loadMessage();
+    },
+    loadMessage: function(){
+        var size = this.node.getSize();
+        this.node.setStyle("position", "relative");
+
+        this.messageMaskNode = new Element("div", { "styles": this.css.messageMaskNode }).inject(this.node);
+        this.messageMaskNode.setStyles({
+            "width": ""+size.x+"px",
+            "height": ""+size.y+"px"
+        });
+
+
+        this.messageNode = new Element("div", { "styles": this.css.messageNode }).inject(this.node);
+        switch (this.controller.options.listStyle){
+            case "list":
+            case "sequence":
+                this.messageNode.setStyles({
+                    "width": "0px",
+                    "height": ""+size.y+"px"
+                });
+                break;
+            case "icon":
+            case "preview":
+                this.messageNode.setStyles({
+                    "width": ""+size.x+"px",
+                    "height": ""+size.y+"px"
+                });
+                break;
+        }
+
+        this.messageText = new Element("div", {
+            "styles": this.css.messageText,
+            "text": "0%"
+        }).inject(this.node);
+        this.messageText.setStyles({
+            "width": ""+size.x+"px",
+            "height": ""+size.y+"px",
+            "line-height": ""+size.y+"px"
+        });
+    },
+    updateProgress: function(percent){
+        var size = this.node.getSize();
+        switch (this.controller.options.listStyle){
+            case "list":
+            case "sequence":
+                var w = size.x*(percent/100);
+                this.messageNode.setStyles({
+                    "width":""+w+"px"
+                });
+                break;
+            case "icon":
+            case "preview":
+                var h = size.y*(1-percent/100);
+                this.messageNode.setStyle("height", ""+h+"px");
+                break;
+        }
+
+        var p = (percent*100).toInt()/100;
+        this.messageText.set("text", ""+p+"%")
+    },
+    transferComplete: function(){
+        this.messageText.set("text", "loading...")
+    }
+});
+o2.widget.AttachmentController.AttachmentMessageMin = new Class({
+    Extends: o2.widget.AttachmentController.AttachmentMin,
+    Implements: [Events],
+    initialize: function(file, controller){
+        var d = (new Date).format("db");
+        var extension = file.name.substring(file.name.lastIndexOf(".")+1, file.name.length);
+        this.file = file;
+        this.data = {
+            activity: "",
+            activityName: "",
+            activityToken: "",
+            activityType: "manual",
+            application: "",
+            completed: false,
+            control: {allowRead:true, allowEdit:false, allowControl:false},
+            controllerIdentityList: [],
+            controllerUnitList: [],
+            createTime: d,
+            deepPath: false,
+            divisionList: [],
+            editIdentityList: [],
+            editUnitList: [],
+            extension: extension,
+            id: (new o2.widget.UUID()).toString(),
+            job: "",
+            lastUpdatePerson: (layout) ? layout.session.user.name : "",
+            lastUpdateTime: d,
+            length: file.size,
+            name: file.name,
+            person: (layout) ? layout.session.user.name : "",
+            process: "",
+            readIdentityList: [],
+            readUnitList: [],
+            site: "$doc",
+            storage: file.size,
+            type: "",
+            updateTime: d,
+            workCreateTime: ""
+        }
+
+
+        if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
+
+        this.controller = controller;
+        this.css = this.controller.css;
+        this.listStyle = this.controller.options.listStyle;
+        this.content = this.controller.minContent;
+        this.isSelected = false;
+        this.seq = this.controller.attachments.length+1;
+        this.actions = [];
+        this.load();
+    },
+    load: function(){
+        this.node = new Element("div").inject(this.content);
+        switch (this.controller.options.listStyle){
+            case "list":
+                this.loadList();
+                break;
+            case "icon":
+                this.loadIcon();
+                break;
+            case "preview":
+                this.loadPreview();
+                break;
+            case "sequence":
+                this.loadSequence();
+                break;
+        }
+
+        this.setEvent();
+        this.loadMessage();
+    },
+    loadMessage: function(){
+        var size = this.node.getSize();
+        this.node.setStyle("position", "relative");
+
+        this.messageMaskNode = new Element("div", { "styles": this.css.messageMaskNode }).inject(this.node);
+        this.messageMaskNode.setStyles({
+            "width": ""+size.x+"px",
+            "height": ""+size.y+"px"
+        });
+
+
+        this.messageNode = new Element("div", { "styles": this.css.messageNode }).inject(this.node);
+        switch (this.controller.options.listStyle){
+            case "list":
+            case "sequence":
+                this.messageNode.setStyles({
+                    "width": "0px",
+                    "height": ""+size.y+"px"
+                });
+                break;
+            case "icon":
+            case "preview":
+                this.messageNode.setStyles({
+                    "width": ""+size.x+"px",
+                    "height": ""+size.y+"px"
+                });
+                break;
+        }
+
+        this.messageText = new Element("div", {
+            "styles": this.css.messageText,
+            "text": "0%"
+        }).inject(this.node);
+        this.messageText.setStyles({
+            "width": ""+size.x+"px",
+            "height": ""+size.y+"px",
+            "line-height": ""+size.y+"px"
+        });
+    },
+    updateProgress: function(percent){
+        var size = this.node.getSize();
+        switch (this.controller.options.listStyle){
+            case "list":
+            case "sequence":
+                var w = size.x*(percent/100);
+                this.messageNode.setStyles({
+                    "width":""+w+"px"
+                });
+                break;
+            case "icon":
+            case "preview":
+                var h = size.y*(1-percent/100);
+                this.messageNode.setStyle("height", ""+h+"px");
+                break;
+        }
+
+        var p = (percent*100).toInt()/100;
+        this.messageText.set("text", ""+p+"%")
+    },
+    transferComplete: function(){
+        this.messageText.set("text", "loading...")
+    }
 });
