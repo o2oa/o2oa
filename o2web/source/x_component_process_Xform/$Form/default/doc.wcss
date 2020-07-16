@@ -18,7 +18,7 @@
 
     "doc_content": {
         "min-height": "30.7cm",
-        "overflow": "hidden",
+        "overflow": "auto",
         "padding": "0.3cm 0px"
     },
     "doc_page": {
@@ -27,7 +27,7 @@
         "padding": "3.7cm 2.6cm 3.5cm 2.8cm",
         "margin": "0.2cm auto 0 auto",
         "background": "#ffffff",
-        "overflow": "hidden",
+        "overflow": "hidden"
     },
 
     "doc_layout_page_content": {

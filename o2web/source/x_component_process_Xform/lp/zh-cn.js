@@ -168,6 +168,12 @@ MWF.xApplication.process.Xform.LP = {
     "printdoc": "打印正文",
     "history": "正文痕迹审查",
 
+    "editdoc_mobile": "编辑",
+    "editdocCompleted_mobile": "编辑完成",
+    "printdoc_mobile": "打印",
+    "history_mobile": "痕迹",
+
+
     "subformNestedError" : "该表单存在相互嵌套的子表单，请联系管理员！",
     "subpageNestedError" : "该页面存在相互嵌套的子页面，请联系管理员！",
 
