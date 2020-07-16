@@ -832,23 +832,23 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		var data = final || {};
 		Object.keys(initial).each(function(k){
 			if (k!="defaultValue"){
-				var t = typeOf(initial[k]);
-				switch (t) {
-					case "object":
-						var s = JSON.stringify(initial[k], null, "\t");
-						if (/((?:\:\s*)((\".+\")|(\d+)|(\[.+\])))/.test(s)){
-							//data[k] = {};
-							data[k] = this._copyFormJson(initial[k], data[k]);
-						}
-						break;
-					case "boolean":
-						data[k] = initial[k];
-						break;
-					default :
-						if (initial[k]) data[k] = initial[k];
-				}
-			}else{
-				data[k] = initial[k];
+					var t = typeOf(initial[k]);
+					switch (t) {
+						case "object":
+							var s = JSON.stringify(initial[k], null, "\t");
+							if (/((?:\:\s*)((\".+\")|(\d+)|(\[.+\])))/.test(s)){
+								//data[k] = {};
+								data[k] = this._copyFormJson(initial[k], data[k]);
+							}
+							break;
+						case "boolean":
+							data[k] = initial[k];
+							break;
+						default :
+							if (initial[k]) data[k] = initial[k];
+					}
+				}else{
+					data[k] = initial[k];
 			}
 
 		}.bind(this));
