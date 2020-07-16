@@ -90,11 +90,68 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 				woSignFeature.setSignDate( signDate );
 			}
 		}
+		
+		//列示排班详情
+		 List<WoSignFeature> scheduleInfos = new ArrayList<>();
+				if (check
+						&& !StringUtils.equalsAnyIgnoreCase("xadmin", effectivePerson.getName())
+						&& !StringUtils.equalsAnyIgnoreCase("cipher", effectivePerson.getName())) {
+					//打卡策略：1-两次打卡（上午上班，下午下班） 2-三次打卡（上午上班，下午下班加中午一次共三次） 3-四次打卡（上午下午都打上班下班
+
+					if( woScheduleSetting != null ){
+						WoSignFeature scheduleInfo1 = new WoSignFeature();
+						scheduleInfo1.setSignSeq(1);
+						scheduleInfo1.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_ONDUTY );
+						scheduleInfo1.setSignTime(scheduleSetting.getOnDutyTime());
+						scheduleInfo1.setSignDate( signDate );
+						scheduleInfos.add(scheduleInfo1);
+						
+
+						if( woScheduleSetting.getSignProxy() == 3 ){
+							//3-四次打卡（上午下午都打上班下班卡）
+							WoSignFeature scheduleInfo2 = new WoSignFeature();
+							scheduleInfo2.setSignSeq(2);
+							scheduleInfo2.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_MORNING_OFFDUTY );
+							scheduleInfo2.setSignTime(scheduleSetting.getMiddayRestStartTime());
+							scheduleInfo2.setSignDate( signDate );
+							scheduleInfos.add(scheduleInfo2);
+							
+							WoSignFeature scheduleInfo3 = new WoSignFeature();
+							scheduleInfo3.setSignSeq(3);
+							scheduleInfo3.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
+							scheduleInfo3.setSignTime(scheduleSetting.getMiddayRestEndTime());
+							scheduleInfo3.setSignDate( signDate );
+							scheduleInfos.add(scheduleInfo3);
+							
+						}else if( woScheduleSetting.getSignProxy() == 2 ){
+							//2-三次打卡（上午上班，下午下班加中午一次共三次）
+							WoSignFeature scheduleInfo3 = new WoSignFeature();
+							scheduleInfo3.setSignSeq(3);
+							scheduleInfo3.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
+							scheduleInfo3.setSignTime(scheduleSetting.getMiddayRestEndTime());
+							scheduleInfo3.setSignDate( signDate );
+							scheduleInfos.add(scheduleInfo3);
+						}else{
+							//1-两次打卡（上午上班，下午下班）
+						}
+						
+						WoSignFeature scheduleInfo4 = new WoSignFeature();
+						scheduleInfo4.setSignSeq(4);
+						scheduleInfo4.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_OFFDUTY );
+						scheduleInfo4.setSignTime(scheduleSetting.getOffDutyTime());
+						scheduleInfo4.setSignDate( signDate );
+						scheduleInfos.add(scheduleInfo4);
+					}
+					/*if( scheduleIf != null ){
+						scheduleIf.setSignDate( signDate );
+					}*/
+				}
 
 		Wo wo = new Wo();
 		wo.setRecords( wraps );
 		wo.setFeature( woSignFeature );
 		wo.setScheduleSetting( woScheduleSetting );
+		wo.setScheduleInfos(scheduleInfos);
 		result.setCount(total);
 		result.setData(wo);
 
@@ -111,6 +168,9 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 
 		@FieldDescribe("下一次打卡信息")
 		private WoSignFeature feature;
+		
+		@FieldDescribe("排班详情")
+		private List<WoSignFeature> scheduleInfos;
 
 		public WoScheduleSetting getScheduleSetting() { return scheduleSetting; }
 
@@ -123,6 +183,10 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 		public WoSignFeature getFeature() { return feature; }
 
 		public void setFeature(WoSignFeature feature) { this.feature = feature; }
+		
+		public List<WoSignFeature> getScheduleInfos() { return scheduleInfos; }
+
+		public void setScheduleInfos(List<WoSignFeature> scheduleInfos) { this.scheduleInfos = scheduleInfos; }
 	}
 
 	public static class WoScheduleSetting extends AttendanceScheduleSetting {
