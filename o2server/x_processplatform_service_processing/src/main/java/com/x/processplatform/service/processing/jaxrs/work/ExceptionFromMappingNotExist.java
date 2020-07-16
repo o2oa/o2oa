@@ -7,7 +7,7 @@ class ExceptionFromMappingNotExist extends PromptException {
 	private static final long serialVersionUID = -7038279889683420366L;
 
 	ExceptionFromMappingNotExist(String storage) {
-		super("from mapping not exist:{}.", storage);
+		super("form mapping not exist:{}.", storage);
 	}
 
 }

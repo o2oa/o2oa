@@ -54,12 +54,6 @@ public class StringTools {
 
 	public static final char SQL_ESCAPE_CHAR = '^';
 
-	public static final String CRLF = "\r\n";
-	public static final String CR = "\r";
-	public static final String LF = "\n";
-
-	public static final String TWO_HYPHENS = "--";
-
 	private static final Random random = new Random();
 
 	public static int utf8Length(String str) {

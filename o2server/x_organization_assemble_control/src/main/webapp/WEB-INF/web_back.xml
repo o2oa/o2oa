@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="x_organization_assemble_control"
+	metadata-complete="true" version="3.0">
+	<display-name>x_organization_assemble_control</display-name>
+	<context-param>
+		<param-name>project</param-name>
+		<param-value>com.x.base.core.project.x_organization_assemble_control
+		</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>com.x.organization.assemble.control.ApplicationServletContextListener
+		</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>ActionApplication</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer
+		</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.x.organization.assemble.control.jaxrs.ActionApplication
+			</param-value>
+		</init-param>
+	</servlet>
+
+</web-app>
