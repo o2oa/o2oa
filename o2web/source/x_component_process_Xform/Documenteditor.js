@@ -149,7 +149,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         if (this.json.documentTempleteType=="cus"){
             pageContentNode.loadHtml(o2.filterUrl(this.json.documentTempleteUrl), function(){
-                if (this.json.toWordPageNumber!="n") this.doPageStyles(pageContentNode);
+                if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
                 if (this.attachmentTemplete){
                     var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
@@ -162,7 +162,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.getTempleteJson(function(){
                 var templete = this.json.documentTempleteName || "standard";
                 pageContentNode.loadHtml(o2.filterUrl("../x_component_process_FormDesigner/Module/Documenteditor/templete/"+this.templeteJson[templete].file), function(){
-                    if (this.json.toWordPageNumber!="n") this.doPageStyles(pageContentNode);
+                    if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
 
                     if (this.attachmentTemplete){
                         var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
