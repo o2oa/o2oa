@@ -144,7 +144,7 @@ public class Query extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME))
+			+ controllerList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME+JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + controllerList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + controllerList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
