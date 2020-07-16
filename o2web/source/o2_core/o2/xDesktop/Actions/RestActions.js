@@ -131,48 +131,71 @@ MWF.xDesktop.Actions.RestActions = new Class({
         xhr.send(data);
     },
     setMessageText: function(messageItem, text){
-        if (messageItem){
+        if (messageItem && messageItem.message){
             var progressNode = messageItem.contentNode.getFirst("div").getFirst("div");
             var progressPercentNode = progressNode.getFirst("div");
             var progressInforNode = messageItem.contentNode.getFirst("div").getLast("div");
             progressInforNode.set("text", text);
             messageItem.dateNode.set("text", (new Date()).format("db"));
         }
-
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.setMessageText) messageItem.moduleMessage.setMessageText();
+        }
     },
     setMessageTitle: function(messageItem, text){
-        if (messageItem) messageItem.subjectNode.set("text", text);
+        if (messageItem && messageItem.message) messageItem.subjectNode.set("text", text);
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.setMessageTitle) messageItem.moduleMessage.setMessageTitle();
+        }
     },
     clearMessageProgress: function(messageItem){
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             var progressNode = messageItem.contentNode.getFirst("div").getFirst("div");
             progressNode.destroy();
+        }
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.clearMessageProgress) messageItem.moduleMessage.clearMessageProgress();
         }
     },
 
 
     transferStart: function(e, xhr, messageItem){
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             this.setMessageText(messageItem, MWF.LP.desktop.action.sendStart);
             messageItem.status = "progress";
+        }
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.transferStart) messageItem.moduleMessage.transferStart();
         }
         this.fireEvent("loadstart");
     },
     transferFailed: function(e, xhr, messageItem){
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             this.setMessageText(messageItem, MWF.LP.desktop.action.sendError);
             this.setMessageTitle(messageItem, MWF.LP.desktop.action.sendError);
             this.clearMessageProgress(messageItem);
             messageItem.status = "failed";
         }
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.transferFailed) messageItem.moduleMessage.transferFailed();
+        }
         this.fireEvent("error");
     },
     transferCanceled: function(e, xhr, messageItem){
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             this.setMessageText(messageItem, MWF.LP.desktop.action.sendAbort);
             this.setMessageTitle(messageItem, MWF.LP.desktop.action.sendAbort);
             this.clearMessageProgress(messageItem);
             messageItem.status = "cancel";
+        }
+        //@upload message
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.transferCanceled) messageItem.moduleMessage.transferCanceled();
         }
         this.fireEvent("abort");
     },
@@ -209,12 +232,17 @@ MWF.xDesktop.Actions.RestActions = new Class({
             var s = ms/1000;
             timeStr = ""+s.toInt()+MWF.LP.desktop.action.second;
         }
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             this.setMessageText(messageItem, MWF.LP.desktop.action.uploadComplete + "  " + MWF.LP.desktop.action.speed + ": " + speed + u + "  " + MWF.LP.desktop.action.time + ": " + timeStr, MWF.LP.desktop.action.uploadComplete);
             this.setMessageTitle(messageItem, MWF.LP.desktop.action.uploadComplete);
             this.clearMessageProgress(messageItem);
 
             messageItem.status = "completed";
+        }
+        //@upload message
+        debugger;
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.transferComplete) messageItem.moduleMessage.transferComplete();
         }
         //var msg = {
         //    "subject": MWF.LP.desktop.action.uploadComplete,
@@ -240,7 +268,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         }
         speed = speed.round(2);
 
-        if (messageItem) {
+        if (messageItem && messageItem.message) {
             if (messageItem.contentNode) {
                 var progressNode = messageItem.contentNode.getFirst("div").getFirst("div");
                 var progressPercentNode = progressNode.getFirst("div");
@@ -248,6 +276,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
                 progressPercentNode.setStyle("width", "" + percent + "%");
                 progressInforNode.set("text", MWF.LP.desktop.action.sendStart + ": " + speed + u);
             }
+        }
+        //@upload message
+        debugger;
+        if (messageItem && messageItem.moduleMessage){
+            if (messageItem.moduleMessage.updateProgress) messageItem.moduleMessage.updateProgress(percent);
         }
         this.fireEvent("progress");
     },
@@ -274,6 +307,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
                         MWF.runCallback(callback, "success", [{
                             "type": "success",
                             "id": dataId,
+                            "messageId": (messageItem && messageItem.moduleMessage) ? messageItem.moduleMessage.data.id : "",
                             "data": json.data
                         }, xhr.responseText]);
                         break;
@@ -388,20 +422,21 @@ MWF.xDesktop.Actions.RestActions = new Class({
 	},
 	addFormDataMessage: function(file, noProgress, xhr, showMsg){
         debugger;
-        var contentHTML = "";
-        if (noProgress){
-            contentHTML = "<div style=\"height: 20px; line-height: 20px\">"+MWF.LP.desktop.action.sendReady+"</div></div>" ;
-        }else{
-            contentHTML = "<div style=\"overflow: hidden\"><div style=\"height: 3px; border:1px solid #999; margin: 3px 0px\">" +
-            "<div style=\"height: 3px; background-color: #acdab9; width: 0px;\"></div></div>" +
-            "<div style=\"height: 20px; line-height: 20px\">"+MWF.LP.desktop.action.sendReady+"</div></div>" ;
-        }
-		var msg = {
-			"subject": MWF.LP.desktop.action.uploadTitle,
-			//"content": MWF.LP.desktop.action.uploadTitle+" : "+file.name+"<br/>"+contentHTML
-            "content": ( file.name ? (file.name+"<br/>") : "" )+contentHTML
-		};
         if (layout.desktop.message){
+            var contentHTML = "";
+            if (noProgress){
+                contentHTML = "<div style=\"height: 20px; line-height: 20px\">"+MWF.LP.desktop.action.sendReady+"</div></div>" ;
+            }else{
+                contentHTML = "<div style=\"overflow: hidden\"><div style=\"height: 3px; border:1px solid #999; margin: 3px 0px\">" +
+                    "<div style=\"height: 3px; background-color: #acdab9; width: 0px;\"></div></div>" +
+                    "<div style=\"height: 20px; line-height: 20px\">"+MWF.LP.desktop.action.sendReady+"</div></div>" ;
+            }
+            var msg = {
+                "subject": MWF.LP.desktop.action.uploadTitle,
+                //"content": MWF.LP.desktop.action.uploadTitle+" : "+file.name+"<br/>"+contentHTML
+                "content": ( file.name ? (file.name+"<br/>") : "" )+contentHTML
+            };
+
             var messageItem = layout.desktop.message.addMessage(msg);
 
             //var _self = this;
@@ -422,6 +457,14 @@ MWF.xDesktop.Actions.RestActions = new Class({
                     messageItem.closeItem(callback, e);
                 }
             };
+        }
+debugger;
+        //@upload message
+        if (this.targetModule){
+            var moduleMessage = this.targetModule.module.addFormDataMessage(this.targetModule.file);
+            if (!messageItem) messageItem  ={};
+            messageItem.moduleMessage = moduleMessage;
+            this.targetModule = null;
         }
 
         //messageItem.addEvent("close", function(flag, e){
