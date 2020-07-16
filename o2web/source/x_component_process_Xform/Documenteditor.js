@@ -1520,7 +1520,9 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (layout.mobile) this.doublePageAction.hide();
 
 
+
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
+        if (this.json.isScale !== "y") this.zoomActionArea.hide();
         this.zoomAddAction = new Element("div", {
             "styles": {
                 "float": "right",
@@ -1534,7 +1536,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "margin-left": "5px"
             },
             "text": "+"
-        }).inject(this.toolbarNode);
+        }).inject(this.zoomActionArea);
 
         this.zoomSelectAction = new Element("select", {
             "styles": {
@@ -1549,7 +1551,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "margin-left": "5px"
             },
             "text": "100%"
-        }).inject(this.toolbarNode);
+        }).inject(this.zoomActionArea);
 
         this.zoomSubAction = new Element("div", {
             "styles": {
@@ -1564,7 +1566,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 "margin-left": "5px"
             },
             "text": "-"
-        }).inject(this.toolbarNode);
+        }).inject(this.zoomActionArea);
 
 
 
@@ -1626,7 +1628,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (v>2) v = 2;
             this.scaleTo(v);
         }.bind(this));
-
     },
     scaleTo: function(scale){
         this._returnScale();
