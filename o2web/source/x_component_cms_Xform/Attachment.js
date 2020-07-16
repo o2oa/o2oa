@@ -208,7 +208,7 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                 this.form.documentAction.getAttachment(o.id, this.form.businessData.document.id, function (json) {
                     if (json.data) {
                         if (!json.data.control) json.data.control = {};
-                        this.attachmentController.addAttachment(json.data);
+                        this.attachmentController.addAttachment(json.data, o.messageId);
                         this.form.businessData.attachmentList.push(json.data);
                     }
                     this.attachmentController.checkActions();
