@@ -79,11 +79,17 @@ public class OperatorDataValidator implements Runnable {
 				cacheImportRowDetail.setRecordDateString( colmlist.get(2) ); //打卡日期
 				
 				if( colmlist.size() > 3 ){
-					cacheImportRowDetail.setOnDutyTime( colmlist.get(3) );    //上班打卡时间
+					cacheImportRowDetail.setOnDutyTime( colmlist.get(3) );    //上午上班打卡时间
+				}
+				if( colmlist.size() > 4 ){
+					cacheImportRowDetail.setMorningOffDutyTime( colmlist.get(4) );    //上午下班打卡时间
+				}
+				if( colmlist.size() > 5 ){
+					cacheImportRowDetail.setAfternoonOnDutyTime( colmlist.get(5) );    //下午上班打卡时间
 				}
 				
-				if( colmlist.size() > 4 ){
-					cacheImportRowDetail.setOffDutyTime( colmlist.get(4) );   //下班打卡时间
+				if( colmlist.size() > 6 ){
+					cacheImportRowDetail.setOffDutyTime( colmlist.get(6) );   //下午下班打卡时间
 				}
 				
 				cacheImportRowDetail.setCheckStatus( "success" );         //设置数据检查状态为正常
@@ -145,12 +151,40 @@ public class OperatorDataValidator implements Runnable {
 					if( cacheImportRowDetail.getOnDutyTime() != null && cacheImportRowDetail.getOnDutyTime().trim().length() > 0 ){
 						try{
 							datetime = dateOperation.getDateFromString( cacheImportRowDetail.getOnDutyTime() );
-							cacheImportRowDetail.setOnDutyTimeFormated( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //上班打卡时间
+							cacheImportRowDetail.setOnDutyTimeFormated( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //上午上班打卡时间
 						}catch( Exception e ){
 							checkSuccess = false;
 							cacheImportRowDetail.setCheckStatus("error");
-							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "上班打卡时间格式异常：" + cacheImportRowDetail.getOnDutyTime() );
+							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "上午上班打卡时间格式异常：" + cacheImportRowDetail.getOnDutyTime() );
 							logger.info("step 2, data check on row "+curRow+", found an error!format on field 'onDutyTime'：" + cacheImportRowDetail.getOnDutyTime(), e);
+						}
+					}
+				}
+				
+				if( checkSuccess ) {
+					if( cacheImportRowDetail.getMorningOffDutyTime() != null && cacheImportRowDetail.getMorningOffDutyTime().trim().length() > 0 ){
+						try{
+							datetime = dateOperation.getDateFromString( cacheImportRowDetail.getMorningOffDutyTime() );
+							cacheImportRowDetail.setMorningOffDutyTimeFormated( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //上午下班打卡时间
+						}catch( Exception e ){
+							checkSuccess = false;
+							cacheImportRowDetail.setCheckStatus("error");
+							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "上午下班打卡时间格式异常：" + cacheImportRowDetail.getMorningOffDutyTime() );
+							logger.info("step 2, data check on row "+curRow+", found an error!format on field 'onDutyTime'：" + cacheImportRowDetail.getMorningOffDutyTime(), e);
+						}
+					}
+				}
+				
+				if( checkSuccess ) {
+					if( cacheImportRowDetail.getAfternoonOnDutyTime() != null && cacheImportRowDetail.getAfternoonOnDutyTime().trim().length() > 0 ){
+						try{
+							datetime = dateOperation.getDateFromString( cacheImportRowDetail.getAfternoonOnDutyTime() );
+							cacheImportRowDetail.setAfternoonOnDutyTimeFormated( dateOperation.getDateStringFromDate( datetime, "HH:mm:ss") ); //上午下班打卡时间
+						}catch( Exception e ){
+							checkSuccess = false;
+							cacheImportRowDetail.setCheckStatus("error");
+							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "上午下班打卡时间格式异常：" + cacheImportRowDetail.getAfternoonOnDutyTime() );
+							logger.info("step 2, data check on row "+curRow+", found an error!format on field 'onDutyTime'：" + cacheImportRowDetail.getAfternoonOnDutyTime(), e);
 						}
 					}
 				}
@@ -163,7 +197,7 @@ public class OperatorDataValidator implements Runnable {
 						}catch( Exception e ){
 							checkSuccess = false;
 							cacheImportRowDetail.setCheckStatus("error");
-							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "下班打卡时间格式异常：" + cacheImportRowDetail.getOffDutyTime() );
+							cacheImportRowDetail.setDescription( cacheImportRowDetail.getDescription() + "下午下班打卡时间格式异常：" + cacheImportRowDetail.getOffDutyTime() );
 							logger.info("step 2, data check on row "+curRow+", found an error!format on field 'offDutyTime'：" + cacheImportRowDetail.getOffDutyTime(), e);
 						}
 					}

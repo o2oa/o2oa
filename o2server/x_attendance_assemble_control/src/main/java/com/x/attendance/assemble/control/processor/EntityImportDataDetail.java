@@ -34,9 +34,17 @@ public class EntityImportDataDetail extends AbStractDataForOperator {
 	
 	private String onDutyTime = "";
 	
+	private String morningOffDutyTime = "";
+	
+	private String afternoonOnDutyTime = "";
+	
 	private String offDutyTime = "";
 	
 	private String onDutyTimeFormated = "";
+	
+	private String morningOffDutyTimeFormated = "";
+	
+	private String afternoonOnDutyTimeFormated = "";
 	
 	private String offDutyTimeFormated = "";
 	
@@ -87,6 +95,22 @@ public class EntityImportDataDetail extends AbStractDataForOperator {
 	public void setOnDutyTime(String onDutyTime) {
 		this.onDutyTime = onDutyTime;
 	}
+	
+	public String getMorningOffDutyTime() {
+		return morningOffDutyTime;
+	}
+
+	public void setMorningOffDutyTime(String morningOffDutyTime) {
+		this.morningOffDutyTime = morningOffDutyTime;
+	}
+	
+	public String getAfternoonOnDutyTime() {
+		return afternoonOnDutyTime;
+	}
+
+	public void setAfternoonOnDutyTime(String afternoonOnDutyTime) {
+		this.afternoonOnDutyTime = afternoonOnDutyTime;
+	}
 
 	public String getOffDutyTime() {
 		return offDutyTime;
@@ -102,6 +126,22 @@ public class EntityImportDataDetail extends AbStractDataForOperator {
 
 	public void setOnDutyTimeFormated(String onDutyTimeFormated) {
 		this.onDutyTimeFormated = onDutyTimeFormated;
+	}
+	
+	public String getMorningOffDutyTimeFormated() {
+		return morningOffDutyTimeFormated;
+	}
+
+	public void setMorningOffDutyTimeFormated(String morningOffDutyTimeFormated) {
+		this.morningOffDutyTimeFormated = morningOffDutyTimeFormated;
+	}
+	
+	public String getAfternoonOnDutyTimeFormated() {
+		return afternoonOnDutyTimeFormated;
+	}
+
+	public void setAfternoonOnDutyTimeFormated(String afternoonOnDutyTimeFormated) {
+		this.afternoonOnDutyTimeFormated = afternoonOnDutyTimeFormated;
 	}
 
 	public String getOffDutyTimeFormated() {

@@ -48,6 +48,8 @@ public class OperatorDataSaver implements Runnable {
 		attendanceDetail.setRecordDate( cacheImportRowDetail.getRecordDate() );
 		attendanceDetail.setRecordDateString(cacheImportRowDetail.getRecordDateStringFormated());
 		attendanceDetail.setOnDutyTime(cacheImportRowDetail.getOnDutyTimeFormated());
+		attendanceDetail.setMorningOffDutyTime(cacheImportRowDetail.getMorningOffDutyTimeFormated());
+		attendanceDetail.setAfternoonOnDutyTime(cacheImportRowDetail.getAfternoonOnDutyTimeFormated());
 		attendanceDetail.setOffDutyTime(cacheImportRowDetail.getOffDutyTimeFormated());
 		attendanceDetail.setRecordStatus( 0 );
 		attendanceDetail.setBatchName( file_id );
