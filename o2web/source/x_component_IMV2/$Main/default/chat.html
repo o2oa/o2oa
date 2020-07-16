@@ -1,6 +1,11 @@
 <!-- title -->
 <div class="chat-title" data-o2-element="chatTitleNode">
   <span>{{$.convName}}</span>
+  <div class="o2_im_chat_content_title_more" data-o2-element="chatTitleMoreBtnNode"></div>
+  <div class="o2_im_chat_content_title_menu" data-o2-element="chatTitleMoreMenuNode">
+    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem1Node" data-o2-events="click:tapUpdateConvTitle">修改群名</div>
+    <div class="o2_im_chat_content_title_menu_item" data-o2-element="chatTitleMoreMenuItem2Node" data-o2-events="click:tapUpdateConvMembers">修改成员</div>
+  </div>
 </div>
 <!-- 聊天内容 -->
 <div class="chat-content" data-o2-element="chatContentNode">
