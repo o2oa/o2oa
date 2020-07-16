@@ -1165,7 +1165,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class({
                 this.form.workAction.getAttachment(o.id, this.form.businessData.work.id, function (json) {
                     if (json.data) {
                         if (!json.data.control) json.data.control = {};
-                        this.attachmentController.addAttachment(json.data);
+                        this.attachmentController.addAttachment(json.data, o.messageId);
                     }
                     this.attachmentController.checkActions();
 
