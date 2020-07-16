@@ -1,52 +1,48 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
-import java.util.List;
-import java.util.Optional;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
-
-import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronExpression;
+
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DefaultCharset;
 
 /**
  * @author Zhou Rui
  */
 public class ProcessPlatform extends ConfigObject {
 
-	public static final Integer DEFAULT_FORMVERSIONPERIOD = 45;
+	public final static Integer DEFAULT_FORMVERSIONPERIOD = 45;
 
-	public static final Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
+	public final static Integer DEFAULT_PROCESSVERSIONPERIOD = 45;
 
-	public static final Integer DEFAULT_SCRIPTVERSIONPERIOD = 45;
+	public final static Integer DEFAULT_SCRIPTVERSIONPERIOD = 45;
 
-	public static final Integer DEFAULT_FORMVERSIONCOUNT = 30;
+	public final static Integer DEFAULT_FORMVERSIONCOUNT = 30;
 
-	public static final Integer DEFAULT_PROCESSVERSIONCOUNT = 30;
+	public final static Integer DEFAULT_PROCESSVERSIONCOUNT = 30;
 
-	public static final Integer DEFAULT_SCRIPTVERSIONCOUNT = 30;
+	public final static Integer DEFAULT_SCRIPTVERSIONCOUNT = 30;
 
-	public static final String DEFAULT_DOCTOWORDTYPE = "local";
+	public final static String DEFAULT_DOCTOWORDTYPE = "local";
 
-	public static final String DOCTOWORDTYPE_LOCAL = "local";
+	public final static String DOCTOWORDTYPE_LOCAL = "local";
 
-	public static final String DOCTOWORDTYPE_CLOUD = "cloud";
+	public final static String DOCTOWORDTYPE_CLOUD = "cloud";
 
-	public static final String DEFAULT_DOCTOWORDDEFAULTFILENAME = "正文.docx";
+	public final static String DEFAULT_DOCTOWORDDEFAULTFILENAME = "正文.docx";
 
-	public static final String DEFAULT_DOCTOWORDDEFAULTSITE = "$doc";
+	public final static String DEFAULT_DOCTOWORDDEFAULTSITE = "$doc";
 
-	public static final Integer DEFAULT_EXECUTORCOUNT = 32;
+	public final static Integer DEFAULT_EXECUTORCOUNT = 32;
 
-	public static final Boolean DEFAULT_DELETEPROCESSINUSE = false;
+	public final static Boolean DEFAULT_DELETEPROCESSINUSE = false;
 
-	public static final Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
+	public final static Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
 
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
@@ -95,16 +91,6 @@ public class ProcessPlatform extends ConfigObject {
 
 	@FieldDescribe("执行器数量")
 	private Integer executorCount;
-
-	@FieldDescribe("扩充事件")
-	private ExtensionEvents extensionEvents = new ExtensionEvents();
-
-	public ExtensionEvents getExtensionEvents() {
-		if (null == this.extensionEvents) {
-			this.extensionEvents = new ExtensionEvents();
-		}
-		return extensionEvents;
-	}
 
 	public Integer getExecutorCount() {
 		return ((null == executorCount) || (executorCount < 1)) ? DEFAULT_EXECUTORCOUNT : this.executorCount;
@@ -549,231 +535,6 @@ public class ProcessPlatform extends ConfigObject {
 
 		public void setCount(Integer count) {
 			this.count = count;
-		}
-
-	}
-
-	public static class ExtensionEvents extends ConfigObject {
-
-		private WorkExtensionEvents workAttachmentUploadEvents = new WorkExtensionEvents();
-		private WorkExtensionEvents workAttachmentDownloadEvents = new WorkExtensionEvents();
-		private WorkExtensionEvents workDocToWordEvents = new WorkExtensionEvents();
-
-		private WorkCompletedExtensionEvents workCompletedAttachmentUploadEvents = new WorkCompletedExtensionEvents();
-		private WorkCompletedExtensionEvents workCompletedAttachmentDownloadEvents = new WorkCompletedExtensionEvents();
-		private WorkCompletedExtensionEvents workCompletedDocToWordEvents = new WorkCompletedExtensionEvents();
-
-		public WorkExtensionEvents getWorkAttachmentUploadEvents() {
-			if (null == this.workAttachmentUploadEvents) {
-				this.workAttachmentUploadEvents = new WorkExtensionEvents();
-			}
-			return workAttachmentUploadEvents;
-		}
-
-		public WorkExtensionEvents getWorkAttachmentDownloadEvents() {
-			if (null == this.workAttachmentDownloadEvents) {
-				this.workAttachmentDownloadEvents = new WorkExtensionEvents();
-			}
-			return workAttachmentDownloadEvents;
-		}
-
-		public WorkExtensionEvents getWorkDocToWordEvents() {
-			if (null == this.workDocToWordEvents) {
-				this.workDocToWordEvents = new WorkExtensionEvents();
-			}
-			return workDocToWordEvents;
-		}
-
-		public WorkCompletedExtensionEvents getWorkCompletedAttachmentUploadEvents() {
-			if (null == this.workCompletedAttachmentUploadEvents) {
-				this.workCompletedAttachmentUploadEvents = new WorkCompletedExtensionEvents();
-			}
-			return workCompletedAttachmentUploadEvents;
-		}
-
-		public WorkCompletedExtensionEvents getWorkCompletedAttachmentDownloadEvents() {
-			if (null == this.workCompletedAttachmentDownloadEvents) {
-				this.workCompletedAttachmentDownloadEvents = new WorkCompletedExtensionEvents();
-			}
-			return workCompletedAttachmentDownloadEvents;
-		}
-
-		public WorkCompletedExtensionEvents getWorkCompletedDocToWordEvents() {
-			if (null == this.workCompletedDocToWordEvents) {
-				this.workCompletedDocToWordEvents = new WorkCompletedExtensionEvents();
-			}
-			return workCompletedDocToWordEvents;
-		}
-
-	}
-
-	public static class WorkExtensionEvents extends TreeList<WorkExtensionEvent> {
-
-		public Optional<WorkExtensionEvent> bind(String application, String process, String activity) {
-			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
-					.filter(o -> (ListTools.contains(o.getApplications(), application)
-							&& ListTools.contains(o.getProcesses(), process)
-							&& ListTools.contains(o.getActivities(), activity))
-							|| (ListTools.contains(o.getApplications(), application)
-									&& ListTools.contains(o.getProcesses(), process)
-									&& ListTools.isEmpty(o.getActivities()))
-							|| (ListTools.contains(o.getApplications(), application)
-									&& ListTools.isEmpty(o.getProcesses()) && ListTools.isEmpty(o.getActivities()))
-							|| (ListTools.isEmpty(o.getApplications()) && ListTools.isEmpty(o.getProcesses())
-									&& ListTools.isEmpty(o.getActivities())))
-					.sorted((x, y) -> {
-						if (x.getActivities().contains(activity)) {
-							return 1;
-						} else if (y.getActivities().contains(activity)) {
-							return -1;
-						} else if (x.getProcesses().contains(process)) {
-							return 1;
-						} else if (y.getProcesses().contains(process)) {
-							return -1;
-						} else if (x.getApplications().contains(application)) {
-							return 1;
-						} else if (y.getApplications().contains(application)) {
-							return -1;
-						} else {
-							return 0;
-						}
-					}).findFirst();
-		}
-
-	}
-
-	public static class WorkExtensionEvent {
-
-		private Boolean enable;
-
-		private List<String> applications;
-		private List<String> processes;
-		private List<String> activities;
-
-		private String url;
-
-		private String custom;
-
-		public Boolean getEnable() {
-			return enable;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public List<String> getApplications() {
-			return applications;
-		}
-
-		public void setApplications(List<String> applications) {
-			this.applications = applications;
-		}
-
-		public List<String> getProcesses() {
-			return processes;
-		}
-
-		public void setProcesses(List<String> processes) {
-			this.processes = processes;
-		}
-
-		public List<String> getActivities() {
-			return activities;
-		}
-
-		public void setActivities(List<String> activities) {
-			this.activities = activities;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-		public String getCustom() {
-			return custom;
-		}
-
-		public void setCustom(String custom) {
-			this.custom = custom;
-		}
-
-	}
-
-	public static class WorkCompletedExtensionEvents extends TreeList<WorkCompletedExtensionEvent> {
-		public Optional<WorkCompletedExtensionEvent> bind(String application, String process) {
-			return this.stream().filter(o -> BooleanUtils.isTrue(o.getEnable()))
-					.filter(o -> (ListTools.contains(o.getApplications(), application)
-							&& ListTools.contains(o.getProcesses(), process))
-							|| (ListTools.contains(o.getApplications(), application)
-									&& ListTools.isEmpty(o.getApplications()))
-							|| (ListTools.isEmpty(o.getApplications()) && ListTools.isEmpty(o.getProcesses())))
-					.sorted((x, y) -> {
-						if (x.getProcesses().contains(process)) {
-							return 1;
-						} else if (y.getProcesses().contains(process)) {
-							return -1;
-						} else if (x.getApplications().contains(application)) {
-							return 1;
-						} else if (y.getApplications().contains(application)) {
-							return -1;
-						} else {
-							return 0;
-						}
-					}).findFirst();
-		}
-	}
-
-	public static class WorkCompletedExtensionEvent {
-
-		private Boolean enable;
-		private List<String> applications;
-		private List<String> processes;
-		private String url;
-		private String custom;
-
-		public Boolean getEnable() {
-			return enable;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public List<String> getApplications() {
-			return applications;
-		}
-
-		public void setApplications(List<String> applications) {
-			this.applications = applications;
-		}
-
-		public List<String> getProcesses() {
-			return processes;
-		}
-
-		public void setProcesses(List<String> processes) {
-			this.processes = processes;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-		public String getCustom() {
-			return custom;
-		}
-
-		public void setCustom(String custom) {
-			this.custom = custom;
 		}
 
 	}
