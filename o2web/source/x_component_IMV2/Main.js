@@ -108,12 +108,47 @@ MWF.xApplication.IMV2.Main = new Class({
 		this.conversationId = conv.id;
 		this.chatNode.empty();
 		this.chatNode.loadHtml(url, { "bind": data, "module": this }, function () {
+			var me = layout.session.user.distinguishedName;
+			if (conv.type === "group" && me === conv.adminPerson) {
+				this.chatTitleMoreBtnNode.setStyle("display", "block");
+				this.chatTitleMoreBtnNode.addEvents({
+					"click": function (e) {
+						var display = this.chatTitleMoreMenuNode.getStyle("display");
+						if (display === "none") {
+							this.chatTitleMoreMenuNode.setStyle("display", "block");
+						} else {
+							this.chatTitleMoreMenuNode.setStyle("display", "none");
+						}
+					}.bind(this)
+				});
+			} else {
+				this.chatTitleMoreBtnNode.setStyle("display", "none");
+			}
 			//获取聊天信息
 			this.messageList = [];
 			this.loadMsgListByConvId(1, 20, conv.id);
 			var scrollFx = new Fx.Scroll(this.chatContentNode);
 			scrollFx.toBottom();
 		}.bind(this));
+	},
+	//修改群名
+	tapUpdateConvTitle: function() {
+		this.chatTitleMoreMenuNode.setStyle("display", "none");
+		var form = new MWF.xApplication.IMV2.UpdateConvTitleForm(this, {}, {}, { app: this.app });
+		form.create();
+	},
+	//修改群成员
+	tapUpdateConvMembers: function() {
+		this.chatTitleMoreMenuNode.setStyle("display", "none");
+		var members = [];
+		for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+			var c = this.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				members = c.data.personList;
+			}
+		}
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "修改成员", "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.app });
+		form.create()
 	},
 	//点击发送消息
 	sendMsg: function () {
@@ -156,8 +191,53 @@ MWF.xApplication.IMV2.Main = new Class({
 	},
 	//点击创建单聊按钮
 	tapCreateSingleConv: function () {
-		var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
+		// var form = new MWF.xApplication.IMV2.SingleForm(this, {}, {}, { app: this.app });
+		// form.create()
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建单聊", "personCount": 1 }, { app: this.app });
 		form.create()
+	},
+	//点击创建群聊按钮
+	tapCreateGroupConv: function () {
+		var form = new MWF.xApplication.IMV2.CreateConversationForm(this, {}, { "title": "创建群聊", "personCount": 0, "personSelected": [] }, { app: this.app });
+		form.create()
+	},
+	//更新群名
+	updateConversationTitle: function(title, convId) {
+		var conv = {
+			id: convId,
+			title: title,
+		};
+		var _self = this;
+		o2.Actions.load("x_message_assemble_communicate").ImAction.update(conv, function (json) {
+			var newConv = json.data;
+			//点击会话 刷新聊天界面
+			_self.tapConv(newConv);
+			//刷新会话列表的title
+			for (var i = 0; i < this.conversationNodeItemList.length; i++) {
+				var cv = this.conversationNodeItemList[i];
+				if (cv.data.id == convId) {
+					//刷新
+					cv.refreshConvTitle(title);
+				}
+			}
+
+		}.bind(this), function (error) {
+			console.log(error);
+		}.bind(this))
+	},
+	//更新群成员
+	updateConversationMembers: function(members, convId) {
+		var conv = {
+			id: convId,
+			personList: members,
+		};
+		var _self = this;
+		o2.Actions.load("x_message_assemble_communicate").ImAction.update(conv, function (json) {
+			var newConv = json.data;
+			_self.tapConv(newConv);
+		}.bind(this), function (error) {
+			console.log(error);
+		}.bind(this))
 	},
 	/**
 	 * 	创建会话
@@ -342,19 +422,19 @@ MWF.xApplication.IMV2.Main = new Class({
 			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
 			new Element("img", { "src": url }).inject(imgBox);
 			imgBox.addEvents({
-				"click": function(e){
+				"click": function (e) {
 					var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 					window.open(downloadUrl);
 				}.bind(this)
 			});
 		} else if (msgBody.type == "audio") {
 			var url = this._getFileDownloadUrl(msgBody.fileId);
-			new Element("audio", { "src": url, "controls":"controls", "preload":"preload" }).inject(lastNode);
+			new Element("audio", { "src": url, "controls": "controls", "preload": "preload" }).inject(lastNode);
 		} else if (msgBody.type == "location") {
 			var mapBox = new Element("span").inject(lastNode);
-			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width":24, "height":24 }).inject(mapBox);
+			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
-			new Element("a", {"href":url, "target":"_blank", "text": msgBody.address}).inject(mapBox);
+			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
@@ -396,19 +476,19 @@ MWF.xApplication.IMV2.Main = new Class({
 			var url = this._getFileUrlWithWH(msgBody.fileId, 144, 192);
 			new Element("img", { "src": url }).inject(imgBox);
 			imgBox.addEvents({
-				"click": function(e){
+				"click": function (e) {
 					var downloadUrl = this._getFileDownloadUrl(msgBody.fileId);
 					window.open(downloadUrl);
 				}.bind(this)
 			});
 		} else if (msgBody.type == "audio") {
 			var url = this._getFileDownloadUrl(msgBody.fileId);
-			new Element("audio", { "src": url, "controls":"controls", "preload":"preload" }).inject(lastNode);
+			new Element("audio", { "src": url, "controls": "controls", "preload": "preload" }).inject(lastNode);
 		} else if (msgBody.type == "location") {
 			var mapBox = new Element("span").inject(lastNode);
-			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width":24, "height":24 }).inject(mapBox);
+			new Element("img", { "src": "../x_component_IMV2/$Main/default/icons/location.png", "width": 24, "height": 24 }).inject(mapBox);
 			var url = this._getBaiduMapUrl(msgBody.latitude, msgBody.longitude, msgBody.address, msgBody.addressDetail);
-			new Element("a", {"href":url, "target":"_blank", "text": msgBody.address}).inject(mapBox);
+			new Element("a", { "href": url, "target": "_blank", "text": msgBody.address }).inject(mapBox);
 		} else {//text
 			new Element("span", { "text": msgBody.body }).inject(lastNode);
 		}
@@ -419,7 +499,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		}
 	},
 	//图片 根据大小 url
-	_getFileUrlWithWH: function(id, width, height) {
+	_getFileUrlWithWH: function (id, width, height) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
 		var url = action.address + action.actions.imgFileDownloadWithWH.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
@@ -428,15 +508,15 @@ MWF.xApplication.IMV2.Main = new Class({
 		return url;
 	},
 	//file 下载的url
-	_getFileDownloadUrl: function(id) {
+	_getFileDownloadUrl: function (id) {
 		var action = MWF.Actions.get("x_message_assemble_communicate").action;
 		var url = action.address + action.actions.imgFileDownload.uri;
 		url = url.replace("{id}", encodeURIComponent(id));
 		return url;
 	},
 	//百度地图打开地址
-	_getBaiduMapUrl: function(lat, longt, address, content) {
-		var url = "https://api.map.baidu.com/marker?location="+lat+","+longt+"&title="+address+"&content="+content+"&output=html&src=net.o2oa.map";
+	_getBaiduMapUrl: function (lat, longt, address, content) {
+		var url = "https://api.map.baidu.com/marker?location=" + lat + "," + longt + "&title=" + address + "&content=" + content + "&output=html&src=net.o2oa.map";
 		return url;
 	},
 	//用户头像
@@ -580,7 +660,7 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 		new Element("img", { "src": convData.avatarUrl, "class": "img" }).inject(avatarNode);
 		var bodyNode = new Element("div", { "class": "body" }).inject(this.nodeBaseItem);
 		var bodyUpNode = new Element("div", { "class": "body_up" }).inject(bodyNode);
-		new Element("div", { "class": "body_title", "text": convData.title }).inject(bodyUpNode);
+		this.titleNode = new Element("div", { "class": "body_title", "text": convData.title }).inject(bodyUpNode);
 		this.messageTimeNode = new Element("div", { "class": "body_time", "text": convData.time }).inject(bodyUpNode);
 		if (convData.lastMessageType == "emoji") {
 			this.lastMessageNode = new Element("div", { "class": "body_down" }).inject(bodyNode);
@@ -634,6 +714,9 @@ MWF.xApplication.IMV2.ConversationItem = new Class({
 			this.messageTimeNode.set("text", time);
 		}
 	},
+	refreshConvTitle: function(title) {
+		this.titleNode.set("text", title);
+	},
 	addCheckClass: function () {
 		if (this.nodeBaseItem) {
 			if (!this.nodeBaseItem.hasClass("check")) {
@@ -681,7 +764,7 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 			style: "minder",
 			hasColon: true,
 			itemTemplate: {
-				person: { text: "选择人员", type: "org", orgType: "person", notEmpty: true, exclude: exclude },
+				person: { text: "选择人员", type: "org", orgType: "person", count: 0, notEmpty: true, exclude: exclude },
 			}
 		}, this.app);
 		this.form.load();
@@ -710,6 +793,138 @@ MWF.xApplication.IMV2.SingleForm = new Class({
 		var data = this.form.getResult(true, null, true, false, true);
 		if (data) {
 			this.app.newConversation(data.person, "single");
+			this.close();
+		}
+	}
+});
+
+
+//创建聊天 弹出窗表单
+MWF.xApplication.IMV2.CreateConversationForm = new Class({
+	Extends: MPopupForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "minder",
+		"width": 700,
+		"height": "200",
+		"hasTop": true,
+		"hasIcon": false,
+		"draggable": true,
+		"title": "创建单聊",
+		"personCount": 1, //1 是单选  0 是多选,
+		"personSelected": [],
+		"isUpdateMember": false
+	},
+	_createTableContent: function () {
+		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+			"<tr><td styles='formTableTitle' lable='person' width='25%'></td>" +
+			"    <td styles='formTableValue14' item='person' colspan='3'></td></tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+		var me = layout.session.user.distinguishedName;
+		var exclude = [];
+		if (me) {
+			exclude = [me];
+		}
+		this.form = new MForm(this.formTableArea, this.data || {}, {
+			isEdited: true,
+			style: "minder",
+			hasColon: true,
+			itemTemplate: {
+				person: { text: "选择人员", type: "org", orgType: "person", count: this.options["personCount"], notEmpty: true, exclude: exclude, value: this.options["personSelected"] },
+			}
+		}, this.app);
+		this.form.load();
+
+	},
+	_createBottomContent: function () {
+		if (this.isNew || this.isEdited) {
+			this.okActionNode = new Element("button.inputOkButton", {
+				"styles": this.css.inputOkButton,
+				"text": "确定"
+			}).inject(this.formBottomNode);
+			this.okActionNode.addEvent("click", function (e) {
+				this.save(e);
+			}.bind(this));
+		}
+		this.cancelActionNode = new Element("button.inputCancelButton", {
+			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
+			"text": "关闭"
+		}).inject(this.formBottomNode);
+		this.cancelActionNode.addEvent("click", function (e) {
+			this.close(e);
+		}.bind(this));
+
+	},
+	save: function () {
+		var data = this.form.getResult(true, null, true, false, true);
+		if (data) {
+			if (this.options["isUpdateMember"] === true) {
+				this.app.updateConversationMembers(data.person, this.app.conversationId);
+			}else {
+				this.app.newConversation(data.person, this.options["personCount"] === 1 ? "single": "group");
+			}
+			
+			this.close();
+		}
+	}
+});
+
+
+
+//修改群名
+MWF.xApplication.IMV2.UpdateConvTitleForm = new Class({
+	Extends: MPopupForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "minder",
+		"width": 500,
+		"height": "200",
+		"hasTop": true,
+		"hasIcon": false,
+		"draggable": true,
+		"title": "修改群名"
+	},
+	_createTableContent: function () {
+		var html = "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable' style='margin-top: 20px; '>" +
+			"<tr><td styles='formTableTitle' lable='title' width='25%'></td>" +
+			"    <td styles='formTableValue14' item='title' colspan='3'></td></tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+		 
+		this.form = new MForm(this.formTableArea, this.data || {}, {
+			isEdited: true,
+			style: "minder",
+			hasColon: true,
+			itemTemplate: {
+				title: {text: "群名", type: "text", notEmpty: true },
+			}
+		}, this.app);
+		this.form.load();
+
+	},
+	_createBottomContent: function () {
+		if (this.isNew || this.isEdited) {
+			this.okActionNode = new Element("button.inputOkButton", {
+				"styles": this.css.inputOkButton,
+				"text": "确定"
+			}).inject(this.formBottomNode);
+			this.okActionNode.addEvent("click", function (e) {
+				this.save(e);
+			}.bind(this));
+		}
+		this.cancelActionNode = new Element("button.inputCancelButton", {
+			"styles": (this.isEdited || this.isNew || this.getEditPermission()) ? this.css.inputCancelButton : this.css.inputCancelButton_long,
+			"text": "关闭"
+		}).inject(this.formBottomNode);
+		this.cancelActionNode.addEvent("click", function (e) {
+			this.close(e);
+		}.bind(this));
+	},
+	save: function () {
+		var data = this.form.getResult(true, null, true, false, true);
+		if (data) {
+			this.app.updateConversationTitle(data.title, this.app.conversationId);
 			this.close();
 		}
 	}
