@@ -2753,7 +2753,6 @@ debugger;
         }.bind(this));
     },
     docToWord: function(){
-        debugger;
         var flag = true;
         if (this.json.toWordConditionScript && this.json.toWordConditionScript.code){
             flag = !!this.form.Macro.exec(this.json.toWordConditionScript.code, this);
@@ -2762,12 +2761,18 @@ debugger;
             this.toWord();
         }
     },
-    showToWord: function(att){
+    showToWord: function(att_word){
         var site = this.json.toWordSite || "$doc";
         var attModule = this.form.all[site];
         if (attModule){
             attModule.attachmentController.clear();
-            attModule.attachmentController.addAttachment(att);
+
+            this.form.businessData.attachmentList.each(function (att) {
+                //if (att.site===this.json.id || (this.json.isOpenInOffice && this.json.officeControlName===att.site)) this.attachmentController.addAttachment(att);
+                if ((att.site === attModule.json.id) && att.name!==att_word.name) attModule.attachmentController.addAttachment(att);
+            }.bind(this));
+            // attModule.attachmentController.reloadAttachments();
+            attModule.attachmentController.addAttachment(att_word);
         }
     }
 });
