@@ -276,10 +276,10 @@ public class Process extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ startableIdentityList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ startableIdentityList_FIELDNAME))
+					+ startableIdentityList_FIELDNAME +  JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + startableIdentityList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + startableIdentityList_FIELDNAME + JoinIndexNameSuffix)
+	@ElementIndex(name = TABLE + IndexNameMiddle + startableIdentityList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> startableIdentityList;
 
