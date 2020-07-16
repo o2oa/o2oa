@@ -496,5 +496,27 @@
         "float": "right",
         "margin-top": "10px",
         "margin-left": "10px"
+    },
+    "messageMaskNode": {
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "background-color": "#666666",
+        "opacity": 0.6
+    },
+    "messageNode": {
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "background-color": "#666666",
+        "opacity": 0.8
+    },
+    "messageText": {
+        "position": "absolute",
+        "top": "0px",
+        "left": "0px",
+        "color": "#ffffff",
+        "text-align": "center",
+        "z-index": 100
     }
 }
