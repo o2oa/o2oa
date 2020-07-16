@@ -897,7 +897,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 debugger;
                 if (issubmit) {
                     this.saveOpinion(module);
-                    delete data[id];
+
+                    var key = layout.desktop.session.user.id;
+                    if( typeOf( data[id] ) === "object" && data[id][key] ){
+                        delete data[id][key]
+                    }
+                    // delete data[id];
                 } else {
                     var v = module.getData();
                     // var d = this.loadPathData(id);
