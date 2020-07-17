@@ -2,6 +2,7 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 
+import org.apache.commons.collections4.Get;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +45,8 @@ public class ProcessPlatform extends ConfigObject {
 
 	public final static Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
 
+	public final static Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
+
 	public static ProcessPlatform defaultInstance() {
 		return new ProcessPlatform();
 	}
@@ -58,6 +61,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.docToWordDefaultFileName = DEFAULT_DOCTOWORDDEFAULTFILENAME;
 		this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
 		this.executorCount = DEFAULT_EXECUTORCOUNT;
+		this.updateDataProjectionEnable = DEFAULT_UPDATEDATAPROJECTIONENABLE;
 		this.urge = new Urge();
 		this.expire = new Expire();
 		this.touchDelay = new TouchDelay();
@@ -67,30 +71,6 @@ public class ProcessPlatform extends ConfigObject {
 		this.passExpired = new PassExpired();
 
 	}
-
-	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
-	private String maintenanceIdentity;
-
-	@FieldDescribe("表单历史版本保留数量,0为不保留.")
-	private Integer formVersionCount;
-
-	@FieldDescribe("流程历史版本保留数量,0为不保留.")
-	private Integer processVersionCount;
-
-	@FieldDescribe("脚本历史版本保留数量,0为不保留.")
-	private Integer scriptVersionCount;
-
-	@FieldDescribe("HTML版式公文转换成Word文件方式,local,cloud.")
-	private String docToWordType;
-
-	@FieldDescribe("HTML版式公文转换成Word文件缺省文件名.")
-	private String docToWordDefaultFileName;
-
-	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
-	private String docToWordDefaultSite;
-
-	@FieldDescribe("执行器数量")
-	private Integer executorCount;
 
 	public Integer getExecutorCount() {
 		return ((null == executorCount) || (executorCount < 1)) ? DEFAULT_EXECUTORCOUNT : this.executorCount;
@@ -120,6 +100,37 @@ public class ProcessPlatform extends ConfigObject {
 	public String getDocToWordDefaultSite() {
 		return StringUtils.isEmpty(docToWordDefaultSite) ? DEFAULT_DOCTOWORDDEFAULTSITE : docToWordDefaultSite;
 	}
+
+	public Boolean getUpdateDataProjectionEnable() {
+		return BooleanUtils.isTrue(this.updateDataProjectionEnable);
+	}
+
+	@FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
+	private String maintenanceIdentity;
+
+	@FieldDescribe("表单历史版本保留数量,0为不保留.")
+	private Integer formVersionCount;
+
+	@FieldDescribe("流程历史版本保留数量,0为不保留.")
+	private Integer processVersionCount;
+
+	@FieldDescribe("脚本历史版本保留数量,0为不保留.")
+	private Integer scriptVersionCount;
+
+	@FieldDescribe("HTML版式公文转换成Word文件方式,local,cloud.")
+	private String docToWordType;
+
+	@FieldDescribe("HTML版式公文转换成Word文件缺省文件名.")
+	private String docToWordDefaultFileName;
+
+	@FieldDescribe("HTML版式公文转换成Word文件缺省site.")
+	private String docToWordDefaultSite;
+
+	@FieldDescribe("执行器数量")
+	private Integer executorCount;
+
+	@FieldDescribe("更新data数据是否执行映射.")
+	private boolean updateDataProjectionEnable;
 
 	@FieldDescribe("催办任务设置,发现即将过期时发送提醒消息.")
 	private Urge urge;
