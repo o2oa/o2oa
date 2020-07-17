@@ -40,13 +40,7 @@ public class ActionManageOpinion extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(Read.class);
-			if (StringTools.utf8Length(wi.getOpinion()) > JpaObject.length_255B) {
-				task.setOpinionLob(wi.getOpinion());
-				task.setOpinion(StringTools.utf8SubString(wi.getOpinion(), JpaObject.length_255B));
-			} else {
-				task.setOpinion(Objects.toString(wi.getOpinion(), ""));
-				task.setOpinionLob(null);
-			}
+			task.setOpinion(Objects.toString(wi.getOpinion(), ""));
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setValue(true);

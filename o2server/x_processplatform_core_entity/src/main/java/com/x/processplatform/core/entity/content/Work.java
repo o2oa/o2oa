@@ -127,25 +127,17 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		return this.properties;
 	}
 
-	// public void setTitle(String title) {
-	// this.title = title;
-	// }
-
-	// public String getTitle() {
-	// if (StringUtils.isNotEmpty(this.titleLob)) {
-	// return this.titleLob;
-	// } else {
-	// return this.title;
-	// }
-	// }
-
 	public void setTitle(String title) {
 		this.title = title;
 		this.getProperties().setTitle(title);
 	}
 
 	public String getTitle() {
-		return this.title;
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getTitle())) {
+			return this.properties.getTitle();
+		} else {
+			return this.title;
+		}
 	}
 
 	public String getWorkCreateType() {
