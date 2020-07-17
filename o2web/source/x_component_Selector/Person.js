@@ -1762,18 +1762,18 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.outItem();
             }.bind(this),
             "click": function(){
-                this.clickItem();
+                this.clickItem( true );
             }.bind(this)
         });
     },
-    clickItem: function(){
+    clickItem: function( manual ){
         if ( layout.mobile && this.selector.options.count.toInt()===1){
-            this.selectedSingle();
+            this.selectedSingle( manual );
         }else{
             if (this.isSelected){
-                this.unSelected();
+                this.unSelected( manual );
             }else{
-                this.selected();
+                this.selected( manual );
             }
         }
     },
@@ -1810,7 +1810,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }
         }
     },
-    selectedSingle: function(){
+    selectedSingle: function( manual ){
         if (!this.isSelected){
             if (this.selector.currentItem) this.selector.currentItem.unSelectedSingle();
             this.getData(function(){
@@ -1827,11 +1827,12 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
 
-                this.selector.fireEvent("selectItem",[this])
+                this.selector.fireEvent("selectItem",[this]);
+                if( manual )this.selector.fireEvent("valid", [this.selector, this]);
 
             }.bind(this));
         }else {
-            this.unSelectedSingle();
+            this.unSelectedSingle( manual );
         }
     },
     getData: function(callback){
@@ -1850,9 +1851,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
-        this.selector.fireEvent("unselectItem",[this])
+        this.selector.fireEvent("unselectItem",[this]);
+        if( manual )this.selector.fireEvent("valid", [this.selector, this]);
     },
-    selected: function(){
+    selected: function( manual ){
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
         if (!count) count = 0;
@@ -1880,12 +1882,13 @@ MWF.xApplication.Selector.Person.Item = new Class({
             //     this.category.checkSelectAll();
             // }
 
-            this.selector.fireEvent("selectItem",[this])
+            this.selector.fireEvent("selectItem",[this]);
+            if( manual )this.selector.fireEvent("valid", [this.selector, this]);
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
     },
-    unSelected: function(){
+    unSelected: function( manual ){
         this.isSelected = false;
         if( this.node ){
             this.node.setStyles(this.selector.css.selectorItem);
@@ -1949,7 +1952,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.destroy();
             this.selectedItem = null;
         }
-        this.selector.fireEvent("unselectItem",[this])
+        this.selector.fireEvent("unselectItem",[this]);
+        if( manual )this.selector.fireEvent("valid", [this.selector, this]);
     },
     postLoad : function(){},
     getParentCategoryByLevel : function( level ){
@@ -2000,16 +2004,18 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     getData: function(callback){
         if (callback) callback();
     },
-    clickItem: function(){
+    clickItem: function( manual ){
         if (this.items.length){
             this.items.each(function(item){
-                item.unSelected();
+                item.unSelected( manual );
             });
+            if( manual )this.selector.fireEvent("valid", [this.selector, this])
         }else{
             //this.item.selectedItem = null;
             //this.item.isSelected = false;
             this.destroy();
             this.selector.selectedItems.erase(this);
+            if( manual )this.selector.fireEvent("valid", [this.selector, this])
         }
     },
     //overItem: function(){
