@@ -38,10 +38,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
-	private final static String taskList_FIELDNAME = "taskList";
-	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
-	private final static String readList_FIELDNAME = "readList";
-	private final static String readCompletedList_FIELDNAME = "readCompletedList";
+	private final static String TASKLIST_FIELDNAME = "taskList";
+	private final static String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
+	private final static String READLIST_FIELDNAME = "readList";
+	private final static String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -121,13 +121,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				wos.add(wo);
 			}
 			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
-					taskList_FIELDNAME);
+					TASKLIST_FIELDNAME);
 			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
+					TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
 			ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
-					readList_FIELDNAME);
+					READLIST_FIELDNAME);
 			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
-					ReadCompleted.activityToken_FIELDNAME, readCompletedList_FIELDNAME);
+					ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
 			result.setData(wos);
 			result.setData(wos);
 			return result;
@@ -137,9 +137,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private List<WoTask> tasks(Business business, String job) {
 		List<WoTask> os = new ArrayList<>();
 		try {
-			os = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier, WoTask.job_FIELDNAME, job)
+			// os = business.entityManagerContainer().fetchEqual(Task.class, WoTask.copier,
+			// WoTask.job_FIELDNAME, job)
+			// .stream().sorted(Comparator.comparing(Task::getStartTime,
+			// Comparator.nullsLast(Date::compareTo)))
+			// .collect(Collectors.toList());
+			os = WoTask.copier.copy(business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job)
 					.stream().sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
+					.collect(Collectors.toList()));
 		} catch (Exception e) {
 			logger.error(e);
 		}
@@ -203,7 +208,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7666329770246726197L;
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.fromActivity_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, WorkLog.fromActivity_FIELDNAME,
 						WorkLog.fromActivityType_FIELDNAME, WorkLog.fromActivityName_FIELDNAME,
 						WorkLog.fromActivityAlias_FIELDNAME, WorkLog.fromActivityToken_FIELDNAME,
 						WorkLog.fromTime_FIELDNAME, WorkLog.arrivedActivity_FIELDNAME,
@@ -282,10 +287,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 293599148568443301L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(Task.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
-						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.opinionLob_FIELDNAME,
-						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME,
-						Task.empowerFromIdentity_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME,
+						Task.unit_FIELDNAME, Task.routeName_FIELDNAME, Task.opinion_FIELDNAME,
+						Task.opinionLob_FIELDNAME, Task.startTime_FIELDNAME, Task.activityName_FIELDNAME,
+						Task.activityToken_FIELDNAME, Task.empowerFromIdentity_FIELDNAME, Task.properties_FIELDNAME),
 				null);
 	}
 
@@ -295,7 +300,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<TaskCompleted, WoTaskCompleted> copier = WrapCopierFactory.wo(TaskCompleted.class,
 				WoTaskCompleted.class,
-				ListTools.toList(TaskCompleted.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, TaskCompleted.person_FIELDNAME,
 						TaskCompleted.identity_FIELDNAME, TaskCompleted.unit_FIELDNAME,
 						TaskCompleted.routeName_FIELDNAME, TaskCompleted.opinion_FIELDNAME,
 						TaskCompleted.opinionLob_FIELDNAME, TaskCompleted.startTime_FIELDNAME,
@@ -303,7 +308,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.activityToken_FIELDNAME, TaskCompleted.mediaOpinion_FIELDNAME,
 						TaskCompleted.processingType_FIELDNAME, TaskCompleted.empowerToIdentity_FIELDNAME,
 						TaskCompleted.empowerFromIdentity_FIELDNAME, TaskCompleted.joinInquire_FIELDNAME,
-						TaskCompleted.properties_FIELDNAME),
+						TaskCompleted.properties_FIELDNAME, TaskCompleted.properties_FIELDNAME),
 				null);
 	}
 
@@ -312,9 +317,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7243683008987722267L;
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				ListTools.toList(Read.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME, Read.unit_FIELDNAME,
-						Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME, Read.startTime_FIELDNAME,
-						Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME,
+						Read.unit_FIELDNAME, Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME,
+						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME,
+						Read.properties_FIELDNAME),
 				null);
 	}
 
@@ -324,11 +330,11 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 		static WrapCopier<ReadCompleted, WoReadCompleted> copier = WrapCopierFactory.wo(ReadCompleted.class,
 				WoReadCompleted.class,
-				ListTools.toList(ReadCompleted.id_FIELDNAME, ReadCompleted.person_FIELDNAME,
+				ListTools.toList(JpaObject.id_FIELDNAME, ReadCompleted.person_FIELDNAME,
 						ReadCompleted.identity_FIELDNAME, ReadCompleted.unit_FIELDNAME, ReadCompleted.opinion_FIELDNAME,
 						ReadCompleted.opinionLob_FIELDNAME, ReadCompleted.startTime_FIELDNAME,
 						ReadCompleted.activityName_FIELDNAME, ReadCompleted.completedTime_FIELDNAME,
-						ReadCompleted.activityToken_FIELDNAME),
+						ReadCompleted.activityToken_FIELDNAME, ReadCompleted.properties_FIELDNAME),
 				null);
 	}
 

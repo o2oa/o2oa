@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
@@ -234,7 +233,6 @@ public class AeiObjects extends GsonPropertyObject {
 			}
 		}
 		return this.projections;
-
 	}
 
 	public List<Mapping> getMappings() throws Exception {
@@ -1005,29 +1003,6 @@ public class AeiObjects extends GsonPropertyObject {
 						logger.error(e);
 					}
 				});
-		// this.getCreateReads().stream()
-		// .collect(Collectors.collectingAndThen(
-		// Collectors.toCollection(
-		// () -> new TreeSet<>(Comparator.comparing(o -> o.getPerson() + o.getJob()))),
-		// ArrayList::new))
-		// .stream().forEach(o -> {
-		// Read obj;
-		// try {
-		// obj = this.getReads().stream().filter(p -> StringUtils.equals(o.getJob(),
-		// p.getJob())
-		// && StringUtils.equals(o.getPerson(),
-		// p.getPerson())).findFirst().orElse(null);
-		// if (null == obj) {
-		// this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-		// /* 创建待阅的参阅 */
-		// this.createReview(new Review(this.getWork(), o.getPerson()));
-		// } else {
-		// o.copyTo(obj, JpaObject.FieldsUnmodify);
-		// }
-		// } catch (Exception e) {
-		// logger.error(e);
-		// }
-		// });
 	}
 
 	private void commitReadUpdatePart() {
@@ -1150,30 +1125,6 @@ public class AeiObjects extends GsonPropertyObject {
 						logger.error(e);
 					}
 				});
-
-		// this.getCreateReviews().stream()
-		// .collect(Collectors.collectingAndThen(
-		// Collectors.toCollection(
-		// () -> new TreeSet<>(Comparator.comparing(o -> o.getPerson() + o.getJob()))),
-		// ArrayList::new))
-		// .stream().forEach(o -> {
-		// Review obj;
-		// try {
-		// /* 参阅唯一 */
-		// obj = this.getReviews().stream().filter(p -> StringUtils.equals(o.getJob(),
-		// p.getJob())
-		// && StringUtils.equals(o.getPerson(),
-		// p.getPerson())).findFirst().orElse(null);
-		// if (null == obj) {
-		// this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-		// } else {
-		// // 如果逻辑上相同的已阅已经存在,覆盖内容.
-		// o.copyTo(obj, JpaObject.FieldsUnmodify);
-		// }
-		// } catch (Exception e) {
-		// logger.error(e);
-		// }
-		// });
 	}
 
 	private void commitReviewUpdatePart() {

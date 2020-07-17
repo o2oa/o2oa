@@ -92,7 +92,11 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public String getOpinion() {
-		return this.opinion;
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getOpinion())) {
+			return this.properties.getOpinion();
+		} else {
+			return this.opinion;
+		}
 	}
 
 	public void setTitle(String title) {
@@ -101,7 +105,11 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public String getTitle() {
-		return this.title;
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getTitle())) {
+			return this.properties.getTitle();
+		} else {
+			return this.title;
+		}
 	}
 
 	public Read() {
