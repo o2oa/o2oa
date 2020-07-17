@@ -7,6 +7,7 @@
   "docToWordDefaultFileName": "正文.docx",
   "docToWordDefaultSite": "$doc",
   "executorCount": 32.0,
+  "updateDataProjectionEnable": false,
   "urge": {
     "enable": false,
     "cron": "30 0/10 8-18 * * ?",
@@ -63,6 +64,7 @@
   "###docToWordDefaultFileName": "HTML版式公文转换成Word文件缺省文件名.###",
   "###docToWordDefaultSite": "HTML版式公文转换成Word文件缺省site.###",
   "###executorCount": "执行器数量###",
+  "###updateDataProjectionEnable": "更新data数据是否执行映射.###",
   "###urge": "催办任务设置,发现即将过期时发送提醒消息.###",
   "###expire": "将已经过了截至时间的待办标记过期.###",
   "###touchDelay": "延时任务设置,定时触发延时任务,当超过延时时间后继续流转.###",
@@ -89,5 +91,6 @@
     "count": 3.0,
     "###intervalMinutes": "提醒间隔(分钟)###",
     "###count": "提醒数量限制.###"
-  }
+  },
+  "###extensionEvents": "事件扩充.###"
 }
