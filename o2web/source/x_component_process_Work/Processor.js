@@ -1775,6 +1775,10 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 }.bind(this));
             }
 
+            defaultOpt["onValid"] = function ( selector ) {
+                this.validation();
+            }.bind(this);
+
             if( this.form.json.selectorStyle ){
                 defaultOpt = Object.merge( Object.clone(this.form.json.selectorStyle), defaultOpt );
                 if( this.form.json.selectorStyle.style )defaultOpt.style = this.form.json.selectorStyle.style;
