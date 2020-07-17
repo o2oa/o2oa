@@ -70,7 +70,11 @@ public class Draft extends SliceJpaObject {
 	}
 
 	public String getTitle() {
-		return this.title;
+		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getTitle())) {
+			return this.properties.getTitle();
+		} else {
+			return this.title;
+		}
 	}
 
 	public Draft() {
