@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -427,6 +428,24 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "列示指定会议室id、指定日期的会议.", action = ActionListOnDayByRoomID.class)
+	@GET
+	@Path("list/year/{year}/month/{month}/day/{day}/{roomId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listOnDayByRoomID(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("年份") 	@PathParam("year") Integer year,@JaxrsParameterDescribe("月份")  @PathParam("month") Integer month, @JaxrsParameterDescribe("日") @PathParam("day") Integer day, @JaxrsParameterDescribe("会议室记录ID") @PathParam("roomId") String roomId) {
+		ActionResult<List<ActionListOnDayByRoomID.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListOnDayByRoomID().execute(effectivePerson, year, month, day,roomId);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "列示等待我确认的会议.", action = ActionWaitConfirm.class)
 	@GET
 	@Path("list/wait/confirm")

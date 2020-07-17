@@ -170,6 +170,21 @@ public class MeetingFactory extends AbstractFactory {
 		cq.select(root.get(Meeting_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
+	
+	public List<String> listWithDateAndRoom(Date start, Date end,String roomId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Meeting.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Meeting> root = cq.from(Meeting.class);
+		//Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), start);
+		//p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), end));
+		Predicate p = cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), start);
+		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), end));
+		p = cb.and(p, cb.equal(root.get(Meeting_.room), roomId));
+		
+		cq.select(root.get(Meeting_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
 
 	public List<String> listWithPersonWithDate(String person, Date start, Date end) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Meeting.class);
