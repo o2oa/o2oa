@@ -1,19 +1,24 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
+import com.x.base.core.project.annotation.ActionLogger;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Data.DataWork;
@@ -24,10 +29,19 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Projection;
+import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 abstract class BaseAction extends StandardJaxrsAction {
+
+	@ActionLogger
+	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
 	protected Gson gson = XGsonBuilder.instance();
 
@@ -150,6 +164,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 			// 标记数据已经被修改
 			business.entityManagerContainer().beginTransaction(Work.class);
 			work.setDataChanged(true);
+			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
+				business.entityManagerContainer().beginTransaction(Task.class);
+				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+				business.entityManagerContainer().beginTransaction(Read.class);
+				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+				business.entityManagerContainer().beginTransaction(Review.class);
+				projection(business, work, XGsonBuilder.convert(jsonObject, Data.class));
+			}
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
@@ -181,6 +203,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, workCompleted);
 				business.entityManagerContainer().persist(_o);
 			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
+				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+				business.entityManagerContainer().beginTransaction(Task.class);
+				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+				business.entityManagerContainer().beginTransaction(Read.class);
+				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+				business.entityManagerContainer().beginTransaction(Review.class);
+				projection(business, workCompleted, XGsonBuilder.convert(jsonObject, Data.class));
+			}
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 
@@ -208,7 +239,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		Item parent = business.item().getWithJobWithPath(work.getJob(), parentPaths[0], parentPaths[1], parentPaths[2],
 				parentPaths[3], parentPaths[4], parentPaths[5], parentPaths[6], parentPaths[7]);
 		if (null == parent) {
-			throw new Exception("parent not existed.");
+			throw new ExceptionParentNotExist(paths);
 		}
 		Item cursor = business.item().getWithJobWithPath(work.getJob(), cursorPaths[0], cursorPaths[1], cursorPaths[2],
 				cursorPaths[3], cursorPaths[4], cursorPaths[5], cursorPaths[6], cursorPaths[7]);
@@ -236,20 +267,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 				business.entityManagerContainer().persist(o);
 			}
 		} else {
-			throw new Exception("unexpected post data with work" + work + ".path:" + StringUtils.join(paths, ".")
-					+ "json:" + jsonElement);
+			throw new ExceptionUnexpectedData(work.getId(), paths, jsonElement);
 		}
 		// 标记数据已经被修改
 		business.entityManagerContainer().beginTransaction(Work.class);
 		work.setDataChanged(true);
+		if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
+			business.entityManagerContainer().beginTransaction(Task.class);
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			business.entityManagerContainer().beginTransaction(Read.class);
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			business.entityManagerContainer().beginTransaction(Review.class);
+			projection(business, work, XGsonBuilder.convert(jsonElement, Data.class));
+		}
 		business.entityManagerContainer().commit();
 	}
 
 	void deleteData(Business business, Work work, String... paths) throws Exception {
 		List<Item> exists = business.item().listWithJobWithPath(work.getJob(), paths);
 		if (exists.isEmpty()) {
-			throw new Exception(
-					"data{job:" + work.getJob() + "} on path:" + StringUtils.join(paths, ".") + " is not existed.");
+			throw new ExceptionDataNotExist(work.getJob(), paths);
 		}
 		business.entityManagerContainer().beginTransaction(Item.class);
 		for (Item o : exists) {
@@ -285,6 +322,109 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private List<Data.DataAttachment> listDataAttachment(Business business, String job) throws Exception {
 		return business.entityManagerContainer().fetchEqual(Attachment.class, Data.DataAttachment.copier,
 				Attachment.job_FIELDNAME, job);
+	}
+
+	private void projection(Business business, Work work, Data data) throws Exception {
+		Process process = business.element().get(work.getProcess(), Process.class);
+		if (null != process) {
+			List<Projection> list = this.listProjection(process);
+			if (ListTools.isNotEmpty(list)) {
+				ProjectionFactory.projectionWork(list, data, work);
+				business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME, work.getJob(),
+						JpaObject.id_FIELDNAME, work.getId()).forEach(o -> {
+							try {
+								ProjectionFactory.projectionWork(list, data, o);
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						});
+				projectionTask(business, work.getJob(), data, list);
+				projectionTaskCompleted(business, work.getJob(), data, list);
+				projectionRead(business, work.getJob(), data, list);
+				projectionReadCompleted(business, work.getJob(), data, list);
+				projectionReview(business, work.getJob(), data, list);
+			}
+		}
+	}
+
+	private void projection(Business business, WorkCompleted workCompleted, Data data) throws Exception {
+		Process process = business.element().get(workCompleted.getProcess(), Process.class);
+
+		if (null != process) {
+			List<Projection> list = this.listProjection(process);
+
+			if (ListTools.isNotEmpty(list)) {
+				ProjectionFactory.projectionWorkCompleted(list, data, workCompleted);
+				projectionTaskCompleted(business, workCompleted.getJob(), data, list);
+				projectionRead(business, workCompleted.getJob(), data, list);
+				projectionReadCompleted(business, workCompleted.getJob(), data, list);
+				projectionReview(business, workCompleted.getJob(), data, list);
+			}
+		}
+	}
+
+	private void projectionTask(Business business, String job, Data data, List<Projection> list) throws Exception {
+		business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, job).forEach(o -> {
+			try {
+				ProjectionFactory.projectionTask(list, data, o);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void projectionTaskCompleted(Business business, String job, Data data, List<Projection> list)
+			throws Exception {
+		business.entityManagerContainer().listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job)
+				.forEach(o -> {
+					try {
+						ProjectionFactory.projectionTaskCompleted(list, data, o);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
+	}
+
+	private void projectionRead(Business business, String job, Data data, List<Projection> list) throws Exception {
+		business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME, job).forEach(o -> {
+			try {
+				ProjectionFactory.projectionRead(list, data, o);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	private void projectionReadCompleted(Business business, String job, Data data, List<Projection> list)
+			throws Exception {
+		business.entityManagerContainer().listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, job)
+				.forEach(o -> {
+					try {
+						ProjectionFactory.projectionReadCompleted(list, data, o);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
+	}
+
+	private void projectionReview(Business business, String job, Data data, List<Projection> list) throws Exception {
+		business.entityManagerContainer().listEqual(Review.class, Review.job_FIELDNAME, job).forEach(o -> {
+			try {
+				ProjectionFactory.projectionReview(list, data, o);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		});
+	}
+
+	public List<Projection> listProjection(Process process) {
+		List<Projection> list = new ArrayList<>();
+		String text = process.getProjection();
+		if (XGsonBuilder.isJsonArray(text)) {
+			list = XGsonBuilder.instance().fromJson(text, new TypeToken<List<Projection>>() {
+			}.getType());
+		}
+		return list;
 	}
 
 }
