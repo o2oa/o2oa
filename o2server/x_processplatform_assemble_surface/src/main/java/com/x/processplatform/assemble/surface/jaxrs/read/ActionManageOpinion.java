@@ -1,10 +1,10 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
+import java.util.Objects;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -12,13 +12,12 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
-import java.util.Objects;
+import org.apache.commons.lang3.BooleanUtils;
 
 public class ActionManageOpinion extends BaseAction {
 
@@ -33,17 +32,11 @@ public class ActionManageOpinion extends BaseAction {
 			}
 			Process process = business.process().pick(read.getProcess());
 			Application application = business.application().pick(read.getApplication());
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(Read.class);
-            if (StringTools.utf8Length(wi.getOpinion()) > JpaObject.length_255B) {
-                read.setOpinionLob(wi.getOpinion());
-                read.setOpinion(StringTools.utf8SubString(wi.getOpinion(), JpaObject.length_255B));
-            } else {
-                read.setOpinion(Objects.toString(wi.getOpinion(), ""));
-                read.setOpinionLob(null);
-            }
+			read.setOpinion(Objects.toString(wi.getOpinion(), ""));
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setValue(true);
