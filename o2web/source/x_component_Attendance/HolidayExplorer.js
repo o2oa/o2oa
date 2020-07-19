@@ -80,7 +80,7 @@ MWF.xApplication.Attendance.HolidayExplorer.View = new Class({
                         }
                     }
                 }.bind(this));
-                holidy.makeUpClassDay = holidy.makeUpClassDay.join(",");
+                // holidy.makeUpClassDay = holidy.makeUpClassDay.join(",");
                 holidy.startDate = startDate;
                 holidy.endDate = endDate;
                 var h = new MWF.xApplication.Attendance.HolidayExplorer.Holiday(this.explorer,holidy);
@@ -95,125 +95,13 @@ MWF.xApplication.Attendance.HolidayExplorer.Document = new Class({
     Extends: MWF.xApplication.Attendance.Explorer.Document
 
 });
-//
-//MWF.xApplication.Attendance.ScheduleExplorer.Schedule = new Class({
-//    Extends: MWF.xApplication.Attendance.Explorer.PopupForm,
-//    options : {
-//        "width": 500,
-//        "height": 400,
-//        "hasTop" : true,
-//        "hasBottom" : true,
-//        "title" : "",
-//        "draggable" : true,
-//        "closeAction" : true
-//    },
-//    _createTableContent: function(){
-//        var lp = this.app.lp.holiday;
-//
-//        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
-//            "<tr><td colspan='2' styles='formTableHead'>"+lp.setHoliday+"</td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='unitName'></td>"+
-//            "    <td styles='formTableValue' item='unitName'></td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='onDutyTime'></td>"+
-//            "    <td styles='formTableValue' item='onDutyTime'></td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='offDutyTime'></td>"+
-//            "    <td styles='formTableValue' item='offDutyTime'></td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='lateStartTime'></td>"+
-//            "    <td styles='formTableValue' item='lateStartTime'></td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='leaveEarlyStartTime'></td>"+
-//            "    <td styles='formTableValue' item='leaveEarlyStartTime'></td></tr>" +
-//            "<tr><td styles='formTabelTitle' lable='absenceStartTime'></td>"+
-//            "    <td styles='formTableValue' item='absenceStartTime'></td></tr>" +
-//            "</table>"
-//        this.formTableArea.set("html",html);
-//
-//        MWF.xDesktop.requireApp("Template", "MForm", function(){
-//            this.form = new MForm( this.formTableArea, this.data, {
-//                isEdited : this.isEdited || this.isNew,
-//                itemTemplate : {
-//                    configYear : {
-//                        "text" : lp.year, notEmpty : true,
-//                        "type" : "select",
-//                        "defaultValue" : new Date().getFullYear() ,
-//                        "selectValue" : function(){
-//                            var years = [];
-//                            var year = new Date().getFullYear()+5;
-//                            for(var i=0; i<11; i++ ){
-//                                years.push( year-- );
-//                            }
-//                            return years;
-//                        }
-//                    },
-//                    configName : { text: lp.name, notEmpty : true },
-//                    startDate : { text: lp.startDate,  tType : "date", notEmpty : true },
-//                    endDate : { text: lp.endDate, tType : "date", notEmpty : true },
-//                    makeUpClassDay : {  text:lp.makeUpClassDay, tType : "date" }
-//                }
-//            }, this.app);
-//            this.form.load();
-//        }.bind(this), true);
-//    },
-//    _ok: function( data, callback ){
-//            var endDate = new Date( data.endDate );
-//            var startDate = new Date( data.startDate  );
-//            if( startDate > endDate ){
-//                this.app.notice("开始日期不能大于结束日期","error");
-//                return;
-//            }
-//
-//            var save = function(){
-//                var error = "";
-//                this.getDateByRange(startDate,endDate).each(function( date ){
-//                    this.app.restActions.saveHoliday({
-//                            "configName" : data.configName,
-//                            "configYear" : data.configYear,
-//                            "configDate": date,
-//                            "configType": "Holiday"
-//                        }, function(json){
-//                            if( json.type == "ERROR" ){error=json.message}
-//                        }.bind(this),
-//                        function(json){
-//                            flag = false;
-//                        }.bind(this),false);
-//                }.bind(this))
-//
-//                if(data.makeUpClassDay!=""){
-//                    data.makeUpClassDay.split(",").each(function( date ){
-//                        this.app.restActions.saveHoliday({
-//                            "configName" : data.configName,
-//                            "configYear" : data.configYear,
-//                            "configDate": this.dateFormat( new Date(date),"yyyy-MM-dd"),
-//                            "configType": "Workday"
-//                        }, function(json){
-//                            if( json.type == "ERROR" ){error=json.message}
-//                        },function(json){
-//                            flag = false;
-//                        }.bind(this),false);
-//                    }.bind(this))
-//                }
-//                if(error==""){
-//                    this.createMarkNode.destroy();
-//                    this.createAreaNode.destroy();
-//                    if(this.explorer.view)this.explorer.view.reload();
-//                    this.app.notice( this.isNew ? this.app.lp.createSuccess : this.app.lp.updateSuccess  , "success");
-//                }else{
-//                    this.app.notice( error  , "error");
-//                }
-//            }.bind(this);
-//            if(!this.isNew){
-//                this.explorer.view._removeDocument(data, false, save )
-//            }else{
-//                save();
-//            }
-//    }
-//});
 
 
 MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
     Extends: MWF.widget.Common,
     options: {
         "width": "500",
-        "height": "400"
+        "height": "600"
     },
     initialize: function( explorer, data ){
         this.explorer = explorer;
@@ -266,6 +154,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
         this.createNode = new Element("div", {
             "styles": this.css.createNode
         }).inject(this.createAreaNode);
+        this.createNode.setStyle("overflow-y","auto");
 
 
         this.createIconNode = new Element("div", {
@@ -283,7 +172,21 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
         var inputTimeStyle = "width: 99%; border:1px solid #999; background-color:#FFF; border-radius: 3px; box-shadow: 0px 0px 6px #CCC;height: 26px;"+
             "background : url(../x_component_Attendance/$HolidayExplorer/default/icon/calendar.png) 98% center no-repeat";
 
-        var html = "<table width='100%' height='200' border='0' cellPadding='0' cellSpacing='0'>" +
+        var makeupClassArea = "";
+        if( this.data && this.data.makeUpClassDay ){
+            this.data.makeUpClassDay.each( function ( d, idx ) {
+                makeupClassArea += "<input type='text' class='makeUpClassDay' " +
+                    "style='" + inputTimeStyle +"'" +
+                    " value='" + (  d || "" ) + "'/>";
+                if( idx > 0 )makeupClassArea += "<div class='removeMakeUpClassDay' style='color: #354f67;padding-bottom: 5px;cursor: pointer;'>删除</div>";
+            }.bind(this))
+        }else{
+            makeupClassArea += "<input type='text' class='makeUpClassDay' " +
+            "style='" + inputTimeStyle +"'" +
+            " value='" + (  "" ) + "'/>";
+        }
+
+        var html = "<table width='100%' height='200' border='0' cellPadding='3' cellSpacing='0'>" +
             "<tr>"+
             "<td colspan='2' style='height: 50px; line-height: 50px; text-align: center; min-width: 80px; font-size:18px;font-weight: bold;'>" + lp.setHoliday + "</td>" +
             "</tr>" +
@@ -317,9 +220,9 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             "</tr>" +
             "<tr>" +
             "<td style='height: 30px; line-height: 30px;  text-align: left'>"+lp.makeUpClassDay+":</td>" +
-            "<td style='; text-align: right;'>" +
-            (!this.isNew && !this.isEdited  ? "" :
-                ("<input type='text' id='makeUpClassDay' " + "style='" + inputTimeStyle +"'" + " value='" + ( this.data && this.data.makeUpClassDay ? this.data.makeUpClassDay : "") + "'/>")) +
+            "<td style='; text-align: right;' id='makeUpClassDayTd'>" +
+            (!this.isNew && !this.isEdited  ? "" :makeupClassArea )+
+            (!this.isNew && !this.isEdited  ? "" : "<div id='addMakeupClass' style='color: #354f67;cursor: pointer;'>增加补班日期</div>" )+
             "</td>" +
             "</tr>" +
             "</table>";
@@ -345,7 +248,11 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
         this.configName = this.createFormNode.getElement("#configName");
         this.startDate = this.createFormNode.getElement("#startDate");
         this.endDate = this.createFormNode.getElement("#endDate");
-        this.makeUpClassDay = this.createFormNode.getElement("#makeUpClassDay");
+        this.makeUpClassDay = this.createFormNode.getElements(".makeUpClassDay");
+        this.removeMakeUpClassDay = this.createFormNode.getElements(".removeMakeUpClassDay");
+        this.addMakeupClass = this.createFormNode.getElement("#addMakeupClass");
+        this.makeUpClassDayTd = this.createFormNode.getElement("#makeUpClassDayTd");
+
 
         this.startDate.addEvent("click",function(){
             _self.selectCalendar(this);
@@ -355,6 +262,36 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
         });
         this.makeUpClassDay.addEvent("click",function(){
             _self.selectCalendar(this);
+        });
+        this.removeMakeUpClassDay.addEvent("click", function () {
+            var input = this.getPrevious();
+            if(input && input.get('tag') === "input")input.destroy();
+            this.destroy();
+        });
+        this.addMakeupClass.addEvent("click",function(){
+            var input = new Element("input",{
+                class : "makeUpClassDay",
+                style : inputTimeStyle,
+                value : "",
+                events : {
+                    click : function () {
+                        _self.selectCalendar(this);
+                    }
+                }
+            }).inject(this, "before");
+
+            var div = new Element("div",{
+                "class" : "removeMakeUpClassDay",
+                style : "color: #354f67;padding-bottom: 5px;cursor: pointer;",
+                text : "删除",
+                events : {
+                    click : function () {
+                        var input = this.getPrevious();
+                        if(input && input.get('tag') === "input")input.destroy();
+                        this.destroy();
+                    }
+                }
+            }).inject(this, "before")
         });
 
         this.cancelActionNode = new Element("div", {
@@ -463,8 +400,8 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             "configYear": this.configYear.get("value"),
             "configName": this.configName.get("value"),
             "startDate": this.startDate.get("value"),
-            "endDate": this.endDate.get("value"),
-            "makeUpClassDay": this.makeUpClassDay.get("value")
+            "endDate": this.endDate.get("value")
+            // "makeUpClassDay": this.makeUpClassDay.get("value")
         };
         if (data.configYear && data.configName && data.startDate && data.endDate ){
             var endDate = new Date( data.endDate );
@@ -474,6 +411,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                 return;
             }
 
+            var flag = true;
             var save = function(){
                 var error = "";
                 this.getDateByRange(startDate,endDate).each(function( date ){
@@ -490,20 +428,35 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
                     }.bind(this),false);
                 }.bind(this));
 
-                if(data.makeUpClassDay!=""){
-                    data.makeUpClassDay.split(",").each(function( date ){
+                // if(data.makeUpClassDay!=""){
+                //     data.makeUpClassDay.split(",").each(function( date ){
+                //         this.app.restActions.saveHoliday({
+                //             "configName" : data.configName,
+                //             "configYear" : data.configYear,
+                //             "configDate": this.dateFormat( new Date(date),"yyyy-MM-dd"),
+                //             "configType": "Workday"
+                //         }, function(json){
+                //             if( json.type == "ERROR" ){error=json.message}
+                //         },function(json){
+                //             flag = false;
+                //         }.bind(this),false);
+                //     }.bind(this))
+                // }
+                this.createFormNode.getElements(".makeUpClassDay").each( function(el){
+                    if(el.get("value")){
                         this.app.restActions.saveHoliday({
                             "configName" : data.configName,
                             "configYear" : data.configYear,
-                            "configDate": this.dateFormat( new Date(date),"yyyy-MM-dd"),
+                            "configDate": this.dateFormat( new Date(el.get("value")),"yyyy-MM-dd"),
                             "configType": "Workday"
                         }, function(json){
                             if( json.type == "ERROR" ){error=json.message}
                         },function(json){
                             flag = false;
                         }.bind(this),false);
-                    }.bind(this))
-                }
+                    }
+                }.bind(this))
+
                 if(error==""){
                     this.createMarkNode.destroy();
                     this.createAreaNode.destroy();
