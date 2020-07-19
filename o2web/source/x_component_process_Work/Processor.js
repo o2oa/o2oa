@@ -1775,6 +1775,12 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 }.bind(this));
             }
 
+            if( this.needValid() ){
+                defaultOpt["onValid"] = function ( selector ) {
+                    this.validOnSelect();
+                }.bind(this);
+            }
+
             if( this.form.json.selectorStyle ){
                 defaultOpt = Object.merge( Object.clone(this.form.json.selectorStyle), defaultOpt );
                 if( this.form.json.selectorStyle.style )defaultOpt.style = this.form.json.selectorStyle.style;
@@ -2412,17 +2418,41 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 //if (!this.node.isIntoView()) this.node.scrollIntoView();
             }
         },
+        needValid: function(){
+            return (( this.json.validationCount && typeOf( this.json.validationCount.toInt() ) === "number" ) ||
+                (this.json.validation && this.json.validation.code));
+        },
+        validOnSelect : function(){
+            if( !this.errNode )return true;
+            var flag=true;
+            if( this.json.validationCount && typeOf( this.json.validationCount.toInt() ) === "number" ){
+                if( this.selector.selector.selectedItems.length < this.json.validationCount.toInt() ){
+                    flag = "请至少选择"+this.json.validationCount+"项"
+                }
+            }
+            if( flag === true ){
+                if ( this.json.validation && this.json.validation.code){
+                    var data = this.getData();
+                    this.setData( data );
+                    flag = this.form.Macro.exec(this.json.validation.code, this);
+                    if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+                }
+            }
+            if (flag.toString()!="true"){
+                this.notValidationMode(flag);
+                return false;
+            }else if(this.errNode){
+                this.errNode.destroy();
+                this.errNode = null;
+            }
+            return true;
+        },
         validation: function(){
             var data = this.getData();
             this.setData( data );
             var flag=true;
             if( this.json.validationCount && typeOf( this.json.validationCount.toInt() ) === "number" ){
                 if( data.length < this.json.validationCount.toInt() ){
-                    //if( this.json.validationCount.toInt() === 1 ){
-                    //    flag = "请选择"
-                    //}else{
-                    //    flag = "请至少选择"+this.json.validationCount+"项"
-                    //}
                     flag = "请至少选择"+this.json.validationCount+"项"
                 }
             }
@@ -2438,7 +2468,8 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 this.notValidationMode(flag);
                 return false;
             }else if(this.errNode){
-                this.errNode.destroy()
+                this.errNode.destroy();
+                this.errNode = null;
             }
             return true;
         }
