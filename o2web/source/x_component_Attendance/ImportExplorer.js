@@ -277,8 +277,10 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
         var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工号"  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "员工名字"  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "日期"  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上班时间"  }).inject(tr);
-        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下班时间"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午上班打卡时间"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "上午下班打卡时间"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午上班打卡时间"  }).inject(tr);
+        var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "下午下班打卡时间"  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "检查结果"  }).inject(tr);
         var td = new Element("td", {  "styles" : this.css.editTableTitle, "text" : "描述"  }).inject(tr);
         td.setStyle( "width" , "300px" );
@@ -290,6 +292,8 @@ MWF.xApplication.Attendance.ImportExplorer.Result = new Class({
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.employeeName.split('@')[0] }).inject(tr);
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.recordDateString }).inject(tr);
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.onDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.morningOffDutyTime }).inject(tr);
+            var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.afternoonOnDutyTime }).inject(tr);
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.offDutyTime }).inject(tr);
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.checkStatus == "error" ? "错误" : "正确" }).inject(tr);
             var td = new Element("td", { "styles" : this.css.editTableValue , "text": d.description }).inject(tr);
