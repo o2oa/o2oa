@@ -311,11 +311,11 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 this.selectAllNode.addEvent( "click", function(ev){
                     if( this.isSelectedAll ){
                         // this.unselectAll(ev);
-                        this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true) : this.unselectAll(ev, null, true);
                         this.selector.fireEvent("unselectCatgory",[this])
                     }else{
                         // this.selectAll(ev);
-                        this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
+                        this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev, true) : this.selectAll(ev ,true);
                         this.selector.fireEvent("selectCatgory",[this])
                     }
                     ev.stopPropagation();
@@ -337,7 +337,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
 
         //this.actionNode.setStyles((this.selector.options.expand) ? this.selector.css.selectorItemCategoryActionNode_expand : this.selector.css.selectorItemCategoryActionNode_collapse);
     },
-    unselectAll : function(ev, exclude){
+    unselectAll : function(ev, exclude, checkValid){
         //( this.subItems || [] ).each( function(item){
         //    if(item.isSelected)item.unSelected();
         //}.bind(this));
@@ -345,7 +345,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         if( exclude && typeOf(exclude) !== "array"  )excludeList = [exclude];
         ( this.subItems || [] ).each( function(item){
             if(item.isSelected && !excludeList.contains(item) ){
-                item.unSelected();
+                item.unSelected( checkValid );
             }
         }.bind(this));
 
@@ -358,44 +358,44 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }
         this.isSelectedAll = false;
     },
-    unselectAllNested : function( ev, exclude ){
-        this.unselectAll(ev, exclude );
+    unselectAllNested : function( ev, exclude, checkValid ){
+        this.unselectAll(ev, exclude, checkValid );
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                if(category.unselectAllNested)category.unselectAllNested( ev, exclude )
+                if(category.unselectAllNested)category.unselectAllNested( ev, exclude, checkValid )
             })
         }
         if( this.subItems && this.subItems.length ){
             this.subItems.each( function( item ){
-                if(item.unselectAllNested)item.unselectAllNested( ev, exclude )
+                if(item.unselectAllNested)item.unselectAllNested( ev, exclude, checkValid )
             })
         }
     },
-    selectAllNested : function(){
-        this.selectAll();
+    selectAllNested : function(ev, checkValid){
+        this.selectAll(ev, checkValid);
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                if(category.selectAllNested)category.selectAllNested()
+                if(category.selectAllNested)category.selectAllNestedev, checkValid()
             })
         }
         if( this.subItems && this.subItems.length ){
             this.subItems.each( function( item ){
-                if(item.selectAllNested)item.selectAllNested()
+                if(item.selectAllNested)item.selectAllNested(ev, checkValid)
             })
         }
     },
-    selectAll: function(ev){
+    selectAll: function(ev, checkValid){
         if( this.loaded || this.selector.isFlatCategory ){
-            this._selectAll( ev )
+            this._selectAll( ev, checkValid )
         }else{
             this.loadSubItems(function(){
-                this._selectAll( ev )
+                this._selectAll( ev, checkValid )
             }.bind(this));
             this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
             this.isExpand = true;
         }
     },
-    _selectAll : function( ev ){
+    _selectAll : function( ev, checkValid ){
         if( !this.subItems || !this.subItems.length )return;
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
@@ -404,8 +404,14 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             if(item.isSelected)selectedSubItemCount++
         }.bind(this));
         if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
+            var checkedCount = 0;
             this.subItems.each( function(item){
-                if(!item.isSelected)item.selected();
+                if(!item.isSelected)item.selected(false, function () {
+                    checkedCount++;
+                    if( this.subItems.length === checkedCount ){
+                        if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
+                    }
+                }.bind(this));
             }.bind(this));
 
             if( this.selectAllNode ){

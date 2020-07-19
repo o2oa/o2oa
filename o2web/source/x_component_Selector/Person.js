@@ -1762,18 +1762,18 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.outItem();
             }.bind(this),
             "click": function(){
-                this.clickItem();
+                this.clickItem( true );
             }.bind(this)
         });
     },
-    clickItem: function(){
+    clickItem: function( checkValid ){
         if ( layout.mobile && this.selector.options.count.toInt()===1){
-            this.selectedSingle();
+            this.selectedSingle( checkValid );
         }else{
             if (this.isSelected){
-                this.unSelected();
+                this.unSelected( checkValid );
             }else{
-                this.selected();
+                this.selected( checkValid );
             }
         }
     },
@@ -1810,7 +1810,7 @@ MWF.xApplication.Selector.Person.Item = new Class({
             }
         }
     },
-    selectedSingle: function(){
+    selectedSingle: function( checkValid ){
         if (!this.isSelected){
             if (this.selector.currentItem) this.selector.currentItem.unSelectedSingle();
             this.getData(function(){
@@ -1827,17 +1827,18 @@ MWF.xApplication.Selector.Person.Item = new Class({
                     this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single_selected );
                 }
 
-                this.selector.fireEvent("selectItem",[this])
+                this.selector.fireEvent("selectItem",[this]);
+                if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
 
             }.bind(this));
         }else {
-            this.unSelectedSingle();
+            this.unSelectedSingle( checkValid );
         }
     },
     getData: function(callback){
         if (callback) callback();
     },
-    unSelectedSingle: function(){
+    unSelectedSingle: function(checkValid){
         this.selector.currentItem = null;
         this.isSelected = false;
         this.selector.selectedItems.erase(this);
@@ -1850,9 +1851,10 @@ MWF.xApplication.Selector.Person.Item = new Class({
         if( ( this.selector.options.count.toInt() === 1 || this.selector.options.noSelectedContainer ) && this.selector.css.selectorItemActionNode_single  ){
             this.actionNode.setStyles( this.selector.css.selectorItemActionNode_single );
         }
-        this.selector.fireEvent("unselectItem",[this])
+        this.selector.fireEvent("unselectItem",[this]);
+        if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
     },
-    selected: function(){
+    selected: function( checkValid, callback ){
         var count = this.selector.options.maxCount || this.selector.options.count;
         count = count.toInt();
         if (!count) count = 0;
@@ -1880,12 +1882,14 @@ MWF.xApplication.Selector.Person.Item = new Class({
             //     this.category.checkSelectAll();
             // }
 
-            this.selector.fireEvent("selectItem",[this])
+            this.selector.fireEvent("selectItem",[this]);
+            if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
+            if(callback)callback();
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
     },
-    unSelected: function(){
+    unSelected: function( checkValid, callback ){
         this.isSelected = false;
         if( this.node ){
             this.node.setStyles(this.selector.css.selectorItem);
@@ -1949,7 +1953,9 @@ MWF.xApplication.Selector.Person.Item = new Class({
             this.selectedItem.destroy();
             this.selectedItem = null;
         }
-        this.selector.fireEvent("unselectItem",[this])
+        this.selector.fireEvent("unselectItem",[this]);
+        if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
+        if(callback)callback();
     },
     postLoad : function(){},
     getParentCategoryByLevel : function( level ){
@@ -2000,16 +2006,18 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     getData: function(callback){
         if (callback) callback();
     },
-    clickItem: function(){
+    clickItem: function( checkValid ){
         if (this.items.length){
             this.items.each(function(item){
-                item.unSelected();
+                item.unSelected( checkValid );
             });
+            if( checkValid )this.selector.fireEvent("valid", [this.selector, this])
         }else{
             //this.item.selectedItem = null;
             //this.item.isSelected = false;
             this.destroy();
             this.selector.selectedItems.erase(this);
+            if( checkValid )this.selector.fireEvent("valid", [this.selector, this])
         }
     },
     //overItem: function(){
@@ -2136,10 +2144,10 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }).inject(selectAllWrap);
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
-                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
                     this.selector.fireEvent("unselectCatgory",[this])
                 }else{
-                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
+                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev, true) : this.selectAll(ev, true);
                     this.selector.fireEvent("selectCatgory",[this])
                 }
                 ev.stopPropagation();
@@ -2222,12 +2230,12 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             this.selectAllNode.addEvent( "click", function(ev){
                 if( this.isSelectedAll ){
                     // this.unselectAll(ev);
-                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev) : this.unselectAll(ev);
-                    this.selector.fireEvent("unselectCatgory",[this])
+                    this.selector.options.selectAllRange === "all" ? this.unselectAllNested(ev, null, true ) : this.unselectAll(ev, null, true);
+                    this.selector.fireEvent("unselectCatgory",[this]);
                 }else{
                     // this.selectAll(ev);
-                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev) : this.selectAll(ev);
-                    this.selector.fireEvent("selectCatgory",[this])
+                    this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev, true) : this.selectAll(ev, true);
+                    this.selector.fireEvent("selectCatgory",[this]);
                 }
                 ev.stopPropagation();
             }.bind(this));
@@ -2297,12 +2305,12 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
     isSelectAllEnable : function(){
 
     },
-    unselectAll : function(ev, exclude){
+    unselectAll : function(ev, exclude, checkValid ){
         var excludeList = exclude || [];
         if( exclude && typeOf(exclude) !== "array"  )excludeList = [exclude];
         ( this.subItems || [] ).each( function(item){
             if(item.isSelected && !excludeList.contains(item) ){
-                item.unSelected();
+                item.unSelected( checkValid );
             }
         }.bind(this));
 
@@ -2315,29 +2323,29 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
         this.isSelectedAll = false;
     },
-    unselectAllNested : function( ev, exclude ){
-        this.unselectAll(ev, exclude );
+    unselectAllNested : function( ev, exclude, checkValid ){
+        this.unselectAll(ev, exclude, checkValid);
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                category.unselectAllNested( ev, exclude )
+                category.unselectAllNested( ev, exclude, checkValid )
             })
         }
     },
-    selectAllNested : function(){
+    selectAllNested : function( ev, checkValid ){
         debugger;
-        this.selectAll();
+        this.selectAll(ev, checkValid);
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                category.selectAllNested()
+                category.selectAllNested(ev, checkValid)
             })
         }
     },
-    selectAll: function(ev){
+    selectAll: function(ev, checkValid){
         if( this.loaded || this.selector.isFlatCategory ){
-            this._selectAll( ev );
+            this._selectAll( ev, checkValid );
         }else{
             this.clickItem( function(){
-                this._selectAll( ev );
+                this._selectAll( ev, checkValid );
                 //this.children.setStyles({
                 //    "display": "none",
                 //    "height": "0px"
@@ -2346,7 +2354,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }.bind(this));
         }
     },
-    _selectAll : function( ev ){
+    _selectAll : function( ev, checkValid ){
         if( this.selector.options.selectAllRange === "direct" && ( !this.subItems || !this.subItems.length ) )return;
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
@@ -2355,8 +2363,14 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if(item.isSelected)selectedSubItemCount++
         }.bind(this));
         if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
+            var checkedCount = 0;
             this.subItems.each( function(item){
-                if(!item.isSelected)item.selected();
+                if(!item.isSelected)item.selected( false, function () {
+                    checkedCount++;
+                    if( this.subItems.length === checkedCount ){
+                        if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
+                    }
+                }.bind(this));
             }.bind(this));
 
             if( this.selectAllNode ){
