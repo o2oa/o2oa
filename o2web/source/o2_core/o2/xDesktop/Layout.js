@@ -191,7 +191,25 @@ MWF.xDesktop.Layout = new Class({
         this.currentApp = null;
         this.session = {};
 
-        this.status = layout.userLayout;
+        var uri = new URI(window.location.href);
+        var df = uri.getData("default") || "";
+        this.noDefault = df.toString().toLowerCase()==="false";
+        var appNames = uri.getData("app");
+        var optionsStr = uri.getData("option");
+        var options = (optionsStr) ? JSON.decode(optionsStr) : null;
+        if (appNames){
+            this.status = layout.userLayout;
+            this.status.apps = {};
+            this.status.apps[appNames] = options || {};
+            this.status.apps[appNames].name = appNames;
+            this.status.apps[appNames].appId = appNames;
+            this.status.apps[appNames].window={"isMax": true, "isHide": false};
+            this.status.currentApp = appNames;
+        }else{
+            this.status = layout.userLayout;
+        }
+
+        //this.status = layout.userLayout;
         this.session.user = layout.session.user
         this.serviceAddressList = layout.serviceAddressList;
         this.centerServer = layout.centerServer;
