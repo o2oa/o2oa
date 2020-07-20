@@ -29,16 +29,32 @@ o2.xDesktop.Default = new Class({
         this.session = {};
         this.serviceAddressList = layout.serviceAddressList;
         this.centerServer = layout.centerServer;
-        this.session.user = layout.session.user
+        this.session.user = layout.session.user;
 
-        this.status = layout.userLayout;
+        var uri = new URI(window.location.href);
+        var df = uri.getData("default") || "";
+        this.noDefault = df.toString().toLowerCase()==="false";
+        var appNames = uri.getData("app");
+        var optionsStr = uri.getData("option");
+        var options = (optionsStr) ? JSON.decode(optionsStr) : null;
+
+        if (appNames){
+            this.status = layout.userLayout;
+            this.status.apps = {};
+            this.status.apps[appNames] = options || {};
+            this.status.apps[appNames].name = appNames;
+            this.status.apps[appNames].appId = appNames;
+            this.status.currentApp = appNames;
+        }else{
+            this.status = layout.userLayout;
+        }
         if (this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
     },
 
     load: function(){
         this.loadLayout(function(){
             this.setEvent();
-            this.loadDefaultPage();
+            if (!this.noDefault) this.loadDefaultPage();
             window.setTimeout(function(){
                 var iconsPath = this.path+"icons.json";
                 o2.JSON.get(iconsPath, function(json) {
