@@ -111,31 +111,24 @@ public class ActionImportFileUpload {
 		// 将文件到应用服务器形成本地文件
 		String importFilePath = "./servers/applicationServer/work/x_attendance_assemble_control/temp/";
 		String importFileName = "import_" + ( new Date() ).getTime() + "_" + fileName;
-		FileOutputStream output = null;
+		OutputStream output = null;
 		try {
-			System.out.println("aaaaaaaaaaaaaaaaaaaa---0");
 			File dir = new File( importFilePath );
-			System.out.println("aaaaaaaaaaaaaaaaaaaa---1");
 			if ( !dir.exists() ) {
 				dir.mkdir();
 			}
-			System.out.println("aaaaaaaaaaaaaaaaaaaa---2");
 			File file = new File(importFilePath + importFileName);
-			System.out.println("aaaaaaaaaaaaaaaaaaaa---3");
 			if (file.exists()) {
 				file.delete();
 			}
 			file.createNewFile();
-			if(file.exists()){
-				System.out.println("aaaaaaaaaaaaaaaaaaaa---4");
-			}
+		
 			
 			try {
 				output = new FileOutputStream(importFilePath + importFileName);
-				System.out.println("aaaaaaaaaaaaaaaaaaaa---5");
+				//output = new FileOutputStream(file);
 				output.write( content );
 				output.flush();
-				System.out.println("aaaaaaaaaaaaaaaaaaaa---6");
 			} catch (Exception e) {
 				logger.warn( "将文件写入到本地文件时发生异常.ID:" + id + ", FileName:" + fileName );
 				logger.error( e );
