@@ -67,9 +67,9 @@ public class RestoreData {
 				return false;
 			}
 		}
-		this.catalog = XGsonBuilder.instance()
-				.fromJson(FileUtils.readFileToString(new File(dir.getAbsolutePath() + File.separator + "catalog.json"),
-						DefaultCharset.charset_utf_8), DumpRestoreDataCatalog.class);
+		this.catalog = XGsonBuilder.instance().fromJson(
+				FileUtils.readFileToString(new File(dir, "catalog.json"), DefaultCharset.charset_utf_8),
+				DumpRestoreDataCatalog.class);
 		return this.execute();
 	}
 
@@ -133,7 +133,7 @@ public class RestoreData {
 		File file = null;
 		for (int i = 0; i < files.size(); i++) {
 			file = files.get(i);
-			logger.print("restoring {}/{} part of data:{}.", (i + 1),  files.size(), cls.getName());
+			logger.print("restoring {}/{} part of data:{}.", (i + 1), files.size(), cls.getName());
 			JsonArray raws = this.convert(file);
 			em.getTransaction().begin();
 			for (JsonElement o : raws) {

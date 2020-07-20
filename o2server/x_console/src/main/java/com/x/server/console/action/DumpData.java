@@ -58,7 +58,6 @@ public class DumpData {
 			}
 		}
 		FileUtils.forceMkdir(this.dir);
-		FileUtils.cleanDirectory(this.dir);
 		this.catalog = new DumpRestoreDataCatalog();
 
 		/* 初始化完成 */

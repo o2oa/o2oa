@@ -72,10 +72,9 @@ public class RestoreStorage {
 				logger.print("path can not in base directory.");
 				return false;
 			}
-			this.catalog = XGsonBuilder.instance()
-					.fromJson(FileUtils.readFileToString(
-							new File(dir.getAbsolutePath() + File.separator + "catalog.json"),
-							DefaultCharset.charset_utf_8), DumpRestoreStorageCatalog.class);
+			this.catalog = XGsonBuilder.instance().fromJson(FileUtils
+					.readFileToString(new File(dir.getAbsolutePath(), "catalog.json"), DefaultCharset.charset_utf_8),
+					DumpRestoreStorageCatalog.class);
 		}
 		return this.execute();
 	}
