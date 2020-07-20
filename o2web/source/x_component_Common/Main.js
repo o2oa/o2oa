@@ -119,6 +119,7 @@ MWF.xApplication.Common.Main = new Class({
 				this.fireAppEvent("postLoadWindow");
 				this.fireAppEvent("queryLoadApplication");
 				//load css
+				if (this.options.title) this.setTitle(this.options.title);
 				if (this.stylePath) {
 					this.content.loadCss(this.stylePath, this.loadWindowApplication.bind(this));
 				}else{
@@ -223,6 +224,7 @@ MWF.xApplication.Common.Main = new Class({
 		this.fireAppEvent("queryLoadApplication");
 
 		//load css
+		if (this.options.title) this.setTitle(this.options.title);
 		if (this.stylePath) {
 			this.content.loadCss(this.stylePath, this.loadWindowApplication.bind(this));
 		}else{
@@ -278,6 +280,7 @@ MWF.xApplication.Common.Main = new Class({
 		this.fireAppEvent("queryLoadApplication");
 		this.setContentEvent();
 
+		if (this.options.title) this.setTitle(this.options.title);
 		if (this.stylePath) o2.loadCss(this.stylePath);
 		this.loadApplication(function () {
 			this.fireAppEvent("postLoadApplication");
