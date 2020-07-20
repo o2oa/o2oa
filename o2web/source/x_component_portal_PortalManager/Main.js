@@ -223,6 +223,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.firstPage+"</td><td id='formApplicationFirstPage'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.pcClient+"</td><td id='formApplicationPcClient'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.mobileClient+"</td><td id='formApplicationMobileClient'></td></tr>";
+        // html += "<tr><td class='formTitle'>"+this.app.lp.application.anonymousAccess+"</td><td id='formApplicationAnonymousAccess'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.id+"</td><td id='formApplicationId'></td></tr>";
         html += "<tr><td class='formTitle'>"+this.app.lp.application.url+"</td><td id='formApplicationUrl'></td></tr>";
         //     html += "<tr><td class='formTitle'>"+this.app.lp.application.icon+"</td><td id='formApplicationIcon'></td></tr>";
@@ -257,6 +258,18 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             };
         }.bind(this));
 
+        // this.anonymousAccessInput = new MWF.xApplication.portal.PortalManager.Radio(
+        //     this.propertyContentNode.getElement("#formApplicationAnonymousAccess"),
+        //     (this.data.anonymousAccess!=undefined) ? this.data.anonymousAccess.toString():"false",
+        //     this.app.css.formInput,
+        //     function(){
+        //         return {
+        //             "true": this.app.lp.application.true,
+        //             "false": this.app.lp.application.false
+        //         };
+        //     }.bind(this))
+        // ;
+
         this.idInput = new MWF.xApplication.portal.PortalManager.Input(this.propertyContentNode.getElement("#formApplicationId"), this.data.id, this.app.css.formInput);
 
         var host = window.location.host;
@@ -274,6 +287,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         this.firstPageInput.editMode();
         this.pcClientInput.editMode();
         this.mobileClientInput.editMode();
+        // this.anonymousAccessInput.editMode();
         this.isEdit = true;
     },
     readMode: function(){
@@ -284,6 +298,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         this.firstPageInput.readMode();
         this.pcClientInput.readMode();
         this.mobileClientInput.readMode();
+        // this.anonymousAccessInput.readMode();
         this.isEdit = false;
     },
     save: function(callback, cancel) {
@@ -294,6 +309,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
         this.data.firstPage = this.firstPageInput.input.get("value");
         this.data.pcClient = this.pcClientInput.getValue()==="true";
         this.data.mobileClient = this.mobileClientInput.getValue()==="true";
+        // this.data.anonymousAccess = this.anonymousAccessInput.getValue()==="true";
 
         this.app.restActions.saveApplication(this.data, function (json) {
             this.propertyTitleBar.set("text", this.data.name);
@@ -305,6 +321,7 @@ MWF.xApplication.portal.PortalManager.ApplicationProperty = new Class({
             this.firstPageInput.save();
             this.pcClientInput.save();
             this.mobileClientInput.save();
+            // this.anonymousAccessInput.save();
 
             if (callback) callback();
         }.bind(this), function (xhr, text, error) {
