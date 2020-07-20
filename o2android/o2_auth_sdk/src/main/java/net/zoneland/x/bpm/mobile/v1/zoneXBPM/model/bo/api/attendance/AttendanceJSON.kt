@@ -236,12 +236,29 @@ data class MobileFeature(
 )
 
 /**
+ * 打卡结果和打卡班次的结合
+ * 兼容老的模式 如果没有班次就是用打卡结果替代
+ */
+data class MobileScheduleInfo(
+        var signSeq: Int = -1,
+        var signDate: String = "",
+        var signTime: String = "",
+        var checkinType: String = "",
+        var checkinStatus: String = "", // 未打卡 已打卡
+        var checkinTime: String = "", //打卡时间
+        var recordId: String = "" //打卡结果的id 更新打卡用
+)
+
+
+
+/**
  * listMyRecords 返回对象
  */
 data class MobileMyRecords(
         var records:List<MobileCheckInJson> = ArrayList(),
         var scheduleSetting: MobileScheduleSetting?,
-        var feature : MobileFeature?
+        var feature : MobileFeature?,
+        var scheduleInfos: List<MobileFeature> = ArrayList()
 )
 
 /**

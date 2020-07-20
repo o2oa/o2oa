@@ -73,31 +73,4 @@
             android:layout_marginTop="@dimen/spacing_small"
             android:background="@color/z_color_bottom_bar_background" />
     </LinearLayout>
-
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="@dimen/spacing_large">-->
-    <!--<LinearLayout-->
-    <!--android:id="@+id/linear_item_attendance_check_in_update_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:visibility="gone"-->
-    <!--android:background="@drawable/attendance_check_in_update_button_bg">-->
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="@string/attendance_check_in_update"-->
-    <!--android:textColor="@android:color/white"/>-->
-    <!--<ImageView-->
-    <!--android:layout_width="@dimen/font_normal"-->
-    <!--android:layout_height="@dimen/font_normal"-->
-    <!--android:layout_marginLeft="@dimen/spacing_small"-->
-    <!--android:src="@mipmap/icon_refresh"/>-->
-    <!--</LinearLayout>-->
-
-    <!--</LinearLayout>-->
 </LinearLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/attendance_check_in_schedule_item_bg">
+
+    <TextView
+        android:id="@+id/tv_item_attendance_check_in_schedule_list_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="上午上班打卡"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_item_attendance_check_in_schedule_list_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="09:00"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/z_color_text_primary"
+        android:layout_marginStart="@dimen/spacing_tiny"
+        android:layout_marginTop="@dimen/spacing_small"
+        app:layout_constraintStart_toEndOf="@+id/tv_item_attendance_check_in_schedule_list_type"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_item_attendance_check_in_schedule_list_enable_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginBottom="@dimen/spacing_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_item_attendance_check_in_schedule_list_type"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:src="@mipmap/list_selected" />
+
+    <TextView
+        android:id="@+id/tv_item_attendance_check_in_schedule_list_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="未打卡"
+        android:textColor="@color/z_color_text_hint"
+        android:textSize="@dimen/font_small"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginBottom="@dimen/spacing_small"
+        app:layout_constraintStart_toEndOf="@+id/image_item_attendance_check_in_schedule_list_enable_icon"
+        app:layout_constraintTop_toBottomOf="@+id/tv_item_attendance_check_in_schedule_list_type"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
+        android:id="@+id/tv_item_attendance_check_in_schedule_list_update_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="更新打卡"
+        android:textColor="@color/z_color_primary_blue"
+        android:textSize="@dimen/font_small"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        app:layout_constraintStart_toEndOf="@+id/tv_item_attendance_check_in_schedule_list_status"
+        app:layout_constraintTop_toBottomOf="@+id/tv_item_attendance_check_in_schedule_list_type"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"/>
+</android.support.constraint.ConstraintLayout>

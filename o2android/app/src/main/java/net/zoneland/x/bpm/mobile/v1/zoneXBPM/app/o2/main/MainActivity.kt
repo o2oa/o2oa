@@ -144,6 +144,8 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         bindService(webSocketServiceIntent, serviceConnect, BIND_AUTO_CREATE)
 
         registerBroadcast()
+
+        mPresenter.checkAttendanceFeature()
     }
 
     override fun o2AIEnable(enable: Boolean) {

@@ -11,6 +11,8 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_attendance_main.*
 import net.muliba.changeskin.FancySkinManager
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.approval.AttendanceAppealApprovalActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.list.AttendanceListActivity
@@ -32,11 +34,17 @@ class AttendanceMainActivity : BaseMVPActivity<AttendanceMainContract.View, Atte
     var locationEnable: Boolean = false
     private var isAttendanceAdmin: Boolean = false
 
-    private val fragmentList: ArrayList<Fragment> by lazy { arrayListOf<Fragment>(AttendanceCheckInFragment(), AttendanceStatisticFragment()) }
+    private lateinit var fragmentList: ArrayList<Fragment>
     private val titleList: ArrayList<String> by lazy { arrayListOf<String>(getString(R.string.attendance_check_in_title), getString(R.string.title_activity_attendance_chart)) }
     override fun afterSetContentView(savedInstanceState: Bundle?) {
-        setupToolBar(getString(R.string.attendance_check_in_title), true, true)
+        setupToolBar(getString(R.string.attendance_check_in_title), setupBackButton = true, isCloseBackIcon = true)
 
+        val attendanceVersion = O2SDKManager.instance().prefs().getString(O2.PRE_ATTENDANCE_VERSION_KEY, "0")
+        fragmentList = if (attendanceVersion == "1") {
+            arrayListOf<Fragment>(AttendanceCheckInNewFragment(), AttendanceStatisticFragment())
+        }else {
+            arrayListOf<Fragment>(AttendanceCheckInFragment(), AttendanceStatisticFragment())
+        }
         view_pager_attendance_main_content.adapter = CommonFragmentPagerAdapter(supportFragmentManager, fragmentList, titleList)
         view_pager_attendance_main_content.addOnPageChangeListener {
             onPageSelected { position ->
