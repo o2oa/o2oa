@@ -198,6 +198,8 @@ o2.LP.desktop = {
             "creatorPerson":"创建者"
         },
 
+        "publishDocument" : "发布文档：",
+
         "customMessageTitle": "消息提醒：",
         "customMessage": "您收到一条消息："
     },

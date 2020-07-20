@@ -165,6 +165,9 @@ MWF.xDesktop.WebSocket = new Class({
                                 console.log("im 消息来了！！！");
                                 this.receiveIMMessage(data);
                                 break;
+                            case "cms_publish" :
+                                this.receiveCMSPublishMessage(data);
+                                break;
                             default:
                         }
                 }
@@ -232,7 +235,40 @@ MWF.xDesktop.WebSocket = new Class({
             //this.initialize();
         }
     },
+    receiveCMSPublishMessage: function(data){
+        debugger;
+        var content = "<font style='color: #ea621f'>"+(data.body.creatorPerson||"").split("@")[0]+"</font>"+MWF.LP.desktop.messsage.publishDocument+data.body.title;
 
+        var msg = {
+            "subject": data.body.categoryName,
+            "content": content
+        };
+        var messageItem = layout.desktop.message.addMessage(msg);
+        var tooltipItem = layout.desktop.message.addTooltip(msg);
+        tooltipItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.hide();
+            var appId = "cms.Document"+data.body.id;
+            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
+                layout.desktop.apps[appId].setCurrent();
+            }else{
+                var options = {"documentId": data.body.id, "appId": appId};
+                layout.desktop.openApplication(e, "cms.Document", options);
+            }
+        });
+
+        messageItem.contentNode.addEvent("click", function(e){
+            layout.desktop.message.addUnread(-1);
+            layout.desktop.message.hide();
+
+            var appId = "cms.Document"+data.body.id;
+            if ( layout.desktop.apps && layout.desktop.apps[appId] ) {
+                layout.desktop.apps[appId].setCurrent();
+            }else{
+                var options = {"documentId": data.body.id, "appId": appId};
+                layout.desktop.openApplication(e, "cms.Document", options);
+            }
+        });
+    },
     receiveChatMessage: function(data){
         if (layout.desktop.widgets["IMIMWidget"]) layout.desktop.widgets["IMIMWidget"].receiveChatMessage(data);
         //if (layout.desktop.top.userPanel) layout.desktop.top.userPanel.receiveChatMessage(data);
