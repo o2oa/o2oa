@@ -269,7 +269,11 @@ public abstract class StorageObject extends SliceJpaObject {
 			} else {
 				throw new Exception(fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
-			manager.closeFileSystem(fo.getFileSystem());
+			// manager.closeFileSystem(fo.getFileSystem());
+			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+				/* webdav关闭会试图去关闭commons.httpClient */
+				manager.closeFileSystem(fo.getFileSystem());
+			}
 		}
 		return length;
 	}
@@ -306,7 +310,11 @@ public abstract class StorageObject extends SliceJpaObject {
 					}
 				}
 			}
-			manager.closeFileSystem(fo.getFileSystem());
+			// manager.closeFileSystem(fo.getFileSystem());
+			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+				/* webdav关闭会试图去关闭commons.httpClient */
+				manager.closeFileSystem(fo.getFileSystem());
+			}
 		}
 	}
 
@@ -404,6 +412,9 @@ public abstract class StorageObject extends SliceJpaObject {
 				webdavBuilder.setConnectionTimeout(opts, 10000);
 				webdavBuilder.setSoTimeout(opts, 10000);
 				webdavBuilder.setUrlCharset(opts, DefaultCharset.name);
+				webdavBuilder.setMaxConnectionsPerHost(opts, 200);
+				webdavBuilder.setMaxTotalConnections(opts, 200);
+				webdavBuilder.setFollowRedirect(opts, true);
 				// webdavBuilder.setVersioning(opts, true);
 				break;
 			case file:
