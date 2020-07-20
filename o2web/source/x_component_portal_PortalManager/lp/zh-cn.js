@@ -97,7 +97,8 @@ MWF.xApplication.portal.PortalManager.LP = {
         "pcClient": "PC端",
         "mobileClient": "移动端",
         "true": "启用",
-        "false": "禁用"
+        "false": "禁用",
+        "anonymousAccess" : "匿名访问"
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
