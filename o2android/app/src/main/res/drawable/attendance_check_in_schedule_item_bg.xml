@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/icon_light_blue" />
-    <corners android:radius="4dp" />
+    <solid android:color="@color/z_color_background_checkin_record" />
+    <corners android:radius="10dp" />
     <padding
         android:left="5dp"
         android:top="5dp"

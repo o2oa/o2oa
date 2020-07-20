@@ -22,6 +22,7 @@
     <color name="z_color_black_alpha">#61000000</color>
 
 
+
     <!-- refresh layout loading color -->
     <color name="z_color_refresh_red">#ff0000</color>
     <color name="z_color_refresh_orange">#ff5722</color>
@@ -94,7 +95,8 @@
     <!-- attendance-->
     <color name="overlay_work_place">#1c3288dd</color>
     <color name="overlay_work_place_border">#3288dd</color>
-
+    <color name="z_color_background_checkin">#FFF1F3F4</color>
+    <color name="z_color_background_checkin_record">#FFF4F6F8</color>
     <color name="bg_biometry_dialog">#99000000</color>
 
     <!--im-->

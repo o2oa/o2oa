@@ -3,6 +3,8 @@
 /captures
 .svn/
 
+autopacking.sh
+
 reports/
 
 # Built application files

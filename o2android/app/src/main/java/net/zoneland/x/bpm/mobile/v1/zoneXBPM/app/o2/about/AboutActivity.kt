@@ -110,6 +110,7 @@ class AboutActivity : AppCompatActivity() {
 
             override fun onNoneUpdate(error: String) {
                 XLog.info(error)
+                XToast.toastShort(this@AboutActivity, "已经是最新版本了！")
                 callbackContinue?.invoke(false)
             }
 

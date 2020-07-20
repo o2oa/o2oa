@@ -15,5 +15,6 @@ object MainContract {
 
     interface Presenter: BasePresenter<View> {
         fun checkO2AIEnable()
+        fun checkAttendanceFeature()
     }
 }

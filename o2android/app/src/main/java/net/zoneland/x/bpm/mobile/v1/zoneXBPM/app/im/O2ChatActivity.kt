@@ -514,7 +514,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     .o2Subscribe {
                         onNext { (granted, _, _) ->
                             if (!granted){
-                                O2DialogSupport.openAlertDialog(this@O2ChatActivity, "需要定位权限, 去设置", { permissionSetting() })
+                                O2DialogSupport.openAlertDialog(this@O2ChatActivity, "语音消息需要权限, 去设置", { permissionSetting() })
                             }
                         }
                         onError { e, _ ->
