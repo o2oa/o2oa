@@ -61,7 +61,6 @@ public class DumpStorage {
 			}
 		}
 		FileUtils.forceMkdir(this.dir);
-		FileUtils.cleanDirectory(this.dir);
 		this.catalog = new DumpRestoreStorageCatalog();
 
 		List<String> storageContainerEntityNames = this.entities();
