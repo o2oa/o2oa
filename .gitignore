@@ -21,6 +21,7 @@
 /o2custom/
 /o2cloud/
 /.svn/
+*.hprof
 /o2web/gulpconfig.js
 /node_modules/
 /o2web/ftpconfig.js
