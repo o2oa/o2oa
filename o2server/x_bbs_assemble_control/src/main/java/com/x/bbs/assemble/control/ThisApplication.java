@@ -11,6 +11,7 @@ import com.x.bbs.assemble.control.queue.QueueNewReplyNotify;
 import com.x.bbs.assemble.control.queue.QueueNewSubjectNotify;
 import com.x.bbs.assemble.control.schedule.SubjectReplyTotalStatisticTask;
 import com.x.bbs.assemble.control.schedule.SubjectTotalStatisticTask;
+import com.x.bbs.assemble.control.schedule.UserCountTodaySetZeroTask;
 import com.x.bbs.assemble.control.schedule.UserSubjectReplyPermissionStatisticTask;
 import com.x.bbs.assemble.control.service.BBSConfigSettingService;
 import com.x.bbs.assemble.control.service.BBSForumInfoServiceAdv;
@@ -44,8 +45,8 @@ public class ThisApplication {
 
 			context().startQueue( queueNewReplyNotify );
 			context().startQueue( queueNewSubjectNotify );
-
-			context.schedule( SubjectTotalStatisticTask.class, "0 10 * * * ?");
+			context.schedule( SubjectTotalStatisticTask.class, "0 0 1 * * ?"); //每天凌晨一点执行
+			context.schedule( UserCountTodaySetZeroTask.class, "0 1 0 * * ?"); //每天凌晨执行
 			context.schedule( SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
 			context.schedule( UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
 		} catch (Exception e) {
