@@ -462,8 +462,8 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe( "文档操作者身份" )
 		private String identity = null;
 		
-		@FieldDescribe( "数据的路径列表." )
-		private String[] dataPaths = null;
+//		@FieldDescribe( "数据的路径列表." )
+//		private String[] dataPaths = null;
 		
 		@FieldDescribe( "启动流程的JobId." )
 		private String wf_jobId = null;
@@ -974,16 +974,16 @@ public class ActionPersistPublishContent extends BaseAction {
 			this.readerList = readerList;
 		}
 
-		public String[] getDataPaths() {
-			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
-				return null;
-			}
-			return dataPaths;
-		}
-
-		public void setDataPaths(String[] dataPaths) {
-			this.dataPaths = dataPaths;
-		}
+//		public String[] getDataPaths() {
+//			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
+//				return null;
+//			}
+//			return dataPaths;
+//		}
+//
+//		public void setDataPaths(String[] dataPaths) {
+//			this.dataPaths = dataPaths;
+//		}
 
 		public Map<?, ?> getDocData() {
 			return docData;
