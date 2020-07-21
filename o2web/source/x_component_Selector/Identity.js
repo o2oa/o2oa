@@ -1206,7 +1206,6 @@ MWF.xApplication.Selector.Identity.Include = new Class({
     },
 
     listByFilter : function( type, key, callback ){
-        debugger;
         var arr1 = this.listByFilterPerson(key) || [];
         this.listByFilterUnitAndGroup( type, key, function(arr2){
             this.listByFilterGroup( type, key, function(arr3){
@@ -1259,8 +1258,8 @@ MWF.xApplication.Selector.Identity.Include = new Class({
         //根据关键字获取组织和群组内的身份
         var keyString = typeOf( key )==="string" ? key.toLowerCase() : key.key.toLowerCase();
 
-        if ( (this.includeUnit && this.includeUnit.length) || (this.includeGroup && this.includeGroup.length) ){
-            key = this.getUnitFilterKey( key, this.includeUnit || [], this.includeGroup || [] );
+        if ( this.includeUnit && this.includeUnit.length ){
+            key = this.getUnitFilterKey( key, this.includeUnit, this.includeGroup );
 
             this.orgAction.listIdentityByKey(function(json){
                 if (callback) callback(json.data);
