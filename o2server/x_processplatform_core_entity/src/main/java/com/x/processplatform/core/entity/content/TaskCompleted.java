@@ -161,6 +161,8 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public String getOpinion() {
 		if ((null != this.properties) && StringUtils.isNotEmpty(this.properties.getOpinion())) {
 			return this.properties.getOpinion();
+		} else if (StringUtils.isNotEmpty(this.opinionLob)) {
+			return this.opinionLob;
 		} else {
 			return this.opinion;
 		}
