@@ -30,6 +30,7 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
 
 	public void execute( Document document ) throws Exception {
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>QueueSendDocumentNotify:" + document.getTitle() );
 		if( document == null ) {
 			logger.info("can not send publish notify , document is NULL!" );
 			return;
@@ -42,43 +43,16 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo category = emc.find( document.getCategoryId(), CategoryInfo.class );
-//			Boolean sendNotify = false;
+
 			if( appInfo != null && category != null ) {
-//				//根据栏目和分类配置判断是否需要提醒
-//				if(StringUtils.equals( "信息", document.getDocumentType() )) {
-//					if( category.getSendNotify() == null ) {
-//						if( appInfo.getSendNotify() == null ) {
-//							//都为空，默认发送通知
-//							sendNotify = true;
-//						}else {
-//							sendNotify = appInfo.getSendNotify();
-//						}
-//					}else {
-//						sendNotify = category.getSendNotify();
-//					}
-//				}else {
-//					//数据类型，只有分类设置了需要通知，才会有通知，为空和为false都不通知
-//					if( category.getSendNotify() ) {
-//						sendNotify = true;
-//					}
-//				}
-			//	if( sendNotify ) {
-					//计算该文档有多少阅读者
 				ReviewService reviewService = new ReviewService();
 				List<String> persons = reviewService.listPermissionPersons( appInfo, category, document );
 				if( ListTools.isNotEmpty( persons )) {
 					//有可能是*， 一般是所有的人员标识列表
 					if( persons.contains( "*" )) {
 						logger.info(">>>>>document.getCreatorTopUnitName()=" + document.getCreatorTopUnitName() );
-						List<String> allPersons = listPersonWithUnit( document.getCreatorTopUnitName() );
-						if( ListTools.isNotEmpty( allPersons )) {
-							for( String person : persons ) {
-								if( StringUtils.equals( "*" , person ) && allPersons.contains( person )) {
-									allPersons.add( person );
-								}
-							}
-						}
-						persons = allPersons;
+						persons = listPersonWithUnit( document.getCreatorTopUnitName() );
+
 					}
 				}
 				if( ListTools.isNotEmpty( persons )) {
