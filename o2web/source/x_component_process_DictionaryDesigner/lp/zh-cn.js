@@ -16,6 +16,9 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
     "projectionType": "映射类型",
     "projectionProcess": "对应流程",
 
+    "design": "设计",
+    "script": "脚本",
+
     "notice": {
         "save_success": "数据字典保存成功！",
 
@@ -32,7 +35,8 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
         "numberKey": "项目名称不能为数字，请重新输入",
 
         "inputName": "请输入数据字典名称和别名",
-        "noModifyName": "不能修改名称或者别名"
+        "noModifyName": "不能修改名称或者别名",
+        "jsonParseError" : "json格式错误，请先修正"
     },
     "isSave": "正在保存，请稍候..."
 };
