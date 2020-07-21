@@ -44,7 +44,7 @@ extension BBSViewModel {
                 switch result {
                 case .success(_):
                     //下载成功
-                    let fileURL = O2CloudFileManager.shared.cloudFileLocalFolder().appendingPathComponent(att.fileName!)
+                    let fileURL = O2.cloudFileLocalFolder().appendingPathComponent(att.fileName!)
                     fulfill(fileURL)
                 case .failure(let err):
                     reject(err)

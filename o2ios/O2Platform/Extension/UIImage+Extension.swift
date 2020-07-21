@@ -37,6 +37,15 @@ extension UIImage {
         
         return rect
     }
+    //base64 转UIImage
+    public static func base64ToImage(_ source:String,defaultImage:UIImage=UIImage(named: "personDefaultIcon")!) -> UIImage {
+        if source != ""{
+            let theImage = UIImage(data: Data(base64Encoded:source,options:NSData.Base64DecodingOptions.ignoreUnknownCharacters)!)
+            return theImage!
+        }else{
+            return defaultImage
+        }
+    }
 }
  
 

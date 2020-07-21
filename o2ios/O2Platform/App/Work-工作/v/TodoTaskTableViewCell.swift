@@ -19,15 +19,7 @@ class TodoTaskTableViewCell: UITableViewCell {
     
     @IBOutlet weak var timeLabel: UILabel!
     
-    var cellModel:TodoCellModel<TodoTask>?{
-        didSet {
-            let i = 1 + arc4random() % 10
-            self.imageView?.image = UIImage.scaleTo(image: UIImage(named: "todo_\(i)")!, w: 20.0, h: 20.0)
-            self.titleLabel.text = "[\((cellModel!.applicationName)!)] \((cellModel!.title)!)"
-            self.statusLabel.text = cellModel?.status
-            self.timeLabel.text = cellModel?.time
-        }
-    }
+
     
 
     override func awakeFromNib() {
@@ -39,6 +31,20 @@ class TodoTaskTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func setData(cellModel:TodoCellModel<TodoTask>) {
+        if let applicationId = cellModel.sourceObj?.application {
+            ImageUtil.shared.getProcessApplicationIcon(id: applicationId)
+                .then { (image)  in
+                    self.todoIconImageView?.image = image
+            }.catch { (err) in
+                self.todoIconImageView?.image = UIImage(named: "todo_8")
+            }
+        }
+        self.titleLabel.text = "[\((cellModel.applicationName)!)] \((cellModel.title)!)"
+        self.statusLabel.text = cellModel.status
+        self.timeLabel.text = cellModel.time
     }
 
 }

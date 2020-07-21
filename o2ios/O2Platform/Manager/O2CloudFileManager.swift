@@ -27,22 +27,16 @@ class O2CloudFileManager {
     
     
     // MARK: - 工具服务 获取url 本地文件夹路径等等
-    //文件存储目录
-    func cloudFileLocalFolder() -> URL {
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        return documentsURL
-            .appendingPathComponent("O2")
-            .appendingPathComponent("cloud")
-    }
+    
     //本地文件存储路径
     func cloudFileLocalPath(file: OOAttachment) -> URL {
         let fileName = "\(file.name!).\(file.`extension`!)"
         if let id = file.id {
-            return self.cloudFileLocalFolder()
+            return O2.cloudFileLocalFolder()
                 .appendingPathComponent(id)
                 .appendingPathComponent(fileName)
         }
-        return self.cloudFileLocalFolder()
+        return O2.cloudFileLocalFolder()
             .appendingPathComponent(fileName)
         
     }
@@ -118,7 +112,7 @@ class O2CloudFileManager {
             }).then({ (dbFile)  in
                 if let filePath = dbFile.filePath, !filePath.isBlank {
                     DDLogDebug("查询到数据 文件路径：\(filePath)")
-                    let url = self.cloudFileLocalFolder().appendingPathComponent(filePath)
+                    let url = O2.cloudFileLocalFolder().appendingPathComponent(filePath)
                     fulfill(url)
                 }else {
                     reject(O2DBError.EmptyResultError)
@@ -136,7 +130,7 @@ class O2CloudFileManager {
             DBManager.shared.queryCloudFile(fileId: id).then({ (dbFile) in
                 if let filePath = dbFile.filePath, !filePath.isBlank {
                     DDLogDebug("查询到数据 文件路径：\(filePath)")
-                    let url = self.cloudFileLocalFolder().appendingPathComponent(filePath)
+                    let url = O2.cloudFileLocalFolder().appendingPathComponent(filePath)
                     fulfill(url)
                 }else {
                     reject(O2DBError.EmptyResultError)
