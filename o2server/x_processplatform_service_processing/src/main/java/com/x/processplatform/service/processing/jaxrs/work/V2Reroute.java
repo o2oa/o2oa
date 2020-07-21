@@ -65,6 +65,7 @@ class V2Reroute extends BaseAction {
 				}
 				emc.beginTransaction(Work.class);
 				emc.beginTransaction(Task.class);
+				emc.beginTransaction(Read.class);
 				emc.beginTransaction(WorkLog.class);
 				/** 重新设置表单 */
 				setForm(business, work, activity);
