@@ -1035,16 +1035,16 @@ public class AttendanceDetailFactory extends AbstractFactory {
 		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
 		cq.select(root.get(AttendanceDetail_.id));
 		Predicate p = cb.equal( root.get( AttendanceDetail_.recordDateString ), recordDate );
-		if( StringUtils.equalsAnyIgnoreCase("onDuty")){
+		if( StringUtils.equalsAnyIgnoreCase("onDuty", type)){
 			Predicate p_type = cb.lessThan( root.get( AttendanceDetail_.onDutyTime ), deadlineTime);
 			p = cb.and( p, p_type );
-		}else if(StringUtils.equalsAnyIgnoreCase("offDuty")){
+		}else if(StringUtils.equalsAnyIgnoreCase("offDuty", type)){
 			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.offDutyTime ), deadlineTime);
 			p = cb.and( p, p_type );
-		}else if(StringUtils.equalsAnyIgnoreCase("morningOffDuty")){
+		}else if(StringUtils.equalsAnyIgnoreCase("morningOffDuty", type)){
 			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.morningOffDutyTime ), deadlineTime);
 			p = cb.and( p, p_type );
-		}else if(StringUtils.equalsAnyIgnoreCase("afternoonOnDuty")){
+		}else if(StringUtils.equalsAnyIgnoreCase("afternoonOnDuty", type)){
 			Predicate p_type = cb.lessThan(root.get( AttendanceDetail_.afternoonOnDutyTime ), deadlineTime);
 			p = cb.and( p, p_type );
 		}else{
