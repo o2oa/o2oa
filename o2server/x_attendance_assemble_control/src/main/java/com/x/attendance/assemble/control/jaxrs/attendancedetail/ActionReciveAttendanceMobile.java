@@ -165,7 +165,8 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 				woSignFeature.setSignDate( signDate );
 			}
 
-			attendanceDetailMobile.setCheckin_type( woSignFeature.getCheckinType() );
+			//attendanceDetailMobile.setCheckin_type( woSignFeature.getCheckinType() );
+			attendanceDetailMobile.setCheckin_type(wrapIn.getCheckin_type());
 			if( StringUtils.isEmpty( wrapIn.getSignDescription() )){
 				attendanceDetailMobile.setSignDescription( woSignFeature.getCheckinType() );
 			}else{
@@ -209,7 +210,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 //		@FieldDescribe( "打卡记录日期字符串：yyyy-mm-dd, 必须填写." )
 		private String recordDateString;
 
-//		@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
+		@FieldDescribe("打卡类型。字符串，目前有：上午上班打卡，上午下班打卡，下午上班打卡，下午下班打卡，外出打卡，午间打卡")
 		private String checkin_type;
 
 		@FieldDescribe("打卡时间，可以为空，为空则取服务器当前时间。Unix时间戳")

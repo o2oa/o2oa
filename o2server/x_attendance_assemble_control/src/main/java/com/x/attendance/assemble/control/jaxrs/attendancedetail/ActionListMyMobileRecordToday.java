@@ -127,7 +127,7 @@ public class ActionListMyMobileRecordToday extends BaseAction {
 							//2-三次打卡（上午上班，下午下班加中午一次共三次）
 							WoSignFeature scheduleInfo3 = new WoSignFeature();
 							scheduleInfo3.setSignSeq(3);
-							scheduleInfo3.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON_ONDUTY );
+							scheduleInfo3.setCheckinType( AttendanceDetailMobile.CHECKIN_TYPE_AFTERNOON );
 							scheduleInfo3.setSignTime(scheduleSetting.getMiddayRestEndTime());
 							scheduleInfo3.setSignDate( signDate );
 							scheduleInfos.add(scheduleInfo3);

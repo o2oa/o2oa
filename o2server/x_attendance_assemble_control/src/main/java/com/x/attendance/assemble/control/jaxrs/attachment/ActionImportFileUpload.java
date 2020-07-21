@@ -122,8 +122,11 @@ public class ActionImportFileUpload {
 				file.delete();
 			}
 			file.createNewFile();
+		
+			
 			try {
 				output = new FileOutputStream(importFilePath + importFileName);
+				//output = new FileOutputStream(file);
 				output.write( content );
 				output.flush();
 			} catch (Exception e) {
