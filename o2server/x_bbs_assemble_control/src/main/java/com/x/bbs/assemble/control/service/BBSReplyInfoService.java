@@ -17,6 +17,8 @@ import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+import com.x.bbs.entity.BBSUserInfo;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -55,6 +57,8 @@ public class BBSReplyInfoService {
 		BBSSectionInfo _sectionInfo = null;
 		BBSSectionInfo _mainSectoinInfo = null;
 		BBSForumInfo _forumInfo = null;
+		BBSUserInfo _BBSUserInfo = null;
+		
 		if( _bBSReplyInfo.getId() == null ){
 			_bBSReplyInfo.setId( BBSReplyInfo.createId() );
 		}
@@ -111,7 +115,16 @@ public class BBSReplyInfoService {
 				_forumInfo.setReplyTotal( _forumInfo.getReplyTotal() + 1 );
 				emc.check( _forumInfo, CheckPersistType.all );
 			}
+			
 			emc.commit();
+			
+			//个人回复数增加1
+			BBSUserInfoService userInfoService = new BBSUserInfoService();
+			BBSUserInfo userInfo = userInfoService.getByUserName( _bBSReplyInfo.getCreatorName());
+			userInfo.setReplyCount(userInfo.getReplyCount() + 1);
+			userInfo.setReplyCountToday(userInfo.getReplyCountToday() + 1);
+			userInfoService.save(userInfo);
+			
 		}catch( Exception e ){
 			logger.warn( "system find BBSReplyInfo{'id':'"+_bBSReplyInfo.getId()+"'} got an exception!" );
 			throw e;
