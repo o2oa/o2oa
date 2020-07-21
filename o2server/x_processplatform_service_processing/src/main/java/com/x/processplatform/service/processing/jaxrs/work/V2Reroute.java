@@ -18,6 +18,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
@@ -75,15 +76,18 @@ class V2Reroute extends BaseAction {
 				if (ListTools.isNotEmpty(wi.getManualForceTaskIdentityList())) {
 					work.getProperties().setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
 				}
-				removeTask(business, work);
 				if (BooleanUtils.isTrue(wi.getMergeWork())) {
 					/* 合并工作 */
 					work.setSplitting(false);
 					work.setSplitToken("");
 					work.getSplitTokenList().clear();
 					work.setSplitValue("");
+					removeAllTask(business, work);
+					redirectOtherRead(business, work);
 					removeOtherWork(business, work);
 					removeOtherWorkLog(business, work);
+				} else {
+					removeTask(business, work);
 				}
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
@@ -93,54 +97,6 @@ class V2Reroute extends BaseAction {
 			result.setData(wo);
 			return result;
 		};
-		// Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-		// public ActionResult<Wo> call() throws Exception {
-		// ActionResult<Wo> result = new ActionResult<>();
-		// Work work;
-		// try (EntityManagerContainer emc =
-		// EntityManagerContainerFactory.instance().create()) {
-		// Business business = new Business(emc);
-		// work = emc.find(id, Work.class);
-		// if (null == work) {
-		// throw new ExceptionEntityNotExist(id, Work.class);
-		// }
-		// Activity activity = business.element().getActivity(wi.getActivity());
-		// if (!StringUtils.equals(work.getProcess(), activity.getProcess())) {
-		// throw new ExceptionProcessNotMatch();
-		// }
-		// emc.beginTransaction(Work.class);
-		// emc.beginTransaction(Task.class);
-		// emc.beginTransaction(WorkLog.class);
-		// /** 重新设置表单 */
-		// setForm(business, work, activity);
-		// work.setDestinationActivity(activity.getId());
-		// work.setDestinationActivityType(activity.getActivityType());
-		// work.setDestinationRoute("");
-		// work.setDestinationRouteName("");
-		// work.getProperties().setManualForceTaskIdentityList(new ArrayList<String>());
-		// if (ListTools.isNotEmpty(wi.getManualForceTaskIdentityList())) {
-		// work.getProperties().setManualForceTaskIdentityList(wi.getManualForceTaskIdentityList());
-		// }
-		// removeTask(business, work);
-		// if (BooleanUtils.isTrue(wi.getMergeWork())) {
-		// /* 合并工作 */
-		// work.setSplitting(false);
-		// work.setSplitToken("");
-		// work.getSplitTokenList().clear();
-		// work.setSplitValue("");
-		// removeOtherWork(business, work);
-		// removeOtherWorkLog(business, work);
-		// }
-		// emc.check(work, CheckPersistType.all);
-		// emc.commit();
-		// }
-
-		// Wo wo = new Wo();
-		// wo.setValue(true);
-		// result.setData(wo);
-		// return result;
-		// }
-		// };
 		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
 
 	}
@@ -164,8 +120,7 @@ class V2Reroute extends BaseAction {
 
 	private void removeTask(Business business, Work work) throws Exception {
 		/* 删除可能的待办 */
-		List<Task> os = business.entityManagerContainer().listEqual(Task.class, Task.activityToken_FIELDNAME,
-				work.getActivityToken());
+		List<Task> os = business.entityManagerContainer().listEqual(Task.class, Task.work_FIELDNAME, work.getId());
 		os.stream().forEach(o -> {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
@@ -174,6 +129,30 @@ class V2Reroute extends BaseAction {
 				logger.error(e);
 			}
 		});
+	}
+
+	private void redirectOtherRead(Business business, Work work) throws Exception {
+		business.entityManagerContainer()
+				.listEqualAndNotEqual(Read.class, Read.job_FIELDNAME, work.getJob(), Read.work_FIELDNAME, work.getId())
+				.stream().forEach(o -> {
+					try {
+						o.setWork(work.getId());
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
+	}
+
+	private void removeAllTask(Business business, Work work) throws Exception {
+		business.entityManagerContainer().listEqual(Task.class, Task.job_FIELDNAME, work.getJob()).stream()
+				.forEach(o -> {
+					try {
+						business.entityManagerContainer().remove(o, CheckRemoveType.all);
+						MessageFactory.task_delete(o);
+					} catch (Exception e) {
+						logger.error(e);
+					}
+				});
 	}
 
 	private void removeOtherWork(Business business, Work work) throws Exception {
