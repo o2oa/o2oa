@@ -174,9 +174,23 @@ class ActionProcessing extends BaseAction {
 	private void processingTask() throws Exception {
 		this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_TASK);
 		this.processing_processingWork(ProcessingAttributes.TYPE_TASK);
-		this.processing_record(Record.TYPE_TASK);
-		this.processing_updateTaskCompleted();
-		this.processing_updateTask();
+		//流程流转到取消环节，此时工作已被删除
+		boolean flag = true;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
+					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, task.getJob()) == 0)) {
+				flag = false;
+			}
+		}
+		if(flag) {
+			this.processing_record(Record.TYPE_TASK);
+			this.processing_updateTaskCompleted();
+			this.processing_updateTask();
+		}else{
+			record = new Record(workLog, task);
+			record.setCompleted(true);
+			record.setType(Record.TYPE_TASK);
+		}
 	}
 
 	private String processing_processingTask(String processType) throws Exception {
