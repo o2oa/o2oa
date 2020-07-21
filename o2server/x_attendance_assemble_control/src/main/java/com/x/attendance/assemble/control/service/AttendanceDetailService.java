@@ -235,54 +235,60 @@ public class AttendanceDetailService {
 		if( attendanceDetail == null ){
 			throw new Exception("attendanceDetail can not be null!");
 		}
+		List<String> ids = null;
+		List<AttendanceDetail> attendanceDetailList = null;
+		AttendanceDetail attendanceDetail_old = null;
+		Business business = new Business( emc );
 		
-		emc.beginTransaction( AttendanceDetail.class );
-		emc.persist( attendanceDetail, CheckPersistType.all);	
-		emc.commit();
+		//如果不存在，则看看该员工当天的打卡信息是否已经存在？
+		ids = business.getAttendanceDetailFactory().listByEmployeeNameAndDate( attendanceDetail.getEmpName(), attendanceDetail.getRecordDateString() );
+		if( ids != null && !ids.isEmpty() ){
+			attendanceDetailList = business.getAttendanceDetailFactory().list(ids);
+		}
+		if( attendanceDetailList != null && !attendanceDetailList.isEmpty() ){
+			attendanceDetail_old = attendanceDetailList.get(0);
+		}
+		
+		if( attendanceDetail_old != null ){
+			//需要进行数据更新			
+			attendanceDetail_old.refresh();
+			attendanceDetail_old.setEmpName( attendanceDetail.getEmpName() );
+			attendanceDetail_old.setEmpNo( attendanceDetail.getEmpNo() );
+			attendanceDetail_old.setRecordDate( attendanceDetail.getRecordDate() );
+			attendanceDetail_old.setRecordDateString( attendanceDetail.getRecordDateString() );
+			attendanceDetail_old.setRecordStatus( 0 );
+			if(attendanceDetail.getOnDutyTime()!= null && attendanceDetail.getOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
+			}
+			if(attendanceDetail.getMorningOffDutyTime()!= null && attendanceDetail.getMorningOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setMorningOffDutyTime( attendanceDetail.getMorningOffDutyTime() );
+			}
+			if(attendanceDetail.getAfternoonOnDutyTime()!= null && attendanceDetail.getAfternoonOnDutyTime().trim().length() > 0){
+				attendanceDetail_old.setAfternoonOnDutyTime( attendanceDetail.getAfternoonOnDutyTime() );
+			}
+			if(attendanceDetail.getOffDutyTime()!= null && attendanceDetail.getOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setOffDutyTime( attendanceDetail.getOffDutyTime() );
+			}
+			 
+			 
+			//emc.beginTransaction( AttendanceSetting.class );
+			emc.beginTransaction( AttendanceDetail.class );
+			emc.check( attendanceDetail_old, CheckPersistType.all);	
+			emc.commit();
+			attendanceDetail = attendanceDetail_old;
+		}else{
+			//需要新增打卡信息数据
+			if( attendanceDetail.getId() == null ) {
+				attendanceDetail.setId( AttendanceDetail.createId() );
+			}
+			emc.beginTransaction( AttendanceDetail.class );
+			emc.persist( attendanceDetail, CheckPersistType.all);	
+			emc.commit();
+		}
 		return attendanceDetail;
 	}
 	
-//	public AttendanceDetail save( EntityManagerContainer emc, AttendanceDetail attendanceDetail ) throws Exception {
-//		if( attendanceDetail == null ){
-//			throw new Exception("attendanceDetail can not be null!");
-//		}
-//		List<String> ids = null;
-//		List<AttendanceDetail> attendanceDetailList = null;
-//		AttendanceDetail attendanceDetail_old = null;
-//		Business business = new Business( emc );
-//		//先看看同一个ID是否存在
-//		attendanceDetail_old = emc.find( attendanceDetail.getId(), AttendanceDetail.class);
-//		//如果不存在，则看看该员工当天的打卡信息是否已经存在？
-//		if( attendanceDetail_old == null ){
-//			ids = business.getAttendanceDetailFactory().listByEmployeeNameAndDate( attendanceDetail.getEmpName(), attendanceDetail.getRecordDateString() );
-//			if( ids != null && !ids.isEmpty() ){
-//				attendanceDetailList = business.getAttendanceDetailFactory().list(ids);
-//			}
-//			if( attendanceDetailList != null && !attendanceDetailList.isEmpty() ){
-//				attendanceDetail_old = attendanceDetailList.get(0);
-//			}
-//		}
-//		if( attendanceDetail_old != null ){
-//			//需要进行数据更新
-//			emc.beginTransaction( AttendanceSetting.class );
-//			attendanceDetail_old.refresh();
-//			attendanceDetail_old.setEmpName( attendanceDetail.getEmpName() );
-//			attendanceDetail_old.setEmpNo( attendanceDetail.getEmpNo() );
-//			attendanceDetail_old.setRecordDate( attendanceDetail.getRecordDate() );
-//			attendanceDetail_old.setRecordDateString( attendanceDetail.getRecordDateString() );
-//			attendanceDetail_old.setRecordStatus( 0 );
-//			attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
-//			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOnWorkTime() );
-//			emc.check( attendanceDetail_old, CheckPersistType.all);	
-//			emc.commit();
-//		}else{
-//			//需要新增打卡信息数据
-//			emc.beginTransaction( AttendanceDetail.class );
-//			emc.persist( attendanceDetail, CheckPersistType.all);	
-//			emc.commit();
-//		}
-//		return attendanceDetail;
-//	}
+
 
 	public AttendanceDetailMobile save( EntityManagerContainer emc, AttendanceDetailMobile attendanceDetailMobile ) throws Exception {
 		if( attendanceDetailMobile == null ){
