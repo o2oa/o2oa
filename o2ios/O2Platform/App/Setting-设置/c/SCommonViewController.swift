@@ -91,11 +91,24 @@ class SCommonViewController: UITableViewController {
                 self.group.leave()
             })
         }))
+        self.group.enter()
+        DispatchQueue.main.async(group: self.group, execute: DispatchWorkItem(block: {
+            self.clearO2CacheFolder()
+            print("清除本地缓存目录")
+            self.group.leave()
+        }))
         
         self.group.notify(queue: DispatchQueue.main) {
             self.showSuccess(title: "清理完成")
             self.notify()
         }
+    }
+    
+    ///清楚本地的缓存文件
+    private func clearO2CacheFolder() {
+        O2.deleteFolder(folder: O2.cloudFileLocalFolder())
+        O2.deleteFolder(folder: O2.base64CacheLocalFolder())
+        O2.deleteFolder(folder: O2.inforCacheLocalFolder())
     }
     
     private func notify() {

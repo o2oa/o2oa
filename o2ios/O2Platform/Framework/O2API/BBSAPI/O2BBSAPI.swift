@@ -137,7 +137,7 @@ extension O2BBSAPI:TargetType{
     
     func getDownDest(filename: String) -> DownloadDestination {
         let myDest:DownloadDestination = { temporaryURL, response in
-            let fileURL = O2CloudFileManager.shared.cloudFileLocalFolder().appendingPathComponent(filename)
+            let fileURL = O2.cloudFileLocalFolder().appendingPathComponent(filename)
             return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
             
         }

@@ -93,8 +93,6 @@ extension O2InformationAPI:TargetType {
             return .requestPlain
         case .docAttachDownload(_):
             return .downloadDestination(self.getDownDest()!)
-        default:
-            return .requestPlain
         }
     }
     
@@ -106,8 +104,7 @@ extension O2InformationAPI:TargetType {
         switch self {
         case .docAttachDownload(let attachmentInfo):
             let fileName = attachmentInfo.name
-             let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let fileURL = documentsURL.appendingPathComponent("O2").appendingPathComponent("infor").appendingPathComponent(fileName!)
+            let fileURL = O2.inforCacheLocalFolder().appendingPathComponent(fileName!)
             return NSURL(string: fileURL.absoluteString)
         default:
             return nil
@@ -118,11 +115,9 @@ extension O2InformationAPI:TargetType {
         switch self {
         case .docAttachDownload(let attachmentInfo):
             let myDest:DownloadDestination = { temporaryURL, response in
-                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 let fileName = attachmentInfo.name
-                let fileURL = documentsURL.appendingPathComponent("O2").appendingPathComponent("infor").appendingPathComponent(fileName!)
+                let fileURL = O2.inforCacheLocalFolder().appendingPathComponent(fileName!)
                 return (fileURL, [.removePreviousFile, .createIntermediateDirectories])
-                
             }
             return myDest
         default:

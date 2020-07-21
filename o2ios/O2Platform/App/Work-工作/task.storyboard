@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -435,51 +435,41 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="我的报销单" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cNB-vb-QcB">
-                                            <rect key="frame" x="58" y="19" width="336" height="16"/>
+                                            <rect key="frame" x="60" y="8.0000000000000018" width="334" height="19.666666666666671"/>
                                             <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="14"/>
                                             <color key="textColor" red="0.070588235294117646" green="0.070588235294117646" blue="0.070588235294117646" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="核稿" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXO-41-4yT">
-                                            <rect key="frame" x="58" y="38" width="238" height="15"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="15" id="MQy-8H-jwG"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="PingFangSC-Thin" family="PingFang SC" pointSize="12"/>
-                                            <color key="textColor" red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="El2-Gs-GuT">
-                                            <rect key="frame" x="14" y="28" width="20" height="14"/>
+                                            <rect key="frame" x="12" y="23" width="24" height="24"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="20" id="dCK-xO-15s"/>
-                                                <constraint firstAttribute="width" constant="20" id="e2w-ZX-1pG"/>
+                                                <constraint firstAttribute="height" constant="24" id="dCK-xO-15s"/>
+                                                <constraint firstAttribute="width" constant="24" id="e2w-ZX-1pG"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2015.10.10 10:27" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Sc-3D-x8m">
-                                            <rect key="frame" x="233" y="43" width="124" height="15"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="124" id="Ng5-na-Rxu"/>
-                                            </constraints>
+                                            <rect key="frame" x="293.33333333333331" y="41" width="88.666666666666686" height="17"/>
                                             <fontDescription key="fontDescription" name="PingFangSC-Thin" family="PingFang SC" pointSize="12"/>
                                             <color key="textColor" red="0.73333333333333328" green="0.80784313725490198" blue="0.82745098039215681" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="核稿" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dXO-41-4yT">
+                                            <rect key="frame" x="60" y="41" width="24" height="17"/>
+                                            <fontDescription key="fontDescription" name="PingFangSC-Thin" family="PingFang SC" pointSize="12"/>
+                                            <color key="textColor" red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="4Sc-3D-x8m" firstAttribute="centerY" secondItem="3D0-U7-9Ot" secondAttribute="centerY" constant="15.5" id="9qR-aG-MKj"/>
-                                        <constraint firstItem="El2-Gs-GuT" firstAttribute="leading" secondItem="3D0-U7-9Ot" secondAttribute="leadingMargin" constant="-6" id="Okf-pj-YfM"/>
-                                        <constraint firstItem="4Sc-3D-x8m" firstAttribute="leading" secondItem="3D0-U7-9Ot" secondAttribute="leading" constant="233" id="Psq-a9-aWV"/>
-                                        <constraint firstItem="cNB-vb-QcB" firstAttribute="top" secondItem="3D0-U7-9Ot" secondAttribute="topMargin" constant="8" id="Ysx-ZF-Q8p"/>
-                                        <constraint firstItem="El2-Gs-GuT" firstAttribute="top" secondItem="3D0-U7-9Ot" secondAttribute="topMargin" constant="17" id="cNt-D5-mFU"/>
-                                        <constraint firstItem="4Sc-3D-x8m" firstAttribute="top" secondItem="3D0-U7-9Ot" secondAttribute="topMargin" constant="32" id="cxE-iv-lEB"/>
+                                        <constraint firstItem="El2-Gs-GuT" firstAttribute="leading" secondItem="3D0-U7-9Ot" secondAttribute="leading" constant="12" id="RkS-cN-bqt"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="4Sc-3D-x8m" secondAttribute="trailing" constant="12" id="Swx-yV-Uua"/>
+                                        <constraint firstItem="cNB-vb-QcB" firstAttribute="top" secondItem="3D0-U7-9Ot" secondAttribute="top" constant="8" id="XMp-E3-YOU"/>
+                                        <constraint firstAttribute="bottom" secondItem="4Sc-3D-x8m" secondAttribute="bottom" constant="12" id="eT6-gu-ONE"/>
                                         <constraint firstItem="El2-Gs-GuT" firstAttribute="centerY" secondItem="3D0-U7-9Ot" secondAttribute="centerY" id="jsT-PR-OTY"/>
                                         <constraint firstItem="cNB-vb-QcB" firstAttribute="leading" secondItem="dXO-41-4yT" secondAttribute="leading" id="kr1-dv-RFg"/>
-                                        <constraint firstItem="cNB-vb-QcB" firstAttribute="trailing" secondItem="dXO-41-4yT" secondAttribute="trailing" constant="98" id="lWn-8K-Thp"/>
+                                        <constraint firstAttribute="bottom" secondItem="dXO-41-4yT" secondAttribute="bottom" constant="12" id="n8y-9k-s8g"/>
                                         <constraint firstItem="cNB-vb-QcB" firstAttribute="trailing" secondItem="3D0-U7-9Ot" secondAttribute="trailingMargin" id="sld-rx-UmN"/>
                                         <constraint firstItem="cNB-vb-QcB" firstAttribute="leading" secondItem="El2-Gs-GuT" secondAttribute="trailing" constant="24" id="v8r-wZ-ciT"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="dXO-41-4yT" secondAttribute="bottom" constant="6" id="yka-dl-Gvh"/>
-                                        <constraint firstItem="dXO-41-4yT" firstAttribute="top" secondItem="cNB-vb-QcB" secondAttribute="bottom" constant="3" id="zJ9-oI-5xF"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -670,11 +660,11 @@
             <point key="canvasLocation" x="1741" y="-1051"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="QJV-sf-Oi5"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="icon_daiban" width="38" height="38"/>
         <image name="todoedStatusIcon" width="32" height="32"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="QJV-sf-Oi5"/>
-    </inferredMetricsTieBreakers>
 </document>

@@ -421,13 +421,11 @@ class TodoTaskViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoTaskTableViewCell", for: indexPath) as! TodoTaskTableViewCell
         if   !self.searchController.isActive {
             let model = self.models[indexPath.row]
-            cell.cellModel = model
-
+            cell.setData(cellModel: model)
         }else{
             let model = self.filterModels[indexPath.row]
-            cell.cellModel = model
+            cell.setData(cellModel: model)
         }
-
         return cell
     }
     

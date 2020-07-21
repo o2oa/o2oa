@@ -4,6 +4,7 @@
 
 import Foundation 
 import ObjectMapper
+import HandyJSON
 
 
 class O2Application : NSObject, NSCoding, Mappable{
@@ -129,4 +130,16 @@ class O2Application : NSObject, NSCoding, Mappable{
 
 	}
 
+}
+
+
+class O2ApplicationIcon: NSObject, DataModel {
+    @objc var icon: String?
+    @objc var iconHue: String?
+    
+    required override init() {
+    }
+    
+    func mapping(mapper: HelpingMapper) {
+    }
 }

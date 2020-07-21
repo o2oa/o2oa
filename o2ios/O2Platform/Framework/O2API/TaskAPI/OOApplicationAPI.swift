@@ -17,6 +17,7 @@ enum OOApplicationAPI {
     case applicationItem(String)
     case availableIdentityWithProcess(String)
     case startProcess(String, String, String) // processId identity title
+    case icon(String)
 }
 
 // MARK:- 上下文实现
@@ -53,6 +54,8 @@ extension OOApplicationAPI:TargetType {
             return "/jaxrs/process/list/available/identity/process/\(processId)"
         case .startProcess(let processId, _, _):
             return "/jaxrs/work/process/\(processId)"
+        case .icon(let applicationId):
+            return "/jaxrs/application/\(applicationId)/icon"
         }
     }
     
