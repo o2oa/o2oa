@@ -4,6 +4,7 @@ MWF.xApplication.process.DictionaryDesigner = MWF.xApplication.process.Dictionar
 MWF.APPDD = MWF.xApplication.process.DictionaryDesigner;
 MWF.require("MWF.widget.Common", null, false);
 MWF.xDesktop.requireApp("process.DictionaryDesigner", "lp."+MWF.language, null, false);
+MWF.require("MWF.widget.JavascriptEditor", null, false);
 MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
@@ -28,7 +29,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         this.node = this.designer.designNode;
         this.tab = this.designer.tab;
 
-        this.areaNode = new Element("div", {"styles": {"overflow": "auto"}});
+        this.areaNode = new Element("div.areaNode");
 
         //MWF.require("MWF.widget.ScrollBar", function(){
         //    new MWF.widget.ScrollBar(this.areaNode, {"distance": 100});
@@ -50,6 +51,87 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
     },
+    loadTab: function(callback){
+        var _self = this;
+        MWF.require("MWF.widget.Tab", null, false);
+        this.designTabNode = new Element("div").inject(this.areaNode);
+        this.designTab = new MWF.widget.Tab(this.designTabNode, {"style": "design"});
+        this.designTab.load();
+        this.designTabPageAreaNode = Element("div");
+
+        this.designNode = new Element("div", {"styles": {"overflow": "auto","background-color":"#fff"}}).inject(this.designTabPageAreaNode);
+
+        this.designTabScriptAreaNode = Element("div", {"styles": { "height": "100%" }});
+        this.scriptNode = new Element("div.scriptNode", {"styles": {"background-color":"#fff"}}).inject(this.designTabScriptAreaNode);
+
+        this.designPage = this.designTab.addTab(this.designTabPageAreaNode, this.designer.lp.design);
+        this.scriptPage = this.designTab.addTab(this.designTabScriptAreaNode, "JSON");
+        this.designPage.showTabIm = function(callback){
+            if( _self.scriptEditor && _self.isChanged){
+                try{
+                    var value = _self.scriptEditor.getValue();
+                    var v = JSON.parse(value);
+
+                    if (!this.isShow){
+                        this.tab.pages.each(function(page){
+                            if (page.isShow) page.hideIm();
+                        });
+                        this.showIm(callback);
+                    }
+
+                }catch (e) {
+                    _self.designer.notice( _self.designer.lp.notice.jsonParseError, "error", _self.node, {"x": "left", "y": "bottom"});
+                }
+            }else{
+                if (!this.isShow){
+                    this.tab.pages.each(function(page){
+                        if (page.isShow) page.hideIm();
+                    });
+                    this.showIm(callback);
+                }
+            }
+        }
+
+        // this.setScriptPageEvent();
+        this.designPage.showTabIm();
+        this.scriptPage.addEvent("postShow", function(){
+            if (this.scriptEditor){
+                var value = JSON.stringify(this.data.data, null, "\t");
+                if (value) this.scriptEditor.setValue(value);
+                this.scriptEditor.focus();
+            }else{
+                this.loadScriptEditor();
+            }
+            this.fireEvent("resize");
+        }.bind(this));
+        this.designPage.addEvent("postShow", function(){
+            if( this.scriptEditor && this.isChanged){
+                try{
+                    var value = this.scriptEditor.getValue();
+                    this.data.data = JSON.parse(value);
+                    this.reload();
+                    this.isChanged = false;
+                }catch (e) {
+                    this.designer.notice( this.designer.lp.notice.jsonParseError, "error", this.node, {"x": "left", "y": "bottom"});
+                }
+            }
+            this.fireEvent("resize");
+        }.bind(this));
+    },
+    loadScriptEditor:function(){
+        var value = JSON.stringify(this.data.data, null, "\t");
+        this.scriptEditor = new MWF.widget.JavascriptEditor(this.scriptNode, {"option": {"value": value, "mode" : "json" }});
+        this.scriptEditor.load(function(){
+
+            if (value) this.scriptEditor.setValue(value);
+
+            this.scriptEditor.addEditorEvent("change", function(e){
+                if (!this.isChanged){
+                    this.isChanged = true;
+                }
+            }.bind(this));
+        }.bind(this));
+    },
     autoSave: function(){
         this.autoSaveTimerID = window.setInterval(function(){
             if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFDictionaryAutoSaveCheck");
@@ -61,9 +143,9 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         }.bind(this), 60000);
     },
     createTitle: function(){
-        this.itemsNode = new Element("div", {"styles": this.css.itemsNode}).inject(this.areaNode);
-        this.typesNode = new Element("div", {"styles": this.css.typesNode}).inject(this.areaNode);
-        this.valuesNode = new Element("div", {"styles": this.css.valuesNode}).inject(this.areaNode);
+        this.itemsNode = new Element("div", {"styles": this.css.itemsNode}).inject(this.designNode);
+        this.typesNode = new Element("div", {"styles": this.css.typesNode}).inject(this.designNode);
+        this.valuesNode = new Element("div", {"styles": this.css.valuesNode}).inject(this.designNode);
 
         this.itemTitleNode = new Element("div", {"styles": this.css.itemTitleNode}).inject(this.itemsNode);
         this.typeTitleNode = new Element("div", {"styles": this.css.typeTitleNode}).inject(this.typesNode);
@@ -82,6 +164,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
     },
 
     load : function(){
+        this.loadTab();
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
 
@@ -138,15 +221,34 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         if (this.searchNode) searchY = this.searchNode.getSize().y;
         var y = size.y - tabSize.y - searchY;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        this.designNode.setStyle("height", ""+(y-18)+"px");
+        this.scriptNode.setStyle("height", ""+(y-18)+"px");
+        if (this.scriptEditor) if (this.scriptEditor.editor) this.scriptEditor.editor.resize();
     },
 
+    reload : function(){
+        this.items = [];
+        this.designNode.empty();
+        this.createTitle();
+        this.createRootItem();
+    },
     createRootItem: function() {
         this.items.push(new MWF.xApplication.process.DictionaryDesigner.Dictionary.item("ROOT", this.data.data, null, 0, this, true));
     },
 
     saveSilence: function(){
         if (!this.isSave){
+
+            if( this.scriptPage.isShow ){
+                if( this.scriptEditor ){
+                    try{
+                        var value = this.scriptEditor.getValue();
+                        this.data.data = JSON.parse(value);
+                    }catch (e) {
+                        return false;
+                    }
+                }
+            }
 
             var name = this.designer.propertyNameNode.get("value");
             var alias = this.designer.propertyAliasNode.get("value");
@@ -177,6 +279,19 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
     save: function(callback){
         if (!this.isSave){
             if (this.designer.tab.showPage==this.page){
+
+                if( this.scriptPage.isShow ){
+                    if( this.scriptEditor ){
+                        try{
+                            var value = this.scriptEditor.getValue();
+                            this.data.data = JSON.parse(value);
+                        }catch (e) {
+                            this.designer.notice( this.designer.lp.notice.jsonParseError, "error", this.node, {"x": "left", "y": "bottom"});
+                            return false;
+                        }
+                    }
+                }
+
                 var name = this.designer.propertyNameNode.get("value");
                 var alias = this.designer.propertyAliasNode.get("value");
                 var description = this.designer.propertyDescriptionNode.get("value");
@@ -228,7 +343,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
         this.setAreaNodeSize();
     },
     createSearchNode: function(){
-        this.searchNode = new Element("div", {"styles": this.css.searchNode}).inject(this.areaNode, "before");
+        this.searchNode = new Element("div", {"styles": this.css.searchNode}).inject(this.designNode, "before");
         this.searchInputNode = new Element("div", {"styles": this.css.searchInputNode}).inject(this.searchNode);
         this.searchInput = new Element("input", {"styles": this.css.searchInput}).inject(this.searchInputNode);
 
@@ -283,7 +398,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
                     if (child.key.indexOf(key)!=-1){
                         child.selected();
                         this.currentSearchItem = child;
-                        new Fx.Scroll(this.areaNode).toElement(child.itemNode);
+                        new Fx.Scroll(this.designNode).toElement(child.itemNode);
                         return true;
                     }else{
                         if (child.type=="object"){
@@ -590,23 +705,23 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
     createChildrenItems: function(){
         if (!this.childrenItemCreated){
             switch(this.type){
-                    case "array":
-                        this.value.each(function(v, idx){
-                            var item = this.createNewItem(idx, v, this, this.level+1, this.dictionary, false);
-                            if (this.children.length) this.children[this.children.length-1].nextSibling = item;
-                            this.children.push(item);
-                        }.bind(this));
-                        break;
-                    case "object":
-                        Object.each(this.value, function(v, key){
-                            var item = this.createNewItem(key, v, this, this.level+1, this.dictionary, false);
-                            if (this.children.length) this.children[this.children.length-1].nextSibling = item;
-                            this.children.push(item);
-                        }.bind(this));
-                        break;
-                    default:
-                        //nothing
-                        break;
+                case "array":
+                    this.value.each(function(v, idx){
+                        var item = this.createNewItem(idx, v, this, this.level+1, this.dictionary, false);
+                        if (this.children.length) this.children[this.children.length-1].nextSibling = item;
+                        this.children.push(item);
+                    }.bind(this));
+                    break;
+                case "object":
+                    Object.each(this.value, function(v, key){
+                        var item = this.createNewItem(key, v, this, this.level+1, this.dictionary, false);
+                        if (this.children.length) this.children[this.children.length-1].nextSibling = item;
+                        this.children.push(item);
+                    }.bind(this));
+                    break;
+                default:
+                    //nothing
+                    break;
             }
             this.childrenItemCreated = true;
         }
@@ -1002,7 +1117,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
     editValue: function(){
         //this.inEdit
         this.valueTextNode.empty();
-    //    this.valueTextNode.removeEvents("mousedown");
+        //    this.valueTextNode.removeEvents("mousedown");
         this.editValueNode = new Element("input", {"styles": this.css.itemEditValueNode}).inject(this.valueTextNode);
         this.editValueNode.set("value", this.value);
 
@@ -1049,12 +1164,12 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
 
         this.setNodeText();
         this.dictionary.jsonParse.loadObjectTree();
-    //    if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", function(e){this.editValue();}.bind(this));
+        //    if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", function(e){this.editValue();}.bind(this));
     },
 
     editKey: function(){
         this.itemTextNode.empty();
-    //    this.itemTextNode.removeEvents("mousedown");
+        //    this.itemTextNode.removeEvents("mousedown");
         this.editKeyNode = new Element("input", {"styles": this.css.itemEditValueNode, "type": "text"}).inject(this.itemTextNode);
         this.editKeyNode.set("value", this.key);
         window.setTimeout(function(){
@@ -1246,5 +1361,3 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.ItemReader= new Class({
 //		this.htmlPath = "../x_component_process_ProcessDesigner//$Process/process.html";
 //	}
 //});
-
-
