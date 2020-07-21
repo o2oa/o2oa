@@ -51,6 +51,87 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
             if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
         }.bind(this));
     },
+    loadTab: function(callback){
+        var _self = this;
+        MWF.require("MWF.widget.Tab", null, false);
+        this.designTabNode = new Element("div").inject(this.areaNode);
+        this.designTab = new MWF.widget.Tab(this.designTabNode, {"style": "design"});
+        this.designTab.load();
+        this.designTabPageAreaNode = Element("div");
+
+        this.designNode = new Element("div", {"styles": {"overflow": "auto","background-color":"#fff"}}).inject(this.designTabPageAreaNode);
+
+        this.designTabScriptAreaNode = Element("div", {"styles": { "height": "100%" }});
+        this.scriptNode = new Element("div.scriptNode", {"styles": {"background-color":"#fff"}}).inject(this.designTabScriptAreaNode);
+
+        this.designPage = this.designTab.addTab(this.designTabPageAreaNode, this.designer.lp.design);
+        this.scriptPage = this.designTab.addTab(this.designTabScriptAreaNode, "JSON");
+        this.designPage.showTabIm = function(callback){
+            if( _self.scriptEditor && _self.isChanged){
+                try{
+                    var value = _self.scriptEditor.getValue();
+                    var v = JSON.parse(value);
+
+                    if (!this.isShow){
+                        this.tab.pages.each(function(page){
+                            if (page.isShow) page.hideIm();
+                        });
+                        this.showIm(callback);
+                    }
+
+                }catch (e) {
+                    _self.designer.notice( _self.designer.lp.notice.jsonParseError, "error", _self.node, {"x": "left", "y": "bottom"});
+                }
+            }else{
+                if (!this.isShow){
+                    this.tab.pages.each(function(page){
+                        if (page.isShow) page.hideIm();
+                    });
+                    this.showIm(callback);
+                }
+            }
+        }
+
+        // this.setScriptPageEvent();
+        this.designPage.showTabIm();
+        this.scriptPage.addEvent("postShow", function(){
+            if (this.scriptEditor){
+                var value = JSON.stringify(this.data.data, null, "\t");
+                if (value) this.scriptEditor.setValue(value);
+                this.scriptEditor.focus();
+            }else{
+                this.loadScriptEditor();
+            }
+            this.fireEvent("resize");
+        }.bind(this));
+        this.designPage.addEvent("postShow", function(){
+            if( this.scriptEditor && this.isChanged){
+                try{
+                    var value = this.scriptEditor.getValue();
+                    this.data.data = JSON.parse(value);
+                    this.reload();
+                    this.isChanged = false;
+                }catch (e) {
+                    this.designer.notice( this.designer.lp.notice.jsonParseError, "error", this.node, {"x": "left", "y": "bottom"});
+                }
+            }
+            this.fireEvent("resize");
+        }.bind(this));
+    },
+    loadScriptEditor:function(){
+        var value = JSON.stringify(this.data.data, null, "\t");
+        this.scriptEditor = new MWF.widget.JavascriptEditor(this.scriptNode, {"option": {"value": value, "mode" : "json" }});
+        this.scriptEditor.load(function(){
+
+            if (value) this.scriptEditor.setValue(value);
+
+            this.scriptEditor.addEditorEvent("change", function(e){
+                if (!this.isChanged){
+                    this.isChanged = true;
+                }
+            }.bind(this));
+        }.bind(this));
+    },
     autoSave: function(){
         this.autoSaveTimerID = window.setInterval(function(){
             if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFDictionaryAutoSaveCheck");
@@ -63,9 +144,9 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
 
     },
     createTitle: function(){
-        this.itemsNode = new Element("div", {"styles": this.css.itemsNode}).inject(this.areaNode);
-        this.typesNode = new Element("div", {"styles": this.css.typesNode}).inject(this.areaNode);
-        this.valuesNode = new Element("div", {"styles": this.css.valuesNode}).inject(this.areaNode);
+        this.itemsNode = new Element("div", {"styles": this.css.itemsNode}).inject(this.designNode);
+        this.typesNode = new Element("div", {"styles": this.css.typesNode}).inject(this.designNode);
+        this.valuesNode = new Element("div", {"styles": this.css.valuesNode}).inject(this.designNode);
 
         this.itemTitleNode = new Element("div", {"styles": this.css.itemTitleNode}).inject(this.itemsNode);
         this.typeTitleNode = new Element("div", {"styles": this.css.typeTitleNode}).inject(this.typesNode);
@@ -84,6 +165,7 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
     },
 
     load : function(){
+        this.loadTab();
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
 
@@ -140,15 +222,34 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
         if (this.searchNode) searchY = this.searchNode.getSize().y;
         var y = size.y - tabSize.y - searchY;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        this.designNode.setStyle("height", ""+(y-18)+"px");
+        this.scriptNode.setStyle("height", ""+(y-18)+"px");
+        if (this.scriptEditor) if (this.scriptEditor.editor) this.scriptEditor.editor.resize();
     },
 
+    reload : function(){
+        this.items = [];
+        this.designNode.empty();
+        this.createTitle();
+        this.createRootItem();
+    },
     createRootItem: function() {
         this.items.push(new MWF.xApplication.cms.DictionaryDesigner.Dictionary.item("ROOT", this.data.data, null, 0, this, true));
     },
 
     saveSilence: function(){
         if (!this.isSave){
+
+            if( this.scriptPage.isShow ){
+                if( this.scriptEditor ){
+                    try{
+                        var value = this.scriptEditor.getValue();
+                        this.data.data = JSON.parse(value);
+                    }catch (e) {
+                        return false;
+                    }
+                }
+            }
 
             var name = this.designer.propertyNameNode.get("value");
             var alias = this.designer.propertyAliasNode.get("value");
@@ -179,6 +280,19 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
     save: function(callback){
         if (!this.isSave){
             if (this.designer.tab.showPage==this.page){
+
+                if( this.scriptPage.isShow ){
+                    if( this.scriptEditor ){
+                        try{
+                            var value = this.scriptEditor.getValue();
+                            this.data.data = JSON.parse(value);
+                        }catch (e) {
+                            this.designer.notice( this.designer.lp.notice.jsonParseError, "error", this.node, {"x": "left", "y": "bottom"});
+                            return false;
+                        }
+                    }
+                }
+
                 var name = this.designer.propertyNameNode.get("value");
                 var alias = this.designer.propertyAliasNode.get("value");
                 var description = this.designer.propertyDescriptionNode.get("value");
@@ -232,7 +346,7 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
         this.setAreaNodeSize();
     },
     createSearchNode: function(){
-        this.searchNode = new Element("div", {"styles": this.css.searchNode}).inject(this.areaNode, "before");
+        this.searchNode = new Element("div", {"styles": this.css.searchNode}).inject(this.designNode, "before");
         this.searchInputNode = new Element("div", {"styles": this.css.searchInputNode}).inject(this.searchNode);
         this.searchInput = new Element("input", {"styles": this.css.searchInput}).inject(this.searchInputNode);
 
@@ -287,7 +401,7 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary = new Class({
                     if (child.key.indexOf(key)!=-1){
                         child.selected();
                         this.currentSearchItem = child;
-                        new Fx.Scroll(this.areaNode).toElement(child.itemNode);
+                        new Fx.Scroll(this.designNode).toElement(child.itemNode);
                         return true;
                     }else{
                         if (child.type=="object"){
