@@ -42,10 +42,11 @@ public class ActionReciveSingleAttendance extends BaseAction {
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		DateOperation dateOperation = new DateOperation();
-		AttendanceDetail attendanceDetail = null;
+		AttendanceDetail attendanceDetail = new AttendanceDetail();
 		Boolean check = true;
 		List<String> ids = null;
 		Wi wrapIn = null;
+		Date datetime = null;
 		try {
 			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
 		} catch (Exception e) {
@@ -68,33 +69,20 @@ public class ActionReciveSingleAttendance extends BaseAction {
 				result.error(exception);
 			}
 		}
-
-		Date datetime = null;
-
-		if (check) {
+		
+		/*if (check) {
 			try {
 				ids = attendanceDetailServiceAdv.listDetailByNameAndDate( wrapIn.getEmpName(), wrapIn.getRecordDateString() );
 				if(ListTools.isNotEmpty(ids)){
 					attendanceDetail = attendanceDetailServiceAdv.get(ids.get(0));
 					if(attendanceDetail==null){
-						/*try {
-							datetime = dateOperation.getDateFromString(wrapIn.getRecordDateString());
-							attendanceDetail.setRecordDate(datetime);
-							attendanceDetail.setRecordDateString(dateOperation.getDateStringFromDate(datetime, "YYYY-MM-DD"));
-							attendanceDetail.setYearString(dateOperation.getYear(datetime));
-							attendanceDetail.setMonthString(dateOperation.getMonth(datetime));
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionAttendanceDetailProcess(e, "员工打卡信息中打卡日期格式异常，格式: yyyy-mm-dd. 日期：" + wrapIn.getRecordDateString());
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}else{*/
 						check = false;
 						Exception exception = new ExceptionDetailNotExists(ids.get(0));
 						result.error(exception);
 					}
 				}else{
+					attendanceDetail = new AttendanceDetail();
+					
 					check = false;
 					Exception exception = new ExceptionSingleDetailNotExists();
 					result.error(exception);
@@ -109,15 +97,59 @@ public class ActionReciveSingleAttendance extends BaseAction {
 			}
 			
 			
+		}*/
+		
+		if (check) {
+			try {
+				datetime = dateOperation.getDateFromString(wrapIn.getRecordDateString());
+				attendanceDetail.setRecordDate(datetime);
+				attendanceDetail.setRecordDateString(dateOperation.getDateStringFromDate(datetime, "YYYY-MM-DD"));
+				attendanceDetail.setYearString(dateOperation.getYear(datetime));
+				attendanceDetail.setMonthString(dateOperation.getMonth(datetime));
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionAttendanceDetailProcess(e, "员工打卡信息中打卡日期格式异常，格式: yyyy-mm-dd. 日期：" + wrapIn.getRecordDateString());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
+		
 		if (check) {
 			if (wrapIn.getOnDutyTime() != null && wrapIn.getOnDutyTime().trim().length() > 0) {
 				try {
 					datetime = dateOperation.getDateFromString(wrapIn.getOnDutyTime());
-					attendanceDetail.setOnDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 上班打卡时间
+					attendanceDetail.setOnDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 上午上班打卡时间
 				} catch (Exception e) {
 					check = false;
-					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工上班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getOnDutyTime());
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工上午上班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getOnDutyTime());
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
+			if (wrapIn.getMorningOffdutyTime() != null && wrapIn.getMorningOffdutyTime().trim().length() > 0) {
+				try {
+					datetime = dateOperation.getDateFromString(wrapIn.getMorningOffdutyTime());
+					attendanceDetail.setMorningOffDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 上午下班打卡时间
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工上午下班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getMorningOffdutyTime());
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
+			if (wrapIn.getAfternoonOnDutyTime() != null && wrapIn.getAfternoonOnDutyTime().trim().length() > 0) {
+				try {
+					datetime = dateOperation.getDateFromString(wrapIn.getAfternoonOnDutyTime());
+					attendanceDetail.setAfternoonOnDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 下午上班打卡时间
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工下午上班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getAfternoonOnDutyTime());
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
@@ -128,7 +160,7 @@ public class ActionReciveSingleAttendance extends BaseAction {
 			if (wrapIn.getOffDutyTime() != null && wrapIn.getOffDutyTime().trim().length() > 0) {
 				try {
 					datetime = dateOperation.getDateFromString(wrapIn.getOffDutyTime());
-					attendanceDetail.setOffDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 上班打卡时间
+					attendanceDetail.setOffDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 下午下班打卡时间
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工下班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getOffDutyTime());
@@ -169,7 +201,7 @@ public class ActionReciveSingleAttendance extends BaseAction {
 		if (check) {
 			try {
 				
-				attendanceDetail = attendanceDetailServiceAdv.save(attendanceDetail);
+				attendanceDetail = attendanceDetailServiceAdv.saveSingle(attendanceDetail);
 				result.setData( new Wo( attendanceDetail.getId() ));
 			} catch (Exception e) {
 				check = false;
