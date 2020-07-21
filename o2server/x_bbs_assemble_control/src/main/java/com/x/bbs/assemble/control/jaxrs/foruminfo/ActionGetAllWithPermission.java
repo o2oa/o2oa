@@ -1,6 +1,7 @@
 package com.x.bbs.assemble.control.jaxrs.foruminfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -103,7 +104,20 @@ public class ActionGetAllWithPermission extends BaseAction {
 				forumInfoList = forumInfoServiceAdv.listAllViewAbleForumWithUserPermission( ids );
 				if( forumInfoList == null ){
 					forumInfoList = new ArrayList<BBSForumInfo>();
+				}else {
+					//排除“停用”
+					ArrayList<BBSForumInfo> bbsForumInfoList = new ArrayList<BBSForumInfo>();
+					Iterator<BBSForumInfo> it = forumInfoList.iterator();
+					while (it.hasNext()) {
+						BBSForumInfo forumInfo = it.next();
+						if(!forumInfo.getForumStatus().equalsIgnoreCase("停用")) {
+							bbsForumInfoList.add(forumInfo);
+						}
+					}
+					forumInfoList = bbsForumInfoList;
 				}
+				
+				
 			} catch (Exception e) {
 				Exception exception = new ExceptionForumInfoProcess( e, "根据ID列表查询论坛信息列表时发生异常。" );
 				result.error( exception );
