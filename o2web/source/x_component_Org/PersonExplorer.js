@@ -157,13 +157,21 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
     },
     _loadContent: function(){
         this._listBaseInfor();
+        if( this.data.id ){
+            this._listAttribute();
+            this._listIdentity();
+            this._listRole();
+            this.loadListCount();
+        }
+
+        //
+        // this.showAttribute();
+    },
+    loadList : function(){
         this._listAttribute();
         this._listIdentity();
         this._listRole();
         this.loadListCount();
-
-        //
-        // this.showAttribute();
     },
     loadListCount: function(){
         if (this.data.woIdentityList){
@@ -227,7 +235,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
             },
             "attr": ["name", {
                 "get": function(){return this.attributeList.join(",")},
-                "set": function(value){this.attributeList = value.split(/,\s*/g)}
+                "set": function(value){ this.attributeList = value.split(/,\s*/g)}
             }, "description"],
             "onPostSave": function(item, id){
                 if (!item.data.id){
@@ -489,12 +497,14 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
             {"style": "width: 30px", "text": ""}
         ]);
 
-        o2.Actions.load("x_organization_assemble_control").RoleAction.listWithPerson(this.data.id, function (json) {
-            this.roleDataList = json.data;
-            json.data.each( function ( item ) {
-                this.roleList.push(item);
-            }.bind(this))
-        }.bind(this), null, false);
+        if( this.data.id ){
+            o2.Actions.load("x_organization_assemble_control").RoleAction.listWithPerson(this.data.id, function (json) {
+                this.roleDataList = json.data;
+                json.data.each( function ( item ) {
+                    this.roleList.push(item);
+                }.bind(this))
+            }.bind(this), null, false);
+        }
 
         // this.data.woPersonAttributeList.each(function(item){
         //     this.roleList.push(item);
@@ -896,6 +906,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             }
         }
         this.explorer.actions.savePerson(data, function(json){
+            debugger;
             Object.merge(this.data, data);
             if (this.data.id){
                 this.data.id = json.data.id;
@@ -906,6 +917,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                     this.data = Object.merge(this.data, json.data);
                     this.item.data = this.data;
                     this.item.refresh();
+
+                    this.content.loadList();
+
                     if (callback) callback();
                 }.bind(this), null, json.data.id);
             }
