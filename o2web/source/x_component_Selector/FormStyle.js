@@ -36,34 +36,65 @@ MWF.xApplication.Selector.FormStyle = new Class({
                     var json = {};
                     var appJs = {};
                     var array = [];
-                    o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listNext("(0)", 500, function (scriptJson) {
-                        o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function (appJson) {
-                            appJson.data.each( function (app) {
-                                appJs[ app.id ] = app;
-                            });
-                            scriptJson.data.each( function (script) {
-                                if( !json[script.application] ){
-                                    json[script.application] = appJs[ script.application ];
-                                    json[script.application].scriptList = [];
-                                }
-                                script.appName = appJs[ script.application ].name;
-                                script.appId = script.application;
-                                script.type = "script";
-                                json[script.application].scriptList.push( script )
-                            }.bind(this));
-                            for( var application in json ){
-                                if( json[application].scriptList && json[application].scriptList.length ){
-                                    array.push( json[application] );
-                                }
+                    o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging(1, 500, {}, function( scriptJson ){
+                        scriptJson.data.each(function (script) {
+                            if (!json[script.application]) {
+                                json[script.application] = {
+                                    name : script.applicationName,
+                                    applicationName: script.applicationName,
+                                    appName: script.applicationName,
+                                    application: script.application,
+                                    appId: script.application
+                                };
+                                json[script.application].scriptList = [];
                             }
+                            script.appName = script.applicationName;
+                            script.appId = script.application;
+                            script.type = "script";
+                            json[script.application].scriptList.push(script)
+                        }.bind(this));
+                        for (var application in json) {
+                            if (json[application].scriptList && json[application].scriptList.length) {
+                                array.push(json[application]);
+                            }
+                        }
 
-                            var category = this._newItemCategory({
-                                name : "自定义样式（脚本）",
-                                id : "script",
-                                applicationList : array
-                            }, this, this.itemAreaNode);
-                        }.bind(this))
+                        var category = this._newItemCategory({
+                            name : "自定义样式（脚本）",
+                            id : "script",
+                            applicationList : array
+                        }, this, this.itemAreaNode);
+
                     }.bind(this));
+
+                    // o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listNext("(0)", 500, function (scriptJson) {
+                    //     o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function (appJson) {
+                    //         appJson.data.each( function (app) {
+                    //             appJs[ app.id ] = app;
+                    //         });
+                    //         scriptJson.data.each( function (script) {
+                    //             if( !json[script.application] ){
+                    //                 json[script.application] = appJs[ script.application ];
+                    //                 json[script.application].scriptList = [];
+                    //             }
+                    //             script.appName = appJs[ script.application ].name;
+                    //             script.appId = script.application;
+                    //             script.type = "script";
+                    //             json[script.application].scriptList.push( script )
+                    //         }.bind(this));
+                    //         for( var application in json ){
+                    //             if( json[application].scriptList && json[application].scriptList.length ){
+                    //                 array.push( json[application] );
+                    //             }
+                    //         }
+                    //
+                    //         var category = this._newItemCategory({
+                    //             name : "自定义样式（脚本）",
+                    //             id : "script",
+                    //             applicationList : array
+                    //         }, this, this.itemAreaNode);
+                    //     }.bind(this))
+                    // }.bind(this));
                 }.bind(this)
             }
         );
