@@ -921,13 +921,13 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
                         //    "adminLevel": "ADMIN"
                         //};
                         //this.app.restActions.addController(controllerData);
-                        var data = {
-                            personList : [ layout.desktop.session.user.distinguishedName || "xadmin" ],
-                            unitList : [],
-                            groupList : []
-                        };
-                        this.app.restActions.saveAppInfoManager(json.data.id, data, function (js) {
-                        }.bind(this), null, false);
+                        // var data = {
+                        //     personList : [ layout.desktop.session.user.distinguishedName || "xadmin" ],
+                        //     unitList : [],
+                        //     groupList : []
+                        // };
+                        // this.app.restActions.saveAppInfoManager(json.data.id, data, function (js) {
+                        // }.bind(this), null, false);
                     }
 
                     if (this.app.noElementNode)this.app.noElementNode.destroy();
