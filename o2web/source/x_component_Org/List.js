@@ -264,7 +264,6 @@ MWF.xApplication.Org.List.Item = new Class({
         input.focus();
         input.addEvents({
             "blur": function(){
-                debugger;
                 var value = this.get("value");
                 if (value){
                     if (typeOf(attr)==="object"){

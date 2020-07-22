@@ -157,7 +157,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
     },
     _loadContent: function(){
         this._listBaseInfor();
-        if( this.data.id ){
+        if( this.data && this.data.id ){
             this._listAttribute();
             this._listIdentity();
             this._listRole();
