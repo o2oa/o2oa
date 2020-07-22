@@ -913,21 +913,13 @@ MWF.xApplication.cms.Column.PopupForm = new Class({
                 this.app.restActions.getColumn( id, function (json) {
                     //保存当前用户为管理员
                     if (this.isNew) {
-                        //var controllerData = {
-                        //    "objectType": "APPINFO",
-                        //    "objectId": json.data.id,
-                        //    "adminUid": layout.desktop.session.user.distinguishedName,
-                        //    "adminName": layout.desktop.session.user.distinguishedName,
-                        //    "adminLevel": "ADMIN"
-                        //};
-                        //this.app.restActions.addController(controllerData);
-                        var data = {
-                            personList : [ layout.desktop.session.user.distinguishedName || "xadmin" ],
-                            unitList : [],
-                            groupList : []
-                        };
-                        this.app.restActions.saveAppInfoManager(json.data.id, data, function (js) {
-                        }.bind(this), null, false);
+                        // var data = {
+                        //     personList : [ layout.desktop.session.user.distinguishedName || "xadmin" ],
+                        //     unitList : [],
+                        //     groupList : []
+                        // };
+                        // this.app.restActions.saveAppInfoManager(json.data.id, data, function (js) {
+                        // }.bind(this), null, false);
                     }
 
                     if (this.app.noElementNode)this.app.noElementNode.destroy();
