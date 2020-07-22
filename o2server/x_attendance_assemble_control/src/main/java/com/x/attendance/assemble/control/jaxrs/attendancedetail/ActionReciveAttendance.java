@@ -82,6 +82,7 @@ public class ActionReciveAttendance extends BaseAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
+		
 		if (check) {
 			if (wrapIn.getOnDutyTime() != null && wrapIn.getOnDutyTime().trim().length() > 0) {
 				try {
@@ -90,6 +91,34 @@ public class ActionReciveAttendance extends BaseAction {
 				} catch (Exception e) {
 					check = false;
 					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工上班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getOnDutyTime());
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
+			if (wrapIn.getMorningOffdutyTime() != null && wrapIn.getMorningOffdutyTime().trim().length() > 0) {
+				try {
+					datetime = dateOperation.getDateFromString(wrapIn.getMorningOffdutyTime());
+					attendanceDetail.setMorningOffDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 上午下班打卡时间
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工上午下班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getMorningOffdutyTime());
+					result.error(exception);
+					logger.error(e, effectivePerson, request, null);
+				}
+			}
+		}
+		
+		if (check) {
+			if (wrapIn.getAfternoonOnDutyTime() != null && wrapIn.getAfternoonOnDutyTime().trim().length() > 0) {
+				try {
+					datetime = dateOperation.getDateFromString(wrapIn.getAfternoonOnDutyTime());
+					attendanceDetail.setAfternoonOnDutyTime(dateOperation.getDateStringFromDate(datetime, "HH:mm:ss")); // 下午上班打卡时间
+				} catch (Exception e) {
+					check = false;
+					Exception exception = new ExceptionAttendanceDetailProcess(e, "员工下午上班打卡时间格式异常，格式: HH:mm:ss. 日期：" + wrapIn.getAfternoonOnDutyTime());
 					result.error(exception);
 					logger.error(e, effectivePerson, request, null);
 				}
