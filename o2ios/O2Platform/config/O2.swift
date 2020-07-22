@@ -11,6 +11,9 @@ import CocoaLumberjack
 
 
 struct O2 {
+    //考勤打卡版本判断用的 userDefaults的key
+    public static let O2_Attendance_version_key = "attendance_version_key"
+    
     public static let O2_Word_draft_mode = "draft"
     public static let O2_First_ID = "(0)"
     /// EZSE: Returns app's name

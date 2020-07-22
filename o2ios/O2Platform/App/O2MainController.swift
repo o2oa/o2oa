@@ -35,6 +35,10 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
     private lazy var imViewModel: IMViewModel = {
         return IMViewModel()
     }()
+    //考勤判断版本
+    private lazy var attendanceViewModel: OOAttandanceViewModel = {
+        return OOAttandanceViewModel()
+    }()
 
 
     override func viewDidLoad() {
@@ -57,6 +61,8 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
         self._startWebsocket()
         //读取消息
         self.getConversationList()
+        //检查考勤版本
+        self.checkAttendanceVersion()
     }
 
     deinit {
@@ -139,6 +145,30 @@ class O2MainController: UITabBarController, UITabBarControllerDelegate {
             let destVC = OOTabBarHelper.getVC(storyboardName: "task", vcName: nil)
             let nav = ZLNavigationController(rootViewController: destVC)
             return nav
+        }
+    }
+    
+    // MARK: - 考勤判断版本
+    private func checkAttendanceVersion() {
+        self.attendanceViewModel.listMyRecords { (result) in
+            switch result {
+            case .ok(let data):
+                let model = data as? OOMyAttandanceRecords
+                if let s = model?.scheduleInfos, s.count > 0 {
+                    StandDefaultUtil.share.userDefaultCache(value: true as AnyObject, key: O2.O2_Attendance_version_key)
+                    DDLogDebug("考勤打卡新版。。。。。。。。。。。。。。。。。。")
+                }else {
+                    StandDefaultUtil.share.userDefaultCache(value: false as AnyObject, key: O2.O2_Attendance_version_key)
+                }
+                break
+            case .fail(let err):
+                DDLogError(err)
+                StandDefaultUtil.share.userDefaultCache(value: false as AnyObject, key: O2.O2_Attendance_version_key)
+                break
+            default:
+                StandDefaultUtil.share.userDefaultCache(value: false as AnyObject, key: O2.O2_Attendance_version_key)
+                break
+            }
         }
     }
 

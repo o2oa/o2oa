@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="OOAttendanceScheduleViewCell" id="gTV-IL-0wX" customClass="OOAttendanceScheduleViewCell" customModule="O2Platform" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="127" height="64"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="127" height="64"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KMo-pX-TmM">
+                        <rect key="frame" x="0.0" y="0.0" width="127" height="64"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="LgZ-1N-gXy">
+                                <rect key="frame" x="12" y="10" width="116" height="14.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="上午上班打卡" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qug-eg-7N2">
+                                        <rect key="frame" x="0.0" y="0.0" width="74" height="14.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OCm-CU-8sx">
+                                        <rect key="frame" x="82" y="0.0" width="34" height="14.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="09:00未打卡" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cro-sW-eth">
+                                <rect key="frame" x="12" y="34.5" width="71" height="14.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBx-af-tVn">
+                                <rect key="frame" x="72" y="31" width="50" height="27"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <state key="normal" title="更新打卡"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.95686274509803915" green="0.96470588235294119" blue="0.97254901960784312" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="Cro-sW-eth" firstAttribute="top" secondItem="LgZ-1N-gXy" secondAttribute="bottom" constant="10" id="54c-S6-9LZ"/>
+                            <constraint firstItem="Cro-sW-eth" firstAttribute="leading" secondItem="KMo-pX-TmM" secondAttribute="leading" constant="12" id="6tz-hr-JUK"/>
+                            <constraint firstAttribute="trailing" secondItem="dBx-af-tVn" secondAttribute="trailing" constant="5" id="Fjp-Ob-VPw"/>
+                            <constraint firstItem="LgZ-1N-gXy" firstAttribute="top" secondItem="KMo-pX-TmM" secondAttribute="top" constant="10" id="LxA-yw-iLw"/>
+                            <constraint firstAttribute="bottom" secondItem="dBx-af-tVn" secondAttribute="bottom" constant="6" id="N0m-Tk-Q6G"/>
+                            <constraint firstItem="LgZ-1N-gXy" firstAttribute="leading" secondItem="KMo-pX-TmM" secondAttribute="leading" constant="12" id="qI9-Gb-Hyr"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="12"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="KMo-pX-TmM" secondAttribute="bottom" id="0be-yW-tuL"/>
+                <constraint firstItem="KMo-pX-TmM" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="8eg-ms-ZJe"/>
+                <constraint firstAttribute="trailing" secondItem="KMo-pX-TmM" secondAttribute="trailing" id="bEZ-fH-5Dh"/>
+                <constraint firstItem="KMo-pX-TmM" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="k5p-4g-vwg"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="127" height="64"/>
+            <connections>
+                <outlet property="checkInStatusLabel" destination="Cro-sW-eth" id="fad-PD-GVf"/>
+                <outlet property="checkInTimeLabel" destination="OCm-CU-8sx" id="Kmp-UM-pCP"/>
+                <outlet property="checkInTypeLabel" destination="Qug-eg-7N2" id="SiG-2z-01f"/>
+                <outlet property="updateCheckInBtn" destination="dBx-af-tVn" id="Qmf-cX-HLB"/>
+            </connections>
+            <point key="canvasLocation" x="-73.188405797101453" y="101.78571428571428"/>
+        </collectionViewCell>
+    </objects>
+</document>
