@@ -40,7 +40,7 @@ final class OOAttandanceViewModel: NSObject {
 
 extension OOAttandanceViewModel{
     
-    // MARK: -
+    // MARK: - 当天打卡记录和打卡班次情况
     func listMyRecords(_ completedBlock:@escaping CallbackBlockDefine) {
         ooAttanceAPI.request(.listMyRecord) { response in
             let myResult = OOResult<BaseModelClass<OOMyAttandanceRecords>>(response)

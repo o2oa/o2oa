@@ -108,18 +108,30 @@ class OOAttandanceFeature: NSObject, DataModel {
     
 }
 
-// MARK: - istMyRecords 登录者当天的所有移动打卡信息记录 排版情况等
+// MARK: - 打卡班次对象 和 打卡结果拼接的结果
+class OOAttandanceMobileScheduleInfo: NSObject, DataModel {
+    @objc var signDate: String?
+    @objc var signTime: String?
+    @objc var checkinType: String?
+    var signSeq: Int?
+    @objc var checkinStatus: String? // 未打卡 已打卡
+    @objc var checkinTime: String? //打卡时间
+    @objc var recordId: String? //打卡结果的id 更新打卡用
+    
+    required override init() {
+        
+    }
+    
+}
+
+// MARK: - MyRecords 登录者当天的所有移动打卡信息记录 排版情况等
 class OOMyAttandanceRecords: NSObject, DataModel {
-    /**
-     {
-         "records": [],
-         "scheduleSetting": {},
-         "feature": {}
-     },
-     */
+   
     @objc var records:[OOAttandanceMobileDetail]?
     @objc var scheduleSetting:OOAttandanceScheduleSetting?
     @objc var feature: OOAttandanceFeature?
+    //2020-07-21 新添加的
+    @objc var scheduleInfos: [OOAttandanceFeature]?
     
     required override init() {
         
@@ -128,6 +140,8 @@ class OOMyAttandanceRecords: NSObject, DataModel {
 
 // MARK:- 提交打卡数据FormBean
 class OOAttandanceMobileCheckinForm:NSObject,DataModel {
+    
+    @objc var id:String? //id 为空就是新增 有id就是更新
     
     @objc var empNo:String? //员工号, 可以为空.
     
