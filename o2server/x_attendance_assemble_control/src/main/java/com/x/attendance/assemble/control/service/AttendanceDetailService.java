@@ -211,8 +211,18 @@ public class AttendanceDetailService {
 			attendanceDetail_old.setRecordDate( attendanceDetail.getRecordDate() );
 			attendanceDetail_old.setRecordDateString( attendanceDetail.getRecordDateString() );
 			attendanceDetail_old.setRecordStatus( 0 );
-			attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
-			attendanceDetail_old.setOffDutyTime( attendanceDetail.getOffDutyTime() );
+			if(attendanceDetail.getOnDutyTime()!= null && attendanceDetail.getOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setOnDutyTime( attendanceDetail.getOnDutyTime() );
+			}
+			if(attendanceDetail.getMorningOffDutyTime()!= null && attendanceDetail.getMorningOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setMorningOffDutyTime( attendanceDetail.getMorningOffDutyTime() );
+			}
+			if(attendanceDetail.getAfternoonOnDutyTime()!= null && attendanceDetail.getAfternoonOnDutyTime().trim().length() > 0){
+				attendanceDetail_old.setAfternoonOnDutyTime( attendanceDetail.getAfternoonOnDutyTime() );
+			}
+			if(attendanceDetail.getOffDutyTime()!= null && attendanceDetail.getOffDutyTime().trim().length() > 0){
+				attendanceDetail_old.setOffDutyTime( attendanceDetail.getOffDutyTime() );
+			}
 			
 			//emc.beginTransaction( AttendanceSetting.class );
 			emc.beginTransaction( AttendanceDetail.class );
