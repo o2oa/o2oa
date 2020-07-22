@@ -175,7 +175,7 @@ public class ActionPersistPublishAndNotify extends BaseAction {
 		}
 
 		//将读者以及作者信息持久化到数据库中
-		if( wi.getSkipPermission() ) {
+		if( !wi.getSkipPermission() ) {
 			try {
 				documentPersistService.refreshDocumentPermission( id, wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
