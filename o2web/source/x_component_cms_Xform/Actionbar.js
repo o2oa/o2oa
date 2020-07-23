@@ -1,7 +1,9 @@
 MWF.xDesktop.requireApp("process.Xform", "Actionbar", null, false);
 MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     Extends: MWF.APPActionbar,
-
+    reload : function(){
+        this._loadUserInterface();
+    },
     _loadUserInterface: function(){
         //if (this.form.json.mode == "Mobile"){
         //    this.node.empty();
