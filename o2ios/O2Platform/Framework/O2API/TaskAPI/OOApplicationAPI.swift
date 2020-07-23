@@ -14,7 +14,8 @@ import O2OA_Auth_SDK
 enum OOApplicationAPI {
     case applicationList
     case applicationOnlyList
-    case applicationItem(String)
+    case applicationItem(String) // 更加应用获取流程列表
+    case applicationItemWithFilter(String) //新版 根据应用获取流程列表 有移动端过滤 仅pc的流程不出现在这里
     case availableIdentityWithProcess(String)
     case startProcess(String, String, String) // processId identity title
     case icon(String)
@@ -50,6 +51,8 @@ extension OOApplicationAPI:TargetType {
             return "/jaxrs/application/list"
         case .applicationItem(let appId):
             return "/jaxrs/process/list/application/\(appId)"
+        case .applicationItemWithFilter(let appId):
+            return "/jaxrs/process/list/application/\(appId)/filter"
         case .availableIdentityWithProcess(let processId):
             return "/jaxrs/process/list/available/identity/process/\(processId)"
         case .startProcess(let processId, _, _):
@@ -61,7 +64,7 @@ extension OOApplicationAPI:TargetType {
     
     var method: Moya.Method {
         switch self {
-        case .startProcess(_, _, _):
+        case .startProcess(_, _, _), .applicationItemWithFilter(_):
             return .post
         default:
             return .get
@@ -76,6 +79,10 @@ extension OOApplicationAPI:TargetType {
         switch self {
         case .startProcess(_, let identity, let title):
             return .requestParameters(parameters: ["identity": identity, "title": title], encoding: JSONEncoding.default)
+        case .applicationItemWithFilter(_):
+            let filter = O2ProcessFilter()
+            filter.startableTerminal = "mobile" //移动端过滤 仅pc的流程不出现在这里
+            return .requestParameters(parameters: filter.toJSON()!, encoding: JSONEncoding.default)
         default:
             return .requestPlain
         }

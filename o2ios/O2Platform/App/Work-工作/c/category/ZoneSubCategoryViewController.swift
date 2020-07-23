@@ -9,11 +9,16 @@
 import UIKit
 
 class ZoneSubCategoryViewController: UITableViewController {
-    
-    
+
     public static let SELEC_SUB_ITEM = NSNotification.Name("SELECT_ITEM_OBJ")
-    
-    public var app:Application! {
+
+//    public var app:Application! {
+//        didSet {
+//            self.tableView.reloadData()
+//        }
+//    }
+
+    var processList: [AppProcess] = [] {
         didSet {
             self.tableView.reloadData()
         }
@@ -41,24 +46,20 @@ class ZoneSubCategoryViewController: UITableViewController {
         return 1
     }
 
-   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        if let _  = self.app {
-            return (self.app.processList?.count)!
-        }else{
-            return 0
-        }
+        return self.processList.count
     }
 
-    
-   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "ZoneSubCategoryTableViewCell", for: indexPath) as! ZoneSubCategoryTableViewCell
-    cell.itemLabel.text = self.app.processList?[indexPath.row].name
-    return cell
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ZoneSubCategoryTableViewCell", for: indexPath) as! ZoneSubCategoryTableViewCell
+        cell.itemLabel.text = self.processList[indexPath.row].name
+        return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = self.app.processList?[indexPath.row]
+        let item = self.processList[indexPath.row]
         NotificationCenter.default.post(name: ZoneSubCategoryViewController.SELEC_SUB_ITEM, object: item)
     }
 

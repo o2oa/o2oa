@@ -12,7 +12,7 @@ import AlamofireImage
 import AlamofireObjectMapper
 import SwiftyJSON
 import ObjectMapper
-
+import Promises
 import CocoaLumberjack
 
 class ZoneMenuViewController: UIViewController {
@@ -22,12 +22,12 @@ class ZoneMenuViewController: UIViewController {
     
     private var subVC:ZoneSubCategoryViewController!
     
-    
-    fileprivate var apps:[Application] = [] {
-        didSet {
-            self.mainVC.apps = apps
-        }
-    }
+    private let o2ProcessAPI = OOMoyaProvider<OOApplicationAPI>()
+//    fileprivate var apps:[Application] = [] {
+//        didSet {
+//            self.mainVC.apps = apps
+//        }
+//    }
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -73,7 +73,73 @@ class ZoneMenuViewController: UIViewController {
     
     @objc private func reveiveCategoryNotification(_ notification:NSNotification){
         let obj = notification.object
-        self.subVC.app = obj as? Application
+        if let app = obj as? O2Application {
+            DispatchQueue.main.async {
+                self.showLoading()
+            }
+            self.loadProcessList(appId: app.id!).then { (list)  in
+                self.hideLoading()
+                self.subVC.processList = list
+            }.catch { (err) in
+                DDLogError(err.localizedDescription)
+                DispatchQueue.main.async {
+                    self.showError(title: "没有获取到流程列表！")
+                }
+            }
+        }
+    }
+    
+    /// 查询流程列表。如果新接口没有 就用老接口
+    private func loadProcessList(appId: String) -> Promise<[AppProcess]> {
+        return Promise {fulfill, reject in
+            self.loadProcessListWithFilter(appId: appId).then { (list)  in
+                fulfill(list)
+            }.catch { (err) in
+                DDLogError(err.localizedDescription)
+                //可能新接口不存在 查询老接口
+                self.loadProcessListOld(appId: appId).then { (oldList) in
+                    fulfill(oldList)
+                }.catch { (err) in
+                    reject(err)
+                }
+            }
+        }
+    }
+    
+    ///新接口 过滤仅pc的流程
+    private func loadProcessListWithFilter(appId: String) -> Promise<[AppProcess]> {
+        return Promise {fulfill, reject in
+            self.o2ProcessAPI.request(.applicationItemWithFilter(appId), completion: {result in
+                let response = OOResult<BaseModelClass<[AppProcess]>>(result)
+                if response.isResultSuccess() {
+                    if let list = response.model?.data {
+                        fulfill(list)
+                    }else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                }else {
+                    reject(response.error!)
+                }
+            })
+        }
+    }
+    
+    /// 老接口 不过滤
+    private func loadProcessListOld(appId: String) -> Promise<[AppProcess]> {
+        return Promise {fulfill, reject in
+            self.o2ProcessAPI.request(.applicationItem(appId), completion: {result in
+                let response = OOResult<BaseModelClass<[AppProcess]>>(result)
+                if response.isResultSuccess() {
+                    if let list = response.model?.data {
+                        fulfill(list)
+                    }else {
+                        reject(OOAppError.apiEmptyResultError)
+                    }
+                }else {
+                    reject(response.error!)
+                }
+            })
+        }
     }
     
     @objc private func receiveSubNotification(_ notification:NSNotification){
@@ -83,20 +149,40 @@ class ZoneMenuViewController: UIViewController {
     
     
     func loadAppList(){
-        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ApplicationContext.applicationContextKey, query: ApplicationContext.applicationListQuery, parameter: nil)
         self.showLoading(title: "应用加载中...")
-        self.apps.removeAll()
-        Alamofire.request(url!).responseArray(queue: nil, keyPath: "data", context: nil, completionHandler: { (response:DataResponse<[Application]>) in
-            switch response.result {
-            case .success(let apps):
-                self.apps.append(contentsOf: apps)
-                self.showSuccess(title: "加载完成")
-            case .failure(let err):
-                DDLogError(err.localizedDescription)
-                self.showError(title: "加载失败")
+//        let url = AppDelegate.o2Collect.generateURLWithAppContextKey(ApplicationContext.applicationContextKey, query: ApplicationContext.applicationListQuery, parameter: nil)
+        
+//        self.apps.removeAll()
+//        Alamofire.request(url!).responseArray(queue: nil, keyPath: "data", context: nil, completionHandler: { (response:DataResponse<[Application]>) in
+//            switch response.result {
+//            case .success(let apps):
+//                self.apps.append(contentsOf: apps)
+//                self.showSuccess(title: "加载完成")
+//            case .failure(let err):
+//                DDLogError(err.localizedDescription)
+//                self.showError(title: "加载失败")
+//            }
+//
+//        })
+        
+        self.o2ProcessAPI.request(.applicationOnlyList, completion: {result in
+            let response = OOResult<BaseModelClass<[O2Application]>>(result)
+            if response.isResultSuccess() {
+                let list = response.model?.data
+                if let apps = list {
+                    DispatchQueue.main.async {
+                        self.showSuccess(title: "加载完成")
+                        self.mainVC.apps = apps
+                    }
+                }else {
+                   DispatchQueue.main.async { self.showError(title: "没有应用数据！") }
+                }
+            }else {
+                DDLogError(response.error?.errorDescription ?? "")
+                DispatchQueue.main.async { self.showError(title: "加载失败") }
             }
-            
         })
+        
     }
     
     //获取身份列表

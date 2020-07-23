@@ -12,7 +12,7 @@ class ZoneMainCategoryViewController: UITableViewController {
     
     public static let SELECT_MSG_NAME = Notification.Name("CATEGORY_SELECT_OBJ")
     
-    public var apps:[Application] = [] {
+    public var apps:[O2Application] = [] {
         didSet {
             self.tableView.reloadData()
             if apps.count > 0 {
@@ -70,7 +70,7 @@ class ZoneMainCategoryViewController: UITableViewController {
         self.postMessage(sAPP)
     }
     
-    private func postMessage(_ currenApp:Application){
+    private func postMessage(_ currenApp: O2Application){
         NotificationCenter.default.post(name: ZoneMainCategoryViewController.SELECT_MSG_NAME, object: currenApp)
     }
     
