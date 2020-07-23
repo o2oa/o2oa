@@ -21,15 +21,15 @@ MWF.xApplication.Selector.Dictionary = new Class({
             if( type === "process" ){
                 action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
             }else if( type === "cms" ){
-
+                action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
             }
 
             var json = {};
             var array = [];
             action(1, 1000, {}, function( dictionaryJson ) {
                 dictionaryJson.data.each(function (dictionary) {
-                    var appName = dictionary.portalName || dictionary.applicationName;
-                    var appId = dictionary.portal || dictionary.application;
+                    var appName = dictionary.appName || dictionary.applicationName;
+                    var appId = dictionary.appId || dictionary.application;
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,
