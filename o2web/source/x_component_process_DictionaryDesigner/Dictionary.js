@@ -71,6 +71,9 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
                 try{
                     var value = _self.scriptEditor.getValue();
                     var v = JSON.parse(value);
+                    if( !this.checkValid(v) ){
+                        return;
+                    }
 
                     if (!this.isShow){
                         this.tab.pages.each(function(page){
@@ -108,7 +111,12 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
             if( this.scriptEditor && this.isChanged){
                 try{
                     var value = this.scriptEditor.getValue();
-                    this.data.data = JSON.parse(value);
+                    var data = JSON.parse(value);
+                    if( this.checkValid(data) ){
+                        this.data.data = data;
+                    }else{
+                        return;
+                    }
                     this.reload();
                     this.isChanged = false;
                 }catch (e) {
@@ -117,6 +125,31 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
             }
             this.fireEvent("resize");
         }.bind(this));
+    },
+    checkValid( obj, silence ){
+        if( typeOf(obj) !== "object" ){
+            return true;
+        }
+        var keys = Object.keys(obj);
+        if( keys.length !== keys.unique().length ){
+            if(!silence)this.designer.notice(this.designer.lp.notice.sameObjectKey, "error", this.node, {"x": "left", "y": "bottom"});
+            return false;
+        }
+        for (var key in obj) {
+            if( !key || key.trim() === "" ){
+                if(!silence)this.designer.notice(this.designer.lp.notice.emptyObjectKey, "error", this.node, {"x": "left", "y": "bottom"});
+                return false;
+            }
+            if (!isNaN(parseFloat(key))){
+                if(!silence)this.designer.notice(this.designer.lp.notice.numberObjectKey, "error", this.node, {"x": "left", "y": "bottom"});
+                return false;
+            }
+
+            if( typeOf(obj[key]) === "object" ){
+                if( !this.checkValidJson( obj[key] ) )return false;
+            }
+        }
+        return true;
     },
     loadScriptEditor:function(){
         var value = JSON.stringify(this.data.data, null, "\t");
@@ -243,7 +276,13 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
                 if( this.scriptEditor ){
                     try{
                         var value = this.scriptEditor.getValue();
-                        this.data.data = JSON.parse(value);
+                        var data = JSON.parse(value);
+                        if( this.checkValid(data, true) ){
+                            this.data.data = data;
+                        }else{
+                            return false;
+                        }
+
                     }catch (e) {
                         return false;
                     }
@@ -284,7 +323,13 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
                     if( this.scriptEditor ){
                         try{
                             var value = this.scriptEditor.getValue();
-                            this.data.data = JSON.parse(value);
+                            var data = JSON.parse(value);
+                            if( this.checkValid(data) ){
+                                this.data.data = data;
+                            }else{
+                                return false;
+                            }
+
                         }catch (e) {
                             this.designer.notice( this.designer.lp.notice.jsonParseError, "error", this.node, {"x": "left", "y": "bottom"});
                             return false;
