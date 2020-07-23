@@ -5,12 +5,10 @@ import net.muliba.accounting.app.ExceptionHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.identity.ProcessWOIdentityJson
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ApplicationData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessInfoData
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessStartBo
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ProcessWorkData
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
@@ -28,11 +26,33 @@ class StartProcessStepOnePresenter : BasePresenterImpl<StartProcessStepOneContra
 
     override fun loadProcessListByAppId(appId: String) {
         getProcessAssembleSurfaceServiceAPI(mView?.getContext())?.let { service->
-            service.getApplicationProcess(appId)
+            val filter = ApplicationProcessFilter()
+            //先用新接口查询
+            service.getApplicationProcessFilter(appId, filter)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler<List<ProcessInfoData>>({list->mView?.loadProcessList(list)}),
-                            ExceptionHandler(mView?.getContext(), {e->mView?.loadProcessListFail()}))
+                    .o2Subscribe { 
+                        onNext { res ->
+                            mView?.loadProcessList(res.data)
+                        }
+                        onError { e, _ ->
+                            XLog.error("", e)
+                            //用老接口查询
+                            service.getApplicationProcess(appId)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .o2Subscribe {
+                                        onNext { res1 ->
+                                            mView?.loadProcessList(res1.data)
+                                        }
+                                        onError { e, _ ->
+                                            XLog.error("", e)
+                                            mView?.loadProcessListFail()
+                                        }
+                                    }
+                        }
+                    }
+
         }
     }
 
