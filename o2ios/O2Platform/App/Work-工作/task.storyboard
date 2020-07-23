@@ -155,7 +155,7 @@
                         <outlet property="tableView" destination="vbb-IJ-YEQ" id="Ov2-c9-jlM"/>
                         <outlet property="tableViewTopConstraint" destination="MI0-xl-tRF" id="d3z-LJ-hc9"/>
                         <segue destination="1VT-mT-wvg" kind="show" identifier="showTodoTaskSegue" id="SwG-Rc-UPd"/>
-                        <segue destination="Lit-tA-usI" kind="show" identifier="showAppCategorySegue" id="V8m-f4-bAt"/>
+                        <segue destination="Lit-tA-usI" kind="show" identifier="showAppCategorySegue" animates="NO" id="V8m-f4-bAt"/>
                         <segue destination="g80-nM-0Sh" kind="show" identifier="showMailSegue" id="97y-zw-SwJ"/>
                     </connections>
                 </viewController>

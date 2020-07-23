@@ -8,25 +8,26 @@
 
 import Foundation
 import ObjectMapper
-class AppProcess:Mappable {
-    var id:String?
-    var name:String?
-    var alias:String?
-    var description:String?
-    var creatorPerson:String?
-    var application:String?
-    var icon:String?
-    var defaultStartMode: String?
+import HandyJSON
+
+
+class AppProcess: NSObject, DataModel  {
+    @objc var id:String?
+    @objc var name:String?
+    @objc var alias:String?
+    @objc var desc:String?
+    @objc var creatorPerson:String?
+    @objc var application:String?
+    @objc var icon:String?
+    @objc var defaultStartMode: String?
     
-    required init?(map: Map) {
-        
-    }
+    required override init(){}
     
     func mapping(map: Map) {
         id <- map["id"]
         name <- map["name"]
         alias <- map["alias"]
-        description <- map["description"]
+        desc <- map["description"]
         creatorPerson <- map["creatorPerson"]
         application <- map["application"]
         icon <- map["icon"]
