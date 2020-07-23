@@ -58,7 +58,11 @@ o2.widget.Maplist = new Class({
 			"text": this.options.title
 		}).inject(this.titleNode);
 		this.titleTextNode.addEvent("click", function(){
-			this.expandOrCollapse();
+			if(this.isShowCode){
+
+			}else{
+				this.expandOrCollapse();
+			}
 		}.bind(this));
 
 		this.createTitleActions();
@@ -69,13 +73,16 @@ o2.widget.Maplist = new Class({
 		}).inject(this.titleActionNode);
 		this.actionNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/code_empty.png)");
 		this.actionNode.addEvent("click", function(e){
-            this.showCode();
+			if(!this.isShowingCode){
+				this.showCode();
+			}
             e.stopPropagation();
         }.bind(this));
 	},
 	showCode: function(){
-		var display = this.contentNode.getStyle("display");
-		if (display=="none") this.expand();
+		debugger;
+		// var display = this.contentNode.getStyle("display");
+		// if (display=="none") this.expand();
 			
 		if (!this.isShowCode){
 			this.codeContentNode = new Element("div", {
@@ -86,6 +93,12 @@ o2.widget.Maplist = new Class({
 				"events": {
 					"blur": function(){
 						this.showCode();
+
+						this.isShowingCode = true;
+						window.setTimeout( function () {
+							this.isShowingCode = false;
+						}.bind(this), 1000 );
+
 						this.fireEvent("change");
 					}.bind(this)
 				}
@@ -106,7 +119,11 @@ o2.widget.Maplist = new Class({
 			this.actionNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/code.png)");
 			this.isShowCode = true;
 		}else{
+			this.items = [];
 			this.contentItemsNode.empty();
+
+			this.contentNode.setStyle("display", "block");
+
 			this.loadContent(JSON.decode(this.codeTextNode.get("value")));
 			this.fireEvent("change");
 			
@@ -121,6 +138,8 @@ o2.widget.Maplist = new Class({
 			});
 			this.actionNode.setStyle("background-image", "url("+this.path+this.options.style+"/icon/code_empty.png)");
 			this.isShowCode = false;
+
+
 		}
 	},
     reload: function(json){
