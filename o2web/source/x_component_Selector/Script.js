@@ -23,15 +23,15 @@ MWF.xApplication.Selector.Script = new Class({
             }else if( type === "portal" ){
                 action = o2.Actions.load("x_portal_assemble_designer").ScriptAction.listPaging;
             }else if( type === "cms" ){
-
+                action = o2.Actions.load("x_cms_assemble_control").ScriptAction.listPaging;
             }
 
             var json = {};
             var array = [];
             action(1, 1000, {}, function( scriptJson ) {
                 scriptJson.data.each(function (script) {
-                    var appName = script.portalName || script.applicationName;
-                    var appId = script.portal || script.application;
+                    var appName = script.portalName || script.applicationName || script.appName;
+                    var appId = script.portal || script.application || script.appId;
                     if (!json[appId]) {
                         json[appId] = {
                             name: appName,
