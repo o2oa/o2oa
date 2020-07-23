@@ -219,7 +219,7 @@ MWF.xApplication.Attendance.HolidayExplorer.Holiday = new Class({
             "</td>" +
             "</tr>" +
             "<tr>" +
-            "<td style='height: 30px; line-height: 30px;  text-align: left'>"+lp.makeUpClassDay+":</td>" +
+            "<td valign='top' style='height: 30px; line-height: 30px;  text-align: left'>"+lp.makeUpClassDay+":</td>" +
             "<td style='; text-align: right;' id='makeUpClassDayTd'>" +
             (!this.isNew && !this.isEdited  ? "" :makeupClassArea )+
             (!this.isNew && !this.isEdited  ? "" : "<div id='addMakeupClass' style='color: #354f67;cursor: pointer;'>增加补班日期</div>" )+
