@@ -6,6 +6,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
     options: {
         "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
     },
+    reload : function(){
+	    this._loadUserInterface();
+    },
 	_loadUserInterface: function(){
         // if (this.form.json.mode == "Mobile"){
         //     this.node.empty();
