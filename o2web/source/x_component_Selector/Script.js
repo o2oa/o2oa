@@ -8,52 +8,66 @@ MWF.xApplication.Selector.Script = new Class({
         "title": MWF.xApplication.Selector.LP.selectScript,
         "values": [],
         "names": [],
+        "appType" : ["process","portal"],
         "expand": false,
         "forceSearchInItem" : true
     },
     loadSelectItems: function(addToNext){
         var json = {};
-        var appJs = {};
-        o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listNext("(0)", 500, function (scriptJson) {
-            o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function (appJson) {
-                appJson.data.each( function (app) {
-                    appJs[ app.id ] = app;
-                });
-                scriptJson.data.each( function (script) {
-                    if( !json[script.application] ){
-                        json[script.application] = appJs[ script.application ];
-                        json[script.application].scriptList = [];
+        this.options.appType.each( function (type) {
+            var container = new Element("div").inject(this.itemAreaNode);
+
+            var action;
+            if( type === "process" ){
+                action = o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging;
+            }else if( type === "portal" ){
+                action = o2.Actions.load("x_portal_assemble_designer").ScriptAction.listPaging;
+            }else if( type === "cms" ){
+                action = o2.Actions.load("x_cms_assemble_control").ScriptAction.listPaging;
+            }
+
+            var json = {};
+            var array = [];
+            action(1, 1000, {}, function( scriptJson ) {
+                scriptJson.data.each(function (script) {
+                    var appName = script.portalName || script.applicationName || script.appName;
+                    var appId = script.portal || script.application || script.appId;
+                    if (!json[appId]) {
+                        json[appId] = {
+                            name: appName,
+                            applicationName: appName,
+                            appName: appName,
+                            application: appId,
+                            appId: appId
+                        };
+                        json[appId].scriptList = [];
                     }
-                    script.appName = appJs[ script.application ].name;
-                    script.appId = script.application;
-                    json[script.application].scriptList.push( script )
+                    script.appName = appName;
+                    script.appId = appId;
+                    script.appType = type;
+                    script.type = "script";
+                    json[appId].scriptList.push(script)
                 }.bind(this));
-                for( var application in json ){
-                    var category = this._newItemCategory(json[application], this, this.itemAreaNode);
-                    json[application].scriptList.each(function(d){
-                        var item = this._newItem(d, this, category.children);
-                        this.items.push(item);
-                    }.bind(this));
+                for (var application in json) {
+                    if (json[application].scriptList && json[application].scriptList.length) {
+                        array.push(json[application]);
+                    }
+                }
+
+                if( this.options.appType.length === 1 ){
+                    array.each( function (data) {
+                        var category = this._newItemCategory(data, this, container);
+                    }.bind(this))
+                }else{
+                    var category = this._newItemCategory({
+                        name: MWF.xApplication.Selector.LP.appType[type],
+                        id: type,
+                        applicationList: array
+                    }, this, container);
                 }
             }.bind(this))
         }.bind(this));
-        // this.processAction.listApplications(function(json){
-        //     json.data.each(function(data){
-        //         if (!data.scriptList){
-        //             this.designerAction.listScript(data.id, function(scriptJson){
-        //                 data.scriptList = scriptJson.data;
-        //             }.bind(this), null, false);
-        //         }
-        //         if (data.scriptList && data.scriptList.length){
-        //             var category = this._newItemCategory(data, this, this.itemAreaNode);
-        //             data.scriptList.each(function(d){
-        //                 d.applicationName = data.name;
-        //                 var item = this._newItem(d, this, category.children);
-        //                 this.items.push(item);
-        //             }.bind(this));
-        //         }
-        //     }.bind(this));
-        // }.bind(this));
+
     },
     _scrollEvent: function(y){
         return true;
@@ -115,8 +129,6 @@ MWF.xApplication.Selector.Script.Item = new Class({
         var selectedItem = this.selector.selectedItems.filter(function(item, index){
             if( item.data.id && this.data.id){
                 return item.data.id === this.data.id;
-            }else{
-                return item.data.name === this.data.name;
             }
             //return (item.data.id === this.data.id) || (item.data.name === this.data.name);
         }.bind(this));
@@ -143,8 +155,6 @@ MWF.xApplication.Selector.Script.ItemSelected = new Class({
                 //return (item.data.id === this.data.id) || (item.data.name === this.data.name);
                 if( item.data.id && this.data.id){
                     return item.data.id === this.data.id;
-                }else{
-                    return item.data.name === this.data.name;
                 }
             }.bind(this));
             this.items = items;
@@ -160,7 +170,60 @@ MWF.xApplication.Selector.Script.ItemSelected = new Class({
 
 MWF.xApplication.Selector.Script.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemCategory,
+    clickItem: function (callback) {
+        if (this._hasChild() ) {
+            var firstLoaded = !this.loaded;
+            this.loadSub(function () {
+                if (firstLoaded && this._hasChild() ) {
+                    if (!this.selector.isFlatCategory) {
+                        this.children.setStyles({"display": "block", "height": "auto"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                        this.isExpand = true;
+                    }
+                    // this.checkSelectAll();
+                } else {
+                    var display = this.children.getStyle("display");
+                    if (display === "none") {
+                        // this.selector.fireEvent("expand", [this] );
+                        this.children.setStyles({"display": "block", "height": "auto"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
+                        this.isExpand = true;
+                    } else {
+                        // this.selector.fireEvent("collapse", [this] );
+                        this.children.setStyles({"display": "none", "height": "0px"});
+                        this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
+                        this.isExpand = false;
+                    }
+                }
+                if (callback) callback();
+            }.bind(this));
+        }
+    },
+    loadSub: function (callback) {
+        if (!this.loaded) {
+            if( this.data.scriptList ){
+                this.data.scriptList.each(function (subItem, index) {
+                    var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
+                    this.selector.items.push(item);
+                    if(this.subItems)this.subItems.push( item );
+                }.bind(this));
+            }
+            if ( this.data.applicationList ) {
+                this.data.applicationList.each(function (subCategory, index) {
+                    var category = this.selector._newItemCategory(subCategory, this.selector, this.children, this.level + 1, this);
+                    this.subCategorys.push( category );
+                }.bind(this));
+            }
+            this.loaded = true;
+            if (callback) callback();
+        } else {
+            if (callback) callback();
+        }
+    },
     _getShowName: function(){
+        return this.data.name;
+    },
+    _getTtiteText: function () {
         return this.data.name;
     },
     createNode: function(){
@@ -172,7 +235,13 @@ MWF.xApplication.Selector.Script.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
-        return (this.data.scriptList && this.data.scriptList.length);
+        return ( this.data.scriptList && this.data.scriptList.length ) ||
+            ( this.data.applicationList && this.data.applicationList.length);
+    },
+    afterLoad: function(){
+        if ( this._hasChild() ){
+            this.clickItem();
+        }
     },
     check: function(){}
 });
