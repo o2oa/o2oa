@@ -1,128 +1,80 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "Person", null, false);
-MWF.xApplication.Selector.FormStyle = new Class({
+MWF.xApplication.Selector.Dictionary = new Class({
     Extends: MWF.xApplication.Selector.Person,
     options: {
         "style": "default",
         "count": 0,
-        "title": MWF.xApplication.Selector.LP.selectFormStyle,
+        "title": MWF.xApplication.Selector.LP.selectDictionary,
         "values": [],
         "names": [],
+        "appType" : ["process","cms"],
         "expand": false,
-        "mode" : "pc",
         "forceSearchInItem" : true
     },
     loadSelectItems: function(addToNext){
-        var stylesUrl = "../x_component_process_FormDesigner/Module/Form/skin/config.json";
-        MWF.getJSON(stylesUrl,{
-                "onSuccess": function(json){
-                    debugger;
-                    var subItemList = [];
-                    Object.each(json, function(s, key){
-                        if( s.mode.contains( this.options.mode ) ){
-                            subItemList.push({
-                                name : s.name,
-                                id : key
-                            });
+        var json = {};
+        this.options.appType.each( function (type) {
+            var container = new Element("div").inject(this.itemAreaNode);
 
-                        }
-                    }.bind(this));
-                    var category = this._newItemCategory({
-                        name : "系统样式",
-                        id : "stystem",
-                        subItemList : subItemList
-                    }, this, this.itemAreaNode);
-
-                    var json = {};
-                    var array = [];
-                    o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listPaging(1, 1000, {}, function( scriptJson ){
-                        scriptJson.data.each(function (script) {
-                            if (!json[script.application]) {
-                                json[script.application] = {
-                                    name : script.applicationName,
-                                    applicationName: script.applicationName,
-                                    appName: script.applicationName,
-                                    application: script.application,
-                                    appId: script.application
-                                };
-                                json[script.application].scriptList = [];
-                            }
-                            script.appName = script.applicationName;
-                            script.appId = script.application;
-                            script.type = "script";
-                            json[script.application].scriptList.push(script)
-                        }.bind(this));
-                        for (var application in json) {
-                            if (json[application].scriptList && json[application].scriptList.length) {
-                                array.push(json[application]);
-                            }
-                        }
-
-                        var category = this._newItemCategory({
-                            name : "自定义样式（脚本）",
-                            id : "script",
-                            applicationList : array
-                        }, this, this.itemAreaNode);
-
-                    }.bind(this));
-
-                    // o2.Actions.load("x_processplatform_assemble_designer").ScriptAction.listNext("(0)", 500, function (scriptJson) {
-                    //     o2.Actions.load("x_processplatform_assemble_designer").ApplicationAction.list(function (appJson) {
-                    //         appJson.data.each( function (app) {
-                    //             appJs[ app.id ] = app;
-                    //         });
-                    //         scriptJson.data.each( function (script) {
-                    //             if( !json[script.application] ){
-                    //                 json[script.application] = appJs[ script.application ];
-                    //                 json[script.application].scriptList = [];
-                    //             }
-                    //             script.appName = appJs[ script.application ].name;
-                    //             script.appId = script.application;
-                    //             script.type = "script";
-                    //             json[script.application].scriptList.push( script )
-                    //         }.bind(this));
-                    //         for( var application in json ){
-                    //             if( json[application].scriptList && json[application].scriptList.length ){
-                    //                 array.push( json[application] );
-                    //             }
-                    //         }
-                    //
-                    //         var category = this._newItemCategory({
-                    //             name : "自定义样式（脚本）",
-                    //             id : "script",
-                    //             applicationList : array
-                    //         }, this, this.itemAreaNode);
-                    //     }.bind(this))
-                    // }.bind(this));
-                }.bind(this)
+            var action;
+            if( type === "process" ){
+                action = o2.Actions.load("x_processplatform_assemble_designer").ApplicationDictAction.listPaging;
+            }else if( type === "cms" ){
+                action = o2.Actions.load("x_cms_assemble_control").AppDictDesignAction.listPaging;
             }
-        );
-        // this.processAction.listApplications(function(json){
-        //     json.data.each(function(data){
-        //         if (!data.scriptList){
-        //             this.designerAction.listScript(data.id, function(scriptJson){
-        //                 data.scriptList = scriptJson.data;
-        //             }.bind(this), null, false);
-        //         }
-        //         if (data.scriptList && data.scriptList.length){
-        //             var category = this._newItemCategory(data, this, this.itemAreaNode);
-        //             data.scriptList.each(function(d){
-        //                 d.applicationName = data.name;
-        //                 var item = this._newItem(d, this, category.children);
-        //                 this.items.push(item);
-        //             }.bind(this));
-        //         }
-        //     }.bind(this));
-        // }.bind(this));
+
+            var json = {};
+            var array = [];
+            action(1, 1000, {}, function( dictionaryJson ) {
+                dictionaryJson.data.each(function (dictionary) {
+                    var appName = dictionary.appName || dictionary.applicationName;
+                    var appId = dictionary.appId || dictionary.application;
+                    if (!json[appId]) {
+                        json[appId] = {
+                            name: appName,
+                            applicationName: appName,
+                            appName: appName,
+                            application: appId,
+                            appId: appId
+                        };
+                        json[appId].dictionaryList = [];
+                    }
+                    dictionary.appName = appName;
+                    dictionary.appId = appId;
+                    dictionary.appType = type;
+                    dictionary.type = "dictionary";
+                    json[appId].dictionaryList.push(dictionary)
+                }.bind(this));
+                for (var application in json) {
+                    if (json[application].dictionaryList && json[application].dictionaryList.length) {
+                        array.push(json[application]);
+                    }
+                }
+
+                if( this.options.appType.length === 1 ){
+                    array.each( function (data) {
+                        var category = this._newItemCategory(data, this, container);
+                    }.bind(this))
+                }else{
+                    var category = this._newItemCategory({
+                        name: MWF.xApplication.Selector.LP.appType[type],
+                        id: type,
+                        applicationList: array
+                    }, this, container);
+                }
+            }.bind(this))
+        }.bind(this));
+
     },
     _scrollEvent: function(y){
         return true;
     },
     _getChildrenItemIds: function(data){
-        return data.scriptList || data.subItemList || data.applicationList;
+        return data.dictionaryList || [];
     },
     _newItemCategory: function(data, selector, item, level){
-        return new MWF.xApplication.Selector.FormStyle.ItemCategory(data, selector, item, level)
+        return new MWF.xApplication.Selector.Dictionary.ItemCategory(data, selector, item, level)
     },
 
     _listItemByKey: function(callback, failure, key){
@@ -134,16 +86,16 @@ MWF.xApplication.Selector.FormStyle = new Class({
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.id), async);
     },
     _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.FormStyle.ItemSelected(data, selector, item)
+        return new MWF.xApplication.Selector.Dictionary.ItemSelected(data, selector, item)
     },
     _listItemByPinyin: function(callback, failure, key){
         return false;
     },
     _newItem: function(data, selector, container, level){
-        return new MWF.xApplication.Selector.FormStyle.Item(data, selector, container, level);
+        return new MWF.xApplication.Selector.Dictionary.Item(data, selector, container, level);
     }
 });
-MWF.xApplication.Selector.FormStyle.Item = new Class({
+MWF.xApplication.Selector.Dictionary.Item = new Class({
     Extends: MWF.xApplication.Selector.Person.Item,
     _getShowName: function(){
         return this.data.name;
@@ -187,7 +139,7 @@ MWF.xApplication.Selector.FormStyle.Item = new Class({
     }
 });
 
-MWF.xApplication.Selector.FormStyle.ItemSelected = new Class({
+MWF.xApplication.Selector.Dictionary.ItemSelected = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemSelected,
     _getShowName: function(){
         return this.data.name;
@@ -214,7 +166,7 @@ MWF.xApplication.Selector.FormStyle.ItemSelected = new Class({
     }
 });
 
-MWF.xApplication.Selector.FormStyle.ItemCategory = new Class({
+MWF.xApplication.Selector.Dictionary.ItemCategory = new Class({
     Extends: MWF.xApplication.Selector.Person.ItemCategory,
     clickItem: function (callback) {
         if (this._hasChild() ) {
@@ -247,15 +199,8 @@ MWF.xApplication.Selector.FormStyle.ItemCategory = new Class({
     },
     loadSub: function (callback) {
         if (!this.loaded) {
-            if( this.data.subItemList ){
-                this.data.subItemList.each(function (subItem, index) {
-                    var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
-                    this.selector.items.push(item);
-                    if(this.subItems)this.subItems.push( item );
-                }.bind(this));
-            }
-            if( this.data.scriptList ){
-                this.data.scriptList.each(function (subItem, index) {
+            if( this.data.dictionaryList ){
+                this.data.dictionaryList.each(function (subItem, index) {
                     var item = this.selector._newItem(subItem, this.selector, this.children, this.level + 1, this);
                     this.selector.items.push(item);
                     if(this.subItems)this.subItems.push( item );
@@ -288,8 +233,7 @@ MWF.xApplication.Selector.FormStyle.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/default/icon/applicationicon.png)");
     },
     _hasChild: function(){
-        return ( this.data.scriptList && this.data.scriptList.length ) ||
-            ( this.data.subItemList && this.data.subItemList.length) ||
+        return ( this.data.dictionaryList && this.data.dictionaryList.length ) ||
             ( this.data.applicationList && this.data.applicationList.length);
     },
     afterLoad: function(){

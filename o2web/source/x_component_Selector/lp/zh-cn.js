@@ -18,6 +18,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "selectCMSCategory": "选择内容管理栏目",
     "noSelectableItemText" : "无待选项",
     "selectScript" : "选择脚本",
+    "selectDictionary" : "选择数据字典",
 
     "searchDescription" : "搜索内容",
 
@@ -36,6 +37,12 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
     "role" : "角色",
     "group" : "群组",
     "unit" : "组织",
+
+    "appType" : {
+        "process": "流程管理",
+        "cms": "内容管理",
+        "portal": "门户管理"
+    },
 
     "cancel": "取消",
     "back": "返回",
