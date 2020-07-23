@@ -37,6 +37,13 @@ interface ProcessAssembleSurfaceService {
     fun getApplicationProcess(@Path("appId") appId: String): Observable<ApiResponse<List<ProcessInfoData>>>
 
     /**
+     * 获取应用下的流程
+     * @param filter 可启动流程终端类型,可选值 client,mobile,all
+     */
+    @POST("jaxrs/process/list/application/{appId}/filter")
+    fun getApplicationProcessFilter(@Path("appId") appId: String, @Body filter: ApplicationProcessFilter): Observable<ApiResponse<List<ProcessInfoData>>>
+
+    /**
      * 获取应用列表 包含应用下的流程数据
      * @return
      */
