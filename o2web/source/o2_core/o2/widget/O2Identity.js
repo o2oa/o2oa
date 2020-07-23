@@ -7,7 +7,7 @@ o2.widget.O2Identity = new Class({
 	options: {
 		"style": "default",
         "canRemove": false,
-        "lazy": false,
+        "lazy": true,
         "disableInfor" : false
 	},
 	initialize: function(data, container, options){
@@ -48,7 +48,7 @@ o2.widget.O2Identity = new Class({
             }.bind(this));
         }
 
-        if( !this.options.disableInfor ){
+        if( !this.options.disableInfor && !layout.mobile){
             if (!this.options.lazy ){
                 this.createInforNode(function(){
                     this.fireEvent("loadedInfor", [this]);
