@@ -37,6 +37,7 @@ MWF.xApplication.process.DictionaryDesigner.LP = {
         "sameObjectKey": "项目名称重复",
         "emptyObjectKey": "项目名称不能为空",
         "numberObjectKey": "项目名称不能为数字",
+        "editorNotValidated" : "请先修正编辑器报的错",
 
         "inputName": "请输入数据字典名称和别名",
         "noModifyName": "不能修改名称或者别名",
