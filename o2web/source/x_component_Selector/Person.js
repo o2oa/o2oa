@@ -1762,11 +1762,11 @@ MWF.xApplication.Selector.Person.Item = new Class({
                 this.outItem();
             }.bind(this),
             "click": function(){
-                this.clickItem( true );
+                this.clickItem( null, true );
             }.bind(this)
         });
     },
-    clickItem: function( checkValid ){
+    clickItem: function( callback, checkValid ){
         if ( layout.mobile && this.selector.options.count.toInt()===1){
             this.selectedSingle( checkValid );
         }else{
@@ -2006,7 +2006,7 @@ MWF.xApplication.Selector.Person.ItemSelected = new Class({
     getData: function(callback){
         if (callback) callback();
     },
-    clickItem: function( checkValid ){
+    clickItem: function( callback, checkValid ){
         if (this.items.length){
             this.items.each(function(item){
                 item.unSelected( checkValid );
