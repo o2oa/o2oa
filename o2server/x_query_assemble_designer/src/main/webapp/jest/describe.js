@@ -30,7 +30,7 @@ Describe.doPost = function(address, m, data) {
 			headers : {
 				'x-debugger' : true
 			},
-			contentType : (m.contentType.indexOf('application/json') > -1) ? m.contentType : false,
+			contentType : (m.contentType.indexOf('application/json') > -1) ? m.contentType : m.contentType,
 			processData : (m.contentType.indexOf('application/json') > -1) ? true : false,
 			xhrFields : {
 				'withCredentials' : true
@@ -562,7 +562,8 @@ Describe.createSample= function(m) {
 			strSample += "        type : '"+ m.type + "',\n";
 			strSample += "        url : '"+address + "',\n";
 			strSample += "        headers : {'x-debugger' : true}" + ",\n";
-			strSample += "        contentType : false,\n";
+			//strSample += "        contentType : false,\n";
+			strSample += "        contentType : '"+m.contentType+ "',\n";
 			strSample += "        processData  : false,\n";
 			strSample += "        xhrFields : {'withCredentials' : true}" + ",\n";
 			strSample += "        crossDomain : true"+ ",\n";
