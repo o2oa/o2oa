@@ -298,15 +298,17 @@ public class DocumentPersistService {
 	 * @param authorList
 	 * @throws Exception
 	 */
-	public void refreshDocumentPermission( String docId, List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
+	public Document refreshDocumentPermission( String docId, List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			throw new Exception("docId is empty!");
 		}
-		permissionService.refreshDocumentPermission( docId, readerList, authorList);
+		Document document = permissionService.refreshDocumentPermission( docId, readerList, authorList);
 		
 		new CmsBatchOperationPersistService().addOperation( 
 				CmsBatchOperationProcessService.OPT_OBJ_DOCUMENT, 
 				CmsBatchOperationProcessService.OPT_TYPE_PERMISSION,  docId,  docId, "刷新文档权限：ID=" +  docId );
+
+		return document;
 	}
 
 	/**
