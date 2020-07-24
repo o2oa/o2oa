@@ -107,7 +107,9 @@ class ActionListLike extends BaseAction {
 		if (ListTools.isNotEmpty(personIds)) {
 			p = cb.and(p, root.get(Person_.id).in(personIds));
 		}else{
-			return wos;
+			if(ListTools.isNotEmpty(wi.getGroupList(), wi.getRoleList())) {
+				return wos;
+			}
 		}
 		p = cb.and(p, business.personPredicateWithTopUnit(effectivePesron));
 		List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
