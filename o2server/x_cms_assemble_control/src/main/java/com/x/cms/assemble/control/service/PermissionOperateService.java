@@ -33,11 +33,11 @@ public class PermissionOperateService {
 	 * @param authorList
 	 * @throws Exception
 	 */
-	public void refreshDocumentPermission( String docId, List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
+	public Document refreshDocumentPermission( String docId, List<PermissionInfo> readerList, List<PermissionInfo> authorList ) throws Exception {
 		List<PermissionInfo> permissionList = composeDocmentAllPermissions(readerList, authorList);
 		try {
 			//将读者以及作者信息持久化到数据库中
-			refreshDocumentPermission( docId, permissionList );
+			return refreshDocumentPermission( docId, permissionList );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -141,13 +141,14 @@ public class PermissionOperateService {
 	 * @param permissionList
 	 * @throws Exception 
 	 */
-	public void refreshDocumentPermission( String docId, List<PermissionInfo> permissionList ) throws Exception {
+	public Document refreshDocumentPermission( String docId, List<PermissionInfo> permissionList ) throws Exception {
 		if( StringUtils.isEmpty(docId) ){
 			throw new Exception( "docId is empty！" );
 		}
+		Document document = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			emc.beginTransaction( Document.class );
-			Document document = emc.find( docId, Document.class );		
+			document = emc.find( docId, Document.class );
 			
 			if( document != null ) {
 				//清空文档权限信息
@@ -196,12 +197,12 @@ public class PermissionOperateService {
 				if( ListTools.isEmpty( document.getAuthorPersonList() ) && ListTools.isEmpty( document.getAuthorUnitList() ) 
 						&& ListTools.isEmpty( document.getAuthorGroupList() )) {
 					//编辑全部都为空，则是创建人可编辑
-					document.addToAuthorPersonList( document.getCreatorPerson() );
+					document.addToReadPersonList( document.getCreatorPerson() );
 					document.addToAuthorPersonList( document.getCreatorPerson() );
 				}
 				if( ListTools.isEmpty( document.getManagerList() ) ) {
 					//管理全部都为空，则是创建人可以管理
-					document.addToManagerList( document.getCreatorPerson() );
+					document.addToReadPersonList( document.getCreatorPerson() );
 					document.addToManagerList( document.getCreatorPerson() );
 				}
 		
@@ -211,6 +212,8 @@ public class PermissionOperateService {
 		} catch ( Exception e ) {
 			throw e;
 		}
+
+		return document;
 	}
 
 //	private boolean existsPermission(List<PermissionInfo> permissionList, String objectType, String permissionCode) {
