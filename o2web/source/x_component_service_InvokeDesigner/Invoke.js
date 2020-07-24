@@ -118,9 +118,9 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 defaultText += "this.currentPerson//当前用户\n";
                 defaultText += "this.response//响应对象。通过this.response.setBody(data)设置响应内容\n";
 
-                defaultText += "this.organization(); //组织访问\n";
-                defaultText += "this.org(); //组织快速访问方法\n";
-                defaultText += "this.service(); ///webSerivces客户端\n";
+                defaultText += "this.organization; //组织访问\n";
+                defaultText += "this.org; //组织快速访问方法\n";
+                defaultText += "this.service; ///webSerivces客户端\n";
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }
