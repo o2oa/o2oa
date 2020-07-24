@@ -5,7 +5,6 @@ MWF.APPDD = MWF.xApplication.process.DictionaryDesigner;
 MWF.require("MWF.widget.Common", null, false);
 MWF.xDesktop.requireApp("process.DictionaryDesigner", "lp."+MWF.language, null, false);
 MWF.require("MWF.widget.JavascriptEditor", null, false);
-alert(1)
 MWF.xApplication.process.DictionaryDesigner.Dictionary = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
