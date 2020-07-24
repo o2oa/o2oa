@@ -365,7 +365,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		if ( check && !wi.getSkipPermission() ) {
 			//将读者以及作者信息持久化到数据库中
 			try {
-				documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				document = documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
