@@ -304,10 +304,13 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         items.each(function(item){
             array.push(item.data);
         }.bind(this));
+
+        var simple = this.json.storeRange === "simple";
+
         this.checkEmpower( array, function( data ){
             var values = [];
             data.each(function(d){
-                values.push(MWF.org.parseOrgData(d, true));
+                values.push(MWF.org.parseOrgData(d, true, simple));
             }.bind(this));
 
             if (this.json.isInput){
@@ -383,6 +386,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
     _searchConfirmPerson: function(item){
         var inforNode = item.inforNode || new Element("div");
 
+        var simple = this.json.storeRange === "simple";
+
         if (item.data){
 
             var data = item.data;
@@ -394,7 +399,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                     }, function(json){
                         if( json.data.length > 0 ){
                             if( data["person"] )json.data[0].id = data["person"];
-                            item.data = MWF.org.parseOrgData( json.data[0], true );
+                            item.data = MWF.org.parseOrgData( json.data[0], true, simple );
                             item.value = this.getDataText( item.data );
                             if(item.node)item.node.set("text", item.value);
                         }
@@ -402,7 +407,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 }
             }
             if( item.data && ( item.data.createTime || item.data.updateTime ) ){
-                item.data = MWF.org.parseOrgData( item.data, true );
+                item.data = MWF.org.parseOrgData( item.data, true, simple );
             }
 
             var text = "";
@@ -706,6 +711,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         var values = [];
         var comboxValues = [];
 
+        var simple = this.json.storeRange === "simple";
+
         var type = typeOf(value);
         if (type==="array"){
             value.each(function(v){
@@ -713,10 +720,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
                 var data = null;
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") {
-                    data = MWF.org.parseOrgData(v, true);
+                    data = MWF.org.parseOrgData(v, true, simple);
                     if(data.woPerson)delete data.woPerson;
                 }
                 if (data){
@@ -728,14 +735,14 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
             }
         }
         if (type==="object"){
-            var vData = MWF.org.parseOrgData(value, true);
+            var vData = MWF.org.parseOrgData(value, true, simple);
             if(vData.woPerson)delete vData.woPerson;
             values.push( vData );
             comboxValues.push({"text": this.getDataText(value),"value": vData});

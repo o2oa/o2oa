@@ -1849,10 +1849,13 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             items.each(function(item){
                 array.push(item.data);
             }.bind(this));
+
+            var simple = this.json.storeRange === "simple";
+
             this.checkEmpower( array, function( data ){
                 var values = [];
                 data.each(function(d){
-                    values.push(MWF.org.parseOrgData(d, true));
+                    values.push(MWF.org.parseOrgData(d, true, simple));
                 }.bind(this));
 
                 this.setData(values);
@@ -1942,11 +1945,12 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
         },
         saveCheckedEmpowerData:function( callback ){
             var data = this.getData();
+            var simple = this.json.storeRange === "simple";
             //this.empowerChecker.replaceEmpowerIdentity(data, function( newData ){
             this.empowerChecker.setIgnoreEmpowerFlag(data, function( newData ){
                 var values = [];
                 newData.each(function(d){
-                    values.push(MWF.org.parseOrgData(d, true));
+                    values.push(MWF.org.parseOrgData(d, true, simple));
                 }.bind(this));
                 this.setData( values );
                 if( callback )callback(values)
@@ -2019,10 +2023,11 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             if( layout.mobile ){
                 return this.getValue();
             }else{
+                var simple = this.json.storeRange === "simple";
                 var data = [];
                 if( this.selector && this.selector.selector){
                     this.selector.selector.selectedItems.each( function( item ){
-                        data.push( MWF.org.parseOrgData(item.data, true) );
+                        data.push( MWF.org.parseOrgData(item.data, true, simple) );
                     })
                 }
                 return data;
@@ -2088,16 +2093,18 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             var oldValues = this.getValue();
             var values = [];
 
+            var simple = this.json.storeRange === "simple";
+
             var type = typeOf(value);
             if (type==="array"){
                 value.each(function(v){
                     var vtype = typeOf(v);
                     var data = null;
                     if (vtype==="string"){
-                        this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true); }.bind(this), error, v, false);
+                        this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, v, false);
                     }
                     if (vtype==="object") {
-                        data = MWF.org.parseOrgData(v, true);
+                        data = MWF.org.parseOrgData(v, true, simple);
                         if(data.woPerson)delete data.woPerson;
                     }
                     if (data)values.push(data);
@@ -2105,11 +2112,11 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             }
             if (type==="string"){
                 var vData;
-                this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true); }.bind(this), error, value, false);
+                this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, true, simple); }.bind(this), error, value, false);
                 if (vData)values.push(vData);
             }
             if (type==="object"){
-                var vData = MWF.org.parseOrgData(value, true);
+                var vData = MWF.org.parseOrgData(value, true, simple);
                 if(vData.woPerson)delete vData.woPerson;
                 values.push( vData );
             }
