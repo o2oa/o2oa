@@ -219,6 +219,19 @@
             <div class="MWFFormulaArea" name="exclude" title="脚本 (S)"></div>
         </div>
 
+        <div>
+            <div style="text-align: center; height: 24px; background-color: #F1F1F1; line-height: 24px; border-bottom: 1px solid #cccccc; border-top: 1px solid #cccccc;font-weight: bold;">数据保存</div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">数据保存:</td>
+                    <td class="editTableValue">
+                        <input type="radio" name="storeRange" value="full" text{($.section!='simple')?'checked':''}/>完整
+                        <input type="radio" name="storeRange" value="simple" text{($.section=='simple')?'checked':''}/>精简
+                    </td>
+                </tr>
+            </table>
+        </div>
+
     </div>
     <div title="区段" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
