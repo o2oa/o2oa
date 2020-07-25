@@ -248,9 +248,18 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
+
+                    if( typeOf(column.titleStyles) === "object" )viewCell.setStyles(column.titleStyles);
+                    if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
                 }else{
                     this.hideColumns.push(column.column);
+                    if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
                 }
+                if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
+                    var code = column.events.loadTitle.code;
+                    this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
+                }
+
                 if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             this.lookup(data);
@@ -1263,6 +1272,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
+
         this.load();
     },
     load: function(){
@@ -1294,6 +1304,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             this.sequenceTd.set("text", s);
         }
 
+        debugger;
+
         Object.each(this.view.entries, function(c, k){
             var cell = this.data.data[k];
             if (cell === undefined) cell = "";
@@ -1308,11 +1320,32 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                     }else{
                         td.set("text", v);
                     }
+                    if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
+
+                    Object.each( c.events || {}, function (e , key) {
+                        if(e.code){
+                            if( key === "loadContent" ){
+                                this.view.Macro.fire( e.code,
+                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
+                            }else if( key !== "loadTitle" ){
+                                td.addEvent(key, function(event){
+                                    return this.view.Macro.fire(
+                                        e.code,
+                                        {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
+                                        event
+                                    );
+                                }.bind(this));
+                            }
+                        }
+                    });
                 }
+
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, c)
                 }
+
                 if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
             }
             //}
         }.bind(this));
@@ -1633,6 +1666,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
                 break;
             }
         }
+
         if (this.groupColumn){
             //var text = (this.groupColumn.code) ? MWF.Macro.exec(this.groupColumn.code, {"value": this.data.group, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : this.data.group;
             var text = this.data.group;
@@ -1652,7 +1686,32 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
+        debugger;
+        if( this.groupColumn ){
+            if( typeOf(this.groupColumn.contentStyles) === "object" )this.categoryTd.setStyles(this.groupColumn.contentStyles);
+            if( typeOf(this.groupColumn.contentProperties) === "object" )this.categoryTd.setProperties(this.groupColumn.contentProperties);
+        }
+
         this.setEvent();
+
+        var column = this.groupColumn;
+        var td = this.categoryTd;
+        Object.each( column.events || {}, function (e , key) {
+            if(e.code){
+                if( key === "loadContent" ){
+                    this.view.Macro.fire( e.code,
+                        {"node" : td, "json" : column, "data" : this.data.group, "view": this.view, "row" : this});
+                }else if( key !== "loadTitle" ){
+                    td.addEvent(key, function(event){
+                        return this.view.Macro.fire(
+                            e.code,
+                            {"node" : td, "json" : column, "data" : this.data.group, "view": this.view, "row" : this},
+                            event
+                        );
+                    }.bind(this));
+                }
+            }
+        });
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },

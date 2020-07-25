@@ -17,6 +17,9 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         this.data.vtype = this.view.json.type;
         this.data.pid = this.view.json.id + this.data.id;
         this.htmlPath = this.options.path;
+
+        this.maplists = {};
+
         this.designer = designer;
 
         this.propertyNode = propertyNode;
@@ -71,6 +74,7 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     this.loadActionStylesArea();
                     this.loadActionArea();
                     this.loadStylesList();
+                    this.loadMaplist();
                 }
             }.bind(this));
         } else {
@@ -790,6 +794,39 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
             }.bind(this));
 
 
+        }.bind(this));
+    },
+    loadMaplist: function(){
+        var maplists = this.propertyContent.getElements(".MWFMaplist");
+        debugger;
+        maplists.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var collapse = node.get("collapse");
+            var mapObj = this.data[name];
+            if (!mapObj) mapObj = {};
+            MWF.require("MWF.widget.Maplist", function(){
+                node.empty();
+                var maplist = new MWF.widget.Maplist(node, {
+                    "title": title,
+                    "collapse": (collapse) ? true : false,
+                    "onChange": function(){
+                        //this.data[name] = maplist.toJson();
+                        //
+                        var oldData = this.data[name];
+                        this.changeJsonDate(name, maplist.toJson());
+                        this.changeStyle(name, oldData);
+                        this.changeData(name);
+                    }.bind(this),
+                    "onDelete": function(key){
+                        debugger;
+
+                        this.module.deletePropertiesOrStyles(name, key);
+                    }.bind(this)
+                });
+                maplist.load(mapObj);
+                this.maplists[name] = maplist;
+            }.bind(this));
         }.bind(this));
     },
     loadActionStylesArea: function () {
