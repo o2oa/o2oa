@@ -339,7 +339,8 @@
         "border-left": "5px solid #ffffff"
     },
     "selectorTitle": {
-        "height": "26px",
+        "height": "auto",
+        "min-height" : "26px",
         "line-height": "26px",
         "font-size": "14px",
         "color": "#333333",
