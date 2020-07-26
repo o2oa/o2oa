@@ -220,12 +220,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
-            this.selectTitleCell = new Element("td", {
+            this.selectTitleCell = new Element("td.selectTitleCell", {
                 "styles": viewTitleCellNode
             }).inject(this.viewTitleLine);
             this.selectTitleCell.setStyle("width", "10px");
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
+            if( this.isSelectTdHidden() ){
+                this.selectTitleCell.hide();
+            }
+
 
             //序号
             if (this.viewJson.isSequence==="yes"){
@@ -248,9 +252,18 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
                     var size = MWF.getTextSize(column.displayName, viewTitleCellNode);
                     viewCell.setStyle("min-width", ""+size.x+"px");
                     if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
+
+                    if( typeOf(column.titleStyles) === "object" )viewCell.setStyles(column.titleStyles);
+                    if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
+
+                    if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
+                        var code = column.events.loadTitle.code;
+                        this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
+                    }
                 }else{
                     this.hideColumns.push(column.column);
                 }
+
                 if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             this.lookup(data);
@@ -261,6 +274,24 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }.bind(this));
             this.lookup(data);
         }
+    },
+    isSelectTdHidden(){
+        if( !this.viewJson.firstTdHidden ){
+            return false;
+        }
+        if( this.json.select === "single" || this.json.select === "multi"  ){
+            return false;
+        }
+        if( this.viewJson.select === "single" || this.viewJson.select === "multi"  ){
+            return false;
+        }
+        if( this.options.select === "single" || this.options.select === "multi"  ){
+            return false;
+        }
+        if( this.viewJson.group && this.viewJson.group.column ){
+            return false;
+        }
+        return true;
     },
     // _loadPageCountNode: function(){
     //     this.viewPageContentNode.empty();
@@ -1263,6 +1294,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.prev = prev;
         this.idx = i;
         this.clazzType = "item";
+
         this.load();
     },
     load: function(){
@@ -1284,6 +1316,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        if( this.view.isSelectTdHidden() ){
+            this.selectTd.hide();
+        }
         //}
 
         //序号
@@ -1293,6 +1328,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             var s= 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
             this.sequenceTd.set("text", s);
         }
+
+        debugger;
 
         Object.each(this.view.entries, function(c, k){
             var cell = this.data.data[k];
@@ -1308,11 +1345,35 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                     }else{
                         td.set("text", v);
                     }
+                    if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
+                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                    if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
+                }else{
+                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
                 }
+
                 if (this.view.openColumns.indexOf(k)!==-1){
                     this.setOpenWork(td, c)
                 }
-                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+
+                if (k!== this.view.viewJson.group.column){
+                    Object.each( c.events || {}, function (e , key) {
+                        if(e.code){
+                            if( key === "loadContent" ){
+                                this.view.Macro.fire( e.code,
+                                    {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this});
+                            }else if( key !== "loadTitle" ){
+                                td.addEvent(key, function(event){
+                                    return this.view.Macro.fire(
+                                        e.code,
+                                        {"node" : td, "json" : c, "data" : v, "view": this.view, "row" : this},
+                                        event
+                                    );
+                                }.bind(this));
+                            }
+                        }
+                    }.bind(this));
+                }
             }
             //}
         }.bind(this));
@@ -1620,6 +1681,10 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        // if( this.view.isSelectTdHidden() ){
+        //     this.selectTd.hide();
+        // }
+
         //}
         this.categoryTd = new Element("td", {
             "styles": viewContentCategoryTdNode,
@@ -1633,6 +1698,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
                 break;
             }
         }
+
         if (this.groupColumn){
             //var text = (this.groupColumn.code) ? MWF.Macro.exec(this.groupColumn.code, {"value": this.data.group, "gridData": this.view.gridJson, "data": this.view.viewData, "entry": this.data}) : this.data.group;
             var text = this.data.group;
@@ -1652,7 +1718,32 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         this.expanded = false;
         if (this.view.json.itemStyles) this.categoryTd.setStyles(this.view.json.itemStyles);
 
+        debugger;
+        if( this.groupColumn ){
+            if( typeOf(this.groupColumn.contentStyles) === "object" )this.categoryTd.setStyles(this.groupColumn.contentStyles);
+            if( typeOf(this.groupColumn.contentProperties) === "object" )this.categoryTd.setProperties(this.groupColumn.contentProperties);
+        }
+
         this.setEvent();
+
+        var column = this.groupColumn;
+        var td = this.categoryTd;
+        Object.each( column.events || {}, function (e , key) {
+            if(e.code){
+                if( key === "loadContent" ){
+                    this.view.Macro.fire( e.code,
+                        {"node" : td, "json" : column, "data" : this.data.group, "view": this.view, "row" : this});
+                }else if( key !== "loadTitle" ){
+                    td.addEvent(key, function(event){
+                        return this.view.Macro.fire(
+                            e.code,
+                            {"node" : td, "json" : column, "data" : this.data.group, "view": this.view, "row" : this},
+                            event
+                        );
+                    }.bind(this));
+                }
+            }
+        }.bind(this));
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },

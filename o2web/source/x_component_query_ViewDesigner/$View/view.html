@@ -68,6 +68,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">无分类和选择隐藏首列</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden===true)?'checked':''} type="radio" value="single"/>是
+                    <input class="editTableRadio" name="data.firstTdHidden" text{($.data.firstTdHidden!==true)?'checked':''} type="radio" value="multi"/>否
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">无数据显示:</td>
                 <td class="editTableValue">
                     <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
