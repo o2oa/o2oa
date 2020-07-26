@@ -264,8 +264,9 @@
         "border-left": "25px solid #ffffff"
     },
     "selectorTitle": {
-        "height": "26px",
+        "min-height": "26px",
         "line-height": "26px",
+        "height" : "auto",
         "font-size": "14px",
         "color": "#333333",
         "padding-left" : "2px",
@@ -301,7 +302,8 @@
         "width" : "16px",
         "height" : "16px",
         "right" : "10px",
-        "top" : "3px",
+//        "top" : "3px",
+        "top" : "calc(50% - 8px)",
         "cursor" : "pointer"
     },
     "selectorContent": {
