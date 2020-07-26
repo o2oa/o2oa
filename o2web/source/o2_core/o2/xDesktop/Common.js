@@ -608,7 +608,9 @@ MWF.org = {
             var data = {
                 "id": data.id,
                 "name": data.name,
-                "distinguishedName": data.distinguishedName
+                "distinguishedName": data.distinguishedName,
+                "unitLevelName" : data.unitLevelName,
+                "person": data.person
             };
             if( data.ignoreEmpower )rData.ignoreEmpower = true;
             if( data.ignoredEmpower )rData.ignoredEmpower = true;
@@ -704,7 +706,8 @@ MWF.org = {
             return {
                 "id": data.id,
                 "name": data.name,
-                "distinguishedName": data.distinguishedName
+                "distinguishedName": data.distinguishedName,
+                "levelName": data.levelName
             }
         }else{
             return {
