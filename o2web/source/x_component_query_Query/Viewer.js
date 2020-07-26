@@ -251,13 +251,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
                     if( typeOf(column.titleStyles) === "object" )viewCell.setStyles(column.titleStyles);
                     if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
+
+                    if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
+                        var code = column.events.loadTitle.code;
+                        this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
+                    }
                 }else{
                     this.hideColumns.push(column.column);
-                    if( typeOf(column.titleProperties) === "object" )viewCell.setProperties(column.titleProperties);
-                }
-                if( column.events && column.events.loadTitle && column.events.loadTitle.code ){
-                    var code = column.events.loadTitle.code;
-                    this.Macro.fire( code, {"node" : viewCell, "json" : column, "data" : column.displayName, "view" : this});
                 }
 
                 if (column.allowOpen) this.openColumns.push(column.column);
@@ -1321,7 +1321,17 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                         td.set("text", v);
                     }
                     if( typeOf(c.contentProperties) === "object" )td.setProperties(c.contentProperties);
+                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                    if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
+                }else{
+                    if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
+                }
 
+                if (this.view.openColumns.indexOf(k)!==-1){
+                    this.setOpenWork(td, c)
+                }
+
+                if (k!== this.view.viewJson.group.column){
                     Object.each( c.events || {}, function (e , key) {
                         if(e.code){
                             if( key === "loadContent" ){
@@ -1337,15 +1347,8 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                                 }.bind(this));
                             }
                         }
-                    });
+                    }.bind(this));
                 }
-
-                if (this.view.openColumns.indexOf(k)!==-1){
-                    this.setOpenWork(td, c)
-                }
-
-                if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
-                if( typeOf(c.contentStyles) === "object" )td.setStyles(c.contentStyles);
             }
             //}
         }.bind(this));
@@ -1711,7 +1714,7 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
                     }.bind(this));
                 }
             }
-        });
+        }.bind(this));
 
         this.view.fireEvent("postLoadCategoryRow", [null, this]);
     },
