@@ -1272,8 +1272,8 @@ MWF.xApplication.process.Work.Processor = new Class({
             var lines = ((len+1)/2).toInt();
             for (var n=0; n<lines; n++){
                 var tr = new Element("tr").inject( routeOrgTable );
-                new Element("td", { "width" : "50%", "styles" : this.css.routeOrgOddTd }).inject( tr );
-                new Element("td", { "width" : "50%", "styles" : this.css.routeOrgEvenTd }).inject( tr );
+                new Element("td", { "width" : "50%", "valign" : "bottom", "styles" : this.css.routeOrgOddTd }).inject( tr );
+                new Element("td", { "width" : "50%", "valign" : "bottom", "styles" : this.css.routeOrgEvenTd }).inject( tr );
             }
 
             var trs = routeOrgTable.getElements("tr");
@@ -1322,6 +1322,23 @@ MWF.xApplication.process.Work.Processor = new Class({
         org.load();
         this.orgItems.push( org )
 
+    },
+    showOrgsByRoute : function( route ){
+        //debugger;
+        this.loadOrgs( route );
+    },
+    clearAllOrgs : function(){
+        //清空组织所选人
+        for( var key in this.orgItemsObject ){
+            var orgItems = this.orgItemsObject[key] || [];
+            orgItems.each( function(org){
+                org.setDataToOriginal();
+            })
+        }
+        //
+        this.orgTableObject = {};
+        this.orgItemsObject = {};
+        this.orgsArea.empty();
     },
     getCurrentRouteSelectorList : function(){
         var selectorList = [];
@@ -1373,14 +1390,14 @@ MWF.xApplication.process.Work.Processor = new Class({
         this.node.setStyle( "height", height );
         this.fireEvent("resize");
     },
-    setSize : function( currentOrgLength ){
+    setSize : function( currentOrgLength, flag ){
         if( layout.mobile ){
             this.setSize_mobile();
         }else{
-            this.setSize_pc( currentOrgLength );
+            this.setSize_pc( currentOrgLength, flag );
         }
         //this.node.store("width", this.node.getStyle("width").toInt() + ( flag ? 20 : 0 ));
-        this.fireEvent("resize");
+        if(!flag)this.fireEvent("resize");
     },
     setSize_mobile : function(){
         if( this.buttonsArea ){
@@ -1398,9 +1415,8 @@ MWF.xApplication.process.Work.Processor = new Class({
             })
         }
     },
-    setSize_pc : function( currentOrgLength ){
+    setSize_pc : function( currentOrgLength, flag ){
         var lines = ((currentOrgLength+1)/2).toInt();
-        var flag = false;
 
         var height = 0;
         if( this.routeSelectorTile )height = height + this.getOffsetY(this.routeSelectorTile) +  this.routeSelectorTile.getStyle("height").toInt();
@@ -1411,12 +1427,18 @@ MWF.xApplication.process.Work.Processor = new Class({
 
         if( lines > 0 ){
             if(this.orgsArea)this.orgsArea.show();
-            if( this.orgsTile )height = height + this.getOffsetY(this.orgsTile) +  this.orgsTile.getStyle("height").toInt();
-            height = height + lines*this.options.orgHeight + this.getOffsetY(this.orgsArea);
-            this.node.setStyle( "height", height );
 
-            //flag = (lines*this.options.orgHeight + 431) > Math.floor( this.form.app.content.getSize().y * 0.9);
-            //this.node.store("height", Math.min( Math.floor( this.form.app.content.getSize().y * 0.9) , lines*this.options.orgHeight + 431 ));
+            if( flag ){
+                // if( this.orgsTile )height = height + this.getOffsetY(this.orgsTile) +  this.orgsTile.getStyle("height").toInt();
+                this.orgsArea.getChildren().each( function(el){
+                    height += el.getSize().y + this.getOffsetY( el );
+                }.bind(this))
+                this.node.setStyle( "height", height );
+            }else{
+                if( this.orgsTile )height = height + this.getOffsetY(this.orgsTile) +  this.orgsTile.getStyle("height").toInt();
+                height = height + lines*this.options.orgHeight + this.getOffsetY(this.orgsArea);
+                this.node.setStyle( "height", height );
+            }
         }else{
             if(this.orgsArea)this.orgsArea.hide();
             this.node.setStyle( "height", height );
@@ -1438,12 +1460,31 @@ MWF.xApplication.process.Work.Processor = new Class({
             this.selectIdeaNode.setStyles( this.css.selectIdeaNode );
         }
     },
+    isErrorHeightOverflow : function(){
+        var hasOverflow = false;
+        ( this.orgItems || [] ).each( function(item){
+            if( item.errorHeightOverflow ){
+                hasOverflow = true;
+            }
+        }.bind(this));
+        return hasOverflow;
+    },
+    checkErrorHeightOverflow : function( force ){
+        if( force || this.isErrorHeightOverflow() ){
+            this.setSize(this.orgItems.length, true);
+        }
+    },
+    errorHeightChange : function(){
+        debugger;
+        this.checkErrorHeightOverflow( true )
+    },
     validationOrgs : function(){
         if( !this.orgItems || !this.orgItems.length )return true;
         var flag = true;
         this.orgItems.each( function(item){
             if( !item.validation() )flag = false;
         }.bind(this));
+        this.checkErrorHeightOverflow();
         return flag;
     },
     isOrgsHasEmpower: function(){
@@ -1988,6 +2029,7 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 if( this.validation() ){
                     return true;
                 }else{
+                    this.processor.checkErrorHeightOverflow();
                     return false;
                 }
             }else{
@@ -2002,6 +2044,10 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 this.selector.selector.options.values = this.getValue();
                 this.selector.selector.setSelectedItem();
             }
+        },
+        setDataToOriginal : function(){
+            var v = this._computeValue();
+            this.setData(v || "");
         },
         resetData: function(){
             var v = this.getValue();
@@ -2362,6 +2408,7 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
         },
 
         createErrorNode: function(text){
+            var _self = this;
             var node;
             if( this.processor.css.errorContentNode ){
                 node = new Element("div",{
@@ -2374,6 +2421,10 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                         "events": {
                             "click" : function(){
                                 this.destroy();
+                                if( _self.errorHeightOverflow ){
+                                    _self.errorHeightOverflow = false;
+                                    _self.processor.errorHeightChange();
+                                }
                             }.bind(node)
                         }
                     }).inject(node);
@@ -2390,11 +2441,12 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 }).inject(node);
                 var textNode = new Element("div", {
                     "styles": {
-                        "height": "20px",
+                        "height" : "auto",
+                        "min-height": "20px",
                         "line-height": "20px",
                         "margin-left": "20px",
                         "color": "red",
-                        "word-break": "keep-all"
+                        "word-break": "break-all"
                     },
                     "text": text
                 }).inject(node);
@@ -2414,6 +2466,12 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
                 }else{
                     this.errNode.inject(this.container, "after");
                 }
+                var errorSize = this.errNode.getSize();
+                debugger;
+                if( !layout.mobile && errorSize.y > 26 ){
+                    this.errorHeightOverflow = true;
+                }
+
                 //this.showNotValidationMode(this.node);
                 //if (!this.node.isIntoView()) this.node.scrollIntoView();
             }
@@ -2440,10 +2498,15 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
             }
             if (flag.toString()!="true"){
                 this.notValidationMode(flag);
+                this.processor.errorHeightChange();
                 return false;
             }else if(this.errNode){
                 this.errNode.destroy();
                 this.errNode = null;
+                if( this.errorHeightOverflow ){
+                    this.errorHeightOverflow = false;
+                    this.processor.errorHeightChange();
+                }
             }
             return true;
         },
