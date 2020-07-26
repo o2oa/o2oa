@@ -549,6 +549,9 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
             var v = this.form.Macro.exec(this.json.exclude.code, this);
             exclude = typeOf(v)==="array" ? v : [v];
         }
+
+        var simple = this.json.storeRange === "simple";
+
 		var options = {
 			"type" : "",
 			"types": selectType,
@@ -562,7 +565,7 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
 			"onComplete": function(items, itemsObject){
 				var values = [];
 				items.each( function(it){
-					values.push(MWF.org.parseOrgData(it.data, true));
+					values.push(MWF.org.parseOrgData(it.data, true, simple));
 				});
 				if (this.json.isInput){
                     this.addData(values);

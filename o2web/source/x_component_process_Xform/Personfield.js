@@ -357,9 +357,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         return options;
     },
     selectOnComplete: function(items){
+        var simple = this.json.storeRange === "simple";
         var values = [];
         items.each(function(item){
-            values.push(MWF.org.parseOrgData(item.data, true));
+            values.push(MWF.org.parseOrgData(item.data, true, simple));
         }.bind(this));
         if (this.json.isInput){
             this.addData(values);
@@ -643,6 +644,7 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         var comboxValues = [];
 
         debugger;
+        var simple = this.json.storeRange === "simple";
 
         var type = typeOf(value);
         if (type==="array"){
@@ -651,10 +653,10 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
                 var data = null;
                 if (vtype==="string"){
                     var error = (this.json.isInput) ? function(){ comboxValues.push(v); } : null;
-                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, false); }.bind(this), error, v, false);
+                    this.getOrgAction()[this.getValueMethod(v)](function(json){ data = MWF.org.parseOrgData(json.data, false, simple); }.bind(this), error, v, false);
                 }
                 if (vtype==="object") {
-                    data = MWF.org.parseOrgData(v, false);
+                    data = MWF.org.parseOrgData(v, false, simple);
                     if(data.woPerson)delete data.woPerson;
                 }
                 if (data){
@@ -666,14 +668,14 @@ MWF.xApplication.process.Xform.Personfield = MWF.APPPersonfield =  new Class({
         if (type==="string"){
             var vData;
             var error = (this.json.isInput) ? function(){ comboxValues.push(value); } : null;
-            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, false); }.bind(this), error, value, false);
+            this.getOrgAction()[this.getValueMethod(value)](function(json){ vData = MWF.org.parseOrgData(json.data, false, simple); }.bind(this), error, value, false);
             if (vData){
                 values.push(vData);
                 comboxValues.push({"text": this.getDataText(vData),"value": vData});
             }
         }
         if (type==="object"){
-            var vData = MWF.org.parseOrgData(value, false);
+            var vData = MWF.org.parseOrgData(value, false, simple);
             if(vData.woPerson)delete vData.woPerson;
             values.push( vData );
             comboxValues.push({"text": this.getDataText(value),"value": vData});
