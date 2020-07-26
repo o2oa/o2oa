@@ -78,6 +78,9 @@ MWF.xApplication.cms.Xform.Personfield = MWF.CMSPersonfield =  new Class({
 			var v = this.form.Macro.exec(this.json.exclude.code, this);
 			exclude = typeOf(v)==="array" ? v : [v];
 		}
+
+		var simple = this.json.storeRange === "simple";
+
 		var options = {
 			"type": this.json.selectType,
 			"unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
@@ -90,7 +93,7 @@ MWF.xApplication.cms.Xform.Personfield = MWF.CMSPersonfield =  new Class({
 			"onComplete": function(items){
 				var values = [];
 				items.each(function(item){
-					values.push(MWF.org.parseOrgData(item.data, true));
+					values.push(MWF.org.parseOrgData(item.data, true, simple));
 				}.bind(this));
 				if (this.json.isInput){
                     this.addData(values);
