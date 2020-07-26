@@ -1,5 +1,6 @@
 o2.widget = o2.widget || {};
 o2.require("o2.widget.Common", null, false);
+o2.require("o2.xDesktop.Common", null, false);
 o2.require("o2.xDesktop.Actions.RestActions", null, false);
 o2.widget.O2Identity = new Class({
 	Implements: [Options, Events],
@@ -11,6 +12,7 @@ o2.widget.O2Identity = new Class({
         "disableInfor" : false
 	},
 	initialize: function(data, container, options){
+	    debugger;
 		this.setOptions(options);
 		this.loadedInfor = false;
 
@@ -30,7 +32,21 @@ o2.widget.O2Identity = new Class({
         //o2.widget.O2Identity.iditems.push(this);
 	},
     setText: function(){
-        this.node.set("text", this.data.displayName || (this.data.name+"("+this.data.unitName+")"));
+	    var disply;
+	    if( this.data.displayName ){
+            disply = this.data.displayName;
+        }else{
+	        var name = this.data.name || o2.name.cn(this.data.distinguishedName);
+	        var unit;
+            if(this.data.unitName){
+                unit = this.data.unitName;
+            }else if( this.data.unitLevelName ){
+                var list = this.data.unitLevelName.split("/");
+                unit = list[ list.length - 1 ];
+            }
+            disply = name + (unit ? "("+unit+")" : "")
+        }
+        this.node.set("text", this.data.displayName || disply );
     },
     load: function(){
         var style = ( layout.mobile && this.style.identityNode_mobile ) ?
@@ -228,7 +244,7 @@ o2.widget.O2Person = new Class({
 o2.widget.O2Unit = new Class({
     Extends: o2.widget.O2Identity,
     getPersonData: function(){
-        if (!this.data.distinguishedName){
+        if (!this.data.distinguishedName || !this.data.levelName){
             this.action.actions = {"getUnit": {"uri": "/jaxrs/unit/{id}"}};
             this.action.invoke({"name": "getUnit", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
                 this.data = json.data;

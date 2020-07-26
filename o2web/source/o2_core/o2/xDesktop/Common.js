@@ -574,27 +574,27 @@ MWF.xDesktop.removeEvents = function(name, type){
 };
 
 MWF.org = {
-    parseOrgData: function(data, flat){
+    parseOrgData: function(data, flat, simple){
         if (data.distinguishedName){
             var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
                 case "@i":
-                    return this.parseIdentityData(data, flat);
+                    return this.parseIdentityData(data, flat, simple);
                     break;
                 case "@p":
-                    return this.parsePersonData(data, flat);
+                    return this.parsePersonData(data, simple);
                     break;
                 case "@u":
-                    return this.parseUnitData(data, flat);
+                    return this.parseUnitData(data, simple);
                     break;
                 case "@g":
-                    return this.parseGroupData(data, flat);
+                    return this.parseGroupData(data, simple);
                     break;
                 case "@r":
-                    return this.parseRoleData(data, flat);
+                    return this.parseRoleData(data, simple);
                     break;
                 case "@a":
-                    return this.parseAttributeData(data, flat);
+                    return this.parseAttributeData(data, simple);
                     break;
                 default:
                     return data;
@@ -603,7 +603,19 @@ MWF.org = {
             return data;
         }
     },
-    parseIdentityData: function(data, flat){
+    parseIdentityData: function(data, flat, simple){
+        if( simple ){
+            var data = {
+                "id": data.id,
+                "name": data.name,
+                "distinguishedName": data.distinguishedName,
+                "unitLevelName" : data.unitLevelName,
+                "person": data.person
+            };
+            if( data.ignoreEmpower )rData.ignoreEmpower = true;
+            if( data.ignoredEmpower )rData.ignoredEmpower = true;
+            return data;
+        }
         var rData = {
             "id": data.id,
             "name": data.name,
@@ -664,63 +676,107 @@ MWF.org = {
         }
         return rData;
     },
-    parsePersonData: function(data){
-        return {
-            "id": data.id,
-            "genderType": data.genderType,
-            "name": data.name,
-            "employee": data.employee,
-            "unique": data.unique,
-            "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName,
-            "mail": data.mail,
-            "weixin": data.weixin,
-            "qq": data.qq,
-            "mobile": data.mobile,
-            "officePhone": data.officePhone
+    parsePersonData: function(data, simple){
+        if( simple ){
+            return {
+                "id": data.id,
+                "name": data.name,
+                "employee": data.employee,
+                "distinguishedName": data.distinguishedName,
+            }
+        }else{
+            return {
+                "id": data.id,
+                "genderType": data.genderType,
+                "name": data.name,
+                "employee": data.employee,
+                "unique": data.unique,
+                "distinguishedName": data.distinguishedName,
+                "dn": data.distinguishedName,
+                "mail": data.mail,
+                "weixin": data.weixin,
+                "qq": data.qq,
+                "mobile": data.mobile,
+                "officePhone": data.officePhone
+            }
         }
     },
-    parseUnitData: function(data){
-        return {
-            "id": data.id,
-            "name": data.name,
-            "unique": data.unique,
-            "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName,
-            "typeList":data.typeList,
-            "shortName": data.shortName,
-            "level": data.level,
-            "levelName": data.levelName
+    parseUnitData: function(data, simple){
+        if( simple ){
+            return {
+                "id": data.id,
+                "name": data.name,
+                "distinguishedName": data.distinguishedName,
+                "levelName": data.levelName
+            }
+        }else{
+            return {
+                "id": data.id,
+                "name": data.name,
+                "unique": data.unique,
+                "distinguishedName": data.distinguishedName,
+                "dn": data.distinguishedName,
+                "typeList":data.typeList,
+                "shortName": data.shortName,
+                "level": data.level,
+                "levelName": data.levelName
+            }
         }
     },
-    parseGroupData: function(data){
-        return {
-            "id": data.id,
-            "name": data.name,
-            "unique": data.unique,
-            "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName
+    parseGroupData: function(data, simple){
+        if( simple ){
+            return {
+                "id": data.id,
+                "name": data.name,
+                "distinguishedName": data.distinguishedName
+            }
+        }else{
+            return {
+                "id": data.id,
+                "name": data.name,
+                "unique": data.unique,
+                "distinguishedName": data.distinguishedName,
+                "dn": data.distinguishedName
+            }
         }
     },
-    parseRoleData: function(data){
-        return {
-            "id": data.id,
-            "name": data.name,
-            "unique": data.unique,
-            "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName
+    parseRoleData: function(data, simple){
+        if( simple ){
+            return {
+                "id": data.id,
+                "name": data.name,
+                "distinguishedName": data.distinguishedName
+            }
+        }else{
+            return {
+                "id": data.id,
+                "name": data.name,
+                "unique": data.unique,
+                "distinguishedName": data.distinguishedName,
+                "dn": data.distinguishedName
+            }
         }
     },
-    parseAttributeData: function(){
-        return {
-            "id": data.id,
-            "description": data.description,
-            "name": data.name,
-            "unique": data.unique,
-            "distinguishedName": data.distinguishedName,
-            "dn": data.distinguishedName,
-            "person": data.person,
-            "attributeList": Array.clone(data.attributeList)
+    parseAttributeData: function(data, simple){
+        if(simple){
+            return {
+                "id": data.id,
+                "name": data.name,
+                "distinguishedName": data.distinguishedName,
+                "person": data.person,
+                "attributeList": Array.clone(data.attributeList)
+            }
+        }else{
+            return {
+                "id": data.id,
+                "description": data.description,
+                "name": data.name,
+                "unique": data.unique,
+                "distinguishedName": data.distinguishedName,
+                "dn": data.distinguishedName,
+                "person": data.person,
+                "attributeList": Array.clone(data.attributeList)
+            }
         }
     }
 };
