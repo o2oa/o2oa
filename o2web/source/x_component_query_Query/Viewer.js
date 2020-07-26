@@ -220,12 +220,16 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }).inject(this.viewTable);
 
             //if (this.json.select==="single" || this.json.select==="multi") {
-            this.selectTitleCell = new Element("td", {
+            this.selectTitleCell = new Element("td.selectTitleCell", {
                 "styles": viewTitleCellNode
             }).inject(this.viewTitleLine);
             this.selectTitleCell.setStyle("width", "10px");
             if (this.json.titleStyles) this.selectTitleCell.setStyles(this.json.titleStyles);
             //}
+            if( this.isSelectTdHidden() ){
+                this.selectTitleCell.hide();
+            }
+
 
             //序号
             if (this.viewJson.isSequence==="yes"){
@@ -270,6 +274,24 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             }.bind(this));
             this.lookup(data);
         }
+    },
+    isSelectTdHidden(){
+        if( !this.viewJson.firstTdHidden ){
+            return false;
+        }
+        if( this.json.select === "single" || this.json.select === "multi"  ){
+            return false;
+        }
+        if( this.viewJson.select === "single" || this.viewJson.select === "multi"  ){
+            return false;
+        }
+        if( this.options.select === "single" || this.options.select === "multi"  ){
+            return false;
+        }
+        if( this.viewJson.group && this.viewJson.group.column ){
+            return false;
+        }
+        return true;
     },
     // _loadPageCountNode: function(){
     //     this.viewPageContentNode.empty();
@@ -1294,6 +1316,9 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.selectTd = new Element("td", { "styles": viewContentTdNode }).inject(this.node);
         this.selectTd.setStyles({"cursor": "pointer"});
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        if( this.view.isSelectTdHidden() ){
+            this.selectTd.hide();
+        }
         //}
 
         //序号
@@ -1656,6 +1681,10 @@ MWF.xApplication.query.Query.Viewer.ItemCategory = new Class({
         //if (this.view.json.select==="single" || this.view.json.select==="multi"){
         this.selectTd = new Element("td", {"styles": viewContentCategoryTdNode}).inject(this.node);
         if (this.view.json.itemStyles) this.selectTd.setStyles(this.view.json.itemStyles);
+        // if( this.view.isSelectTdHidden() ){
+        //     this.selectTd.hide();
+        // }
+
         //}
         this.categoryTd = new Element("td", {
             "styles": viewContentCategoryTdNode,
