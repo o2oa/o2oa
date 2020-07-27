@@ -437,7 +437,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 var att = this.attachments[i];
                 if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
 
-                if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person !== user) {
+                if ((!att.data.control.allowControl) && att.data.person !== user) { // || !att.data.control.allowEdit
                     flag = false;
                 }
                 if (flag) {
@@ -752,6 +752,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 o2.Actions.get("x_processplatform_assemble_surface").configAttachment(att.data.id, this.module.form.businessData.work.id, att.data, function () {
                     //刷新附件权限，以后要加一个刷新附件的功能
                     o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.getWithWorkOrWorkCompleted(att.data.id, this.module.form.businessData.work.id, function (json) {
+                        debugger;
                         var attachment = this.getAttachmentById( att.data.id );
                         if( attachment ){
                             attachment.data = json.data;
