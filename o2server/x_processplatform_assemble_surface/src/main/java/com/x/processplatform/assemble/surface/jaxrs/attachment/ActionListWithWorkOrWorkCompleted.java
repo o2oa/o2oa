@@ -45,11 +45,14 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			List<Wo> wos = new ArrayList<>();
 
 			for (Attachment attachment : this.list(business, job)) {
-				if (this.read(attachment, effectivePerson, identities, units)) {
-					Wo wo = Wo.copier.copy(attachment);
+				Wo wo = Wo.copier.copy(attachment);
+				boolean canControl = this.control(wo, effectivePerson, identities, units);
+				boolean canEdit = (this.edit(wo, effectivePerson, identities, units) || canControl);
+				boolean canRead = (this.read(attachment, effectivePerson, identities, units) || canEdit);
+				if (canRead) {
 					wo.getControl().setAllowRead(true);
-					wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
-					wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
+					wo.getControl().setAllowEdit(canEdit);
+					wo.getControl().setAllowControl(canControl);
 					wos.add(wo);
 				}
 			}
