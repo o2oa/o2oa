@@ -215,6 +215,20 @@ public class Unit extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String dingdingHash;
 
+	public static final String weLinkId_FIELDNAME = "weLinkId";
+	@FieldDescribe("WeLink部门ID.")
+	@Column(length = length_255B, name = ColumnNamePrefix + weLinkId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + weLinkId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String weLinkId;
+
+	public static final String weLinkHash_FIELDNAME = "weLinkHash";
+	@FieldDescribe("WeLink部门哈希特征.")
+	@Column(length = length_255B, name = ColumnNamePrefix + weLinkHash_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + weLinkHash_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String weLinkHash;
+
 	public static final String qiyeweixinId_FIELDNAME = "qiyeweixinId";
 	@FieldDescribe("企业微信人员ID.")
 	@Column(length = length_255B, name = ColumnNamePrefix + qiyeweixinId_FIELDNAME)
@@ -409,4 +423,19 @@ public class Unit extends SliceJpaObject {
 		this.zhengwuDingdingHash = zhengwuDingdingHash;
 	}
 
+	public String getWeLinkId() {
+		return weLinkId;
+	}
+
+	public void setWeLinkId(String weLinkId) {
+		this.weLinkId = weLinkId;
+	}
+
+	public String getWeLinkHash() {
+		return weLinkHash;
+	}
+
+	public void setWeLinkHash(String weLinkHash) {
+		this.weLinkHash = weLinkHash;
+	}
 }
