@@ -76,6 +76,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		byte[] bytes = null;
 		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
 				.bind(application, process, activity);
+
 		if (event.isPresent()) {
 			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get());
 		} else {
