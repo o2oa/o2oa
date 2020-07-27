@@ -43,13 +43,14 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 			Wo wo = Wo.copier.copy(attachment);
 
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-
-			if (this.read(wo, effectivePerson, identities, units)) {
+			boolean canControl = this.control(wo, effectivePerson, identities, units);
+			boolean canEdit = (this.edit(wo, effectivePerson, identities, units) || canControl);
+			boolean canRead = (this.read(attachment, effectivePerson, identities, units) || canEdit);
+			if (canRead) {
 				wo.getControl().setAllowRead(true);
-				wo.getControl().setAllowEdit(this.edit(wo, effectivePerson, identities, units));
-				wo.getControl().setAllowControl(this.control(wo, effectivePerson, identities, units));
+				wo.getControl().setAllowEdit(canEdit);
+				wo.getControl().setAllowControl(canControl);
 			}
 
 			result.setData(wo);
