@@ -163,11 +163,11 @@
 		<key>centerContext</key>
 		<string>/x_program_center</string>
 		<key>centerHost</key>
-		<string>sample.o2oa.net</string>
+		<string>123.125.39.51</string>
 		<key>centerPort</key>
-		<integer>40030</integer>
+		<integer>20030</integer>
 		<key>httpProtocol</key>
-		<string>https</string>
+		<string>http</string>
 		<key>id</key>
 		<string>o2CenterServer</string>
 		<key>name</key>
