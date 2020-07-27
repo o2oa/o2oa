@@ -175,7 +175,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean read(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
 			throws Exception {
 		boolean value = false;
-		if (effectivePerson.isPerson(attachment.getPerson())) {
+		if(effectivePerson.isManager()) {
+			value = true;
+		}else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
 		} else if (ListTools.isEmpty(attachment.getReadIdentityList()) && ListTools.isEmpty(attachment.getReadUnitList())) {
 			value = true;
@@ -191,7 +193,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean edit(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
 			throws Exception {
 		boolean value = false;
-		if (effectivePerson.isPerson(attachment.getPerson())) {
+		if(effectivePerson.isManager()) {
+			value = true;
+		}else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
 		} else if (ListTools.isEmpty(attachment.getEditIdentityList()) && ListTools.isEmpty(attachment.getEditUnitList())) {
 			value = true;
@@ -207,7 +211,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
 			throws Exception {
 		boolean value = false;
-		if (effectivePerson.isPerson(attachment.getPerson())) {
+		if(effectivePerson.isManager()) {
+			value = true;
+		}else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
 		} else if (ListTools.isEmpty(attachment.getControllerUnitList()) && ListTools.isEmpty(attachment.getControllerIdentityList())) {
 			value = true;
