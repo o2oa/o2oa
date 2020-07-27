@@ -180,7 +180,7 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("工号,不可重复.")
 	@Column(length = length_255B, name = ColumnNamePrefix + employee_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + employee_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists = @CitationNotExist(fields = employee_FIELDNAME, type = Person.class))
+	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists = @CitationNotExist(fields = employee_FIELDNAME, type = Person.class))
 	private String employee;
 
 	public static final String unique_FIELDNAME = "unique";
@@ -188,7 +188,7 @@ public class Person extends SliceJpaObject {
 	@FieldDescribe("唯一标识,不可重复,为空则使用自动填充值")
 	@Column(length = length_255B, name = ColumnNamePrefix + unique_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + unique_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists = @CitationNotExist(fields = unique_FIELDNAME, type = Person.class))
+	@CheckPersist(allowEmpty = true, simplyString = false, citationNotExists = @CitationNotExist(fields = unique_FIELDNAME, type = Person.class))
 	private String unique;
 
 	public static final String distinguishedName_FIELDNAME = "distinguishedName";
@@ -342,6 +342,21 @@ public class Person extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dingdingHash_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String dingdingHash;
+
+
+	public static final String weLinkId_FIELDNAME = "weLinkId";
+	@FieldDescribe("WeLikn人员ID.")
+	@Column(length = length_255B, name = ColumnNamePrefix + weLinkId_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + weLinkId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String weLinkId;
+
+	public static final String weLinkHash_FIELDNAME = "weLinkHash";
+	@FieldDescribe("WeLink人员哈希特征.")
+	@Column(length = length_255B, name = ColumnNamePrefix + weLinkHash_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + weLinkHash_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String weLinkHash;
 
 	public static final String zhengwuDingdingId_FIELDNAME = "zhengwuDingdingId";
 	@FieldDescribe("政务钉钉人员ID.")
@@ -788,4 +803,19 @@ public class Person extends SliceJpaObject {
 		this.hiddenMobile = hiddenMobile;
 	}
 
+	public String getWeLinkId() {
+		return weLinkId;
+	}
+
+	public void setWeLinkId(String weLinkId) {
+		this.weLinkId = weLinkId;
+	}
+
+	public String getWeLinkHash() {
+		return weLinkHash;
+	}
+
+	public void setWeLinkHash(String weLinkHash) {
+		this.weLinkHash = weLinkHash;
+	}
 }

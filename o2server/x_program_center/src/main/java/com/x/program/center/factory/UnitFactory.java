@@ -41,6 +41,20 @@ public class UnitFactory extends AbstractFactory {
 		}
 	}
 
+	public Unit getWithWeLinkDeptCodeObject(String weLinkDeptCode) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Unit.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+		Root<Unit> root = cq.from(Unit.class);
+		Predicate p = cb.equal(root.get(Unit_.weLinkId), weLinkDeptCode);
+		List<Unit> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
+		if (os.isEmpty()) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
 	public Unit getWithZhengwuDingdingIdObject(String zhengwuDingdingId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Unit.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
