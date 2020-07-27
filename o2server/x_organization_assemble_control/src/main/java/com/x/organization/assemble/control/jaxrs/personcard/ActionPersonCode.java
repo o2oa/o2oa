@@ -33,7 +33,7 @@ import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 
 
 
@@ -123,7 +123,8 @@ class ActionPersonCode extends BaseAction {
 			BufferedImage logoFile = null;
 			ByteArrayOutputStream QrCodeFile = new ByteArrayOutputStream();
 			if(personCard.getIconMdpi()!=null && !personCard.getIconMdpi().equals("")){
-				byte[] buffer = new BASE64Decoder().decodeBuffer(personCard.getIconMdpi());  
+				//byte[] buffer = new BASE64Decoder().decodeBuffer(personCard.getIconMdpi());  
+				byte[] buffer = Base64.decodeBase64(personCard.getIconMdpi());
 				ByteArrayInputStream in = new ByteArrayInputStream(buffer);    //将b作为输入流；
 				logoFile = ImageIO.read(in);     //将in作为输入流，读取图片存入image中，而这里in可以为ByteArrayInputStream();
 			}
