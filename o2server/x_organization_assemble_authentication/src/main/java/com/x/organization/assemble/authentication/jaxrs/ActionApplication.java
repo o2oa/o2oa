@@ -11,6 +11,7 @@ import com.x.organization.assemble.authentication.jaxrs.dingding.DingdingAction;
 import com.x.organization.assemble.authentication.jaxrs.oauth.OauthAction;
 import com.x.organization.assemble.authentication.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.organization.assemble.authentication.jaxrs.sso.SsoAction;
+import com.x.organization.assemble.authentication.jaxrs.welink.WeLinkAction;
 import com.x.organization.assemble.authentication.jaxrs.zhengwudingding.ZhengwuDingdingAction;
 
 @ApplicationPath("jaxrs")
@@ -24,6 +25,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(QiyeweixinAction.class);
 		classes.add(DingdingAction.class);
 		classes.add(ZhengwuDingdingAction.class);
+		classes.add(WeLinkAction.class);
 		return classes;
 	}
 
