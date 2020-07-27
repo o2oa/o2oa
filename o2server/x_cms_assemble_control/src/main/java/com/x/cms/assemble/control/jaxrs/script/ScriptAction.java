@@ -257,7 +257,7 @@ public class ScriptAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListPaging.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListPaging().execute(effectivePerson, page, size);
+			result = ((ActionListPaging)proxy.getProxy(ActionListPaging.class)).execute(effectivePerson, page, size);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
