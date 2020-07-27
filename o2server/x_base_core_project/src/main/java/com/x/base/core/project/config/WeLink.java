@@ -57,6 +57,8 @@ public class WeLink extends ConfigObject {
         this.oapiAddress = default_oapiAddress;
     }
 
+    public static String WeLink_Auth_Head_Key = "x-wlk-Authorization";
+
     private static String cachedAccessToken;
     private static Date cachedAccessTokenDate;
 

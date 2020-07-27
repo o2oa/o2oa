@@ -2,6 +2,7 @@ package com.x.program.center.welink;
 
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.WeLink;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
@@ -96,7 +97,7 @@ public class WeLinkFactory {
         //deptCode
         //recursiveflag 0 ：查询下级部门信息 1 ：查询递归获取所有子部门
         List<NameValuePair> heads = new ArrayList<>();
-        heads.add(new NameValuePair("x-wlk-Authorization", this.accessToken));
+        heads.add(new NameValuePair(WeLink.WeLink_Auth_Head_Key, this.accessToken));
         OrgListResp resp = HttpConnection.getAsObject(address, heads, OrgListResp.class);
         logger.info("orgs response:{}.", resp);
         if (!resp.getCode().equals("0") && !resp.getCode().equals("47009") && !resp.getCode().equals("47012")) {
@@ -133,7 +134,7 @@ public class WeLinkFactory {
     private UserListResp users(String deptCode, int pageNo) throws Exception {
         String address = Config.weLink().getOapiAddress() + "/contact/v1/user/users?deptCode="+deptCode+"&pageNo="+pageNo+"&pageSize=50";
         List<NameValuePair> heads = new ArrayList<>();
-        heads.add(new NameValuePair("x-wlk-Authorization", this.accessToken));
+        heads.add(new NameValuePair(WeLink.WeLink_Auth_Head_Key, this.accessToken));
         UserListResp resp = HttpConnection.getAsObject(address, heads, UserListResp.class);
         logger.info("users response:{}.", resp);
         if (!resp.getCode().equals("0") && !resp.getCode().equals("47009") && !resp.getCode().equals("47012")) {
