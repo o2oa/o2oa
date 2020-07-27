@@ -72,6 +72,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
         this.checkActions();
     },
+    getAttachmentById: function(attId){
+        for( var i=0; i<this.attachments.length; i++ ){
+            if( this.attachments[i].data.id === attId ){
+                return this.attachments[i];
+            }
+        }
+        return null;
+    },
 	loadMax: function(){
         if (!this.node) this.node = new Element("div", {"styles": this.css.container});
 
