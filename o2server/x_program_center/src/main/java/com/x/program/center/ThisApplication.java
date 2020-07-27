@@ -24,6 +24,8 @@ public class ThisApplication {
 
 	public static List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
+	public static List<Object> weLinkSyncOrganizationCallbackRequest = new ArrayList<>();
+
 	public static List<Object> zhengwuDingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
 	public static List<Object> qiyeweixinSyncOrganizationCallbackRequest = new ArrayList<>();
@@ -61,6 +63,14 @@ public class ThisApplication {
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
 			}
+			/* WeLink同步 */
+			if (Config.weLink().getEnable()) {
+				/* 启动同步任务 */
+				context().scheduleLocal(WeLinkSyncOrganization.class, Config.weLink().getSyncCron());
+				/* 添加一个强制同步任务 */
+				context().scheduleLocal(WeLinkSyncOrganizationTrigger.class, Config.weLink().getForceSyncCron());
+			}
+
 			context().scheduleLocal(RefreshApplications.class, CenterQueue.REFRESHAPPLICATIONSINTERVAL,
 					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
 			// 运行间隔由300秒缩减到120秒

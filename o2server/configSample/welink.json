@@ -1,0 +1,8 @@
+{
+  "enable": false,
+  "clientId": "",
+  "clientSecret": "",
+  "syncCron": "10 0/10 * * * ?",
+  "forceSyncCron": "10 45 8,12 * * ?",
+  "oapiAddress": "https://open.welink.huaweicloud.com/api"
+}
