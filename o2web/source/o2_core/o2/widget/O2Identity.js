@@ -8,7 +8,7 @@ o2.widget.O2Identity = new Class({
 	options: {
 		"style": "default",
         "canRemove": false,
-        "lazy": true,
+        "lazy": false,
         "disableInfor" : false
 	},
 	initialize: function(data, container, options){
