@@ -718,7 +718,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                     if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
 
-                    if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+                    if ((!att.data.control.allowControl ) && att.data.person!==user){ //|| !att.data.control.allowEdit
                         flag = false;
                     }
                 }
