@@ -61,6 +61,7 @@ public class Config {
 	public static final String PATH_CONFIG_PROCESSPLATFORM = "config/processPlatform.json";
 	public static final String PATH_CONFIG_QUERY = "config/query.json";
 	public static final String PATH_CONFIG_DINGDING = "config/dingding.json";
+	public static final String PATH_CONFIG_WELINK = "config/welink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
@@ -1039,6 +1040,23 @@ public class Config {
 			}
 		}
 		return instance().dingding;
+	}
+
+	private WeLink weLink;
+
+	public static WeLink weLink() throws Exception {
+		if (null == instance().weLink) {
+			synchronized (Config.class) {
+				if (null == instance().weLink) {
+					WeLink obj = BaseTools.readConfigObject(PATH_CONFIG_WELINK, WeLink.class);
+					if (null == obj) {
+						obj = WeLink.defaultInstance();
+					}
+					instance().weLink = obj;
+				}
+			}
+		}
+		return instance().weLink;
 	}
 
 	private Qiyeweixin qiyeweixin;
