@@ -1,5 +1,6 @@
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.UUID", null, false);
+MWF.require("MWF.widget.O2Identity", null, false);
 MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
@@ -19,7 +20,6 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
 		this.items = [];
 	},
     load: function(data){
-        this.titleNode = new Element("div", {"styles": this.css.titleNode, "text": this.designer.lp.validation.validation}).inject(this.node);
 		this.editorNode = new Element("div", {"styles": this.css.editorNode}).inject(this.node);
         this.actionNode = new Element("div", {"styles": this.css.actionNode}).inject(this.node);
         this.listNode = new Element("div", {"styles": this.css.listNode}).inject(this.node);
@@ -28,11 +28,44 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         this.loadListNode(data);
 	},
     loadEditorNode: function(){
+	    debugger;
         var html = "<table width='100%' border='0' cellpadding='5' cellspacing='0' class='editTable'>" +
-            "<tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>";
+            "<tr><td style='width: 60px; '>异步加载：</td><td align='left'>"+
+            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='true' checked/>是"+
+            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='false'/>否"+
+            "</td></tr><tr><td>选择脚本：</td><td><div class='scriptSelectorArea'></div></td></tr></table>";
         this.editorNode.set("html", html);
         var tds = this.editorNode.getElements("td").setStyles(this.css.editTableTdValue);
-
+        this.asyncLoadScript = this.editorNode.getElements("[type='radio']");
+        this.scriptSelectorArea = this.editorNode.getElement(".scriptSelectorArea");
+        this.loadScriptSelector();
+    },
+    loadScriptSelector: function( data ){
+        MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
+            var _self = this;
+            if( !data )data = [];
+            this.scriptSelector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(this.scriptSelectorArea, this.designer, {
+                "type": "Script",
+                "count": 0,
+                "names": data,
+                "onChange": function(ids){
+                    var value = [];
+                    ids.each( function (id) {
+                        var d = id.data;
+                        value.push({
+                            "type" : "script",
+                            "name": d.name,
+                            "alias": d.alias,
+                            "id": d.id,
+                            "appName" : d.appName || d.applicationName,
+                            "appId": d.appId || d.application,
+                            "appType" : d.appType
+                        });
+                    })
+                    this.currentSelectScripts = value;
+                }.bind(this)
+            });
+        }.bind(this));
     },
     loadActionNode: function(){
         this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.actionNode);
@@ -40,55 +73,57 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         this.modifyAction = new Element("div", {"styles": this.css.modifyAction_disabled, "text": this.designer.lp.validation.modify}).inject(this.actionAreaNode);
 
         this.addAction.addEvent("click", function(){
-            this.addValidation();
+            this.add();
         }.bind(this));
         this.modifyAction.addEvent("click", function(){
-            this.modifyValidation();
+            this.modify();
         }.bind(this));
     },
-    getData: function(){
-        var status = this.getStatusValue();
-        var decision = this.decisionInputNode.get("value");
-        var valueType = this.valueTypeSelectNode.options[this.valueTypeSelectNode.selectedIndex].value;
-        var operateor = this.operateorSelectNode.options[this.operateorSelectNode.selectedIndex].value;
-        var value = this.valueInputNode.get("value");
-        var prompt = this.promptInputNode.get("value");
-        if (decision == this.designer.lp.validation.decisionName) decision = "";
-        if (value == this.designer.lp.validation.valueInput) value = "";
+    getCurrentData: function(){
+	    var async = true;
+        this.asyncLoadScript.each( function (el) {
+            if( el.checked ){
+                async = el.get("value") === "true";
+            }
+        });
 
         return {
-            "status": status,
-            "decision": decision,
-            "valueType": valueType,
-            "operateor": operateor,
-            "value": value,
-            "prompt": prompt
+            "async": async,
+            "scriptList": this.currentSelectScripts || []
         };
     },
-    addValidation: function(){
+    add: function(){
         this.hideErrorNode();
-        var data = this.getData();
+        var data = this.getCurrentData();
 
-        if (data.status!="all"){
-            if (!data.decision || data.decision==this.designer.lp.validation.decisionName){
-                this.showErrorNode(this.designer.lp.validation.inputDecisionName);
-                return false;
-            }
-        }
-        if (data.operateor!="isnull" && data.operateor!="notnull"){
-            if (!data.value || data.value==this.designer.lp.validation.valueInput){
-                this.showErrorNode(this.designer.lp.validation.inputValue);
-                return false;
-            }
-        }
-        if (!data.prompt){
-            this.showErrorNode(this.designer.lp.validation.inputPrompt);
+        if ( data.scriptList.length === 0 ){
+            this.showErrorNode("请先选择脚本");
             return false;
+        }
+        for( var i=0; i<this.items.length; i++ ){
+            var scriptList = this.items[i].data.scriptList;
+            for( var j=0; j<scriptList.length; j++ ){
+                for( var k=0; k< data.scriptList.length; k++ )
+                if( scriptList[j].id === data.scriptList[i].id ){
+                    this.showErrorNode("请不要重复添加脚本");
+                    return false;
+                }
+            }
         }
         var item = new MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item(data, this);
         this.items.push(item);
         item.selected();
+        this.empty();
         this.fireEvent("change");
+    },
+    empty: function(){
+        this.asyncLoadScript.each( function (el) {
+            if( el.get("value") === "true" ){
+                el.set("checked", true)
+            }
+        });
+        if(this.scriptSelector)this.scriptSelector.setData( [] );
+        this.currentSelectScripts = [];
     },
     showErrorNode: function(text){
         this.errorNode = new Element("div", {"styles": this.css.errorNode}).inject(this.actionNode, "before");
@@ -99,39 +134,33 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
     hideErrorNode: function(){
         if (this.errorNode) this.errorNode.destroy();
     },
-    getStatusValue: function(){
-        for (var i=0; i<this.statusRadioNodes.length; i++){
-            var item = this.statusRadioNodes[i];
-            if (item.checked) return item.value;
-        }
-        return "";
-    },
-    modifyValidation: function(){
+    modify: function(){
         if (this.currentItem){
             this.hideErrorNode();
 
-            var data = this.getData();
+            var data = this.getCurrentData();
 
-            if (data.status!="all"){
-                if (!data.decision || data.decision==this.designer.lp.validation.decisionName){
-                    this.showErrorNode(this.designer.lp.validation.inputDecisionName);
-                    return false;
-                }
-            }
-            if (data.operateor!="isnull" && data.operateor!="notnull"){
-                if (!data.value || data.value==this.designer.lp.validation.valueInput){
-                    this.showErrorNode(this.designer.lp.validation.inputValue);
-                    return false;
-                }
-            }
-            if (!data.prompt){
-                this.showErrorNode(this.designer.lp.validation.inputPrompt);
+            if ( data.scriptList.length === 0 ){
+                this.showErrorNode("请先选择脚本");
                 return false;
+            }
+            for( var i=0; i<this.items.length; i++ ){
+                if( this.currentItem !== this.items[i] ){
+                    var scriptList = this.items[i].data.scriptList;
+                    for( var j=0; j< scriptList.length; j++ ){
+                        for( var k=0; k< data.scriptList.length; k++ )
+                            if( scriptList[j].id === data.scriptList[i].id ){
+                                this.showErrorNode("请不要重复添加脚本");
+                                return false;
+                            }
+                    }
+                }
             }
 
             this.currentItem.reload(data);
             this.currentItem.unSelected();
             this.disabledModify();
+            this.empty();
             this.fireEvent("change");
         }
     },
@@ -152,31 +181,19 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         this.modifyAction.setStyles(this.css.modifyAction_disabled);
     },
     setData: function(data){
-        if (data.decision) this.decisionInputNode.set("value", data.decision);
-        if (data.status){
-            for (var i=0; i<this.statusRadioNodes.length; i++){
-                if (data.status == this.statusRadioNodes[i].get("value")){
-                    this.statusRadioNodes[i].set("checked", true);
-                    break;
-                }
+        this.asyncLoadScript.each( function (el) {
+            if( el.get("value") === "true" && data.async ){
+                el.set("checked", true)
+            }else if( el.get("value") === "false" && !data.async ){
+                el.set("checked", true)
             }
+        });
+        if( !this.scriptSelector ){
+            this.loadScriptSelector( data.scriptList );
         }else{
-            this.statusRadioNodes[0].set("checked", true);
+            this.scriptSelector.setData( data.scriptList );
         }
-        for (var i=0; i<this.valueTypeSelectNode.options.length; i++){
-            if (data.valueType == this.valueTypeSelectNode.options[i].get("value")){
-                this.valueTypeSelectNode.options[i].set("selected", true);
-                break;
-            }
-        }
-        for (var i=0; i<this.operateorSelectNode.options.length; i++){
-            if (data.operateor == this.operateorSelectNode.options[i].get("value")){
-                this.operateorSelectNode.options[i].set("selected", true);
-                break;
-            }
-        }
-        if (data.value) this.valueInputNode.set("value", data.value);
-        if (data.prompt) this.promptInputNode.set("value", data.prompt);
+        this.currentSelectScripts = data.scriptList;
     },
 
     deleteItem: function(item){
@@ -186,7 +203,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         MWF.release(item);
         this.fireEvent("change");
     },
-    getValidationData: function(){
+    getData: function(){
         var data = [];
         this.items.each(function(item){
             data.push(item.data);
@@ -205,10 +222,21 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
         this.load();
     },
     load: function(){
+        debugger;
         this.node = new Element("div", {"styles": this.css.itemNode}).inject(this.container);
         this.deleteNode = new Element("div", {"styles": this.css.itemDeleteNode}).inject(this.node);
         this.contentNode = new Element("div", {"styles": this.css.itemContentNode}).inject(this.node);
-        this.contentNode.set("text", this.getText());
+
+        this.asyncNode = new Element("div", {"styles": {}}).inject(this.contentNode);
+        this.asyncNode.set({
+            "text": this.data.async ? "异步加载脚本：" : "同步加载脚本："
+        });
+        this.scriptNode = new Element("div", {
+            styles : this.css.scriptNode
+        }).inject(this.contentNode);
+        this.data.scriptList.each( function (scipt) {
+            new MWF.widget.O2Script(scipt, this.scriptNode)
+        }.bind(this));
 
         this.contentNode.addEvent("click", function(){
             this.selected();
@@ -220,21 +248,13 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
     },
     reload: function(data){
         this.data = data;
-        this.contentNode.set("text", this.getText());
-    },
-    getText: function(){
-        var text = "";
-        if (this.data.status=="all"){
-            text = this.lp.validation.anytime+" ";
-        }else{
-            text = this.lp.validation.when+this.lp.validation.decision+" \""+this.data.decision+"\" "+this.lp.validation.as+" ";
-        }
-        text += this.lp.validation[this.data.valueType]+" ";
-        text += this.lp.validation[this.data.operateor]+" ";
-        text += " \""+this.data.value+"\" ";
-
-        text += this.lp.validation.prompt+": \""+this.data.prompt+"\"";
-        return text;
+        this.asyncNode.set({
+            "text": this.data.async ? "异步加载脚本：" : "同步加载脚本："
+        });
+        this.scriptNode.empty();
+        this.data.scriptList.each( function (scipt) {
+            new MWF.widget.O2Script(scipt, this.scriptNode)
+        }.bind(this));
     },
     selected: function(){
         if (this.editor.currentItem) this.editor.currentItem.unSelected();

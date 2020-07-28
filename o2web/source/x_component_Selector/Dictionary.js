@@ -48,9 +48,15 @@ MWF.xApplication.Selector.Dictionary = new Class({
                 }.bind(this));
                 for (var application in json) {
                     if (json[application].dictionaryList && json[application].dictionaryList.length) {
+                        json[application].dictionaryList.sort(function (a, b) {
+                            return (a.name||"").localeCompare((b.name||""));
+                        });
                         array.push(json[application]);
                     }
                 }
+                array.sort( function (a, b) {
+                    return (a.name||"").localeCompare((b.name||""));
+                });
 
                 if( this.options.appType.length === 1 ){
                     array.each( function (data) {
