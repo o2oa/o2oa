@@ -2,6 +2,10 @@ package com.x.processplatform.assemble.surface.jaxrs.readcompleted;
 
 import java.util.List;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.processplatform.assemble.surface.Business;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -23,6 +27,10 @@ class ActionListNextFilter extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		EqualsTerms equals = new EqualsTerms();
 		InTerms ins = new InTerms();
@@ -32,7 +40,11 @@ class ActionListNextFilter extends BaseAction {
 			ins.put(ReadCompleted.application_FIELDNAME, wi.getApplicationList());
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			ins.put(ReadCompleted.process_FIELDNAME, wi.getProcessList());
+			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				ins.put(ReadCompleted.process_FIELDNAME, wi.getProcessList());
+			}else{
+				ins.put(ReadCompleted.process_FIELDNAME, business.process().listEditionProcess(wi.getProcessList()));
+			}
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 			ins.put(ReadCompleted.creatorUnit_FIELDNAME, wi.getCreatorUnitList());
@@ -69,6 +81,9 @@ class ActionListNextFilter extends BaseAction {
 		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
+
 		@FieldDescribe("创建人所在组织")
 		private List<String> creatorUnitList;
 
@@ -98,6 +113,14 @@ class ActionListNextFilter extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getActivityNameList() {
