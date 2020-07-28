@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -42,7 +43,11 @@ class ActionManageListNextWithFilter extends BaseAction {
 			}
 			equals.put("application", application.getId());
 			if (ListTools.isNotEmpty(wi.getProcessList())) {
-				ins.put("process", wi.getProcessList());
+				if(BooleanUtils.isTrue(wi.getRelateEditionProcess())) {
+					ins.put("process", business.process().listEditionProcess(wi.getProcessList()));
+				}else{
+					ins.put("process", wi.getProcessList());
+				}
 			}
 			if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
 				ins.put("creatorUnit", wi.getCreatorUnitList());
@@ -85,6 +90,9 @@ class ActionManageListNextWithFilter extends BaseAction {
 		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("是否查找同版本流程数据：true|false(默认不查找)")
+		private Boolean relateEditionProcess = false;
+
 		@FieldDescribe("创建组织")
 		private List<String> creatorUnitList;
 
@@ -108,6 +116,14 @@ class ActionManageListNextWithFilter extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getStartTimeMonthList() {
