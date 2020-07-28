@@ -85,6 +85,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadSidebarPosition();
                     this.loadViewFilter();
                     this.loadDocumentTempleteSelect();
+                    this.loadScriptIncluder();
                     //this.testRestful();
 //			this.loadScriptInput();
                     //MWF.process.widget.EventsEditor
@@ -1445,6 +1446,24 @@ debugger;
 
 
         }.bind(this));
+    },
+    loadScriptIncluder : function(){
+        var nodes = this.propertyContent.getElements(".MWFScriptIncluder");
+        if (nodes.length){
+            nodes.each(function(node){
+                var name = node.get("name");
+                MWF.xDesktop.requireApp("process.FormDesigner", "widget.ScriptIncluder", function(){
+                    var scriptIncluder = new MWF.xApplication.process.FormDesigner.widget.ScriptIncluder(node, this.designer, {
+                        "onChange": function(){
+                            // var data = validationEditor.getValidationData();
+                            // this.data[name] = data;
+                        }.bind(this)
+                    });
+                    scriptIncluder.load(this.data[name])
+                }.bind(this));
+            }.bind(this));
+        }
+
     },
     saveFileItem: function(node, ids){
         if (ids[0]){

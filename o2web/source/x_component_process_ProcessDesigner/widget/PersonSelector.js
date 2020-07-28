@@ -37,6 +37,12 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         this.createAddNode();
         this.loadIdentitys();
     },
+    setData: function( data ){
+        this.node.empty();
+        this.identitys = [];
+        this.options.names = data;
+        this.loadIdentitys();
+    },
     loadIdentitys: function(){
         if (this.options.names){
             if (this.options.type.toLowerCase()==="duty"){
@@ -88,8 +94,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (this.options.type.toLowerCase()==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
                             if (this.options.type.toLowerCase()==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
 
-                            if (this.options.type.toLowerCase()==="script") this.identitys.push(new MWF.widget.O2Other(data, this.node));
-                            if (this.options.type.toLowerCase()==="formstyle") this.identitys.push(new MWF.widget.O2Other(data, this.node));
+                            if (this.options.type.toLowerCase()==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(data, this.node));
+                            if (this.options.type.toLowerCase()==="script") this.identitys.push(new MWF.widget.O2Script(data, this.node));
+                            if (this.options.type.toLowerCase()==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(data, this.node));
                         }.bind(this));
                     }
                 }.bind(this));
@@ -154,8 +161,9 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (this.options.type.toLowerCase()==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
                             if (this.options.type.toLowerCase()==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
 
-                            if (this.options.type.toLowerCase()==="script") this.identitys.push(new MWF.widget.O2Other(item.data, this.node));
-                            if (this.options.type.toLowerCase()==="formstyle") this.identitys.push(new MWF.widget.O2Other(item.data, this.node));
+                            if (this.options.type.toLowerCase()==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
+                            if (this.options.type.toLowerCase()==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
+                            if (this.options.type.toLowerCase()==="formstyle") this.identitys.push(new MWF.widget.O2FormStyle(item.data, this.node));
                         }.bind(this));
                         if (this.options.type.toLowerCase()==="duty") {
                             items.each(function(item){
