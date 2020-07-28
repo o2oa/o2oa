@@ -181,4 +181,23 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取流程节点信息.", action = ActionGetActivity.class)
+	@GET
+	@Path("activity/{activity}/activityType/{activityType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getActivity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					@JaxrsParameterDescribe("流程节点标志") @PathParam("activity") String activity,
+					@JaxrsParameterDescribe("流程节点类型") @PathParam("activityType") String activityType) {
+		ActionResult<ActionGetActivity.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGetActivity().execute(effectivePerson, activity, activityType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
