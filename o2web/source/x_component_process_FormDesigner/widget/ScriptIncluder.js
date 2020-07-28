@@ -28,92 +28,11 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         this.loadListNode(data);
 	},
     loadEditorNode: function(){
-        //this.statusNode = new Element("div", {"styles": this.css.statusNode}).inject(this.editorNode);
-        //this.conditionNode = new Element("div", {"styles": this.css.conditionNode}).inject(this.editorNode);
-        //this.valueNode = new Element("div", {"styles": this.css.valueNode}).inject(this.editorNode);
-        //this.promptNode = new Element("div", {"styles": this.css.promptNode}).inject(this.editorNode);
-
         var html = "<table width='100%' border='0' cellpadding='5' cellspacing='0' class='editTable'>" +
-            "<tr><td></td></tr><tr><td></td></tr><tr><td></td></tr></table>";
+            "<tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>";
         this.editorNode.set("html", html);
         var tds = this.editorNode.getElements("td").setStyles(this.css.editTableTdValue);
-        this.loadStatus(tds);
-        this.loadConditions(tds);
-        this.loadPrompt(tds);
 
-    },
-    loadStatus: function(tds){
-        var html = "<table width='100%' border='0' cellpadding='0' cellspacing='0'><tr>" +
-        "<td width='140px'>"+"<input type='radio' value='all' checked />"+this.designer.lp.validation.anytime+
-        "<input type='radio' value='decision' />"+this.designer.lp.validation.decision+"</td>" +
-        "<td><input type='text' value='"+this.designer.lp.validation.decisionName+"'></td>" +
-        "</tr></table>";
-
-        tds[0].set("html", html);
-        var inputs = tds[0].getElements("input");
-        var randomId = new MWF.widget.UUID().toString();
-        inputs[0].set("name", "condition"+randomId);
-        inputs[1].set("name", "condition"+randomId);
-        inputs[2].setStyles(this.css.decisionNameInput);
-
-        this.decisionInputNode = inputs[2];
-        this.statusRadioNodes = inputs;
-        this.statusRadioNodes.pop();
-
-        this.decisionInputNode.addEvents({
-            "focus": function(){
-                if (this.decisionInputNode.get("value")==this.designer.lp.validation.decisionName) this.decisionInputNode.set("value", "");
-            }.bind(this),
-            "blur": function(){
-                if (!this.decisionInputNode.get("value")) this.decisionInputNode.set("value", this.designer.lp.validation.decisionName);
-            }.bind(this)
-        });
-    },
-    loadConditions: function(tds){
-        var html = "<table width='100%' border='0' cellpadding='0' cellspacing='0'><tr>" +
-            "<td width='140px'>"+"<select><option value='value'>"+this.designer.lp.validation.value+"</option>" +
-            "<option value='length'>"+this.designer.lp.validation.length+"</option></select>"+
-            "&nbsp;<select><option value='isnull'>"+this.designer.lp.validation.isnull+"</option>" +
-            "<option value='notnull'>"+this.designer.lp.validation.notnull+"</option>" +
-            "<option value='gt'>"+this.designer.lp.validation.gt+"</option>" +
-            "<option value='lt'>"+this.designer.lp.validation.lt+"</option>" +
-            "<option value='equal'>"+this.designer.lp.validation.equal+"</option>" +
-            "<option value='neq'>"+this.designer.lp.validation.neq+"</option>" +
-            "<option value='contain'>"+this.designer.lp.validation.contain+"</option>" +
-            "<option value='notcontain'>"+this.designer.lp.validation.notcontain+"</option>" +
-            "</select>"+"</td>" +
-            "<td><input style='display: none' type='text' value='"+this.designer.lp.validation.valueInput+"'/></td>" +
-            "</tr></table>";
-
-        tds[1].set("html", html);
-        var selects = tds[1].getElements("select");
-        selects.setStyles(this.css.valueSelect);
-        this.valueTypeSelectNode = selects[0];
-        this.operateorSelectNode = selects[1];
-        this.valueInputNode = tds[1].getElement("input").setStyles(this.css.valueInput);
-        this.operateorSelectNode.addEvent("change", function(){
-            var v = this.operateorSelectNode.options[this.operateorSelectNode.selectedIndex].value;
-            if (v && (v!="isnull") && (v!="notnull")){
-                this.valueInputNode.setStyle("display", "inline");
-            }else{
-                this.valueInputNode.setStyle("display", "none");
-            }
-        }.bind(this));
-
-        this.valueInputNode.addEvents({
-            "focus": function(){
-                if (this.valueInputNode.get("value")==this.designer.lp.validation.valueInput) this.valueInputNode.set("value", "");
-            }.bind(this),
-            "blur": function(){
-                if (!this.valueInputNode.get("value")) this.valueInputNode.set("value", this.designer.lp.validation.valueInput);
-            }.bind(this)
-        });
-    },
-    loadPrompt: function(tds){
-        var html = "<table width='100%' border='0' cellpadding='0' cellspacing='0'><tr><td width='60px'>"+this.designer.lp.validation.prompt+"</td><td><input type='text' /></td></tr></table>";
-        tds[2].set("html", html);
-        tds[2].getElements("td")[0].setStyles(this.css.titleTd);
-        this.promptInputNode = tds[2].getElement("input").setStyles(this.css.promptInput);
     },
     loadActionNode: function(){
         this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.actionNode);
