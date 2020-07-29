@@ -155,3 +155,8 @@ struct O2BizContactPickerResult: HandyJSON {
     var users: [O2PersonPickerItem]?
 }
 
+struct O2DeviceLocationResult: HandyJSON {
+    var latitude: Double?
+    var longitude: Double?
+    var address: String?
+}
