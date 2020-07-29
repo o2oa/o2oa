@@ -109,6 +109,9 @@ class ActionCreate extends BaseAction {
 					case MessageConnector.CONSUME_CALENDAR:
 						message = this.calendarMessage(effectivePerson, business, cpwi, instant);
 						break;
+					case MessageConnector.CONSUME_WELINK:
+						message = this.weLinkMessage(effectivePerson, business, cpwi, instant);
+						break;
 					default:
 						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
 						break;
@@ -148,6 +151,11 @@ class ActionCreate extends BaseAction {
 			case MessageConnector.CONSUME_DINGDING:
 				if (Config.dingding().getEnable() && Config.dingding().getMessageEnable()) {
 					ThisApplication.dingdingConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_WELINK:
+				if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
+					ThisApplication.weLinkConsumeQueue.send(message);
 				}
 				break;
 			case MessageConnector.CONSUME_ZHENGWUDINGDING:
@@ -229,6 +237,18 @@ class ActionCreate extends BaseAction {
 		message.setPerson(wi.getPerson());
 		message.setTitle(wi.getTitle());
 		message.setConsumer(MessageConnector.CONSUME_DINGDING);
+		message.setConsumed(false);
+		message.setInstant(instant.getId());
+		return message;
+	}
+
+	private Message weLinkMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
+		Message message = new Message();
+		message.setBody(Objects.toString(wi.getBody()));
+		message.setType(wi.getType());
+		message.setPerson(wi.getPerson());
+		message.setTitle(wi.getTitle());
+		message.setConsumer(MessageConnector.CONSUME_WELINK);
 		message.setConsumed(false);
 		message.setInstant(instant.getId());
 		return message;

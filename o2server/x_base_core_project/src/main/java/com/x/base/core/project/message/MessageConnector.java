@@ -129,6 +129,8 @@ public class MessageConnector {
 
 	public static final String CONSUME_DINGDING = "dingding";
 
+	public static final String CONSUME_WELINK = "welink";
+
 	public static final String CONSUME_ZHENGWUDINGDING = "zhengwuDingding";
 
 	public static final String CONSUME_QIYEWEIXIN = "qiyeweixin";
