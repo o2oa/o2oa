@@ -1455,8 +1455,8 @@ debugger;
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.ScriptIncluder", function(){
                     var scriptIncluder = new MWF.xApplication.process.FormDesigner.widget.ScriptIncluder(node, this.designer, {
                         "onChange": function(){
-                            // var data = validationEditor.getValidationData();
-                            // this.data[name] = data;
+                            var data = scriptIncluder.getData();
+                            this.data[name] = data;
                         }.bind(this)
                     });
                     scriptIncluder.load(this.data[name])
