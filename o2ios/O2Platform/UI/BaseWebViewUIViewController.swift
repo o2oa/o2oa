@@ -26,6 +26,11 @@ open class BaseWebViewUIViewController: UIViewController {
     var delegate: BaseWebViewUIViewControllerJSDelegate?
     var o2WKScriptHandlers: [String : O2WKScriptMessageHandlerImplement] = [:]
     
+    //定位用
+    var locationCallBack: (String?) -> Void = {(result) in }
+    private var locService: BMKLocationManager?
+    private var searchAddress: BMKGeoCodeSearch?
+    
     
     //继承的子类如果要添加MessageHandler必须在theWebView方法前使用
     func addScriptMessageHandler(key: String, handler: O2WKScriptMessageHandlerImplement)  {
@@ -132,5 +137,85 @@ extension BaseWebViewUIViewController: WKScriptMessageHandler {
             let err = "没有找到对应的key，key:\(name)"
             self.showError(title: err)
         }
+    }
+}
+
+extension BaseWebViewUIViewController: BMKLocationManagerDelegate, BMKGeoCodeSearchDelegate {
+    public func startLocation() {
+        //开始定位
+        locService = BMKLocationManager()
+        if locService == nil {
+            locService?.desiredAccuracy = kCLLocationAccuracyBest
+            //设置返回位置的坐标系类型
+            locService?.coordinateType = .BMK09LL
+            //设置距离过滤参数
+            locService?.distanceFilter = kCLDistanceFilterNone;
+            //设置预期精度参数
+            locService?.desiredAccuracy = kCLLocationAccuracyBest;
+            //设置应用位置类型
+            locService?.activityType = .automotiveNavigation
+            //设置是否自动停止位置更新
+            locService?.pausesLocationUpdatesAutomatically = false
+            //定位返回geo地址信息
+            locService?.locatingWithReGeocode = true
+            //后台定位
+            locService?.allowsBackgroundLocationUpdates = true
+        }
+        if searchAddress == nil {
+            searchAddress = BMKGeoCodeSearch()
+        }
+        searchAddress?.delegate = self
+        locService?.delegate = self
+        locService?.startUpdatingLocation()
+    }
+    
+    public func stopLocation()  {
+        locService?.stopUpdatingLocation()
+        locService?.delegate = nil
+        searchAddress?.delegate = nil
+    }
+    
+    public func bmkLocationManager(_ manager: BMKLocationManager, didUpdate location: BMKLocation?, orError error: Error?) {
+        if let loc = location?.location {
+            DDLogDebug("当前位置,\(loc.coordinate.latitude),\(loc.coordinate.longitude)")
+            //根据经纬度搜索到地址
+            let re = BMKReverseGeoCodeSearchOption()
+            re.location = CLLocationCoordinate2D(latitude: loc.coordinate.latitude, longitude: loc.coordinate.longitude)
+            let _ = searchAddress?.reverseGeoCode(re)
+            
+        } else {
+            DDLogError("没有获取到定位信息！！！！！")
+        }
+    }
+    
+    public func bmkLocationManager(_ manager: BMKLocationManager, didFailWithError error: Error?) {
+        DDLogError("定位错误：\(String(describing: error?.localizedDescription))")
+    }
+    
+    public func onGetReverseGeoCodeResult(_ searcher: BMKGeoCodeSearch?, result: BMKReverseGeoCodeSearchResult?, errorCode error: BMKSearchErrorCode) {
+        //发送定位的实时位置及名称信息
+        if let location = result?.location {
+            var r = O2DeviceLocationResult()
+            r.latitude = location.latitude
+            r.longitude = location.longitude
+            r.address = result?.address ?? "没有获取到地址！"
+            locationCallBack(r.toJSONString())
+        }else {
+            var r = O2DeviceLocationResult()
+            r.address = "没有获取到地址！"
+            locationCallBack(r.toJSONString())
+            DDLogError("搜索地址失败， \(error)")
+        }
+        //结束定位
+        self.stopLocation()
+    }
+    
+    public func onGetGeoCodeResult(_ searcher: BMKGeoCodeSearch!, result: BMKGeoCodeSearchResult!, errorCode error: BMKSearchErrorCode) {
+        if Int(error.rawValue) == 0 {
+            DDLogDebug("result \(String(describing: result))")
+        } else {
+            DDLogDebug("result error  errorCode = \(Int(error.rawValue))")
+        }
+
     }
 }

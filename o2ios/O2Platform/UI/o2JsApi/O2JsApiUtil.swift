@@ -52,6 +52,9 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
                     case "device.scan":
                         scan(json: String(json))
                         break
+                    case "device.location":
+                        locationSingle(json: String(json))
+                        break
                     case "navigation.setTitle":
                         navigationSetTitle(json: String(json))
                         break
@@ -256,6 +259,27 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
             DDLogError("getPhoneInfo, 解析json失败")
         }
     }
+    //单次定位
+    private func locationSingle(json: String) {
+        if let alert = O2WebViewBaseMessage<O2UtilNavigation>.deserialize(from: json) {
+            if alert.callback != nil {
+                DispatchQueue.main.async {
+                    self.viewController.locationCallBack = { result in
+                        guard let r = result else {
+                            DDLogError("没有获取到位置信息")
+                            return
+                        }
+                        let callJs = "\(alert.callback!)('\(r)')"
+                        self.evaluateJs(callBackJs: callJs)
+                    }
+                    self.viewController.startLocation()
+                }
+            }
+        }else {
+            DDLogError("locationSingle, 解析json失败")
+        }
+    }
+    
     //设置t标题
     private func navigationSetTitle(json: String) {
         if let alert = O2WebViewBaseMessage<O2UtilNavigation>.deserialize(from: json) {
@@ -321,4 +345,4 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
             DDLogDebug("回调js执行完成！")
         })
     }
-}
+} 

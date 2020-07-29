@@ -135,6 +135,10 @@
 	<string>使用图片资料库</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>应用会识别您的语音来了解您的命令</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>login</string>
 	<key>UIRequiredDeviceCapabilities</key>
