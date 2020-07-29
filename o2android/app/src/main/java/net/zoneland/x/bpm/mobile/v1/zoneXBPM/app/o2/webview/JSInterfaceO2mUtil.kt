@@ -8,17 +8,18 @@ import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.baidu.location.BDLocation
+import com.baidu.location.BDLocationListener
+import com.baidu.location.LocationClient
+import com.baidu.location.LocationClientOption
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wugang.activityresult.library.ActivityResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2JsPhoneInfoResponse
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.*
 
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2JsPostMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UtilDatePickerMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UtilNavigationMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
@@ -68,6 +69,7 @@ class JSInterfaceO2mUtil private constructor(val activity: FragmentActivity?) {
                         "calendar.chooseInterval" -> calendarDateIntervalPicker(message!!)
                         "device.getPhoneInfo" -> deviceGetPhoneInfo(message!!)
                         "device.scan" -> deviceScan(message!!)
+                        "device.location" -> deviceGetLocation(message!!)
                         "navigation.setTitle" -> navigationSetTitle(message!!)
                         "navigation.close" -> navigationClose(message!!)
                         "navigation.goBack" -> navigationGoBack(message!!)
@@ -390,6 +392,74 @@ class JSInterfaceO2mUtil private constructor(val activity: FragmentActivity?) {
             XLog.error("activity不存在 deviceGetPhoneInfo失败 ！！")
         }
     }
+
+
+    private fun deviceGetLocation(message: String) {
+        val type = object : TypeToken<O2JsPostMessage<O2UtilNavigationMessage>>() {}.type
+        val value: O2JsPostMessage<O2UtilNavigationMessage> = gson.fromJson(message, type)
+        val callback = value.callback
+        if (activity != null) {
+            activity.runOnUiThread {
+                PermissionRequester(activity)
+                        .request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+                        .o2Subscribe {
+                            onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
+                                XLog.info("定位权限 granted:$granted , shouldShowRequest:$shouldShowRequestPermissionRationale, denied:$deniedPermissions")
+                                if (!granted) {
+                                    O2DialogSupport.openAlertDialog(activity, "需要定位权限获取您当前的位置信息！")
+                                } else {
+                                    locationAndCallback(callback)
+                                }
+                            }
+                        }
+
+            }
+        } else {
+            XLog.error("activity不存在 deviceGetLocation 失败！！")
+        }
+    }
+
+    private fun locationAndCallback(callback: String?) {
+        val mLocationClient: LocationClient by lazy { LocationClient(activity) }
+        mLocationClient.registerLocationListener(object : BDLocationListener{
+            override fun onReceiveLocation(location: BDLocation?) {
+                XLog.debug("onReceive locType:${location?.locType}, latitude:${location?.latitude}, longitude:${location?.longitude}")
+                if (location != null) {
+                    val des = location.locationDescribe
+                    val response = O2JsDeviceLocationResponse()
+                    response.latitude = location.latitude
+                    response.longitude = location.longitude
+                    response.address = if (TextUtils.isEmpty(des)){location.addrStr}else{des}
+                    if (!TextUtils.isEmpty(callback)) {
+                        val json = gson.toJson(response)
+                        callbackJs("$callback('$json')")
+                    }
+                    mLocationClient.stop()
+                }
+            }
+
+            override fun onConnectHotSpotMessage(p0: String?, p1: Int) {
+                XLog.debug("onConnectHotSpotMessage, p0:$p0, p1:$p1")
+            }
+
+        })
+        val option = LocationClientOption()
+        option.locationMode = LocationClientOption.LocationMode.Hight_Accuracy//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll")//百度坐标系 可选，默认gcj02，设置返回的定位结果坐标系
+        option.setScanSpan(1000)//5秒一次定位 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true)//可选，设置是否需要地址信息，默认不需要
+        option.isOpenGps = true//可选，默认false,设置是否使用gps
+        option.isLocationNotify = true//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true)//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true)//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false)//可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false)//可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false)//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        mLocationClient.locOption = option
+        mLocationClient.start()
+    }
+
+
 
 
 
