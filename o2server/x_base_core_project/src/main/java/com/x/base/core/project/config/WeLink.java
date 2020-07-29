@@ -34,6 +34,9 @@ public class WeLink extends ConfigObject {
     @FieldDescribe("WeLink api服务器地址")
     private String oapiAddress;
 
+    @FieldDescribe("是否启用消息推送")
+    private Boolean messageEnable;
+
 
 
     public static WeLink defaultInstance() {
@@ -46,6 +49,7 @@ public class WeLink extends ConfigObject {
     public static final String default_syncCron = "10 0/10 * * * ?";
     public static final String default_forceSyncCron = "10 45 8,12 * * ?";
     public static final String default_oapiAddress = "https://open.welink.huaweicloud.com/api";
+    public static final Boolean default_messageEnable = false;
 
 
     public WeLink() {
@@ -55,6 +59,7 @@ public class WeLink extends ConfigObject {
         this.syncCron = default_syncCron;
         this.forceSyncCron = default_forceSyncCron;
         this.oapiAddress = default_oapiAddress;
+        this.messageEnable = default_messageEnable;
     }
 
     public static String WeLink_Auth_Head_Key = "x-wlk-Authorization";
@@ -197,5 +202,13 @@ public class WeLink extends ConfigObject {
 
     public void setOapiAddress(String oapiAddress) {
         this.oapiAddress = oapiAddress;
+    }
+
+    public Boolean getMessageEnable() {
+        return BooleanUtils.isTrue(this.messageEnable);
+    }
+
+    public void setMessageEnable(Boolean messageEnable) {
+        this.messageEnable = messageEnable;
     }
 }
