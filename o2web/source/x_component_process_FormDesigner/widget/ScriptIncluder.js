@@ -16,6 +16,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
 		this.path = "../x_component_process_FormDesigner/widget/$ScriptIncluder/";
 		this.cssPath = "../x_component_process_FormDesigner/widget/$ScriptIncluder/"+this.options.style+"/css.wcss";
 		this._loadCss();
+		this.lp = this.designer.lp.scriptIncluder;
 		
 		this.items = [];
 	},
@@ -30,10 +31,10 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
     loadEditorNode: function(){
 	    debugger;
         var html = "<table width='100%' border='0' cellpadding='5' cellspacing='0' class='editTable'>" +
-            "<tr><td style='width: 60px; '>异步加载：</td><td align='left'>"+
-            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='true' checked/>是"+
-            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='false'/>否"+
-            "</td></tr><tr><td>选择脚本：</td><td><div class='scriptSelectorArea'></div></td></tr></table>";
+            "<tr><td style='width: 60px; '>"+this.lp.asyncLoad+"</td><td align='left'>"+
+            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='true' checked/>"+this.lp.yes+
+            "<input type='radio' name='"+(this.designer.appId||"")+"asyncLoadScript' value='false'/>"+this.lp.no+
+            "</td></tr><tr><td>"+this.lp.selectScript+"</td><td><div class='scriptSelectorArea'></div></td></tr></table>";
         this.editorNode.set("html", html);
         var tds = this.editorNode.getElements("td").setStyles(this.css.editTableTdValue);
         this.asyncLoadScript = this.editorNode.getElements("[type='radio']");
@@ -97,7 +98,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
         var data = this.getCurrentData();
 
         if ( data.scriptList.length === 0 ){
-            this.showErrorNode("请先选择脚本");
+            this.showErrorNode(this.lp.selectScriptNotice);
             return false;
         }
         for( var i=0; i<this.items.length; i++ ){
@@ -105,7 +106,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
             for( var j=0; j<scriptList.length; j++ ){
                 for( var k=0; k< data.scriptList.length; k++ )
                 if( scriptList[j].id === data.scriptList[i].id ){
-                    this.showErrorNode("请不要重复添加脚本");
+                    this.showErrorNode(this.lp.repeatAddScriptNotice);
                     return false;
                 }
             }
@@ -141,7 +142,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
             var data = this.getCurrentData();
 
             if ( data.scriptList.length === 0 ){
-                this.showErrorNode("请先选择脚本");
+                this.showErrorNode(this.lp.selectScriptNotice);
                 return false;
             }
             for( var i=0; i<this.items.length; i++ ){
@@ -150,7 +151,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder = new Class({
                     for( var j=0; j< scriptList.length; j++ ){
                         for( var k=0; k< data.scriptList.length; k++ )
                             if( scriptList[j].id === data.scriptList[i].id ){
-                                this.showErrorNode("请不要重复添加脚本");
+                                this.showErrorNode(this.lp.repeatAddScriptNotice);
                                 return false;
                             }
                     }
@@ -229,7 +230,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
 
         this.asyncNode = new Element("div", {"styles": {}}).inject(this.contentNode);
         this.asyncNode.set({
-            "text": this.data.async ? "异步加载脚本：" : "同步加载脚本："
+            "text": this.data.async ? this.lp.scriptIncluder.asyncLoadScript : this.lp.scriptIncluder.syncLoadScript
         });
         this.scriptNode = new Element("div", {
             styles : this.css.scriptNode
@@ -249,7 +250,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
     reload: function(data){
         this.data = data;
         this.asyncNode.set({
-            "text": this.data.async ? "异步加载脚本：" : "同步加载脚本："
+            "text": this.data.async ? this.lp.scriptIncluder.asyncLoadScript : this.lp.scriptIncluder.syncLoadScript
         });
         this.scriptNode.empty();
         this.data.scriptList.each( function (scipt) {
@@ -271,7 +272,7 @@ MWF.xApplication.process.FormDesigner.widget.ScriptIncluder.Item = new Class({
     },
     deleteItem: function(e){
         var _self = this;
-        this.editor.designer.confirm("warn", e, this.lp.validation.delete_title, this.lp.validation.delete_text, 300, 120, function(){
+        this.editor.designer.confirm("warn", e, this.lp.scriptIncluder.delete_title, this.lp.scriptIncluder.delete_text, 300, 120, function(){
             _self.destroy();
             this.close();
         }, function(){
