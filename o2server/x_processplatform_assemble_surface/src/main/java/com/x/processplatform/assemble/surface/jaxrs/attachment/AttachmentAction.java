@@ -364,7 +364,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "上传附件.", action = ActionUpload.class)
+	@JaxrsMethodDescribe(value = "上传附件.", action = ActionUploadWithWork.class)
 	@POST
 	@Path("upload/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -376,7 +376,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("天印扩展字段") @FormDataParam("extraParam") String extraParam,
 			@FormDataParam(FILE_FIELD) byte[] bytes,
 			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionUpload.Wo> result = new ActionResult<>();
+		ActionResult<ActionUploadWithWork.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			if (StringUtils.isEmpty(extraParam)) {
@@ -392,7 +392,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 					}
 				}
 			}
-			result = new ActionUpload().execute(effectivePerson, workId, site, fileName, bytes, disposition,
+			result = new ActionUploadWithWork().execute(effectivePerson, workId, site, fileName, bytes, disposition,
 					extraParam);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
