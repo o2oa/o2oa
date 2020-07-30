@@ -184,5 +184,6 @@ public abstract class Activity extends SliceJpaObject {
 	public static final String allowRerouteTo_FIELDNAME = "allowRerouteTo";
 	public static final String displayLogScript_FIELDNAME = "displayLogScript";
 	public static final String displayLogScriptText_FIELDNAME = "displayLogScriptText";
+	public static final String resetRangeScriptText_FIELDNAME = "resetRangeScriptText";
 
 }
