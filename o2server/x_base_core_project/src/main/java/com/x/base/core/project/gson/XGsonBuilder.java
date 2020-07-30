@@ -16,6 +16,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.x.base.core.project.tools.DateTools;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 public class XGsonBuilder {
 
@@ -34,6 +35,7 @@ public class XGsonBuilder {
 					gson.registerTypeAdapter(Long.class, new LongDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateDeserializer());
 					gson.registerTypeAdapter(Date.class, new DateSerializer());
+					gson.registerTypeAdapter(ScriptObjectMirror.class, new ScriptObjectMirrorSerializer());
 					INSTANCE = gson.setPrettyPrinting().create();
 				}
 			}
@@ -157,7 +159,7 @@ public class XGsonBuilder {
 		}
 		try {
 			JsonElement jsonElement = new JsonParser().parse(json);
-			if (jsonElement.isJsonObject()){
+			if (jsonElement.isJsonObject()) {
 				return true;
 			} else {
 				return false;
@@ -173,7 +175,7 @@ public class XGsonBuilder {
 		}
 		try {
 			JsonElement jsonElement = new JsonParser().parse(json);
-			if (jsonElement.isJsonArray()){
+			if (jsonElement.isJsonArray()) {
 				return true;
 			} else {
 				return false;
