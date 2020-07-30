@@ -245,10 +245,10 @@ class ActionInputAll extends BaseAction {
 					if (null != configurator.getUnitTypeColumn()) {
 						String typeList = configurator.getCellStringValue(row.getCell(configurator.getUnitTypeColumn()));
 						typeList = StringUtils.trimToEmpty(typeList);
-						/*typeList = typeMap.get(typeList);
-						System.out.println("typeListx="+typeList);*/
 						List<String> typeListStr = new ArrayList<>();
-						typeListStr.add(typeList);
+						if(StringUtils.isNotEmpty(typeList)){
+							typeListStr.add(typeList);
+						}
 						unitItem.setTypeList(typeListStr);
 					}
 					if (null != configurator.getSuperiorColumn()) {
