@@ -47,6 +47,70 @@ public class Calculate extends GsonPropertyObject {
 	@FieldDescribe("图表")
 	public List<String> chart;
 	
+	public Boolean getIsGroup() {
+		return isGroup;
+	}
+
+	public void setIsGroup(Boolean isGroup) {
+		this.isGroup = isGroup;
+	}
+
+	public Boolean getIsAmount() {
+		return isAmount;
+	}
+
+	public void setIsAmount(Boolean isAmount) {
+		this.isAmount = isAmount;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getOrderColumn() {
+		return orderColumn;
+	}
+
+	public void setOrderColumn(String orderColumn) {
+		this.orderColumn = orderColumn;
+	}
+
+	public List<String> getGroupSpecifiedList() {
+		return groupSpecifiedList;
+	}
+
+	public void setGroupSpecifiedList(List<String> groupSpecifiedList) {
+		this.groupSpecifiedList = groupSpecifiedList;
+	}
+
+	public String getGroupMergeType() {
+		return groupMergeType;
+	}
+
+	public void setGroupMergeType(String groupMergeType) {
+		this.groupMergeType = groupMergeType;
+	}
+
+	public List<CalculateEntry> getCalculateList() {
+		return calculateList;
+	}
+
+	public void setCalculateList(List<CalculateEntry> calculateList) {
+		this.calculateList = calculateList;
+	}
+
+	public List<String> getChart() {
+		return chart;
+	}
+
+	public void setChart(List<String> chart) {
+		this.chart = chart;
+	}
+
 	public Boolean available() {
 		for (CalculateEntry o : ListTools.nullToEmpty(this.calculateList)) {
 			if (o.available()) {
