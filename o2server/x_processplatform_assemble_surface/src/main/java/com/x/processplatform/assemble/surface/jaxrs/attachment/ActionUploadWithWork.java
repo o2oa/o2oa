@@ -25,9 +25,9 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 import javax.servlet.http.HttpServletRequest;
 
-class ActionUpload extends BaseAction {
+class ActionUploadWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpload.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionUploadWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition, String extraParam) throws Exception {
