@@ -42,7 +42,10 @@ class AttendanceDetailAnalyseSignProxy3 {
 
 		//先初始化当前打卡信息中的上下班时间要求，该要求是是根据员工所在组织排班信息获取到的
 		onWorkTime = AttendanceDetailAnalyseCoreService.getOnWorkTimeFromDetail( detail, debugger );
+		morningEndTime = AttendanceDetailAnalyseCoreService.getMiddleRestStartTimeFromDetail( detail, scheduleSetting, debugger );
+		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );
 		offWorkTime = AttendanceDetailAnalyseCoreService.getOffWorkTimeFromDetail( detail, debugger );
+		
 		onDutyTime = AttendanceDetailAnalyseCoreService.getOnDutyTimeFromDetail( detail, debugger );
 		offDutyTime = AttendanceDetailAnalyseCoreService.getOffDutyTimeFromDetail( detail, debugger );
 		morningOffdutyTime = AttendanceDetailAnalyseCoreService.getMorningOffdutyTimeFromDetail( detail, debugger );
@@ -51,9 +54,6 @@ class AttendanceDetailAnalyseSignProxy3 {
 		lateStartTime = AttendanceDetailAnalyseCoreService.getLateStartTimeFromDetail( detail, scheduleSetting, debugger );
 		leaveEarlyStartTime = AttendanceDetailAnalyseCoreService.getLeaveEarlyStartTimeFromDetail( detail, scheduleSetting, debugger );
 		absenceStartTime = AttendanceDetailAnalyseCoreService.getAbsenceStartTimeFromDetail( detail, scheduleSetting, debugger );
-		morningEndTime = AttendanceDetailAnalyseCoreService.getMiddleRestStartTimeFromDetail( detail, scheduleSetting, debugger );
-		afternoonStartTime = AttendanceDetailAnalyseCoreService.getMiddleRestEndTimeFromDetail( detail, scheduleSetting, debugger );
-
 
 		if ( onWorkTime != null && offWorkTime != null && morningEndTime != null && afternoonStartTime != null ) {
 			logger.debug( debugger, "上下班排班信息获取正常：onWorkTime=" +  onWorkTime + "， morningEndTime="+morningEndTime + "， afternoonStartTime="+afternoonStartTime + "， offWorkTime="+offWorkTime );
