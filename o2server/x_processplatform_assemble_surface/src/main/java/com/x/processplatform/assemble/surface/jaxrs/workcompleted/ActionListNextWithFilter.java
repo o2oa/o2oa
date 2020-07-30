@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.workcompleted;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -40,7 +41,11 @@ class ActionListNextWithFilter extends BaseAction {
 			equals.put("creatorPerson", effectivePerson.getDistinguishedName());
 			equals.put("application", applicationId);
 			if (ListTools.isNotEmpty(wi.getProcessList())) {
-				ins.put("process", wi.getProcessList());
+				if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+					ins.put("process", wi.getProcessList());
+				}else{
+					ins.put("process", business.process().listEditionProcess(wi.getProcessList()));
+				}
 			}
 			if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 				ins.put("startTimeMonth", wi.getStartTimeMonthList());
@@ -76,6 +81,9 @@ class ActionListNextWithFilter extends BaseAction {
 		@FieldDescribe("流程")
 		private List<String> processList;
 
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		private Boolean relateEditionProcess = true;
+
 		@FieldDescribe("结束年月")
 		private List<String> completedTimeMonthList;
 
@@ -91,6 +99,14 @@ class ActionListNextWithFilter extends BaseAction {
 
 		public void setProcessList(List<String> processList) {
 			this.processList = processList;
+		}
+
+		public Boolean getRelateEditionProcess() {
+			return relateEditionProcess;
+		}
+
+		public void setRelateEditionProcess(Boolean relateEditionProcess) {
+			this.relateEditionProcess = relateEditionProcess;
 		}
 
 		public List<String> getCompletedTimeMonthList() {
