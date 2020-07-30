@@ -27,7 +27,7 @@ class ActionGetWithPortalMobile extends BaseAction {
 			if ((null != element) && (null != element.getObjectValue())) {
 				wo = (Wo) element.getObjectValue();
 				Portal portal = business.portal().pick(wo.getPortal());
-				if (!business.portal().visible(effectivePerson, portal)) {
+				if (isNotLoginPage(flag) && (!business.portal().visible(effectivePerson, portal))) {
 					throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
 							portal.getId());
 				}
@@ -36,7 +36,7 @@ class ActionGetWithPortalMobile extends BaseAction {
 				if (null == portal) {
 					throw new ExceptionPortalNotExist(portalFlag);
 				}
-				if (!business.portal().visible(effectivePerson, portal)) {
+				if (isNotLoginPage(flag) && (!business.portal().visible(effectivePerson, portal))) {
 					throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
 							portal.getId());
 				}
