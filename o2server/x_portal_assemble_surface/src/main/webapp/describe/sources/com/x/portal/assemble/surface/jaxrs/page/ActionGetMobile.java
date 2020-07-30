@@ -26,7 +26,7 @@ class ActionGetMobile extends BaseAction {
 			if (null == portal) {
 				throw new ExceptionPortalNotExist(page.getPortal());
 			}
-			if (!business.portal().visible(effectivePerson, portal)) {
+			if (isNotLoginPage(id) && (!business.portal().visible(effectivePerson, portal))) {
 				throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
 						portal.getId());
 			}
