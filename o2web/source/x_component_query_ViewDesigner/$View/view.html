@@ -50,7 +50,10 @@
             </tr>
             <tr>
                 <td class="editTableTitleNoWidth">每页行数:</td>
-                <td class="editTableValue"><input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/></td>
+                <td class="editTableValue">
+                    <input type="number" name="pageSize" value="text{$.pageSize || 20}" class="editTableInput"/>
+                    <div style="color:#999;">注：每页最大行数为2000条</div>
+                </td>
             </tr>
             <tr>
                 <td class="editTableTitle">隐藏操作条:</td>
