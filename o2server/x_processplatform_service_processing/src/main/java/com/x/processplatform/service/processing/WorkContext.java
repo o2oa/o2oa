@@ -38,6 +38,14 @@ public class WorkContext {
 	private Task task;
 	private TaskCompleted taskCompleted;
 
+	public void bindTask(Task task) {
+		this.task = task;
+	}
+
+	public void bindTaskCompleted(TaskCompleted taskCompleted) {
+		this.taskCompleted = taskCompleted;
+	}
+
 	public WorkContext(AeiObjects aeiObjects) throws Exception {
 		this.aeiObjects = aeiObjects;
 		this.business = aeiObjects.business();
