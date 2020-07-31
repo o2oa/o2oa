@@ -355,15 +355,15 @@ MWF.xApplication.Forum.TopNode = new Class({
             Cookie.dispose("x-token");
             if (layout.session && layout.session.user) layout.session.user.token = "";
 
-            // layout.desktop.session.user.distinguishedName = "anonymous";
-            // this.app.clearContent();
-            // this.app.loadApplicationContent();
-            // this.openLoginForm();
+            layout.desktop.session.user.distinguishedName = "anonymous";
+            this.app.clearContent();
+            this.app.loadApplicationContent();
+            this.openLoginForm();
 
             // if( callback ){
             //     callback()
             // }else{
-                 window.location.reload();
+            //      window.location.reload();
             // }
         }.bind(this));
     }
