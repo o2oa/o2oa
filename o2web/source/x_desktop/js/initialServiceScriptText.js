@@ -3074,7 +3074,7 @@ var _org = {
         }else{
             v = this.oIdentity.listWithUnitSubDirect(getNameFlag(name));
         }
-        return this.getObject(this.oIdentity, v);``
+        return this.getObject(this.oIdentity, v);
     },
 
     //组织**********
