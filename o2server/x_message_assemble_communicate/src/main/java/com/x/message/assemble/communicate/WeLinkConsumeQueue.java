@@ -38,10 +38,12 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 				//todo 这里 Person.getWeLinkId() 获取不到 改用unique 不知道为啥获取不到
 				list.add(business.organization().person().getObject(message.getPerson()).getUnique());
 				m.setToUserList(list);
-				m.setMsgRange(0);
+				m.setMsgRange("0");
 				m.setMsgTitle(message.getTitle());
 				m.setMsgContent(message.getTitle());
 				m.setMsgOwner(message.getType());
+				m.setUrlType("html");
+				m.setUrlPath("http://www.o2oa.net");
 				Date now = new Date();
 				m.setCreateTime(now.getTime()+"");
 				logger.info("welink send body: " + m.toString());
