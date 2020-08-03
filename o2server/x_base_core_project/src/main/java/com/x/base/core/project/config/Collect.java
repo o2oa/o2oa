@@ -28,7 +28,7 @@ public class Collect extends ConfigObject {
 	private static String Default_title = "企业办公平台";
 	private static String Default_footer = "www.o2oa.net";
 	private static String Default_name = "www.o2oa.net";
-	private static String Default_appUrl = "https://sample.o2oa.net/app/download.html";
+	private static String Default_appUrl = "https://app.o2oa.net/download/download.html";
 	private static String Default_server = "collect.o2oa.net";
 	private static Integer Default_port = 20080;
 	public static String ADDRESS_COLLECT_LOGIN = "/o2_collect_assemble/jaxrs/authentication/captcha/key/o2/answer/o2";
