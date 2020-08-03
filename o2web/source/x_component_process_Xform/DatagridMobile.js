@@ -534,7 +534,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         //}.bind(this));
 
         this.validationMode();
-        this.fireEvent("addLine");
+        this.fireEvent("addLine", [this.table]);
     },
     _cancelLineEdit : function(e){
         var datagrid = this;
@@ -717,7 +717,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this._loadDatagridStyle();
 
         this.validationMode();
-        this.fireEvent("completeLineEdit");
+        this.fireEvent("completeLineEdit", [table]);
 
         this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
         this.addAction.removeEvents("click");
