@@ -492,7 +492,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			
 		this.getData();
         this.validationMode();
-        this.fireEvent("completeLineEdit");
+        this.fireEvent("completeLineEdit", [newTr]);
 
         return true;
 	},
@@ -539,7 +539,7 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		}
 		this.isEdit =true;
         this.validationMode();
-        this.fireEvent("addLine");
+        this.fireEvent("addLine",[this.editorTr]);
 //		newTr.addEvent("blur", function(e){
 //			this._completeLineEdit();
 //		}.bind(this));
