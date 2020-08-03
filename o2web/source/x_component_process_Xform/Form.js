@@ -2794,11 +2794,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 //     this.selectPeopleCompany(dlg, json.data, count)
                 // }.bind(this), null, this.businessData.task.identity);
                 break;
+            case "script" :
+                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getActivity( this.businessData.work.activity,"manual",function (activityJson) {
+                    var scriptText = activityJson.data.activity.resetRangeScriptText;
+                    if( !scriptText )return;
+                    var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
+                    this.selectPeopleUnit(dlg, "", count, resetRange);
+                }.bind(this))
+                break;
             default:
                 this.selectPeopleAll(dlg, count);
         }
     },
-    selectPeopleUnit: function (dlg, unit, count) {
+    selectPeopleUnit: function (dlg, unit, count, include) {
         var names = dlg.identityList || [];
         var areaNode = $("resetWork_selPeopleArea");
         var options = {
@@ -2817,6 +2825,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 dlg.identityList = identityList;
             }.bind(this)
         };
+        if( include ){
+            options.noUnit = true;
+            options.include = typeOf(include)==="array" ? include : [include];
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
