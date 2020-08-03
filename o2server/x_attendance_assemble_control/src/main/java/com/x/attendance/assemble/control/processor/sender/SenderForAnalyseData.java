@@ -44,4 +44,24 @@ public class SenderForAnalyseData {
 		}
 	}
 	
-}
+	public void executeForce(List<String> personNames, String startDate, String endDate,Boolean forceFlag, List<AttendanceWorkDayConfig> attendanceWorkDayConfigList, Map<String, Map<String, List<AttendanceStatisticalCycle>>> topUnitAttendanceStatisticalCycleMap, Boolean debugger ) {
+			
+			StatusSystemImportOpt statusSystemImportOpt = StatusSystemImportOpt.getInstance();
+			List<String> ids = null;
+			 
+			for ( String personName : personNames ) {
+				try {
+					ids = attendanceDetailServiceAdv.getAllAnalysenessDetailsForce( startDate, endDate, personName ,forceFlag);
+					if( ids != null && !ids.isEmpty() ) {
+						statusSystemImportOpt.setProcessing( true );
+						statusSystemImportOpt.setProcessing_analysis( true );
+						statusSystemImportOpt.increaseProcess_analysis_total( ids.size() );
+						DataProcessThreadFactory.getInstance().submit( new EntityAnalyseData( "analyse", personName, ids, attendanceWorkDayConfigList, topUnitAttendanceStatisticalCycleMap ), debugger );
+					}
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+		}
+		
+	}
