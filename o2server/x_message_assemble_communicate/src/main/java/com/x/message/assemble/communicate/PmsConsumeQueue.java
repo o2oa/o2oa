@@ -26,7 +26,7 @@ public class PmsConsumeQueue extends AbstractQueue<Message> {
 
 	protected void execute(Message message) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("send pms message:{}.", message);
+			logger.info("send pms message:{}.", message);
 			Boolean result = false;
 			JsonElement jsonElement = XGsonBuilder.instance().fromJson(message.getBody(), JsonElement.class);
 			/* 跳过第一条待办的提醒 */
@@ -46,6 +46,10 @@ public class PmsConsumeQueue extends AbstractQueue<Message> {
 					WrapBoolean wrapBoolean = CipherConnectionAction.post(false, url, pms).getData(WrapBoolean.class);
 					result = wrapBoolean.getValue();
 				}
+			}
+			//单独发送推送消息用，没有存message对象 所以没有id，不需要更新
+			if (StringUtils.isEmpty(message.getId())) {
+				return;
 			}
 			if (BooleanUtils.isTrue(result)) {
 				Message messageEntityObject = emc.find(message.getId(), Message.class);
