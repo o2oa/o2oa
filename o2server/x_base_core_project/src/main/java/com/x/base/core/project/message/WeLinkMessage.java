@@ -21,7 +21,7 @@ public class WeLinkMessage extends GsonPropertyObject {
     //}
 
 
-    private int msgRange;
+    private String msgRange;
     private List<String> toUserList;
     private String msgTitle;
     private String msgContent;
@@ -30,12 +30,11 @@ public class WeLinkMessage extends GsonPropertyObject {
     private String msgOwner;
     private String createTime;
 
-
-    public int getMsgRange() {
+    public String getMsgRange() {
         return msgRange;
     }
 
-    public void setMsgRange(int msgRange) {
+    public void setMsgRange(String msgRange) {
         this.msgRange = msgRange;
     }
 
