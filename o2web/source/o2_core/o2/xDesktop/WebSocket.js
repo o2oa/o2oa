@@ -350,7 +350,7 @@ MWF.xDesktop.WebSocket = new Class({
         if (body.type && body.type == "emoji") { //表情 消息
             msgBody = "[表情]";
         }
-        var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>"+msgBody;
+        var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>: "+msgBody;
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
