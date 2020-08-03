@@ -280,9 +280,19 @@
             <tr>
                 <td class="editTableTitle">重置范围:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='all')?'checked':''} type="radio" value="all"/>所有人
-                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='unit')?'checked':''} type="radio" value="unit"/>直接组织
-                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='topUnit')?'checked':''} type="radio" value="topUnit"/>顶层组织
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='all')?'checked':''} type="radio" value="all"
+                           onclick="if (this.checked){ $('text{$.id}resetRangeScriptTextTr').setStyle('display', 'none'); }"/>所有人
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='unit')?'checked':''} type="radio" value="unit"
+                           onclick="if (this.checked){ $('text{$.id}resetRangeScriptTextTr').setStyle('display', 'none'); }"/>直接组织
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='topUnit')?'checked':''} type="radio" value="topUnit"
+                           onclick="if (this.checked){ $('text{$.id}resetRangeScriptTextTr').setStyle('display', 'none'); }"/>顶层组织
+                    <input class="editTableRadio" name="resetRange" text{($.resetRange=='script')?'checked':''} type="radio" value="script"
+                           onclick="if (this.checked){ $('text{$.id}resetRangeScriptTextTr').setStyle('display', ''); }"/>脚本
+                </td>
+            </tr>
+            <tr id="text{$.id}resetRangeScriptTextTr" style="display: text{($.resetRange!=='script')?'none':''};">
+                <td colspan="2">
+                    <div class="MWFScriptText" name="resetRangeScriptText"></div>
                 </td>
             </tr>
         </table>
