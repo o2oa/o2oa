@@ -251,6 +251,30 @@ public class AttendanceDetailAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	@JaxrsMethodDescribe(value = "分析打卡数据（指定人员）", action = ActionAnalyseAttendanceDetailsForce.class)
+	@POST
+	@Path("analyse")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void analyseAttendanceDetailsForce(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionAnalyseAttendanceDetailsForce.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		Boolean check = true;
+		if (check) {
+			try {
+				result = new ActionAnalyseAttendanceDetailsForce().execute(request, effectivePerson, jsonElement);
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				Exception exception = new ExceptionAttendanceDetailProcess(e, "根据时间区间分析所有员工打卡信息时发生异常！");
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 	@JaxrsMethodDescribe(value = "分析打卡数据", action = ActionAnalyseAttendanceDetail.class)
 	@GET
