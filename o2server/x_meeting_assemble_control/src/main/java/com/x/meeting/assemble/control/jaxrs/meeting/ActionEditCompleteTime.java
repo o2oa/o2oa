@@ -11,6 +11,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -24,7 +25,7 @@ import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Room;
 
-class ActionEdit extends BaseAction {
+class ActionEditCompleteTime extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -35,53 +36,31 @@ class ActionEdit extends BaseAction {
 			if (null == meeting) {
 				throw new ExceptionMeetingNotExist(id);
 			}
+			
 			if (!business.meetingEditAvailable(effectivePerson, meeting)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			
 			Room room = emc.find(wi.getRoom(), Room.class);
 			if (null == room) {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
 			
-			//判断开始时间或者结束时间有没有修改过
-			boolean modifyTime = false;
-			Date StartTime = wi.getStartTime();
-			Date CompletedTime = wi.getCompletedTime();
-			if(StartTime.getTime() != meeting.getStartTime().getTime() ) {
-				modifyTime = true;
-			}
-			if(CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
-				modifyTime = true;
-			}
-			
 			emc.beginTransaction(Meeting.class);
-			List<String> modifyInvitePersonList = ListUtils.subtract(
-					this.convertToPerson(business, ListTools.trim(wi.getInvitePersonList(), true, true)),
-					meeting.getInvitePersonList());
-			List<String> invitePersonList = new ArrayList<>(meeting.getInvitePersonList());
-			invitePersonList.addAll(modifyInvitePersonList);
-			Wi.copier.copy(wi, meeting);
-			meeting.setInvitePersonList(invitePersonList);
+			
+			
+			//Wi.copier.copy(wi, meeting);
+			meeting.setCompletedTime(wi.getCompletedTime());
+			
 			if (!business.room().checkIdle(meeting.getRoom(), meeting.getStartTime(), meeting.getCompletedTime(),
 					meeting.getId())) {
 				throw new ExceptionRoomNotAvailable(room.getName());
 			}
+			
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
-			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
-				
-				if(modifyTime) { //开始时间或者结束时间有修改过
-					for (String _s : wi.getInvitePersonList()) {
-						MessageFactory.meeting_invite(_s, meeting, room);
-					}
-				}else {
-					for (String _s : modifyInvitePersonList) {
-						MessageFactory.meeting_invite(_s, meeting, room);
-					}
-				}
-				
-				this.notifyMeetingInviteMessage(business, meeting);
-			}
+		
+			
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
 			result.setData(wo);
@@ -89,11 +68,31 @@ class ActionEdit extends BaseAction {
 		}
 	}
 
-	public static class Wi extends Meeting {
+	public static class Wi  {
+		
+		@FieldDescribe("所属楼层.")
+		private String room;
+		
+		@FieldDescribe("结束时间.")
+		private Date completedTime;
 
-		private static final long serialVersionUID = -4637797853096659198L;
-		static WrapCopier<Wi, Meeting> copier = WrapCopierFactory.wi(Wi.class, Meeting.class, null,
-				JpaObject.FieldsUnmodify);
+		public String getRoom() {
+			return room;
+		}
+
+		public void setRoom(String room) {
+			this.room = room;
+		}
+
+		public Date getCompletedTime() {
+			return completedTime;
+		}
+
+		public void setCompletedTime(Date completedTime) {
+			this.completedTime = completedTime;
+		}
+	   
+		
 	}
 
 	public static class Wo extends WoId {
