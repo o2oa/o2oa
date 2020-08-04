@@ -868,7 +868,6 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															if($('#' + i.name, '#ins').val() == ""){
 																/*
 																if(i.isCollection){
@@ -877,7 +876,15 @@ Describe.prototype = {
 																	data[i.name] = {};
 																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														}
 													}
@@ -910,7 +917,15 @@ Describe.prototype = {
 																	data[i.name] = {};
 																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															   if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														
 														}
@@ -1217,15 +1232,22 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															if($('#' + i.name, '#ins').val() == ""){
-																if(i.isCollection){
+																/*if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														}
 													}
@@ -1251,13 +1273,21 @@ Describe.prototype = {
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
-																if(i.isCollection){
+																/*if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														
 														}

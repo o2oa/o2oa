@@ -86,6 +86,42 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "会议提前开始,修改开始时间", action = ActionEditStartTime.class)
+	@PUT
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}/modify/starttime")
+	public void editStartTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditStartTime.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditStartTime().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "会议提前结束,修改结束时间", action = ActionEditCompleteTime.class)
+	@PUT
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}/modify/completedtime")
+	public void editCompletedTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditCompleteTime.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditCompleteTime().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "删除会议.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
