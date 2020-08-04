@@ -173,6 +173,70 @@ public class AttendanceDetailFactory extends AbstractFactory {
 	 * 分析时间范围内的所有打卡记录
 	 * 1、如果未传入时间，或者时间有错，那么分析所有未分析过的打卡记录
 	 * 2、只分析未归档的，已经归档的将不再分析了
+	 * 3、如果forceFlag为true则分析（未分析的，已分析的，错误的）
+	 * @param startDateString
+	 * @param endDateString
+	 * @param personName
+	 * @param forceFlag
+	 * @return
+	 * @throws Exception
+	 */
+	//@MethodDescribe("按指定的开始时间，结束时间列示未被分析的AttendanceDetail信息列表")
+	public List<String> getAllAnalysenessDetailsForce(String startDateString, String endDateString, String personName ,Boolean forceFlag) throws Exception {
+		DateOperation dateOperation = new DateOperation();
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		
+		//一般始终为true, id is not null
+		Predicate p = root.get( AttendanceDetail_.id ).isNotNull();
+		p = cb.and( p, root.get( AttendanceDetail_.archiveTime ).isNull()); //要未归档的，才再次进行分析
+		if( StringUtils.isNotEmpty( personName ) ) {
+			p = cb.and( p, cb.equal( root.get(AttendanceDetail_.empName ), personName)); //匹配员工姓名
+		}
+		Date startDate = null;
+		Date endDate = null;
+		try{
+			startDate = dateOperation.getDateFromString( startDateString );
+		}catch(Exception e){
+			startDate = null;
+		}
+		try{
+			endDate = dateOperation.getDateFromString( endDateString );
+		}catch(Exception e){
+			endDate = null;
+		}
+		//如果开始时间和结束时间有值，那么分析一个时间区间内的所有打卡记录，已经分析过了的，也需要重新分析一次
+		if( startDate != null  && endDate != null ){
+			p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), startDate, endDate));
+		}else{
+			if( startDate != null ){
+				p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), startDate, new Date()));
+			}
+			if( endDate != null ){
+				p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), new Date(), endDate));
+			}
+			if( startDate == null && endDate == null ){
+				//startDateString和endDateString都为空，只分析所有未分析过的
+				List<Integer> statusArray = new ArrayList<Integer>();
+				statusArray.add( 0 ); //未分析的
+				if(forceFlag){
+					statusArray.add( 1 ); //已分析的
+				}
+				statusArray.add( -1 ); //有错误的
+				p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
+			}
+		}
+		
+		cq.select( root.get( AttendanceDetail_.id ) );
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+	}
+	
+	/**
+	 * 分析时间范围内的所有打卡记录
+	 * 1、如果未传入时间，或者时间有错，那么分析所有未分析过的打卡记录
+	 * 2、只分析未归档的，已经归档的将不再分析了
 	 * @param startDateString
 	 * @param endDateString
 	 * @return
@@ -215,6 +279,66 @@ public class AttendanceDetailFactory extends AbstractFactory {
 				//startDateString和endDateString都为空，只分析所有未分析过的
 				List<Integer> statusArray = new ArrayList<Integer>();
 				statusArray.add( 0 ); //未分析的
+				statusArray.add( -1 ); //有错误的
+				p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
+			}
+		}
+		
+		cq.distinct(true).select( root.get( AttendanceDetail_.empName ) );
+		return em.createQuery(cq.where(p)).setMaxResults(20000).getResultList();
+	}
+	
+	/**
+	 * 分析时间范围内的所有打卡记录(可选择已分析/未分析)
+	 * 1、如果未传入时间，或者时间有错， 那么分析所有未分析过的打卡记录
+	 * 2、只分析未归档的，已经归档的将不再分析了
+	 * 3、如果forceFlag为true则分析（未分析的，已分析的，错误的）
+	 * @param startDateString
+	 * @param endDateString
+	 * @param forceFlag
+	 * @return
+	 * @throws Exception
+	 */
+	//@MethodDescribe("按指定的开始时间，结束时间列示员工姓名列表")
+	public List<String> getAllAnalysenessPersonNamesForce(String startDateString, String endDateString ,Boolean forceFlag) throws Exception {
+		DateOperation dateOperation = new DateOperation();
+		EntityManager em = this.entityManagerContainer().get( AttendanceDetail.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AttendanceDetail> root = cq.from( AttendanceDetail.class);
+		
+		//一般始终为true, id is not null
+		Predicate p = root.get( AttendanceDetail_.id ).isNotNull();
+		p = cb.and( p, root.get( AttendanceDetail_.archiveTime ).isNull()); //要未归档的，才再次进行分析
+		Date startDate = null;
+		Date endDate = null;
+		try{
+			startDate = dateOperation.getDateFromString( startDateString );
+		}catch(Exception e){
+			startDate = null;
+		}
+		try{
+			endDate = dateOperation.getDateFromString( endDateString );
+		}catch(Exception e){
+			endDate = null;
+		}
+		//如果开始时间和结束时间有值，那么分析一个时间区间内的所有打卡记录，已经分析过了的，也需要重新分析一次
+		if( startDate != null  && endDate != null ){
+			p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), startDate, endDate));
+		}else{
+			if( startDate != null ){
+				p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), startDate, new Date()));
+			}
+			if( endDate != null ){
+				p = cb.and( p, cb.between( root.get( AttendanceDetail_.recordDate), new Date(), endDate));
+			}
+			if( startDate == null && endDate == null ){
+				//startDateString和endDateString都为空，只分析所有未分析过的
+				List<Integer> statusArray = new ArrayList<Integer>();
+				statusArray.add( 0 ); //未分析的
+				if(forceFlag){
+					statusArray.add( 1 ); //已分析的
+				}
 				statusArray.add( -1 ); //有错误的
 				p = cb.and( p, root.get( AttendanceDetail_.recordStatus).in( statusArray ));
 			}

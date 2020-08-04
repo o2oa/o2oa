@@ -138,6 +138,11 @@ public class AttendanceDetailService {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().getAllAnalysenessDetails( startDate, endDate, personName );	
 	}
+	
+	public List<String> getAllAnalysenessDetailsForce( EntityManagerContainer emc, String startDate, String endDate, String personName ,Boolean forceFlag) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().getAllAnalysenessDetailsForce( startDate, endDate, personName ,forceFlag);
+	}
 
 	/**
 	 * 
@@ -339,6 +344,11 @@ public class AttendanceDetailService {
 	public List<String> getAllAnalysenessPersonNames(EntityManagerContainer emc, String startDate, String endDate) throws Exception {
 		Business business =  new Business( emc );
 		return business.getAttendanceDetailFactory().getAllAnalysenessPersonNames( startDate, endDate );
+	}
+	
+	public List<String> getAllAnalysenessPersonNamesForce(EntityManagerContainer emc, String startDate, String endDate,Boolean forceFlag) throws Exception {
+		Business business =  new Business( emc );
+		return business.getAttendanceDetailFactory().getAllAnalysenessPersonNamesForce( startDate, endDate , forceFlag);
 	}
 
 	public AttendanceDetail listDetailWithEmployee(EntityManagerContainer emc, String employeeName, String recordDateString) throws Exception {
