@@ -753,7 +753,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
             "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
             "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
+            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
             "   </td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
@@ -864,11 +864,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     editAction : { type : "button", className : "inputOkButton", value : this.lp.editMeeting , event : {
                         click : function(){ this.editMeeting(); }.bind(this)
                     } },
-                    startImmediatelyAction : { type : "button", className : "inputCancelButton", value : "开始会议" , event : {
-                        click : function(){ this.editMeeting(); }.bind(this)
+                    startImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.startMeetingImmediately , event : {
+                        click : function(){ this.startImmediately(); }.bind(this)
                     } },
-                    finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : "结束会议" , event : {
-                            click : function(){ this.editMeeting(); }.bind(this)
+                    finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.endMeetingImmediately , event : {
+                            click : function(){ this.finishImmediately(); }.bind(this)
                         } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
                         click : function(){ this.close(); }.bind(this)
@@ -890,6 +890,26 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    startImmediately : function(){
+        o2.Actions.load("x_meeting_assemble_control").MeetingAction.editStartTime( this.data.id, {
+            room : this.roomId || this.data.room,
+            startTime : ( new Date() ).format("db")
+        }, function () {
+            this.app.notice( this.lp.startMeetingSucccess, "success");
+            this.waitReload = true;
+            this.reload()
+        }.bind(this))
+    },
+    finishImmediately : function(){
+        o2.Actions.load("x_meeting_assemble_control").MeetingAction.editCompletedTime( this.data.id, {
+            room : this.roomId || this.data.room,
+            completedTime : ( new Date() ).format("db")
+        }, function () {
+            this.app.notice( this.lp.endMeetingSucccess, "success");
+            this.waitReload = true;
+            this.reload()
+        }.bind(this))
     },
     getInvitePersonExclude : function(){
         var invitePersonList = this.invitePersonList || this.data.invitePersonList;
@@ -1304,17 +1324,17 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
 
         var d = this.data.dateInput;
-        if( this.isNew ) {
-            var startTime = d + " " + this.data.beginTimeInput + ":0";
-            var completedTime = d + " " + this.data.endTimeInput + ":0";
-            var startTimeDate = Date.parse(startTime);
-            var completedTimeDate = Date.parse(completedTime);
+        // if( this.isNew ) {
+        var startTime = d + " " + this.data.beginTimeInput + ":0";
+        var completedTime = d + " " + this.data.endTimeInput + ":0";
+        var startTimeDate = Date.parse(startTime);
+        var completedTimeDate = Date.parse(completedTime);
 
-            this.data.startTime = startTime;
-            this.data.completedTime = completedTime;
-            this.data.startTimeDate = startTimeDate;
-            this.data.completedTimeDate = completedTimeDate;
-        }
+        this.data.startTime = startTime;
+        this.data.completedTime = completedTime;
+        this.data.startTimeDate = startTimeDate;
+        this.data.completedTimeDate = completedTimeDate;
+        // }
 
         if( this.isNew ){
             delete this.data.applicant;
