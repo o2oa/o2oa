@@ -125,6 +125,11 @@ MWF.xApplication.Meeting.LP = {
     "deleteAttachmentTitle":"删除附件确认",
     "deleteAttachment": "是否确定要删除您选中的附件？",
 
+    "startMeetingImmediately" : "开始会议",
+    "endMeetingImmediately" : "结束会议",
+    "startMeetingSucccess" : "会议已开始",
+    "endMeetingSucccess" : "会议已结束",
+
     "dateFormatMonth": "%Y年%m月",
     "dateFormatMonthDay": "%m月%d日",
     "dateFormatMonthOnly": "%m月",
