@@ -883,7 +883,11 @@ Describe.prototype = {
 																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 																	}
 																}else{
-																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																    if (i.isCollection) {
+																       data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															        } else {
+																       data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															        }
 																}
 															}
 														}
@@ -924,7 +928,15 @@ Describe.prototype = {
 																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 																	}
 																}else{
-																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																   if (i.isCollection) {
+																      data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															       } else {
+																         if (i.isCollection) {
+																			   data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+																		} else {
+																			   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																		}
+															       }
 																}
 															}
 														
