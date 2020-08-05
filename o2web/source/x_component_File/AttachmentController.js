@@ -152,7 +152,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -196,7 +196,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -224,7 +224,7 @@ MWF.xApplication.File.AttachmentController.Attachment = new Class({
     },
     createInforNode: function(callback){
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -314,7 +314,7 @@ MWF.xApplication.File.AttachmentController.Folder = new Class({
     },
     createInforNode: function(callback){
         var size = "";
-        var k = this.data.size/1204;
+        var k = this.data.size/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;

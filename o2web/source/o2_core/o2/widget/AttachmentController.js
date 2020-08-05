@@ -1261,7 +1261,7 @@ o2.widget.AttachmentController.Attachment = new Class({
     },
     createInforNode: function(callback){
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1303,7 +1303,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1343,7 +1343,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1755,7 +1755,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1810,7 +1810,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         this.textNode.set("text", this.data.name);
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
