@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.factory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -15,23 +16,21 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 public class PersonFactory extends AbstractFactory {
 
-	private Ehcache cache;
+	private CacheCategory cacheCategory = new CacheCategory(Person.class);
 
 	public PersonFactory(Business business) throws Exception {
 		super(business);
-		this.cache = CacheFactory.getPersonCache();
 	}
 
 	public Person pick(String flag) throws Exception {
@@ -39,14 +38,15 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Person) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			if (null != o) {
+				CacheManager.put(cacheCategory, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -88,15 +88,14 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : ListTools.trim(flags, true, false)) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Person) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				cache.put(new Element(str, o));
 				if (null != o) {
+					CacheManager.put(cacheCategory, cacheKey, o);
 					list.add(o);
 				}
 			}

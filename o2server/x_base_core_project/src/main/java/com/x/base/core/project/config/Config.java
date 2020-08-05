@@ -75,6 +75,7 @@ public class Config {
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
+	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 
 	public static final String DIR_COMMONS = "commons";
@@ -1260,6 +1261,19 @@ public class Config {
 			}
 		}
 		return instance().portal;
+	}
+
+	public Cache cache;
+
+	public static synchronized Cache cache() throws Exception {
+		if (null == instance().cache) {
+			Cache obj = BaseTools.readConfigObject(PATH_CONFIG_CACHE, Cache.class);
+			if (null == obj) {
+				obj = Cache.defaultInstance();
+			}
+			instance().cache = obj;
+		}
+		return instance().cache;
 	}
 
 	private Components components = null;

@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -13,6 +12,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -25,8 +26,6 @@ import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.ThisApplication;
@@ -35,11 +34,7 @@ import com.x.organization.core.entity.accredit.Empower;
 import com.x.organization.core.entity.accredit.Empower_;
 import com.x.organization.core.entity.accredit.Filter;
 
-import org.apache.commons.lang3.StringUtils;
-
 class ActionListWithIdentityObject extends BaseAction {
-
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithIdentityObject.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

@@ -9,8 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.ListUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -72,10 +70,10 @@ class ActionListWithPerson extends BaseAction {
 	 */
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
 			List<String> identities, List<String> units) throws Exception {
-		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
-		return ids;
-		// List<String> fromProcessIds = this.listFromProcess(business, effectivePerson,
-		// roles, identities, units);
+//		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
+//		return ids;
+		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units);
+		return fromProcessIds;
 //		return ListUtils.intersection(ids, fromProcessIds);
 	}
 

@@ -15,28 +15,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.config.Config;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 public class IdentityFactory extends AbstractFactory {
 
-	private Ehcache cache;
+	private CacheCategory cacheCategory = new CacheCategory(Identity.class);
 
 	public IdentityFactory(Business business) throws Exception {
 		super(business);
-		this.cache = CacheFactory.getIdentityCache();
 	}
 
 	public Identity pick(String flag) throws Exception {
@@ -44,14 +42,15 @@ public class IdentityFactory extends AbstractFactory {
 			return null;
 		}
 		Identity o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Identity) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			o = (Identity) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			if (null != o) {
+				CacheManager.put(cacheCategory, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -90,15 +89,14 @@ public class IdentityFactory extends AbstractFactory {
 	public List<Identity> pick(List<String> flags) throws Exception {
 		List<Identity> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Identity) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Identity) optional.get());
 			} else {
 				Identity o = this.pickObject(str);
-				cache.put(new Element(str, o));
 				if (null != o) {
+					CacheManager.put(cacheCategory, cacheKey, o);
 					list.add(o);
 				}
 			}
@@ -106,7 +104,7 @@ public class IdentityFactory extends AbstractFactory {
 		return list;
 	}
 
-	public List<Identity> listByPerson(String personId) throws Exception{
+	public List<Identity> listByPerson(String personId) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Identity.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
@@ -117,15 +115,18 @@ public class IdentityFactory extends AbstractFactory {
 	}
 
 	public <T extends Identity> List<T> sort(List<T> list) throws Exception {
-		if(Config.person().getPersonUnitOrderByAsc()) {
-			list = list.stream().sorted(
-					Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
-							Comparator.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+		if (Config.person().getPersonUnitOrderByAsc()) {
+			list = list.stream()
+					.sorted(Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+							.thenComparing(Comparator
+									.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 					.collect(Collectors.toList());
-		}else{
-			list = list.stream().sorted(
-					Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).reversed()
-					.thenComparing(Comparator.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
+		} else {
+			list = list.stream()
+					.sorted(Comparator.comparing(Identity::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
+							.reversed()
+							.thenComparing(Comparator
+									.comparing(Identity::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 					.collect(Collectors.toList());
 		}
 		return list;
