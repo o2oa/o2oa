@@ -1,5 +1,6 @@
 package com.x.base.core.project.bean;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,7 +9,10 @@ import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
-public abstract class PropertyObject {
+public abstract class PropertyObject implements Serializable {
+
+	private static final long serialVersionUID = 4777469768430179083L;
+
 	public void copyTo(Object o) throws Exception {
 		copyTo(o, false, new String[] {});
 	}

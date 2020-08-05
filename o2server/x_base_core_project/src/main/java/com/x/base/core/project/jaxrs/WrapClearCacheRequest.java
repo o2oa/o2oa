@@ -1,5 +1,6 @@
 package com.x.base.core.project.jaxrs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -25,7 +26,7 @@ public abstract class WrapClearCacheRequest extends GsonPropertyObject {
 	}
 
 	public List<Object> getKeys() {
-		return keys;
+		return null == keys ? new ArrayList<>() : keys;
 	}
 
 	public void setKeys(List<Object> keys) {
