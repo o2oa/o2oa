@@ -13,8 +13,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
@@ -22,8 +20,6 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.accredit.EmpowerLog;
 
 class ActionCreate extends BaseAction {
-
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
