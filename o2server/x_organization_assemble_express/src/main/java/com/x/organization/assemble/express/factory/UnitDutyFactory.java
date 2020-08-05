@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.factory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -14,22 +15,20 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 public class UnitDutyFactory extends AbstractFactory {
 
-	private Ehcache cache;
+	private CacheCategory cacheCategory = new CacheCategory(UnitDuty.class);
 
 	public UnitDutyFactory(Business business) throws Exception {
 		super(business);
-		this.cache = CacheFactory.getUnitDutyCache();
 	}
 
 	public UnitDuty pick(String flag) throws Exception {
@@ -37,14 +36,15 @@ public class UnitDutyFactory extends AbstractFactory {
 			return null;
 		}
 		UnitDuty o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (UnitDuty) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			o = (UnitDuty) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			if (null != o) {
+				CacheManager.put(cacheCategory, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -83,15 +83,14 @@ public class UnitDutyFactory extends AbstractFactory {
 	public List<UnitDuty> pick(List<String> flags) throws Exception {
 		List<UnitDuty> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((UnitDuty) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				list.add((UnitDuty) optional.get());
 			} else {
 				UnitDuty o = this.pickObject(str);
-				cache.put(new Element(str, o));
 				if (null != o) {
+					CacheManager.put(cacheCategory, cacheKey, o);
 					list.add(o);
 				}
 			}
