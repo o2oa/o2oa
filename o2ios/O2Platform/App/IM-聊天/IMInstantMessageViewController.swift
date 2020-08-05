@@ -35,7 +35,7 @@ class IMInstantMessageViewController: UITableViewController {
     private func scrollMessageToBottom() {
         DispatchQueue.main.async {
             if self.instantMsgList.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.instantMsgList.count-1, section: 0), at: .bottom, animated: true)
+                self.tableView.scrollToRow(at: IndexPath(row: self.instantMsgList.count-1, section: 0), at: .bottom, animated: false)
             }
         }
     }

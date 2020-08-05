@@ -22,6 +22,7 @@ class IdentityV2:NSObject,Mappable{
     var unit : String?
     var unitLevel : Int?
     var unitLevelName : String?
+    var major: Bool? //是否主身份
     var unitName : String?
     var updateTime : String?
     var orderNumber : Int?
@@ -46,6 +47,7 @@ class IdentityV2:NSObject,Mappable{
         unit <- map["unit"]
         unitLevel <- map["unitLevel"]
         unitLevelName <- map["unitLevelName"]
+        major <- map["major"]
         unitName <- map["unitName"]
         updateTime <- map["updateTime"]
         orderNumber <- map["orderNumber"]

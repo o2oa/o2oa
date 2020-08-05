@@ -241,7 +241,7 @@ class IMChatViewController: UIViewController {
         DispatchQueue.main.async {
             self.tableView.reloadData()
             if self.chatMessageList.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count - 1, section: 0), at: .bottom, animated: true)
+                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count - 1, section: 0), at: .bottom, animated: false)
             }
         }
     }

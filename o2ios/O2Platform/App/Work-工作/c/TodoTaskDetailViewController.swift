@@ -229,9 +229,9 @@ class TodoTaskDetailViewController: BaseWebViewUIViewController {
         case 1:
             self.performSegue(withIdentifier: "backMainTask", sender: nil)
             break
-//        case 2:
-//            self.performSegue(withIdentifier: "backToTodoTask", sender: nil)
-//            break
+        case 2:
+            self.performSegue(withIdentifier: "backToTodoTask", sender: nil)
+            break
             //5是处理内容管理创建过来的流程 因为有一个创建页面 所以需要跳两层回去
         case 4, 5:
             if let index = self.navigationController?.viewControllers.firstIndex(of: self) {
@@ -831,8 +831,12 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
         case "uploadAttachment":
             ZonePermissions.requestImagePickerAuthorization(callback: { (zoneStatus) in
                 if zoneStatus == ZoneAuthorizationStatus.zAuthorizationStatusAuthorized {
-                    let site = (message.body as! NSDictionary)["site"]
-                    self.uploadAttachment(site as! String)
+//                    let site = (message.body as! NSDictionary)["site"]
+                    if  let body = (message.body as?  NSDictionary), let site = body["site"] as? String {
+                        self.uploadAttachment(site)
+                    }else {
+                        self.showError(title: "参数传入错误，无法上传！")
+                    }
                 } else {
                     //显示
                     self.gotoApplicationSettings(alertMessage: "需要照片允许访问权限，是否跳转到手机设置页面开启相机权限？")
@@ -840,13 +844,21 @@ extension TodoTaskDetailViewController: O2WKScriptMessageHandlerImplement {
             })
             break
         case "downloadAttachment":
-            let attachmentId = (message.body as! NSDictionary)["id"]
-            self.downloadAttachment(attachmentId as! String)
+//            let attachmentId = (message.body as! NSDictionary)["id"]
+            if let body = (message.body as? NSDictionary), let attachmentId = body["id"] as? String {
+                self.downloadAttachment(attachmentId)
+            }else {
+                self.showError(title: "参数传入错误，无法下载！")
+            }
             break
         case "replaceAttachment":
-            let attachmentId = (message.body as! NSDictionary)["id"] as! String
-            let site = (message.body as! NSDictionary)["site"] as? String
-            self.replaceAttachment(attachmentId, site ?? "")
+//            let attachmentId = (message.body as! NSDictionary)["id"] as! String
+//            let site = (message.body as! NSDictionary)["site"] as? String
+            if let body = (message.body as? NSDictionary), let attachmentId = body["id"] as? String, let site = body["site"] as? String {
+                self.replaceAttachment(attachmentId, site)
+            }else {
+                self.showError(title: "参数传入错误，无法替换！")
+            }
             break
         case "openDocument":
             let url = (message.body as! NSString)

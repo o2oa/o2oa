@@ -73,6 +73,9 @@ let setting_content_textFont = UIFont(name: "PingFangSC-Light", size: 12.0)
 let setting_content_textColor = RGB(155, g: 155, b: 155)
 
 
+let text_primary_color = UIColor(hex: "#333333")
+let text_normal_color = UIColor(hex: "#666666")
+
 
 
 //基本颜色
