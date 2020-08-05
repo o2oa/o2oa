@@ -74,7 +74,14 @@ class MainTaskSecondViewController: UIViewController {
         self.tableView.delegate = self
         loadHomeApps()
         loadPlayerList()
-        loadNewPublish(newPublishPageModel)
+        let sIndex = self.seguementControl.selectedIndex
+        if sIndex == 0 {
+            self.loadNewPublish(newPublishPageModel)
+        }else {
+            newTaskPageModel = CommonPageModel(MainTaskSecondViewController.PAGE_SIZE)
+            self.loadMainTodo(newTaskPageModel)
+        }
+        
         //self.initBarManager()
     }
     

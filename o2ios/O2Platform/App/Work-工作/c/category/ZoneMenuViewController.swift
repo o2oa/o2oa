@@ -292,7 +292,18 @@ class ZoneMenuViewController: UIViewController {
             if sender is TaskCreateData {
                 let data = sender as? TaskCreateData
                 destVc.process = data?.process
-                destVc.identitys = data?.identitys
+                //主身份排序
+                if let identitys = data?.identitys {
+                    var newArray = identitys
+                    newArray.sort { (first, second) -> Bool in
+                        if second.major == true {
+                            return false
+                        } else  {
+                            return true
+                        }
+                    }
+                    destVc.identitys = newArray
+                }
             }
         }
     }

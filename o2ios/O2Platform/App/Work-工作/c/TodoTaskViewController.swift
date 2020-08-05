@@ -90,10 +90,10 @@ class TodoTaskViewController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if self.searchController.isActive {
-            self.searchController.isActive = false
-        }
-        self.searchController.searchBar.removeFromSuperview()
+//        if self.searchController.isActive {
+//            self.searchController.isActive = false
+//        }
+//        self.searchController.searchBar.removeFromSuperview()
     }
     
     override func viewDidLoad() {
@@ -113,11 +113,7 @@ class TodoTaskViewController: UITableViewController {
         if let searchField = self.searchController.searchBar.value(forKey: "searchField") as? UITextField {
             searchField.textColor = .white
         }
-        
-        
-        
-//        
-//        //设置搜索框是否显示
+        //设置搜索框是否显示
         self.setSearchBarIsShow()
         
         //分页刷新功能
@@ -481,16 +477,17 @@ class TodoTaskViewController: UITableViewController {
     //backWindtodoTask
     @IBAction func unWindForTodoTask(_ segue:UIStoryboardSegue){
         DDLogDebug(segue.identifier!)
-        if segue.identifier == "backToTodoTask" {
-            self.segmentedControl.setSelected(at: 0, animated: true)
-            AppConfigSettings.shared.taskIndex = 0
-            self.tableView.mj_header.beginRefreshing()
+        self.tableView.mj_header.beginRefreshing()
+//        if segue.identifier == "backToTodoTask" {
+//            self.segmentedControl.setSelected(at: 0, animated: true)
+//            AppConfigSettings.shared.taskIndex = 0
+//            self.tableView.mj_header.beginRefreshing()
             //self.segmentedSelected(self.taskSegmentedControl)
-        }else if segue.identifier == "backToReadTask" {
-            self.segmentedControl.setSelected(at: 1, animated: true)
-            AppConfigSettings.shared.taskIndex = 1
-            self.tableView.mj_header.beginRefreshing()
-        }
+//        }else if segue.identifier == "backToReadTask" {
+//            self.segmentedControl.setSelected(at: 1, animated: true)
+//            AppConfigSettings.shared.taskIndex = 1
+//            self.tableView.mj_header.beginRefreshing()
+//        }
     }
     
 }

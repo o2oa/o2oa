@@ -118,6 +118,7 @@
 		B13A011C2369315100025F3B /* CreateTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011A2369315100025F3B /* CreateTables.swift */; };
 		B13A011E2369319300025F3B /* O2RunTrackFullData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011D2369319300025F3B /* O2RunTrackFullData.swift */; };
 		B13A0120236935BC00025F3B /* O2CloudFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */; };
+		B13F7EA924DA9C0C00733882 /* IdentitySelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B13F7EA824DA9C0C00733882 /* IdentitySelectView.swift */; };
 		B142B081230FB56400E7D127 /* MimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B080230FB56400E7D127 /* MimeType.swift */; };
 		B142B083230FB58B00E7D127 /* Swime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B142B082230FB58B00E7D127 /* Swime.swift */; };
 		B1489B1C248E0F4D009EE9FD /* IMChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */; };
@@ -263,6 +264,7 @@
 		B1E95F4E2373DDC4004876B7 /* ZoomImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E95F4D2373DDC4004876B7 /* ZoomImageView.swift */; };
 		B1E95F7B23750CC2004876B7 /* CloudFilePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E95F7A23750CC2004876B7 /* CloudFilePreviewController.swift */; };
 		B1E95FA72375155F004876B7 /* CloudFileBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */; };
+		B1EA1A6724DA9BDD00EDCB3A /* IdentitySelectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B1EA1A6624DA9BDD00EDCB3A /* IdentitySelectView.xib */; };
 		B1EE2CCE2281729400842F48 /* QDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCD2281729400842F48 /* QDatePicker.swift */; };
 		B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */; };
 		B1F6CDBE24A88D26005CB1E0 /* BBSViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */; };
@@ -1450,6 +1452,7 @@
 		B13A011A2369315100025F3B /* CreateTables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateTables.swift; sourceTree = "<group>"; };
 		B13A011D2369319300025F3B /* O2RunTrackFullData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2RunTrackFullData.swift; sourceTree = "<group>"; };
 		B13A011F236935BC00025F3B /* O2CloudFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2CloudFileInfo.swift; sourceTree = "<group>"; };
+		B13F7EA824DA9C0C00733882 /* IdentitySelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentitySelectView.swift; sourceTree = "<group>"; };
 		B142B080230FB56400E7D127 /* MimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MimeType.swift; sourceTree = "<group>"; };
 		B142B082230FB58B00E7D127 /* Swime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Swime.swift; sourceTree = "<group>"; };
 		B1489B1A248E0F4D009EE9FD /* IMChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMChatViewController.swift; sourceTree = "<group>"; };
@@ -1609,6 +1612,7 @@
 		B1E95F4D2373DDC4004876B7 /* ZoomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomImageView.swift; sourceTree = "<group>"; };
 		B1E95F7A23750CC2004876B7 /* CloudFilePreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFilePreviewController.swift; sourceTree = "<group>"; };
 		B1E95FA62375155F004876B7 /* CloudFileBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileBaseVC.swift; sourceTree = "<group>"; };
+		B1EA1A6624DA9BDD00EDCB3A /* IdentitySelectView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IdentitySelectView.xib; sourceTree = "<group>"; };
 		B1EE2CCD2281729400842F48 /* QDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QDatePicker.swift; sourceTree = "<group>"; };
 		B1EE2CCF2281771600842F48 /* O2JsApiUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2JsApiUtil.swift; sourceTree = "<group>"; };
 		B1F6CDBD24A88D26005CB1E0 /* BBSViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBSViewModel.swift; sourceTree = "<group>"; };
@@ -4418,6 +4422,8 @@
 				E4BF45DC1E751399008B52F0 /* NewMainAppTableViewCell.swift */,
 				E4BF45DE1E7514A9008B52F0 /* NewMainItemTableViewCell.swift */,
 				E496E89D207314B100C68EEE /* NavView.swift */,
+				B1EA1A6624DA9BDD00EDCB3A /* IdentitySelectView.xib */,
+				B13F7EA824DA9C0C00733882 /* IdentitySelectView.swift */,
 			);
 			path = v;
 			sourceTree = "<group>";
@@ -5780,6 +5786,7 @@
 				E46E6CB11DD41F5D00AB7561 /* ZSSunorderedlist.png in Resources */,
 				E40E246D20B68AF6009F8BE7 /* OOAttandanceTotalHeaderView.xib in Resources */,
 				B1489CB724935104009EE9FD /* IMInstantMessageViewController.xib in Resources */,
+				B1EA1A6724DA9BDD00EDCB3A /* IdentitySelectView.xib in Resources */,
 				E4C24C1720844F5200E426B0 /* yh_image_no_picked@3x.png in Resources */,
 				E46E6C7E1DD41F5D00AB7561 /* ZSSh5@2x.png in Resources */,
 				E46E6C871DD41F5D00AB7561 /* ZSSindent.png in Resources */,
@@ -6480,6 +6487,7 @@
 				B12FD1EB2283D62B00E636BA /* O2ThemeManager.swift in Sources */,
 				09E02E891F16319600579887 /* Fetch.swift in Sources */,
 				09E02E851F16319600579887 /* CryptoSwiftMD5.swift in Sources */,
+				B13F7EA924DA9C0C00733882 /* IdentitySelectView.swift in Sources */,
 				E4C24BAF20844F3C00E426B0 /* JCRemindListViewController.swift in Sources */,
 				E4CB27871E793AE6004A7ACB /* ZonePickerView.swift in Sources */,
 				E4B69728207602A40062F6E8 /* OOMoyaProvider.swift in Sources */,
