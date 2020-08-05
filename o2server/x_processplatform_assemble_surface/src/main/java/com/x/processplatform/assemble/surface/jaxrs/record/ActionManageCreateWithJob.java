@@ -48,7 +48,7 @@ class ActionManageCreateWithJob extends BaseAction {
 			}
 		}
 		WoId resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("job", job), wi, job)
+				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("record", "job", job), wi, job)
 				.getData(WoId.class);
 		Wo wo = new Wo();
 		wo.setId(resp.getId());
