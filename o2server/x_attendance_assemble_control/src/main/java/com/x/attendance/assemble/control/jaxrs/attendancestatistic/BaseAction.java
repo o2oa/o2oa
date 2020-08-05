@@ -5,19 +5,23 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
 import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
 import com.x.attendance.assemble.control.service.UserManagerService;
+import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class BaseAction extends StandardJaxrsAction {
 	
 	protected Logger logger = LoggerFactory.getLogger( BaseAction.class );
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected AttendanceStatisticServiceAdv attendanceStatisticServiceAdv = new AttendanceStatisticServiceAdv();
+	protected AttendanceEmployeeConfigServiceAdv attendanceEmployeeConfigServiceAdv = new AttendanceEmployeeConfigServiceAdv();
 	
 	// 根据组织递归查询下级组织
 	protected List<String> getUnitNameList( String unitName, List<String> unitNameList ) throws Exception {
@@ -106,6 +110,58 @@ public class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return unitNameList;
+	}
+	
+	/**
+	 * 获取不需要考勤的组织
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnUnitNameList() throws Exception {
+		List<String> unUnitNameList = new ArrayList<String>();
+
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String unitName = attendanceEmployeeConfig.getUnitName();
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isEmpty(employeeName) && StringUtils.isNotEmpty(unitName)){
+					unUnitNameList.add(unitName);
+					List<String> tempUnitNameList = userManagerService.listSubUnitNameWithParent(unitName);
+					if(ListTools.isNotEmpty(tempUnitNameList)){
+						for(String tempUnit:tempUnitNameList){
+							if(!ListTools.contains(unUnitNameList, tempUnit)){
+								unUnitNameList.add(tempUnit);
+							}
+						}
+					}
+				}
+			} 
+		}
+		return unUnitNameList;
+	}
+	
+	/**
+	 * 获取不需要考勤的人员
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnPersonNameList() throws Exception {
+		List<String> personNameList = new ArrayList<String>();
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isNotEmpty(employeeName) && !ListTools.contains(personNameList, employeeName)){
+					personNameList.add(employeeName);
+				}
+			}
+		}
+		return personNameList;
 	}
 
 }
