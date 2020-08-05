@@ -3462,7 +3462,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
-                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        _self.app.notice("request json error: " + errorText, "error");
                         if (_self.mask) {
                             _self.mask.hide();
                             _self.mask = null;
@@ -3498,7 +3498,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
-                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        _self.app.notice("request json error: " + errorText, "error");
                         if (_self.mask) {
                             _self.mask.hide();
                             _self.mask = null;
