@@ -1520,7 +1520,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (layout.mobile) this.doublePageAction.hide();
 
 
-
         this.zoomActionArea =  new Element("div", {"styles": {"float": "right", "margin-right": "10px"}}).inject(this.toolbarNode);
         if (this.json.isScale !== "y") this.zoomActionArea.hide();
         this.zoomAddAction = new Element("div", {
