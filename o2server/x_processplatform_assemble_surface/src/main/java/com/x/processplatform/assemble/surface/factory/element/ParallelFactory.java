@@ -17,12 +17,12 @@ public class ParallelFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Parallel pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Parallel.class );
 	}
 
 	public List<Parallel> listWithProcess(Process process) throws Exception {
-		List<Parallel> list = this.listWithProcess(Parallel.class, process);
-		return list;
+		return this.listWithProcess(Parallel.class, process);
 	}
 }

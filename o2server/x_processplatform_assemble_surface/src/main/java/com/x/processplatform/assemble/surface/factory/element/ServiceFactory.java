@@ -17,12 +17,12 @@ public class ServiceFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Service pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
-		return this.pick(flag, Service.class );
+		return this.pick(flag, Service.class);
 	}
 
 	public List<Service> listWithProcess(Process process) throws Exception {
-		List<Service> list = this.listWithProcess(Service.class, process);
-		return list;
+		return this.listWithProcess(Service.class, process);
 	}
 }

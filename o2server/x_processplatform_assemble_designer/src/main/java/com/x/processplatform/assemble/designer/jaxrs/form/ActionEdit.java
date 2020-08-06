@@ -12,7 +12,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -23,7 +23,6 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.FormVersion;
-import com.x.processplatform.core.entity.element.ScriptVersion;
 
 class ActionEdit extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -65,7 +64,7 @@ class ActionEdit extends BaseAction {
 			form.setLastUpdateTime(new Date());
 			emc.check(form, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Form.class);
+			CacheManager.notify(Form.class);
 			/* 保存历史版本 */
 			ThisApplication.formVersionQueue.send(new FormVersion(form.getId(), jsonElement));
 			Wo wo = new Wo();

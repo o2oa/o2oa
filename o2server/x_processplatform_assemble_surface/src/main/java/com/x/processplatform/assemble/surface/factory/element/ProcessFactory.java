@@ -3,12 +3,22 @@ package com.x.processplatform.assemble.surface.factory.element;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -17,139 +27,86 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import net.sf.ehcache.Element;
-
 public class ProcessFactory extends ElementFactory {
 
 	public ProcessFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);
-		this.cache = ApplicationCache.instance().getCache(Process.class);
 	}
 
 	public List<Process> pick(List<String> flags) throws Exception {
-		List<Process> list = new ArrayList<>();
-		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Process) element.getObjectValue());
-				}
-			} else {
-				Process o = this.pickObject(str);
-				cache.put(new Element(str, o));
-				if (null != o) {
-					list.add(o);
-				}
-			}
-		}
-		return list;
+		return this.pick(flags, Process.class);
 	}
 
 	public Process pick(String flag) throws Exception {
-		if (StringUtils.isEmpty(flag)) {
-			return null;
-		}
-		Process o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Process) element.getObjectValue();
-			}
-		} else {
-			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
-		}
-		return o;
+		return this.pick(flag, Process.class);
 	}
 
 	public Process pick(Application application, String flag) throws Exception {
-		if ((null == application) || StringUtils.isEmpty(flag)) {
-			return null;
-		}
-		Process o = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(application.getId(), flag);
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Process) element.getObjectValue();
-			}
-		} else {
-			o = this.restrictProcess(application.getId(), flag);
-			if (null != o) {
-				this.entityManagerContainer().get(Process.class).detach(o);
-				cache.put(new Element(cacheKey, o));
-			}
-		}
-		return o;
+		return this.pick(application, flag, Process.class);
 	}
 
 	public Process pickEnabled(String application, String edition) throws Exception {
 		if (StringUtils.isEmpty(application) || StringUtils.isEmpty(edition)) {
 			return null;
 		}
+		CacheCategory cacheCategory = new CacheCategory(Process.class);
+		CacheKey cacheKey = new CacheKey(application, edition);
 		Process o = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(application, "e:" + edition);
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Process) element.getObjectValue();
-			}
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			o = (Process) optional.get();
 		} else {
 			o = this.getEnabledProcess(application, edition);
 			if (null != o) {
 				this.entityManagerContainer().get(Process.class).detach(o);
-				cache.put(new Element(cacheKey, o));
+				CacheManager.put(cacheCategory, cacheKey, o);
 			}
 		}
 		return o;
 	}
 
-	private Process pickObject(String flag) throws Exception {
-		Process o = this.business().entityManagerContainer().flag(flag, Process.class);
-		if (o != null) {
-			this.entityManagerContainer().get(Process.class).detach(o);
-		}
-		if (null == o) {
-			EntityManager em = this.entityManagerContainer().get(Process.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Process> cq = cb.createQuery(Process.class);
-			Root<Process> root = cq.from(Process.class);
-			Predicate p = cb.equal(root.get(Process_.name), flag);
-			List<Process> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
-			if (os.size() == 1) {
-				o = os.get(0);
-				em.detach(o);
-			}
-		}
-		return o;
-	}
+//	private Process pickObject(String flag) throws Exception {
+//		Process o = this.business().entityManagerContainer().flag(flag, Process.class);
+//		if (o != null) {
+//			this.entityManagerContainer().get(Process.class).detach(o);
+//		}
+//		if (null == o) {
+//			EntityManager em = this.entityManagerContainer().get(Process.class);
+//			CriteriaBuilder cb = em.getCriteriaBuilder();
+//			CriteriaQuery<Process> cq = cb.createQuery(Process.class);
+//			Root<Process> root = cq.from(Process.class);
+//			Predicate p = cb.equal(root.get(Process_.name), flag);
+//			List<Process> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+//			if (os.size() == 1) {
+//				o = os.get(0);
+//				em.detach(o);
+//			}
+//		}
+//		return o;
+//	}
 
-	public Process pickObject(Application application, String flag) throws Exception {
-		if (null == application || StringUtils.isEmpty(flag)) {
-			return null;
-		}
-		Process o = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(Process.class, application.getId(), flag);
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Process) element.getObjectValue();
-			}
-		} else {
-			o = this.restrictProcess(application.getId(), flag);
-			if (null != o) {
-				cache.put(new Element(cacheKey, o));
-			}
-		}
-		return o;
-	}
+//	public Process pickObject(Application application, String flag) throws Exception {
+//		if (null == application || StringUtils.isEmpty(flag)) {
+//			return null;
+//		}
+//		Process o = null;
+//		String cacheKey = ApplicationCache.concreteCacheKey(Process.class, application.getId(), flag);
+//		Element element = cache.get(cacheKey);
+//		if (null != element) {
+//			if (null != element.getObjectValue()) {
+//				o = (Process) element.getObjectValue();
+//			}
+//		} else {
+//			o = this.restrictProcess(application.getId(), flag);
+//			if (null != o) {
+//				cache.put(new Element(cacheKey, o));
+//			}
+//		}
+//		return o;
+//	}
 
 	/* 获取Application下的所有流程 */
 	public List<String> listWithApplication(Application application) throws Exception {
-		List<String> list = new ArrayList<>();
 		EntityManager em = this.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -157,8 +114,7 @@ public class ProcessFactory extends ElementFactory {
 		Predicate p = cb.equal(root.get(Process_.application), application.getId());
 		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
 		cq.select(root.get(Process_.id)).where(p).distinct(true);
-		list = em.createQuery(cq).getResultList();
-		return list;
+		return em.createQuery(cq).getResultList();
 	}
 
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
@@ -217,10 +173,8 @@ public class ProcessFactory extends ElementFactory {
 		List<String> list = new ArrayList<>();
 		for (String str : ids) {
 			Process o = this.pick(str);
-			if (null != o) {
-				if (effectivePerson.isPerson(o.getControllerList())) {
-					list.add(str);
-				}
+			if ((null != o) && (effectivePerson.isPerson(o.getControllerList()))) {
+				list.add(str);
 			}
 		}
 		return list;
