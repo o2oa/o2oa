@@ -37,11 +37,9 @@ class ActionListWithPerson extends BaseAction {
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());
-				System.out.println("!!!!!!!!!!!!!!GET with cache");
 			} else {
 				Wo wo = this.list(business, wi);
 				CacheManager.put(cacheCategory, cacheKey, wo);
-				System.out.println("!!!!!!!!!!!!!!nnnnnnnnnnnnoooooooooooooo cache");
 				result.setData(wo);
 			}
 			return result;
