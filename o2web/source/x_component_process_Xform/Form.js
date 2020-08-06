@@ -2709,7 +2709,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
-            "workHtml": this.app.content.get("html")
+            "workHtml": this.app.content.get("html"),
+            "pageWidth" : 1000
         }, function (json) {
             htmlFormId = json.data.id;
         }.bind(this), null, false);
