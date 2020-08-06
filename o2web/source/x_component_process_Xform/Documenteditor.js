@@ -1224,12 +1224,14 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
     //     return this.fullWidthFlagNode;
     // },
     _printDoc: function(){
+        var scale = this.scale;
         this.toWord(function(data){
             if (this.form.businessData.work && !this.form.businessData.work.completedTime){
                 this.form.workAction.getAttachmentStream(data.id, this.form.businessData.work.id);
             }else{
                 this.form.workAction.getWorkcompletedAttachmentStream(data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
             }
+            this.scaleTo(scale);
         }.bind(this));
     },
     _historyDoc: function(){
@@ -1263,7 +1265,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     _readFiletext: function(){
         //this._returnScale();
-        this.zoom(1);
+        //this.zoom(1);
+        var scale = this.scale;
         if (this.filetextEditor) this.filetextEditor.destroy();
         if (this.filetextScrollNode){
             if (this.reLocationFiletextToolbarFun){
@@ -1284,6 +1287,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
         //this._checkSplitPage(this.pages[0]);
         this._repage();
+        this.scaleTo(scale);
     },
     _editFiletext: function(inline){
         this._returnScale();
@@ -2890,7 +2894,7 @@ debugger;
             if (!toEdit){
                 this._readFiletext();
             }else{
-                this._createEditor();
+                this._createEditor("inline");
             }
         }.bind(this));
     },
