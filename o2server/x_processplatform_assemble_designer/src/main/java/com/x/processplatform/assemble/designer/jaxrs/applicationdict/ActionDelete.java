@@ -5,7 +5,7 @@ import java.util.List;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -37,7 +37,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(ApplicationDict.class);
 			emc.remove(dict, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(ApplicationDict.class);
+			CacheManager.notify(ApplicationDict.class);
 			Wo wo = new Wo();
 			wo.setId(dict.getId());
 			result.setData(wo);
@@ -49,7 +49,7 @@ class ActionDelete extends BaseAction {
 		for (int i = 0; i < ids.size(); i++) {
 			if (i % 100 == 0) {
 				emc.beginTransaction(ApplicationDictItem.class);
-				//emc.beginTransaction(ApplicationDictLobItem.class);
+				// emc.beginTransaction(ApplicationDictLobItem.class);
 			}
 			ApplicationDictItem o = emc.find(ids.get(i), ApplicationDictItem.class);
 			if (null != o) {

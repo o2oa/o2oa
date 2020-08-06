@@ -17,12 +17,12 @@ public class EndFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public End pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, End.class);
 	}
 
 	public List<End> listWithProcess(Process process) throws Exception {
-		List<End> list = this.listWithProcess(End.class, process);
-		return list;
+		return this.listWithProcess(End.class, process);
 	}
 }

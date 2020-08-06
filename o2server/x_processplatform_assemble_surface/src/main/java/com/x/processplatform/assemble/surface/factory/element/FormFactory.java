@@ -19,8 +19,9 @@ public class FormFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Form pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
-		return this.pick(flag, Form.class );
+		return this.pick(flag, Form.class);
 	}
 
 }

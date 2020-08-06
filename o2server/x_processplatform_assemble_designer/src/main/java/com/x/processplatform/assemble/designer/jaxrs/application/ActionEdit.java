@@ -9,7 +9,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -36,7 +36,7 @@ class ActionEdit extends BaseAction {
 			application.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			application.setLastUpdateTime(new Date());
 			emc.commit();
-			ApplicationCache.notify(Application.class);
+			CacheManager.notify(Application.class);
 			Wo wo = new Wo();
 			wo.setId(application.getId());
 			result.setData(wo);

@@ -17,12 +17,12 @@ public class DelayFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Delay pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Delay.class);
 	}
 
 	public List<Delay> listWithProcess(Process process) throws Exception {
-		List<Delay> list = this.listWithProcess(Delay.class, process);
-		return list;
+		return this.listWithProcess(Delay.class, process);
 	}
 }

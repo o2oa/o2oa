@@ -19,7 +19,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 @SuppressWarnings("unchecked")
-public class ApplicationCache extends AbstractApplicationCache {
+public class ApplicationCache111 extends AbstractApplicationCache {
 
 	private NotifyThread notifyThread;
 	private ReceiveThread receiveThread;

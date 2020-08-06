@@ -13,19 +13,19 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Application_;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
-			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
+//	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
+//			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
+	
+	protected CacheCategory cacheCategory= new CacheCategory(BaseAction.class);
 
 	public enum Method {
 		cover, create, ignore;
