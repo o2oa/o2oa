@@ -18,6 +18,7 @@ public class RouteFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Route pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Route.class);
 	}
@@ -34,7 +35,6 @@ public class RouteFactory extends ElementFactory {
 	}
 
 	public List<Route> listWithProcess(Process process) throws Exception {
-		List<Route> list = this.listWithProcess(Route.class, process);
-		return list;
+		return this.listWithProcess(Route.class, process);
 	}
 }

@@ -1,9 +1,10 @@
 package com.x.processplatform.assemble.designer.jaxrs.output;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,8 +27,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapForm;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 import com.x.processplatform.core.entity.element.wrap.WrapScript;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionList extends BaseAction {
 

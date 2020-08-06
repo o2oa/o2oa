@@ -13,7 +13,7 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -64,7 +64,7 @@ class ActionEdit extends BaseAction {
 				emc.persist(o, CheckPersistType.all);
 			}
 			emc.commit();
-			ApplicationCache.notify(ApplicationDict.class);
+			CacheManager.notify(ApplicationDict.class);
 			Wo wo = new Wo();
 			wo.setId(dict.getId());
 			result.setData(wo);
