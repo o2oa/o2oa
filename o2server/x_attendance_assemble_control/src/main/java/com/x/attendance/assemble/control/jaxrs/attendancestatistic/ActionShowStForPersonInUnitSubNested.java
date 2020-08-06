@@ -22,6 +22,8 @@ public class ActionShowStForPersonInUnitSubNested extends BaseAction {
 		List<Wo> wraps = null;
 		List<String> ids = null;
 		List<String> unitNameList = new ArrayList<String>();
+		List<String> unUnitNameList = new ArrayList<String>();
+		List<String> personNameList = new ArrayList<String>();
 		List<StatisticPersonForMonth> statisticPersonForMonth_list = null;
 		Boolean check = true;
 		if ( "(0)".equals( year ) ) {
@@ -52,10 +54,17 @@ public class ActionShowStForPersonInUnitSubNested extends BaseAction {
 				unitNameList = new ArrayList<>();
 			}
 			unitNameList.add( name );
+			unUnitNameList = getUnUnitNameList();
+			personNameList = getUnPersonNameList();
+			System.out.println("ActionShowStForPersonInUnitSubNested____unitNameList="+unitNameList);
+			System.out.println("ActionShowStForPersonInUnitSubNested____unUnitNameList="+unUnitNameList);
+			System.out.println("ActionShowStForPersonInUnitSubNested____personNameList="+personNameList);
 		}
 		if( check ){
 			try {
-				ids = attendanceStatisticServiceAdv.listPersonForMonthByUnitYearAndMonth( unitNameList, year, month);
+				//ids = attendanceStatisticServiceAdv.listPersonForMonthByUnitYearAndMonth( unitNameList, year, month);
+				ids = attendanceStatisticServiceAdv.listPersonForMonthByUnitYearMonthAndUn( unitNameList, unUnitNameList,personNameList,year, month);
+				System.out.println("ActionShowStForPersonInUnitSubNested____ids="+ids.size());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionAttendanceStatisticProcess(e, 
