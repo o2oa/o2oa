@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,12 +12,25 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.Draft;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.SerialNumber;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Agent;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Cancel;
@@ -877,22 +889,22 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	void cacheNotify() throws Exception {
-		ApplicationCache.notify(Process.class);
-		ApplicationCache.notify(Agent.class);
-		ApplicationCache.notify(Begin.class);
-		ApplicationCache.notify(Cancel.class);
-		ApplicationCache.notify(Choice.class);
-		ApplicationCache.notify(Delay.class);
-		ApplicationCache.notify(Embed.class);
-		ApplicationCache.notify(End.class);
-		ApplicationCache.notify(Invoke.class);
-		ApplicationCache.notify(Manual.class);
-		ApplicationCache.notify(Merge.class);
-		ApplicationCache.notify(Message.class);
-		ApplicationCache.notify(Parallel.class);
-		ApplicationCache.notify(Route.class);
-		ApplicationCache.notify(Service.class);
-		ApplicationCache.notify(Split.class);
+		CacheManager.notify(Process.class);
+		CacheManager.notify(Agent.class);
+		CacheManager.notify(Begin.class);
+		CacheManager.notify(Cancel.class);
+		CacheManager.notify(Choice.class);
+		CacheManager.notify(Delay.class);
+		CacheManager.notify(Embed.class);
+		CacheManager.notify(End.class);
+		CacheManager.notify(Invoke.class);
+		CacheManager.notify(Manual.class);
+		CacheManager.notify(Merge.class);
+		CacheManager.notify(Message.class);
+		CacheManager.notify(Parallel.class);
+		CacheManager.notify(Route.class);
+		CacheManager.notify(Service.class);
+		CacheManager.notify(Split.class);
 	}
 
 	// public static class WiAgent extends Agent {

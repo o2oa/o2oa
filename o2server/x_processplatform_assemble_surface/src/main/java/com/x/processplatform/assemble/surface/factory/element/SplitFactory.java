@@ -17,12 +17,12 @@ public class SplitFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Split pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
-		return this.pick(flag, Split.class );
+		return this.pick(flag, Split.class);
 	}
 
 	public List<Split> listWithProcess(Process process) throws Exception {
-		List<Split> list = this.listWithProcess(Split.class, process);
-		return list;
+		return this.listWithProcess(Split.class, process);
 	}
 }

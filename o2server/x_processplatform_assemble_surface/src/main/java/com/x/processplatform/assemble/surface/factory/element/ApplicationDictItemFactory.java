@@ -55,7 +55,8 @@ public class ApplicationDictItemFactory extends AbstractFactory {
 		Root<ApplicationDictItem> root = cq.from(ApplicationDictItem.class);
 		Predicate p = cb.equal(root.get(ApplicationDictItem_.bundle), applicationDict);
 		if (StringUtils.isEmpty(path0)) {
-			p = cb.and(p, cb.or(cb.equal(root.get(ApplicationDictItem_.path0), path0), cb.isNull(root.get(ApplicationDictItem_.path0))));
+			p = cb.and(p, cb.or(cb.equal(root.get(ApplicationDictItem_.path0), path0),
+					cb.isNull(root.get(ApplicationDictItem_.path0))));
 		} else {
 			p = cb.and(p, cb.equal(root.get(ApplicationDictItem_.path0), path0));
 		}
@@ -68,7 +69,7 @@ public class ApplicationDictItemFactory extends AbstractFactory {
 		p = cb.and(p, cb.equal(root.get("path7"), path7));
 		cq.select(root).where(p);
 		List<ApplicationDictItem> list = em.createQuery(cq).getResultList();
-		if (list.size() == 0) {
+		if (list.isEmpty()) {
 			return null;
 		}
 		if (list.size() == 1) {
@@ -94,7 +95,7 @@ public class ApplicationDictItemFactory extends AbstractFactory {
 		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get("path" + paths.length + "Location")));
 		List<ApplicationDictItem> list = em.createQuery(cq).setMaxResults(1).getResultList();
-		if (list.size() == 0) {
+		if (list.isEmpty()) {
 			return null;
 		} else {
 			return list.get(0).get("path" + paths.length + "Location", Integer.class);

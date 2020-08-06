@@ -26,14 +26,6 @@ public interface Cache {
 
 	public abstract void notify(Class<?> clz, List<Object> keys) throws Exception;
 
-	public static CacheCategory cacheCategory(Object... parts) {
-		return new CacheCategory(parts);
-	}
-
-	public static CacheKey cacheKey(Object... parts) {
-		return new CacheKey(parts);
-	}
-
 	public static class CacheCategory {
 
 		public static final String SPLIT = "#";

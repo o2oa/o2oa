@@ -12,15 +12,12 @@ public class AgentFactory extends ElementFactory {
 		super(abstractBusiness);
 	}
 
- 
-
 	public Agent pick(String flag) throws Exception {
 		return this.pick(flag, Agent.class);
 	}
 
 	public List<Agent> listWithProcess(Process process) throws Exception {
-		List<Agent> list = this.listWithProcess(Agent.class, process);
-		return list;
+		return this.listWithProcess(Agent.class, process);
 	}
 
 }
