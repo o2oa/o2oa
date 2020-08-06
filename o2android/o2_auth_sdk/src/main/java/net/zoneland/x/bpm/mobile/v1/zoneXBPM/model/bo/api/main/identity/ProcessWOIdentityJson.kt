@@ -13,5 +13,7 @@ data class ProcessWOIdentityJson(
         var unit: String = "",
         var unitName: String = "",
         var unitLevel: Int = 0,
-        var unitLevelName: String = ""
+        var unitLevelName: String = "",
+        //是否主身份
+        var major: Boolean = false
 )
