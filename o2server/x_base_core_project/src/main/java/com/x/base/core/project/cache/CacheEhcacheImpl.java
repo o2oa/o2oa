@@ -68,7 +68,9 @@ public class CacheEhcacheImpl implements Cache {
 
 	@Override
 	public void put(CacheCategory category, CacheKey key, Object o) throws Exception {
-		this.getCache(category.toString()).put(new Element(key.toString(), o));
+		if (null != o) {
+			this.getCache(category.toString()).put(new Element(key.toString(), o));
+		}
 	}
 
 	@Override

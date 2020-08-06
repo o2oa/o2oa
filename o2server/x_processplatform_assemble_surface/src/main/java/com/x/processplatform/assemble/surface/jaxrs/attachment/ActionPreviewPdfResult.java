@@ -1,8 +1,13 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.ActionLogger;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -10,19 +15,19 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-import net.sf.ehcache.Element;
-
 class ActionPreviewPdfResult extends BaseAction {
 
 	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionPreviewPdfResult.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
-		Element element = cachePreviewPdf.get(flag);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
-		if (null != element && null != element.getObjectValue()) {
-			PreviewPdfResultObject obj = (PreviewPdfResultObject) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(PreviewPdfResultObject.class);
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			PreviewPdfResultObject obj = (PreviewPdfResultObject) optional.get();
 			if (!StringUtils.equals(effectivePerson.getDistinguishedName(), obj.getPerson())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
