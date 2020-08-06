@@ -95,6 +95,7 @@ public class ActionQueryGetControl extends BaseAction {
 		if ((null != element) && (null != element.getObjectValue())) {
 			wo = (Wo) element.getObjectValue();
 			result.setData(wo);
+			woControl = wo.getControl();
 		} else {			
 			if (check) {
 				try {					
