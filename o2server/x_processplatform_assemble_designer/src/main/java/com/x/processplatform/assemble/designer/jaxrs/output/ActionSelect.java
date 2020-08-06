@@ -14,6 +14,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -67,8 +69,6 @@ import com.x.processplatform.core.entity.element.wrap.WrapScript;
 import com.x.processplatform.core.entity.element.wrap.WrapService;
 import com.x.processplatform.core.entity.element.wrap.WrapSplit;
 
-import net.sf.ehcache.Element;
-
 class ActionSelect extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String applicationFlag, JsonElement jsonElement)
@@ -90,7 +90,8 @@ class ActionSelect extends BaseAction {
 			outputCacheObject.setName(application.getName());
 			outputCacheObject.setApplication(wrapApplication);
 			String flag = StringTools.uniqueToken();
-			cache.put(new Element(flag, outputCacheObject));
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(cacheCategory, cacheKey, outputCacheObject);
 			Wo wo = gson.fromJson(gson.toJson(wrapApplication), Wo.class);
 			wo.setFlag(flag);
 			result.setData(wo);

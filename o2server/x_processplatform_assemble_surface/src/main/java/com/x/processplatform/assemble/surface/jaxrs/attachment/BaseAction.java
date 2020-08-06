@@ -1,28 +1,26 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-
-import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
-import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Attachment_;
-import com.x.processplatform.core.entity.content.Work;
-import net.sf.ehcache.Ehcache;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.StringTools;
+import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Attachment_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -49,7 +47,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	public static Ehcache cache = ApplicationCache.instance().getCache(CacheResultObject.class);
+	// public static Ehcache cache =
+	// ApplicationCache.instance().getCache(CacheResultObject.class);
 
 	public static class CacheResultObject extends GsonPropertyObject {
 
@@ -83,7 +82,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	public static Ehcache cachePreviewPdf = ApplicationCache.instance().getCache(PreviewPdfResultObject.class);
+	// public static Ehcache cachePreviewPdf =
+	// ApplicationCache.instance().getCache(PreviewPdfResultObject.class);
 
 	public static class PreviewPdfResultObject extends GsonPropertyObject {
 
@@ -117,7 +117,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	public static Ehcache cachePreviewImage = ApplicationCache.instance().getCache(PreviewImageResultObject.class);
+	// public static Ehcache cachePreviewImage =
+	// ApplicationCache.instance().getCache(PreviewImageResultObject.class);
 
 	public static class PreviewImageResultObject extends GsonPropertyObject {
 
@@ -172,14 +173,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return list.get(0);
 	}
 
-	public boolean read(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
+	public boolean read(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
+			List<String> units) throws Exception {
 		boolean value = false;
-		if(effectivePerson.isManager()) {
+		if (effectivePerson.isManager()) {
 			value = true;
-		}else if (effectivePerson.isPerson(attachment.getPerson())) {
+		} else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
-		} else if (ListTools.isEmpty(attachment.getReadIdentityList()) && ListTools.isEmpty(attachment.getReadUnitList())) {
+		} else if (ListTools.isEmpty(attachment.getReadIdentityList())
+				&& ListTools.isEmpty(attachment.getReadUnitList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, attachment.getReadIdentityList())
@@ -190,14 +192,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return value;
 	}
 
-	public boolean edit(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
+	public boolean edit(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
+			List<String> units) throws Exception {
 		boolean value = false;
-		if(effectivePerson.isManager()) {
+		if (effectivePerson.isManager()) {
 			value = true;
-		}else if (effectivePerson.isPerson(attachment.getPerson())) {
+		} else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
-		} else if (ListTools.isEmpty(attachment.getEditIdentityList()) && ListTools.isEmpty(attachment.getEditUnitList())) {
+		} else if (ListTools.isEmpty(attachment.getEditIdentityList())
+				&& ListTools.isEmpty(attachment.getEditUnitList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, attachment.getEditIdentityList())
@@ -208,14 +211,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return value;
 	}
 
-	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
+	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
+			List<String> units) throws Exception {
 		boolean value = false;
-		if(effectivePerson.isManager()) {
+		if (effectivePerson.isManager()) {
 			value = true;
-		}else if (effectivePerson.isPerson(attachment.getPerson())) {
+		} else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
-		} else if (ListTools.isEmpty(attachment.getControllerUnitList()) && ListTools.isEmpty(attachment.getControllerIdentityList())) {
+		} else if (ListTools.isEmpty(attachment.getControllerUnitList())
+				&& ListTools.isEmpty(attachment.getControllerIdentityList())) {
 			value = true;
 		} else {
 			if (ListTools.containsAny(identities, attachment.getControllerIdentityList())

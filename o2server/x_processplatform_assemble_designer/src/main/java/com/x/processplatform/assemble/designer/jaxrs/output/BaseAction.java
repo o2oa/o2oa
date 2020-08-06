@@ -1,14 +1,13 @@
 package com.x.processplatform.assemble.designer.jaxrs.output;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache cache = ApplicationCache.instance().getCache(OutputCacheObject.class);
+//	protected Ehcache cache = ApplicationCache.instance().getCache(OutputCacheObject.class);
+	protected CacheCategory cacheCategory = new CacheCategory(OutputCacheObject.class);
 
 	public static class OutputCacheObject {
 

@@ -17,12 +17,12 @@ public class ChoiceFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Choice pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Choice.class);
 	}
 
 	public List<Choice> listWithProcess(Process process) throws Exception {
-		List<Choice> list = this.listWithProcess(Choice.class, process);
-		return list;
+		return this.listWithProcess(Choice.class, process);
 	}
 }

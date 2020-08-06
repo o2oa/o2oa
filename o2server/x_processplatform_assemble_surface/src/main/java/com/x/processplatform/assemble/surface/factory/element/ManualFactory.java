@@ -17,12 +17,12 @@ public class ManualFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Manual pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Manual.class);
 	}
 
 	public List<Manual> listWithProcess(Process process) throws Exception {
-		List<Manual> list = this.listWithProcess(Manual.class, process);
-		return list;
+		return this.listWithProcess(Manual.class, process);
 	}
 }

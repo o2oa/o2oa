@@ -17,12 +17,12 @@ public class MessageFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Message pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Message.class );
 	}
 
 	public List<Message> listWithProcess(Process process) throws Exception {
-		List<Message> list = this.listWithProcess(Message.class, process);
-		return list;
+		return this.listWithProcess(Message.class, process);
 	}
 }

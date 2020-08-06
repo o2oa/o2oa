@@ -5,6 +5,9 @@ import org.apache.commons.io.FilenameUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.ActionLogger;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -15,11 +18,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkCompletedControl;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
-
-import net.sf.ehcache.Element;
 
 class ActionPreviewImage extends BaseAction {
 
@@ -47,10 +46,12 @@ class ActionPreviewImage extends BaseAction {
 		obj.setBytes(bytes);
 		obj.setName(FilenameUtils.getBaseName(attachment.getName()) + ".png");
 
-		String cacheKey = StringTools.uniqueToken();
-		cachePreviewImage.put(new Element(cacheKey, obj));
+		String key = StringTools.uniqueToken();
+		CacheCategory cacheCategory = new CacheCategory(PreviewImageResultObject.class);
+		CacheKey cacheKey = new CacheKey(key);
+		CacheManager.put(cacheCategory, cacheKey, obj);
 		Wo wo = new Wo();
-		wo.setId(cacheKey);
+		wo.setId(key);
 		result.setData(wo);
 		return result;
 	}
