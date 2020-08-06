@@ -72,13 +72,13 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private byte[] workConvert(EffectivePerson effectivePerson, Wi wi, String application, String process,
-			String activity) throws Exception {
+			String activity, String job) throws Exception {
 		byte[] bytes = null;
 		Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
 				.bind(application, process, activity);
 
 		if (event.isPresent()) {
-			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get());
+			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get(), job);
 		} else {
 			if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
 				bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
@@ -89,12 +89,13 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event)
+	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event, String job)
 			throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setContent(content);
 		req.setPerson(effectivePerson.getDistinguishedName());
+		req.setJob(job);
 		if (StringUtils.isNotEmpty(event.getCustom())) {
 			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
 		} else {
@@ -103,13 +104,13 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process)
+	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process, String job)
 			throws Exception {
 		byte[] bytes = null;
 		Optional<WorkCompletedExtensionEvent> event = Config.processPlatform().getExtensionEvents()
 				.getWorkCompletedDocToWordEvents().bind(application, process);
 		if (event.isPresent()) {
-			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get());
+			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get(), job);
 		} else {
 			if (StringUtils.equals(ProcessPlatform.DOCTOWORDTYPE_CLOUD, Config.processPlatform().getDocToWordType())) {
 				bytes = DocumentTools.docToWord(wi.getFileName(), wi.getContent());
@@ -121,11 +122,12 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private byte[] workCompletedExtensionService(EffectivePerson effectivePerson, String content,
-			WorkCompletedExtensionEvent event) throws Exception {
+			WorkCompletedExtensionEvent event, String job) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setContent(content);
 		req.setPerson(effectivePerson.getDistinguishedName());
+		req.setJob(job);
 		if (StringUtils.isNotEmpty(event.getCustom())) {
 			bytes = ThisApplication.context().applications().postQueryBinary(event.getCustom(), event.getUrl(), req);
 		} else {
@@ -137,7 +139,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 	private Wo work(EffectivePerson effectivePerson, Wi wi, Work work) throws Exception {
 		String person = effectivePerson.isCipher() ? work.getCreatorPerson() : effectivePerson.getDistinguishedName();
 		byte[] bytes = this.workConvert(effectivePerson, wi, work.getApplication(), work.getProcess(),
-				work.getActivity());
+				work.getActivity(), work.getJob());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME, work.getJob());
 			Attachment attachment = null;
@@ -190,7 +192,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		String person = effectivePerson.isCipher() ? workCompleted.getCreatorPerson()
 				: effectivePerson.getDistinguishedName();
 		byte[] bytes = this.workCompletedConvert(effectivePerson, wi, workCompleted.getApplication(),
-				workCompleted.getProcess());
+				workCompleted.getProcess(), workCompleted.getJob());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			List<Attachment> attachments = emc.listEqual(Attachment.class, Attachment.job_FIELDNAME,
 					workCompleted.getJob());
@@ -292,6 +294,8 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
 		private String content;
 
+		private String job;
+
 		public String getPerson() {
 			return person;
 		}
@@ -306,6 +310,14 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
 		public void setContent(String content) {
 			this.content = content;
+		}
+
+		public String getJob() {
+			return job;
+		}
+
+		public void setJob(String job) {
+			this.job = job;
 		}
 	}
 
