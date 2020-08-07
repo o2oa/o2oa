@@ -68,6 +68,7 @@ class BaseAction extends StandardJaxrsAction {
 		t.setQiyeweixinId(person.getQiyeweixinId());
 		t.setDingdingId(person.getDingdingId());
 		t.setZhengwuDingdingId(person.getZhengwuDingdingId());
+		t.setWeLinkId(person.getWeLinkId());
 		return t;
 
 	}

@@ -33,6 +33,8 @@ class ActionEnableType extends BaseAction {
 				wo.setValue(Mass.TYPE_DINGDING);
 			} else if (Config.zhengwuDingding().getEnable()) {
 				wo.setValue(Mass.TYPE_ZHENGWUDINGDING);
+			} else if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
+				wo.setValue(Mass.TYPE_WELINK);
 			} else {
 				wo.setValue("");
 			}
