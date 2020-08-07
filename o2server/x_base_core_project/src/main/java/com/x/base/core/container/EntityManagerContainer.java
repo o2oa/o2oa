@@ -83,70 +83,70 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			// Object object = jpa.get(field.getName());
 			Object object = FieldUtils.readField(field, jpa, true);
 			switch (fieldType) {
-				case stringValue:
-					this.persistChecker.stringValue.check(field, null == object ? null : Objects.toString(object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case stringValueList:
-					this.persistChecker.stringValueList.check(field, null == object ? null : (List<String>) object, jpa,
-							checkPersist, checkPersistType);
-					break;
-				case dateValue:
-					this.persistChecker.dateValue.check(field, (null == object ? null : (Date) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case dateValueList:
-					this.persistChecker.dateValueList.check(field, (null == object ? null : (List<Date>) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case booleanValue:
-					this.persistChecker.booleanValue.check(field, (null == object ? null : (Boolean) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case booleanValueList:
-					this.persistChecker.booleanValueList.check(field, (null == object ? null : (List<Boolean>) object),
-							jpa, checkPersist, checkPersistType);
-					break;
-				case integerValue:
-					this.persistChecker.integerValue.check(field, (null == object ? null : (Integer) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case integerValueList:
-					this.persistChecker.integerValueList.check(field, (null == object ? null : (List<Integer>) object),
-							jpa, checkPersist, checkPersistType);
-					break;
-				case doubleValue:
-					this.persistChecker.doubleValue.check(field, (null == object ? null : (Double) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case doubleValueList:
-					this.persistChecker.doubleValueList.check(field, (null == object ? null : (List<Double>) object),
-							jpa, checkPersist, checkPersistType);
-					break;
-				case longValue:
-					this.persistChecker.longValue.check(field, (null == object ? null : (Long) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case longValueList:
-					this.persistChecker.longValueList.check(field, (null == object ? null : (List<Long>) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case floatValue:
-					this.persistChecker.floatValue.check(field, (null == object ? null : (Float) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case floatValueList:
-					this.persistChecker.floatValueList.check(field, (null == object ? null : (List<Float>) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case byteValueArray:
-					this.persistChecker.byteValueArray.check(field, (null == object ? null : (byte[]) object), jpa,
-							checkPersist, checkPersistType);
-					break;
-				case enumValue:
-					break;
-				default:
-					break;
+			case stringValue:
+				this.persistChecker.stringValue.check(field, null == object ? null : Objects.toString(object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case stringValueList:
+				this.persistChecker.stringValueList.check(field, null == object ? null : (List<String>) object, jpa,
+						checkPersist, checkPersistType);
+				break;
+			case dateValue:
+				this.persistChecker.dateValue.check(field, (null == object ? null : (Date) object), jpa, checkPersist,
+						checkPersistType);
+				break;
+			case dateValueList:
+				this.persistChecker.dateValueList.check(field, (null == object ? null : (List<Date>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case booleanValue:
+				this.persistChecker.booleanValue.check(field, (null == object ? null : (Boolean) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case booleanValueList:
+				this.persistChecker.booleanValueList.check(field, (null == object ? null : (List<Boolean>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case integerValue:
+				this.persistChecker.integerValue.check(field, (null == object ? null : (Integer) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case integerValueList:
+				this.persistChecker.integerValueList.check(field, (null == object ? null : (List<Integer>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case doubleValue:
+				this.persistChecker.doubleValue.check(field, (null == object ? null : (Double) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case doubleValueList:
+				this.persistChecker.doubleValueList.check(field, (null == object ? null : (List<Double>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case longValue:
+				this.persistChecker.longValue.check(field, (null == object ? null : (Long) object), jpa, checkPersist,
+						checkPersistType);
+				break;
+			case longValueList:
+				this.persistChecker.longValueList.check(field, (null == object ? null : (List<Long>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case floatValue:
+				this.persistChecker.floatValue.check(field, (null == object ? null : (Float) object), jpa, checkPersist,
+						checkPersistType);
+				break;
+			case floatValueList:
+				this.persistChecker.floatValueList.check(field, (null == object ? null : (List<Float>) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case byteValueArray:
+				this.persistChecker.byteValueArray.check(field, (null == object ? null : (byte[]) object), jpa,
+						checkPersist, checkPersistType);
+				break;
+			case enumValue:
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -161,16 +161,16 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			// Object object = jpa.get(field.getName());
 			Object object = FieldUtils.readField(field, jpa, true);
 			switch (fieldType) {
-				case stringValue:
-					this.removeChecker.stringValue.check(field, null == object ? null : Objects.toString(object), jpa,
-							checkRemove, checkRemoveType);
-					break;
-				case stringValueList:
-					this.removeChecker.stringValueList.check(field, null == object ? null : (List<String>) object, jpa,
-							checkRemove, checkRemoveType);
-					break;
-				default:
-					break;
+			case stringValue:
+				this.removeChecker.stringValue.check(field, null == object ? null : Objects.toString(object), jpa,
+						checkRemove, checkRemoveType);
+				break;
+			case stringValueList:
+				this.removeChecker.stringValueList.check(field, null == object ? null : (List<String>) object, jpa,
+						checkRemove, checkRemoveType);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -208,19 +208,18 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			t = em.find(cls, id);
 		}
 		switch (exceptionWhen) {
-			case not_found:
-				if (null == t) {
-					throw new Exception("can not find entity id: " + id + ", class: " + cls.getCanonicalName() + ".");
-				}
-				break;
-			case found:
-				if (null != t) {
-					throw new Exception(
-							"entity already existed, id: " + id + ", class: " + cls.getCanonicalName() + ".");
-				}
-				break;
-			default:
-				break;
+		case not_found:
+			if (null == t) {
+				throw new Exception("can not find entity id: " + id + ", class: " + cls.getCanonicalName() + ".");
+			}
+			break;
+		case found:
+			if (null != t) {
+				throw new Exception("entity already existed, id: " + id + ", class: " + cls.getCanonicalName() + ".");
+			}
+			break;
+		default:
+			break;
 		}
 		return t;
 	}
@@ -245,14 +244,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			Predicate p = cb.equal(root.get(field.getName()), flag);
 			List<T> list = em.createQuery(cq.select(root).where(p).distinct(true)).setMaxResults(2).getResultList();
 			switch (list.size()) {
-				case 0:
-					break;
-				case 1:
-					t = list.get(0);
-					break out;
-				case 2:
-					throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
-							+ ", attribute:" + field.getName() + ".");
+			case 0:
+				break;
+			case 1:
+				t = list.get(0);
+				break out;
+			case 2:
+				throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+						+ ", attribute:" + field.getName() + ".");
 			}
 		}
 		return t;
@@ -310,15 +309,15 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			cq.select(root).where(p);
 			List<T> list = em.createQuery(cq).setMaxResults(2).getResultList();
 			switch (list.size()) {
-				case 0:
-					break;
-				case 1:
-					t = list.get(0);
-					break out;
-				default:
-					throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
-							+ ", attribute:" + field.getName() + ", restrict attrubte:" + singularAttribute
-							+ ", restrict value:" + restrictValue + ".");
+			case 0:
+				break;
+			case 1:
+				t = list.get(0);
+				break out;
+			default:
+				throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+						+ ", attribute:" + field.getName() + ", restrict attrubte:" + singularAttribute
+						+ ", restrict value:" + restrictValue + ".");
 			}
 		}
 		return t;
@@ -938,6 +937,19 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		query.setParameter(1, value);
 		List<String> os = query.getResultList();
 		return new ArrayList<>(os);
+	}
+
+	public <T extends JpaObject> List<String> idsLessThanMax(Class<T> cls, String attribute, Comparable value,
+			Integer count) throws Exception {
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		Predicate p = cb.lessThan(root.get(attribute), (Comparable) value);
+		List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME)).where(p)).setMaxResults(count)
+				.getResultList();
+		List<String> list = new ArrayList<>(os);
+		return list;
 	}
 
 	public <T extends JpaObject> List<String> idsGreaterThan(Class<T> cls, String attribute, Object value)
