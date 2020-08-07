@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -28,6 +29,7 @@ import com.x.base.core.project.tools.SortTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
+import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
 import com.x.meeting.core.entity.Meeting_;
 
@@ -50,26 +52,83 @@ class ActionPaging extends BaseAction {
 			
 			Predicate p = cb.equal(root.get(Meeting_.applicant), effectivePerson.getDistinguishedName());
 			
+			p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(),root.get(Meeting_.invitePersonList)));
+			
+			if(!StringUtils.isBlank(wi.getSubject())) {
+				p = cb.and(p, cb.like(root.get(Meeting_.subject), "%" + wi.getSubject() + "%"));
+			}
+			
 			if(!StringUtils.isBlank(wi.getRoom())) {
 				p = cb.and(p, cb.equal(root.get(Meeting_.room), wi.getRoom()));
 			}
 		   
-			if(wi.getStartTime() != null) {
-			   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), wi.getStartTime()));
-			}
-			
-			if(wi.getCompletedTime()!= null) {
-			   p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), wi.getCompletedTime()));
+			if(!StringUtils.isBlank(wi.getMeetingStatus())) {
+				String meetingStatus = wi.getMeetingStatus();
+				
+				if(meetingStatus.equalsIgnoreCase("completed")) {
+					p = cb.and(p, cb.or(cb.lessThan(root.get(Meeting_.completedTime), new Date()),
+							cb.equal(root.get(Meeting_.manualCompleted), true)));
+				}
+				
+	            if(meetingStatus.equalsIgnoreCase("processing")) {
+	            	Date date = new Date();
+	            	p = cb.and(p, cb.notEqual(root.get(Meeting_.manualCompleted), true));
+	        		p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.startTime), date));
+	        		p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Meeting_.completedTime), date));
+				}
+	
+                 if(meetingStatus.equalsIgnoreCase("wait")) {
+                	 p = cb.and(p, cb.notEqual(root.get(Meeting_.manualCompleted), true));
+             		 p = cb.and(p, cb.greaterThan(root.get(Meeting_.startTime), new Date()));
+				 }
+				
+			}else {
+				if(wi.getStartTime() != null) {
+				   p = cb.and(p, cb.greaterThanOrEqualTo(root.get(Meeting_.startTime), wi.getStartTime()));
+				}
+				
+				if(wi.getCompletedTime()!= null) {
+				   p = cb.and(p, cb.lessThanOrEqualTo(root.get(Meeting_.completedTime), wi.getCompletedTime()));
+				}
 			}
 			
 			if(!StringUtils.isBlank(wi.getConfirmStatus())) {
-		    	p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), wi.getConfirmStatus()));
+		    	p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.valueOf(wi.getConfirmStatus().trim())));
 			}
 			
-			cq.select(root.get(Meeting_.id)).where(p);
+			if(!StringUtils.isBlank(wi.getInvitePersonList())) {
+				p = cb.and(p, cb.isMember( wi.getInvitePersonList().trim(),root.get(Meeting_.invitePersonList)));
+			 }
 			
+			if(!StringUtils.isBlank(wi.getAcceptPersonList())) {
+				p = cb.and(p, cb.isMember( wi.getAcceptPersonList().trim(),root.get(Meeting_.acceptPersonList)));
+			 }
+			
+			if(!StringUtils.isBlank(wi.getCheckinPersonList())) {
+				p = cb.and(p, cb.isMember( wi.getCheckinPersonList().trim(),root.get(Meeting_.checkinPersonList)));
+			 }
+			
+			if(wi.getManualCompleted() != null) {
+				p = cb.and(p, cb.equal(root.get(Meeting_.manualCompleted), wi.getManualCompleted()));
+			}
+			
+	        Order order;
+	        String  sortField = wi.getSortField();
+	        String  sortType = wi.getSortType();
+
+	        if(!StringUtils.isBlank(sortField)) {
+		        if(sortType.equalsIgnoreCase("asc")) {
+		             order =  cb.asc(root.get(sortField));
+		        }else {
+		        	 order =  cb.desc(root.get(sortField));
+		        }
+	        }else {
+	        	   order =  cb.desc(root.get("startTime"));
+	        }
+	        
+			cq.select(root.get(Meeting_.id)).where(p).orderBy(order);
+		
 			 TypedQuery<String> typedQuery = em.createQuery(cq);
-			    //设置分页
 			 int pageIndex = (page-1)*size;
 			 int pageSize = page*size;
 			 typedQuery.setFirstResult(pageIndex);
@@ -78,11 +137,18 @@ class ActionPaging extends BaseAction {
 			 //logger.info("typedQuery="+  typedQuery.toString()); 
 			 ids =  typedQuery.getResultList();
 			
+			 CriteriaQuery<Long> cqCount = cb.createQuery(Long.class);
+			 Root<Meeting> rootCount = cqCount.from(Meeting.class);
+			 cqCount.select(cb.countDistinct(rootCount)).where(p);
+			 Long count = em.createQuery(cqCount).getSingleResult().longValue();
+			 //logger.info("count="+  count); 
+			 
 			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
 			SortTools.desc(wos, Meeting.startTime_FIELDNAME);
 			result.setData(wos);
+			result.setCount(count);
 			return result;
 		}
 	}
@@ -97,6 +163,9 @@ class ActionPaging extends BaseAction {
 
     public static class Wi  {
     	
+    	@FieldDescribe("标题.")
+    	private String subject;
+    	
 		@FieldDescribe("所属楼层.")
 		private String room;
 		
@@ -106,10 +175,38 @@ class ActionPaging extends BaseAction {
 		@FieldDescribe("结束时间.")
 		private Date completedTime;
 		
-		@FieldDescribe("会议状态.(wait|processing|completed)")
+		@FieldDescribe("会议预定状态.(allow|deny|wait)")
 		private String confirmStatus;
 		
+		@FieldDescribe("邀请人员,身份,组织.")
+		private String invitePersonList;
+		
+		@FieldDescribe("接受人员.")
+		private String acceptPersonList;
+		
+		@FieldDescribe("签到人员.")
+		private String checkinPersonList;
+		
+		@FieldDescribe("会议是否手工结束.(true|false)")
+		private Boolean manualCompleted;
+		
+		@FieldDescribe("会议当前状态.(wait|processing|completed)")
+		private String meetingStatus;
+		
+		@FieldDescribe("排序字段.(startTime|completedTime|room)")
+		private String sortField;
+		
+		@FieldDescribe("排序.(desc|asc)")
+		private String sortType;
+		
+		
+		public String getSubject() {
+			return subject;
+		}
 
+		public void setSubject(String subject) {
+			this.subject = subject;
+		}
 
 		public String getConfirmStatus() {
 			return confirmStatus;
@@ -142,6 +239,63 @@ class ActionPaging extends BaseAction {
 		public void setCompletedTime(Date completedTime) {
 			this.completedTime = completedTime;
 		}
+
+		public String getInvitePersonList() {
+			return invitePersonList;
+		}
+
+		public void setInvitePersonList(String invitePersonList) {
+			this.invitePersonList = invitePersonList;
+		}
+
+		public String getAcceptPersonList() {
+			return acceptPersonList;
+		}
+
+		public void setAcceptPersonList(String acceptPersonList) {
+			this.acceptPersonList = acceptPersonList;
+		}
+
+		public String getCheckinPersonList() {
+			return checkinPersonList;
+		}
+
+		public void setCheckinPersonList(String checkinPersonList) {
+			this.checkinPersonList = checkinPersonList;
+		}
+
+		public Boolean getManualCompleted() {
+			return manualCompleted;
+		}
+
+		public void setManualCompleted(Boolean manualCompleted) {
+			this.manualCompleted = manualCompleted;
+		}
+
+		public String getMeetingStatus() {
+			return meetingStatus;
+		}
+
+		public void setMeetingStatus(String meetingStatus) {
+			this.meetingStatus = meetingStatus;
+		}
+
+		public String getSortField() {
+			return sortField;
+		}
+
+		public void setSortField(String sortField) {
+			this.sortField = sortField;
+		}
+
+		public String getSortType() {
+			return sortType;
+		}
+
+		public void setSortType(String sortType) {
+			this.sortType = sortType;
+		}
+		
 			
 	}
 }
