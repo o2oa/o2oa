@@ -10,13 +10,12 @@ import com.x.base.core.project.config.WeLink;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.DingdingMessage;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.message.WeLinkMessage;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -36,31 +35,36 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 				List<String> list = new ArrayList<>();
 				logger.info("person :" + message.getPerson());
 				//todo 这里 Person.getWeLinkId() 获取不到 改用unique 不知道为啥获取不到
-				list.add(business.organization().person().getObject(message.getPerson()).getUnique());
+				String unique = business.organization().person().getObject(message.getPerson()).getUnique();
+				if (StringUtils.isEmpty(unique)) {
+					logger.error(new ExceptionWeLinkMessage("-1", "没有找到对应welink用户id"));
+					return;
+				}
+				list.add(unique);
 				m.setToUserList(list);
 				m.setMsgRange("0");
-				m.setMsgTitle(message.getTitle());
-				m.setMsgContent(message.getTitle());
-				m.setMsgOwner(message.getType());
-				m.setUrlType("html");
-				m.setUrlPath("http://www.o2oa.net");
+				//处理消息标题和内容
+				if (message.getTitle().contains(":")) {
+					int i = message.getTitle().indexOf(":");
+					m.setMsgTitle(message.getTitle().substring(0, i));
+					m.setMsgContent(message.getTitle().substring(i+1));
+				}else {
+					m.setMsgTitle(message.getTitle());
+					m.setMsgContent(message.getTitle());
+				}
+				m.setMsgOwner(appOwnerByType(message.getType()));
+
 				Date now = new Date();
 				m.setCreateTime(now.getTime()+"");
+				//是否添加超链接
+				if (needTransferLink(message.getType())) {
+					String workUrl = getDingdingOpenWorkUrl(message.getBody());
+					if (workUrl != null && !"".equals(workUrl)) {
+						m.setUrlType("html");
+						m.setUrlPath(workUrl);
+					}
+				}
 				logger.info("welink send body: " + m.toString());
-//
-//
-//				if (needTransferLink(message.getType())) {
-//					String workUrl = getDingdingOpenWorkUrl(message.getBody());
-//					if (workUrl != null && !"".equals(workUrl)) {
-//						m.getMsg().setMsgtype("markdown");
-//						m.getMsg().getMarkdown().setTitle(message.getTitle());
-//						m.getMsg().getMarkdown().setText("["+message.getTitle()+"]("+workUrl+")");
-//					}else {
-//						m.getMsg().getText().setContent(message.getTitle());
-//					}
-//				}else {
-//					m.getMsg().getText().setContent(message.getTitle());
-//				}
 
 				String address = Config.weLink().getOapiAddress() + "/messages/v3/send";
 				logger.info("welink send url: " + address);
@@ -91,13 +95,13 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 	private String getDingdingOpenWorkUrl(String messageBody) {
 		try {
 			String work = getWorkIdFromBody(messageBody);
-			String o2oaUrl = Config.dingding().getWorkUrl();
+			String o2oaUrl = Config.weLink().getWorkUrl();
 			if (work == null || "".equals(work) || o2oaUrl == null || "".equals(o2oaUrl)) {
 				return null;
 			}
 
 			String workUrl = "workmobilewithaction.html?workid=" + work;
-			String messageRedirectPortal = Config.dingding().getMessageRedirectPortal();
+			String messageRedirectPortal = Config.weLink().getMessageRedirectPortal();
 			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
 				String portal = "portalmobile.html?id="+messageRedirectPortal;
 				portal = URLEncoder.encode(portal, DefaultCharset.name);
@@ -105,7 +109,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 			}
 			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 			logger.info("o2oa workUrl："+workUrl);
-			o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
+			o2oaUrl = o2oaUrl + "welinksso.html?redirect=" + workUrl;
 			logger.info("o2oa 地址："+o2oaUrl);
 			return o2oaUrl;
 		}catch (Exception e) {
@@ -138,7 +142,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 	 */
 	private boolean needTransferLink(String messageType) {
 		try {
-			String workUrl = Config.dingding().getWorkUrl();
+			String workUrl = Config.weLink().getWorkUrl();
 			if (workUrl != null && !"".equals(workUrl) && workMessageTypeList().contains(messageType)) {
 				return true;
 			}
@@ -146,6 +150,26 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 			logger.error(e);
 		}
 		return false;
+	}
+
+	private String appOwnerByType(String messageType) {
+		if (workMessageTypeList().contains(messageType)) {
+			return "工作消息";
+		}else {
+			if (messageType.startsWith("meeting_")) {
+				return "会议消息";
+			}else if (messageType.startsWith("attachment_")) {
+				return "文件消息";
+			}else if (messageType.startsWith("calendar_")) {
+				return "日历消息";
+			}else if (messageType.startsWith("cms_")) {
+				return "信息中心消息";
+			}else if (messageType.startsWith("bbs_")) {
+				return "论坛消息";
+			}else {
+				return "消息";
+			}
+		}
 	}
 
 	private List<String> workMessageTypeList() {
