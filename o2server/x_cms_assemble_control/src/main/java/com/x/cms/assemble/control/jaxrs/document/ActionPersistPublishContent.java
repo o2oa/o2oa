@@ -177,8 +177,9 @@ public class ActionPersistPublishContent extends BaseAction {
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-				if ( StringUtils.isEmpty( wi.getIdentity())) {
+				if ( StringUtils.isNotEmpty( wi.getIdentity())) {
 					wi.setCreatorIdentity( wi.getIdentity() );
+					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity(wi.getIdentity()));
 				}
 
 				if ( StringUtils.isEmpty( wi.getCreatorPerson())) {
@@ -404,7 +405,7 @@ public class ActionPersistPublishContent extends BaseAction {
 					}
 				}
 				if( notify ){
-					logger.info("try to add notify object to queue for document:" + document.getTitle() );
+					logger.debug("try to add notify object to queue for document:" + document.getTitle() );
 					ThisApplication.queueSendDocumentNotify.send( document );
 				}
 			} catch (Exception e) {

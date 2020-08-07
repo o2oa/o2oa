@@ -454,7 +454,7 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public List<String> listPersonWithUnit(String unitName) throws Exception {
-		if (StringUtils.isEmpty(unitName)) {
+		if (StringUtils.isEmpty( unitName )) {
 			throw new Exception("unitName is empty!");
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
