@@ -48,6 +48,16 @@ public class Person extends GsonPropertyObject {
 	private String dingdingId;
 	@FieldDescribe("政务钉钉Id")
 	private String zhengwuDingdingId;
+	@FieldDescribe("华为WeLink id")
+	private String weLinkId;
+
+	public String getWeLinkId() {
+		return weLinkId;
+	}
+
+	public void setWeLinkId(String weLinkId) {
+		this.weLinkId = weLinkId;
+	}
 
 	public String getName() {
 		return name;
