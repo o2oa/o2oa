@@ -22,7 +22,7 @@ public class Cleanup extends BaseAction {
 
 	private List<Class<? extends JpaObject>> list = new ArrayList<>();
 
-	private int tag = 0;
+	private volatile int tag = 0;
 
 	public Cleanup() {
 		list.add(ScheduleLog.class);
@@ -35,7 +35,8 @@ public class Cleanup extends BaseAction {
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
 			if (pirmaryCenter()) {
-				ThisApplication.logQueue.send(new NameValuePair(list.get((tag++) % list.size()).getName(), null));
+				ThisApplication.logQueue.send(new NameValuePair(list.get(tag).getName(), null));
+				tag = (tag + 1) % list.size();
 			}
 		} catch (Exception e) {
 			logger.error(e);
