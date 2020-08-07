@@ -55,12 +55,12 @@ public class Main {
 		/* getVersion需要FileUtils在后面运行 */
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		//LogTools.setSlf4jSimple();
+		// LogTools.setSlf4jSimple();
 		try {
 			Main.class.getClassLoader().loadClass("org.slf4j.impl.SimpleLogger");
 			LogTools.setSlf4jSimple();
-		}catch(ClassNotFoundException ex) {
-			System.out.println("ignore:"+ex.getMessage());
+		} catch (ClassNotFoundException ex) {
+			System.out.println("ignore:" + ex.getMessage());
 			slf4jOtherImplOn = true;
 		}
 		org.slf4j.impl.StaticLoggerBinder.getSingleton();
@@ -125,7 +125,7 @@ public class Main {
 				}
 			}
 		}.start();
-		
+
 		/* 启动NodeAgent */
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
 			NodeAgent nodeAgent = new NodeAgent();
@@ -157,48 +157,48 @@ public class Main {
 			matcher = CommandFactory.start_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-					case "application":
-						startApplicationServer();
-						break;
-					case "center":
-						startCenterServer();
-						break;
-					case "web":
-						startWebServer();
-						break;
-					case "storage":
-						startStorageServer();
-						break;
-					case "data":
-						startDataServer();
-						break;
-					default:
-						startAll();
-						break;
+				case "application":
+					startApplicationServer();
+					break;
+				case "center":
+					startCenterServer();
+					break;
+				case "web":
+					startWebServer();
+					break;
+				case "storage":
+					startStorageServer();
+					break;
+				case "data":
+					startDataServer();
+					break;
+				default:
+					startAll();
+					break;
 				}
 				continue;
 			}
 			matcher = CommandFactory.stop_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-					case "application":
-						stopApplicationServer();
-						break;
-					case "center":
-						stopCenterServer();
-						break;
-					case "web":
-						stopWebServer();
-						break;
-					case "storage":
-						stopStorageServer();
-						break;
-					case "data":
-						stopDataServer();
-						break;
-					default:
-						stopAll();
-						break;
+				case "application":
+					stopApplicationServer();
+					break;
+				case "center":
+					stopCenterServer();
+					break;
+				case "web":
+					stopWebServer();
+					break;
+				case "storage":
+					stopStorageServer();
+					break;
+				case "data":
+					stopDataServer();
+					break;
+				default:
+					stopAll();
+					break;
 				}
 				continue;
 			}
@@ -245,23 +245,7 @@ public class Main {
 		}
 		/* 关闭定时器 */
 		scheduler.shutdown();
-		// }
 		SystemOutErrorSideCopyBuilder.stop();
-	}
-
-	private static boolean test() {
-		try {
-			DeploymentManager deployer = Servers.applicationServer.getBean(DeploymentManager.class);
-			for (App app : deployer.getApps()) {
-				System.out.println(app.getContextPath());
-				if (StringUtils.equals("/x_query_assemble_designer", app.getContextPath())) {
-					app.getContextHandler().stop();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
 	}
 
 	private static boolean createEncryptKey() {
