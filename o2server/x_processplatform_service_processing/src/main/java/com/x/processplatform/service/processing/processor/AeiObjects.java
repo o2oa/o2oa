@@ -11,6 +11,10 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
@@ -56,11 +60,9 @@ import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 public class AeiObjects extends GsonPropertyObject {
+
+	private static final long serialVersionUID = -4125441813647193068L;
 
 	private static Logger logger = LoggerFactory.getLogger(AeiObjects.class);
 
@@ -73,11 +75,11 @@ public class AeiObjects extends GsonPropertyObject {
 		this.activityProcessingConfigurator = processingConfigurator.get(activity.getActivityType());
 	}
 
-	private Business business;
+	private transient Business business;
 
 	private ProcessingConfigurator processingConfigurator;
 
-	private ActivityProcessingConfigurator activityProcessingConfigurator;
+	private transient ActivityProcessingConfigurator activityProcessingConfigurator;
 
 	private ProcessingAttributes processingAttributes;
 
@@ -85,44 +87,44 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private Work work;
 
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Work> works = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Task> tasks = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<TaskCompleted> taskCompleteds = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Read> reads = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<ReadCompleted> readCompleteds = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Review> reviews = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<DocumentVersion> documentVersions = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Record> records = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Attachment> attachments = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<WorkLog> workLogs = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Route> routes = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private Process process = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private Application application = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Projection> projections = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private List<Mapping> mappings = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
 	private Activity activity = null;
-	/* 使用用懒加载,初始为null */
-	private WorkDataHelper workDataHelper = null;
-	/* 使用用懒加载,初始为null */
+	// 使用用懒加载,初始为null
+	private transient WorkDataHelper workDataHelper = null;
+	// 使用用懒加载,初始为null
 	private Data data = null;
-	/* 使用用懒加载,初始为null */
-	private ScriptContext scriptContext = null;
+	// 使用用懒加载,初始为null
+	private transient ScriptContext scriptContext = null;
 
 	private List<Work> createWorks = new ArrayList<>();
 	private List<Work> updateWorks = new ArrayList<>();
@@ -745,7 +747,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateWorks()) || ListTools.isNotEmpty(this.getDeleteWorks())
 				|| ListTools.isNotEmpty(this.getUpdateWorks())) {
 			this.entityManagerContainer().beginTransaction(Work.class);
-			/* 保存工作 */
+			// 保存工作
 			this.getCreateWorks().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -753,7 +755,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 更新工作 */
+			// 更新工作
 			this.getUpdateWorks().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
@@ -761,7 +763,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除工作 */
+			// 删除工作
 			this.getDeleteWorks().stream().forEach(o -> {
 				Work obj;
 				try {
@@ -780,7 +782,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateWorkCompleteds()) || ListTools.isNotEmpty(this.getDeleteWorkCompleteds())
 				|| ListTools.isNotEmpty(this.getUpdateWorkCompleteds())) {
 			this.entityManagerContainer().beginTransaction(WorkCompleted.class);
-			/* 保存完成工作 */
+			// 保存完成工作
 			this.getCreateWorkCompleteds().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -788,7 +790,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 更新完成工作 */
+			// 更新完成工作
 			this.getUpdateWorkCompleteds().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
@@ -796,7 +798,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除完成工作 */
+			// 删除完成工作
 			this.getDeleteWorkCompleteds().stream().forEach(o -> {
 				WorkCompleted obj;
 				try {
@@ -815,7 +817,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateWorkLogs()) || ListTools.isNotEmpty(this.getDeleteWorkLogs())
 				|| ListTools.isNotEmpty(this.getUpdateWorkLogs())) {
 			this.entityManagerContainer().beginTransaction(WorkLog.class);
-			/* 保存工作日志 */
+			// 保存工作日志
 			this.getCreateWorkLogs().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -823,7 +825,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 更新工作日志 */
+			// 更新工作日志
 			this.getUpdateWorkLogs().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
@@ -831,7 +833,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除工作日志 */
+			// 删除工作日志
 			this.getDeleteWorkLogs().stream().forEach(o -> {
 				WorkLog obj;
 				try {
@@ -864,6 +866,7 @@ public class AeiObjects extends GsonPropertyObject {
 			try {
 				// 写入当前处理人作为上一环节处理人
 				if (StringUtils.isNotEmpty(this.processingAttributes.getIdentity())) {
+					o.getProperties().setPrevTaskIdentity(this.processingAttributes.getIdentity());
 					o.getProperties()
 							.setPrevTaskIdentityList(ListTools.trim(o.getProperties().getPrevTaskIdentityList(), true,
 									true, this.processingAttributes.getIdentity()));
@@ -911,7 +914,7 @@ public class AeiObjects extends GsonPropertyObject {
 			commitTaskCompletedCreatePart();
 			// 更新已办
 			commitTaskCompletedUpdatePart();
-			// 删除已办 */
+			// 删除已办
 			commitTaskCompletedDeletePart();
 		}
 	}
@@ -919,11 +922,11 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitTaskCompletedCreatePart() {
 		this.getCreateTaskCompleteds().stream().forEach(o -> {
 			try {
-				/* 将相同用户的其他已办的lastest标记为false */
+				// 将相同用户的其他已办的lastest标记为false
 				this.getTaskCompleteds().stream().filter(p -> StringUtils.equals(o.getPerson(), p.getPerson()))
 						.forEach(p -> p.setLatest(false));
 				this.business.entityManagerContainer().persist(o, CheckPersistType.all);
-				/* 创建已办的参阅 */
+				// 创建已办的参阅
 				this.createReview(new Review(this.getWork(), o.getPerson()));
 			} catch (Exception e) {
 				logger.error(e);
@@ -945,7 +948,7 @@ public class AeiObjects extends GsonPropertyObject {
 		this.getDeleteTaskCompleteds().stream().forEach(o -> {
 			TaskCompleted obj;
 			try {
-				/* 要删除此已经办前此人其他的已办lastest标记为true */
+				// 要删除此已经办前此人其他的已办lastest标记为true
 				TaskCompleted lastest = this.getTaskCompleteds().stream()
 						.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
 								&& (!StringUtils.equals(o.getId(), p.getId())))
@@ -1110,7 +1113,7 @@ public class AeiObjects extends GsonPropertyObject {
 											Comparator.nullsLast(String::compareTo))))
 							.findFirst().get();
 					try {
-						/* 参阅唯一 */
+						// 参阅唯一
 						Review existed = this.getReviews().stream()
 								.filter(p -> StringUtils.equals(obj.getJob(), p.getJob())
 										&& StringUtils.equals(obj.getPerson(), p.getPerson()))
@@ -1164,7 +1167,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 更新版式文件 */
+			// 更新版式文件
 			this.getUpdateDocumentVersions().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
@@ -1172,7 +1175,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除版式文件 */
+			// 删除版式文件
 			this.getDeleteDocumentVersions().stream().forEach(o -> {
 				DocumentVersion obj;
 				try {
@@ -1191,7 +1194,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateRecords()) || ListTools.isNotEmpty(this.getDeleteRecords())
 				|| ListTools.isNotEmpty(this.getUpdateRecords())) {
 			this.entityManagerContainer().beginTransaction(Record.class);
-			/* 保存记录 */
+			// 保存记录
 			this.getCreateRecords().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -1199,7 +1202,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除记录 */
+			// 删除记录
 			this.getUpdateRecords().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().check(o, CheckPersistType.all);
@@ -1225,7 +1228,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateAttachments()) || ListTools.isNotEmpty(this.getDeleteAttachments())
 				|| ListTools.isNotEmpty(this.getUpdateAttachments())) {
 			this.entityManagerContainer().beginTransaction(Attachment.class);
-			/* 保存,更新附件是不可能的,删除附件 */
+			// 保存,更新附件是不可能的,删除附件
 			this.getDeleteAttachments().stream().forEach(o -> {
 				Attachment obj;
 				try {
@@ -1261,7 +1264,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (ListTools.isNotEmpty(this.getCreateDynamicEntities())
 				|| ListTools.isNotEmpty(this.getDeleteDynamicEntities())
 				|| ListTools.isNotEmpty(this.getUpdateDynamicEntities())) {
-			/* 保存自定义对象 */
+			// 保存自定义对象
 			this.getCreateDynamicEntities().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
@@ -1270,7 +1273,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 更新自定义对象 */
+			// 更新自定义对象
 			this.getUpdateDynamicEntities().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
@@ -1279,7 +1282,7 @@ public class AeiObjects extends GsonPropertyObject {
 					logger.error(e);
 				}
 			});
-			/* 删除自定义对象 */
+			// 删除自定义对象
 			this.getDeleteDynamicEntities().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().beginTransaction(o.getClass());
@@ -1294,7 +1297,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void message() throws Exception {
 
-		/* 待办转已办处理 */
+		// 待办转已办处理
 		List<TaskCompleted> copyOfCreateTaskCompleteds = new ArrayList<>(this.getCreateTaskCompleteds());
 		List<Task> copyOfDeleteTasks = new ArrayList<>(this.getDeleteTasks());
 		for (Entry<TaskCompleted, Task> entry : ListTools.pairWithProperty(copyOfCreateTaskCompleteds,
@@ -1303,7 +1306,7 @@ public class AeiObjects extends GsonPropertyObject {
 			copyOfDeleteTasks.remove(entry.getValue());
 			MessageFactory.task_to_taskCompleted(entry.getKey());
 		}
-		/* 待阅转已阅处理 */
+		// 待阅转已阅处理
 		List<ReadCompleted> copyOfCreateReadCompleteds = new ArrayList<>(this.getCreateReadCompleteds());
 		List<Read> copyOfDeleteReads = new ArrayList<>(this.getDeleteReads());
 		for (Entry<ReadCompleted, Read> entry : ListTools.pairWithProperty(copyOfCreateReadCompleteds,
@@ -1313,7 +1316,7 @@ public class AeiObjects extends GsonPropertyObject {
 			MessageFactory.read_to_readCompleted(entry.getKey());
 		}
 
-		/* 工作转已完成工作 */
+		// 工作转已完成工作
 		List<WorkCompleted> copyOfCreateWorkCompleteds = new ArrayList<>(this.getCreateWorkCompleteds());
 		List<Work> copyOfDeleteWorks = new ArrayList<>(this.getDeleteWorks());
 		for (Entry<WorkCompleted, Work> entry : ListTools.pairWithProperty(copyOfCreateWorkCompleteds,
