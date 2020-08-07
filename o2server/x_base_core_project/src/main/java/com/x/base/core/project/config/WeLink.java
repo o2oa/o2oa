@@ -37,6 +37,12 @@ public class WeLink extends ConfigObject {
     @FieldDescribe("是否启用消息推送")
     private Boolean messageEnable;
 
+    @FieldDescribe("WeLink消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/")
+    private String workUrl = "";
+
+    @FieldDescribe("WeLink消息处理完成后跳转到特定的门户页面的Id")
+    private String messageRedirectPortal = "";
+
 
 
     public static WeLink defaultInstance() {
@@ -50,6 +56,8 @@ public class WeLink extends ConfigObject {
     public static final String default_forceSyncCron = "10 45 8,12 * * ?";
     public static final String default_oapiAddress = "https://open.welink.huaweicloud.com/api";
     public static final Boolean default_messageEnable = false;
+    public static final String default_workUrl = "";
+    public static final String default_messageRedirectPortal = "";
 
 
     public WeLink() {
@@ -60,6 +68,8 @@ public class WeLink extends ConfigObject {
         this.forceSyncCron = default_forceSyncCron;
         this.oapiAddress = default_oapiAddress;
         this.messageEnable = default_messageEnable;
+        this.workUrl = default_workUrl;
+        this.messageRedirectPortal = default_messageRedirectPortal;
     }
 
     public static String WeLink_Auth_Head_Key = "x-wlk-Authorization";
@@ -210,5 +220,21 @@ public class WeLink extends ConfigObject {
 
     public void setMessageEnable(Boolean messageEnable) {
         this.messageEnable = messageEnable;
+    }
+
+    public String getWorkUrl() {
+        return StringUtils.isEmpty(this.workUrl) ? default_workUrl : this.workUrl;
+    }
+
+    public void setWorkUrl(String workUrl) {
+        this.workUrl = workUrl;
+    }
+
+    public String getMessageRedirectPortal() {
+        return StringUtils.isEmpty(this.messageRedirectPortal) ? default_messageRedirectPortal : this.messageRedirectPortal;
+    }
+
+    public void setMessageRedirectPortal(String messageRedirectPortal) {
+        this.messageRedirectPortal = messageRedirectPortal;
     }
 }
