@@ -1,26 +1,20 @@
 package com.x.server.console.action;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.dataitem.ItemCategory;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.core.entity.CmsBatchOperation;
 import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.Review;
+import com.x.cms.core.entity.DocumentCommend;
+import com.x.cms.core.entity.DocumentCommentCommend;
+import com.x.cms.core.entity.DocumentCommentContent;
+import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.DocumentViewRecord;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.ReadRemind;
-import com.x.cms.core.entity.DocumentCommentInfo;
-import com.x.cms.core.entity.DocumentCommentContent;
-import com.x.cms.core.entity.DocumentCommentCommend;
-import com.x.cms.core.entity.DocumentCommend;
-import com.x.cms.core.entity.CmsBatchOperation;
+import com.x.cms.core.entity.Review;
 
-public class EraseContentCms extends EraseContentProcessPlatform {
+public class EraseContentCms extends EraseContent {
 
-	private static Logger logger = LoggerFactory.getLogger(EraseContentCms.class);
 	@Override
 	public boolean execute() throws Exception {
 		this.init("cms", ItemCategory.cms);
