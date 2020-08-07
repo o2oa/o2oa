@@ -20,6 +20,9 @@ public class DataServer extends ConfigObject {
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATFILTER = "mergeStat";
 	private static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
+	private static final Integer DEFAULT_LOCKTIMEOUT = 120000;
+
+	
 
 	public static DataServer defaultInstance() {
 		return new DataServer();
@@ -39,6 +42,7 @@ public class DataServer extends ConfigObject {
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statFilter = DEFAULT_STATFILTER;
 		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
+		this.lockTimeout = DEFAULT_LOCKTIMEOUT;
 	}
 
 	@FieldDescribe("是否启用,如果没有可用的externalDataSources.json文件,那么默认会在节点中启用本地的H2数据库作为默认的数据库.")
@@ -67,6 +71,12 @@ public class DataServer extends ConfigObject {
 	private String statFilter;
 	@FieldDescribe("执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.")
 	private Integer slowSqlMillis;
+	@FieldDescribe("默认锁超时时间()毫秒).")
+	private Integer lockTimeout;
+	
+	public Integer getLockTimeout() {
+		return (null == this.lockTimeout || this.lockTimeout < 1) ? DEFAULT_LOCKTIMEOUT : this.lockTimeout;
+	}
 
 	public LogLevel getLogLevel() {
 		return this.logLevel == null ? LogLevel.WARN : this.logLevel;
