@@ -8,7 +8,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.gson.internal.LinkedTreeMap;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.program.center.schedule.*;
+import com.x.program.center.schedule.Area;
+import com.x.program.center.schedule.Cleanup;
+import com.x.program.center.schedule.CleanupCode;
+import com.x.program.center.schedule.CollectLog;
+import com.x.program.center.schedule.CollectMarket;
+import com.x.program.center.schedule.CollectPerson;
+import com.x.program.center.schedule.DingdingSyncOrganization;
+import com.x.program.center.schedule.DingdingSyncOrganizationTrigger;
+import com.x.program.center.schedule.FireSchedule;
+import com.x.program.center.schedule.QiyeweixinSyncOrganization;
+import com.x.program.center.schedule.QiyeweixinSyncOrganizationTrigger;
+import com.x.program.center.schedule.RefreshApplications;
+import com.x.program.center.schedule.TriggerAgent;
+import com.x.program.center.schedule.WeLinkSyncOrganization;
+import com.x.program.center.schedule.WeLinkSyncOrganizationTrigger;
+import com.x.program.center.schedule.ZhengwuDingdingSyncOrganization;
+import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
 
 public class ThisApplication {
 
@@ -20,7 +36,7 @@ public class ThisApplication {
 
 	public static CenterQueue centerQueue = new CenterQueue();
 
-	public static LogQueue logQueue;
+	public static LogQueue logQueue = new LogQueue();
 
 	public static List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
@@ -37,7 +53,6 @@ public class ThisApplication {
 			LoggerFactory.setLevel(Config.logLevel().x_program_center());
 			/* 20190927新报告机制 */
 			context().startQueue(centerQueue);
-			logQueue = new LogQueue();
 			context().startQueue(logQueue);
 
 			/* 政务钉钉拉入同步 */
@@ -75,11 +90,8 @@ public class ThisApplication {
 					CenterQueue.REFRESHAPPLICATIONSINTERVAL);
 			// 运行间隔由300秒缩减到120秒
 			context().scheduleLocal(FireSchedule.class, 180, 120);
-			context().scheduleLocal(CleanupScheduleLog.class, 10, 80);
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
-			context().scheduleLocal(CleanupPromptErrorLog.class, 10, 60 * 30);
-			context().scheduleLocal(CleanupUnexpectedErrorLog.class, 10, 60 * 30);
-			context().scheduleLocal(CleanupWarnLog.class, 10, 60 * 30);
+			context().scheduleLocal(Cleanup.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
 			context().scheduleLocal(CollectMarket.class, 10, 60 * 60 * 6);
 			context().scheduleLocal(CollectLog.class, 10, 60 * 30);

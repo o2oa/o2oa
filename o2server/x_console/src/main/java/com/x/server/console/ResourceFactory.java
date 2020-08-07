@@ -135,9 +135,9 @@ public class ResourceFactory {
 	private static void internal_driud_c3p0() throws Exception {
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
-			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/X;JMX="
-					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-					+ (entry.getValue().getCacheSize() * 1024);
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
+					+ "/X;DEFAULT_LOCK_TIMEOUT=99999999;JMX=" + (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE")
+					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setJdbcUrl(url);
 			dataSource.setDriverClass(SlicePropertiesBuilder.driver_h2);
 			dataSource.setPreferredTestQuery(SlicePropertiesBuilder.validationQueryOfUrl(url));
@@ -164,9 +164,9 @@ public class ResourceFactory {
 
 			BasicDataSource dataSource = new BasicDataSource();
 
-			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/X;JMX="
-					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-					+ (entry.getValue().getCacheSize() * 1024);
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
+					+ "/X;DEFAULT_LOCK_TIMEOUT=99999999;JMX=" + (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE")
+					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setDriverClassName(SlicePropertiesBuilder.driver_h2);
 			dataSource.setUrl(url);
 			dataSource.setInitialSize(0);
@@ -188,9 +188,9 @@ public class ResourceFactory {
 	private static void internal_driud() throws Exception {
 		for (Entry<String, DataServer> entry : Config.nodes().dataServers().entrySet()) {
 			DruidDataSource dataSource = new DruidDataSource();
-			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort() + "/X;JMX="
-					+ (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE") + ";CACHE_SIZE="
-					+ (entry.getValue().getCacheSize() * 1024);
+			String url = "jdbc:h2:tcp://" + entry.getKey() + ":" + entry.getValue().getTcpPort()
+					+ "/X;DEFAULT_LOCK_TIMEOUT=99999999;JMX=" + (entry.getValue().getJmxEnable() ? "TRUE" : "FALSE")
+					+ ";CACHE_SIZE=" + (entry.getValue().getCacheSize() * 1024);
 			dataSource.setDriverClassName(SlicePropertiesBuilder.driver_h2);
 			dataSource.setUrl(url);
 			dataSource.setInitialSize(0);
@@ -247,10 +247,10 @@ public class ResourceFactory {
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			//services[i] = Executors.newSingleThreadExecutor();
+			// services[i] = Executors.newSingleThreadExecutor();
 			services[i] = Executors.newFixedThreadPool(1);
 		}
-	
+
 		new Resource(Config.RESOURCE_NODE_PROCESSPLATFORMEXECUTORS, services);
 	}
 
