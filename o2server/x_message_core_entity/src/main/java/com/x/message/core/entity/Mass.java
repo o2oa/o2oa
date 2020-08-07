@@ -65,6 +65,7 @@ public class Mass extends SliceJpaObject {
 	public static final String TYPE_QIYEWEIXIN = "qiyeweixin";
 	public static final String TYPE_DINGDING = "dingding";
 	public static final String TYPE_ZHENGWUDINGDING = "zhengwuDingding";
+	public static final String TYPE_WELINK = "welink";
 
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
