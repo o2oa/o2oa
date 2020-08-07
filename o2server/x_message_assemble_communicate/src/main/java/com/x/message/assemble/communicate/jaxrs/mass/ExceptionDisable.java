@@ -7,6 +7,6 @@ class ExceptionDisable extends PromptException {
 	private static final long serialVersionUID = 4132300948670472899L;
 
 	ExceptionDisable() {
-		super("企业微信,钉钉,政务钉钉都没有启用.");
+		super("华为WeLink, 企业微信, 钉钉, 政务钉钉都没有启用.");
 	}
 }
