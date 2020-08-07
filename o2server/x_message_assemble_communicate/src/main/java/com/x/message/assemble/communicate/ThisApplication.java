@@ -24,6 +24,8 @@ public class ThisApplication {
 
 	public static DingdingConsumeQueue dingdingConsumeQueue = new DingdingConsumeQueue();
 
+	public static WeLinkConsumeQueue weLinkConsumeQueue = new WeLinkConsumeQueue();
+
 	public static PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
 
 	public static Context context() {
@@ -59,6 +61,9 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 				pmsInnerConsumeQueue.start();
 			}
+			if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
+				weLinkConsumeQueue.start();
+			}
 
 			MessageConnector.start(context());
 
@@ -76,6 +81,7 @@ public class ThisApplication {
 			zhengwuDingdingConsumeQueue.stop();
 			dingdingConsumeQueue.stop();
 			pmsInnerConsumeQueue.stop();
+			weLinkConsumeQueue.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
