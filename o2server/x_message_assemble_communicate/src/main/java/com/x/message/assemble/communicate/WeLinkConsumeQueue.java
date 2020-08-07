@@ -34,8 +34,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 				WeLinkMessage m = new WeLinkMessage();
 				List<String> list = new ArrayList<>();
 				logger.info("person :" + message.getPerson());
-				//todo 这里 Person.getWeLinkId() 获取不到 改用unique 不知道为啥获取不到
-				String unique = business.organization().person().getObject(message.getPerson()).getUnique();
+				String unique = business.organization().person().getObject(message.getPerson()).getWeLinkId();
 				if (StringUtils.isEmpty(unique)) {
 					logger.error(new ExceptionWeLinkMessage("-1", "没有找到对应welink用户id"));
 					return;
