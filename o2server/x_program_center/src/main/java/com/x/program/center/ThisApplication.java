@@ -106,8 +106,6 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
-			centerQueue.stop();
-			logQueue.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

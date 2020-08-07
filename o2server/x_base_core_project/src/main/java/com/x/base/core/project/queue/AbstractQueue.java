@@ -123,6 +123,7 @@ public abstract class AbstractQueue<T> {
 		try {
 			this.queue.clear();
 			queue.put(new StopSignal());
+			logger.info("queue class: {} stop.", className);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
