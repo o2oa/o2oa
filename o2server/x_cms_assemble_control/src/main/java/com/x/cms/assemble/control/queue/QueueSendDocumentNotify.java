@@ -28,18 +28,19 @@ import java.util.List;
 public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 	
 	private static  Logger logger = LoggerFactory.getLogger( QueueSendDocumentNotify.class );
+	private UserManagerService userManagerService = new UserManagerService();
 
 	public void execute( Document document ) throws Exception {
-		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>QueueSendDocumentNotify:" + document.getTitle() );
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>QueueSendDocumentNotify:" + document.getTitle() );
 		if( document == null ) {
-			logger.info("can not send publish notify , document is NULL!" );
+			logger.debug("can not send publish notify , document is NULL!" );
 			return;
 		}
 		if( !StringUtils.equalsIgnoreCase( "信息" , document.getDocumentType()) ) {
-			logger.info("can not send publish notify , document is not '信息'!" );
+			logger.debug("can not send publish notify , document is not '信息'!" );
 			return;
 		}
-		logger.info("send publish notify for new document:" + document.getTitle() );	
+		logger.debug("send publish notify for new document:" + document.getTitle() );
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo category = emc.find( document.getCategoryId(), CategoryInfo.class );
@@ -50,9 +51,24 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 				if( ListTools.isNotEmpty( persons )) {
 					//有可能是*， 一般是所有的人员标识列表
 					if( persons.contains( "*" )) {
-						logger.info(">>>>>document.getCreatorTopUnitName()=" + document.getCreatorTopUnitName() );
-						persons = listPersonWithUnit( document.getCreatorTopUnitName() );
-
+						String topUnitName = document.getCreatorTopUnitName();
+						logger.debug(">>>>>document.getCreatorTopUnitName()=" + topUnitName );
+						if( StringUtils.equalsAnyIgnoreCase("cipher",topUnitName ) || StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName) ){
+							//取发起人所有顶层组织
+							if( !StringUtils.equalsAnyIgnoreCase("cipher",document.getCreatorIdentity() ) &&
+								!StringUtils.equalsAnyIgnoreCase("xadmin",document.getCreatorIdentity() )){
+								topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
+							}else if(!StringUtils.equalsAnyIgnoreCase("cipher",document.getCreatorPerson() ) &&
+									!StringUtils.equalsAnyIgnoreCase("xadmin",document.getCreatorPerson() )){
+								topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
+							}
+						}
+						if( StringUtils.isNotEmpty( topUnitName )){
+							//取顶层组织的所有人
+							persons = listPersonWithUnit( topUnitName );
+						}else{
+							persons = new ArrayList<>();
+						}
 					}
 				}
 				if( ListTools.isNotEmpty( persons )) {
@@ -69,10 +85,10 @@ public class QueueSendDocumentNotify extends AbstractQueue<Document> {
 					}
 					logger.debug("cms send total count:" + persons.size()  );
 				}
-				logger.info("cms send publish notify for new document completed! " );
+				logger.debug("cms send publish notify for new document completed! " );
 				//}
 			}else{
-				logger.info("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
+				logger.debug("can not send publish notify for document, category or  appinfo not exists! ID： " + document.getId() );
 			}
 		}
 	}
