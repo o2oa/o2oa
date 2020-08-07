@@ -2,10 +2,6 @@ package com.x.server.console.action;
 
 import java.util.Objects;
 
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -13,7 +9,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 /*
 @author zhourui
@@ -132,7 +133,7 @@ public class ActionControl extends ActionBase {
 
 	private static Option ecOption() {
 		return Option.builder("ec").longOpt("eraseContent").argName("type").hasArg().optionalArg(false)
-				.desc("清空实例数据,保留设计数据,type可选值 bbs cms log processPlatform message org.").build();
+				.desc("清空实例数据,保留设计数据,type可选值: bbs,cms,log,processPlatform,message,org或者实体类名.").build();
 	}
 
 	private static Option clh2Option() {
@@ -183,26 +184,31 @@ public class ActionControl extends ActionBase {
 		}
 		String type = Objects.toString(cmd.getOptionValue("ec"));
 		switch (type) {
-			case "processPlatform":
-				new EraseContentProcessPlatform().execute();
-				break;
-			case "bbs":
-				new EraseContentBbs().execute();
-				break;
-			case "cms":
-				new EraseContentCms().execute();
-				break;
-			case "log":
-				new EraseContentLog().execute();
-				break;
-			case "message":
-				new EraseContentMessage().execute();
-				break;
-			case "org":
-				new EraseContentOrg().execute();
-				break;
-			default:
-				logger.print("type may be processPlatform bbs cms log message.");
+		case "processPlatform":
+			new EraseContentProcessPlatform().execute();
+			break;
+		case "bbs":
+			new EraseContentBbs().execute();
+			break;
+		case "cms":
+			new EraseContentCms().execute();
+			break;
+		case "log":
+			new EraseContentLog().execute();
+			break;
+		case "message":
+			new EraseContentMessage().execute();
+			break;
+		case "org":
+			new EraseContentOrg().execute();
+			break;
+		default:
+			EraseContentEntity eraseContentEntity = new EraseContentEntity();
+			for (String str : StringUtils.split(type, ",")) {
+				eraseContentEntity.addClass(str);
+			}
+			eraseContentEntity.execute();
+			break;
 		}
 	}
 
