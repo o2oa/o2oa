@@ -1,40 +1,32 @@
 package com.x.program.center.schedule;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.NameValuePair;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.CenterServer;
-import com.x.base.core.project.config.Collect;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.connection.ActionResponse;
-import com.x.base.core.project.connection.ConnectionAction;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.http.WrapOutBoolean;
-import com.x.base.core.project.jaxrs.WrapString;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Host;
-import com.x.base.core.project.tools.ListTools;
-import com.x.organization.core.entity.Person;
-import com.x.program.center.Business;
-import com.x.program.center.core.entity.Application;
-import com.x.program.center.core.entity.Attachment;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.program.center.Business;
+import com.x.program.center.core.entity.Application;
+import com.x.program.center.core.entity.Attachment;
 
 public class CollectMarket extends BaseAction {
 
