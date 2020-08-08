@@ -32,6 +32,7 @@ import com.x.base.core.project.config.Portal;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.PushConfig;
 import com.x.base.core.project.config.Qiyeweixin;
+import com.x.base.core.project.config.EmailNotification;
 import com.x.base.core.project.config.Query;
 import com.x.base.core.project.config.Token;
 import com.x.base.core.project.config.Vfs;
@@ -74,6 +75,7 @@ public class CreateConfigSample {
 		classes.add(ProcessPlatform.class);
 		classes.add(PushConfig.class);
 		classes.add(Qiyeweixin.class);
+		classes.add(EmailNotification.class);
 		classes.add(Query.class);
 		classes.add(Token.class);
 		classes.add(Vfs.class);

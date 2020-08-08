@@ -26,6 +26,8 @@ public class ThisApplication {
 
 	public static PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
 
+	public static EmailConsumeQueue emailConsumeQueue = new EmailConsumeQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -59,6 +61,9 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 				pmsInnerConsumeQueue.start();
 			}
+			if (BooleanUtils.isTrue(Config.emailNotification().getEnable())) {
+				emailConsumeQueue.start();
+			}
 
 			MessageConnector.start(context());
 
@@ -76,6 +81,7 @@ public class ThisApplication {
 			zhengwuDingdingConsumeQueue.stop();
 			dingdingConsumeQueue.stop();
 			pmsInnerConsumeQueue.stop();
+			emailConsumeQueue.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();

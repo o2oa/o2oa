@@ -28,6 +28,11 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_message_core_entity</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		  </dependency>
 	</dependencies>
 	<build>
 		<plugins>

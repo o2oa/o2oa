@@ -44,6 +44,7 @@ public class CreateSample {
 		classes.add(Person.class);
 		classes.add(ProcessPlatform.class);
 		classes.add(Qiyeweixin.class);
+		classes.add(EmailNotification.class);
 		classes.add(Query.class);
 		classes.add(Token.class);
 		classes.add(Vfs.class);

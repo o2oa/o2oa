@@ -133,6 +133,8 @@ public class MessageConnector {
 
 	public static final String CONSUME_QIYEWEIXIN = "qiyeweixin";
 
+	public static final String CONSUME_EMAIL = "email";
+
 	private static Context context;
 
 	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>();

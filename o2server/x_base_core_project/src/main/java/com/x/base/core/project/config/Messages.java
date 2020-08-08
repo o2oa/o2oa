@@ -28,51 +28,51 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_ATTACHMENT_SHARE,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_ATTACHMENT_EDITOR,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_ATTACHMENT_SHARECANCEL,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_ATTACHMENT_EDITORCANCEL,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_ATTACHMENT_EDITORMODIFY,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 		/* 文件通知结束 */
 
 		/* 会议通知 */
 		o.put(MessageConnector.TYPE_MEETING_INVITE,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_MEETING_DELETE,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 		/* 会议通知结束 */
 
 		/* 待办已办通知 */
 		o.put(MessageConnector.TYPE_TASK_CREATE,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 		/* 待办提醒通知 */
 		o.put(MessageConnector.TYPE_TASK_PRESS,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_TASK_DELETE, new Message());
 
@@ -85,7 +85,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_READ_CREATE,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		o.put(MessageConnector.TYPE_READ_DELETE, new Message());
 
@@ -98,7 +98,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_CALENDAR_ALARM,
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN));
+						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_EMAIL));
 
 		/* 文档发布消息通知 */
 //		o.put(MessageConnector.TYPE_CMS_PUBLISH,

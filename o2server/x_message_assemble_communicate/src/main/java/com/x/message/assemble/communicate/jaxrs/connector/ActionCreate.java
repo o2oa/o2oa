@@ -109,6 +109,9 @@ class ActionCreate extends BaseAction {
 					case MessageConnector.CONSUME_CALENDAR:
 						message = this.calendarMessage(effectivePerson, business, cpwi, instant);
 						break;
+					case MessageConnector.CONSUME_EMAIL:
+						message = this.emailMessage(effectivePerson, business, cpwi, instant);
+						break;
 					default:
 						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
 						break;
@@ -165,6 +168,10 @@ class ActionCreate extends BaseAction {
 					ThisApplication.pmsInnerConsumeQueue.send(message);
 				}
 				break;
+			case MessageConnector.CONSUME_EMAIL:
+				if (Config.emailNotification().getEnable()) {
+					ThisApplication.emailConsumeQueue.send(message);
+				}
 			default:
 				break;
 			}
@@ -265,6 +272,18 @@ class ActionCreate extends BaseAction {
 		message.setPerson(wi.getPerson());
 		message.setTitle(wi.getTitle());
 		message.setConsumer(MessageConnector.CONSUME_CALENDAR);
+		message.setConsumed(false);
+		message.setInstant(instant.getId());
+		return message;
+	}
+
+	private Message emailMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
+		Message message = new Message();
+		message.setBody(Objects.toString(wi.getBody()));
+		message.setType(wi.getType());
+		message.setPerson(wi.getPerson());
+		message.setTitle(wi.getTitle());
+		message.setConsumer(MessageConnector.CONSUME_EMAIL);
 		message.setConsumed(false);
 		message.setInstant(instant.getId());
 		return message;
