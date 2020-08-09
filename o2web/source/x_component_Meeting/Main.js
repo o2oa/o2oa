@@ -591,13 +591,15 @@ MWF.xApplication.Meeting.Main = new Class({
         };
     },
     reload: function( ){
-        if( this.inContainer ){
+        // if( this.inContainer ){
             if( this.currentView && this.currentView.reload ){
                 this.currentView.reload();
+            }else{
+                this.refresh()
             }
-        }else{
-            this.refresh()
-        }
+        // }else{
+        //     this.refresh()
+        // }
     },
     loadSideBar : function(){
         this.sideBar = new MWF.xApplication.Meeting.SideBar(this.node, this);
