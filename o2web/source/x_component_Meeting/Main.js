@@ -594,6 +594,8 @@ MWF.xApplication.Meeting.Main = new Class({
         // if( this.inContainer ){
             if( this.currentView && this.currentView.reload ){
                 this.currentView.reload();
+            }else{
+                this.refresh()
             }
         // }else{
         //     this.refresh()
