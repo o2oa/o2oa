@@ -32,15 +32,10 @@ MWF.xApplication.Selector.Identity = new Class({
         if(this.options.noUnit){
             this.loadInclude(afterLoadSelectItemFun);
         }else if (this.options.units.length){
-            var unitLoaded = 0;
-
             var loadUnitSuccess = function () {
-                unitLoaded++;
-                if( unitLoaded === this.options.units.length ){
-                    this.unitLoaded = true;
-                    if( this.includeLoaded ){
-                        afterLoadSelectItemFun();
-                    }
+                this.unitLoaded = true;
+                if( this.includeLoaded ){
+                    afterLoadSelectItemFun();
                 }
             }.bind(this);
             var loadUnitFailure = loadUnitSuccess;
@@ -52,41 +47,78 @@ MWF.xApplication.Selector.Identity = new Class({
                 }
             }.bind(this));
 
-
-            this.options.units.each(function(unit){
-
-                var container = new Element("div").inject( this.itemAreaNode );
-
-                if (typeOf(unit)==="string"){
-                    this.orgAction.getUnit(unit, function(json){
-                        if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-                            this.subCategorys.push( category );
-                        }
-                        loadUnitSuccess();
-                    }.bind(this), function(){
-                        this.orgAction.listUnitByKey(function(json){
-                            if (json.data.length){
-                                json.data.each(function(data){
-                                    var category = this._newItemCategory("ItemUnitCategory", data, this, container);
-                                    this.subCategorys.push( category );
-                                }.bind(this))
-                            }
-                            loadUnitSuccess();
-                        }.bind(this), loadUnitFailure, unit);
-                    }.bind(this));
-                }else{
-                    this.orgAction.getUnit(function(json){
-                        if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-                            this.subCategorys.push( category );
-                        }
-                        loadUnitSuccess();
-                    }.bind(this), loadUnitFailure, unit.distinguishedName);
-                    //var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
+            var unitList = [];
+            for( var i=0 ; i<this.options.units.length; i++ ){
+                var unit = this.options.units[i];
+                if( typeOf( unit ) === "string" ){
+                    unitList.push(unit);
+                }else if( typeOf(unit)==="object"){
+                    unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
                 }
+            }
+            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
+                if (json.data.length){
+                    json.data.each( function(data){
+                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
+                        this.subCategorys.push(category);
+                    }.bind(this));
+                }
+                loadUnitSuccess();
+            }.bind(this), loadUnitFailure );
 
-            }.bind(this));
+
+            // var unitLoaded = 0;
+            //
+            // var loadUnitSuccess = function () {
+            //     unitLoaded++;
+            //     if( unitLoaded === this.options.units.length ){
+            //         this.unitLoaded = true;
+            //         if( this.includeLoaded ){
+            //             afterLoadSelectItemFun();
+            //         }
+            //     }
+            // }.bind(this);
+            // var loadUnitFailure = loadUnitSuccess;
+            //
+            // this.loadInclude( function () {
+            //     this.includeLoaded = true;
+            //     if( this.unitLoaded ){
+            //         afterLoadSelectItemFun();
+            //     }
+            // }.bind(this));
+            // this.options.units.each(function(unit){
+            //
+            //     var container = new Element("div").inject( this.itemAreaNode );
+            //
+            //     if (typeOf(unit)==="string"){
+            //         this.orgAction.getUnit(unit, function(json){
+            //             if (json.data){
+            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
+            //                 this.subCategorys.push( category );
+            //             }
+            //             loadUnitSuccess();
+            //         }.bind(this), function(){
+            //             this.orgAction.listUnitByKey(function(json){
+            //                 if (json.data.length){
+            //                     json.data.each(function(data){
+            //                         var category = this._newItemCategory("ItemUnitCategory", data, this, container);
+            //                         this.subCategorys.push( category );
+            //                     }.bind(this))
+            //                 }
+            //                 loadUnitSuccess();
+            //             }.bind(this), loadUnitFailure, unit);
+            //         }.bind(this));
+            //     }else{
+            //         this.orgAction.getUnit(function(json){
+            //             if (json.data){
+            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
+            //                 this.subCategorys.push( category );
+            //             }
+            //             loadUnitSuccess();
+            //         }.bind(this), loadUnitFailure, unit.distinguishedName);
+            //     }
+            //
+            // }.bind(this));
         }else{
             // this.loadInclude( function () {
             //     this.includeLoaded = true;
