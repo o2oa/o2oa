@@ -1557,13 +1557,13 @@ MWF.APPOrg.UnitOptions = new Class({
                 if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
                 v.each(function(d){
                     if (d){
-                        if (typeOf(d)==="string"){
-                            var data;
-                            this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                            rangeValues.push(data);
-                        }else{
+                        // if (typeOf(d)==="string"){
+                        //     var data;
+                        //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                        //     rangeValues.push(data);
+                        // }else{
                             rangeValues.push(d);
-                        }
+                        // }
                     }
                 }.bind(this));
             }.bind(this));
@@ -1573,13 +1573,13 @@ MWF.APPOrg.UnitOptions = new Class({
             if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
             v.each(function(d){
                 if (d){
-                    if (typeOf(d)==="string"){
-                        var data;
-                        this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                        rangeValues.push(data);
-                    }else{
+                    // if (typeOf(d)==="string"){
+                    //     var data;
+                    //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                    //     rangeValues.push(data);
+                    // }else{
                         rangeValues.push(d);
-                    }
+                    // }
                 }
             }.bind(this));
         }
@@ -1748,13 +1748,13 @@ MWF.APPOrg.IdentityOptions = new Class({
                 if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
                 v.each(function(d){
                     if (d){
-                        if (typeOf(d)==="string"){
-                            var data;
-                            this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                            rangeValues.push(data);
-                        }else{
+                        // if (typeOf(d)==="string"){
+                        //     var data;
+                        //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                        //     rangeValues.push(data);
+                        // }else{
                             rangeValues.push(d);
-                        }
+                        // }
                     }
                 }.bind(this));
             }.bind(this));
@@ -1764,13 +1764,13 @@ MWF.APPOrg.IdentityOptions = new Class({
             if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
             v.each(function(d){
                 if (d){
-                    if (typeOf(d)==="string"){
-                        var data;
-                        this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                        rangeValues.push(data);
-                    }else{
+                    // if (typeOf(d)==="string"){
+                    //     var data;
+                    //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                    //     rangeValues.push(data);
+                    // }else{
                         rangeValues.push(d);
-                    }
+                    // }
                 }
             }.bind(this));
         }
