@@ -163,7 +163,11 @@ MWF.xApplication.Meeting.ListView = new Class({
 
     },
     reload: function(){
-        this.app.reload();
+        if( this.currentView ){
+            this.currentView.reload();
+        }else{
+            this.app.reload();
+        }
     },
     recordStatus : function(){
         var action = "";
@@ -189,6 +193,11 @@ MWF.xApplication.Meeting.ListView.View = new Class({
         this.container = this.view.contentNode;
         this.app = this.view.app;
         this.items = [];
+        this.load();
+    },
+    reload : function(){
+        this.items = [];
+        this.container.empty();
         this.load();
     },
     load: function(){
