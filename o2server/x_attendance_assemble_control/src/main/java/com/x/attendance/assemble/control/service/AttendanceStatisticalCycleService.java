@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.x.attendance.assemble.common.date.DateOperation;
@@ -15,15 +16,16 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
+
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 public class AttendanceStatisticalCycleService {
 
-	private Ehcache cache_AttendanceStatisticalCycle = ApplicationCache.instance().getCache( AttendanceStatisticalCycle.class);
+	private CacheCategory cache_AttendanceStatisticalCycle = new CacheCategory( AttendanceStatisticalCycle.class);
 
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceStatisticalCycleService.class );
 	private UserManagerService userManagerService = new UserManagerService();
@@ -35,12 +37,12 @@ public class AttendanceStatisticalCycleService {
 	 * @throws Exception
 	 */
 	public Map<String, Map<String, List<AttendanceStatisticalCycle>>> getAllStatisticalCycleMapWithCache(Boolean debugger) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey( "map#all" );
-		Element element = cache_AttendanceStatisticalCycle.get(cacheKey);
+		CacheKey cacheKey = new CacheKey("map#all");
+		
 		Map<String, Map<String, List<AttendanceStatisticalCycle>>> statisticalCycleMap = null;
-
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Map<String, Map<String, List<AttendanceStatisticalCycle>>>) element.getObjectValue();
+		Optional<?> optional = CacheManager.get(cache_AttendanceStatisticalCycle, cacheKey);
+		if (optional.isPresent()) {
+			return ((Map<String, Map<String, List<AttendanceStatisticalCycle>>>)optional.get());
 		}else{
 			return getCycleMapFormAllCycles( false );
 		}

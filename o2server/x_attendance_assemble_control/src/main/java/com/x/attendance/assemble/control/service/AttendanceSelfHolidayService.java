@@ -2,19 +2,21 @@ package com.x.attendance.assemble.control.service;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceSelfHoliday;
-import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.cache.ApplicationCache;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class AttendanceSelfHolidayService {
 
-	private Ehcache cache_AttendanceSelfHoliday = ApplicationCache.instance().getCache( AttendanceSelfHoliday.class);
+	private CacheCategory cache_AttendanceSelfHoliday = new CacheCategory( AttendanceSelfHoliday.class);
+	
 
 	public AttendanceSelfHoliday get( EntityManagerContainer emc, String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
@@ -37,15 +39,18 @@ public class AttendanceSelfHolidayService {
 	}
 
 	public List<AttendanceSelfHoliday> listWithPersonFromCache( EntityManagerContainer emc, String person, boolean debugger) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey( "list#" + person );
-		Element element = cache_AttendanceSelfHoliday.get(cacheKey);
+		//String cacheKey = ApplicationCache.concreteCacheKey( "list#" + person );
+		//Element element = cache_AttendanceSelfHoliday.get(cacheKey);
+		CacheKey cacheKey = new CacheKey("list#" + person);
+		Optional<?> optional = CacheManager.get(cache_AttendanceSelfHoliday, cacheKey);
+		
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (List<AttendanceSelfHoliday>) element.getObjectValue();
+		if (optional.isPresent()) {
+			return ((List<AttendanceSelfHoliday>)optional.get());
 		}else{
 			List<String> ids = getByPersonName( emc, person );
 			List<AttendanceSelfHoliday> list = list( emc, ids );
-			cache_AttendanceSelfHoliday.put(new Element( cacheKey, list ));
+			CacheManager.put(cache_AttendanceSelfHoliday, cacheKey,list);
 			return list;
 		}
 	}
