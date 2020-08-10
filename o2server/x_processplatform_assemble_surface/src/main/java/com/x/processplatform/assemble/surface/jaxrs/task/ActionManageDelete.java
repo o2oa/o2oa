@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -29,7 +31,7 @@ class ActionManageDelete extends BaseAction {
 			Application application = business.application().pick(task.getApplication());
 			Process process = business.process().pick(task.getProcess());
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
