@@ -55,6 +55,9 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
                     case "device.location":
                         locationSingle(json: String(json))
                         break
+                    case "device.openMap":
+                        openMap(json: String(json))
+                        break
                     case "navigation.setTitle":
                         navigationSetTitle(json: String(json))
                         break
@@ -277,6 +280,22 @@ class O2JsApiUtil: O2WKScriptMessageHandlerImplement {
             }
         }else {
             DDLogError("locationSingle, 解析json失败")
+        }
+    }
+    
+    //打开地图位置
+    private func openMap(json: String) {
+        if let map = O2WebViewBaseMessage<O2UtilOpenMap>.deserialize(from: json) {
+            if let callback = map.callback, let data = map.data  {
+                DispatchQueue.main.async {
+                    IMShowLocationViewController.pushShowLocation(vc: self.viewController, latitude: data.latitude,
+                                                                  longitude: data.longitude, address: data.address, addressDetail: data.addressDetail)
+                    let callJs = "\(callback)('{}')"
+                    self.evaluateJs(callBackJs: callJs)
+                }
+            }
+        }else {
+            DDLogError("openMap, 解析json失败")
         }
     }
     
