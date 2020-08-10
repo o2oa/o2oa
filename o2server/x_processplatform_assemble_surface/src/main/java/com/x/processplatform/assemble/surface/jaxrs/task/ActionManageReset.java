@@ -106,7 +106,7 @@ class ActionManageReset extends BaseAction {
 					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
 							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
 							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-			if (BooleanUtils.isTrue(wi.getKeep())) {
+			if (BooleanUtils.isNotFalse(wi.getKeep())) {
 				// 不排除自己,那么把自己再加进去
 				list.add(task);
 			}
