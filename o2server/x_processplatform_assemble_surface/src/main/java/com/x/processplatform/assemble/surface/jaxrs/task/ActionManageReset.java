@@ -1,36 +1,49 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 
 class ActionManageReset extends BaseAction {
 
+	private Wi wi;
+	private EffectivePerson effectivePerson;
+	private WorkLog workLog;
+	private Task task;
+	private List<String> existTaskIds = new ArrayList<>();
+
 	/** 将A的待办直接改为B的待办,转交 */
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Task task = null;
 		ActionResult<Wo> result = new ActionResult<>();
-		Wi wi = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			wi = this.convertToWrapIn(jsonElement, Wi.class);
+			this.effectivePerson = effectivePerson;
 			Business business = new Business(emc);
 			task = emc.find(id, Task.class);
 			if (null == task) {
@@ -40,6 +53,13 @@ class ActionManageReset extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
+			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
+					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(WorkLog.class);
+			}
+			existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, task.getJob());
 			/* 检查reset人员 */
 			List<String> identites = business.organization().identity().list(wi.getIdentityList());
 			if (identites.isEmpty()) {
@@ -59,52 +79,72 @@ class ActionManageReset extends BaseAction {
 		}
 		ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("task", task.getId(), "reset"), wi, task.getJob());
+		this.record();
 		Wo wo = new Wo();
-		wo.setId(task.getId());
+		wo.setValue(true);
 		result.setData(wo);
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("路由名称")
-		private String routeName;
-
-		@FieldDescribe("意见")
-		private String opinion;
-
-		@FieldDescribe("重置身份")
-		private List<String> identityList;
-
-		public List<String> getIdentityList() {
-			return identityList;
+	private void record() throws Exception {
+		Record record;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			final List<String> nextTaskIdentities = new ArrayList<>();
+			record = new Record(workLog, task);
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+					task.getJob());
+			if (null != workCompleted) {
+				record.setCompleted(true);
+				record.setWorkCompleted(workCompleted.getId());
+			}
+			record.setPerson(effectivePerson.getDistinguishedName());
+			record.setType(Record.TYPE_RESET);
+			List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, task.getJob());
+			ids = ListUtils.subtract(ids, existTaskIds);
+			List<Task> list = emc.fetch(ids, Task.class,
+					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
+							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
+							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
+			if (BooleanUtils.isTrue(wi.getKeep())) {
+				// 不排除自己,那么把自己再加进去
+				list.add(task);
+			}
+			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+					.forEach(o -> {
+						Task next = o.getValue().get(0);
+						NextManual nextManual = new NextManual();
+						nextManual.setActivity(next.getActivity());
+						nextManual.setActivityAlias(next.getActivityAlias());
+						nextManual.setActivityName(next.getActivityName());
+						nextManual.setActivityToken(next.getActivityToken());
+						nextManual.setActivityType(next.getActivityType());
+						for (Task t : o.getValue()) {
+							nextManual.getTaskIdentityList().add(t.getIdentity());
+							nextTaskIdentities.add(t.getIdentity());
+						}
+						record.getProperties().getNextManualList().add(nextManual);
+					});
+			/* 去重 */
+			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
 		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
+		WoId resp = ThisApplication.context().applications()
+				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "job", task.getJob()), record, this.task.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionReset(this.task.getId());
 		}
+	}
 
-		public String getRouteName() {
-			return routeName;
-		}
+	public static class Wi extends V2ResetWi {
 
-		public void setRouteName(String routeName) {
-			this.routeName = routeName;
-		}
-
-		public String getOpinion() {
-			return opinion;
-		}
-
-		public void setOpinion(String opinion) {
-			this.opinion = opinion;
-		}
 	}
 
 	public static class WoControl extends WorkControl {
 	}
 
-	public static class Wo extends WoId {
+	public static class Wo extends WrapBoolean {
 
 	}
 
