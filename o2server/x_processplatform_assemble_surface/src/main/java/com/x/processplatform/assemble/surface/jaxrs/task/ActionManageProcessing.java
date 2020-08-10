@@ -37,7 +37,7 @@ class ActionManageProcessing extends BaseAction {
 			}
 			Process process = business.process().pick(task.getProcess());
 			// 需要对这个应用的管理权限
-			if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			/* 如果有输入新的路由决策覆盖原有决策 */
