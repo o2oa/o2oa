@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -40,50 +41,48 @@ class V2Reset extends BaseAction {
 			job = task.getJob();
 		}
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					Task task = emc.find(id, Task.class);
-					if (null == task) {
-						throw new ExceptionEntityNotExist(id, Task.class);
-					}
-					Work work = emc.find(task.getWork(), Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(task.getWork(), Work.class);
-					}
-					/* 检查reset人员 */
-					List<String> identites = ListTools
-							.trim(business.organization().identity().list(wi.getIdentityList()), true, true);
-
-					if (identites.isEmpty()) {
-						throw new ExceptionResetEmpty();
-					}
-
-					emc.beginTransaction(Work.class);
-					List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
-
-					os = ListUtils.sum(os, identites);
-					/* 在新增待办人员中删除当前的处理人 */
-					if (!wi.getKeep()) {
-						os = ListUtils.subtract(os, ListTools.toList(task.getIdentity()));
-					}
-
-					if (ListTools.isEmpty(os)) {
-						throw new ExceptionResetEmpty();
-					}
-
-					work.setManualTaskIdentityList(ListTools.trim(os, true, true));
-					emc.check(work, CheckPersistType.all);
-					emc.commit();
-
+		Callable<ActionResult<Wo>> callable = () -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				Task task = emc.find(id, Task.class);
+				if (null == task) {
+					throw new ExceptionEntityNotExist(id, Task.class);
 				}
-				Wo wo = new Wo();
-				wo.setValue(true);
-				ActionResult<Wo> result = new ActionResult<>();
-				result.setData(wo);
-				return result;
+				Work work = emc.find(task.getWork(), Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+				}
+				/* 检查reset人员 */
+				List<String> identites = ListTools.trim(business.organization().identity().list(wi.getIdentityList()),
+						true, true);
+
+				if (identites.isEmpty()) {
+					throw new ExceptionResetEmpty();
+				}
+
+				emc.beginTransaction(Work.class);
+				List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
+
+				os = ListUtils.sum(os, identites);
+				/* 在新增待办人员中删除当前的处理人 */
+				if (BooleanUtils.isNotTrue(wi.getKeep())) {
+					os = ListUtils.subtract(os, ListTools.toList(task.getIdentity()));
+				}
+
+				if (ListTools.isEmpty(os)) {
+					throw new ExceptionResetEmpty();
+				}
+
+				work.setManualTaskIdentityList(ListTools.trim(os, true, true));
+				emc.check(work, CheckPersistType.all);
+				emc.commit();
+
 			}
+			Wo wo = new Wo();
+			wo.setValue(true);
+			ActionResult<Wo> result = new ActionResult<>();
+			result.setData(wo);
+			return result;
 		};
 
 		return ProcessPlatformExecutorFactory.get(job).submit(callable).get();
