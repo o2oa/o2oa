@@ -15,9 +15,9 @@ import com.baidu.location.LocationClientOption
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wugang.activityresult.library.ActivityResult
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.view.CMSWebViewActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.O2LocationActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.*
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.AndroidUtils
@@ -70,6 +70,7 @@ class JSInterfaceO2mUtil private constructor(val activity: FragmentActivity?) {
                         "device.getPhoneInfo" -> deviceGetPhoneInfo(message!!)
                         "device.scan" -> deviceScan(message!!)
                         "device.location" -> deviceGetLocation(message!!)
+                        "device.openMap" -> deviceOpenMap(message!!)
                         "navigation.setTitle" -> navigationSetTitle(message!!)
                         "navigation.close" -> navigationClose(message!!)
                         "navigation.goBack" -> navigationGoBack(message!!)
@@ -458,6 +459,26 @@ class JSInterfaceO2mUtil private constructor(val activity: FragmentActivity?) {
         mLocationClient.locOption = option
         mLocationClient.start()
     }
+
+
+
+
+    private fun deviceOpenMap(message: String) {
+        val type = object : TypeToken<O2JsPostMessage<O2LocationActivity.LocationData>>() {}.type
+        val value: O2JsPostMessage<O2LocationActivity.LocationData> = gson.fromJson(message, type)
+        val callback = value.callback
+        val data = value.data
+        if (activity != null && data != null) {
+            val bundle = O2LocationActivity.showLocation(data)
+            activity.go<O2LocationActivity>(bundle)
+            if (!TextUtils.isEmpty(callback)) {
+                callbackJs("$callback('{}')")
+            }
+        } else {
+            XLog.error("activity不存在 deviceOpenMap 失败！！")
+        }
+    }
+
 
 
 

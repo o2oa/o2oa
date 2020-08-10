@@ -1,13 +1,14 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v7.widget.Toolbar
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import com.baidu.location.BDLocation
 import com.baidu.location.BDLocationListener
 import com.baidu.location.LocationClient
@@ -21,7 +22,13 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import org.jetbrains.anko.doAsync
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+
 
 class O2LocationActivity : AppCompatActivity(), BDLocationListener {
 
@@ -123,6 +130,8 @@ class O2LocationActivity : AppCompatActivity(), BDLocationListener {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (mode == 0) {
             menuInflater.inflate(R.menu.menu_location_send, menu)
+        }else {
+            menuInflater.inflate(R.menu.menu_location_open, menu)
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -138,6 +147,17 @@ class O2LocationActivity : AppCompatActivity(), BDLocationListener {
                     finish()
                 }
                 return true
+            }
+            R.id.location_open -> {
+                BottomSheetMenu(this@O2LocationActivity).setItems(
+                        arrayListOf("百度地图", "高德地图", "腾讯地图"),
+                        ContextCompat.getColor(this@O2LocationActivity, R.color.blue)){ index ->
+                            when(index) {
+                                0 -> goToBaiduMap()
+                                1 -> goToGaodeMap()
+                                2 -> goToTencentMap()
+                            }
+                        }.show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -251,6 +271,77 @@ class O2LocationActivity : AppCompatActivity(), BDLocationListener {
         option.SetIgnoreCacheException(false)//可选，默认false，设置是否收集CRASH信息，默认收集
         option.setEnableSimulateGps(false)//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
         mLocationClient.locOption = option
+    }
+
+    /**
+     * 跳转百度地图
+     */
+    private fun goToBaiduMap() {
+        try {
+            val uri = Uri.parse(("baidumap://map/direction?destination=latlng:"
+                     + locationData?.latitude.toString()) + ","
+                     + locationData?.longitude.toString() + "|name:" + locationData?.address +  // 终点
+                     "&mode=driving" +  // 导航路线方式
+                     "&src=" + packageName)
+            val intent = Intent("android.intent.action.VIEW", uri)
+            startActivity(intent)
+        } catch (e: Exception) {
+            XToast.toastShort(this, "未安装百度地图，无法打开")
+        }
+    }
+
+    /**
+     * 跳转高德地图
+     */
+    private fun goToGaodeMap() {
+        try {
+            val lat = LatLng(locationData?.latitude!!, locationData?.longitude!!)
+            val endPoint = BD2GCJ(lat) //坐标转换
+//        val stringBuffer = StringBuffer("androidamap://navi?sourceApplication=").append("O2OA")
+//        stringBuffer.append("&lat=").append(endPoint!!.latitude)
+//                .append("&lon=").append(endPoint.longitude).append("&keywords=${locationData?.address}")
+//                .append("&dev=").append(0)
+//                .append("&style=").append(2)
+            val stringBuffer = StringBuffer("androidamap://route/plan/?sourceApplication=O2OA&dlat=")
+            stringBuffer.append(endPoint!!.latitude)
+                    .append("&dlon=").append(endPoint.longitude)
+                    .append("&dname=${locationData?.address}")
+                    .append("&dev=0&t=0")
+            val intent = Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()))
+            startActivity(intent)
+        } catch (e: Exception) {
+            XToast.toastShort(this, "未安装高德地图，无法打开")
+        }
+    }
+
+    /**
+     * 跳转腾讯地图
+     */
+    private fun goToTencentMap() {
+        try {
+            val lat = LatLng(locationData?.latitude!!, locationData?.longitude!!)
+            val endPoint = BD2GCJ(lat) //坐标转换
+            val stringBuffer = StringBuffer("qqmap://map/routeplan?type=drive")
+                    .append("&tocoord=").append(endPoint!!.latitude).append(",").append(endPoint.longitude).append("&to=${locationData?.address}")
+            val intent = Intent("android.intent.action.VIEW", Uri.parse(stringBuffer.toString()))
+            startActivity(intent)
+        } catch (e: Exception) {
+            XToast.toastShort(this, "未安装腾讯地图，无法打开")
+        }
+    }
+
+
+    /**
+     * BD-09 坐标转换成 GCJ-02 坐标
+     */
+    private fun BD2GCJ(bd: LatLng): LatLng? {
+        val x = bd.longitude - 0.0065
+        val y = bd.latitude - 0.006
+        val z = sqrt(x * x + y * y) - 0.00002 * sin(y * Math.PI)
+        val theta = atan2(y, x) - 0.000003 * cos(x * Math.PI)
+        val lng = z * cos(theta) //lng
+        val lat = z * sin(theta) //lat
+        return LatLng(lat, lng)
     }
 
 
