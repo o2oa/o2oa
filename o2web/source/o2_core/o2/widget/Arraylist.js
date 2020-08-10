@@ -153,7 +153,7 @@ o2.widget.Arraylist.Item = new Class({
 				e.target.setStyles(this.arraylist.css.contentItemNode);
 			}.bind(this),
 			"click": function(e){
-				if (this.options.isAdd) this.arraylist.addNewItem(this);
+				if (this.arraylist.options.isAdd) this.arraylist.addNewItem(this);
 			}.bind(this)
 		});
 		
