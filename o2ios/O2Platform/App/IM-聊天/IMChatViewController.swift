@@ -633,12 +633,8 @@ extension IMChatViewController: IMChatMessageDelegate {
     
     
     func openLocatinMap(info: IMMessageBodyInfo) {
-        let map = IMShowLocationViewController()
-        map.address = info.address
-        map.addressDetail = info.addressDetail
-        map.latitude = info.latitude
-        map.longitude = info.longitude
-        self.navigationController?.pushViewController(map, animated: false)
+        IMShowLocationViewController.pushShowLocation(vc: self, latitude: info.latitude, longitude: info.longitude,
+                                                      address: info.address, addressDetail: info.addressDetail)
     }
     
     func clickImageMessage(info: IMMessageBodyInfo) {
