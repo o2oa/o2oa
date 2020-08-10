@@ -28,11 +28,19 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                 if (this.json.actionStyles) this.toolbarWidget.css = this.json.actionStyles;
                 //alert(this.readonly)
 
-                if (this.json.hideSystemTools){
-                    this.setCustomToolbars(this.json.tools, this.toolbarNode);
-                    this.toolbarWidget.load();
-                }else{
-                    if (this.json.defaultTools){
+                if( this.json.multiTools ){ //自定义操作和系统操作混合的情况，用 system : true 来区分系统和自定义
+                    var addReadActionFlag = !this.json.hideSystemTools; //是否需要增加已阅
+                    this.json.multiTools.each( function (tool) {
+                        if( tool.system ){
+                            if( !this.json.hideSystemTools ){
+                                if( tool.id === "action_readed" )addReadActionFlag = false;
+                                this.setToolbars([tool], this.toolbarNode, this.readonly);
+                            }
+                        }else{
+                            this.setCustomToolbars([tool], this.toolbarNode);
+                        }
+                    }.bind(this));
+                    if( addReadActionFlag ){
                         var addActions = [
                             {
                                 "type": "MWFToolBarButton",
@@ -46,23 +54,45 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class({
                                 "read": true
                             }
                         ];
-                        //this.form.businessData.control.allowReflow =
-
-                        //this.json.defaultTools.push(o);
-                        this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
                         this.setToolbars(addActions, this.toolbarNode, this.readonly);
-
+                    }
+                    this.toolbarWidget.load();
+                }else{
+                    if (this.json.hideSystemTools){
                         this.setCustomToolbars(this.json.tools, this.toolbarNode);
                         this.toolbarWidget.load();
                     }else{
-                        MWF.getJSON(this.form.path+"toolbars.json", function(json){
-                            this.setToolbars(json, this.toolbarNode, this.readonly, true);
+                        if (this.json.defaultTools){
+                            var addActions = [
+                                {
+                                    "type": "MWFToolBarButton",
+                                    "img": "read.png",
+                                    "title": "标记为已阅",
+                                    "action": "readedWork",
+                                    "text": "已阅",
+                                    "id": "action_readed",
+                                    "control": "allowReadProcessing",
+                                    "condition": "",
+                                    "read": true
+                                }
+                            ];
+                            //this.form.businessData.control.allowReflow =
+
+                            //this.json.defaultTools.push(o);
+                            this.setToolbars(this.json.defaultTools, this.toolbarNode, this.readonly);
+                            this.setToolbars(addActions, this.toolbarNode, this.readonly);
+
                             this.setCustomToolbars(this.json.tools, this.toolbarNode);
                             this.toolbarWidget.load();
-                        }.bind(this), null);
+                        }else{
+                            MWF.getJSON(this.form.path+"toolbars.json", function(json){
+                                this.setToolbars(json, this.toolbarNode, this.readonly, true);
+                                this.setCustomToolbars(this.json.tools, this.toolbarNode);
+                                this.toolbarWidget.load();
+                            }.bind(this), null);
+                        }
                     }
                 }
-
             }.bind(this));
         // }
 	},
