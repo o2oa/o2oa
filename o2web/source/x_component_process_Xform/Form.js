@@ -1575,7 +1575,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             "buttonList": [
                 {
                     "text": this.app.lp.closePage,
-                    "action": function () { dlg.close(); this.app.close(); }.bind(this)
+                    "action": function () {
+                        dlg.close();
+                        if (this.json.afterProcessAction=="redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code){
+                            var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+                            (new URI(url)).go();
+                        }else{
+                            this.app.close();
+                        }
+                    }.bind(this)
                 }
             ]
         };
