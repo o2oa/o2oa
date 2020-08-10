@@ -1097,7 +1097,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var start = d+" "+bt;
         var completed = d+" "+et;
 
-        this.app.actions.listBuildingByRange(start, completed, function(json){
+        var success = function(json){
             json.data.each(function(building){
                 var node = new Element("div", {"styles": css.createMeetingInfoSelectRoomItem1Node}).inject(this.selectRoomNode);
                 var nodeName = new Element("div", {"styles": css.createMeetingInfoSelectRoomItem1NameNode, "text": building.name}).inject(node);
@@ -1109,7 +1109,18 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 }.bind(this));
 
             }.bind(this));
-        }.bind(this));
+        }.bind(this);
+
+        if( this.isEdited && this.data.room ){
+            o2.Actions.load("x_meeting_assemble_control").BuildingAction.listWithStartCompletedRoom( start, completed, this.data.room, this.data.id,  function ( json ) {
+                    success( json );
+                }
+            )
+        }else{
+            this.app.actions.listBuildingByRange(start, completed, function(json){
+                success( json )
+            }.bind(this));
+        }
     },
 
     createRoomSelectNode: function(room, i, building){
