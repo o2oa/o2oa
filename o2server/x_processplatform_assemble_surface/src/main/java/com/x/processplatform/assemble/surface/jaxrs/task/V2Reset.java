@@ -247,6 +247,7 @@ public class V2Reset extends BaseAction {
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
 			req.setTaskList(newTasks);
+			req.setPrevTaskIdentity(task.getIdentity());
 			req.getPrevTaskIdentityList().add(task.getIdentity());
 			ThisApplication.context().applications()
 					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
