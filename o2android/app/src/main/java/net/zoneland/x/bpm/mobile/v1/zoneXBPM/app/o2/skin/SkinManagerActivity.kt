@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.skin
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_skin_manager.*
 import net.muliba.changeskin.FancySkinManager

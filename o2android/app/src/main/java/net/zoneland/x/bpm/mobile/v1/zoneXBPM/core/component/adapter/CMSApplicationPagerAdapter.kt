@@ -1,9 +1,9 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.application.CMSCategoryFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSCategoryInfoJson
 

@@ -48,8 +48,9 @@ class PortalWebViewActivity : BaseMVPActivity<PortalWebViewContract.View, Portal
             portalUrl = APIAddressHelper.instance().getPortalWebViewUrl(portalId)
             XLog.debug("portal url : $portalUrl")
             portalFragment = IndexPortalFragment.instance(portalId)
+
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_portal_web_view_content, portalFragment)
+            transaction.replace(R.id.frame_portal_web_view_content, portalFragment!!)
             transaction.commit()
             toolbar?.setNavigationIcon(R.mipmap.ic_back_mtrl_white_alpha)
             toolbar?.setNavigationOnClickListener {

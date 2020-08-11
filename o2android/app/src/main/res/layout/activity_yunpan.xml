@@ -9,7 +9,7 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar" ></include>
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_yunpan"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -18,12 +18,12 @@
         app:tabIndicatorColor="@color/z_color_primary"
         app:tabTextAppearance="@style/tab_task_application" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/yunpan_viewPager_id"
         android:layout_below="@id/tab_yunpan"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
     <RelativeLayout
         android:layout_width="match_parent"

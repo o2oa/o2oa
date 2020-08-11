@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.viewer
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_picture_viewer.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity

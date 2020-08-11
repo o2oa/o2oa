@@ -35,8 +35,8 @@ class CloudDrivePictureViewerFragment : BaseMVPViewPagerFragment<CloudDrivePictu
     var fileName = ""
 
     override fun initUI() {
-        fileId = arguments.getString(FILE_ID_KEY) ?: ""
-        fileName = arguments.getString(FILE_NAME_KEY) ?: ""
+        fileId = arguments?.getString(FILE_ID_KEY) ?: ""
+        fileName = arguments?.getString(FILE_NAME_KEY) ?: ""
         if (TextUtils.isEmpty(fileId) || TextUtils.isEmpty(fileName)) {
             XToast.toastShort(activity, "没有传入必要的参数，无法展现图片！")
         }else {

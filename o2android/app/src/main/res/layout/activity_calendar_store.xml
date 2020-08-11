@@ -8,7 +8,7 @@
             type="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm.CalendarStoreViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/z_color_background"
@@ -18,7 +18,7 @@
             android:id="@+id/include"
             layout="@layout/snippet_appbarlayout_toolbar" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_calendar_store_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,5 +29,5 @@
             app:layout_constraintTop_toBottomOf="@+id/include"
             app:layout_constraintVertical_bias="0.0" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

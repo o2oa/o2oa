@@ -1,6 +1,5 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.ai
 
-import jiguang.chat.utils.pinyin.HanyuPinyin
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
@@ -8,6 +7,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.TulingPostData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.pinyin.HanyuPinyin
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.android.schedulers.AndroidSchedulers

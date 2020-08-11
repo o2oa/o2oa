@@ -13,7 +13,7 @@ import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.widget.EditText
 import android.widget.TextView
@@ -150,12 +150,12 @@ class BlueToothClientActivity : BaseMVPActivity<BlueToothContract.View, BlueToot
     private fun sendInfo2AIDevice(wifiSSID: String, wifiPassword: String) {
         try {
             //todo httpProtocol
-            val centerHost = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_HOST_KEY, "")
-            val centerContext = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_CONTEXT_KEY, "")
+            val centerHost = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_HOST_KEY, "") ?: ""
+            val centerContext = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_CONTEXT_KEY, "") ?: ""
             val centerPort = O2SDKManager.instance().prefs().getInt(O2.PRE_CENTER_PORT_KEY, 0)
             val info = AIDeviceBluetoothSendInfo(wifiSSID, wifiPassword, centerHost, centerContext, centerPort.toString(), O2SDKManager.instance().zToken)
             val json = O2SDKManager.instance().gson.toJson(info)
-            XLog.info("json:" + json)
+            XLog.info("json:$json")
             val out = socket?.outputStream
             out?.write(json.toByteArray())
             out?.flush()

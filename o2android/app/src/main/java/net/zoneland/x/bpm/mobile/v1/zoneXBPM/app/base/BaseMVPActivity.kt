@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.widget.TextView
 import com.wugang.activityresult.library.ActivityResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R

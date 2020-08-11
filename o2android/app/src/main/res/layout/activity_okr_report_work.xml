@@ -11,8 +11,8 @@
 
     <include layout="@layout/snippet_appbarlayout_tablayout_toolbar" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_okr_report_work"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent"></androidx.viewpager.widget.ViewPager>
 </LinearLayout>

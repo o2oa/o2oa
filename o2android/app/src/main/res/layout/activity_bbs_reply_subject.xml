@@ -55,7 +55,7 @@
                         android:textColor="@color/z_color_title_font"
                         android:textSize="@dimen/font_normal"/>
                 </RelativeLayout>
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_normal"
@@ -70,7 +70,7 @@
                         android:gravity="start"
                         android:background="@null"
                         android:hint="@string/bbs_reply_subject_content_label" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
         <LinearLayout

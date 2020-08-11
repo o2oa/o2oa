@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -56,20 +56,20 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //NO_FRAME就是dialog无边框，0指的是默认系统Theme
-        setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle)
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle)
         presenter.attachView(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_task_work_submit, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_task_work_submit, container, false)
     }
 
     override fun onStart() {
         super.onStart()
-        val window = dialog.window
-        window!!.setLayout(activity.screenWidth(), activity.screenHeight())
-        window.setGravity(Gravity.TOP)
-        window.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
+        val window = dialog?.window
+        window?.setLayout(activity?.screenWidth() ?: 200, activity?.screenHeight()?: 200)
+        window?.setGravity(Gravity.TOP)
+        window?.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
 
     override fun onDestroy() {
@@ -78,12 +78,12 @@ class TaskWorkSubmitDialogFragment: DialogFragment(), TaskWorkSubmitDialogContra
 
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        workId = arguments.getString(WORK_ID_KEY) ?: ""
-        val task = arguments.getString(TASK_DATA_KEY) ?: ""
-        formData = arguments.getString(FORM_DATA_KEY) ?: ""
-        opinionText = arguments.getString(OPINION_TEXT_KEY) ?: ""
+        workId = arguments?.getString(WORK_ID_KEY) ?: ""
+        val task = arguments?.getString(TASK_DATA_KEY) ?: ""
+        formData = arguments?.getString(FORM_DATA_KEY) ?: ""
+        opinionText = arguments?.getString(OPINION_TEXT_KEY) ?: ""
         try {
             taskData = O2SDKManager.instance().gson.fromJson(task, TaskData::class.java)
         } catch (e: Exception) {

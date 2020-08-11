@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 
 /**
  * Created by fancy on 2017/7/20.

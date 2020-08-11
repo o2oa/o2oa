@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_refresh_myFile_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/view_my_file_split"
             android:orientation="vertical">
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_yunpan_myfile_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -116,4 +116,4 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

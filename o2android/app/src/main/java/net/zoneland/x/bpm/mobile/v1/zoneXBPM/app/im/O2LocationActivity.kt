@@ -5,8 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.baidu.location.BDLocation
@@ -355,8 +355,8 @@ class O2LocationActivity : AppCompatActivity(), BDLocationListener {
             var longitude: Double? = null//type=location的时候位置信息
     ) : Parcelable {
         constructor(source: Parcel) : this(
-                source.readString(),
-                source.readString(),
+                source.readString() ?: "",
+                source.readString() ?: "",
                 source.readValue(Double::class.java.classLoader) as Double?,
                 source.readValue(Double::class.java.classLoader) as Double?
         )

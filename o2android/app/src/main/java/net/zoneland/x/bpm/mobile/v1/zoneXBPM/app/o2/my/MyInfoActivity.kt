@@ -109,7 +109,7 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
                 TAKE_FROM_PICTURES_CODE -> {
                     XLog.debug("choose from pictures ...")
                     data?.let {
-                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        val result = it.extras?.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
                         if (!TextUtils.isEmpty(result)){
                             val uri = Uri.fromFile(File(result))
                             startClipAvatar(uri)
@@ -119,7 +119,7 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
 
                 CLIP_AVATAR_ACTIVITY_CODE -> {
                     data?.let {
-                        val url = it.extras.getString("clipAvatarFilePath")
+                        val url = it.extras?.getString("clipAvatarFilePath")
                         XLog.debug("back Myinfo avatar uri : $url ")
                         modifyAvatar2Remote(url)
                     }

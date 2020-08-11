@@ -3,7 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.fragment_start_process_step_one.*

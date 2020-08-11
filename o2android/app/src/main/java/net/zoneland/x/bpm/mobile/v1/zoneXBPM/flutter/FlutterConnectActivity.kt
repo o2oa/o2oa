@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.flutter
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.FrameLayout
 import io.flutter.app.FlutterActivity
 import io.flutter.facade.Flutter

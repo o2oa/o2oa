@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.view.*
 import kotlinx.android.synthetic.main.fragment_custom_style_install.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2CustomStyle
@@ -41,32 +41,34 @@ class CustomStyleFragment : DialogFragment(), CustomStyleFragmentContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
         mPresenter.attachView(this)
     }
 
     override fun onStart() {
         super.onStart()
-        val window = dialog.window
+        val window = dialog?.window
 //        val metrics = resources.displayMetrics
 //        val width = (metrics.widthPixels * 0.98).toInt() //DialogSearch的宽
-        window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-        window.setGravity(Gravity.TOP)
-        window.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
+        window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
+        window?.setGravity(Gravity.TOP)
+        window?.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_custom_style_install, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_custom_style_install, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.installCustomStyle(handler)
     }
 
     override fun installFinish() {
-        O2CustomStyle.clearImageDiskCache(context)
-        O2CustomStyle.clearImageMemoryCache(context)
+        if (activity != null) {
+            O2CustomStyle.clearImageDiskCache(activity!!)
+            O2CustomStyle.clearImageMemoryCache(activity!!)
+        }
         val message = handler.obtainMessage()
         message.arg1 = 100
         handler.sendMessage(message)
@@ -77,7 +79,7 @@ class CustomStyleFragment : DialogFragment(), CustomStyleFragmentContract.View {
         mPresenter.detachView()
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         if (activity is DialogInterface.OnDismissListener) {
             (activity as DialogInterface.OnDismissListener).onDismiss(dialog)
         }

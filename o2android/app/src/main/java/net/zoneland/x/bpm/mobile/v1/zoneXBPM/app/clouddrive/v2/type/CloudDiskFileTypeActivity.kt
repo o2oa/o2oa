@@ -3,10 +3,10 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.type
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_cloud_disk_file_type.*
@@ -36,7 +36,7 @@ class CloudDiskFileTypeActivity : BaseMVPActivity<CloudDiskFileTypeContract.View
         fun start(activity: Activity, type: String) {
             val bundle = Bundle()
             bundle.putString(FILE_TYPE_ARG_KEY, type)
-            activity.go<CloudDiskFileTypeActivity>(bundle)
+            activity?.go<CloudDiskFileTypeActivity>(bundle)
         }
     }
 

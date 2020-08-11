@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric
 
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.security.keystore.KeyProperties
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException

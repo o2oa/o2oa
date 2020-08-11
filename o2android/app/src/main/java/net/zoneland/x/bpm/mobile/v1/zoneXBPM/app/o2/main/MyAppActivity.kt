@@ -1,9 +1,9 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main
 
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -96,7 +96,7 @@ class MyAppActivity : BaseMVPActivity<MyAppContract.View,MyAppContract.Presenter
         /**
          * 回到正常状态的时候回调
          */
-        override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder) {
+        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
             // 正常默认状态下背景恢复默认
             viewHolder.itemView.setBackgroundColor(0)
             //ViewCompat.setTranslationX(viewHolder.itemView, 0f)
@@ -115,7 +115,7 @@ class MyAppActivity : BaseMVPActivity<MyAppContract.View,MyAppContract.Presenter
     }
 
     private fun initAllApp(){
-        all_app_recycler_view.layoutManager = GridLayoutManager(this,5)
+        all_app_recycler_view.layoutManager = GridLayoutManager(this, 5)
         all_app_recycler_view.adapter = allAppAdapter
         allAppAdapter.setOnItemClickListener { _, position ->
             if (isEdit) {
@@ -132,10 +132,10 @@ class MyAppActivity : BaseMVPActivity<MyAppContract.View,MyAppContract.Presenter
     }
 
     private fun initMyApp(){
-        my_app_rv.layoutManager = GridLayoutManager(this,9)
+        my_app_rv.layoutManager = GridLayoutManager(this, 9)
         my_app_rv.adapter = myAppAdapter
 
-        my_app_recycler_view.layoutManager = GridLayoutManager(this,5)
+        my_app_recycler_view.layoutManager = GridLayoutManager(this, 5)
         my_app_recycler_view.adapter = myAppEditAdapter
         myAppEditAdapter.setOnItemClickListener { _, position ->
             if (isEdit) {

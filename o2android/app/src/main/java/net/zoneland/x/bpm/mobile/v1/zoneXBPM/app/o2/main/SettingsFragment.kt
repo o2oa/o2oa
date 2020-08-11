@@ -68,9 +68,9 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
     val shareDialog: AndroidShareDialog by lazy { AndroidShareDialog(activity, O2.O2_DOWNLOAD_URL, null) }
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.setting_button_account_security_id -> activity.go<AccountSecurityActivity>()
-            R.id.setting_button_skin -> activity.go<SkinManagerActivity>()
-            R.id.setting_button_remind_setting_id -> activity.go<NoticeSettingActivity>()
+            R.id.setting_button_account_security_id -> activity?.go<AccountSecurityActivity>()
+            R.id.setting_button_skin -> activity?.go<SkinManagerActivity>()
+            R.id.setting_button_remind_setting_id -> activity?.go<NoticeSettingActivity>()
             R.id.setting_button_common_set_id -> {
                 O2DialogSupport.openConfirmDialog(activity, "确认要清除缓存吗？", {
                     HttpCacheUtil.clearCache(activity, 0)
@@ -78,7 +78,7 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
             }
             R.id.setting_button_customer_service_id -> shareDialog.show()
 //            R.id.setting_button_feedback_id -> startFeedBack()
-            R.id.setting_button_about_id -> activity.go<AboutActivity>()
+            R.id.setting_button_about_id -> activity?.go<AboutActivity>()
             R.id.myInfo_logout_btn_id -> logout()
 
 
@@ -132,6 +132,6 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
     private fun logoutThenJump2Login() {
         O2SDKManager.instance().logoutCleanCurrentPerson()
         O2App.instance._JMLogout()
-        activity.goAndClearBefore<LoginActivity>()
+        activity?.goAndClearBefore<LoginActivity>()
     }
 }

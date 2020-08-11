@@ -41,18 +41,21 @@ object O2DialogSupport {
     /**
      * 确认dialog
      */
-    fun openConfirmDialog(context: Context, content:String, listener: ((O2AlertDialogBuilder.O2Dialog) -> Unit),
+    fun openConfirmDialog(context: Context?, content:String, listener: ((O2AlertDialogBuilder.O2Dialog) -> Unit),
                           icon: O2AlertIconEnum = O2AlertIconEnum.ALERT,
                           negativeListener: ((O2AlertDialogBuilder.O2Dialog) -> Unit) = { _->  }) {
-        O2AlertDialogBuilder(context)
-                .title(R.string.confirm)
-                .icon(icon)
-                .content(content)
-                .positive(R.string.positive)
-                .negative(R.string.cancel)
-                .onPositiveListener(listener)
-                .onNegativeListener(negativeListener)
-                .show()
+        context?.let {
+            O2AlertDialogBuilder(it)
+                    .title(R.string.confirm)
+                    .icon(icon)
+                    .content(content)
+                    .positive(R.string.positive)
+                    .negative(R.string.cancel)
+                    .onPositiveListener(listener)
+                    .onNegativeListener(negativeListener)
+                    .show()
+        }
+
     }
 
 
@@ -60,12 +63,15 @@ object O2DialogSupport {
     /**
      * 提示dialog
      */
-    fun openAlertDialog(context: Context, content:String, listener: ((O2AlertDialogBuilder.O2Dialog) -> Unit) = {}, icon: O2AlertIconEnum = O2AlertIconEnum.ALERT) {
-        O2AlertDialogBuilder(context)
-                .icon(icon)
-                .content(content)
-                .positive(R.string.positive)
-                .onPositiveListener(listener)
-                .show()
+    fun openAlertDialog(context: Context?, content:String, listener: ((O2AlertDialogBuilder.O2Dialog) -> Unit) = {}, icon: O2AlertIconEnum = O2AlertIconEnum.ALERT) {
+        context?.let {
+            O2AlertDialogBuilder(it)
+                    .icon(icon)
+                    .content(content)
+                    .positive(R.string.positive)
+                    .onPositiveListener(listener)
+                    .show()
+        }
+
     }
 }

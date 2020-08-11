@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;

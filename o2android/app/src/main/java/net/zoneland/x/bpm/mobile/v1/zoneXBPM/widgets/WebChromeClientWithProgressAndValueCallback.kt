@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -93,7 +93,7 @@ class WebChromeClientWithProgressAndValueCallback private constructor (val activ
                 TAKE_FROM_PICTURES_KEY -> {
                     //选择照片
                     data?.let {
-                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        val result = it.extras?.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
                         if (!TextUtils.isEmpty(result)) {
                             XLog.debug("照片 path:$result")
                             if (uploadMessageAboveL != null && activity!=null)   {

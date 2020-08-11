@@ -50,7 +50,7 @@ class MyAppPresenter : BasePresenterImpl<MyAppContract.View>(), MyAppContract.Pr
                         result.add(obj)
                     }
                     if (result.isEmpty()) {
-                        val url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "")
+                        val url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "") ?: ""
                         getApiService(mView?.getContext(), url)
                                 ?.getCustomStyle()
                                 ?.subscribeOn(Schedulers.immediate())

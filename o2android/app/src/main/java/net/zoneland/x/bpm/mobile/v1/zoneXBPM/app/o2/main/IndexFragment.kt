@@ -6,9 +6,9 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.widget.NestedScrollView
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
@@ -125,7 +125,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
 
     lateinit var cBannerView: ConvenientBanner<HotPictureOutData>
     lateinit var mActionBarBackgroundDrawable: Drawable
-    val screenWidth: Int by lazy { activity.screenWidth() }
+    val screenWidth: Int by lazy { activity?.screenWidth() ?: 200 }
     val cBannerHeight: Int by lazy { screenWidth / 2 }
     val appList = ArrayList<MyAppListObject>()
     val itemDecoration: DividerItemDecoration by lazy { DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST) }
@@ -149,7 +149,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                 R.color.z_color_refresh_red, R.color.z_color_refresh_purple, R.color.z_color_refresh_orange)
         swipe_refresh_todo_fragment.setOnRefreshListener { lazyLoad() }
         XLog.debug("cBanner width:$screenWidth, height:$cBannerHeight")
-        mActionBarBackgroundDrawable = ColorDrawable(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+        mActionBarBackgroundDrawable = ColorDrawable(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
         mActionBarBackgroundDrawable.alpha = 0 //透明
         relative_todo_main_action_bar.background = mActionBarBackgroundDrawable
         nested_scroll_todo_main_content.setOnScrollChangeListener { _: @ParameterName(name = "v") NestedScrollView?,
@@ -228,7 +228,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
         when (v?.id) {
             R.id.image_todo_main_to_top -> nested_scroll_todo_main_content.scrollTo(0, 0)
             R.id.image_todo_fragment_scan_code -> startScan()
-            R.id.tv_todo_fragment_publish -> activity.go<StartProcessActivity>()
+            R.id.tv_todo_fragment_publish -> activity?.go<StartProcessActivity>()
             R.id.linear_main_todo_new_message_center_button -> {
                 currentType = BUSINESS_TYPE_MESSAGE_CENTER
                 refreshRecyclerView()
@@ -242,7 +242,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
     }
 
     private fun startScan() {
-        PermissionRequester(activity)
+        PermissionRequester(activity!!)
                 .request(Manifest.permission.CAMERA)
                 .o2Subscribe {
                     onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
@@ -250,7 +250,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
                         if (!granted) {
                             O2DialogSupport.openAlertDialog(activity, "需要摄像头权限才能进行扫一扫功能！")
                         } else {
-                            activity.go<CaptureActivity>()
+                            activity?.go<CaptureActivity>()
                         }
                     }
                 }
@@ -391,7 +391,10 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
 
     private fun initAppList() {
         appAdapter.setOnItemClickListener { _, position ->
-            IndexFragment.go(appList[position].appId!!, activity, appList[position].appTitle ?: "")
+            if (activity != null) {
+                IndexFragment.go(appList[position].appId!!, activity!!, appList[position].appTitle
+                        ?: "")
+            }
         }
         recycler_todo_main_app_list.adapter = appAdapter
         recycler_todo_main_app_list.layoutManager = GridLayoutManager(activity, 5)
@@ -456,7 +459,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
         when {
             HotPictureApplicationEnum.BBS.key == data.application -> {
                 XLog.debug("打开论坛帖子：" + data.title)
-                activity.go<BBSWebViewSubjectActivity>(BBSWebViewSubjectActivity.startBundleData(data.infoId, data.title))
+                activity?.go<BBSWebViewSubjectActivity>(BBSWebViewSubjectActivity.startBundleData(data.infoId, data.title))
             }
             HotPictureApplicationEnum.CMS.key == data.application -> {
                 XLog.debug("点击内容管理：" + data.title)
@@ -502,9 +505,9 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
         itemList.clear()
         if (currentType == BUSINESS_TYPE_MESSAGE_CENTER) {
             tv_no_data?.text = getString(R.string.recycler_no_data_cool)
-            tv_main_todo_new_message_center?.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+            tv_main_todo_new_message_center?.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
             view_main_todo_new_message_center_divider?.visible()
-            tv_main_todo_new_task_center?.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary))
+            tv_main_todo_new_task_center?.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary))
             view_main_todo_new_task_center_divider?.gone()
             newsList.map {
                 itemList.add(it.copyToTodoListItem())
@@ -518,9 +521,9 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
             }
         } else {
             tv_no_data?.text = getString(R.string.recycler_no_data_wonderful_work)
-            tv_main_todo_new_task_center?.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+            tv_main_todo_new_task_center?.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
             view_main_todo_new_task_center_divider?.visible()
-            tv_main_todo_new_message_center?.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary))
+            tv_main_todo_new_message_center?.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary))
             view_main_todo_new_message_center_divider?.gone()
             taskList.map {
                 itemList.add(it.copyToTodoListItem())
@@ -562,7 +565,7 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
 
     private fun gotoCMSWebView(businessId: String, title: String) {
         XLog.debug("goto cms web view page id:$businessId , title: $title")
-        activity.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(businessId, title))
+        activity?.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(businessId, title))
     }
 
 }

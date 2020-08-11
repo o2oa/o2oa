@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.approval
 
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View

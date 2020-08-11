@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.tbs
 
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
@@ -45,7 +45,7 @@ class FileReaderActivity : BaseO2BindActivity() {
             XLog.info("arg:$arg, 1:$arg1, 2:$arg2")
         }
         fl_file_reader_container.addView(mTbsReaderView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-        val filePath = intent.extras.getString(file_reader_file_path_key) ?: ""
+        val filePath = intent.extras?.getString(file_reader_file_path_key) ?: ""
         if (!TextUtils.isEmpty(filePath)) {
             openFileWithTBS(filePath)
         }

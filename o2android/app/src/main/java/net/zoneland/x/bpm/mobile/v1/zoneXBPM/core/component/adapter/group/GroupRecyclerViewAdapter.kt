@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.group
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseArray
 import android.view.ViewGroup
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder

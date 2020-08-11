@@ -3,6 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import androidx.viewpager.widget.ViewPager
 
 /**
  * Created by fancyLou on 2018/1/25.
@@ -10,7 +11,7 @@ import android.view.MotionEvent
  */
 
 
-class NoScollViewPager : android.support.v4.view.ViewPager {
+class NoScollViewPager : ViewPager {
 
     var canSlide: Boolean = false
 

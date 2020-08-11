@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import android.view.ViewGroup
 
 /**
@@ -24,7 +24,7 @@ class MainActivityFragmentAdapter(val fragmentList:List<Fragment>, val titleList
         return titleList[position]
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         super.destroyItem(container, position, `object`)
     }
 }

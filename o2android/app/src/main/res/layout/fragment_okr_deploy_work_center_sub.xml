@@ -7,10 +7,10 @@
         android:id="@+id/recycler_okr_deploy_work_center_sub_list_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_okr_deploy_work_center_sub_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
     </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.RecyclerViewSwipeRefreshLayout>
 
     <LinearLayout

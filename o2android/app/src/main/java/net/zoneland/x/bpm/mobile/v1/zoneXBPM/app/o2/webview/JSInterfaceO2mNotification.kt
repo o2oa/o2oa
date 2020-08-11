@@ -3,7 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 import android.app.Activity
 import android.app.Service
 import android.os.Vibrator
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.webkit.JavascriptInterface
 import android.webkit.WebView

@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.service.*

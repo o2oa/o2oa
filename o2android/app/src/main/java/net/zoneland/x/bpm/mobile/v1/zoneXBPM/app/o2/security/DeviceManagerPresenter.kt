@@ -44,9 +44,9 @@ class DeviceManagerPresenter: BasePresenterImpl<DeviceManagerContract.View>(),De
             mView?.list(ArrayList())
             return
         }
-        val unit = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "")
-        val phone = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_KEY, "")
-        val token = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")
+        val unit = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_ID_KEY, "") ?: ""
+        val phone = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_KEY, "") ?: ""
+        val token = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: ""
         if (TextUtils.isEmpty(unit) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(token)) {
             mView?.list(ArrayList())
             return

@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
 import android.graphics.BitmapFactory
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.fragment_todo_task_complete.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2
@@ -53,8 +53,8 @@ class TaskCompletedFragment : BaseMVPViewPagerFragment<TaskCompletedContract.Vie
 
 
     override fun initUI() {
-        application = arguments.getString(APPLICATION_ID_KEY) ?: ""
-        todo_task_complete_refresh_layout_id.touchSlop =  activity.dip( 70f)
+        application = arguments?.getString(APPLICATION_ID_KEY) ?: ""
+        todo_task_complete_refresh_layout_id.touchSlop =  activity?.dip( 70f)?: 70
         todo_task_complete_refresh_layout_id.setColorSchemeResources(R.color.z_color_refresh_scuba_blue,
                 R.color.z_color_refresh_red, R.color.z_color_refresh_purple, R.color.z_color_refresh_orange)
         todo_task_complete_refresh_layout_id.recyclerViewPageNumber = O2.DEFAULT_PAGE_NUMBER

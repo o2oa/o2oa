@@ -9,7 +9,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.widget.RemoteViews
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.FileUtil
@@ -20,7 +20,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import android.app.NotificationChannel
 import android.os.Build
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.BuildConfig
 
 

@@ -86,7 +86,7 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
                 }
                 radio.id = 100 + index//这里必须添加id 否则后面获取选中Radio的时候 group.getCheckedRadioButtonId() 拿不到id 会有空指针异常
                 val layoutParams = RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT)
-                layoutParams.setMargins(0, activity.dip(10f), 0, 0)
+                layoutParams.setMargins(0, activity?.dip(10f) ?: 10, 0, 0)
                 radio_group_process_step_two_department.addView(radio, layoutParams)
             }
         }

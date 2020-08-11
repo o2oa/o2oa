@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
@@ -7,7 +7,7 @@
     tools:context=".app.o2.person.PersonActivity">
 
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@android:color/white">
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_person_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
@@ -60,7 +60,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_person_name"
                     tools:text="QQ 171600000" />
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:id="@+id/relative_person_operation_bar"
@@ -410,7 +410,7 @@
                 />
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <RelativeLayout
@@ -440,4 +440,4 @@
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

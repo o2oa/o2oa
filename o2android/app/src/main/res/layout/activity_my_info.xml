@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_myInfo_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
@@ -73,7 +73,7 @@
                     app:layout_constraintRight_toRightOf="@+id/image_myInfo_avatar"
                     app:layout_constraintTop_toTopOf="@+id/image_myInfo_avatar"
                     app:srcCompat="@mipmap/icon_edit_24dp" />
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:id="@+id/relative_myInfo_operation_bar"

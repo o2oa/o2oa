@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import kotlinx.android.synthetic.main.fragment_calendar_week.*
 import net.zoneland.o2.view.CalendarViewEvent
@@ -29,10 +29,10 @@ class WeekCalendarViewFragment : CalendarBaseFragment(), OnSchedulerPageChangedL
     private lateinit var myFilter: CalendarEventFilterVO
 
     override fun bindViewModel() {
-        viewModel.currentFilter().observe(this, android.arch.lifecycle.Observer { cal ->
+        viewModel.currentFilter().observe(this, androidx.lifecycle.Observer { cal ->
             updateTitle(cal?.start)
         })
-        viewModel.getEventList().observe(this, android.arch.lifecycle.Observer { list->
+        viewModel.getEventList().observe(this, androidx.lifecycle.Observer { list->
             if (list!=null) {
                 cv_calendar_week.removeEvents()
                 cv_calendar_week.addEvents(list)
@@ -73,9 +73,9 @@ class WeekCalendarViewFragment : CalendarBaseFragment(), OnSchedulerPageChangedL
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putSerializable(MY_FILTER_KEY, myFilter)
+        outState.putSerializable(MY_FILTER_KEY, myFilter)
     }
 
     override fun onResume() {

@@ -2,10 +2,10 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialogfragment
 
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintSet
-import android.support.transition.TransitionManager
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.transition.TransitionManager
+import androidx.fragment.app.DialogFragment
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -64,23 +64,20 @@ class CalendarDateTimePickerFragment : DialogFragment() , OnDateSelectedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = false
-        pickerType = arguments.getString(PICKER_TYPE_KEY) ?: DATE_PICKER_TYPE
-        defaultValue = arguments.getString(DEFAULT_VALUE_KEY) ?: ""
-        defaultStartDate = arguments.getString(DEFAULT_START_VALUE_KEY) ?: ""
-        defaultEndDate = arguments.getString(DEFAULT_END_VALUE_KEY) ?: ""
+        pickerType = arguments?.getString(PICKER_TYPE_KEY) ?: DATE_PICKER_TYPE
+        defaultValue = arguments?.getString(DEFAULT_VALUE_KEY) ?: ""
+        defaultStartDate = arguments?.getString(DEFAULT_START_VALUE_KEY) ?: ""
+        defaultEndDate = arguments?.getString(DEFAULT_END_VALUE_KEY) ?: ""
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (inflater == null) {
-            return null
-        }
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setDimAmount(0.8f)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setDimAmount(0.8f)
         return inflater.inflate(R.layout.dialog_fragment_calendar_date_time_picker, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //布局
         datePickerLayout.clone(constraint_calendar_date_time_picker)
@@ -224,8 +221,8 @@ class CalendarDateTimePickerFragment : DialogFragment() , OnDateSelectedListener
 
     private fun showStartDateCalendar() {
         isStartDateCalendarMode = true
-        tv_start_date.setTextColor(ContextCompat.getColor(activity, R.color.icon_blue))
-        tv_end_date.setTextColor(ContextCompat.getColor(activity, R.color.z_color_text_primary))
+        tv_start_date.setTextColor(ContextCompat.getColor(activity!!, R.color.icon_blue))
+        tv_end_date.setTextColor(ContextCompat.getColor(activity!!, R.color.z_color_text_primary))
         val sDate = DateHelper.convertStringToDate("yyyy-MM-dd", tv_start_date.text.toString())
         calendarView_date_picker.setSelectedDate(sDate)
         calendarView_date_picker.setCurrentDate(sDate)
@@ -233,8 +230,8 @@ class CalendarDateTimePickerFragment : DialogFragment() , OnDateSelectedListener
 
     private fun showEndDateCalendar() {
         isStartDateCalendarMode = false
-        tv_start_date.setTextColor(ContextCompat.getColor(activity, R.color.z_color_text_primary))
-        tv_end_date.setTextColor(ContextCompat.getColor(activity, R.color.icon_blue))
+        tv_start_date.setTextColor(ContextCompat.getColor(activity!!, R.color.z_color_text_primary))
+        tv_end_date.setTextColor(ContextCompat.getColor(activity!!, R.color.icon_blue))
         val eDate = DateHelper.convertStringToDate("yyyy-MM-dd", tv_end_date.text.toString())
         calendarView_date_picker.setSelectedDate(eDate)
         calendarView_date_picker.setCurrentDate(eDate)
@@ -247,8 +244,8 @@ class CalendarDateTimePickerFragment : DialogFragment() , OnDateSelectedListener
         TransitionManager.beginDelayedTransition(constraint_calendar_date_time_picker)
         datePickerLayout.applyTo(constraint_calendar_date_time_picker)
         // tv_first_value 高亮
-        tv_start_date.setTextColor(ContextCompat.getColor(activity, R.color.icon_blue))
-        tv_time_value.setTextColor(ContextCompat.getColor(activity, R.color.z_color_text_primary))
+        tv_start_date.setTextColor(ContextCompat.getColor(activity!!, R.color.icon_blue))
+        tv_time_value.setTextColor(ContextCompat.getColor(activity!!, R.color.z_color_text_primary))
     }
 
     /**
@@ -258,8 +255,8 @@ class CalendarDateTimePickerFragment : DialogFragment() , OnDateSelectedListener
         TransitionManager.beginDelayedTransition(constraint_calendar_date_time_picker)
         dateTimePickerLayout.applyTo(constraint_calendar_date_time_picker)
         // tv_second_value 高亮
-        tv_start_date.setTextColor(ContextCompat.getColor(activity, R.color.z_color_text_primary))
-        tv_time_value.setTextColor(ContextCompat.getColor(activity, R.color.icon_blue))
+        tv_start_date.setTextColor(ContextCompat.getColor(activity!!, R.color.z_color_text_primary))
+        tv_time_value.setTextColor(ContextCompat.getColor(activity!!, R.color.icon_blue))
     }
 
     /**

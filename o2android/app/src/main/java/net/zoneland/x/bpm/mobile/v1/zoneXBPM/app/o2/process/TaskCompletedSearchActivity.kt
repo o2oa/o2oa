@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher

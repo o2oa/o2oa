@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.main
 
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,7 +37,7 @@ class NewContactFragment : BaseMVPViewPagerFragment<NewContactContract.View, New
             override fun bindMyDepartment(department: NewContactFragmentVO.MyDepartment, holder: CommonRecyclerViewHolder?) {
                 holder?.setText(R.id.tv_item_contact_fragment_body_name, department.unitName)
                         ?.setCircleTextView(R.id.image_item_contact_fragment_body_icon, if (TextUtils.isEmpty(department.unitName)){""} else {department.unitName.substring(0, 1)},
-                                FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                                FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 if (department.hasChildren) {
                     holder?.getView<ImageView>(R.id.image_item_contact_fragment_body_arrow)?.visible()
                 }else {
@@ -48,7 +48,7 @@ class NewContactFragment : BaseMVPViewPagerFragment<NewContactContract.View, New
             override fun clickMyDepartment(department: NewContactFragmentVO.MyDepartment) {
                 XLog.debug("点击部门 $department")
                 if (department.hasChildren) {
-                    activity.go<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(department.unit, department.unitName))
+                    activity?.go<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(department.unit, department.unitName))
                 }else {
                     XLog.error("没有子元素。。。。。。。。。。。。。。")
                 }
@@ -79,7 +79,7 @@ class NewContactFragment : BaseMVPViewPagerFragment<NewContactContract.View, New
 
             override fun clickMyCollect(collect: NewContactFragmentVO.MyCollect) {
                 XLog.debug("点击常用联系人，$collect")
-                activity.go<PersonActivity>(PersonActivity.startBundleData(collect.personId))
+                activity?.go<PersonActivity>(PersonActivity.startBundleData(collect.personId))
             }
         }
     }
@@ -88,7 +88,7 @@ class NewContactFragment : BaseMVPViewPagerFragment<NewContactContract.View, New
         main_contact_refresh_layout_id.setColorSchemeResources(R.color.z_color_refresh_scuba_blue,
                 R.color.z_color_refresh_red, R.color.z_color_refresh_purple, R.color.z_color_refresh_orange)
         main_contact_refresh_layout_id.setOnRefreshListener { lazyLoad() }
-        linear_contact_fragment_search.setOnClickListener { activity.go<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(status = NewOrganizationActivity.SEARCH_STATUS)) }
+        linear_contact_fragment_search.setOnClickListener { activity?.go<NewOrganizationActivity>(NewOrganizationActivity.startBundleData(status = NewOrganizationActivity.SEARCH_STATUS)) }
         MiscUtilK.swipeRefreshLayoutRun(main_contact_refresh_layout_id, activity)
 
         recycler_contact_fragment_list.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)

@@ -14,7 +14,7 @@
         android:layout_height="59dp"
         android:orientation="horizontal">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1">
@@ -69,7 +69,7 @@
                 android:layout_marginTop="5dp"
                 tools:text="128 K" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <CheckBox
             android:id="@+id/file_list_choose_id"
             android:layout_width="wrap_content"

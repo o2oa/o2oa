@@ -3,8 +3,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.bind
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -40,7 +40,7 @@ class BindPhoneActivity: AppCompatActivity(), BindPhoneContract.View , DialogInt
         setContentView(R.layout.activity_fluid_app)
         mPresenter.attachView(this)
 
-        deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")//检查本地是否存在设备号
+        deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: ""//检查本地是否存在设备号
         if (TextUtils.isEmpty(deviceId)){
             val nowToken = JPushInterface.getRegistrationID(this)
             if (!TextUtils.isEmpty(nowToken)) {
@@ -48,7 +48,7 @@ class BindPhoneActivity: AppCompatActivity(), BindPhoneContract.View , DialogInt
             }
         }
         XLog.debug("推送服务的本机deviceId：$deviceId")
-        if (supportFragmentManager.fragments == null || supportFragmentManager.fragments.isEmpty()) {
+        if (supportFragmentManager.fragments.isEmpty()) {
             addFragment(FirstStepFragment())
         }
     }
@@ -103,7 +103,7 @@ class BindPhoneActivity: AppCompatActivity(), BindPhoneContract.View , DialogInt
 
     fun loadDeviceId(): String {
         if (TextUtils.isEmpty(deviceId)) {
-            deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")//检查本地是否存在设备号
+            deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: ""//检查本地是否存在设备号
             if (TextUtils.isEmpty(deviceId)){//远程获取
                 val nowToken = JPushInterface.getRegistrationID(this)
                 if (!TextUtils.isEmpty(nowToken)) {
