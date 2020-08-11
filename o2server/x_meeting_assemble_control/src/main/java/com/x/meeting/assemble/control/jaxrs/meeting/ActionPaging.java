@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -51,8 +52,9 @@ class ActionPaging extends BaseAction {
 			Root<Meeting> root = cq.from(Meeting.class);
 			
 			Predicate p = cb.equal(root.get(Meeting_.applicant), effectivePerson.getDistinguishedName());
-			
-			p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(),root.get(Meeting_.invitePersonList)));
+			//p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(),root.get(Meeting_.invitePersonList)));
+			Expression<List<String>> expression = root.get(Meeting_.invitePersonList);
+			p = cb.or(p, expression.in(effectivePerson.getDistinguishedName()));
 			
 			if(!StringUtils.isBlank(wi.getSubject())) {
 				p = cb.and(p, cb.like(root.get(Meeting_.subject), "%" + wi.getSubject() + "%"));
@@ -127,28 +129,32 @@ class ActionPaging extends BaseAction {
 	        }
 	        
 			cq.select(root.get(Meeting_.id)).where(p).orderBy(order);
-		
+			cq.distinct(true);
+			
 			 TypedQuery<String> typedQuery = em.createQuery(cq);
 			 int pageIndex = (page-1)*size;
-			 int pageSize = page*size;
+			 int pageSize = size;
 			 typedQuery.setFirstResult(pageIndex);
 			 typedQuery.setMaxResults(pageSize);
-			    
-			 //logger.info("typedQuery="+  typedQuery.toString()); 
 			 ids =  typedQuery.getResultList();
-			
-			 CriteriaQuery<Long> cqCount = cb.createQuery(Long.class);
-			 Root<Meeting> rootCount = cqCount.from(Meeting.class);
-			 cqCount.select(cb.countDistinct(rootCount)).where(p);
-			 Long count = em.createQuery(cqCount).getSingleResult().longValue();
-			 //logger.info("count="+  count); 
+			 //logger.info("pagingtypedQuery="+  typedQuery.toString()); 
 			 
-			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
+			 TypedQuery<String> tqCount = em.createQuery( cq.select(root.get(Meeting_.id)).where(p).distinct(true));
+			 List<String> allid = tqCount.getResultList();
+			 Long  tpsize =  (long) allid.size();
+			 //logger.info("ids count="+  tpsize); 
+			 
+			 CriteriaQuery<Meeting> cqMeeting = cb.createQuery(Meeting.class);		
+			 Predicate pMeeting = cb.isMember(root.get(Meeting_.id), cb.literal(ids));
+			 Root<Meeting> rootMeeting = cqMeeting.from(Meeting.class);
+			 cqMeeting.select(rootMeeting).where(pMeeting).orderBy(order);
+		     List<Meeting> os = em.createQuery(cqMeeting).getResultList();
+		    
+			List<Wo> wos = Wo.copier.copy(os);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
-			SortTools.desc(wos, Meeting.startTime_FIELDNAME);
 			result.setData(wos);
-			result.setCount(count);
+			result.setCount(tpsize);
 			return result;
 		}
 	}
