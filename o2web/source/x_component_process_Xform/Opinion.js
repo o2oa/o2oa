@@ -179,7 +179,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             }
         }.bind(this));
 
-        if( !this.json.notLoadUserOpinion ){
+        if( !this.form.json.notLoadUserOpinion ){
             MWF.UD.getDataJson("userOpinion", function(json){
                 this.userOpinions = json;
             }.bind(this), false);
