@@ -179,10 +179,11 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion =  new Class({
             }
         }.bind(this));
 
-
-        MWF.UD.getDataJson("userOpinion", function(json){
-            this.userOpinions = json;
-        }.bind(this), false);
+        if( !this.json.notLoadUserOpinion ){
+            MWF.UD.getDataJson("userOpinion", function(json){
+                this.userOpinions = json;
+            }.bind(this), false);
+        }
         this.node.getFirst().addEvent("input", function(e){
             this.startSearchOpinion();
         }.bind(this));
