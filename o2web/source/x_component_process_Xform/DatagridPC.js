@@ -26,6 +26,9 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
         this.editable = (this.readonly) ? false : true;
         if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 
+        this.deleteable = this.json.deleteable !== "no";
+		this.addable = this.json.addable !== "no";
+
 		this.gridData = this._getValue();
 
         this.totalModules = [];
@@ -84,12 +87,16 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		
 		var actionTh = new Element("th", {"styles": {"width": "46px"}}).inject(this.titleTr, "top");
 		new Element("th").inject(this.titleTr, "bottom");
-		this._createAddLineAction(actionTh);
+		if( this.addable ){
+			this._createAddLineAction(actionTh);
+		}
 		//this._createDelLineAction(actionTh);
 		
 		var actionEditTd = new Element("td").inject(this.editorTr, "top");
 		this._createCompleteAction(actionEditTd);
-		this._createCancelAction(actionEditTd);
+		if( this.deleteable ){
+			this._createCancelAction(actionEditTd);
+		}
 		
 		new Element("td").inject(this.editorTr, "bottom");
 
@@ -202,8 +209,8 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 		var cell = $(tr.insertCell(idx));
 		if (idx==0){
 			cell.setStyles(this.form.css.gridLineActionCell);
-			this._createAddLineAction(cell);
-			this._createDelLineAction(cell);
+			if( this.addable )this._createAddLineAction(cell);
+			if( this.deleteable )this._createDelLineAction(cell);
 		}else if (idx == lastIdx){
 			cell.setStyles(this.form.css.gridMoveActionCell);
 			this._createMoveLineAction(cell);
