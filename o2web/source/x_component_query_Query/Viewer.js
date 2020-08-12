@@ -10,6 +10,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     options: {
         "style": "default",
         "skin" : null,
+        "skin" : null,
         "resizeNode": true,
         "paging" : "scroll",
         "perPageCount" : 50,
@@ -193,6 +194,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     },
     createViewNode: function(data){
         this.viewAreaNode.empty();
+
+        this.selectedItems = [];
 
         var viewStyles = this.viewJson.viewStyles;
 
