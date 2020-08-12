@@ -29,6 +29,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         if (this.editable) this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
         //this.editable = false;
 
+        this.deleteable = this.json.deleteable !== "no";
+        this.addable = this.json.addable !== "no";
+
         this.gridData = this._getValue();
 
         this.totalModules = [];
@@ -329,9 +332,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             }.bind(this));
         }else{
             if (this.addAction){
-                this.addAction.setStyle("display", "block");
+                if( this.addable )this.addAction.setStyle("display", "block");
             }else{
-                this._loadAddAction();
+                if( this.addable )this._loadAddAction();
             }
             // this._loadAddAction();
         }
@@ -341,18 +344,24 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         var actionNode = new Element("div", {
             "styles": this.form.css.mobileDatagridActionNode
         }).inject(titleDiv);
+
         var delAction = new Element("div", {
             "styles": this.form.css.mobileDatagridDelActionNode,
             "text": MWF.xApplication.process.Xform.LP["delete"]
         }).inject(actionNode);
+        if( !this.deleteable )delAction.hide();
+
         var editAction = new Element("div", {
             "styles": this.form.css.mobileDatagridEditActionNode,
             "text": MWF.xApplication.process.Xform.LP.edit
         }).inject(actionNode);
+
         var addAction = new Element("div", {
             "styles": this.form.css.mobileDatagridAddActionNode,
             "text": MWF.xApplication.process.Xform.LP.add
         }).inject(actionNode);
+        if( !this.addable )addAction.hide();
+
         var cancelAction = new Element("div", {
             "styles": this.form.css.mobileDatagridCancelActionNode,
             "text": MWF.xApplication.process.Xform.LP.cancelEdit
@@ -364,7 +373,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
 
         var _self = this;
-        delAction.addEvent("click", function(e){
+        if( this.deleteable )delAction.addEvent("click", function(e){
             _self._deleteLine(this.getParent().getParent().getParent(), e);
         });
         editAction.addEvent("click", function(e){
@@ -376,7 +385,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         cancelAction.addEvent("click", function(e){
             _self._cancelLineEdit(e);
         });
-        addAction.addEvent("click", function(e){
+        if( this.addable )addAction.addEvent("click", function(e){
             _self._addLine();
         });
     },
@@ -550,9 +559,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 currentEditTable.setStyle("display", "table");
 
                 var actions = datagrid.currentEditLine.getFirst("div").getLast("div").getElements("div");
-                if (actions[0]) actions[0].setStyle("display", "block");
-                if (actions[1]) actions[1].setStyle("display", "block");
-                if (actions[2]) actions[2].setStyle("display", "block");
+                if (actions[0] && this.deleteable ) actions[0].setStyle("display", "block");
+                if (actions[1] ) actions[1].setStyle("display", "block");
+                if (actions[2] && this.addable ) actions[2].setStyle("display", "block");
                 if (actions[3]) actions[3].setStyle("display", "none");
                 if (actions[4]) actions[4].setStyle("display", "none");
 
@@ -567,9 +576,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
             if (!_self.gridData.data.length){
                 if (_self.addAction){
-                    _self.addAction.setStyle("display", "block");
+                    if( _self.addable )_self.addAction.setStyle("display", "block");
                 }else{
-                    _self._loadAddAction();
+                    if( _self.addable )_self._loadAddAction();
                 }
             }
 
@@ -601,9 +610,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             table = dataNode.getElement("table");
 
             var actions = this.currentEditLine.getFirst("div").getLast("div").getElements("div");
-            if (actions[0]) actions[0].setStyle("display", "block");
+            if (actions[0] && this.deleteable ) actions[0].setStyle("display", "block");
             if (actions[1]) actions[1].setStyle("display", "block");
-            if (actions[2]) actions[2].setStyle("display", "block");
+            if (actions[2] && this.addable ) actions[2].setStyle("display", "block");
             if (actions[3]) actions[3].setStyle("display", "none");
             if (actions[4]) actions[4].setStyle("display", "none");
         }else{
@@ -616,9 +625,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             }
 
             var actions = this.table.getParent().getPrevious("div").getLast("div").getElements("div");
-            if (actions[0]) actions[0].setStyle("display", "block");
+            if (actions[0] && this.deleteable ) actions[0].setStyle("display", "block");
             if (actions[1]) actions[1].setStyle("display", "block");
-            if (actions[2]) actions[2].setStyle("display", "block");
+            if (actions[2] && this.addable ) actions[2].setStyle("display", "block");
             if (actions[3]) actions[3].setStyle("display", "none");
             if (actions[4]) actions[4].setStyle("display", "none");
 
@@ -851,9 +860,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
 
                 if (!_self.gridData.data.length){
                     if (_self.addAction){
-                        _self.addAction.setStyle("display", "block");
+                        if( _self.addable )_self.addAction.setStyle("display", "block");
                     }else{
-                        _self._loadAddAction();
+                        if( _self.addable )_self._loadAddAction();
                     }
                 }
                 this.close();
