@@ -56,8 +56,6 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
     override fun logoutSuccess() {
         O2SDKManager.instance().logoutCleanCurrentPerson()
         O2SDKManager.instance().clearBindUnit()
-        O2App.instance._JMLogout()
-
         goAndClearBefore<BindPhoneActivity>()
     }
 

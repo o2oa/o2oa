@@ -82,7 +82,7 @@ class BlueToothClientActivity : BaseMVPActivity<BlueToothContract.View, BlueToot
             val ssid = wifiSSIDs[position]
             XLog.info("ssid:$ssid")
 
-            val dialog = O2DialogSupport.openCustomViewDialog(this@BlueToothClientActivity, "请输入wifi密码", R.layout.dialog_wifi, { dialog ->
+            val dialog = O2DialogSupport.openCustomViewDialog(this@BlueToothClientActivity, "请输入wifi密码", R.layout.dialog_wifi) { dialog ->
                 val wifiPasswordTv = dialog.findViewById<EditText>(R.id.dialog_wifi_password)
                 val password = wifiPasswordTv.text.toString()
                 if (TextUtils.isEmpty(password)) {
@@ -90,7 +90,7 @@ class BlueToothClientActivity : BaseMVPActivity<BlueToothContract.View, BlueToot
                 } else {
                     sendInfo2AIDevice(ssid, password)
                 }
-            })
+            }
             val wifiSSIDTv = dialog.findViewById<TextView>(R.id.dialog_wifi_ssid)
             wifiSSIDTv.text = ssid
 

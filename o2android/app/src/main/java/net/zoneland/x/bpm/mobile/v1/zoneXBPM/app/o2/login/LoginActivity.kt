@@ -248,7 +248,6 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         }
         hideLoadingDialog()
         O2SDKManager.instance().setCurrentPersonData(data)
-        O2App.instance._JMLoginInner()
         goThenKill<MainActivity>()
     }
 

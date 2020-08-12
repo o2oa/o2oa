@@ -127,7 +127,6 @@ class BindPhoneActivity: AppCompatActivity(), BindPhoneContract.View , DialogInt
     private fun goFinish() {
         if (goToMain) {
             goThenKill<MainActivity>()
-            O2App.instance._JMLoginInner()
         } else {
             goThenKill<LoginActivity>(LoginActivity.startBundleData(phone))
         }

@@ -11,9 +11,9 @@
         android:id="@+id/scroll_myInfo"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         android:fadingEdge="vertical"
-        android:scrollbars="vertical"
-        android:background="@android:color/white">
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,8 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="8dp"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -55,13 +55,16 @@
 
                 <TextView
                     android:id="@+id/tv_myInfo_sign"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
+                    android:textAlignment="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:layout_marginEnd="@dimen/spacing_normal"
                     app:layout_constraintTop_toBottomOf="@+id/tv_myInfo_name"
                     tools:text="个人签名" />
 
@@ -80,15 +83,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginBottom="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small">
+                android:layout_marginTop="@dimen/spacing_small"
+                android:layout_marginBottom="@dimen/spacing_small">
 
                 <RelativeLayout
                     android:id="@+id/linear_myInfo_gender_men_button"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="90dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="90dp"
                     android:orientation="vertical">
 
                     <ImageView
@@ -112,8 +115,8 @@
                         android:id="@+id/image_myInfo_gender_men_edit"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
                         android:visibility="gone"
                         app:srcCompat="@mipmap/icon_radio_primary_on" />
                 </RelativeLayout>
@@ -122,8 +125,8 @@
                     android:id="@+id/linear_myInfo_gender_women_button"
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="90dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="90dp"
                     android:orientation="vertical">
 
                     <ImageView
@@ -147,8 +150,8 @@
                         android:id="@+id/image_myInfo_gender_women_edit"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
                         android:visibility="gone"
                         app:srcCompat="@mipmap/icon_radio_primary_on" />
                 </RelativeLayout>
@@ -208,6 +211,10 @@
                     android:layout_weight="2"
                     android:background="@drawable/input_background_bottom_line"
                     android:hint="请填入个性签名"
+                    android:maxLines="1"
+                    android:lines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:textColor="@color/z_color_text_primary"
                     android:textSize="@dimen/font_normal"
                     android:visibility="gone" />
@@ -241,47 +248,6 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/myInfo_name_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <!--姓名-->
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="姓名"
-                        android:textColor="@color/z_color_text_primary_dark"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tv_myInfo_name_edit"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:textColor="@color/z_color_text_primary"
-                        android:textSize="@dimen/font_normal" />
-
-                    <EditText
-                        android:id="@+id/edit_myInfo_name"
-                        android:layout_width="0dp"
-                        android:layout_height="32dp"
-                        android:layout_weight="2"
-                        android:background="@drawable/input_background_bottom_line"
-                        android:hint="请填入姓名"
-                        android:textColor="@color/z_color_text_primary"
-                        android:textSize="@dimen/font_normal"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/z_color_split_line_ddd" />
-
-                <LinearLayout
                     android:id="@+id/myInfo_mobile_id"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
@@ -292,7 +258,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="联系电话"
+                        android:text="手机号码"
                         android:textColor="@color/z_color_text_primary_dark"
                         android:textSize="15sp" />
 
@@ -310,7 +276,11 @@
                         android:layout_height="32dp"
                         android:layout_weight="2"
                         android:background="@drawable/input_background_bottom_line"
-                        android:hint="请填入联系电话"
+                        android:hint="请填入手机号码"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
                         android:textColor="@color/z_color_text_primary"
                         android:textSize="@dimen/font_normal"
                         android:visibility="gone" />
@@ -319,7 +289,50 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <LinearLayout
+                    android:id="@+id/myInfo_officePhone_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="办公电话"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/myInfo_officePhone_value_id"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_officePhone"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入办公电话"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -352,6 +365,10 @@
                         android:layout_weight="2"
                         android:background="@drawable/input_background_bottom_line"
                         android:hint="请填入电子邮件"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
                         android:textColor="@color/z_color_text_primary"
                         android:textSize="@dimen/font_normal"
                         android:visibility="gone" />
@@ -360,7 +377,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -393,6 +409,54 @@
                         android:layout_weight="2"
                         android:background="@drawable/input_background_bottom_line"
                         android:hint="请填入QQ"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/z_color_split_line_ddd" />
+
+                <LinearLayout
+                    android:id="@+id/myInfo_weixin_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="微信"
+                        android:textColor="@color/z_color_text_primary_dark"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/myInfo_weixin_value_id"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:textColor="@color/z_color_text_primary"
+                        android:textSize="@dimen/font_normal" />
+
+                    <EditText
+                        android:id="@+id/edit_myInfo_weixin"
+                        android:layout_width="0dp"
+                        android:layout_height="32dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/input_background_bottom_line"
+                        android:hint="请填入微信号"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
                         android:textColor="@color/z_color_text_primary"
                         android:textSize="@dimen/font_normal"
                         android:visibility="gone" />
@@ -401,24 +465,6 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/z_color_background"-->
-                <!--android:gravity="center_horizontal"-->
-                <!--android:paddingBottom="30dp"-->
-                <!--android:paddingTop="30dp">-->
-
-                <!--<Button-->
-                    <!--android:id="@+id/myInfo_logout_btn_id"-->
-                    <!--android:layout_width="325dp"-->
-                    <!--android:layout_height="44dp"-->
-                    <!--android:background="@drawable/button_background_44dp"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="@string/activity_logout"-->
-                    <!--android:textColor="@android:color/white"-->
-                    <!--android:textSize="18sp" />-->
-            <!--</LinearLayout>-->
 
         </LinearLayout>
 
@@ -428,17 +474,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:paddingTop="@dimen/toolbar_padding_top"
         android:layout_alignParentTop="true"
-        android:background="@color/z_color_primary">
+        android:background="@color/z_color_primary"
+        android:paddingTop="@dimen/toolbar_padding_top">
 
         <ImageView
             android:id="@+id/image_myInfo_back"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:src="@mipmap/ic_back_mtrl_white_alpha" />
 
         <TextView
@@ -454,9 +500,9 @@
             android:id="@+id/tv_myInfo_edit_save_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/menu_edit"
             android:textColor="@android:color/white" />
     </RelativeLayout>

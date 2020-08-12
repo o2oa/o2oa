@@ -40,6 +40,7 @@ class IndexPresenter : BasePresenterImpl<IndexContract.View>(), IndexContract.Pr
         status.add("published")
         wrapIn["statusList"] = status
         val json = O2SDKManager.instance().gson.toJson(wrapIn)
+
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getCMSAssembleControlService(mView?.getContext())?.let { service ->
             service.filterDocumentList(body, lastId, O2.DEFAULT_PAGE_NUMBER)

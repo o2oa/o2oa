@@ -361,7 +361,6 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
     }
 
     private fun gotoMain() {
-        O2App.instance._JMLoginInner()//im
         circleProgressBar_launch.gone()
         if (mStyleUpdate) {
             goAndClearBefore<MainActivity>()

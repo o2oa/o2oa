@@ -131,7 +131,6 @@ class SettingsFragment : BaseMVPViewPagerFragment<SettingsContract.View, Setting
 
     private fun logoutThenJump2Login() {
         O2SDKManager.instance().logoutCleanCurrentPerson()
-        O2App.instance._JMLogout()
         activity?.goAndClearBefore<LoginActivity>()
     }
 }

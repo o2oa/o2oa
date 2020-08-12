@@ -268,8 +268,8 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
             isLoadMoreList = false
             hiddenObtainMoreDataAnimation()
         }
-        if (!taskList.isEmpty()) {
-            lastTaskId = taskList[taskList.size - 1].id
+        if (list.isNotEmpty()) {
+            lastTaskId = list[list.size - 1].id
         }
         refreshRecyclerView()
     }
@@ -299,8 +299,8 @@ class IndexFragment : BaseMVPViewPagerFragment<IndexContract.View, IndexContract
             isLoadMoreList = false
             hiddenObtainMoreDataAnimation()
         }
-        if (!newsList.isEmpty()) {
-            lastNewsId = newsList[newsList.size - 1].id
+        if (list.isNotEmpty()) {
+            lastNewsId = list[list.size - 1].id
         }
         refreshRecyclerView()
     }
