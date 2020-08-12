@@ -1,8 +1,13 @@
 package com.x.server.console.server;
 
 import java.io.File;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -65,7 +70,7 @@ public abstract class JettySeverTools {
 		FileUtils.cleanDirectory(dir);
 	}
 
-	protected static String calculateExtraClassPath(Class<?> cls) throws Exception {
+	protected static String calculateExtraClassPath(Class<?> cls, Path... paths) throws Exception {
 		List<String> jars = new ArrayList<>();
 		jars.addAll(calculateExtraClassPathDefault());
 		Module module = cls.getAnnotation(Module.class);
@@ -85,6 +90,15 @@ public abstract class JettySeverTools {
 			File file = new File(Config.dir_dynamic_jars(), str + ".jar");
 			if (file.exists()) {
 				jars.add(file.getAbsolutePath());
+			}
+		}
+		for (Path path : paths) {
+			if (Files.exists(path) && Files.isDirectory(path)) {
+				try (Stream<Path> stream = Files.walk(path, FileVisitOption.FOLLOW_LINKS)) {
+					stream.filter(Files::isRegularFile)
+							.filter(p -> p.toAbsolutePath().toString().toLowerCase().endsWith(".jar"))
+							.forEach(p -> jars.add(p.toAbsolutePath().toString()));
+				}
 			}
 		}
 		return StringUtils.join(jars, ";");
