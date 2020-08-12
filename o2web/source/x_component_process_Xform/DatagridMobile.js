@@ -1,8 +1,8 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.DatagridMobile = new Class({
-	Implements: [Events],
-	Extends: MWF.APP$Module,
-	isEdit: false,
+    Implements: [Events],
+    Extends: MWF.APP$Module,
+    isEdit: false,
     options: {
         "moduleEvents": ["queryLoad","postLoad","load","completeLineEdit", "addLine", "deleteLine", "afterDeleteLine","editLine"]
     },
@@ -15,13 +15,13 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.field = true;
     },
 
-	_loadUserInterface: function(){
+    _loadUserInterface: function(){
         this.fireEvent("queryLoad");
 
-		this.editModules = [];
+        this.editModules = [];
         this.node.setStyle("overflow-x", "hidden");
         this.node.setStyle("overflow-y", "hidden");
-		this.table = this.node.getElement("table");
+        this.table = this.node.getElement("table");
 
         this.createMobileTable();
 
@@ -35,22 +35,22 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.gridData = this._getValue();
 
         this.totalModules = [];
-		this._loadDatagridTitleModules();
+        this._loadDatagridTitleModules();
 
-		if (this.editable!=false){
+        if (this.editable!=false){
             this._loadDatagridDataModules();
             //this._addTitleActionColumn();
-			this._loadEditDatagrid();
-			//this._loadReadDatagrid();
+            this._loadEditDatagrid();
+            //this._loadReadDatagrid();
             this.fireEvent("postLoad");
             this.fireEvent("load");
-		}else{
+        }else{
             this._loadDatagridDataModules();
-			this._loadReadDatagrid();
+            this._loadReadDatagrid();
             this.fireEvent("postLoad");
             this.fireEvent("load");
-		}
-	},
+        }
+    },
     createMobileTable: function(){
         var mobileTable = new Element("table").inject(this.node);
         mobileTable.set(this.json.properties);
@@ -80,87 +80,87 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.table = mobileTable;
     },
 
-	_loadStyles: function(){
-		//this.table.setStyles(this.json.tableStyles);
+    _loadStyles: function(){
+        //this.table.setStyles(this.json.tableStyles);
         this.node.setStyles(this.json.styles);
         var tables = this.node.getElements("table");
         tables.each(function(table){
             table.setStyles(this.json.tableStyles);
         }.bind(this));
 
-	},
-	_getValue: function(){
-		var value = [];
-		value = this._getBusinessData();
-		if (!value){
-			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+    },
+    _getValue: function(){
+        var value = [];
+        value = this._getBusinessData();
+        if (!value){
+            if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
             value = {"data": value || []};
-		}
-		return value || [];
-	},
+        }
+        return value || [];
+    },
 
-	_getValueText: function(idx, value){
-		var module = this.editModules[idx];
-		if (module){
-			switch (module.json.type){
-			case "Select":
-                for (var i=0; i<module.json.itemValues.length; i++){
-                    var itemv = module.json.itemValues[i];
-                    var arr = itemv.split(/\|/);
-                    var text = arr[0];
-                    var v = (arr.length>1) ? arr[1] : arr[0];
-                    if (value===v) return text;
-                }
+    _getValueText: function(idx, value){
+        var module = this.editModules[idx];
+        if (module){
+            switch (module.json.type){
+                case "Select":
+                    for (var i=0; i<module.json.itemValues.length; i++){
+                        var itemv = module.json.itemValues[i];
+                        var arr = itemv.split(/\|/);
+                        var text = arr[0];
+                        var v = (arr.length>1) ? arr[1] : arr[0];
+                        if (value===v) return text;
+                    }
 
-				// var ops = module.node.getElements("option");
-				// for (var i=0; i<ops.length; i++){
-				// 	if (ops[i].value == value){
-				// 		return ops[i].get("text");
-				// 	}
-				// }
-				break;
-			case "Radio":
-				var ops = module.node.getElements("input");
-				for (var i=0; i<ops.length; i++){
-					if (ops[i].value == value){
-						return ops[i].get("showText");
-					} 
-				}
-				break;
-			case "Checkbox":
-				var ops = module.node.getElements("input");
-				var texts = [];
-				for (var i=0; i<ops.length; i++){
-					if (value.indexOf(ops[i].value) != -1) texts.push(ops[i].get("showText"));
-				}
-				if (texts.length) return texts.join(", ");
-				break;
-            case "Orgfield":
-            case "Personfield":
-            case "Org":
-                //var v = module.getTextData();
-                //return v.text[0];
-
-                if (typeOf(value)==="array"){
-                    var textArray = [];
-                    value.each( function( item ){
-                        if (typeOf(item)==="object"){
-                            textArray.push( item.name+((item.unitName) ? "("+item.unitName+")" : "") );
-                        }else{
-                            textArray.push(item);
+                    // var ops = module.node.getElements("option");
+                    // for (var i=0; i<ops.length; i++){
+                    // 	if (ops[i].value == value){
+                    // 		return ops[i].get("text");
+                    // 	}
+                    // }
+                    break;
+                case "Radio":
+                    var ops = module.node.getElements("input");
+                    for (var i=0; i<ops.length; i++){
+                        if (ops[i].value == value){
+                            return ops[i].get("showText");
                         }
-                    }.bind(this));
-                    return textArray.join(", ");
-                }else if (typeOf(value)==="object"){
-                    return value.name+((value.unitName) ? "("+value.unitName+")" : "");
-                }else{
-                    return value;
-                }
-                break;
-			}
-		}
-		return value;
-	},
+                    }
+                    break;
+                case "Checkbox":
+                    var ops = module.node.getElements("input");
+                    var texts = [];
+                    for (var i=0; i<ops.length; i++){
+                        if (value.indexOf(ops[i].value) != -1) texts.push(ops[i].get("showText"));
+                    }
+                    if (texts.length) return texts.join(", ");
+                    break;
+                case "Orgfield":
+                case "Personfield":
+                case "Org":
+                    //var v = module.getTextData();
+                    //return v.text[0];
+
+                    if (typeOf(value)==="array"){
+                        var textArray = [];
+                        value.each( function( item ){
+                            if (typeOf(item)==="object"){
+                                textArray.push( item.name+((item.unitName) ? "("+item.unitName+")" : "") );
+                            }else{
+                                textArray.push(item);
+                            }
+                        }.bind(this));
+                        return textArray.join(", ");
+                    }else if (typeOf(value)==="object"){
+                        return value.name+((value.unitName) ? "("+value.unitName+")" : "");
+                    }else{
+                        return value;
+                    }
+                    break;
+            }
+        }
+        return value;
+    },
 
     editValidation: function(){
         var flag = true;
@@ -173,8 +173,8 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         return flag;
     },
 
-	_loadReadDatagrid: function(){
-		this.gridData = this._getValue();
+    _loadReadDatagrid: function(){
+        this.gridData = this._getValue();
 
         var titleHeaders = this.table.getElements("th");
         var tds = this.table.getElements("td");
@@ -249,7 +249,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
 
         //this._loadTotal();
-	},
+    },
     _loadEditDatagrid: function(){
         //this._createHelpNode();
 
@@ -490,7 +490,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.validationMode();
     },
     _loadAddAction: function(){
-	    if( !this.addAction ){
+        if( !this.addAction ){
             this.addAction = new Element("div", {"styles": this.form.css.gridMobileActionNode}).inject(this.node, "top");
             this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
             this.addAction.addEvent("click", function(){
@@ -917,9 +917,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         tableNode.setStyle("margin-right", ""+width+"px");
     },
 
-	_loadDatagridStyle: function(){
-		//var ths = this.node.getElements("th");
-		//ths.setStyles(this.form.css.datagridTitle);
+    _loadDatagridStyle: function(){
+        //var ths = this.node.getElements("th");
+        //ths.setStyles(this.form.css.datagridTitle);
 
         this.loadGridTitleStyle();
         this.loadGridContentStyle();
@@ -927,10 +927,10 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         this.loadGridEditStyle();
 
         this._loadTotal();
-		this._loadBorderStyle();
-		this._loadZebraStyle();
+        this._loadBorderStyle();
+        this._loadZebraStyle();
         this._loadSequence();
-	},
+    },
 
     loadGridEditStyle: function(){
         if (this.table){
@@ -962,15 +962,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             tds.setStyles(this.json.contentStyles);
         }
     },
-	
-	_loadZebraStyle: function(){
+
+    _loadZebraStyle: function(){
         if (this.json.zebraColor || this.json.backgroundColor){
             var tables = this.node.getElements("table");
             tables.each(function(table){
                 this._loadTableZebraStyle(table);
             }.bind(this));
         }
-	},
+    },
     _loadTableZebraStyle: function(table){
         var trs = table.getElements("tr");
         for (var i=0; i<trs.length; i++){
@@ -1033,7 +1033,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                     tr = this.totalTable.insertRow(i);
                     var datath = new Element("th").inject(tr);
                     datath.set("text", m.module.node.get("text"));
-                //    datath.setStyle("width", "30%");
+                    //    datath.setStyle("width", "30%");
                     datath.setStyles(this.json.titleStyles);
                     tr.insertCell(1).setStyles(this.json.amountStyles).set("text", totalResaults[i] || "");
                 }else{
@@ -1064,15 +1064,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             }.bind(this));
         }.bind(this));
     },
-	
-	_loadBorderStyle: function(){
-		if (this.json.border){
+
+    _loadBorderStyle: function(){
+        if (this.json.border){
             var tables = this.node.getElements("table");
             tables.each(function(table){
                 this._loadTableBorderStyle(table)
             }.bind(this));
-		}
-	},
+        }
+    },
     _loadTableBorderStyle: function(table){
         table.setStyles({
             "border-top": this.json.border,
@@ -1090,9 +1090,9 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
             "background": "transparent"
         });
     },
-	_loadDatagridTitleModules: function(){
-		var ths = this.node.getElements("th");
-		ths.each(function(th){
+    _loadDatagridTitleModules: function(){
+        var ths = this.node.getElements("th");
+        ths.each(function(th){
             var json = this.form._getDomjson(th);
             th.store("dataGrid", this);
             if (json){
@@ -1100,25 +1100,25 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
                 this.form.modules.push(module);
             }
         }.bind(this));
-	},
-	_loadDatagridDataModules: function(){
-		var tds = this.node.getElements("td");
-		tds.each(function(td){
-			var json = this.form._getDomjson(td);
-			td.store("dataGrid", this);
-			if (json){
-				var module = this.form._loadModule(json, td, function(){
+    },
+    _loadDatagridDataModules: function(){
+        var tds = this.node.getElements("td");
+        tds.each(function(td){
+            var json = this.form._getDomjson(td);
+            td.store("dataGrid", this);
+            if (json){
+                var module = this.form._loadModule(json, td, function(){
                     this.field = false;
                 });
-				td.store("module", module);
-				this.form.modules.push(module);
-			}
-		}.bind(this));
-	},
-	_afterLoaded: function(){
-		this._loadDatagridStyle();
+                td.store("module", module);
+                this.form.modules.push(module);
+            }
+        }.bind(this));
+    },
+    _afterLoaded: function(){
+        this._loadDatagridStyle();
         if (this.table) this.table.setStyle("display", "none");
-	},
+    },
     resetData: function(){
         this.setData(this._getValue());
     },
@@ -1216,15 +1216,15 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         return this.totalResaults;
     },
     isEmpty: function(){
-	    var data = this.getData();
-	    if( !data )return true;
-	    if( typeOf( data ) === "object" ){
-	        if( typeOf( data.data ) !== "array" )return true;
-	        if( data.data.length === 0 )return true;
+        var data = this.getData();
+        if( !data )return true;
+        if( typeOf( data ) === "object" ){
+            if( typeOf( data.data ) !== "array" )return true;
+            if( data.data.length === 0 )return true;
         }
-	    return false;
+        return false;
     },
-	getData: function(){
+    getData: function(){
         if (this.editable!=false){
             if (this.isEdit) this._completeLineEdit();
             var data = [];
@@ -1247,7 +1247,7 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }else{
             return this._getBusinessData();
         }
-	},
+    },
     getAmount: function(){
         return this._loadTotal();
     },
@@ -1400,12 +1400,12 @@ MWF.xApplication.process.Xform.DatagridMobile = new Class({
         }
         return true;
     }
-	
+
 });
 
 MWF.xApplication.process.Xform.DatagridMobile$Title =  new Class({
-	Extends: MWF.APP$Module,
-	_afterLoaded: function(){
+    Extends: MWF.APP$Module,
+    _afterLoaded: function(){
         this.dataGrid = this.node.retrieve("dataGrid");
         if ((this.json.total == "number") || (this.json.total == "count")){
             this.dataGrid.totalModules.push({
@@ -1414,14 +1414,14 @@ MWF.xApplication.process.Xform.DatagridMobile$Title =  new Class({
                 "type": this.json.total
             })
         }
-	//	this.form._loadModules(this.node);
-	}
+        //	this.form._loadModules(this.node);
+    }
 });
 MWF.xApplication.process.Xform.DatagridMobile$Data =  new Class({
-	Extends: MWF.APP$Module,
-	_afterLoaded: function(){
-		//this.form._loadModules(this.node);
-		this.dataGrid = this.node.retrieve("dataGrid");
+    Extends: MWF.APP$Module,
+    _afterLoaded: function(){
+        //this.form._loadModules(this.node);
+        this.dataGrid = this.node.retrieve("dataGrid");
 
         var td = this.node;
         if (this.json.cellType == "sequence"){
@@ -1451,5 +1451,5 @@ MWF.xApplication.process.Xform.DatagridMobile$Data =  new Class({
                 this.dataGrid.editModules.push(module);
             }.bind(this));
         }
-	}
+    }
 });
