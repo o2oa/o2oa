@@ -16,6 +16,7 @@ import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -38,6 +39,7 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
 
 public class EntityManagerContainer extends EntityManagerContainerBasic {
@@ -1903,6 +1905,32 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			list.add(t);
 		}
 		return list;
+	}
+
+	public <T extends JpaObject> Long clean(Class<T> cls, Integer batchSize) throws Exception {
+		Long count = 0L;
+		EntityManager em = this.get(cls);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<T> root = cq.from(cls);
+		cq.select(root.get(JpaObject.id_FIELDNAME));
+		List<String> ids;
+		do {
+			ids = em.createQuery(cq).setMaxResults(NumberTools.nullOrLessThan(batchSize, 1) ? 500 : batchSize)
+					.getResultList();
+			if (!ids.isEmpty()) {
+				em.getTransaction().begin();
+				for (String id : ids) {
+					T t = em.find(cls, id);
+					if (null != t) {
+						em.remove(t);
+						count++;
+					}
+				}
+				em.getTransaction().commit();
+			}
+		} while (!ids.isEmpty());
+		return count;
 	}
 
 }
