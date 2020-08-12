@@ -41,6 +41,23 @@
 
         <div class="MWFMaplist" name="properties" collapse="true" title="属性"></div>
         <div class="MWFScriptArea" name="defaultData" title="默认数据(S)"></div>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">允许删除:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="deleteable" value="yes" text{($.deleteable!=='no')?'checked':''}/>是
+                    <input type="radio" name="deleteable" value="no" text{($.deleteable==='no')?'checked':''}/>否
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">允许添加:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="addable" value="yes" text{($.addable!=='no')?'checked':''}/>是
+                    <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}/>否
+                </td>
+            </tr>
+        </table>
         <div class="MWFScriptArea" name="editableScript" title="是否可编辑(S)"></div>
 
         <div class="MWFValidation" name="validationConfig"></div>
