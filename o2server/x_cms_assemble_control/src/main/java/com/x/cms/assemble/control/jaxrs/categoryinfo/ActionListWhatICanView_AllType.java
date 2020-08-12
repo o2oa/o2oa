@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -96,12 +99,11 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 			}
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( personName, appId, "AllType", isXAdmin, appManager, appPublisher, appViewer );
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appId, isAnonymous, isXAdmin, appManager, appPublisher, appViewer );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			wos = (List<Wo>) element.getObjectValue();
-			result.setData(wos);
+		if (optional.isPresent()) {
+			result.setData((List<Wo>)optional.get());
 		} else {
 			if (check) {
 				if ( isXAdmin || appManager || appPublisher || appViewer ) {
@@ -151,7 +153,7 @@ public class ActionListWhatICanView_AllType extends BaseAction {
 							wo.setExtContent( categoryInfoServiceAdv.getExtContentWithId( wo.getId() ));
 						}
 						SortTools.asc(wos, "categorySeq");
-						cache.put(new Element(cacheKey, wos));
+						CacheManager.put(cacheCategory, cacheKey, wos);
 						result.setData(wos);
 					} catch (Exception e) {
 						check = false;
