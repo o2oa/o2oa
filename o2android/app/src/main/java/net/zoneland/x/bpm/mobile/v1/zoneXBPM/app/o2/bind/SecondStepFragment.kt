@@ -56,9 +56,9 @@ class SecondStepFragment: BaseMVPFragment<SecondStepContract.View, SecondStepCon
     override fun initData() {
         super.initData()
         if (arguments!=null) {
-            json = arguments.getString(LOGIN_UNIT_JSON_KEY, "")
-            phone = arguments.getString(LOGIN_UNIT_PHONE_KEY, "")
-            code = arguments.getString(LOGIN_UNIT_CODE_KEY, "")
+            json = arguments!!.getString(LOGIN_UNIT_JSON_KEY, "")
+            phone = arguments!!.getString(LOGIN_UNIT_PHONE_KEY, "")
+            code = arguments!!.getString(LOGIN_UNIT_CODE_KEY, "")
         }
         if (TextUtils.isEmpty(json)) {
             XToast.toastShort(activity, "没有获得单位信息！")
@@ -75,7 +75,7 @@ class SecondStepFragment: BaseMVPFragment<SecondStepContract.View, SecondStepCon
     override fun initUI() {
         radio_group_login_unit_choose_unit.removeAllViews()
         val layoutInflater = LayoutInflater.from(activity)
-        var marginTop = activity.dip( 10f)
+        var marginTop = activity?.dip( 10f) ?: 10
         for ((index, unit) in unitList.withIndex()) {
             val radio: RadioButton = layoutInflater.inflate(R.layout.snippet_radio_button, null) as RadioButton
             radio.text = (unit.name)
@@ -126,14 +126,14 @@ class SecondStepFragment: BaseMVPFragment<SecondStepContract.View, SecondStepCon
     override fun loginSuccess(data: AuthenticationInfoJson) {
         O2SDKManager.instance().setCurrentPersonData(data)
         hideLoadingDialog()
-//        activity.goThenKill<MainActivity>()
+//        activity?.goThenKill<MainActivity>()
         (activity as BindPhoneActivity).startInstallCustomStyle(true)
     }
 
     override fun loginFail() {
         hideLoadingDialog()
         //自动登陆失败 跳转过去手动登陆
-//        activity.goThenKill<LoginActivity>(LoginActivity.startBundleData(phone))
+//        activity?.goThenKill<LoginActivity>(LoginActivity.startBundleData(phone))
         (activity as BindPhoneActivity).startInstallCustomStyle(false, phone)
     }
 

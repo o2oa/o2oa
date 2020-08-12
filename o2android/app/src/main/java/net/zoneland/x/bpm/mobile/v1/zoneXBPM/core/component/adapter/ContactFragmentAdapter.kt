@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactFragmentVO
@@ -12,7 +12,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.inflate
 
 abstract class ContactFragmentAdapter(var items: List<ContactFragmentVO>): RecyclerView.Adapter<CommonRecyclerViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CommonRecyclerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonRecyclerViewHolder {
         return when(viewType) {
             0 -> CommonRecyclerViewHolder(parent?.inflate(R.layout.item_contact_fragment_header))
             1,2 -> CommonRecyclerViewHolder(parent?.inflate(R.layout.item_contact_fragment_body))
@@ -21,32 +21,32 @@ abstract class ContactFragmentAdapter(var items: List<ContactFragmentVO>): Recyc
         }
     }
 
-    override fun onBindViewHolder(holder: CommonRecyclerViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: CommonRecyclerViewHolder, position: Int) {
         when(items[position]){
             is ContactFragmentVO.GroupHeader -> {
                 val header = items[position] as ContactFragmentVO.GroupHeader
-                holder?.setText(R.id.tv_item_contact_fragment_header_title, header.name)
+                holder.setText(R.id.tv_item_contact_fragment_header_title, header.name)
                         ?.setImageViewResource(R.id.image_item_contact_fragment_header_icon, header.resId)
             }
             is ContactFragmentVO.MyDepartment -> {
                 val body = items[position] as ContactFragmentVO.MyDepartment
                 bindMyDepartment(body, holder)
-                holder?.convertView?.setOnClickListener { clickMyDepartment(body) }
+                holder.convertView?.setOnClickListener { clickMyDepartment(body) }
             }
             is ContactFragmentVO.MyCompany -> {
                 val body = items[position] as ContactFragmentVO.MyCompany
                 bindMyCompany(body, holder)
-                holder?.convertView?.setOnClickListener { clickMyCompany(body) }
+                holder.convertView?.setOnClickListener { clickMyCompany(body) }
             }
             is ContactFragmentVO.MyCollect -> {
                 val body = items[position] as ContactFragmentVO.MyCollect
                 bindMyCollect(body, holder)
-                holder?.convertView?.setOnClickListener { clickMyCollect(body) }
+                holder.convertView?.setOnClickListener { clickMyCollect(body) }
             }
             is ContactFragmentVO.MyGroup -> {
                 val body = items[position] as ContactFragmentVO.MyGroup
                 bindMyGroup(body, holder)
-                holder?.convertView?.setOnClickListener { clickMyGroup(body) }
+                holder.convertView?.setOnClickListener { clickMyGroup(body) }
             }
         }
     }

@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.main
 
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.fragment_bbs_main_section.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R

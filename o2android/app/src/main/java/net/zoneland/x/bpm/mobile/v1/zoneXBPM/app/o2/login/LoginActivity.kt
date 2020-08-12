@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.InputType
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -248,7 +248,6 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         }
         hideLoadingDialog()
         O2SDKManager.instance().setCurrentPersonData(data)
-        O2App.instance._JMLoginInner()
         goThenKill<MainActivity>()
     }
 

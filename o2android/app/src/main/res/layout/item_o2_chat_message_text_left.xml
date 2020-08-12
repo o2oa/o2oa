@@ -8,7 +8,7 @@
         android:id="@+id/tv_o2_chat_message_time"
         tools:text="10:19"
         style="@style/o2_im_chat_message_time_text_style"/>
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp">
@@ -114,5 +114,5 @@
             android:visibility="gone"
             />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

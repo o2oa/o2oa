@@ -7,19 +7,19 @@
     android:layout_height="match_parent"
     tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.view.BBSWebViewSubjectActivity"
     >
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/activity_bbs_web_view_subject"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/z_color_background"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout_snippet"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/XBPMTheme.AppBarOverlay">
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_snippet_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,8 +35,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=""
                     android:singleLine="true" />
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView
             android:id="@+id/web_view_bbs_web_view_subject_content"
@@ -47,8 +47,8 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
         </net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.NestedProgressWebView>
 
-    </android.support.design.widget.CoordinatorLayout>
-    <android.support.design.widget.FloatingActionButton
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_bbs_subject_attach"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:layout_marginEnd="@dimen/spacing_normal"
         android:visibility="gone"
         />
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -136,6 +136,6 @@
 
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
 

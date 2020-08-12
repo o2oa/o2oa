@@ -1,12 +1,12 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.CardView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import android.text.TextUtils
 import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.view.Gravity

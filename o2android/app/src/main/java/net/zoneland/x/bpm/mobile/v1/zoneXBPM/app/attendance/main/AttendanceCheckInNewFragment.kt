@@ -3,8 +3,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.main
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Message
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.GridLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import android.widget.ImageView
 import android.widget.TextView
 import com.baidu.location.BDLocation
@@ -108,7 +108,7 @@ class AttendanceCheckInNewFragment : BaseMVPViewPagerFragment<AttendanceCheckInC
 
         //打卡班次
         rv_attendance_check_in_new_schedules.layoutManager = GridLayoutManager(activity, 2)
-        rv_attendance_check_in_new_schedules.addItemDecoration(GridLayoutItemDecoration(activity.dip(10), activity.dip(10), 2))
+        rv_attendance_check_in_new_schedules.addItemDecoration(GridLayoutItemDecoration(activity?.dip(10) ?: 10, activity?.dip(10) ?: 10, 2))
         rv_attendance_check_in_new_schedules.adapter = recordAdapter
         recordAdapter.setOnItemClickListener { view, position ->
             val t = recordList[position]
@@ -221,16 +221,23 @@ class AttendanceCheckInNewFragment : BaseMVPViewPagerFragment<AttendanceCheckInC
             if (unCheckNumber > 0) {
                 needCheckIn = true
                 val draw = rl_attendance_check_in_new_knock_btn.background as? GradientDrawable
-                draw?.setColor(ContextCompat.getColor(activity, R.color.z_color_primary))
+                activity?.let {
+                    draw?.setColor(ContextCompat.getColor(it, R.color.z_color_primary))
+                }
+
             }else {
                 needCheckIn = false
                 val draw = rl_attendance_check_in_new_knock_btn.background as? GradientDrawable
-                draw?.setColor(ContextCompat.getColor(activity, R.color.disabled))
+                activity?.let {
+                    draw?.setColor(ContextCompat.getColor(it, R.color.disabled))
+                }
             }
         }else {
             needCheckIn = false
             val draw = rl_attendance_check_in_new_knock_btn.background as? GradientDrawable
-            draw?.setColor(ContextCompat.getColor(activity, R.color.disabled))
+            activity?.let {
+                draw?.setColor(ContextCompat.getColor(it, R.color.disabled))
+            }
         }
     }
 
@@ -281,13 +288,13 @@ class AttendanceCheckInNewFragment : BaseMVPViewPagerFragment<AttendanceCheckInC
             XLog.info("distance:$distance")
             if (distance < checkInPosition!!.errorRange) {
                 isInCheckInPositionRange = true
-                activity.runOnUiThread {
+                activity?.runOnUiThread {
                     tv_attendance_check_in_new_workplace.text = checkInPosition?.placeName
                     image_attendance_check_in_new_location_check_icon.setImageResource(R.mipmap.list_selected)
                 }
             } else {
                 isInCheckInPositionRange = false
-                activity.runOnUiThread {
+                activity?.runOnUiThread {
                     tv_attendance_check_in_new_workplace.text = myLocation?.addrStr
                     image_attendance_check_in_new_location_check_icon.setImageResource(R.mipmap.icon_delete_people)
                 }

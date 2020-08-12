@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -66,27 +66,27 @@ class TaskCompletedWorkListFragment : DialogFragment(), TaskCompletedWorkListCon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
         mPresenter.attachView(this)
-        taskId = arguments.getString(TASKCOMPLETED_ID_KEY)
+        taskId = arguments?.getString(TASKCOMPLETED_ID_KEY)
     }
 
     override fun onStart() {
         super.onStart()
-        val window = dialog.window
+        val window = dialog?.window
         val metrics = resources.displayMetrics
         val width = metrics.widthPixels //DialogSearch的宽
         val height = (metrics.heightPixels * 0.85).toInt() //DialogSearch的宽
-        window!!.setLayout(width, height)
-        window.setGravity(Gravity.BOTTOM)
-        window.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
+        window?.setLayout(width, height)
+        window?.setGravity(Gravity.BOTTOM)
+        window?.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_task_completed_work_list, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         image_fragment_task_completed_work_list_close.setOnClickListener {
             closeSelf()
@@ -98,12 +98,12 @@ class TaskCompletedWorkListFragment : DialogFragment(), TaskCompletedWorkListCon
             val work = mWorkList[position]
             if (work is Work) {
 
-                activity.go<TaskWebViewActivity>(TaskWebViewActivity.start(work.id ?: "", "", work.title
+                activity?.go<TaskWebViewActivity>(TaskWebViewActivity.start(work.id ?: "", "", work.title
                         	                        ?: ""))
                 closeSelf()
             }
             if (work is WorkCompleted) {
-                activity.go<TaskWebViewActivity>(TaskWebViewActivity.start("", work.id ?: "",work.title
+                activity?.go<TaskWebViewActivity>(TaskWebViewActivity.start("", work.id ?: "",work.title
                         	                        ?: ""))
                 closeSelf()
             }

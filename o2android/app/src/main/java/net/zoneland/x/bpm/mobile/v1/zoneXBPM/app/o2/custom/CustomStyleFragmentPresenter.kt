@@ -29,7 +29,7 @@ class CustomStyleFragmentPresenter : BasePresenterImpl<CustomStyleFragmentContra
     val service: RealmDataService by lazy { RealmDataService() }
 
     override fun installCustomStyle(handler: Handler?) {
-        var url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "")
+        var url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "") ?: ""
         getApiService(mView?.getContext(), url)?.getCustomStyle()
                 ?.subscribeOn(Schedulers.io())
                 ?.flatMap { response ->

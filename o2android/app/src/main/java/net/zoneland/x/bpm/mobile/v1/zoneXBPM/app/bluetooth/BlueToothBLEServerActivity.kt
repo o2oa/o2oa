@@ -10,7 +10,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.ParcelUuid
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.activity_blue_tooth_bleserver.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity

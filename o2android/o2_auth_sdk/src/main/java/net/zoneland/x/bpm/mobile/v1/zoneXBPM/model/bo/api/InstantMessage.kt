@@ -21,15 +21,15 @@ data class InstantMessage(
         var updateTime: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.createStringArrayList(),
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.createStringArrayList() ?: ArrayList(),
             1 == source.readInt(),
-            source.readString(),
-            source.readString()
+            source.readString() ?: "",
+            source.readString() ?: ""
     )
 
     override fun describeContents() = 0

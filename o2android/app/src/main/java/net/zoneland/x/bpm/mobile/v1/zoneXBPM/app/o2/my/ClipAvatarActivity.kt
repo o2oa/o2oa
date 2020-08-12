@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_clip_avatar.*
@@ -47,7 +47,8 @@ class ClipAvatarActivity : AppCompatActivity() {
         }else {
             val cr = this.contentResolver
             try {
-                val bitmap = BitmapUtil.getFitSampleBitmap(cr.openInputStream(uri), screenWidth(), screenHeight())
+                val input = cr.openInputStream(uri) ?: throw Exception("没有获取到图片")
+                val bitmap = BitmapUtil.getFitSampleBitmap(input, screenWidth(), screenHeight())
                 clip_avatar_layout.setSrc(bitmap)
             } catch (e: Exception) {
                 XLog.error("", e)

@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.skin
 
 import android.os.Build
-import android.support.design.widget.FloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.view.View
 import net.muliba.changeskin.FancySkinManager
 import net.muliba.changeskin.data.BaseSkinAttr

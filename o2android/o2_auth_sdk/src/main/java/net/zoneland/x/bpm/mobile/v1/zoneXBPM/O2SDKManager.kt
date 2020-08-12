@@ -109,25 +109,25 @@ class O2SDKManager private constructor()  {
         spHelper = SharedPreferencesHelper(context)
 
         RetrofitClient.instance().init(context)
-        cId = prefs().getString(CURRENT_PERSON_ID_KEY, "")
-        distinguishedName = prefs().getString(CURRENT_PERSON_DISTINGUISHED_KEY, "")
-        cUpdateTime = prefs().getString(CURRENT_PERSON_UPDATETIME_KEY, "")
-        cGenderType = prefs().getString(CURRENT_PERSON_GENDERTYPE_KEY, "")
-        cPinyin = prefs().getString(CURRENT_PERSON_PINYIN_KEY, "")
-        cPinyinInitial = prefs().getString(CURRENT_PERSON_PINYININITIAL_KEY, "")
-        cName = prefs().getString(CURRENT_PERSON_NAME_KEY, "")
-        cEmployee = prefs().getString(CURRENT_PERSON_EMPLOYEE_KEY, "")
-        cUnique = prefs().getString(CURRENT_PERSON_UNIQUE_KEY, "")
-        cControllerList = prefs().getString(CURRENT_PERSON_CONTROLLERLIST_KEY, "")
-        cMail = prefs().getString(CURRENT_PERSON_MAIL_KEY, "")
-        cQq = prefs().getString(CURRENT_PERSON_QQ_KEY, "")
-        cWeixin = prefs().getString(CURRENT_PERSON_WEIXIN_KEY, "")
-        cMobile = prefs().getString(CURRENT_PERSON_MOBILE_KEY, "")
-        cDeviceList = prefs().getString(CURRENT_PERSON_DEVICELIST_KEY, "")
-        cSignature = prefs().getString(CURRENT_PERSON_SIGNATURE_KEY, "")
-        cRoleList = prefs().getString(CURRENT_PERSON_ROLELIST_KEY, "")
+        cId = prefs().getString(CURRENT_PERSON_ID_KEY, "") ?: ""
+        distinguishedName = prefs().getString(CURRENT_PERSON_DISTINGUISHED_KEY, "") ?: ""
+        cUpdateTime = prefs().getString(CURRENT_PERSON_UPDATETIME_KEY, "") ?: ""
+        cGenderType = prefs().getString(CURRENT_PERSON_GENDERTYPE_KEY, "") ?: ""
+        cPinyin = prefs().getString(CURRENT_PERSON_PINYIN_KEY, "") ?: ""
+        cPinyinInitial = prefs().getString(CURRENT_PERSON_PINYININITIAL_KEY, "") ?: ""
+        cName = prefs().getString(CURRENT_PERSON_NAME_KEY, "") ?: ""
+        cEmployee = prefs().getString(CURRENT_PERSON_EMPLOYEE_KEY, "") ?: ""
+        cUnique = prefs().getString(CURRENT_PERSON_UNIQUE_KEY, "") ?: ""
+        cControllerList = prefs().getString(CURRENT_PERSON_CONTROLLERLIST_KEY, "") ?: ""
+        cMail = prefs().getString(CURRENT_PERSON_MAIL_KEY, "") ?: ""
+        cQq = prefs().getString(CURRENT_PERSON_QQ_KEY, "") ?: ""
+        cWeixin = prefs().getString(CURRENT_PERSON_WEIXIN_KEY, "") ?: ""
+        cMobile = prefs().getString(CURRENT_PERSON_MOBILE_KEY, "") ?: ""
+        cDeviceList = prefs().getString(CURRENT_PERSON_DEVICELIST_KEY, "") ?: ""
+        cSignature = prefs().getString(CURRENT_PERSON_SIGNATURE_KEY, "") ?: ""
+        cRoleList = prefs().getString(CURRENT_PERSON_ROLELIST_KEY, "") ?: ""
         //扩展信息
-        zToken = prefs().getString(CURRENT_PERSON_TOKEN_KEY, "")//TOKEN
+        zToken = prefs().getString(CURRENT_PERSON_TOKEN_KEY, "") ?: ""//TOKEN
 
 
     }
@@ -145,8 +145,8 @@ class O2SDKManager private constructor()  {
             showState(LaunchState.NoBindError)
             return
         }
-        val phone = prefs().getString(O2.PRE_BIND_PHONE_KEY, "")
-        val unit = prefs().getString(O2.PRE_BIND_UNIT_KEY, "")
+        val phone = prefs().getString(O2.PRE_BIND_PHONE_KEY, "") ?: ""
+        val unit = prefs().getString(O2.PRE_BIND_UNIT_KEY, "") ?: ""
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(unit)) {
             Log.e(TAG,"没有绑定手机号码。。。。")
             showState(LaunchState.NoBindError)

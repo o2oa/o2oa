@@ -16,7 +16,7 @@ import org.jetbrains.anko.dip
 /**
  * Created by 73419 on 2017/12/18 0018.
  */
-class IdentifyChooseDialog(context: Context?, list: List<ProcessWOIdentityJson>, listener: DialogCallback) : Dialog(context), View.OnClickListener {
+class IdentifyChooseDialog(context: Context, list: List<ProcessWOIdentityJson>, listener: DialogCallback) : Dialog(context), View.OnClickListener {
 
     private var callback: DialogCallback = listener
     private var identifyId: String = ""

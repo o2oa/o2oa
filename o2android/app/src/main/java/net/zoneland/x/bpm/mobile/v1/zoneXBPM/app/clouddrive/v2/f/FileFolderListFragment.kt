@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.f
 
 import android.graphics.Typeface
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Menu
@@ -47,7 +47,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
         val ARG_FOLDER_ID_KEY = "ARG_FOLDER_ID_KEY"
         val LPWW = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
     }
-    private val font: Typeface by lazy { Typeface.createFromAsset(activity.assets, "fonts/fontawesome-webfont.ttf") }
+    private val font: Typeface by lazy { Typeface.createFromAsset(activity?.assets, "fonts/fontawesome-webfont.ttf") }
     private val breadcrumbBeans = ArrayList<FileBreadcrumbBean>()//面包屑导航对象
     private val adapter: CloudDiskItemAdapter by lazy { CloudDiskItemAdapter() }
     private var fileLevel = 0//默认进入的时候是第一层
@@ -60,8 +60,8 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
 
     override fun initUI() {
         if (arguments != null) {
-            if (arguments.getSerializable(ARG_FOLDER_ID_KEY) != null) {
-                val bean = arguments.getSerializable(ARG_FOLDER_ID_KEY) as FileBreadcrumbBean
+            if (arguments!!.getSerializable(ARG_FOLDER_ID_KEY) != null) {
+                val bean = arguments!!.getSerializable(ARG_FOLDER_ID_KEY) as FileBreadcrumbBean
                 breadcrumbBeans.clear()
                 breadcrumbBeans.add(bean)
             }
@@ -87,13 +87,13 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_cloud_disk, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_cloud_disk, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
             R.id.cloud_disk_menu_upload_file -> {
                 menuUploadFile()
                 return true
@@ -225,7 +225,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
 
     private fun move() {
         //选择文件夹进行移动
-        CloudDiskFolderPickerActivity.pickFolder(activity) { parentId ->
+        CloudDiskFolderPickerActivity.pickFolder(activity!!) { parentId ->
             val files = ArrayList<CloudDiskItem.FileItem>()
             val folders = ArrayList<CloudDiskItem.FolderItem>()
             adapter.mSelectIds.forEach { id ->
@@ -280,7 +280,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
         val renameId = adapter.mSelectIds.first()
         val item = adapter.items.firstOrNull { it.id == renameId }
         if (item != null) {
-            val dialog = O2DialogSupport.openCustomViewDialog(activity, getString(R.string.yunpan_rename), R.layout.dialog_name_modify) {
+            val dialog = O2DialogSupport.openCustomViewDialog(activity!!, getString(R.string.yunpan_rename), R.layout.dialog_name_modify) {
                 dialog ->
                 val text = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
                 val content = text.text.toString()
@@ -315,7 +315,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
     private fun initRecyclerView() {
         rv_file_folder_list.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_file_folder_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val topRowVerticalPosition = rv_file_folder_list?.getChildAt(0)?.top ?: 0
                 swipe_refresh_file_folder_layout.isEnabled = topRowVerticalPosition >= 0
@@ -338,7 +338,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
 
             override fun onFileClick(file: CloudDiskItem.FileItem) {
                 if (file.type == FileTypeEnum.image.key) {
-                    BigImageViewActivity.start(activity, file.id, file.extension, file.name)
+                    BigImageViewActivity.start(activity!!, file.id, file.extension, file.name)
                 }else {
                     if (activity is CloudDiskActivity) {
                         (activity as CloudDiskActivity).openFile(file)
@@ -365,10 +365,10 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
             breadcrumbTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             breadcrumbTitle.layoutParams = LPWW
             if (index == breadcrumbBeans.size - 1) {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 ll_file_folder_breadcrumb.addView(breadcrumbTitle)
             } else {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 breadcrumbTitle.setOnClickListener { v -> onClickBreadcrumb(v as TextView) }
                 ll_file_folder_breadcrumb.addView(breadcrumbTitle)
                 val arrow = TextView(activity)
@@ -376,7 +376,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
                 lp.setMargins(8, 0, 8, 0)
                 arrow.layoutParams = lp
                 arrow.text = getString(R.string.fa_angle_right)
-                arrow.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                arrow.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 arrow.typeface = font
                 arrow.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 ll_file_folder_breadcrumb.addView(arrow)
@@ -414,7 +414,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
 
     private fun menuUploadFile() {
         FilePicker()
-                .withActivity(activity)
+                .withActivity(activity!!)
                 .chooseType(FilePicker.CHOOSE_TYPE_SINGLE)
                 .forResult { filePaths ->
                     if (filePaths.isNotEmpty()) {
@@ -439,7 +439,7 @@ class FileFolderListFragment : BaseMVPFragment<FileFolderListContract.View, File
      * 新建文件夹
      */
     private fun menuCreateFolder() {
-        O2DialogSupport.openCustomViewDialog(activity, getString(R.string.yunpan_menu_create_folder), R.layout.dialog_name_modify) {
+        O2DialogSupport.openCustomViewDialog(activity!!, getString(R.string.yunpan_menu_create_folder), R.layout.dialog_name_modify) {
             dialog ->
             val text = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
             val content = text.text.toString()

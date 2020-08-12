@@ -10,11 +10,11 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_attendance_main_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></android.support.v4.view.ViewPager>
+        android:layout_weight="1"></androidx.viewpager.widget.ViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"

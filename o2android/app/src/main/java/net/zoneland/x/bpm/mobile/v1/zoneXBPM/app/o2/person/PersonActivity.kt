@@ -204,8 +204,8 @@ class PersonActivity : BaseMVPActivity<PersonContract.View, PersonContract.Prese
             linear_person_gender_men_button.visible()
         }
         genderName = GenderTypeEnums.getNameByKey(personInfo.genderType)
-        if (!TextUtils.isEmpty(personInfo.qq)) {
-            tv_person_qq.text = "QQ ".plus(personInfo.qq)
+        if (!TextUtils.isEmpty(personInfo.signature)) {
+            tv_person_sign.text = "个人签名: ".plus(personInfo.signature)
         }
         tv_person_name.text = personInfo.name
         tv_person_name_2.text = personInfo.name

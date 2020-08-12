@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process
 
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.GravityCompat
+import com.google.android.material.tabs.TabLayout
+import androidx.core.view.GravityCompat
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils

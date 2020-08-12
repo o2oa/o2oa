@@ -1,9 +1,9 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.process.TaskFragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskApplicationData
 
@@ -12,7 +12,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskApplicationData
  * Copyright © 2017 O2. All rights reserved.
  */
 
-class TaskListPagerAdapter(fm:FragmentManager, val applications:ArrayList<TaskApplicationData>): FragmentPagerAdapter(fm) {
+class TaskListPagerAdapter(fm: FragmentManager, val applications:ArrayList<TaskApplicationData>): FragmentPagerAdapter(fm) {
 
 
 

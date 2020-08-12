@@ -3,9 +3,9 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import org.jetbrains.anko.dip
 
@@ -20,11 +20,11 @@ class TransparentItemDecoration(context: Context, orientation: Int) : RecyclerVi
     private var mOrientation = orientation
     private val mWidth by lazy { context.dip( 8f) }
 
-    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         //啥也不干，只在getItemOffsets中进行偏移
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val layoutManger = parent.layoutManager
         when(layoutManger){
             is GridLayoutManager -> {

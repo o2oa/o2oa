@@ -10,7 +10,7 @@
 
     <include layout="@layout/snippet_appbarlayout_tablayout_toolbar" ></include>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_okr_report_task_collect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.StringUtil;
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper;
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog;

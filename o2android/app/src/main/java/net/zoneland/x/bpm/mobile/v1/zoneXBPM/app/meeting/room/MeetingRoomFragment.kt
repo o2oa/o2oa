@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.room
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -72,7 +72,7 @@ class MeetingRoomFragment : BaseMVPViewPagerFragment<MeetingRoomFragmentContract
         val tpd : TimePickerDialog = TimePickerDialog.newInstance(
                 this, Integer.parseInt(startHour), Integer.parseInt(startMinute),true,
                 Integer.parseInt(endHour), Integer.parseInt(endMinute))
-        tpd.show(activity.fragmentManager,"TimePickerDialog")
+        tpd.show(activity?.fragmentManager,"TimePickerDialog")
     }
 
     override fun findBuildingList(list: List<Group<MeetingRoom.Building, MeetingRoom.Room>>) {
@@ -128,17 +128,17 @@ class MeetingRoomFragment : BaseMVPViewPagerFragment<MeetingRoomFragmentContract
                     roomNumber =  " 房间：${child.roomNumber}"
                 }
                 val roomName = holder.getView<TextView>(R.id.tv_meeting_room_name)
-                roomName.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_hint))
+                roomName.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_hint))
                 val res = if (child.available) {
                     if (child.idle) {
-                        roomName.setTextColor(FancySkinManager.instance().getColor(activity,R.color.z_color_meeting_room_free))
+                        roomName.setTextColor(FancySkinManager.instance().getColor(activity!!,R.color.z_color_meeting_room_free))
                         R.mipmap.pic_meeting_room_free
                     } else {
-                        roomName.setTextColor(FancySkinManager.instance().getColor(activity,R.color.z_color_primary_dark))
+                        roomName.setTextColor(FancySkinManager.instance().getColor(activity!!,R.color.z_color_primary_dark))
                         R.mipmap.pic_meeting_room_subscribe
                     }
                 } else {
-                    roomName.setTextColor(FancySkinManager.instance().getColor(activity,R.color.z_color_text_hint))
+                    roomName.setTextColor(FancySkinManager.instance().getColor(activity!!,R.color.z_color_text_hint))
                     R.mipmap.pic_meeting_room_close
                 }
 
@@ -158,7 +158,7 @@ class MeetingRoomFragment : BaseMVPViewPagerFragment<MeetingRoomFragmentContract
                     bundle.putString(MeetingRoomDetailActivity.DATE,tv_meeting_room_date.text.toString())
                     bundle.putString(MeetingRoomDetailActivity.START_TIME,tv_meeting_room_start_time.text.toString())
                     bundle.putString(MeetingRoomDetailActivity.END_TIME,tv_meeting_room_end_time.text.toString())
-                    activity.go<MeetingRoomDetailActivity>(bundle)
+                    activity?.go<MeetingRoomDetailActivity>(bundle)
                 }
             }
         }

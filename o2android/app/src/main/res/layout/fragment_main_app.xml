@@ -23,7 +23,7 @@
             android:background="@android:color/white"
             android:padding="@dimen/meeting_padding">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -50,7 +50,7 @@
                     android:visibility="gone"
                     android:text="(按住拖动调整顺序)"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/my_app_rv"
                     app:layout_constraintStart_toEndOf="@id/my_app_text"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/edit_ll_view"
@@ -75,7 +75,7 @@
                     android:background="@color/z_color_split_meeting_line"
                     />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/my_app_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -104,7 +104,7 @@
                 android:background="@color/z_color_split_meeting_line"
                 android:layout_marginTop="@dimen/spacing_meeting"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/all_app_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

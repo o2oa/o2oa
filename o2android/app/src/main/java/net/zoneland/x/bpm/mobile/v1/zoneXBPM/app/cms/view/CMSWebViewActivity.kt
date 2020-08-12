@@ -10,16 +10,12 @@ import android.net.http.SslError
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_cms_web_view_document.*
-import kotlinx.android.synthetic.main.activity_cms_web_view_document.bottom_operate_button_layout
-import kotlinx.android.synthetic.main.activity_cms_web_view_document.fl_bottom_operation_bar
-import kotlinx.android.synthetic.main.activity_work_web_view.*
 import net.muliba.fancyfilepickerlibrary.FilePicker
 import net.muliba.fancyfilepickerlibrary.PicturePicker
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
@@ -28,9 +24,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.tbs.FileReaderActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.RetrofitClient
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.CMSWorkControl
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.AttachmentItemVO
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.O2UploadImageData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.go
@@ -38,17 +32,10 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.gone
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.visible
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.AttachPopupWindow
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.WebChromeClientWithProgressAndValueCallback
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.util.concurrent.Future
 
 
 class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewContract.Presenter>(), CMSWebViewContract.View {
@@ -165,10 +152,10 @@ class CMSWebViewActivity : BaseMVPActivity<CMSWebViewContract.View, CMSWebViewCo
                 TAKE_FROM_PICTURES_CODE -> {
                     //选择照片
                     data?.let {
-                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        val result = it.extras?.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
                         if (!TextUtils.isEmpty(result)) {
                             XLog.debug("照片 path:$result")
-                            uploadImage2FileStorageStart(result)
+                            uploadImage2FileStorageStart(result!!)
                         }
                     }
                 }

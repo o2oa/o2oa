@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.baidu.android.tts.InitConfig
 import com.baidu.android.tts.MySyntherizer
 import com.baidu.android.tts.OfflineResource

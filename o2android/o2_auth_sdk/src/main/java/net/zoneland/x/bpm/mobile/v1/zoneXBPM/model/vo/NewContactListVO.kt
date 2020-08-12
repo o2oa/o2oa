@@ -20,14 +20,14 @@ sealed class NewContactListVO {
             var departmentCount: Int = 0,
             var identityCount: Int = 0) : NewContactListVO(), Parcelable {
         constructor(source: Parcel) : this(
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.createStringArrayList(),
-                source.readString(),
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.createStringArrayList() ?: ArrayList(),
+                source.readString() ?: "",
                 source.readInt(),
-                source.readString(),
+                source.readString() ?: "",
                 source.readInt(),
                 source.readInt()
         )
@@ -67,15 +67,15 @@ sealed class NewContactListVO {
                    var unitLevelName: String = ""
     ) : NewContactListVO(), Parcelable {
         constructor(source: Parcel) : this(
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
                 source.readInt(),
-                source.readString()
+                source.readString() ?: ""
         )
 
         override fun describeContents() = 0
@@ -107,10 +107,10 @@ sealed class NewContactListVO {
                 var distinguishedName: String = "",
                 var unique: String = "") : NewContactListVO(), Parcelable {
         constructor(source: Parcel) : this(
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString()
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: ""
         )
 
         override fun describeContents() = 0
@@ -145,17 +145,17 @@ sealed class NewContactListVO {
                  var mobile: String = "",
                  var officePhone: String = "") : NewContactListVO(), Parcelable {
         constructor(source: Parcel) : this(
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString(),
-                source.readString()
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: "",
+                source.readString() ?: ""
         )
 
         override fun describeContents() = 0

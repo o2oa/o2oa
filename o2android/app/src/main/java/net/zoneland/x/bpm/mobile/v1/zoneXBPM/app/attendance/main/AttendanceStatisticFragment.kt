@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.main
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import com.jzxiang.pickerview.TimePickerDialog
 import com.jzxiang.pickerview.data.Type
@@ -39,19 +39,19 @@ class AttendanceStatisticFragment : BaseMVPViewPagerFragment<AttendanceStatistic
                 when (header.groupType) {
                     0 -> {
                         val headerType = holder.getView<CircleTextView>(R.id.circle_tv_item_attendance_statistic_header_type)
-                        headerType.setTextAndCircleColor("迟", ContextCompat.getColor(activity, R.color.z_attendance_late))
+                        headerType.setTextAndCircleColor("迟", ContextCompat.getColor(activity!!, R.color.z_attendance_late))
                     }
                     1 -> {
                         val headerType = holder.getView<CircleTextView>(R.id.circle_tv_item_attendance_statistic_header_type)
-                        headerType.setTextAndCircleColor("早", ContextCompat.getColor(activity, R.color.z_attendance_leaveEarlier))
+                        headerType.setTextAndCircleColor("早", ContextCompat.getColor(activity!!, R.color.z_attendance_leaveEarlier))
                     }
                     2 -> {
                         val headerType = holder.getView<CircleTextView>(R.id.circle_tv_item_attendance_statistic_header_type)
-                        headerType.setTextAndCircleColor("缺", ContextCompat.getColor(activity, R.color.z_attendance_absent))
+                        headerType.setTextAndCircleColor("缺", ContextCompat.getColor(activity!!, R.color.z_attendance_absent))
                     }
                     3 -> {
                         val headerType = holder.getView<CircleTextView>(R.id.circle_tv_item_attendance_statistic_header_type)
-                        headerType.setTextAndCircleColor("正", ContextCompat.getColor(activity, R.color.z_color_primary))
+                        headerType.setTextAndCircleColor("正", ContextCompat.getColor(activity!!, R.color.z_color_primary))
                     }
                 }
                 var weekDay = DateHelper.getWeekDay(header.firstDetail.recordDateString, "yyyy-MM-dd")
@@ -129,13 +129,13 @@ class AttendanceStatisticFragment : BaseMVPViewPagerFragment<AttendanceStatistic
     private fun showMonthPicker() {
         val currentMonth = DateHelper.convertStringToDate("yyyy-MM", month).time
         val monthChooser = TimePickerDialog.Builder()
-                .setThemeColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                .setThemeColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 .setType(Type.YEAR_MONTH)
                 .setTitleStringId("月份选择")
                 .setCurrentMillseconds(currentMonth)
                 .setCallBack(this)
                 .build()
-        monthChooser.show(activity.supportFragmentManager, "month")
+        monthChooser.show(activity!!.supportFragmentManager, "month")
 
     }
 }

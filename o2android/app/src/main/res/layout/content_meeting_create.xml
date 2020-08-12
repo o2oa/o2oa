@@ -8,10 +8,10 @@
     tools:context=".app.meeting.activity.MeetingCreateActivity"
     tools:showIn="@layout/activity_meeting_create">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_meeting_create"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+        android:layout_height="match_parent"></androidx.viewpager.widget.ViewPager>
 
 
 </LinearLayout>

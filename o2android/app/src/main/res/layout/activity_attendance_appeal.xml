@@ -237,7 +237,7 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/linear_attendance_appeal_form_line8_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -249,7 +249,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/attendance_appeal_form_address" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <RelativeLayout
                     android:id="@+id/linear_attendance_appeal_form_line_time_day"
@@ -331,7 +331,7 @@
                 </LinearLayout>
 
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/linear_attendance_appeal_form_line11_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -343,7 +343,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/attendance_appeal_form_desc" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
 

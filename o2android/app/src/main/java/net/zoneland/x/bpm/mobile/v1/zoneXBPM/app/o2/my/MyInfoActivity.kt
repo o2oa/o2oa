@@ -23,9 +23,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.enums.GenderTypeEnums
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goThenKill
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.goWithRequestCode
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.imageloader.O2ImageLoaderOptions
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.permission.PermissionRequester
@@ -109,9 +107,9 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
                 TAKE_FROM_PICTURES_CODE -> {
                     XLog.debug("choose from pictures ...")
                     data?.let {
-                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        val result = it.extras?.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
                         if (!TextUtils.isEmpty(result)){
-                            val uri = Uri.fromFile(File(result))
+                            val uri = Uri.fromFile(File(result!!))
                             startClipAvatar(uri)
                         }
                     }
@@ -119,7 +117,7 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
 
                 CLIP_AVATAR_ACTIVITY_CODE -> {
                     data?.let {
-                        val url = it.extras.getString("clipAvatarFilePath")
+                        val url = it.extras?.getString("clipAvatarFilePath")
                         XLog.debug("back Myinfo avatar uri : $url ")
                         modifyAvatar2Remote(url)
                     }
@@ -163,8 +161,8 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
         person = personal
         switchStatus(false)
         tv_myInfo_name.text = personal.name
-        tv_myInfo_name_edit.text = personal.name
-        edit_myInfo_name.setText(personal.name)
+        myInfo_officePhone_value_id.text = personal.officePhone
+        edit_myInfo_officePhone.setText(personal.officePhone)
         tv_myInfo_sign_edit.text = personal.signature
         tv_myInfo_sign.text = personal.signature
         edit_myInfo_sign.setText(personal.signature)
@@ -174,6 +172,8 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
         edit_myInfo_email.setText(personal.mail)
         myInfo_qq_value_id.text = personal.qq
         edit_myInfo_qq.setText(personal.qq)
+        myInfo_weixin_value_id.text = personal.weixin
+        edit_myInfo_weixin.setText(personal.weixin)
         if (GenderTypeEnums.MALE.key == personal.genderType) {
             image_myInfo_gender_men.setImageResource(R.mipmap.icon_gender_men_enable_50dp)
             image_myInfo_gender_women.setImageResource(R.mipmap.icon_gender_women_disable_50dp)
@@ -224,15 +224,17 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
         if (flag) {
             tv_myInfo_sign_edit.visibility = View.GONE
             edit_myInfo_sign.visibility = View.VISIBLE
-            tv_myInfo_name_edit.visibility = View.GONE
-            edit_myInfo_name.visibility = View.VISIBLE
+            myInfo_officePhone_value_id.visibility = View.GONE
+            edit_myInfo_officePhone.visibility = View.VISIBLE
             myInfo_mobile_value_id.visibility = View.GONE
             edit_myInfo_mobile.visibility = View.VISIBLE
             myInfo_email_value_id.visibility = View.GONE
             edit_myInfo_email.visibility = View.VISIBLE
             myInfo_qq_value_id.visibility = View.GONE
             edit_myInfo_qq.visibility = View.VISIBLE
-            if (GenderTypeEnums.MALE.key.equals(person?.genderType)) {
+            myInfo_weixin_value_id.gone()
+            edit_myInfo_weixin.visible()
+            if (GenderTypeEnums.MALE.key == person?.genderType) {
                 image_myInfo_gender_men_edit.visibility = View.VISIBLE
                 image_myInfo_gender_women_edit.visibility = View.GONE
             } else {
@@ -246,14 +248,16 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
         } else {
             tv_myInfo_sign_edit.visibility = View.VISIBLE
             edit_myInfo_sign.visibility = View.GONE
-            tv_myInfo_name_edit.visibility = View.VISIBLE
-            edit_myInfo_name.visibility = View.GONE
+            myInfo_officePhone_value_id.visibility = View.VISIBLE
+            edit_myInfo_officePhone.visibility = View.GONE
             myInfo_mobile_value_id.visibility = View.VISIBLE
             edit_myInfo_mobile.visibility = View.GONE
             myInfo_email_value_id.visibility = View.VISIBLE
             edit_myInfo_email.visibility = View.GONE
             myInfo_qq_value_id.visibility = View.VISIBLE
             edit_myInfo_qq.visibility = View.GONE
+            myInfo_weixin_value_id.visible()
+            edit_myInfo_weixin.gone()
             image_myInfo_gender_men_edit.visibility = View.GONE
             image_myInfo_gender_women_edit.visibility = View.GONE
             image_myInfo_edit_avatar.visibility = View.GONE
@@ -340,17 +344,15 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
 
     private fun switchTheStatusAndUpdateTheData() {
         if (isEdit) {
-            val name = edit_myInfo_name.text.toString()
-            if (TextUtils.isEmpty(name)) {
-                XToast.toastShort(this, "姓名不能为空")
-                return
-            }
+
             if (person != null) {
-                person?.name = name
+                person?.name = tv_myInfo_name.text.toString()
                 person?.signature = edit_myInfo_sign.text.toString()
                 person?.mobile = edit_myInfo_mobile.text.toString()
                 person?.mail = edit_myInfo_email.text.toString()
                 person?.qq = edit_myInfo_qq.text.toString()
+                person?.officePhone = edit_myInfo_officePhone.text.toString()
+                person?.weixin = edit_myInfo_weixin.text.toString()
                 if (View.VISIBLE == image_myInfo_gender_men_edit.visibility) {
                     person?.genderType = GenderTypeEnums.MALE.key
                 } else {
@@ -371,7 +373,7 @@ class MyInfoActivity : BaseMVPActivity<MyInfoContract.View, MyInfoContract.Prese
 
     private fun showAvatar() {
         //头像
-        var url = APIAddressHelper.instance().getPersonAvatarUrlWithId(O2SDKManager.instance().distinguishedName)
+        val url = APIAddressHelper.instance().getPersonAvatarUrlWithId(O2SDKManager.instance().distinguishedName)
         O2ImageLoaderManager.instance().showImage(image_myInfo_avatar, url, O2ImageLoaderOptions(isSkipCache = true))
     }
 }

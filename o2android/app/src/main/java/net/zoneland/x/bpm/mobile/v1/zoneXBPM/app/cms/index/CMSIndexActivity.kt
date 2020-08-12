@@ -4,7 +4,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.index
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.text.TextUtils
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_cms_main.*

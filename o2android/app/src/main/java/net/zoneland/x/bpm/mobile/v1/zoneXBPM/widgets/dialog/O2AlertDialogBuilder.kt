@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.support.annotation.LayoutRes
-import android.support.annotation.StringRes
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -185,7 +185,7 @@ class O2AlertDialogBuilder(val mContext: Context)  {
                 view = inflater.inflate(R.layout.dialog_o2_custom, null)
             }
             buildUI()
-            setContentView(view)
+            setContentView(view!!)
         }
 
         private fun buildUI() {
