@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,7 +16,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.SortTools;
@@ -21,19 +23,18 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.ViewFactory;
 import com.x.cms.core.entity.element.View;
 
-import net.sf.ehcache.Element;
-
 public class ActionListAll extends BaseAction {
 	
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
-		String cacheKey = ApplicationCache.concreteCacheKey( "all" );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wraps = (List<Wo>) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass() );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wraps = (List<Wo>) optional.get();
 			result.setData(wraps);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
@@ -58,7 +59,7 @@ public class ActionListAll extends BaseAction {
 						}
 					}
 				}
-				cache.put(new Element( cacheKey, wraps ));
+				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

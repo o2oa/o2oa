@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,13 +12,13 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.Document;
-
-import net.sf.ehcache.Element;
 
 public class ActionQueryListDraftNextWithFilter extends BaseAction {
 
@@ -40,11 +41,11 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 			logger.error(e, effectivePerson, request, null);
 		}
 
-		String cacheKey = getCacheKeyFormWrapInFilter("draft", id, count, wi);
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, count, wi );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			wos = (List<Wo>) element.getObjectValue();
+		if (optional.isPresent()) {
+			wos = ( List<Wo> ) optional.get();
 			result.setData(wos);
 		} else {
 			if (check) {
@@ -74,7 +75,7 @@ public class ActionQueryListDraftNextWithFilter extends BaseAction {
 							}
 						}
 						result.setCount(Long.parseLong(documentList.size() + ""));
-						cache.put(new Element(cacheKey, wos));
+						CacheManager.put(cacheCategory, cacheKey, wos );
 						result.setData(wos);
 					} catch (Exception e) {
 						Exception exception = new ExceptionDocumentInfoProcess(e, "系统在将分页查询结果转换为可输出的数据信息时发生异常。");

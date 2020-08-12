@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -60,16 +63,16 @@ public class ActionQueryViewDocument extends BaseAction {
 			}
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( id, "view", isAnonymous, isManager, effectivePerson.getDistinguishedName() );
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			result = (ActionResult<Wo>) element.getObjectValue();
+		if (optional.isPresent()) {
+			result = (ActionResult<Wo>) optional.get();
 		} else {
 			logger.debug(">>>>>>>>>>>>>view document '"+id+"' in database!" );
 			//继续进行数据查询
 			result = getDocumentQueryResult( id, request, effectivePerson, isManager );
-			cache.put(new Element(cacheKey, result ));
+			CacheManager.put(cacheCategory, cacheKey, result );
 		}
 		
 		if (check ) {

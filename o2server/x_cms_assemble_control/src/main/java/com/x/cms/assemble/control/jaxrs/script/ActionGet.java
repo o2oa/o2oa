@@ -2,15 +2,19 @@ package com.x.cms.assemble.control.jaxrs.script;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.WrapOutString;
 import com.x.cms.core.entity.element.Script;
 
 import net.sf.ehcache.Element;
@@ -20,11 +24,12 @@ class ActionGet extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
-		String cacheKey = "script.get." + id;
-		Element element = null;
-		element = cache.get(cacheKey);
-		if (element != null) {
-			wrap = (Wo) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wrap = (Wo) optional.get();
 			result.setData(wrap);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -36,7 +41,7 @@ class ActionGet extends BaseAction {
 				result.setData(wrap);
 
 				// 将查询结果放进缓存里
-				cache.put(new Element(cacheKey, wrap));
+				CacheManager.put(cacheCategory, cacheKey, wrap );
 
 			} catch (Throwable th) {
 				th.printStackTrace();

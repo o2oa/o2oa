@@ -1,9 +1,13 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.cms.assemble.control.jaxrs.comment.ActionListNextWithFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -90,11 +94,11 @@ public class ActionQueryGetControl extends BaseAction {
 			}
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( id, "getControl", isManager, effectivePerson.getDistinguishedName() );
-		Element element = cache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			wo = (Wo) element.getObjectValue();
-			result.setData(wo);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), id, isManager );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			result.setData((Wo) optional.get());
 			woControl = wo.getControl();
 		} else {			
 			if (check) {
@@ -121,7 +125,7 @@ public class ActionQueryGetControl extends BaseAction {
 			
 			if (check) {
 				wo.setControl(woControl);
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 		}
 		

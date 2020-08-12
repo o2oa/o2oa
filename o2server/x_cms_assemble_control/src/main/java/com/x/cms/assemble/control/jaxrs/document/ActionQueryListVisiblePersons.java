@@ -3,9 +3,12 @@ package com.x.cms.assemble.control.jaxrs.document;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
@@ -51,10 +54,11 @@ public class ActionQueryListVisiblePersons extends BaseAction {
 			result.error(exception);
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( id, "ActionQueryListVisiblePersons" );
-		Element element = cache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			wo = (Wo) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wo = ( Wo ) optional.get();
 			result.setData(wo);
 		} else {
 			if (check) {
@@ -135,7 +139,7 @@ public class ActionQueryListVisiblePersons extends BaseAction {
 				wo.setValueList(persons);
 				result.setData(wo);
 				result.setCount( Long.parseLong( persons.size() + ""));
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 		}
 		return result;
