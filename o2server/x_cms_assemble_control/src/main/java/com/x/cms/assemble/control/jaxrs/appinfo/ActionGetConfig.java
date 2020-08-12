@@ -1,6 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoText;
@@ -11,6 +13,7 @@ import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 public class ActionGetConfig extends BaseAction {
 
@@ -27,13 +30,12 @@ public class ActionGetConfig extends BaseAction {
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( "appConfig", id );
-		Element element = cache.get( cacheKey );
-		
-		if (( null != element ) && ( null != element.getObjectValue()) ) {
-			woText = ( WoText ) element.getObjectValue();
-			result.setData( woText );
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			result.setData((WoText)optional.get());
 		} else {
 			if( check ){
 				try {
@@ -51,7 +53,7 @@ public class ActionGetConfig extends BaseAction {
 				}
 			}
 			if( check ){
-				cache.put(new Element( cacheKey, woText ));
+				CacheManager.put(cacheCategory, cacheKey, woText);
 				result.setData( woText );
 			}
 		}

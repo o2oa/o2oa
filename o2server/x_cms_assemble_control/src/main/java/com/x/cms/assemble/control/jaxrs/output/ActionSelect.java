@@ -5,6 +5,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
@@ -55,7 +56,6 @@ class ActionSelect extends BaseAction {
 
 			String flag = StringTools.uniqueToken();
 
-			cache.put(new Element(flag, outputCacheObject));
 			Wo wo = gson.fromJson(gson.toJson(wrapAppInfo), Wo.class);
 			wo.setFlag(flag);
 			result.setData(wo);

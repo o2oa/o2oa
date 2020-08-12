@@ -46,22 +46,7 @@ class ActionFileEdit extends BaseAction {
 			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
 		}
-		
-//		Boolean isAnonymous = effectivePerson.isAnonymous();
-//		Boolean isManager = false;
-//		if (check) {
-//			try {
-//				if ( effectivePerson.isManager() ) {
-//					isManager = true;
-//				}
-//			} catch (Exception e) {
-//				check = false;
-//				Exception exception = new ExceptionFileInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + effectivePerson.getDistinguishedName() );
-//				result.error(exception);
-//				logger.error(e, effectivePerson, request, null);
-//			}
-//		}
-		
+
 		if (check) {
 			try {
 				doc = documentQueryService.get(docId);
@@ -131,20 +116,7 @@ class ActionFileEdit extends BaseAction {
 				Wo wo = new Wo();
 				wo.setId(file.getId());
 				result.setData(wo);
-//				
-//				List<String> keys = new ArrayList<>();
-//				keys.add( "file.all" ); //清除文档的附件列表缓存
-//				keys.add( "file." + id  ); //清除指定ID的附件信息缓存
-//				keys.add( ApplicationCache.concreteCacheKey( "document", docId, isAnonymous, isManager ) ); //清除文档的附件列表缓存
-//				ApplicationCache.notify( FileInfo.class, keys );
-//
-//				keys.clear();
-//				keys.add(  ApplicationCache.concreteCacheKey( docId, "view", isAnonymous, isManager ) ); //清除文档阅读缓存
-//				keys.add( ApplicationCache.concreteCacheKey( docId, "get", isManager )  ); //清除文档信息获取缓存
-//				System.out.println(">>>>>>>>>>>>>clean cache document:" + ApplicationCache.concreteCacheKey( docId, "view", isAnonymous, isManager )  );
-//				System.out.println(">>>>>>>>>>>>>clean cache document:" + ApplicationCache.concreteCacheKey( docId, "get", isManager )  );
-//				ApplicationCache.notify( Document.class, keys );
-				
+
 				ApplicationCache.notify( FileInfo.class );
 				ApplicationCache.notify( Document.class );
 			} catch (Exception e) {

@@ -2,32 +2,32 @@ package com.x.cms.assemble.control.jaxrs.view;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.View;
-
-import net.sf.ehcache.Element;
+import java.util.Optional;
 
 public class ActionGet extends BaseAction {
 	
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String flag ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wrap = (Wo) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wrap = (Wo) optional.get();
 			result.setData(wrap);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -41,7 +41,7 @@ public class ActionGet extends BaseAction {
 				if(StringUtils.isNotEmpty( wrap.getFormId() )) {
 					wrap.setFormName( formServiceAdv.getNameWithId( wrap.getFormId() ) );
 				}
-				cache.put(new Element( cacheKey, wrap ));
+				CacheManager.put(cacheCategory, cacheKey, wrap );
 				result.setData(wrap);
 			} catch (Throwable th) {
 				th.printStackTrace();

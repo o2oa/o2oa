@@ -5,6 +5,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ActionQueryGetControl extends BaseAction {
 
@@ -52,12 +55,12 @@ public class ActionQueryGetControl extends BaseAction {
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error(exception);
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( id, "getControl", isManager, isAnonymous, effectivePerson.getDistinguishedName() );
-		Element element = cache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			wo = (Wo) element.getObjectValue();
-			result.setData(wo);
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, id, isAnonymous, isManager );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			result.setData((Wo)optional.get());
 		} else {
 			woControl = new WoControl();
 			if( check ){
@@ -140,7 +143,7 @@ public class ActionQueryGetControl extends BaseAction {
 					}
 				}
 				wo.setControl(woControl);
-				cache.put(new Element( cacheKey, wo ));
+				CacheManager.put(cacheCategory, cacheKey, wo);
 			}
 		}
 		result.setData(wo);

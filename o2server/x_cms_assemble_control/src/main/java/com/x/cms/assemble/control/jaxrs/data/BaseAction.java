@@ -10,7 +10,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.cms.assemble.control.Business;
@@ -20,14 +19,11 @@ import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.Document;
 import com.x.query.core.entity.Item;
 
-import net.sf.ehcache.Ehcache;
-
 public class BaseAction extends StandardJaxrsAction {
 	
 	private static final String title_path = "title";
 	private static final String subject_path = "subject";
-	
-	protected Ehcache cache = ApplicationCache.instance().getCache( Item.class);
+//	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class);
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
