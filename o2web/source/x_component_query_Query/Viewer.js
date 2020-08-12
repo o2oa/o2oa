@@ -194,6 +194,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     createViewNode: function(data){
         this.viewAreaNode.empty();
 
+        this.selectedItems = [];
+
         var viewStyles = this.viewJson.viewStyles;
 
         this.contentAreaNode = new Element("div", {"styles":
