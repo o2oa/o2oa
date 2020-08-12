@@ -10,7 +10,6 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     options: {
         "style": "default",
         "skin" : null,
-        "skin" : null,
         "resizeNode": true,
         "paging" : "scroll",
         "perPageCount" : 50,
