@@ -5,11 +5,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.service.*;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
+import com.x.cms.core.entity.element.*;
+import com.x.organization.core.entity.*;
+import com.x.organization.core.entity.accredit.Empower;
 import net.sf.ehcache.Ehcache;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,19 +21,18 @@ import java.util.*;
 
 public class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache cache = ApplicationCache.instance().getCache( AppInfo.class );
+	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(AppInfo.class, AppDict.class, AppDictItem.class, View.class,
+			ViewCategory.class, ViewFieldConfig.class);
 
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
     protected FormServiceAdv formServiceAdv = new FormServiceAdv();
-//    protected ViewServiceAdv viewServiceAdv = new ViewServiceAdv();
     protected ScriptServiceAdv scriptServiceAdv = new ScriptServiceAdv();
 	protected AppDictServiceAdv appDictServiceAdv = new AppDictServiceAdv();
     protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
     protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected PermissionQueryService permissionQueryService = new PermissionQueryService();
-//	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
-	
+
 	/**
 	 * 当前登录者访问栏目分类列表查询
 	  * 1、根据人员的访问权限获取可以访问的栏目信息ID列表

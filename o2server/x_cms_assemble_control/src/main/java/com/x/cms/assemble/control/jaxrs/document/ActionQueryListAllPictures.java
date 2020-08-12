@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -29,11 +32,11 @@ public class ActionQueryListAllPictures extends BaseAction {
 		Wo wo = null;
 		Boolean check = true;
 		
-		String cacheKey = getCacheKeyFormWrapInFilter( "pictures", id );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wos = ( List<Wo> ) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wos = ( List<Wo> ) optional.get();
 			result.setData(wos);
 			result.setCount( Long.parseLong( wos.size() + "" ) );
 		} else {
@@ -69,7 +72,7 @@ public class ActionQueryListAllPictures extends BaseAction {
 						wos.add( wo );
 					}
 					result.setData( wos );
-					cache.put( new Element( cacheKey, wos ) );
+					CacheManager.put(cacheCategory, cacheKey, wos );
 					result.setCount( Long.parseLong( wos.size() + "" ) );
 				}
 			}	
