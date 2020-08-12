@@ -1,9 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -35,13 +38,12 @@ public class ActionGet extends BaseAction {
 			Exception exception = new ExceptionIdEmpty();
 			result.error( exception );
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wo = ( Wo ) element.getObjectValue();
-			result.setData( wo );
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			result.setData((Wo)optional.get());
 		} else {
 			if( check ){
 				try {
@@ -62,8 +64,8 @@ public class ActionGet extends BaseAction {
 				try {
 					wo = Wo.copier.copy( categoryInfo );
 					wo.setExtContent( categoryInfoServiceAdv.getExtContentWithId( wo.getId() ));
-					
-					cache.put(new Element( cacheKey, wo ));
+
+					CacheManager.put(cacheCategory, cacheKey, wo);
 					result.setData( wo );
 				} catch ( Exception e ) {
 					check = false;

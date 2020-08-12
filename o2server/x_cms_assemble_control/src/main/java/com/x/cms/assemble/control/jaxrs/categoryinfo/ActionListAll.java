@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,7 +10,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -17,8 +19,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.cms.core.entity.CategoryInfo;
-
-import net.sf.ehcache.Element;
 
 public class ActionListAll extends BaseAction {
 
@@ -30,13 +30,12 @@ public class ActionListAll extends BaseAction {
 		List<Wo> wos = null;
 		List<CategoryInfo> categoryInfoList = null;
 		Boolean check = true;		
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( "all" );
-		Element element = cache.get( cacheKey );
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wos = ( List<Wo> ) element.getObjectValue();
-			result.setData(wos);
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass() );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			result.setData((List<Wo>)optional.get());
 		} else {
 			try {
 				categoryInfoList = categoryInfoServiceAdv.listAll();
@@ -54,7 +53,7 @@ public class ActionListAll extends BaseAction {
 							wo.setExtContent( categoryInfoServiceAdv.getExtContentWithId( wo.getId() ));
 						}
 						SortTools.desc( wos, "categorySeq");
-						cache.put(new Element( cacheKey, wos ));
+						CacheManager.put(cacheCategory, cacheKey, wos);
 						result.setData(wos);
 					} catch ( Exception e ) {
 						check = false;

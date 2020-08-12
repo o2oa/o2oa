@@ -1,44 +1,33 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.service.AppInfoServiceAdv;
 import com.x.cms.assemble.control.service.CategoryInfoServiceAdv;
 import com.x.cms.assemble.control.service.DocCommendPersistService;
-import com.x.cms.assemble.control.service.DocCommendQueryService;
 import com.x.cms.assemble.control.service.DocumentPersistService;
 import com.x.cms.assemble.control.service.DocumentQueryService;
 import com.x.cms.assemble.control.service.DocumentViewRecordServiceAdv;
 import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.FormServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
-import com.x.cms.assemble.control.service.PermissionOperateService;
 import com.x.cms.assemble.control.service.PermissionQueryService;
 import com.x.cms.assemble.control.service.QueryViewService;
 import com.x.cms.assemble.control.service.UserManagerService;
-import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.Document;
-
-import com.x.cms.core.entity.FileInfo;
-import net.sf.ehcache.Ehcache;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.x.cms.core.entity.*;
+import com.x.query.core.entity.Item;
 
 public class BaseAction extends StandardJaxrsAction {
-	protected Ehcache cache = ApplicationCache.instance().getCache( Document.class);
-	
+
+	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class, DocumentCommentInfo.class);
+
 	protected LogService logService = new LogService();
 	protected QueryViewService queryViewService = new QueryViewService();
 	protected DocumentViewRecordServiceAdv documentViewRecordServiceAdv = new DocumentViewRecordServiceAdv();
@@ -46,16 +35,14 @@ public class BaseAction extends StandardJaxrsAction {
 	protected DocumentQueryService documentQueryService = new DocumentQueryService();
 	
 	protected DocCommendPersistService docCommendPersistService = new DocCommendPersistService();
-//	protected DocCommendQueryService docCommendQueryService = new DocCommendQueryService();
-	
+
 	protected FormServiceAdv formServiceAdv = new FormServiceAdv();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();
 	protected PermissionQueryService permissionQueryService = new PermissionQueryService();
-//	protected PermissionOperateService permissionOperateService = new PermissionOperateService();
-	
+
 	protected boolean modifyDocStatus( String id, String stauts, String personName ) throws Exception{
 		Business business = null;
 		Document document = null;
