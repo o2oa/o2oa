@@ -9,23 +9,18 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.Cache;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.StringTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.AppInfo_;
 
-import net.sf.ehcache.Ehcache;
-
 abstract class BaseAction extends StandardJaxrsAction {
-
-	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
-			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
 
 	public enum Method {
 		cover, create, ignore;
