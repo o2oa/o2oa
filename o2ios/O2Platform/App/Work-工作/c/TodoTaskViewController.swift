@@ -107,12 +107,17 @@ class TodoTaskViewController: UITableViewController {
         self.searchController.dimsBackgroundDuringPresentation = false
         self.searchController.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
+        let attrs =  [NSAttributedString.Key.font: UIFont.init(name: "PingFangTC-Light", size: 14) ?? UIFont.systemFont(ofSize: 14),
+         NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color") ?? UIColor.red]
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attrs, for: .normal)
+        self.searchController.searchBar.searchBarStyle = UISearchBar.Style.minimal
         self.searchController.searchBar.sizeToFit()
-        self.searchController.searchBar.backgroundColor = RGB(251, g: 71, b: 71)
-        self.searchController.searchBar.setImage(UIImage(named: "contact_search"), for: .search, state: .normal)
-        if let searchField = self.searchController.searchBar.value(forKey: "searchField") as? UITextField {
-            searchField.textColor = .white
-        }
+//        self.searchController.searchBar.backgroundColor = RGB(251, g: 71, b: 71)
+//        self.searchController.searchBar.setImage(UIImage(named: "contact_search"), for: .search, state: .normal)
+//        if let searchField = self.searchController.searchBar.value(forKey: "searchField") as? UITextField {
+//            searchField.textColor = .white
+//        }
         //设置搜索框是否显示
         self.setSearchBarIsShow()
         
