@@ -46,8 +46,8 @@ class ActionCheckInCode extends BaseAction {
 		String applicationUrl = getApplicationUrl(sslEnable, host, port) + "/x_meeting_assemble_control/jaxrs/meeting/" + meetingId + "/checkin";
 		/** 二维码内容 */
 		String url = UriBuilder.fromUri(applicationUrl).build().toASCIIString();
-		int width = 200; // 二维码图片宽度
-		int height = 200; // 二维码图片高度
+		int width = 800; // 二维码图片宽度
+		int height = 800; // 二维码图片高度
 		String format = "png";// 二维码的图片格式
 
 		Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
@@ -62,19 +62,18 @@ class ActionCheckInCode extends BaseAction {
 				image.setRGB(x, y, bitMatrix.get(x, y) ? BLACK : WHITE);
 			}
 		}
-		Graphics2D graphics = image.createGraphics();
-
-		Image logo = ImageIO.read(new ByteArrayInputStream(Config.bindLogo()));
-		graphics.drawImage(logo, 68, 68, null);
-		graphics.dispose();
-		logo.flush();
+//		Graphics2D graphics = image.createGraphics();
+//		Image logo = ImageIO.read(new ByteArrayInputStream(Config.bindLogo()));
+//		graphics.drawImage(logo, 68, 68, null);
+//		graphics.dispose();
+//		logo.flush();
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ImageIO.write(image, format, out);
 			wo.setImage(Base64.encodeBase64String(out.toByteArray()));
 		}
 		wo.setMeta(meta);
 		result.setData(wo);
-		audit.log(effectivePerson.getDistinguishedName(), "认证码发送.");
+		audit.log(effectivePerson.getDistinguishedName(), "会议签到码生成.");
 		return result;
 	}
 
