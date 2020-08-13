@@ -2,7 +2,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
 	Extends: MWF.APP$Module,
     options: {
-        "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData"]
+        "moduleEvents": ["load", "queryLoad", "postLoad", "postLoadData", "postLoadLine"]
     },
 
 	_loadUserInterface: function(){
@@ -538,6 +538,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             textNode.set("html", html);
             if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "node" : logTaskNode,
+            "log" : this
+        }]);
     },
 
 
@@ -1551,6 +1556,11 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
             textNode.set("html", html);
             if(iconNode)iconNode.setStyle("background-image", "url("+"../x_component_process_Xform/$Form/"+this.form.options.style+"/icon/rightRed.png)");
         }
+        this.fireEvent("postLoadLine",[{
+            "data" : task,
+            "node" : logTaskNode,
+            "log" : this
+        }]);
     },
     loadMediaOpinion: function(atts, node, type){
         atts.each(function(att){
