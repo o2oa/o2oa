@@ -541,7 +541,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         this.fireEvent("postLoadLine",[{
             "data" : task,
             "node" : logTaskNode,
-            "log" : this
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
         }]);
     },
 
@@ -1559,7 +1560,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class({
         this.fireEvent("postLoadLine",[{
             "data" : task,
             "node" : logTaskNode,
-            "log" : this
+            "log" : this,
+            "type" : isTask ? "task" : "taskCompleted"
         }]);
     },
     loadMediaOpinion: function(atts, node, type){
