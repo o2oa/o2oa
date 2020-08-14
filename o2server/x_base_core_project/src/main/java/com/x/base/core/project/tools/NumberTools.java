@@ -16,11 +16,11 @@ public class NumberTools {
 		return NumberUtils.compare(x, y) == 0;
 	}
 
-	public static Boolean greaterThan(Integer x, Integer y) {
+	public static Boolean greaterThan(Number x, Number y) {
 		if (null == x || null == y) {
 			return false;
 		}
-		return x > y;
+		return x.doubleValue() > y.doubleValue();
 	}
 
 	public static Integer valueEuqalsThan(Integer x, Integer y, Integer euqalsValue, Integer notEuqalsValue) {
@@ -74,11 +74,11 @@ public class NumberTools {
 		return null;
 	}
 
-	public static boolean nullOrLessThan(Integer value, Number number) {
+	public static boolean nullOrLessThan(Number value, Number number) {
 		if (value == null) {
 			return true;
 		}
-		return value < number.intValue();
+		return value.doubleValue() < number.doubleValue();
 	}
 
 }
