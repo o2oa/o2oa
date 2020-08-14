@@ -25,10 +25,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.SortTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
-import com.x.meeting.assemble.control.jaxrs.meeting.ActionPaging.Wo;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
@@ -51,11 +49,14 @@ class ActionPagingManage extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Meeting> root = cq.from(Meeting.class);
 			
-			if (StringUtils.isBlank(wi.getDistinguishedName())) {
-				throw new ExceptionDistinguishedNameEmpty();
+			Predicate p = cb.isNotNull(root.get(Meeting_.applicant));
+			
+			if (!StringUtils.isBlank(wi.getDistinguishedName())) {
+				//throw new ExceptionDistinguishedNameEmpty();
+				p = cb.and(p, cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName()));
 			}
 			
-			Predicate p = cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName());
+			//Predicate p = cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName());
 			
 			if(!StringUtils.isBlank(wi.getSubject())) {
 				p = cb.and(p, cb.like(root.get(Meeting_.subject), "%" + wi.getSubject() + "%"));
@@ -99,6 +100,10 @@ class ActionPagingManage extends BaseAction {
 		    	p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.valueOf(wi.getConfirmStatus().trim())));
 			}
 			
+			if(!StringUtils.isBlank(wi.getApplicant())) {
+				p = cb.and(p, cb.equal(root.get(Meeting_.applicant), wi.getApplicant()));
+			 }
+			
 			if(!StringUtils.isBlank(wi.getInvitePersonList())) {
 				p = cb.and(p, cb.isMember( wi.getInvitePersonList().trim(),root.get(Meeting_.invitePersonList)));
 			 }
@@ -129,31 +134,34 @@ class ActionPagingManage extends BaseAction {
 	        	   order =  cb.desc(root.get("startTime"));
 	        }
 	        
-			cq.select(root.get(Meeting_.id)).where(p).orderBy(order);
-		
+	    	 cq.select(root.get(Meeting_.id)).where(p).orderBy(order);
+			 cq.distinct(true);
+			
 			 TypedQuery<String> typedQuery = em.createQuery(cq);
 			 int pageIndex = (page-1)*size;
-			 int pageSize = page*size;
+			 int pageSize = size;
 			 typedQuery.setFirstResult(pageIndex);
 			 typedQuery.setMaxResults(pageSize);
-			    
-			 //logger.info("typedQuery="+  typedQuery.toString()); 
 			 ids =  typedQuery.getResultList();
-			
-			 CriteriaQuery<Long> cqCount = cb.createQuery(Long.class);
-			 Root<Meeting> rootCount = cqCount.from(Meeting.class);
-			 cqCount.select(cb.countDistinct(rootCount)).where(p);
-			 Long count = em.createQuery(cqCount).getSingleResult().longValue();
-			// logger.info("count="+  count); 
+			 //logger.info("pagingtypedQuery="+  typedQuery.toString()); 
 			 
-			List<Wo> wos = Wo.copier.copy(emc.list(Meeting.class, ids));
+			 TypedQuery<String> tqCount = em.createQuery( cq.select(root.get(Meeting_.id)).where(p).distinct(true));
+			 List<String> allid = tqCount.getResultList();
+			 Long  tpsize =  (long) allid.size();
+			 //logger.info("ids count="+  tpsize); 
+			 
+			 CriteriaQuery<Meeting> cqMeeting = cb.createQuery(Meeting.class);		
+			 Predicate pMeeting = cb.isMember(root.get(Meeting_.id), cb.literal(ids));
+			 Root<Meeting> rootMeeting = cqMeeting.from(Meeting.class);
+			 cqMeeting.select(rootMeeting).where(pMeeting).orderBy(order);
+		     List<Meeting> os = em.createQuery(cqMeeting).getResultList();
+		    
+			List<Wo> wos = Wo.copier.copy(os);
 			WrapTools.decorate(business, wos, effectivePerson);
 			WrapTools.setAttachment(business, wos);
-			SortTools.desc(wos, Meeting.startTime_FIELDNAME);
 			result.setData(wos);
-			result.setCount(count);
+			result.setCount(tpsize);
 			return result;
-		
 		}
 	}
 
@@ -184,6 +192,9 @@ class ActionPagingManage extends BaseAction {
 		
 		@FieldDescribe("会议预定状态.(allow|deny|wait)")
 		private String confirmStatus;
+		
+		@FieldDescribe("创建人员.")
+		private String applicant;
 		
 		@FieldDescribe("邀请人员,身份,组织.")
 		private String invitePersonList;
@@ -255,6 +266,15 @@ class ActionPagingManage extends BaseAction {
 			this.completedTime = completedTime;
 		}
 
+		public String getApplicant() {
+			return applicant;
+		}
+
+		public void setApplicant(String applicant) {
+			this.applicant = applicant;
+		}
+
+		
 		public String getInvitePersonList() {
 			return invitePersonList;
 		}

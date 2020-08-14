@@ -10,7 +10,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -112,6 +111,9 @@ class ActionCreate extends BaseAction {
 					case MessageConnector.CONSUME_WELINK:
 						message = this.weLinkMessage(effectivePerson, business, cpwi, instant);
 						break;
+					case MessageConnector.CONSUME_MQ:
+						message = this.MQMessage(effectivePerson, business, cpwi, instant);
+						break;
 					default:
 						message = this.defaultMessage(effectivePerson, business, cpwi, consumer, instant);
 						break;
@@ -171,6 +173,11 @@ class ActionCreate extends BaseAction {
 			case MessageConnector.CONSUME_PMS_INNER:
 				if (Config.pushConfig().getEnable()) {
 					ThisApplication.pmsInnerConsumeQueue.send(message);
+				}
+				break;
+			case MessageConnector.CONSUME_MQ:
+				if (Config.mq().getEnable()) {
+					ThisApplication.mqConsumeQueue.send(message);
 				}
 				break;
 			default:
@@ -290,6 +297,18 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	private Message MQMessage(EffectivePerson effectivePerson, Business business, Wi wi, Instant instant) {
+		Message message = new Message();
+		message.setBody(Objects.toString(wi.getBody()));
+		message.setType(wi.getType());
+		message.setPerson(wi.getPerson());
+		message.setTitle(wi.getTitle());
+		message.setConsumer(MessageConnector.CONSUME_MQ);
+		message.setConsumed(false);
+		message.setInstant(instant.getId());
+		return message;
+	}
+	
 	private Message defaultMessage(EffectivePerson effectivePerson, Business business, Wi wi, String consumer,
 			Instant instant) {
 		Message message = new Message();
