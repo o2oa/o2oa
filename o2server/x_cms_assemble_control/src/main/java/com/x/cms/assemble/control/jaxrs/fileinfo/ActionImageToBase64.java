@@ -3,10 +3,13 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -35,11 +38,12 @@ public class ActionImageToBase64 extends BaseAction {
 		FileInfo fileInfo = null;
 		Integer sizeNum = null;
 		Boolean check = true;
-		String cacheKey = ApplicationCache.concreteCacheKey( "base64", id, size );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wrap = ( WrapOutString ) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, size );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wrap = ( WrapOutString ) optional.get();
 			result.setData(wrap);
 		} else {
 			if( check ){
@@ -108,7 +112,7 @@ public class ActionImageToBase64 extends BaseAction {
 				ImageIO.write( image, "png", output );
 				wrap = new WrapOutString();
 				wrap.setValue(Base64.encodeBase64String( output.toByteArray() ));
-				cache.put(new Element( cacheKey, wrap ));
+				CacheManager.put(cacheCategory, cacheKey, wrap );
 				result.setData( wrap );
 			}catch( Exception e ){
 				check = false;

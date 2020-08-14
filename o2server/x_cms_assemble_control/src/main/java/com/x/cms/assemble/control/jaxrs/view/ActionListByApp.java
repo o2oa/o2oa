@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -29,11 +32,12 @@ public class ActionListByApp extends BaseAction {
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String appId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = null;
-		String cacheKey = ApplicationCache.concreteCacheKey( "app", appId );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wraps = (List<Wo>) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), appId );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wraps = (List<Wo>) optional.get();
 			result.setData(wraps);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {			
@@ -58,8 +62,8 @@ public class ActionListByApp extends BaseAction {
 						}
 					}
 				}
-				
-				cache.put(new Element( cacheKey, wraps ));
+
+				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

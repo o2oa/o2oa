@@ -2,7 +2,10 @@ package com.x.cms.assemble.control.jaxrs.script;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,11 +27,12 @@ class ActionGetWithAppAndName extends BaseAction {
 	ActionResult<Wo> execute( EffectivePerson effectivePerson, String appFlag, String name ) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wrap = null;
-		String cacheKey = "script.getWithAppWithName.appFlag." + appFlag + ".scriptName." + name;
-		Element element = null;
-		element = cache.get(cacheKey);
-		if (element != null) {
-			wrap = (Wo) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), appFlag, name );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wrap = (Wo) optional.get();
 			result.setData(wrap);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -44,8 +48,9 @@ class ActionGetWithAppAndName extends BaseAction {
 				} else {
 					throw new Exception("[getWithAppWithName]script not existed with name or alias : " + name + ".");
 				}
+
 				// 将查询结果放进缓存里
-				cache.put(new Element( cacheKey, wrap) );
+				CacheManager.put(cacheCategory, cacheKey, wrap );
 				result.setData(wrap);
 			} catch (Throwable th) {
 				th.printStackTrace();
