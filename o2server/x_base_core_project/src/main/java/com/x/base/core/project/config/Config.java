@@ -77,6 +77,7 @@ public class Config {
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
+	public static final String PATH_CONFIG_EMAIL = "config/email.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -1274,6 +1275,19 @@ public class Config {
 			instance().cache = obj;
 		}
 		return instance().cache;
+	}
+
+	public Email email;
+
+	public static synchronized Email email() throws Exception {
+		if (null == instance().email) {
+			Email obj = BaseTools.readConfigObject(PATH_CONFIG_EMAIL, Email.class);
+			if (null == obj) {
+				obj = Email.defaultInstance();
+			}
+			instance().email = obj;
+		}
+		return instance().email;
 	}
 
 	private Components components = null;
