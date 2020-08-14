@@ -17,8 +17,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore
 import android.provider.Settings
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -61,7 +61,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         fun startChat(activity: Activity, conversationId: String) {
             val bundle = Bundle()
             bundle.putString(con_id_key, conversationId)
-            activity.go<O2ChatActivity>(bundle)
+            activity?.go<O2ChatActivity>(bundle)
         }
     }
 
@@ -343,7 +343,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         ivLoad = view.findViewById<ImageView>(R.id.iv_load)
         dialogBuilder.setView(view)
         val dialog = dialogBuilder.create()
-        dialog.window.setBackgroundDrawable(BitmapDrawable())
+        dialog.window?.setBackgroundDrawable(BitmapDrawable())
         return dialog
     }
     private fun updateRecordingDialogUI(resId: Int, prompt: String?) {
@@ -574,7 +574,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     .greenChannel()
                     .forResult { resultCode, data ->
                         if (resultCode == Activity.RESULT_OK) {
-                            val location = data.extras.getParcelable<O2LocationActivity.LocationData>(O2LocationActivity.RESULT_LOCATION_KEY)
+                            val location = data.extras?.getParcelable<O2LocationActivity.LocationData>(O2LocationActivity.RESULT_LOCATION_KEY)
                             if (location != null) {
                                 newLocationMessage(location)
                             }

@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -90,7 +90,7 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 //        return 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent?.context)
         animation =  AnimationUtils.loadAnimation(parent?.context, R.anim.jmui_rotate)
         return when(viewType) {
@@ -101,9 +101,9 @@ class O2ChatMessageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int  = messages.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 //        val viewType = getItemViewType(position)
-        if (holder != null && holder is CommonRecyclerViewHolder) {
+        if (holder is CommonRecyclerViewHolder) {
             val message = messages[position]
             val messageBody = message.messageBody()
             val name = if (message.createPerson.isNotEmpty() && message.createPerson.contains("@")) {

@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func
 
-import android.support.v4.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout
 import android.view.View
 
 /**
@@ -21,27 +21,35 @@ class KTXDrawerListener : DrawerLayout.DrawerListener {
     override fun onDrawerStateChanged(newState: Int) {
         _onDrawerStateChanged?.invoke(newState)
     }
+
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+        _onDrawerSlide?.invoke(drawerView, slideOffset)
+    }
+
+
+    override fun onDrawerClosed(drawerView: View) {
+        _onDrawerClosed?.invoke(drawerView)
+    }
+
+    override fun onDrawerOpened(drawerView: View) {
+        _onDrawerOpened?.invoke(drawerView)
+    }
+
     fun onDrawerStateChanged(func:(newState: Int)->Unit) {
         _onDrawerStateChanged = func
     }
 
-    override fun onDrawerSlide(drawerView: View?, slideOffset: Float) {
-        _onDrawerSlide?.invoke(drawerView, slideOffset)
-    }
+
     fun onDrawerSlide(func:(drawerView: View?, slideOffset: Float)->Unit) {
         _onDrawerSlide = func
     }
 
-    override fun onDrawerClosed(drawerView: View?) {
-        _onDrawerClosed?.invoke(drawerView)
-    }
+
     fun onDrawerClosed(func:(drawerView: View?)->Unit) {
         _onDrawerClosed = func
     }
 
-    override fun onDrawerOpened(drawerView: View?) {
-        _onDrawerOpened?.invoke(drawerView)
-    }
+
     fun onDrawerOpened(func: (drawerView: View?)->Unit) {
         _onDrawerOpened = func
     }

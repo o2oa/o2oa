@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
@@ -103,7 +103,7 @@ class ContactUnitAndIdentityPicker: BaseMVPFragment<ContactUnitAndIdentityPicker
                     department.departmentCount + department.identityCount
                 }
                 hold?.setCircleTextView(R.id.image_item_contact_complex_picker_org_body_icon,
-                        department.name.substring(0, 1), FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                        department.name.substring(0, 1), FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                         ?.setText(R.id.tv_item_contact_complex_picker_org_body_name, department.name)//+"($count)" 不显示数量 不准确
                 val nextLevelBtn = hold?.getView<Button>(R.id.btn_item_contact_complex_picker_org_body_next)
                 if (count>0) {
@@ -209,7 +209,7 @@ class ContactUnitAndIdentityPicker: BaseMVPFragment<ContactUnitAndIdentityPicker
         swipe_refresh_contact_complex_picker_main.setOnRefreshListener {
             refreshRV()
         }
-        rv_contact_complex_picker_main.layoutManager =  LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        rv_contact_complex_picker_main.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_contact_complex_picker_main.adapter = adapter
 
         //初始化数据
@@ -284,10 +284,10 @@ class ContactUnitAndIdentityPicker: BaseMVPFragment<ContactUnitAndIdentityPicker
             breadcrumbTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             breadcrumbTitle.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             if (index == breadcrumbBeans.size - 1) {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 ll_contact_complex_picker_breadcrumb_layout.addView(breadcrumbTitle)
             } else {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 breadcrumbTitle.setOnClickListener { view -> onClickBreadcrumb((view as TextView)) }
                 ll_contact_complex_picker_breadcrumb_layout.addView(breadcrumbTitle)
                 val arrow = ImageView(activity)

@@ -4,8 +4,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import android.text.TextUtils
 import android.webkit.JavascriptInterface
 import android.webkit.WebView

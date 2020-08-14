@@ -33,7 +33,7 @@
                 android:visibility="gone"
                 android:orientation="vertical">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small">
@@ -99,7 +99,7 @@
                         tools:text="9:10" />
 
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
@@ -108,7 +108,7 @@
                     android:layout_marginTop="@dimen/spacing_small"/>
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_o2_im_conversation"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

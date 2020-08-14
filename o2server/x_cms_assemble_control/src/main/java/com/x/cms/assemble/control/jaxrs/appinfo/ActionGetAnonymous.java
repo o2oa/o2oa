@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.ApplicationCache;
@@ -12,6 +14,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.AppInfo;
 
 import net.sf.ehcache.Element;
+
+import java.util.Optional;
 
 public class ActionGetAnonymous extends BaseAction {
 
@@ -28,13 +32,12 @@ public class ActionGetAnonymous extends BaseAction {
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
-		Element element = cache.get( cacheKey );
-		
-		if (( null != element ) && ( null != element.getObjectValue()) ) {
-			wo = ( Wo ) element.getObjectValue();
-			result.setData( wo );
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			result.setData((Wo)optional.get());
 		} else {
 			if( check ){
 				try {
@@ -60,7 +63,7 @@ public class ActionGetAnonymous extends BaseAction {
 			if( check ){
 				try {
 					wo = Wo.copier.copy( appInfo );
-					cache.put(new Element( cacheKey, wo ));
+					CacheManager.put(cacheCategory, cacheKey, wo);
 					result.setData( wo );
 				} catch (Exception e) {
 					Exception exception = new ExceptionAppInfoProcess( e, "将查询出来的应用栏目信息对象转换为可输出的数据信息时发生异常。" );

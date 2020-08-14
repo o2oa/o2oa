@@ -13,13 +13,13 @@
         android:orientation="vertical"
         tools:context=".app.o2.main.MainActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout_main_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/XBPMTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_snippet_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,10 +33,10 @@
                     android:layout_gravity="center"
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium" />
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/content_fragmentView_id"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -47,7 +47,7 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_main_start_ai"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -28,8 +28,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
-import android.support.annotation.ColorRes;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.ColorRes;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 
@@ -41,7 +41,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R;
  * called before the animation is actually complete and support shadows on older
  * platforms.
  */
-public class CircleProgressBar extends android.support.v7.widget.AppCompatImageView {
+public class CircleProgressBar extends androidx.appcompat.widget.AppCompatImageView {
 
     private static final int KEY_SHADOW_COLOR = 0x1E000000;
     private static final int FILL_SHADOW_COLOR = 0x3D000000;

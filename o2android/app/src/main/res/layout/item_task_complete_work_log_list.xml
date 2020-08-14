@@ -22,7 +22,7 @@
             android:src="@mipmap/icon_work_completed"/>
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="0dp"
         android:layout_weight="1"
@@ -53,7 +53,7 @@
                 android:textColor="@color/z_color_text_primary"
                 android:text="蔡艳红: \n  [送核搞] 送核搞"/>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 

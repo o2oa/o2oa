@@ -12,7 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.KeyEvent
@@ -78,7 +78,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
         XLog.info("main activity init..............")
         val indexType = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_TYPE_PREF_KEY, O2CustomStyle.INDEX_TYPE_DEFAULT)
-        val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "")
+        val indexId = O2SDKManager.instance().prefs().getString(O2CustomStyle.INDEX_ID_PREF_KEY, "") ?: ""
         XLog.info("main activity isIndex $indexType..............")
 
         val newsFragment = O2IMConversationFragment()
@@ -191,14 +191,14 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
         pictureLoaderService?.close()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putInt(mCurrentSelectIndexKey, mCurrentSelectIndex)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(mCurrentSelectIndexKey, mCurrentSelectIndex)
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        mCurrentSelectIndex = savedInstanceState?.getInt(mCurrentSelectIndexKey) ?: 2
+        mCurrentSelectIndex = savedInstanceState.getInt(mCurrentSelectIndexKey) ?: 2
     }
 
     override fun onDestroy() {
@@ -234,7 +234,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
                 TAKE_FROM_PICTURES_CODE -> {
                     XLog.debug("choose from pictures ...")
                     data?.let {
-                        val result = it.extras.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
+                        val result = it.extras?.getString(PicturePicker.FANCY_PICTURE_PICKER_SINGLE_RESULT_KEY, "")
                         if (!TextUtils.isEmpty(result)) {
                             val uri = Uri.fromFile(File(result))
                             startClipAvatar(uri)
@@ -244,7 +244,7 @@ class MainActivity : BaseMVPActivity<MainContract.View, MainContract.Presenter>(
 
                 CLIP_AVATAR_ACTIVITY_CODE -> {
                     data?.let {
-                        val url = it.extras.getString("clipAvatarFilePath")
+                        val url = it.extras?.getString("clipAvatarFilePath")
                         XLog.debug("back Myinfo avatar uri : $url ")
                         if (content_fragmentView_id.currentItem == 3 && fragmentList[3] is MyFragment) {
                             (fragmentList[3] as MyFragment).modifyAvatar2Remote(url)

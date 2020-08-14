@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.script;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -31,10 +34,12 @@ class ActionGetScriptNestedImported extends BaseAction {
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), uniqueName, flag);
-				Element element = cache.get(cacheKey);
-				if ((null != element) && (null != element.getObjectValue())) {
-					wrap = (Wo) element.getObjectValue();
+
+				Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), uniqueName, flag );
+				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+				if (optional.isPresent()) {
+					wrap = (Wo) optional.get();
 				} else {
 					Business business = new Business(emc);
 					AppInfo appInfo = business.getAppInfoFactory().flag(flag);
@@ -58,7 +63,7 @@ class ActionGetScriptNestedImported extends BaseAction {
 					wrap = new Wo();
 					wrap.setImportedList(imported);
 					wrap.setText(buffer.toString());
-					cache.put(new Element(cacheKey, wrap));
+					CacheManager.put(cacheCategory, cacheKey, wrap );
 				}
 			} catch (Throwable th) {
 				th.printStackTrace();

@@ -7,7 +7,7 @@
               android:paddingBottom="@dimen/spacing_small"
               android:paddingTop="@dimen/spacing_small">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:text="test"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_normal"/>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </LinearLayout>

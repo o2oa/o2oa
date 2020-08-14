@@ -66,12 +66,16 @@ class UnitBreadcrumbViewCell: UITableViewCell {
                     }
                 })
             }
-            var size = self.breadcrumbScrollView.contentSize;
-            size.width = oX;
-            self.breadcrumbScrollView.showsHorizontalScrollIndicator = true;
-            self.breadcrumbScrollView.contentSize = size;
-            self.breadcrumbScrollView.bounces = true;
-            
+            var size = self.breadcrumbScrollView.contentSize
+            size.width = oX
+            self.breadcrumbScrollView.showsHorizontalScrollIndicator = true
+            self.breadcrumbScrollView.contentSize = size
+            self.breadcrumbScrollView.bounces = true
+            //滚动到底部
+            if self.breadcrumbScrollView.contentSize.width > self.breadcrumbScrollView.bounds.size.width {
+                let point = CGPoint(x: self.breadcrumbScrollView.contentSize.width - self.breadcrumbScrollView.bounds.size.width + self.breadcrumbScrollView.contentInset.right, y: 0)
+                self.breadcrumbScrollView.setContentOffset(point, animated: true)
+            }
         }
     }
 

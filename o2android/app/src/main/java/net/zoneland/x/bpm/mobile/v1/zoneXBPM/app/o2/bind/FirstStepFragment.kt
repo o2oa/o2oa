@@ -40,22 +40,22 @@ class FirstStepFragment : BaseMVPFragment<FirstStepContract.View, FirstStepContr
         button_login_phone_code.setOnClickListener(this)
         edit_login_phone.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                view_bind_phone_step_one_number_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity, R.color.z_color_input_line_focus))
-                image_login_phone_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity, R.mipmap.icon_phone_focus))
+                view_bind_phone_step_one_number_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_input_line_focus))
+                image_login_phone_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity!!, R.mipmap.icon_phone_focus))
             } else {
-                view_bind_phone_step_one_number_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity, R.color.z_color_input_line_blur))
-                image_login_phone_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity, R.mipmap.icon_phone_normal))
+                view_bind_phone_step_one_number_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_input_line_blur))
+                image_login_phone_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity!!, R.mipmap.icon_phone_normal))
             }
 
 
         }
         edit_login_code.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                view_bind_phone_step_one_code_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity, R.color.z_color_input_line_focus))
-                image_login_phone_code_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity, R.mipmap.icon_verification_code_focus))
+                view_bind_phone_step_one_code_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_input_line_focus))
+                image_login_phone_code_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity!!, R.mipmap.icon_verification_code_focus))
             } else {
-                view_bind_phone_step_one_code_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity, R.color.z_color_input_line_blur))
-                image_login_phone_code_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity, R.mipmap.icon_verification_code_normal))
+                view_bind_phone_step_one_code_bottom.setBackgroundColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_input_line_blur))
+                image_login_phone_code_icon.setImageDrawable(FancySkinManager.instance().getDrawable(activity!!, R.mipmap.icon_verification_code_normal))
             }
         }
     }
@@ -115,7 +115,7 @@ class FirstStepFragment : BaseMVPFragment<FirstStepContract.View, FirstStepContr
                     XToast.toastShort(activity, "短信验证码不能为空！")
                     return
                 }
-                activity.hideSoftInput()
+                activity?.hideSoftInput()
                 this.phone = phone
                 this.code = code
                 mPresenter.getUnitList(phone, code)

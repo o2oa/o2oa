@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_o2_chat_outside"
@@ -10,7 +10,7 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/sr_o2_chat_message_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -18,12 +18,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/ll_o2_chat_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout_snippet">
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_o2_chat_messages"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
     <net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.KeyboardLayout
@@ -154,7 +154,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_o2_chat_emoji_box"
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -200,4 +200,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

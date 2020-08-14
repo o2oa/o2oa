@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils
 
 import android.content.Context
-import android.support.v4.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import org.jetbrains.anko.dip
 
 /**
@@ -15,8 +15,8 @@ object MiscUtilK {
      * @param refreshLayout
      * @param context
      */
-    fun swipeRefreshLayoutRun(refreshLayout: SwipeRefreshLayout, context: Context) {
-        refreshLayout.setProgressViewOffset(false, 0, context.dip(24f))
+    fun swipeRefreshLayoutRun(refreshLayout: SwipeRefreshLayout, context: Context?) {
+        refreshLayout.setProgressViewOffset(false, 0, context?.dip(24f) ?: 24)
         refreshLayout.isRefreshing = true
     }
 }

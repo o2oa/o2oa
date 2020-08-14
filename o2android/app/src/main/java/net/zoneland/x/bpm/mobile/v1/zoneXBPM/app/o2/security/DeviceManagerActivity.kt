@@ -1,8 +1,8 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.security
 
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_device_manager.*
@@ -25,7 +25,7 @@ class DeviceManagerActivity : BaseMVPActivity<DeviceManagerContract.View, Device
 
     override fun layoutResId(): Int = R.layout.activity_device_manager
 
-    private val deviceToken: String by lazy {  O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") }
+    private val deviceToken: String by lazy {  O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: "" }
 
     private val list: ArrayList<CollectDeviceData> = ArrayList()
     private val adapter: CommonRecycleViewAdapter<CollectDeviceData> by lazy {
@@ -70,7 +70,7 @@ class DeviceManagerActivity : BaseMVPActivity<DeviceManagerContract.View, Device
             }
 
         }
-        rv_device_manager_list.layoutManager =  LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        rv_device_manager_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_device_manager_list.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST))
         rv_device_manager_list.adapter = adapter
 

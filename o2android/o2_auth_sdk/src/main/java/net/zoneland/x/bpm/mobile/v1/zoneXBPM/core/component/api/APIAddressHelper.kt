@@ -276,7 +276,7 @@ class APIAddressHelper private constructor() {
         if (!TextUtils.isEmpty(oldDataJson) && !TextUtils.isEmpty(oldWebDataJson)) {
             try {
                 if (!TextUtils.isEmpty(httpProtocol)){
-                    setHttpProtocol(httpProtocol)
+                    setHttpProtocol(httpProtocol!!)
                 }
                 val data = O2SDKManager.instance().gson.fromJson<APIAssemblesData>(oldDataJson, APIAssemblesData::class.java)
                 val webData = O2SDKManager.instance().gson.fromJson<APIWebServerData>(oldWebDataJson, APIWebServerData::class.java)

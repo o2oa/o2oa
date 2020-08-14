@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Build
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -137,11 +137,11 @@ class CircleRippleView : View {
         if (mIcon!=null) {
 
             if(mScaleIcon==null) {
-                mScaleIcon = Bitmap.createScaledBitmap(mIcon, (2 * mInitialRadius * MAXRADIUSRATE).toInt(), (2 * mInitialRadius * MAXRADIUSRATE).toInt(), false)
+                mScaleIcon = Bitmap.createScaledBitmap(mIcon!!, (2 * mInitialRadius * MAXRADIUSRATE).toInt(), (2 * mInitialRadius * MAXRADIUSRATE).toInt(), false)
             }
             val left = (width/2 - mInitialRadius * MAXRADIUSRATE).toFloat()
             val top = (height/2 - mInitialRadius * MAXRADIUSRATE).toFloat()
-            canvas?.drawBitmap(mScaleIcon, left, top, null)
+            canvas?.drawBitmap(mScaleIcon!!, left, top, null)
         }
     }
 

@@ -10,7 +10,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.android.synthetic.main.fragment_attendance_chart.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPViewPagerFragment
@@ -25,7 +24,7 @@ class AttendanceChartFragment : BaseMVPViewPagerFragment<AttendanceChartContract
     override fun layoutResId(): Int = R.layout.fragment_attendance_chart
 
 
-    val typeFace: Typeface by lazy { Typeface.createFromAsset(activity.assets, "OpenSans-Regular.ttf") }
+    val typeFace: Typeface by lazy { Typeface.createFromAsset(activity?.assets, "OpenSans-Regular.ttf") }
 
     override fun initUI() {
         //chart init
@@ -108,7 +107,9 @@ class AttendanceChartFragment : BaseMVPViewPagerFragment<AttendanceChartContract
                 val entry = Entry(value.toFloat(), i)
                 yVals1.add(entry)
                 xVals.add(status.label)
-                colors.add(FancySkinManager.instance().getColor(activity, status.color))
+                if (activity != null) {
+                    colors.add(FancySkinManager.instance().getColor(activity!!, status.color))
+                }
                 i++
             }
         }

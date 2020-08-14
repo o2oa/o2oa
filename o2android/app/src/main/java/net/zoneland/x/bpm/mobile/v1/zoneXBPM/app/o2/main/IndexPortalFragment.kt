@@ -83,7 +83,7 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
             )
             web_view_portal_content.addJavascriptInterface(jsUtil, JSInterfaceO2mUtil.JSInterfaceName)
             web_view_portal_content.addJavascriptInterface(jsBiz, JSInterfaceO2mBiz.JSInterfaceName)
-            web_view_portal_content.webViewSetCookie(activity, portalUrl)
+            web_view_portal_content.webViewSetCookie(activity!!, portalUrl)
             web_view_portal_content.webChromeClient = webChromeClient
             web_view_portal_content.webViewClient = object : WebViewClient() {
                 override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
@@ -123,7 +123,7 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
             val app = CMSApplicationInfoJson()
             app.appName = categoryList.first().appName
             app.wrapOutCategoryList = categoryList
-            activity.go<CMSApplicationActivity>(CMSApplicationActivity.startBundleData(app))
+            activity?.go<CMSApplicationActivity>(CMSApplicationActivity.startBundleData(app))
         } else {
             XLog.error("该应用无法打开 没有分类数据。。。。。")
         }
@@ -159,7 +159,7 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
     @JavascriptInterface
     fun openO2Work(work: String, workCompleted: String, title: String) {
         XLog.debug("open work : $work, $workCompleted, $title")
-        activity.go<TaskWebViewActivity>(TaskWebViewActivity.start(work, workCompleted, title))
+        activity?.go<TaskWebViewActivity>(TaskWebViewActivity.start(work, workCompleted, title))
     }
 
     @JavascriptInterface
@@ -172,19 +172,19 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
     @JavascriptInterface
     fun openO2CmsDocument(docId: String, docTitle: String) {
         XLog.debug("openO2CmsDocument : $docId, $docTitle ")
-        activity.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(docId, docTitle))
+        activity?.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(docId, docTitle))
     }
 
     @JavascriptInterface
     fun openO2Meeting(result: String) {
         XLog.debug("openO2Meeting rrrrrrrrrrr")
-        activity.go<MeetingMainActivity>()
+        activity?.go<MeetingMainActivity>()
     }
 
     @JavascriptInterface
     fun openO2Calendar(result: String) {
         XLog.debug("openO2Calendarvvvvvvvvvvvvvvv")
-        activity.go<CalendarMainActivity>()
+        activity?.go<CalendarMainActivity>()
     }
 
     @JavascriptInterface
@@ -195,8 +195,8 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
         intent.data = Uri.parse(jumpUrl)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         try {
-            if (null != intent.resolveActivity(context.packageManager)) {
-                context.startActivity(intent)
+            if (context != null && null != intent.resolveActivity(context!!.packageManager)) {
+                context!!.startActivity(intent)
             } else {
                 XLog.info("找不到。。。。")
             }
@@ -208,8 +208,8 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
     @JavascriptInterface
     fun openScan(result: String) {
         XLog.debug("open scan ........")
-        activity.runOnUiThread {
-            PermissionRequester(activity)
+        activity?.runOnUiThread {
+            PermissionRequester(activity!!)
                     .request(Manifest.permission.CAMERA)
                     .o2Subscribe {
                         onNext { (granted, shouldShowRequestPermissionRationale, deniedPermissions) ->
@@ -217,7 +217,7 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
                             if (!granted) {
                                 O2DialogSupport.openAlertDialog(activity, "需要摄像头权限才能进行扫一扫功能！")
                             } else {
-                                activity.go<CaptureActivity>()
+                                activity?.go<CaptureActivity>()
                             }
                         }
                     }
@@ -229,11 +229,11 @@ class IndexPortalFragment : BaseMVPViewPagerFragment<IndexPortalContract.View, I
     fun openO2WorkSpace(type: String) {
         XLog.info("open work space $type")
         when (type.toLowerCase()) {
-            "task" -> activity.go<TaskListActivity>()
-            "taskcompleted" -> activity.go<TaskCompletedListActivity>()
-            "read" -> activity.go<ReadListActivity>()
-            "readcompleted" -> activity.go<ReadCompletedListActivity>()
-            else -> activity.go<TaskListActivity>()
+            "task" -> activity?.go<TaskListActivity>()
+            "taskcompleted" -> activity?.go<TaskCompletedListActivity>()
+            "read" -> activity?.go<ReadListActivity>()
+            "readcompleted" -> activity?.go<ReadCompletedListActivity>()
+            else -> activity?.go<TaskListActivity>()
         }
     }
 

@@ -30,11 +30,11 @@
             tools:text="标题"
             android:singleLine="true" />
     </RelativeLayout>
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager_picture_view"
         android:layout_below="@id/relative_picture_view_top_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
 </RelativeLayout>

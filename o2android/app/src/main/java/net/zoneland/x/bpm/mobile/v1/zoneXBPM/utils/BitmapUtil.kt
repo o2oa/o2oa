@@ -35,7 +35,7 @@ object BitmapUtil {
         val cv = Canvas(newBitmap)
         cv.drawBitmap(first, 0f, 0f, null)
         cv.drawBitmap(second, fromPoint.x, fromPoint.y, null)
-        cv.save(Canvas.ALL_SAVE_FLAG)
+        cv.save()
         cv.restore()
         return newBitmap
     }
@@ -70,7 +70,7 @@ object BitmapUtil {
         cv.drawBitmap(watermark, (w - ww - 5).toFloat(), (h - wh - 5).toFloat(), null)//设置watermark的位置
         // cv.drawBitmap(watermark, 0, 0, null);
         // save all clip
-        cv.save(Canvas.ALL_SAVE_FLAG)// 保存
+        cv.save()// 保存
         // store
         cv.restore()// 存储
         return newb

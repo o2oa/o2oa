@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
@@ -17,25 +17,25 @@ abstract class NewContactListAdapter(var items: ArrayList<NewContactListVO>) : R
         return items.size
     }
 
-    override fun onBindViewHolder(holder: CommonRecyclerViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: CommonRecyclerViewHolder, position: Int) {
         when(items[position]) {
             is NewContactListVO.Department -> {
                 val department = items[position] as NewContactListVO.Department
                 bindDepartment(holder, department, position)
-                holder?.convertView?.setOnClickListener { clickDepartment(department) }
+                holder.convertView?.setOnClickListener { clickDepartment(department) }
             }
             else -> {
                 val identity = items[position] as NewContactListVO.Identity
                 bindIdentity(holder, identity, position)
-                holder?.convertView?.setOnClickListener { view -> clickIdentity(view, identity) }
+                holder.convertView?.setOnClickListener { view -> clickIdentity(view, identity) }
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): CommonRecyclerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonRecyclerViewHolder {
         return when(viewType) {
-            0 -> CommonRecyclerViewHolder(parent?.inflate(R.layout.item_contact_org_body))
-            else -> CommonRecyclerViewHolder(parent?.inflate(R.layout.item_contact_person_body_new))
+            0 -> CommonRecyclerViewHolder(parent.inflate(R.layout.item_contact_org_body))
+            else -> CommonRecyclerViewHolder(parent.inflate(R.layout.item_contact_person_body_new))
         }
     }
 

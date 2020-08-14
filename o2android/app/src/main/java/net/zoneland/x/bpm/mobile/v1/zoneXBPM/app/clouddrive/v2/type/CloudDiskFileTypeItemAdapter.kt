@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.type
 
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +34,7 @@ class CloudDiskFileTypeItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private var footer: View? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent?.context)
         return when(viewType) {
             ITEM_VIEW_TYPE_GRID -> CommonRecyclerViewHolder(inflater.inflate(R.layout.item_file_grid_list_v2, parent, false))
@@ -45,39 +45,37 @@ class CloudDiskFileTypeItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     override fun getItemCount(): Int = datas.size + getFooterCount()
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        if (holder != null) {
-            if (holder is CommonRecyclerViewHolder) {
-                val item = datas[position]
-                if (isGrid) {
-                    val resId = FileExtensionHelper.getImageResourceByFileExtension(item.extension)
-                    holder.setImageViewResource(R.id.file_list_icon_id, resId)
-                            .setText(R.id.file_list_name_id, item.name)
-                    val imageView = holder.getView<ImageView>(R.id.file_list_icon_id)
-                    val size = holder.convertView.dip(40)
-                    val url = APIAddressHelper.instance().getCloudDiskImageUrl(item.id, size, size)
-                    O2ImageLoaderManager.instance().showImage(imageView, url)
-                    ViewCompat.setTransitionName(imageView, url)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is CommonRecyclerViewHolder) {
+            val item = datas[position]
+            if (isGrid) {
+                val resId = FileExtensionHelper.getImageResourceByFileExtension(item.extension)
+                holder.setImageViewResource(R.id.file_list_icon_id, resId)
+                        .setText(R.id.file_list_name_id, item.name)
+                val imageView = holder.getView<ImageView>(R.id.file_list_icon_id)
+                val size = holder.convertView.dip(40)
+                val url = APIAddressHelper.instance().getCloudDiskImageUrl(item.id, size, size)
+                O2ImageLoaderManager.instance().showImage(imageView, url)
+                ViewCompat.setTransitionName(imageView, url)
+            }else {
+                val resId = FileExtensionHelper.getImageResourceByFileExtension(item.extension)
+                holder.setImageViewResource(R.id.file_list_icon_id, resId)
+                        .setText(R.id.file_list_name_id, item.name)
+                        .setText(R.id.tv_file_list_time, item.updateTime)
+                val size = holder.getView<TextView>(R.id.tv_file_list_size)
+                size.visibility = View.VISIBLE
+                size.text = item.length.friendlyFileLength()
+                val checkBox = holder.getView<CheckBox>(R.id.file_list_choose_id)
+                checkBox.gone()
+                if (position == datas.size - 1) {
+                    holder.getView<View>(R.id.view_file_list_split).gone()
                 }else {
-                    val resId = FileExtensionHelper.getImageResourceByFileExtension(item.extension)
-                    holder.setImageViewResource(R.id.file_list_icon_id, resId)
-                            .setText(R.id.file_list_name_id, item.name)
-                            .setText(R.id.tv_file_list_time, item.updateTime)
-                    val size = holder.getView<TextView>(R.id.tv_file_list_size)
-                    size.visibility = View.VISIBLE
-                    size.text = item.length.friendlyFileLength()
-                    val checkBox = holder.getView<CheckBox>(R.id.file_list_choose_id)
-                    checkBox.gone()
-                    if (position == datas.size - 1) {
-                        holder.getView<View>(R.id.view_file_list_split).gone()
-                    }else {
-                        holder.getView<View>(R.id.view_file_list_split).visible()
-                    }
+                    holder.getView<View>(R.id.view_file_list_split).visible()
                 }
+            }
 
-                if (onItemClickListener != null) {
-                    holder.itemView.setOnClickListener { v -> onItemClickListener?.onItemClick(v, item) }
-                }
+            if (onItemClickListener != null) {
+                holder.itemView.setOnClickListener { v -> onItemClickListener?.onItemClick(v, item) }
             }
         }
     }

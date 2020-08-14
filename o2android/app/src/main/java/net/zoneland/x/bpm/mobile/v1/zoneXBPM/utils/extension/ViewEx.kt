@@ -6,13 +6,16 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.Base64ImageUtil
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import org.jetbrains.anko.ctx
@@ -24,7 +27,7 @@ import rx.schedulers.Schedulers
  * Created by fancy on 2017/4/10.
  */
 inline fun Activity.makeCallDial(number: String): Boolean = ctx.makeCallDial(number)
-inline fun Fragment.makeCallDial(number: String): Boolean = activity.makeCallDial(number)
+inline fun Fragment.makeCallDial(number: String): Boolean = activity?.makeCallDial(number) ?: false
 
 fun Context.makeCallDial(number: String): Boolean {
     return try {
@@ -124,3 +127,14 @@ fun ImageView.setImageBase64(base64Str: String? , tag: String) {
 fun TextView.text2String(): String = text.toString()
 
 
+fun ContextCompat.getColor(context: Context?, @ColorRes colorRes: Int): Int {
+    return if (context != null) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            context.getColor(colorRes)
+        } else {
+            context.resources.getColor(colorRes)
+        }
+    }else {
+        colorRes
+    }
+}

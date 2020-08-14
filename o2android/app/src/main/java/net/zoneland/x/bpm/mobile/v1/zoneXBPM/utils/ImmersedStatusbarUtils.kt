@@ -25,14 +25,14 @@ object ImmersedStatusBarUtils {
     fun setImmersedStatusBar(activity: Activity) {
         val window = activity.window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = FancySkinManager.instance().getColor(activity, R.color.z_color_primary)
+            window.statusBarColor = FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary)
         }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setTranslucentStatus(window, true)
             val tintManager = SystemBarTintManager(activity)
             tintManager.isStatusBarTintEnabled = true
             tintManager.setNavigationBarTintEnabled(true)
             // 自定义颜色
-            tintManager.setTintColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+            tintManager.setTintColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
         }
     }
 

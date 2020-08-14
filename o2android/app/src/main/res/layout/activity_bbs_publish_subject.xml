@@ -7,17 +7,17 @@
     android:layout_height="match_parent"
     tools:context="net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.bbs.publish.BBSPublishSubjectActivity"
     >
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/activity_bbs_publish_subject"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white">
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout_snippet"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/XBPMTheme.AppBarOverlay">
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_snippet_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,8 +33,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=""
                     android:singleLine="true" />
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -208,7 +208,7 @@
                     android:layout_height="@dimen/spacing_meeting"
                     android:background="@color/z_color_bottom_bar_background" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_small"
@@ -228,13 +228,13 @@
                         android:minLines="15"
                         android:textColor="@color/z_color_text_hint"
                         android:textSize="15sp" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </ScrollView>
 
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

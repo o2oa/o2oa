@@ -114,13 +114,13 @@ class CollectLogJobService : JobService() {
     private fun generateLogData(lines: List<String>, date: String) {
         val logData = APILogData()
         val pref = O2SDKManager.instance().prefs()
-        logData.unit = pref.getString(O2.PRE_BIND_UNIT_ID_KEY, "")
-        logData.unitName = pref.getString(O2.PRE_BIND_UNIT_KEY, "")
-        logData.centerHost = pref.getString(O2.PRE_CENTER_HOST_KEY, "")
+        logData.unit = pref.getString(O2.PRE_BIND_UNIT_ID_KEY, "")?: ""
+        logData.unitName = pref.getString(O2.PRE_BIND_UNIT_KEY, "")?: ""
+        logData.centerHost = pref.getString(O2.PRE_CENTER_HOST_KEY, "")?: ""
 //        val centerHttpProtocol = pref.getString(O2.PRE_CENTER_HTTP_PROTOCOL_KEY, "")
-        logData.centerContext = pref.getString(O2.PRE_CENTER_CONTEXT_KEY, "")
+        logData.centerContext = pref.getString(O2.PRE_CENTER_CONTEXT_KEY, "")?: ""
         logData.centerPort = pref.getInt(O2.PRE_CENTER_PORT_KEY, -1).toString()
-        logData.deviceToken = pref.getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")
+        logData.deviceToken = pref.getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")?: ""
         logData.distinguishedName = O2SDKManager.instance().distinguishedName
         logData.name = O2SDKManager.instance().cName
         logData.mobile = O2SDKManager.instance().cMobile
@@ -129,7 +129,7 @@ class CollectLogJobService : JobService() {
         logData.osVersion = AndroidUtils.getDeviceOsVersion()
         logData.osCpu = AndroidUtils.getDeviceCpuABI()
         logData.osMemory = AndroidUtils.getDeviceMemory(applicationContext)
-        logData.osDpi = pref.getString(O2.PRE_DEVICE_DPI_KEY, "")
+        logData.osDpi = pref.getString(O2.PRE_DEVICE_DPI_KEY, "")?: ""
         logData.androidManufacturer = AndroidUtils.getDeviceManufacturer()
         logData.manufacturerOsVersion = AndroidUtils.getDeviceBrand() + "/" + AndroidUtils.getDeviceModelNumber()
         logData.logDate = date

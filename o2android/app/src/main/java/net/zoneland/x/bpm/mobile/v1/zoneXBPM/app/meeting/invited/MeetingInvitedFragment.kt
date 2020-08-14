@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.invited
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -52,23 +52,23 @@ class MeetingInvitedFragment : BaseMVPViewPagerFragment<MeetingInvitedFragmentCo
         val menuCreator = SwipeMenuCreator { swipeLeftMenu, swipeRightMenu, viewType ->
             val agreeItem = SwipeMenuItem(context)
             agreeItem.height = ViewGroup.LayoutParams.MATCH_PARENT
-            agreeItem.width = activity.dip(70)
+            agreeItem.width = activity?.dip(70) ?: 70
             agreeItem.text = "同意"
             agreeItem.setTextColor(Color.WHITE)
             agreeItem.textSize = 18
-            agreeItem.background = ColorDrawable(ContextCompat.getColor(context, R.color.meeting_agree))
+            agreeItem.background = ColorDrawable(ContextCompat.getColor(activity!!, R.color.meeting_agree))
             swipeRightMenu.addMenuItem(agreeItem)
             val rejectItem = SwipeMenuItem(context)
             rejectItem.height = ViewGroup.LayoutParams.MATCH_PARENT
-            rejectItem.width = activity.dip(70)
+            rejectItem.width = activity?.dip(70) ?:70
             rejectItem.text = "拒绝"
             rejectItem.setTextColor(Color.WHITE)
             rejectItem.textSize = 18
-            rejectItem.background = ColorDrawable(ContextCompat.getColor(context, R.color.meeting_reject))
+            rejectItem.background = ColorDrawable(ContextCompat.getColor(activity!!, R.color.meeting_reject))
             swipeRightMenu.addMenuItem(rejectItem)
         }
         receive_invite_list.layoutManager = LinearLayoutManager(activity)
-        receive_invite_list.addItemDecoration(DefaultItemDecoration(ContextCompat.getColor(activity, R.color.z_color_split_line_ddd)))
+        receive_invite_list.addItemDecoration(DefaultItemDecoration(ContextCompat.getColor(activity!!, R.color.z_color_split_line_ddd)))
         receive_invite_list.setSwipeMenuCreator(menuCreator)
         receive_invite_list.setSwipeMenuItemClickListener { menuBridge ->
             menuBridge.closeMenu()// 任何操作必须先关闭菜单，否则可能出现Item菜单打开状态错乱。
@@ -156,15 +156,15 @@ class MeetingInvitedFragment : BaseMVPViewPagerFragment<MeetingInvitedFragmentCo
 
     private fun toggleView() {
         if (currentType == RECEIVE_INVITE_TYPE) {
-            tv_receive_invite_title.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+            tv_receive_invite_title.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
             view_receive_invite_title_divider.visible()
-            tv_originator_invite_title.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary))
+            tv_originator_invite_title.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary))
             view_originator_invite_title_divider.gone()
             mPresenter.getReceiveInviteMeetingList()
         } else {
-            tv_originator_invite_title.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+            tv_originator_invite_title.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
             view_originator_invite_title_divider.visible()
-            tv_receive_invite_title.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary))
+            tv_receive_invite_title.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary))
             view_receive_invite_title_divider.gone()
             mPresenter.getOriginatorMeetingList()
         }
@@ -189,7 +189,7 @@ class MeetingInvitedFragment : BaseMVPViewPagerFragment<MeetingInvitedFragmentCo
                 mPresenter.asyncLoadPersonName(
                         holder.getView(R.id.meeting_card_view_originator_id), t.id + "%%%", t.applicant)
                 holder.convertView.setOnClickListener {
-                    activity.goWithRequestCode<MeetingEditActivity>(MeetingEditActivity.startBundleData(t,
+                    activity?.goWithRequestCode<MeetingEditActivity>(MeetingEditActivity.startBundleData(t,
                             holder.getView<TextView>(R.id.meeting_card_view_room_id).text.toString()))
                 }
             }

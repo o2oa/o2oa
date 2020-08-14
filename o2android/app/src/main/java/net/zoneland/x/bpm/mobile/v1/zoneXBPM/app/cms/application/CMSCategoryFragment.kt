@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.cms.application
 
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.fragment_cms_category.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
@@ -57,7 +57,7 @@ class CMSCategoryFragment : BaseMVPViewPagerFragment<CMSCategoryContract.View, C
     }
 
     override fun initUI() {
-        info = arguments.getSerializable(CMS_CATEGORY_OBJECT_KEY) as CMSCategoryInfoJson
+        info = arguments?.getSerializable(CMS_CATEGORY_OBJECT_KEY) as CMSCategoryInfoJson
 
         if (info == null) {
             XLog.error("没有接收到分类对象。。。。。。")
@@ -66,7 +66,7 @@ class CMSCategoryFragment : BaseMVPViewPagerFragment<CMSCategoryContract.View, C
             return
         }
 
-        refresh_cms_category_layout.touchSlop = activity.dip(70f)
+        refresh_cms_category_layout.touchSlop = activity?.dip(70f) ?: 70
         refresh_cms_category_layout.setColorSchemeResources(R.color.z_color_refresh_scuba_blue,
                 R.color.z_color_refresh_red, R.color.z_color_refresh_purple, R.color.z_color_refresh_orange)
         refresh_cms_category_layout.recyclerViewPageNumber = O2.DEFAULT_PAGE_NUMBER
@@ -92,7 +92,7 @@ class CMSCategoryFragment : BaseMVPViewPagerFragment<CMSCategoryContract.View, C
         recycler_cms_category_document_list.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST))
         adapter.setOnItemClickListener { view, position ->
             val document = documentList[position]
-            activity.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(document.id, document.title))
+            activity?.go<CMSWebViewActivity>(CMSWebViewActivity.startBundleData(document.id, document.title))
         }
 
     }

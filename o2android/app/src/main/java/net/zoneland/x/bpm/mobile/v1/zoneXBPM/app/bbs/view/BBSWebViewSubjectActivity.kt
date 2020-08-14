@@ -206,7 +206,7 @@ class BBSWebViewSubjectActivity : BaseMVPActivity<BBSWebViewSubjectContract.View
     private fun formatToHtml(content: String): String {
         var ret = ""
         if (!TextUtils.isEmpty(content)) {
-            val lineSeparator = System.getProperty("line.separator", "\n")
+            val lineSeparator = System.getProperty("line.separator", "\n") ?: "\n"
             content.split(lineSeparator).map {
                 ret += "<p>$it</p>"
             }

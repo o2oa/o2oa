@@ -37,11 +37,8 @@ class PermissionRequestFragment : Fragment() {
      * 权限请求反馈处理
      */
     @TargetApi(Build.VERSION_CODES.M)
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (permissions == null || grantResults == null) {
-            return
-        }
         when (requestCode) {
             REQUEST_PERMISSION_CODE -> {
                 permissions.mapIndexed { index, permission ->

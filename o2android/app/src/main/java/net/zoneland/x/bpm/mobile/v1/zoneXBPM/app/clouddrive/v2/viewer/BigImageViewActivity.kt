@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive.v2.viewer
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_big_image_view.*
@@ -27,7 +27,7 @@ class BigImageViewActivity : AppCompatActivity() {
             bundle.putString(IMAGE_ID_KEY, fileId)
             bundle.putString(IMAGE_EXTENSION_KEY, extension)
             bundle.putString(IMAGE_TITLE_KEY, title)
-            activity.go<BigImageViewActivity>(bundle)
+            activity?.go<BigImageViewActivity>(bundle)
         }
     }
 

@@ -40,7 +40,7 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
         val LPWW = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
     }
 
-    private val font: Typeface  by lazy { Typeface.createFromAsset(activity.assets, "fonts/fontawesome-webfont.ttf") }
+    private val font: Typeface  by lazy { Typeface.createFromAsset(activity?.assets, "fonts/fontawesome-webfont.ttf") }
     /**
      * 分享文件夹名称，为空的时候展现 文件夹列表 点击某个文件夹 展现文件夹下面的文件列表。
      */
@@ -62,7 +62,7 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
         swipe_refresh_cooperation_layout.setOnRefreshListener { refreshView() }
 
         initAdapter()
-        MiscUtilK.swipeRefreshLayoutRun(swipe_refresh_cooperation_layout, activity)
+        MiscUtilK.swipeRefreshLayoutRun(swipe_refresh_cooperation_layout, activity!!)
     }
 
     override fun lazyLoad() {
@@ -156,10 +156,10 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
             breadcrumbTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             breadcrumbTv.layoutParams = LPWW
             if (index == breadcrumbList.size-1) {
-                breadcrumbTv.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                breadcrumbTv.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 linear_cooperation_file_reply.addView(breadcrumbTv)
             }else {
-                breadcrumbTv.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                breadcrumbTv.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 linear_cooperation_file_reply.addView(breadcrumbTv)
                 breadcrumbTv.setOnClickListener {
                     if (!TextUtils.isEmpty(folderName)) {
@@ -174,7 +174,7 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
                 arrowTv.layoutParams = layout
                 arrowTv.text = getString(R.string.fa_angle_right)
                 arrowTv.typeface = font
-                arrowTv.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                arrowTv.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 arrowTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 linear_cooperation_file_reply.addView(arrowTv)
             }
@@ -225,7 +225,7 @@ class CloudDriveCooperationFileFragment : BaseMVPViewPagerFragment<CloudDriveCoo
                         bundle.putStringArrayList(PictureViewerData.TRANSFER_FILE_ID_KEY, viewerData.fileIdList)
                         bundle.putStringArrayList(PictureViewerData.TRANSFER_TITLE_KEY, viewerData.titleList)
                         bundle.putString(PictureViewerData.TRANSFER_CURRENT_FILE_ID_KEY, item.id)
-                        activity.go<PictureViewActivity>(bundle)
+                        activity?.go<PictureViewActivity>(bundle)
                     } else {
                         val activity = activity as CloudDriveActivity
                         activity.openYunPanFile(item.id, item.name)

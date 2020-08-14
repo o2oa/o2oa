@@ -2,9 +2,9 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.clouddrive
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Menu
@@ -59,10 +59,10 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
     var fileLevel = 0//默认进入的时候是第一层
     var isChoose = false
     var isGrid = false
-    val itemDecoration: TransparentItemDecoration by lazy { TransparentItemDecoration(activity, LinearLayoutManager.VERTICAL) }
+    val itemDecoration: TransparentItemDecoration by lazy { TransparentItemDecoration(activity!!, LinearLayoutManager.VERTICAL) }
     val gridLayoutManager: GridLayoutManager by lazy { GridLayoutManager(activity, 4) }
     val linearLayoutManager: LinearLayoutManager by lazy { LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false) }
-    val font: Typeface by lazy { Typeface.createFromAsset(activity.assets, "fonts/fontawesome-webfont.ttf") }
+    val font: Typeface by lazy { Typeface.createFromAsset(activity?.assets, "fonts/fontawesome-webfont.ttf") }
     val viewerData: PictureViewerData = PictureViewerData()
 
 
@@ -90,27 +90,27 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
         refreshView("")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_my_file, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_my_file, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        menu?.clear()//先清除已经建好的menu
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.clear()//先清除已经建好的menu
         if (isChoose) {
-            activity.menuInflater.inflate(R.menu.menu_my_file_checkbox, menu)
+            activity?.menuInflater?.inflate(R.menu.menu_my_file_checkbox, menu)
         } else {
             if (isGrid) {
-                activity.menuInflater.inflate(R.menu.menu_my_file_grid, menu)
+                activity?.menuInflater?.inflate(R.menu.menu_my_file_grid, menu)
             } else {
-                activity.menuInflater.inflate(R.menu.menu_my_file, menu)
+                activity?.menuInflater?.inflate(R.menu.menu_my_file, menu)
             }
         }
         super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.yunpan_menu_action_upload_file -> {
                 XLog.debug(item.title.toString())
                 (activity as CloudDriveActivity).clickUploadFile()
@@ -259,7 +259,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
      * 新建文件夹
      */
     private fun menuCreateFolder() {
-        O2DialogSupport.openCustomViewDialog(activity, getString(R.string.yunpan_menu_create_folder), R.layout.dialog_name_modify) {
+        O2DialogSupport.openCustomViewDialog(activity!!, getString(R.string.yunpan_menu_create_folder), R.layout.dialog_name_modify) {
             dialog ->
             val text = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
             val content = text.text.toString()
@@ -401,7 +401,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
 
     private fun renameFile(position: Int) {
         val item = fileList[position]
-        val dialog = O2DialogSupport.openCustomViewDialog(activity, getString(R.string.yunpan_rename), R.layout.dialog_name_modify) {
+        val dialog = O2DialogSupport.openCustomViewDialog(activity!!, getString(R.string.yunpan_rename), R.layout.dialog_name_modify) {
             dialog ->
             val text = dialog.findViewById<EditText>(R.id.dialog_name_editText_id)
             val content = text.text.toString()
@@ -456,10 +456,10 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
             breadcrumbTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
             breadcrumbTitle.layoutParams = LPWW
             if (index == breadcrumbBeans.size - 1) {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_primary))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary))
                 breadcrumb_id.addView(breadcrumbTitle)
             } else {
-                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                breadcrumbTitle.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 breadcrumbTitle.setOnClickListener { v -> onClickBreadcrumb(v as TextView) }
                 breadcrumb_id.addView(breadcrumbTitle)
                 val arrow = TextView(activity)
@@ -467,7 +467,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
                 lp.setMargins(8, 0, 8, 0)
                 arrow.layoutParams = lp
                 arrow.text = getString(R.string.fa_angle_right)
-                arrow.setTextColor(FancySkinManager.instance().getColor(activity, R.color.z_color_text_primary_dark))
+                arrow.setTextColor(FancySkinManager.instance().getColor(activity!!, R.color.z_color_text_primary_dark))
                 arrow.typeface = font
                 arrow.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 breadcrumb_id.addView(arrow)
@@ -536,7 +536,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
         recycler_view_yunpan_myfile_list.adapter = cloudFileListAdapter
         changeRecyclerViewLayout()
         recycler_view_yunpan_myfile_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val topRowVerticalPosition = recycler_view_yunpan_myfile_list?.getChildAt(0)?.top ?: 0
                 swipe_refresh_myFile_layout.isEnabled = topRowVerticalPosition >= 0
@@ -576,7 +576,7 @@ class CloudDriveMyFileFragment : BaseMVPViewPagerFragment<CloudDriveMyFileContra
                                 bundle.putStringArrayList(PictureViewerData.TRANSFER_FILE_ID_KEY, viewerData.fileIdList)
                                 bundle.putStringArrayList(PictureViewerData.TRANSFER_TITLE_KEY, viewerData.titleList)
                                 bundle.putString(PictureViewerData.TRANSFER_CURRENT_FILE_ID_KEY, fileItem.id)
-                                activity.go<PictureViewActivity>(bundle)
+                                activity?.go<PictureViewActivity>(bundle)
                             } else {
                                 (activity as CloudDriveActivity).openYunPanFile(fileItem.id, fileItem.name)
                             }

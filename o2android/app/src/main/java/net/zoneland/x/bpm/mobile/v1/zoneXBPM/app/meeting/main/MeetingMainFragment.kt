@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.main
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -74,7 +74,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
             val meetingInvited = meetingList[position]
             val bundle = Bundle()
             bundle.putSerializable(MeetingDetailInfoActivity.meetingDetail, meetingInvited)
-            activity.go<MeetingDetailInfoActivity>(bundle)
+            activity?.go<MeetingDetailInfoActivity>(bundle)
         }
 
         ll_meeting_main_month_chang.setOnClickListener {
@@ -129,7 +129,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
                 TodayDecorator(activity),
                 selectorDecorator
         )
-        calendarView_meeting_date.addDecorator(EventDecorator(FancySkinManager.instance().getColor(activity, R.color.z_color_primary_dark), meetingDays))
+        calendarView_meeting_date.addDecorator(EventDecorator(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary_dark), meetingDays))
         hideLoadingDialog()
     }
 
@@ -189,7 +189,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
 
         } else {
             hideLoadingDialog()
-            identifyDialog = IdentifyChooseDialog(activity, list, this)
+            identifyDialog = IdentifyChooseDialog(activity!!, list, this)
             identifyDialog?.show()
         }
     }
@@ -214,7 +214,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
         val bundle = Bundle()
         bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_WORK, workId)
         bundle.putString(TaskWebViewActivity.WORK_WEB_VIEW_TITLE, "拟稿")
-        activity.go<TaskWebViewActivity>(bundle)
+        activity?.go<TaskWebViewActivity>(bundle)
     }
 
     override fun startProcessFail(message: String) {
@@ -225,7 +225,7 @@ class MeetingMainFragment : BaseMVPViewPagerFragment<MeetingMainFragmentContract
     private fun applyMeeting() {
         val processId = meetingConfig?.process?.id
         if (TextUtils.isEmpty(processId)) {
-            activity.go<MeetingApplyActivity>()
+            activity?.go<MeetingApplyActivity>()
         }else {
             showLoadingDialog()
             mPresenter.loadCurrentPersonIdentityWithProcess(processId!!)

@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import android.text.TextUtils
 import android.view.View
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper

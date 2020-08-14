@@ -1258,6 +1258,7 @@
         //if (Browser.name == "ie")
         if (_cacheUrls.length){
             for (var i=0; i<_cacheUrls.length; i++){
+                _cacheUrls[i].lastIndex = 0;
                 if (_cacheUrls[i].test(address)){
                     noCache = false;
                     break;

@@ -56,8 +56,6 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
     override fun logoutSuccess() {
         O2SDKManager.instance().logoutCleanCurrentPerson()
         O2SDKManager.instance().clearBindUnit()
-        O2App.instance._JMLogout()
-
         goAndClearBefore<BindPhoneActivity>()
     }
 
@@ -153,7 +151,7 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
 
     private fun changeMobile() {
         O2DialogSupport.openConfirmDialog(this, "确定要重新绑定手机号码吗,该操作会清空当前登录信息，需要重新登录？", {
-            val deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")
+            val deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: ""
             mPresenter.logout(deviceId)
         })
     }

@@ -14,19 +14,26 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
  */
 object XToast {
 
-    fun toastShort(context: Context, message: String) {
-        ToastUtil(context).Short(message).setToastBackgroundDrawable(Color.WHITE,
-                FancySkinManager.instance().getDrawable(context, R.drawable.toast_background)!!).show()
+    fun toastShort(context: Context?, message: String) {
+        context?.let {
+            ToastUtil(it).Short(message).setToastBackgroundDrawable(Color.WHITE,
+                    FancySkinManager.instance().getDrawable(it, R.drawable.toast_background)!!).show()
+        }
+
     }
 
-    fun toastShort(context: Context, messageRes: Int) {
-        ToastUtil(context).Short(messageRes).setToastBackgroundDrawable(Color.WHITE,
-                FancySkinManager.instance().getDrawable(context, R.drawable.toast_background)!!).show()
+    fun toastShort(context: Context?, messageRes: Int) {
+        context?.let {
+            ToastUtil(it).Short(messageRes).setToastBackgroundDrawable(Color.WHITE,
+                    FancySkinManager.instance().getDrawable(it, R.drawable.toast_background)!!).show()
+        }
     }
 
-    fun toastLong(context: Context, message: String) {
-        ToastUtil(context).Long(message).setToastBackgroundDrawable(Color.WHITE,
-                FancySkinManager.instance().getDrawable(context, R.drawable.toast_background)!!).show()
+    fun toastLong(context: Context?, message: String) {
+        context?.let {
+            ToastUtil(it).Long(message).setToastBackgroundDrawable(Color.WHITE,
+                    FancySkinManager.instance().getDrawable(it, R.drawable.toast_background)!!).show()
+            }
     }
 
     fun toastLong(context: Context, messageRes: Int) {

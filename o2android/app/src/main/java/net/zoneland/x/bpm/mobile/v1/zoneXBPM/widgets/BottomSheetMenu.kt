@@ -14,8 +14,8 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.borax12.materialdaterangepicker.Utils.dpToPx
-import jiguang.chat.pickerimage.utils.ScreenUtil.getBottomStatusHeight
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DensityUtil.getBottomStatusHeight
 
 /**
  * Created by fancyLou on 2019/4/19.
