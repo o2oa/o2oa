@@ -9,6 +9,7 @@
   "attachment_editor": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -20,6 +21,7 @@
   "attachment_editorCancel": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -31,6 +33,7 @@
   "attachment_editorModify": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -42,6 +45,7 @@
   "attachment_share": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -53,6 +57,7 @@
   "attachment_shareCancel": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -95,6 +100,7 @@
   "meeting_delete": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -106,6 +112,7 @@
   "meeting_invite": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -139,6 +146,7 @@
   "read_create": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -162,6 +170,7 @@
   "task_create": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
@@ -177,6 +186,7 @@
   "task_press": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",

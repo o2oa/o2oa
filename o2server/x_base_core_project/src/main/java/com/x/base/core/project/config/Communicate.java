@@ -43,6 +43,51 @@ public class Communicate extends ConfigObject {
 		return BooleanUtils.isTrue(calendarEnable);
 	}
 
+	@FieldDescribe("定时触发发送到消息队列MQ.")
+	private CronMq cronMq;
+	
+	
+	public CronMq cronMq() {
+		return this.cronMq == null ? new CronMq() : this.cronMq;
+	}
+	
+	public static class CronMq extends ConfigObject {
+		
+		public static CronMq defaultInstance() {
+			CronMq o = new CronMq();
+			return o;
+		}
+		
+		public final static Boolean DEFAULT_ENABLE = false;
+		public final static String DEFAULT_CRON = "0 0 * * * ? *"; //每小时运行一次
+		
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+		
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public void setCron(String cron) {
+			this.cron = cron;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+	}
+	
 	@FieldDescribe("清理设置.")
 	private Clean clean;
 
@@ -51,6 +96,7 @@ public class Communicate extends ConfigObject {
 	}
 
 	public static class Clean extends ConfigObject {
+		private static final long serialVersionUID = 1L;
 
 		public static Clean defaultInstance() {
 			Clean o = new Clean();
