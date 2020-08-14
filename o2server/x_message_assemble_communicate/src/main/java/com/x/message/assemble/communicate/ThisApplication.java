@@ -7,6 +7,8 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.schedule.Clean;
+import com.x.message.assemble.communicate.schedule.TriggerMq;
+import com.x.message.core.entity.Message;
 
 public class ThisApplication {
 
@@ -27,6 +29,8 @@ public class ThisApplication {
 	public static WeLinkConsumeQueue weLinkConsumeQueue = new WeLinkConsumeQueue();
 
 	public static PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
+	
+	public static MQConsumeQueue mqConsumeQueue = new MQConsumeQueue();
 
 	public static Context context() {
 		return context;
@@ -64,9 +68,18 @@ public class ThisApplication {
 			if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
 				weLinkConsumeQueue.start();
 			}
-
+			
+			if (Config.mq().getEnable()) {
+				mqConsumeQueue.start();
+			}
+			
 			MessageConnector.start(context());
-
+          
+			
+			if (BooleanUtils.isTrue(Config.communicate().cronMq().getEnable())) {
+				  context().schedule(TriggerMq.class,Config.communicate().cronMq().getCron());
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -64,6 +64,7 @@ public class Config {
 	public static final String PATH_CONFIG_WELINK = "config/welink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
+	public static final String PATH_CONFIG_MQ = "config/mq.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_CONFIG_SLICE = "config/slice.json";
@@ -1095,6 +1096,23 @@ public class Config {
 		return instance().zhengwuDingding;
 	}
 
+	private MQ mq;
+
+	public static MQ mq() throws Exception {
+		if (null == instance().mq) {
+			synchronized (Config.class) {
+				if (null == instance().mq) {
+					MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
+					if (null == obj) {
+						obj = MQ.defaultInstance();
+					}
+					instance().mq = obj;
+				}
+			}
+		}
+		return instance().mq;
+	}
+	
 	private Vfs vfs;
 
 	public static Vfs vfs() throws Exception {
