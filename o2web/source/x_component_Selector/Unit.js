@@ -396,7 +396,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.selectAll(ev, checkValid);
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                if(category.selectAllNested)category.selectAllNestedev, checkValid()
+                if(category.selectAllNested)category.selectAllNested, checkValid()
             })
         }
         if( this.subItems && this.subItems.length ){
@@ -427,7 +427,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
             var checkedCount = 0;
             this.subItems.each( function(item){
-                if(!item.isSelected)item.selected(false, function () {
+                if(!item.isSelected && !item.disabled )item.selected(false, function () {
                     checkedCount++;
                     if( this.subItems.length === checkedCount ){
                         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);

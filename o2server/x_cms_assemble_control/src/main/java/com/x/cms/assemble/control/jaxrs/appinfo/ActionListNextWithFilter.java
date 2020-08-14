@@ -21,8 +21,7 @@ public class ActionListNextWithFilter extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListNextWithFilter.class);
 
-	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
-			Integer count, JsonElement jsonElement) throws Exception {
+	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		EqualsTerms equals = new EqualsTerms();
 		InTerms ins = new InTerms();
@@ -63,8 +62,9 @@ public class ActionListNextWithFilter extends BaseAction {
 					likes.put("appName", key);
 				}
 			}
+
 			try {
-				result = this.standardListNext(Wo.copier, id, count, "sequence", equals, null, likes, ins, null, null,
+				result = this.standardListNext( Wo.copier, id, count, "sequence", equals, null, likes, ins, null, null,
 						null, null, true, DESC);
 			} catch (Exception e) {
 				result.error(e);

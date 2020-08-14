@@ -1,6 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -12,6 +14,7 @@ import net.sf.ehcache.Element;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ActionListWhatICanViewData_WithAppType extends BaseAction {
 
@@ -36,13 +39,12 @@ public class ActionListWhatICanViewData_WithAppType extends BaseAction {
 			result.error(exception);
 			logger.error(e, effectivePerson, request, null);
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey(personName, "Data", appType, isXAdmin);
-		Element element = cache.get(cacheKey);
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			wos = (List<Wo>) element.getObjectValue();
-			result.setData(wos);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appType, isAnonymous, isXAdmin );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			result.setData((List<Wo>)optional.get());
 		} else {
 			if (check) {
 				try {
@@ -71,7 +73,7 @@ public class ActionListWhatICanViewData_WithAppType extends BaseAction {
 					}
 					//按appInfoSeq列的值， 排个序
 					SortTools.asc( wos, "appInfoSeq");
-					cache.put(new Element( cacheKey, wos ));
+					CacheManager.put(cacheCategory, cacheKey, wos);
 					result.setData( wos );
 				}
 			}

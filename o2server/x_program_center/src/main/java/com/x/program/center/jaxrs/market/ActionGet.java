@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.market;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -28,7 +29,7 @@ class ActionGet extends BaseAction {
 			wo.setAttList(emc.listEqual(Attachment.class, Attachment.application_FIELDNAME, wo.getId()));
 
 			InstallLog installLog = emc.find(id, InstallLog.class);
-			if(installLog!=null){
+			if(installLog!=null && CommonStatus.VALID.getValue().equals(installLog.getStatus())){
 				wo.setInstalledVersion(installLog.getVersion());
 			}else{
 				wo.setInstalledVersion("");
