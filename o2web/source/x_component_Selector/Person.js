@@ -1703,6 +1703,14 @@ MWF.xApplication.Selector.Person.Item = new Class({
         }
     },
     loadSubItem: function(){},
+    disable : function(){
+      this.node.hide();
+      this.disabled = true;
+    },
+    enable : function(){
+        this.node.show();
+        this.disabled = false;
+    },
     check: function(){
         //if (this.selector.options.count.toInt()===1){
         //    this.checkSelectedSingle();
@@ -2365,7 +2373,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
             var checkedCount = 0;
             this.subItems.each( function(item){
-                if(!item.isSelected)item.selected( false, function () {
+                if(!item.isSelected && !item.disabled )item.selected( false, function () {
                     checkedCount++;
                     if( this.subItems.length === checkedCount ){
                         if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
