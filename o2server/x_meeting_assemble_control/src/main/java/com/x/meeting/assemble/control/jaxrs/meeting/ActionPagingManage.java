@@ -25,10 +25,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.SortTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
-import com.x.meeting.assemble.control.jaxrs.meeting.ActionPaging.Wo;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
 import com.x.meeting.core.entity.ConfirmStatus;
 import com.x.meeting.core.entity.Meeting;
@@ -51,11 +49,14 @@ class ActionPagingManage extends BaseAction {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Meeting> root = cq.from(Meeting.class);
 			
-			if (StringUtils.isBlank(wi.getDistinguishedName())) {
-				throw new ExceptionDistinguishedNameEmpty();
+			Predicate p = cb.isNotNull(root.get(Meeting_.applicant));
+			
+			if (!StringUtils.isBlank(wi.getDistinguishedName())) {
+				//throw new ExceptionDistinguishedNameEmpty();
+				p = cb.and(p, cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName()));
 			}
 			
-			Predicate p = cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName());
+			//Predicate p = cb.equal(root.get(Meeting_.applicant), wi.getDistinguishedName());
 			
 			if(!StringUtils.isBlank(wi.getSubject())) {
 				p = cb.and(p, cb.like(root.get(Meeting_.subject), "%" + wi.getSubject() + "%"));
@@ -98,6 +99,10 @@ class ActionPagingManage extends BaseAction {
 			if(!StringUtils.isBlank(wi.getConfirmStatus())) {
 		    	p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.valueOf(wi.getConfirmStatus().trim())));
 			}
+			
+			if(!StringUtils.isBlank(wi.getApplicant())) {
+				p = cb.and(p, cb.equal(root.get(Meeting_.applicant), wi.getApplicant()));
+			 }
 			
 			if(!StringUtils.isBlank(wi.getInvitePersonList())) {
 				p = cb.and(p, cb.isMember( wi.getInvitePersonList().trim(),root.get(Meeting_.invitePersonList)));
@@ -188,6 +193,9 @@ class ActionPagingManage extends BaseAction {
 		@FieldDescribe("会议预定状态.(allow|deny|wait)")
 		private String confirmStatus;
 		
+		@FieldDescribe("创建人员.")
+		private String applicant;
+		
 		@FieldDescribe("邀请人员,身份,组织.")
 		private String invitePersonList;
 		
@@ -258,6 +266,15 @@ class ActionPagingManage extends BaseAction {
 			this.completedTime = completedTime;
 		}
 
+		public String getApplicant() {
+			return applicant;
+		}
+
+		public void setApplicant(String applicant) {
+			this.applicant = applicant;
+		}
+
+		
 		public String getInvitePersonList() {
 			return invitePersonList;
 		}

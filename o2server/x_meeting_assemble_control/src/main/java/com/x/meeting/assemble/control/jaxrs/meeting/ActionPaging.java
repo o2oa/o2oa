@@ -26,7 +26,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.SortTools;
 import com.x.meeting.assemble.control.Business;
 import com.x.meeting.assemble.control.WrapTools;
 import com.x.meeting.assemble.control.wrapout.WrapOutMeeting;
@@ -97,6 +96,10 @@ class ActionPaging extends BaseAction {
 			if(!StringUtils.isBlank(wi.getConfirmStatus())) {
 		    	p = cb.and(p, cb.equal(root.get(Meeting_.confirmStatus), ConfirmStatus.valueOf(wi.getConfirmStatus().trim())));
 			}
+			
+			if(!StringUtils.isBlank(wi.getApplicant())) {
+				p = cb.and(p, cb.equal(root.get(Meeting_.applicant), wi.getApplicant()));
+			 }
 			
 			if(!StringUtils.isBlank(wi.getInvitePersonList())) {
 				p = cb.and(p, cb.isMember( wi.getInvitePersonList().trim(),root.get(Meeting_.invitePersonList)));
@@ -184,6 +187,9 @@ class ActionPaging extends BaseAction {
 		@FieldDescribe("会议预定状态.(allow|deny|wait)")
 		private String confirmStatus;
 		
+		@FieldDescribe("创建人员.")
+		private String applicant;
+		
 		@FieldDescribe("邀请人员,身份,组织.")
 		private String invitePersonList;
 		
@@ -246,6 +252,15 @@ class ActionPaging extends BaseAction {
 			this.completedTime = completedTime;
 		}
 
+		public String getApplicant() {
+			return applicant;
+		}
+
+		public void setApplicant(String applicant) {
+			this.applicant = applicant;
+		}
+
+		
 		public String getInvitePersonList() {
 			return invitePersonList;
 		}
