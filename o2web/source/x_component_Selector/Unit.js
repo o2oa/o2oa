@@ -1,7 +1,7 @@
 MWF.xApplication.Selector = MWF.xApplication.Selector || {};
 MWF.xDesktop.requireApp("Selector", "Identity", null, false);
 MWF.xApplication.Selector.Unit = new Class({
-	Extends: MWF.xApplication.Selector.Identity,
+    Extends: MWF.xApplication.Selector.Identity,
     options: {
         "style": "default",
         "count": 0,
@@ -202,7 +202,7 @@ MWF.xApplication.Selector.Unit = new Class({
 });
 
 MWF.xApplication.Selector.Unit.Item = new Class({
-	Extends: MWF.xApplication.Selector.Identity.Item,
+    Extends: MWF.xApplication.Selector.Identity.Item,
     load : function(){
         if( this.selector.isFlatCategory ){
             if( !this.justItem && this.selector.options.expandSubEnable && this.data.subDirectUnitCount ){
@@ -682,12 +682,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
                         //if( !subData.subDirectUnitCount ){
-                            var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
-                            category.justItem = true;
-                            category.load();
-                            this.selector.items.push( category );
-                            if( !this.subItems )this.subItems = [];
-                            this.subItems.push( category );
+                        var category = this.selector._newItem(subData, this.selector, this.children, this.level + 1, this, true);
+                        category.justItem = true;
+                        category.load();
+                        this.selector.items.push( category );
+                        if( !this.subItems )this.subItems = [];
+                        this.subItems.push( category );
                         //}
                     }
                 }.bind(this));
@@ -748,7 +748,7 @@ MWF.xApplication.Selector.Unit.SearchItem = new Class({
 });
 
 MWF.xApplication.Selector.Unit.ItemSelected = new Class({
-	Extends: MWF.xApplication.Selector.Identity.ItemSelected,
+    Extends: MWF.xApplication.Selector.Identity.ItemSelected,
     getData: function(callback){
         if (callback) callback();
     },
