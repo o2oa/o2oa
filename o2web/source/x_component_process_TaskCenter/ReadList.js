@@ -163,6 +163,34 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
             this.close();
         }, null, this.list.app.content);
     },
+    openWorkByTaskCompleted: function(e, id){
+        var _self = this;
+        var options = {"workId": id, "readonly": true, "appId": "process.Work"+id,
+            "onQueryLoadForm" : function () {
+                this.appForm.addEvent("afterReaded", function () {
+                    _self.node.destroy();
+                    _self.list.refresh();
+                })
+            }, "onPostLoadForm" :function () {
+
+            }
+        };
+        this.list.app.desktop.openApplication(e, "process.Work", options);
+    },
+    openWorkCompleteedByTaskCompleted: function(e, id){
+        var _self = this;
+        var options = {"workCompletedId": id, "readonly": true, "appId": "process.Work"+id,
+            "onQueryLoadForm" : function () {
+                this.appForm.addEvent("afterReaded", function () {
+                    _self.node.destroy();
+                    _self.list.refresh();
+                })
+            }, "onPostLoadForm" :function () {
+
+            }
+        };
+        this.list.app.desktop.openApplication(e, "process.Work", options);
+    },
     closeTaskCompleted: function(callback){
 
         this.closeTaskCompletedNode.setStyle("display", "none");
