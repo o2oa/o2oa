@@ -52,6 +52,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -441,7 +442,15 @@ public class Generate {
 					attachments);
 		}
 		for (Attachment att : attachmentObjects) {
-			/* 文件小于10M */
+			if (Config.query().getCrawlWorkCompleted().getExcludeAttachment().contains(att.getName())
+					|| Config.query().getCrawlWorkCompleted().getExcludeSite().contains(att.getSite())
+					|| StringUtils.equalsIgnoreCase(att.getName(),
+							Config.processPlatform().getDocToWordDefaultFileName())
+					|| StringUtils.equalsIgnoreCase(att.getSite(),
+							Config.processPlatform().getDocToWordDefaultSite())) {
+				continue;
+			}
+			// 文件小于10M
 			if (att.getLength() < BaseAction.MAX_ATTACHMENT_BYTE_LENGTH) {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						att.getStorage());
