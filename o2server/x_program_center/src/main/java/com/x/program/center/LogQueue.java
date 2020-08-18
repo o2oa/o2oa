@@ -68,7 +68,7 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 		do {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Calendar threshold = Calendar.getInstance();
-				threshold.add(Calendar.DATE, -5);
+				threshold.add(Calendar.DATE, -7);
 				ids = emc.idsLessThanMax(cls, JpaObject.createTime_FIELDNAME, threshold.getTime(), 500);
 				if (!ids.isEmpty()) {
 					emc.beginTransaction(cls);
