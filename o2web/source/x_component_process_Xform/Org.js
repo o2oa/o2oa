@@ -566,6 +566,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         this.node = node;
     },
     _loadNodeInputEdit: function(){
+        debugger;
+        this.node.setStyle("overflow","visible");
         var input=null;
         MWF.require("MWF.widget.Combox", function(){
             this.combox = input = new MWF.widget.Combox({
