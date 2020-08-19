@@ -1,7 +1,12 @@
 package com.x.calendar.assemble.control;
 
+import java.util.List;
+
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.schedule.AlarmTrigger;
@@ -10,22 +15,23 @@ import com.x.calendar.assemble.control.service.UserManagerService;
 import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
 
-import java.util.List;
-
 public class ThisApplication {
 
 	protected static Context context;
 	public static final String CalendarMANAGER = "CalendarManager";
+
 	public static Context context() {
 		return context;
 	}
 
 	public static void init() throws Exception {
 		try {
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_calendar_assemble_control());
 			MessageConnector.start(context());
-			//每30秒检查一次需要推送的消息
+			// 每30秒检查一次需要推送的消息
 			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");
-			//每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
+			// 每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
 			context.schedule(CheckEventComment.class, "* * */2 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,6 +40,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
