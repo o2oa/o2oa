@@ -26,8 +26,9 @@ public abstract class CacheManager {
 
 	private static String name = StringTools.uniqueToken();
 
-	public static void setName(String name) {
+	public static void init(String name) throws Exception {
 		CacheManager.name = name;
+		cache();
 	}
 
 	private static synchronized Cache cache() throws Exception {
