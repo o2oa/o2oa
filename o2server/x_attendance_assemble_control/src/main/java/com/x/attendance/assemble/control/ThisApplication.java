@@ -5,7 +5,10 @@ import com.x.attendance.assemble.control.processor.thread.DataProcessThreadFacto
 import com.x.attendance.assemble.control.schedule.*;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.LoggerFactory;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 public class ThisApplication {
@@ -26,10 +29,10 @@ public class ThisApplication {
 	public static QueuePersonAttendanceDetailAnalyse detailAnalyseQueue = new QueuePersonAttendanceDetailAnalyse();
 	public static QueueAttendanceDetailStatistic detailStatisticQueue = new QueueAttendanceDetailStatistic();
 
-
 	public static void init() throws Exception {
 		try {
-
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_attendance_assemble_control());
 			new AttendanceSettingService().initAllSystemConfig();
 
 			detailAnalyseQueue.start();
@@ -38,8 +41,8 @@ public class ThisApplication {
 				dingdingQueue.start();
 				personStatisticQueue.start();
 				unitStatisticQueue.start();
-				context.schedule( DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?" );
-				//已经将任务 放到了同步结束后执行 暂时不需要开定时任务了
+				context.schedule(DingdingAttendanceSyncScheduleTask.class, "0 0 1 * * ?");
+				// 已经将任务 放到了同步结束后执行 暂时不需要开定时任务了
 //				context.schedule(DingdingAttendanceStatisticScheduleTask.class, "0 0 3 * * ?");
 //				context.schedule(DingdingAttendanceStatisticPersonScheduleTask.class, "0 0 3 * * ?");
 			}
@@ -53,7 +56,7 @@ public class ThisApplication {
 			context.schedule(AttendanceStatisticTask.class, "0 0 0/4 * * ?");
 
 			context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
-			//每天凌晨1点，计算前一天所有的未签退和未分析的打卡数据
+			// 每天凌晨1点，计算前一天所有的未签退和未分析的打卡数据
 			context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
 
 		} catch (Exception e) {
@@ -63,6 +66,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 			DataProcessThreadFactory.getInstance().showdown();
 		} catch (Exception e) {
 			e.printStackTrace();

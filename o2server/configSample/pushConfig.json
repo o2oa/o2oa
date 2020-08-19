@@ -1,0 +1,8 @@
+{
+  "enable": false,
+  "appKey": "9aca7cc20fe0cc987cd913ca",
+  "masterSecret": "96ee7e2e0daffd51bac57815",
+  "###enable": "是否启用.###",
+  "###appKey": "极光推送应用的AppKey###",
+  "###masterSecret": "极光推送应用的Master Secret###"
+}
