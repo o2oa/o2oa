@@ -3,6 +3,7 @@ package com.x.query.service.processing;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.service.processing.schedule.CrawlCms;
@@ -19,6 +20,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_query_service_processing());
 			if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
 				context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
@@ -36,6 +38,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

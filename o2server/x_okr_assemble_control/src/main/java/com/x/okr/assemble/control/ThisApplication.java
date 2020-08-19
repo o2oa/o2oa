@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.okr.assemble.control.jaxrs.queue.QueueWorkDynamicRecord;
 import com.x.okr.assemble.control.jaxrs.workimport.CacheImportFileStatus;
 import com.x.okr.assemble.control.schedule.ErrorIdentityCheckTask;
@@ -31,7 +34,8 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
-
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_okr_assemble_control());
 			queueWorkDynamicRecord = new QueueWorkDynamicRecord();
 			context().startQueue(queueWorkDynamicRecord);
 
@@ -59,6 +63,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -95,6 +95,9 @@ public class LogLevel extends ConfigObject {
 	@FieldDescribe("是否启用调试")
 	private String x_processplatform_assemble_bam = "";
 
+	@FieldDescribe("是否启用调试")
+	private String x_jpush_assemble_control = "";
+
 	@FieldDescribe("审计日志配置")
 	private Audit audit = Audit.defaultInstance();
 
@@ -222,6 +225,10 @@ public class LogLevel extends ConfigObject {
 		return this.getLevel(this.x_general_assemble_control);
 	}
 
+	public String x_jpush_assemble_control() {
+		return this.getLevel(this.x_jpush_assemble_control);
+	}
+
 	private String getLevel(String str) {
 		if (StringUtils.equalsIgnoreCase(str, Logger.ERROR)) {
 			return Logger.ERROR;
@@ -276,16 +283,22 @@ public class LogLevel extends ConfigObject {
 				return this.logSize;
 			}
 		}
-		public String getSystem() { return system; }
+
+		public String getSystem() {
+			return system;
+		}
 
 		public void setSystem(String system) {
 			this.system = system;
 		}
 
-		public String getSystemName() { return systemName; }
+		public String getSystemName() {
+			return systemName;
+		}
 
-		public void setSystemName(String systemName) { this.systemName = systemName; }
-
+		public void setSystemName(String systemName) {
+			this.systemName = systemName;
+		}
 
 		public String getExtend1() {
 			return extend1;
