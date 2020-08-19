@@ -284,7 +284,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 	},
 
 	_editLine:function(td){
-		debugger;
 		if (this.isEdit){
 			if (!this._completeLineEdit()) return false;
 		}
@@ -414,7 +413,6 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 
 	},
 	_completeLineEdit: function( ev ){
-		debugger;
 		//this.currentEditLine.getElemets(td);
 		if (!this.editValidation()){
 			return false;
