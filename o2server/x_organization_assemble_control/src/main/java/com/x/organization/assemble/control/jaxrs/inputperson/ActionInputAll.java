@@ -45,6 +45,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.UnitAttribute;
 import com.x.base.core.project.script.ScriptFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
@@ -133,6 +134,7 @@ class ActionInputAll extends BaseAction {
 	
 	private void scanPerson(Business business, XSSFWorkbook workbook) throws Exception {
 	//导入人员信息	
+		System.out.println("--------scanPerson");
 		Sheet sheet = workbook.getSheetAt(2);
 		configuratorPerson = new PersonSheetConfigurator(workbook, sheet);
 		person = this.scanPersonList(configuratorPerson, sheet);
@@ -145,6 +147,7 @@ class ActionInputAll extends BaseAction {
 	
 	private void scanIdentity(Business business, XSSFWorkbook workbook ,List<PersonItem> persons,List<UnitItem> units) throws Exception {
 		//导入身份信息	
+		System.out.println("--------scanIdentity");
 			Sheet sheet = workbook.getSheetAt(3);
 			configuratorIdentity = new IdentitySheetConfigurator(workbook, sheet);
 			//校验导入的职务信息
@@ -156,7 +159,7 @@ class ActionInputAll extends BaseAction {
 						if(wholeFlag){
 							//保存组织，人员
 							System.out.println("开始导入组织信息--------");
-							this.persistUnit(workbook, configuratorUnit, unit);
+							this.persistUnit(business,workbook, configuratorUnit, unit);
 							System.out.println("开始导入人员信息--------");
 							this.persistPerson(business,workbook, configuratorPerson, person);
 							System.out.println("开始导入身份信息--------");
@@ -185,7 +188,8 @@ class ActionInputAll extends BaseAction {
 	}
 	
 	private void scanDuty(Business business, XSSFWorkbook workbook) throws Exception  {
-		//导入职务信息	
+		//导入职务信息
+		System.out.println("--------scanDuty");
 			Sheet sheet = workbook.getSheetAt(4);
 			DutySheetConfigurator configurator = new DutySheetConfigurator(workbook, sheet);
 			for (int i = configurator.getFirstRow(); i <= configurator.getLastRow(); i++) {
@@ -607,9 +611,9 @@ class ActionInputAll extends BaseAction {
 						}
 					}
 				}
-				if(!validate){
+				/*if(!validate){
 					continue;
-				}
+				}*/
 				Unit p = null;
 				p = emc.flag(o.getUnique(), Unit.class);
 				if (null != p) {
@@ -679,9 +683,9 @@ class ActionInputAll extends BaseAction {
 					}
 				}
 				
-				if(!validate){
+				/*if(!validate){
 					continue;
-				}
+				}*/
 				Person p = null;
 				p = emc.flag(o.getUnique(), Person.class);
 				if (null != p) {
@@ -896,7 +900,7 @@ class ActionInputAll extends BaseAction {
 	}
 	
 	
-	private void persistUnit(XSSFWorkbook workbook, UnitSheetConfigurator configurator, List<UnitItem> unitItems) throws Exception {
+	private void persistUnit(Business business,XSSFWorkbook workbook, UnitSheetConfigurator configurator, List<UnitItem> unitItems) throws Exception {
 		for (List<UnitItem> list : ListTools.batch(unitItems, 200)) {
 			for (UnitItem o : list) {
 				logger.debug("正在保存组织:{}.", o.getName());
@@ -906,7 +910,27 @@ class ActionInputAll extends BaseAction {
 				String resp = this.saveUnit("unit", unitObject);
 				
 				if("".equals(resp)){
-					this.setUnitMemo(workbook, configurator, o, "已导入.");
+					EntityManagerContainer emc = business.entityManagerContainer();
+					Unit po = emc.flag(unitObject.getUnique(), Unit.class);
+					boolean validate = true;
+					for (Entry<String, String> en : o.getAttributes().entrySet()) {
+						if (StringUtils.isNotEmpty(en.getValue())) {
+							UnitAttribute unitAttribute = new UnitAttribute();
+							unitAttribute.setName(en.getKey());
+							unitAttribute.setAttributeList(new ArrayList<String>());
+							unitAttribute.getAttributeList().add(en.getValue());
+							unitAttribute.setUnit(po.getId());
+							String respAtt = saveUnitAttribute("unitattribute",unitAttribute);
+							if("".equals(respAtt)){
+							}else{
+								System.out.println("respMass="+respAtt);
+								this.setUnitMemo(workbook, configurator, o, respAtt);
+							}
+						}
+					}
+					if(validate){
+						this.setUnitMemo(workbook, configurator, o, "已导入.");
+					}
 				}else{
 					System.out.println("respMass="+resp);
 					this.setUnitMemo(workbook, configurator, o, resp);
@@ -926,7 +950,27 @@ class ActionInputAll extends BaseAction {
 				String resp = this.savePerson("person", personObject);
 				
 				if("".equals(resp)){
-					this.setPersonMemo(workbook, configurator, o, "已导入.");
+					EntityManagerContainer emc = business.entityManagerContainer();
+					Person po = emc.flag(personObject.getUnique(), Person.class);
+					boolean validate = true;
+					for (Entry<String, String> en : o.getAttributes().entrySet()) {
+						if (StringUtils.isNotEmpty(en.getValue())) {
+							PersonAttribute personAttribute = new PersonAttribute();
+							personAttribute.setName(en.getKey());
+							personAttribute.setAttributeList(new ArrayList<String>());
+							personAttribute.getAttributeList().add(en.getValue());
+							personAttribute.setPerson(po.getId());
+							String respAtt = savePersonAttribute("personattribute",personAttribute);
+							if("".equals(respAtt)){
+							}else{
+								System.out.println("respMass="+respAtt);
+								this.setPersonMemo(workbook, configurator, o, respAtt);
+							}
+						}
+					}
+					if(validate){
+						this.setPersonMemo(workbook, configurator, o, "已导入.");
+					}
 				}else{
 					System.out.println("respMass="+resp);
 					this.setPersonMemo(workbook, configurator, o, resp);
@@ -1083,6 +1127,12 @@ class ActionInputAll extends BaseAction {
 	private String saveUnit(String path ,Unit unitObj) throws Exception{
 		ActionResponse resp =  ThisApplication.context().applications()
 				.postQuery(x_organization_assemble_control.class, path, unitObj);
+		return resp.getMessage();
+	}
+	
+	private String saveUnitAttribute(String path ,UnitAttribute unitAttribute) throws Exception{
+		ActionResponse resp =  ThisApplication.context().applications()
+				.postQuery(x_organization_assemble_control.class, path, unitAttribute);
 		return resp.getMessage();
 	}
 	
