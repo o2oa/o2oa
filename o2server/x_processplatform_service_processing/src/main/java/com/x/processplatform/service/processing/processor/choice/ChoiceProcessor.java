@@ -34,7 +34,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
-
+//nothing
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
-
+//nothing
 	}
 
 	@Override
@@ -73,6 +73,6 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Choice choice) throws Exception {
-
+		// nothing
 	}
 }
