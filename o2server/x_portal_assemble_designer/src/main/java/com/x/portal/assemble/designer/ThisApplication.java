@@ -7,6 +7,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {

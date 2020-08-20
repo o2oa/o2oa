@@ -10,7 +10,11 @@ import com.x.organization.assemble.authentication.schedule.CleanupOauthCode;
 
 public class ThisApplication {
 
-	public static QueueLoginRecord queueLoginRecord;
+	private ThisApplication() {
+		// nothing
+	}
+
+	public static final QueueLoginRecord queueLoginRecord = new QueueLoginRecord();
 
 	protected static Context context;
 
@@ -22,7 +26,6 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_organization_assemble_authentication());
-			queueLoginRecord = new QueueLoginRecord();
 			context.startQueue(queueLoginRecord);
 			context.schedule(CleanupBind.class, "0 */15 * * * ?");
 			context.schedule(CleanupOauthCode.class, "0 */15 * * * ?");

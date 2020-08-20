@@ -8,13 +8,17 @@ import com.x.base.core.project.message.MessageConnector;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
-	public static ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
-	public static MappingExecuteQueue mappingExecuteQueue = new MappingExecuteQueue();
-	public static FormVersionQueue formVersionQueue = new FormVersionQueue();
-	public static ProcessVersionQueue processVersionQueue = new ProcessVersionQueue();
-	public static ScriptVersionQueue scriptVersionQueue = new ScriptVersionQueue();
+	public static final ProjectionExecuteQueue projectionExecuteQueue = new ProjectionExecuteQueue();
+	public static final MappingExecuteQueue mappingExecuteQueue = new MappingExecuteQueue();
+	public static final FormVersionQueue formVersionQueue = new FormVersionQueue();
+	public static final ProcessVersionQueue processVersionQueue = new ProcessVersionQueue();
+	public static final ScriptVersionQueue scriptVersionQueue = new ScriptVersionQueue();
 
 	public static Context context() {
 		return context;
@@ -25,11 +29,11 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_processplatform_assemble_designer());
 			MessageConnector.start(context());
-			projectionExecuteQueue.start();
-			mappingExecuteQueue.start();
-			formVersionQueue.start();
-			processVersionQueue.start();
-			scriptVersionQueue.start();
+			context().startQueue(projectionExecuteQueue);
+			context().startQueue(mappingExecuteQueue);
+			context().startQueue(formVersionQueue);
+			context().startQueue(processVersionQueue);
+			context().startQueue(scriptVersionQueue);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,11 +42,6 @@ public class ThisApplication {
 	public static void destroy() {
 		try {
 			CacheManager.shutdown();
-			projectionExecuteQueue.stop();
-			mappingExecuteQueue.stop();
-			formVersionQueue.stop();
-			processVersionQueue.stop();
-			scriptVersionQueue.stop();
 			MessageConnector.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
