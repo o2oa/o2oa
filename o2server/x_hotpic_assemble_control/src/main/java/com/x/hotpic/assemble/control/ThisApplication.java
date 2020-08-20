@@ -9,7 +9,11 @@ import com.x.hotpic.assemble.control.schedule.InfoExistsCheckTask;
 
 public class ThisApplication {
 
-	public static DocumentExistsCheckTask queueLoginRecord;
+	private ThisApplication() {
+		// nothing
+	}
+
+	public static final DocumentExistsCheckTask queueLoginRecord = new DocumentExistsCheckTask();
 	protected static Context context;
 
 	public static Context context() {
@@ -20,7 +24,6 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_hotpic_assemble_control());
-			queueLoginRecord = new DocumentExistsCheckTask();
 			context.startQueue(queueLoginRecord);
 			context.schedule(InfoExistsCheckTask.class, "0 0/10 * * * ?");
 		} catch (Exception e) {

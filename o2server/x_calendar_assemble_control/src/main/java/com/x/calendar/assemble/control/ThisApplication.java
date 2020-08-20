@@ -2,6 +2,8 @@ package com.x.calendar.assemble.control;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -16,6 +18,10 @@ import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
 
 public class ThisApplication {
+
+	private ThisApplication() {
+		// nothing
+	}
 
 	protected static Context context;
 	public static final String CalendarMANAGER = "CalendarManager";
@@ -73,7 +79,7 @@ public class ThisApplication {
 	 * @return
 	 */
 	public static Boolean isCalendarManager(EffectivePerson effectivePerson, Calendar calendar) {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		if (calendar != null) {
@@ -98,11 +104,11 @@ public class ThisApplication {
 	 */
 	public static Boolean isCalendarPublisher(EffectivePerson effectivePerson, List<String> unitNames,
 			List<String> groupNames, Calendar calendar) {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		if (calendar != null) {
-			if (isCalendarManager(effectivePerson, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarManager(effectivePerson, calendar))) {
 				return true;
 			}
 			// 判断发布权限
@@ -142,13 +148,13 @@ public class ThisApplication {
 	 * @throws Exception
 	 */
 	public static Boolean isCalendarPublisher(EffectivePerson effectivePerson, Calendar calendar) throws Exception {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		if (calendar != null) {
-			if (isCalendarManager(effectivePerson, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarManager(effectivePerson, calendar))) {
 				return true;
 			}
 			UserManagerService userManagerService = new UserManagerService();
@@ -192,7 +198,7 @@ public class ThisApplication {
 	 */
 	public static Boolean isEventManager(EffectivePerson effectivePerson, Calendar calendar, Calendar_Event event)
 			throws Exception {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		List<String> unitNames = null;
@@ -203,7 +209,7 @@ public class ThisApplication {
 			unitNames = userManagerService.listUnitNamesWithPerson(personName);
 			groupNames = userManagerService.listGroupNamesByPerson(personName);
 			// 判断日历的发布权限
-			if (isCalendarPublisher(effectivePerson, unitNames, groupNames, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarPublisher(effectivePerson, unitNames, groupNames, calendar))) {
 				return true;
 			}
 			// 判断事件的管理权限
