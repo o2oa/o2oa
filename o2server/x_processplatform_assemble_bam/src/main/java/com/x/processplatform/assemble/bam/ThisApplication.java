@@ -11,6 +11,10 @@ import com.x.processplatform.assemble.bam.schedule.StateTimer;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {

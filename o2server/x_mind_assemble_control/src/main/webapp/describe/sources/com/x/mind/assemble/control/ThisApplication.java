@@ -8,8 +8,13 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.mind.assemble.control.queue.QueueShareNotify;
 
 public class ThisApplication {
+
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
-	public static QueueShareNotify queueShareNotify;
+	public static final QueueShareNotify queueShareNotify = new QueueShareNotify();
 
 	public static Context context() {
 		return context;
@@ -19,7 +24,6 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_mind_assemble_control());
-			queueShareNotify = new QueueShareNotify();
 			MessageConnector.start(context());
 			context().startQueue(queueShareNotify);
 		} catch (Exception e) {
@@ -30,6 +34,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 			queueShareNotify.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
