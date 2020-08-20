@@ -20,13 +20,17 @@ import com.x.okr.assemble.control.service.OkrConfigSystemService;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Map<String, CacheImportFileStatus> importFileStatusMap = new HashMap<String, CacheImportFileStatus>();
 
 	public static final String OKRMANAGER = "OKRManager";
 
-	public static QueueWorkDynamicRecord queueWorkDynamicRecord;
+	public static final QueueWorkDynamicRecord queueWorkDynamicRecord = new QueueWorkDynamicRecord();
 
 	public static Context context() {
 		return context;
@@ -36,11 +40,8 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_okr_assemble_control());
-			queueWorkDynamicRecord = new QueueWorkDynamicRecord();
 			context().startQueue(queueWorkDynamicRecord);
-
 			new OkrConfigSystemService().initAllSystemConfig();
-
 			// 每天凌晨2点执行一次
 			context.schedule(St_WorkReportContent.class, "0 0 2 * * ?");
 			// 每天凌晨2点30执行一次
