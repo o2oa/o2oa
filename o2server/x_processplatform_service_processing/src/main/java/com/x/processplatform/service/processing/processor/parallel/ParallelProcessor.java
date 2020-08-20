@@ -71,9 +71,12 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 			Object objectValue = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
 					.eval(scriptContext);
-			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(objectValue))) == true) {
+			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
 				routes.add(o);
 			}
+//			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(objectValue))) == true) {
+//				routes.add(o);
+//			}
 		}
 
 		for (int i = 0; i < routes.size(); i++) {

@@ -111,7 +111,13 @@ public class ScriptFactory {
 	}
 
 	public static Boolean asBoolean(Object o) throws Exception {
-		return BooleanUtils.toBooleanObject(Objects.toString(o));
+		if (null == o) {
+			return false;
+		}
+		if (o instanceof Number) {
+			return ((Number) o).intValue() != 0;
+		}
+		return BooleanUtils.toBooleanObject(Objects.toString(o, "false"));
 	}
 
 	public static List<String> asDistinguishedName(Object o) throws Exception {
