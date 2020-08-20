@@ -41,7 +41,7 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
-
+//nothing
 	}
 
 	@Override
@@ -102,6 +102,7 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void executingCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+		//nothing
 	}
 
 	@Override
@@ -124,5 +125,6 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 
 	@Override
 	protected void inquiringCommitted(AeiObjects aeiObjects, Parallel parallel) throws Exception {
+		//nothing
 	}
 }
