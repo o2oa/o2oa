@@ -9,7 +9,11 @@ import com.x.file.assemble.control.jaxrs.file.FileRemoveQueue;
 
 public class ThisApplication {
 
-	public static FileRemoveQueue fileRemoveQueue;
+	private ThisApplication() {
+		// nothing
+	}
+
+	public static final FileRemoveQueue fileRemoveQueue = new FileRemoveQueue();
 
 	protected static Context context;
 
@@ -21,7 +25,6 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_file_assemble_control());
-			fileRemoveQueue = new FileRemoveQueue();
 			MessageConnector.start(context());
 			context().startQueue(fileRemoveQueue);
 		} catch (Exception e) {

@@ -8,6 +8,10 @@ import com.x.processplatform.assemble.surface.schedule.CleanKeyLock;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {

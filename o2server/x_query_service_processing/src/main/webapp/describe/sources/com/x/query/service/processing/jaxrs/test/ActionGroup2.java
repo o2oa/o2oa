@@ -1,6 +1,11 @@
 package com.x.query.service.processing.jaxrs.test;
 
+import java.util.ArrayList;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,7 +24,12 @@ class ActionGroup2 extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			ScriptEngine engine = ScriptFactory.newScriptEngine();
-			Object o = engine.eval("this.data && this.data.length");
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put("data", new ArrayList<>());
+			engine.setContext(scriptContext);
+			engine.eval("var o = this.data && this.data.length;");
+			Object o = engine.eval("o;");
 			System.out.println(o.getClass());
 			return result;
 		}

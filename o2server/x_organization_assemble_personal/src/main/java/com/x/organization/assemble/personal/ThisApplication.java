@@ -8,6 +8,10 @@ import com.x.organization.assemble.personal.schedule.DisableExpiredEmpower;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {

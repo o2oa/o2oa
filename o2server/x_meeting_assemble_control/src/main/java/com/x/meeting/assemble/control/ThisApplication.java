@@ -8,6 +8,10 @@ import com.x.base.core.project.message.MessageConnector;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {
