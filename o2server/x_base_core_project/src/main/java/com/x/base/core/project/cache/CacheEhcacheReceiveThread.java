@@ -30,9 +30,6 @@ public class CacheEhcacheReceiveThread extends Thread {
 		while (!isInterrupted()) {
 			try {
 				WrapClearCacheRequest wi = queue.take();
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				System.out.println(wi);
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				String keyValue = new CacheKey(wi.getKeys().toArray()).toString();
 				Stream.of(cacheManager.getCacheNames()).forEach(cacheName -> {
 					if (StringUtils.contains(cacheName, new CacheCategory(wi.getClassName()).toString())) {
