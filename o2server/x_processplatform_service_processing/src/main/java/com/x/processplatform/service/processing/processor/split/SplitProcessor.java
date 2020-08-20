@@ -33,6 +33,7 @@ public class SplitProcessor extends AbstractSplitProcessor {
 
 	@Override
 	protected void arrivingCommitted(AeiObjects aeiObjects, Split split) throws Exception {
+		// nothing
 	}
 
 	@Override
