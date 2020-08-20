@@ -56,10 +56,14 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		for (Route o : aeiObjects.getRoutes()) {
 			ScriptContext scriptContext = aeiObjects.scriptContext();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptFactory.BINDING_NAME_ROUTE, o);
-			Object obj = aeiObjects.business().element()
+			Object objectValue = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE)
 					.eval(scriptContext);
-			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(obj))) == true) {
+//			if (BooleanUtils.toBoolean(StringUtils.trimToNull(Objects.toString(obj))) == true) {
+//				results.add(o);
+//				break;
+//			}
+			if (BooleanUtils.isTrue(ScriptFactory.asBoolean(objectValue))) {
 				results.add(o);
 				break;
 			}

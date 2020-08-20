@@ -1,12 +1,11 @@
 package com.x.query.service.processing.jaxrs.test;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Root;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,8 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.query.core.entity.segment.Word;
-import com.x.query.core.entity.segment.Word_;
+import com.x.base.core.project.script.ScriptFactory;
 
 class ActionGroup2 extends BaseAction {
 
@@ -25,13 +23,14 @@ class ActionGroup2 extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			EntityManager em = emc.get(Word.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Object> cq = cb.createQuery(Object.class);
-			Root<Word> root = cq.from(Word.class);
-			Path<String> path = root.get(Word_.value);
-			cq.multiselect(cb.count(path), cb.count(path)).groupBy(path);
-			List<Object> os = em.createQuery(cq).getResultList();
+			ScriptEngine engine = ScriptFactory.newScriptEngine();
+			ScriptContext scriptContext = new SimpleScriptContext();
+			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.put("data", new ArrayList<>());
+			engine.setContext(scriptContext);
+			engine.eval("var o = this.data && this.data.length;");
+			Object o = engine.eval("o;");
+			System.out.println(o.getClass());
 			return result;
 		}
 	}
