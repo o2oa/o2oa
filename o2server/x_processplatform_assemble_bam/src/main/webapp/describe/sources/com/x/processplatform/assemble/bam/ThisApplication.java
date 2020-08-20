@@ -11,6 +11,10 @@ import com.x.processplatform.assemble.bam.schedule.StateTimer;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {
@@ -31,6 +35,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

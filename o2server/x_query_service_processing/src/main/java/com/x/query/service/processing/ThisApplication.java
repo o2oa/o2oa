@@ -12,6 +12,10 @@ import com.x.query.service.processing.schedule.CrawlWorkCompleted;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {

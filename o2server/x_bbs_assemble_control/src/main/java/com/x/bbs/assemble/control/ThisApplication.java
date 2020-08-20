@@ -2,6 +2,8 @@ package com.x.bbs.assemble.control;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
@@ -26,10 +28,14 @@ import com.x.bbs.entity.BBSSectionInfo;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 	public static final String BBSMANAGER = "BBSManager@CMSManagerSystemRole@R";
-	public static QueueNewReplyNotify queueNewReplyNotify;
-	public static QueueNewSubjectNotify queueNewSubjectNotify;
+	public static final QueueNewReplyNotify queueNewReplyNotify = new QueueNewReplyNotify();
+	public static final QueueNewSubjectNotify queueNewSubjectNotify = new QueueNewSubjectNotify();
 	public static String CONFIG_BBS_ANONYMOUS_PERMISSION = "YES";
 
 	public static Context context() {
@@ -43,11 +49,7 @@ public class ThisApplication {
 			CONFIG_BBS_ANONYMOUS_PERMISSION = (new BBSConfigSettingService())
 					.getValueWithConfigCode("BBS_ANONYMOUS_PERMISSION");
 			initAllSystemConfig();
-			queueNewReplyNotify = new QueueNewReplyNotify();
-			queueNewSubjectNotify = new QueueNewSubjectNotify();
-
 			MessageConnector.start(context());
-
 			context().startQueue(queueNewReplyNotify);
 			context().startQueue(queueNewSubjectNotify);
 			context.schedule(SubjectTotalStatisticTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
@@ -144,7 +146,7 @@ public class ThisApplication {
 	 * @return
 	 */
 	public static Boolean isForumManager(EffectivePerson effectivePerson, BBSForumInfo forumInfo) {
-		if (isBBSManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isBBSManager(effectivePerson))) {
 			return true;
 		}
 		if (forumInfo != null && ListTools.isNotEmpty(forumInfo.getForumManagerList())) {

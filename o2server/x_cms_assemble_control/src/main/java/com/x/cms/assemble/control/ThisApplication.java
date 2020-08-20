@@ -1,6 +1,7 @@
 package com.x.cms.assemble.control;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
@@ -22,17 +23,27 @@ import com.x.cms.assemble.control.timertask.Timertask_RefreshAllDocumentReviews;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static final String ROLE_CMSManager = "CMSManager@CMSManagerSystemRole@R";
 	public static final String ROLE_Manager = "Manager@ManagerSystemRole@R";
-	public static QueueDataRowImport queueDataRowImport;
-	public static QueueDocumentDelete queueDocumentDelete;
-	public static QueueDocumentUpdate queueDocumentUpdate;
-	public static QueueDocumentViewCountUpdate queueDocumentViewCountUpdate;
-	public static QueueBatchOperation queueBatchOperation;
-	public static QueueSendDocumentNotify queueSendDocumentNotify;
-	private static ConcurrentHashMap<String, DataImportStatus> importStatus = new ConcurrentHashMap<>();
+	// 文档批量导入时数据存储过程
+	public static final QueueDataRowImport queueDataRowImport = new QueueDataRowImport();
+	// Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
+	public static final QueueDocumentDelete queueDocumentDelete = new QueueDocumentDelete();
+	// Document变更标题时也需要更新一下热点图片里的数据
+	public static final QueueDocumentUpdate queueDocumentUpdate = new QueueDocumentUpdate();
+	// Document被访问时，需要将总的访问量更新到item的document中，便于视图使用，在队列里异步修改
+	public static final QueueDocumentViewCountUpdate queueDocumentViewCountUpdate = new QueueDocumentViewCountUpdate();
+	// 执行数据库中的批处理操作
+	public static final QueueBatchOperation queueBatchOperation = new QueueBatchOperation();
+	// Document发布时，向所有阅读者推送通知
+	public static final QueueSendDocumentNotify queueSendDocumentNotify = new QueueSendDocumentNotify();
+	private static final ConcurrentHashMap<String, DataImportStatus> importStatus = new ConcurrentHashMap<>();
 
 	public static Context context() {
 		return context;
@@ -41,21 +52,7 @@ public class ThisApplication {
 	public static void init() throws Exception {
 		CacheManager.init(context.clazz().getSimpleName());
 		LoggerFactory.setLevel(Config.logLevel().x_cms_assemble_control());
-		// 执行数据库中的批处理操作
-		queueBatchOperation = new QueueBatchOperation();
-		// Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
-		queueDocumentDelete = new QueueDocumentDelete();
-		// 文档批量导入时数据存储过程
-		queueDataRowImport = new QueueDataRowImport();
-		// Document变更标题时也需要更新一下热点图片里的数据
-		queueDocumentUpdate = new QueueDocumentUpdate();
-		// Document被访问时，需要将总的访问量更新到item的document中，便于视图使用，在队列里异步修改
-		queueDocumentViewCountUpdate = new QueueDocumentViewCountUpdate();
-		// Document发布时，向所有阅读者推送通知
-		queueSendDocumentNotify = new QueueSendDocumentNotify();
-
 		MessageConnector.start(context());
-
 		context().startQueue(queueBatchOperation);
 		context().startQueue(queueDocumentDelete);
 		context().startQueue(queueDataRowImport);
@@ -77,18 +74,12 @@ public class ThisApplication {
 	public static void destroy() {
 		try {
 			CacheManager.shutdown();
-			queueBatchOperation.stop();
-			queueDocumentDelete.stop();
-			queueDataRowImport.stop();
-			queueDocumentUpdate.stop();
-			queueDocumentViewCountUpdate.stop();
-			queueSendDocumentNotify.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static ConcurrentHashMap<String, DataImportStatus> listImportStatus() {
+	public static ConcurrentMap<String, DataImportStatus> listImportStatus() {
 		return importStatus;
 	}
 

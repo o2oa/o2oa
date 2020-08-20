@@ -21,13 +21,17 @@ import org.apache.commons.lang3.BooleanUtils;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
-	public static SyncJaxrsInvokeQueue syncJaxrsInvokeQueue = new SyncJaxrsInvokeQueue();
+	public static final SyncJaxrsInvokeQueue syncJaxrsInvokeQueue = new SyncJaxrsInvokeQueue();
 
-	public static SyncJaxwsInvokeQueue syncJaxwsInvokeQueue = new SyncJaxwsInvokeQueue();
+	public static final SyncJaxwsInvokeQueue syncJaxwsInvokeQueue = new SyncJaxwsInvokeQueue();
 
-	public static SyncEmbedQueue syncEmbedQueue = new SyncEmbedQueue();
+	public static final SyncEmbedQueue syncEmbedQueue = new SyncEmbedQueue();
 
 	public static Context context() {
 		return context;

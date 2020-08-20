@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.internal.LinkedTreeMap;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -28,23 +30,27 @@ import com.x.program.center.schedule.ZhengwuDingdingSyncOrganizationTrigger;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Context context() {
 		return context;
 	}
 
-	public static CenterQueue centerQueue = new CenterQueue();
+	public static final CenterQueue centerQueue = new CenterQueue();
 
-	public static LogQueue logQueue = new LogQueue();
+	public static final LogQueue logQueue = new LogQueue();
 
-	public static List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
+	public static final List<Object> dingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
-	public static List<Object> weLinkSyncOrganizationCallbackRequest = new ArrayList<>();
+	public static final List<Object> weLinkSyncOrganizationCallbackRequest = new ArrayList<>();
 
-	public static List<Object> zhengwuDingdingSyncOrganizationCallbackRequest = new ArrayList<>();
+	public static final List<Object> zhengwuDingdingSyncOrganizationCallbackRequest = new ArrayList<>();
 
-	public static List<Object> qiyeweixinSyncOrganizationCallbackRequest = new ArrayList<>();
+	public static final List<Object> qiyeweixinSyncOrganizationCallbackRequest = new ArrayList<>();
 
 	public static Map<String, Map<String, LinkedTreeMap>> metricsReportMap = new ConcurrentHashMap<>();
 
@@ -56,7 +62,7 @@ public class ThisApplication {
 			context().startQueue(logQueue);
 
 			/* 政务钉钉拉入同步 */
-			if (Config.zhengwuDingding().getEnable()) {
+			if (BooleanUtils.isNotTrue(Config.zhengwuDingding().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(ZhengwuDingdingSyncOrganization.class, Config.zhengwuDingding().getSyncCron());
 				/* 添加一个强制同步任务 */
@@ -64,7 +70,7 @@ public class ThisApplication {
 						Config.zhengwuDingding().getForceSyncCron());
 			}
 			/* 企业微信拉入同步 */
-			if (Config.qiyeweixin().getEnable()) {
+			if (BooleanUtils.isNotTrue(Config.qiyeweixin().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(QiyeweixinSyncOrganization.class, Config.qiyeweixin().getSyncCron());
 				/* 添加一个强制同步任务 */
@@ -72,14 +78,14 @@ public class ThisApplication {
 						Config.qiyeweixin().getForceSyncCron());
 			}
 			/* 钉钉同步 */
-			if (Config.dingding().getEnable()) {
+			if (BooleanUtils.isNotTrue(Config.dingding().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(DingdingSyncOrganization.class, Config.dingding().getSyncCron());
 				/* 添加一个强制同步任务 */
 				context().scheduleLocal(DingdingSyncOrganizationTrigger.class, Config.dingding().getForceSyncCron());
 			}
 			/* WeLink同步 */
-			if (Config.weLink().getEnable()) {
+			if (BooleanUtils.isNotTrue(Config.weLink().getEnable())) {
 				/* 启动同步任务 */
 				context().scheduleLocal(WeLinkSyncOrganization.class, Config.weLink().getSyncCron());
 				/* 添加一个强制同步任务 */
