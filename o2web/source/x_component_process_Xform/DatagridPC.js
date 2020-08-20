@@ -930,9 +930,14 @@ MWF.xApplication.process.Xform.DatagridPC = new Class({
 			var json = this.form._getDomjson(td);
 			td.store("dataGrid", this);
 			if (json){
+				var isField = false;
 				var module = this.form._loadModule(json, td, function(){
+					isField = this.field;
 					this.field = false;
 				});
+				if( isField ){
+					module.node.setStyle("padding-right","0px");
+				}
 				td.store("module", module);
 				this.form.modules.push(module);
 			}
@@ -1229,9 +1234,15 @@ MWF.xApplication.process.Xform.DatagridPC$Data =  new Class({
 			var moduleNodes = this.form._getModuleNodes(this.node);
 			moduleNodes.each(function(node){
 				var json = this.form._getDomjson(node);
+				var isField = false;
 				var module = this.form._loadModule(json, node, function(){
+					debugger;
+					isField = this.field;
 					this.field = false;
 				});
+				if( isField ){
+					module.node.setStyle("padding-right","0px");
+				}
 				module.dataModule = this;
 				this.dataGrid.editModules.push(module);
 			}.bind(this));
