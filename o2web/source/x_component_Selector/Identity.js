@@ -484,7 +484,7 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }
         var keys = Object.keys( object );
         if( keys.length > 0 ){
-            o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({"identityList":keys}, function (json) {
+            o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({"personList":keys}, function (json) {
                 json.data.each( function ( p ){
                     if(object[ p.id ])object[ p.id ].data.woPerson = p;
                 }.bind(this));
