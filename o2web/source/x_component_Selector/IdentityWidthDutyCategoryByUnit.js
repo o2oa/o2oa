@@ -321,8 +321,8 @@ MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit = new Class({
         //    if (callback) callback.apply(this, [json]);
         //}.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected(data, selector, item)
+    _newItemSelected: function(data, selector, item, selectedNode){
+        return new MWF.xApplication.Selector.IdentityWidthDutyCategoryByUnit.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
         if (this.options.units.length) key = {"key": key, "unitList": this.options.units};
