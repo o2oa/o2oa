@@ -207,8 +207,8 @@ MWF.xApplication.Selector.Identity = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item)
+    _newItemSelected: function(data, selector, item, selectedNode){
+        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
         this._listItem( "pinyin", callback, failure, key );
@@ -456,6 +456,43 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
     _setIcon: function(){
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
+    },
+    _beforeSelectAll : function( _selectAllFun ){
+        if( this.selector.options.ignorePerson ){
+            _selectAllFun();
+            return;
+        }
+        //批量获取个人
+        var object = {};
+        if( this.selector.options.resultType === "person" ){
+            this.subItems.each( function(item){
+                var isPerson = false;
+                if( item.data && item.data.distinguishedName ){
+                    var dn = item.data.distinguishedName;
+                    if( dn.substr(dn.length-1, 1).toLowerCase() === "p" )isPerson = true;
+                }
+                if( !isPerson && !item.data.woPerson && item.data.person ){
+                    object[ item.data.person ] = item;
+                }
+            }.bind(this))
+        }else{
+            this.subItems.each( function (item) {
+                if (!item.data.woPerson && item.data.person ){
+                    object[ item.data.person ] = item;
+                }
+            }.bind(this))
+        }
+        var keys = Object.keys( object );
+        if( keys.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({"identityList":keys}, function (json) {
+                json.data.each( function ( p ){
+                    if(object[ p.id ])object[ p.id ].data.woPerson = p;
+                }.bind(this));
+                _selectAllFun();
+            })
+        }else{
+            _selectAllFun();
+        }
     },
     clickItem: function( callback ){
         if (this._hasChild()){
