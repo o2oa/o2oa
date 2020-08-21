@@ -43,6 +43,7 @@ class BaseAction extends StandardJaxrsAction {
 	protected <T extends com.x.base.core.project.organization.Person> T convert(Business business, Person person,
 			Class<T> clz) throws Exception {
 		T t = clz.newInstance();
+		t.setId(person.getId());
 		t.setName(person.getName());
 		t.setGenderType(person.getGenderType());
 		t.setSignature(person.getSignature());
