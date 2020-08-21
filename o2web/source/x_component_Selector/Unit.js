@@ -173,8 +173,8 @@ MWF.xApplication.Selector.Unit = new Class({
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
 
-    _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.Unit.ItemSelected(data, selector, item)
+    _newItemSelected: function(data, selector, item, selectedNode){
+        return new MWF.xApplication.Selector.Unit.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
         if (this.options.units.length){
@@ -336,7 +336,12 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                         this.selector.fireEvent("unselectCatgory",[this])
                     }else{
                         // this.selectAll(ev);
-                        this.selector.options.selectAllRange === "all" ? this.selectAllNested(ev, true) : this.selectAll(ev ,true);
+                        if( this.selector.options.selectAllRange === "all" ){
+                            var node = new Element("div.categorySelectedNode").inject( this.selector.selectedNode );
+                            this.selectAllNested(ev, true, node)
+                        }else{
+                            this.selectAll(ev ,true)
+                        }
                         this.selector.fireEvent("selectCatgory",[this])
                     }
                     ev.stopPropagation();
@@ -392,58 +397,74 @@ MWF.xApplication.Selector.Unit.Item = new Class({
             })
         }
     },
-    selectAllNested : function(ev, checkValid){
-        this.selectAll(ev, checkValid);
+    selectAllNested : function(ev, checkValid, selectedNode){
+        var node;
+        if( selectedNode )node = new Element("div.categorySelectedNode").inject( selectedNode );
+        this.selectAll(ev, checkValid, node);
         if( this.subCategorys && this.subCategorys.length ){
             this.subCategorys.each( function( category ){
-                if(category.selectAllNested)category.selectAllNested, checkValid()
+                if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
+                if(category.selectAllNested)category.selectAllNested(ev, checkValid, node)
             })
         }
         if( this.subItems && this.subItems.length ){
             this.subItems.each( function( item ){
-                if(item.selectAllNested)item.selectAllNested(ev, checkValid)
+                if(selectedNode)var node = new Element("div.categorySelectedNode").inject( selectedNode );
+                if(item.selectAllNested)item.selectAllNested(ev, checkValid, node)
             })
         }
     },
-    selectAll: function(ev, checkValid){
+    selectAll: function(ev, checkValid, selectedNode){
         if( this.loaded || this.selector.isFlatCategory ){
-            this._selectAll( ev, checkValid )
+            this._selectAll( ev, checkValid, selectedNode )
         }else{
             this.loadSubItems(function(){
-                this._selectAll( ev, checkValid )
+                this._selectAll( ev, checkValid, selectedNode )
             }.bind(this));
             this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
             this.isExpand = true;
         }
     },
-    _selectAll : function( ev, checkValid ){
+    _selectAll : function( ev, checkValid, selectedNode ){
         if( !this.subItems || !this.subItems.length )return;
         var count = this.selector.options.maxCount || this.selector.options.count;
         if (!count) count = 0;
         var selectedSubItemCount = 0;
+
         this.subItems.each( function(item){
             if(item.isSelected)selectedSubItemCount++
         }.bind(this));
-        if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
-            var checkedCount = 0;
-            this.subItems.each( function(item){
-                if(!item.isSelected && !item.disabled )item.selected(false, function () {
-                    checkedCount++;
-                    if( this.subItems.length === checkedCount ){
-                        if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
-                    }
-                }.bind(this));
-            }.bind(this));
 
-            if( this.selectAllNode ){
-                if( this.selector.isFlatCategory ){
-                    this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll_selected );
-                }else if(this.selector.css.selectorItemCategoryActionNode_selectAll_selected){
-                    this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+        if ((count.toInt()===0) || (this.selector.selectedItems.length+(this.subItems.length-selectedSubItemCount))<=count){
+
+            var doSelectAll = function () {
+                var checkedCount = 0;
+                this.subItems.each( function(item){
+                    if(!item.isSelected && !item.disabled )item.selected(false, function () {
+                        checkedCount++;
+                        if( this.subItems.length === checkedCount ){
+                            if( checkValid )this.selector.fireEvent("valid", [this.selector, this]);
+                        }
+                    }.bind(this), selectedNode);
+                }.bind(this));
+
+                if( this.selectAllNode ){
+                    if( this.selector.isFlatCategory ){
+                        this.selectAllNode.setStyles( this.selector.css.flatCategory_selectAll_selected );
+                    }else if(this.selector.css.selectorItemCategoryActionNode_selectAll_selected){
+                        this.selectAllNode.setStyles( this.selector.css.selectorItemCategoryActionNode_selectAll_selected );
+                    }
                 }
+
+                this.isSelectedAll = true;
+            }.bind(this);
+
+            if( this._beforeSelectAll ){
+                this._beforeSelectAll( doSelectAll );
+            }else{
+                doSelectAll();
             }
 
-            this.isSelectedAll = true;
         }else{
             MWF.xDesktop.notice("error", {x: "right", y:"top"}, "最多可选择"+count+"个选项", this.node);
         }
