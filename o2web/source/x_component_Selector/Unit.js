@@ -510,7 +510,8 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         }
     },
     loadSubItems: function( callback ){
-        if (!this.loaded){
+        if (!this.loaded && !this.loading){
+            this.loading = true;
             if (!this.children){
                 this.children = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryChildrenNode
@@ -529,6 +530,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
                     }
                 }.bind(this));
                 this.loaded = true;
+                this.loading = false;
                 if(callback)callback();
             }.bind(this), null, this.data.distinguishedName);
         }else{
@@ -734,7 +736,8 @@ MWF.xApplication.Selector.Unit.SearchItem = new Class({
     },
     loadSubItems: function( callback ){
         //只是为了在isFlatCategory模式下，加载全称用的，否则用继承的就可以
-        if (!this.loaded){
+        if (!this.loaded && !this.loading){
+            this.loading = true;
             if (!this.children){
                 this.children = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryChildrenNode
@@ -760,6 +763,7 @@ MWF.xApplication.Selector.Unit.SearchItem = new Class({
                     }
                 }.bind(this));
                 this.loaded = true;
+                this.loading = false;
                 if(callback)callback();
             }.bind(this), null, this.data.distinguishedName);
         }else{
