@@ -437,6 +437,7 @@ MWF.xApplication.cms.Xform.Readerfield = MWF.CMSReaderfield =  new Class({
             } else {
                 var node = this.node.getFirst();
                 if (node) {
+                    node.empty();
                     comboxValues.each(function (v, i) {
                         this.creteShowNode(v, (i === comboxValues.length - 1)).inject(node);
                     }.bind(this));

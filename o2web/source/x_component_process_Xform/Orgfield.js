@@ -450,6 +450,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
             }else{
                 var node = this.node.getFirst();
                 if (node){
+                    node.empty();
                     comboxValues.each(function(v, i){
                         this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
                     }.bind(this));
