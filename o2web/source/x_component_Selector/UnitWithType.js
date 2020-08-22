@@ -183,7 +183,8 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
         }
     },
     loadSubItems: function(callback){
-        if (!this.loaded){
+        if (!this.loaded && !this.loading){
+            this.loading = true;
             if (!this.children){
                 this.children = new Element("div", {
                     "styles": this.selector.css.selectorItemCategoryChildrenNode
@@ -207,6 +208,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
                 if(callback)callback()
             }.bind(this));
             this.loaded = true;
+            this.loading = false;
         }else{
             this.children.setStyle("display", "block");
         }
