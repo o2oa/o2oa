@@ -234,7 +234,7 @@ MWF.xApplication.Setting.LP = {
     "pleaseInput": "请输入",
     "list": {
         "client": "SSO名称",
-        "key": "密钥",
+        "key": "密钥(最少8位)",
         "clientId": "客户号(ClientId)",
         "mapping": "映射 (Mapping)",
         "corpId": "corpId",
