@@ -775,6 +775,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }else{
                 var node = this.node.getFirst();
                 if (node){
+                    node.empty();
                     comboxValues.each(function(v, i){
                         this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
                     }.bind(this));
@@ -900,6 +901,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }else{
                 var node = this.node.getFirst();
                 if (node){
+                    node.empty();
                     comboxValues.each(function(v, i){
                         this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
                     }.bind(this));
