@@ -495,9 +495,11 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         }
     },
     clickItem: function( callback ){
-        if (this._hasChild()){
+        if (this._hasChild() && !this.loading){
             var firstLoaded = !this.loaded;
+            this.loading = true;
             this.loadSub(function(){
+                this.loading = false;
                 if( firstLoaded ){
                     if( !this.selector.isFlatCategory ){
                         this.children.setStyles({"display": "block", "height": "auto"});
