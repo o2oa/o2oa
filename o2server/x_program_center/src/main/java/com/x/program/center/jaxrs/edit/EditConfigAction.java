@@ -44,7 +44,7 @@ public class EditConfigAction<Wo> extends StandardJaxrsAction{
 	}
 	
 	@JaxrsMethodDescribe(value = "打开config文件", action = ActionOpen.class)
-	@GET
+	@POST
 	@Path("open")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
