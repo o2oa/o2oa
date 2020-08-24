@@ -1,28 +1,25 @@
 package com.x.program.center.jaxrs.edit;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileFilter;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -31,7 +28,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.program.center.jaxrs.command.ActionCommand.Wo;
 
 public class ActionList extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionList.class);
@@ -43,9 +39,29 @@ public class ActionList extends BaseAction {
 		if(manifestFile.exists()) {
 			if(manifestFile.isFile()) {
 				String json = FileUtils.readFileToString(manifestFile, DefaultCharset.charset);
-				wo.setConfig(json);
+				
+				FileFilter fileFilter = new WildcardFileFilter("node_*.json");
+				File[] files = Config.dir_config().listFiles(fileFilter);
+				if (null != files && files.length > 0) {
+					String  strNode = "";
+					JsonParser parser = new JsonParser();
+					JsonObject jsonObj = parser.parse(json).getAsJsonObject();
+					jsonObj.remove("node_127.0.0.1.json");
+					
+					for (File o : files) {
+						String name = StringUtils.substringBetween(o.getName(), "node_", ".json");
+						jsonObj.addProperty(o.getName().toString(), name+ "应用节点配置" );
+					}
+					   wo.setConfig(jsonObj.toString());
+				} else {
+					   wo.setConfig(json);
+				}
+				
+				
 			}
 		}
+		
+		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		wo.setTime(df.format(new Date()));
 		wo.setStatus("success");
@@ -83,31 +99,7 @@ public class ActionList extends BaseAction {
 	}
    
 	public static class Wi  extends GsonPropertyObject{
-		@FieldDescribe("命令名称")
-		private String ctl;
-		@FieldDescribe("服务器地址(*代表多台应用服务器)")
-		private String nodeName;
-		@FieldDescribe("服务端口")
-		private String nodePort;
 		
-		public String getCtl() {
-			return ctl;
-		}
-		public void setCtl(String ctl) {
-			this.ctl = ctl;
-		}
-		public String getNodeName() {
-			return nodeName;
-		}
-		public void setNodeName(String nodeName) {
-			this.nodeName = nodeName;
-		}
-		public String getNodePort() {
-			return nodePort;
-		}
-		public void setNodePort(String nodePort) {
-			this.nodePort = nodePort;
-		}
 	}
 	
 	public static class Wo extends GsonPropertyObject {
