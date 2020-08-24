@@ -2,7 +2,9 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
@@ -13,8 +15,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -23,12 +23,11 @@ import org.imgscalr.Scalr;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 class ActionDownloadImageWidthHeight extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger( ActionDownloadImageWidthHeight.class );
-
-	private Ehcache cache = ApplicationCache.instance().getCache(ActionDownloadImageWidthHeight.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, Integer width, Integer height)
 			throws Exception {
@@ -54,10 +53,11 @@ class ActionDownloadImageWidthHeight extends BaseAction {
 				throw new ExceptionAttachmentNotExist(id,attachment.getOriginFile());
 			}
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), id+width+height);
-			Element element = cache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheCategory cacheCategory = new CacheCategory(Attachment2.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), id+width+height);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 				result.setData(wo);
 			} else {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
@@ -81,7 +81,7 @@ class ActionDownloadImageWidthHeight extends BaseAction {
 							wo = new Wo(bs, this.contentType(false, attachment.getName()),
 									this.contentDisposition(false, attachment.getName()));
 
-							cache.put(new Element(cacheKey, wo));
+							CacheManager.put(cacheCategory, cacheKey, wo);
 							result.setData(wo);
 						}
 					}
