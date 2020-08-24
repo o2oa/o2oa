@@ -52,8 +52,8 @@ task printVersionName {
 
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     sourceSets {
         main {
             jniLibs.srcDir 'libs'
@@ -82,7 +82,7 @@ android {
     defaultConfig {
         applicationId "net.zoneland.x.bpm.mobile.v1.zoneXBPM"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode project.property("o2.versionCode").toInteger()
         versionName project.property("o2.versionName").toString()
         multiDexEnabled true
@@ -260,7 +260,6 @@ dependencies {
 
     //im
 //    implementation 'com.michaelpardo:activeandroid:3.1.0'
-////    implementation files('libs/activeandroid-3.1.0-SNAPSHOT.jar')
 //    implementation 'com.jakewharton:butterknife:8.4.0'
 //    kapt 'com.jakewharton:butterknife-compiler:8.4.0'
 //    implementation 'com.github.chrisbanes.photoview:library:1.2.4'
