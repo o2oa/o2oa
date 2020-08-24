@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.module;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -17,6 +18,9 @@ import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -31,8 +35,6 @@ import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
 import com.x.query.core.entity.wrap.WrapQuery;
 
-import net.sf.ehcache.Element;
-
 public class ActionWrite extends BaseAction {
 	
 	private static Logger logger = LoggerFactory.getLogger(ActionWrite.class);
@@ -42,11 +44,13 @@ public class ActionWrite extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wo wo = new Wo();
 			ActionResult<Wo> result = new ActionResult<>();
-			Element element = cache.get(flag);
-			if (null == element || null == element.getObjectValue()) {
+			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+			CacheKey cacheKey = new CacheKey(flag);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (!optional.isPresent()) {
 				throw new ExceptionFlagNotExist(flag);
 			}
-			CacheObject cacheObject = (CacheObject) element.getObjectValue();
+			CacheObject cacheObject = (CacheObject) optional.get();
 			WrapModule module = cacheObject.getModule();
 			List<WrapPair> replaces = new ArrayList<>();
 			for (WiCommand cmd : wi.getProcessPlatformList()) {
