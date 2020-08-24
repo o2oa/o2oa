@@ -27,7 +27,11 @@ public class DiskLruCacheHelper {
         try {
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                     || !Environment.isExternalStorageRemovable()) {
-                mCache = DiskLruCache.open(context.getExternalCacheDir(), appVersion, 1, maxSize);
+                if (context.getExternalCacheDir() !=null ) {
+                    mCache = DiskLruCache.open(context.getExternalCacheDir(), appVersion, 1, maxSize);
+                }else {
+                    mCache = DiskLruCache.open(context.getCacheDir(), appVersion, 1, maxSize);
+                }
             } else {
                 mCache = DiskLruCache.open(context.getCacheDir(), appVersion, 1, maxSize);
             }

@@ -390,6 +390,8 @@
 
         <activity android:name=".app.tbs.FileReaderActivity" />
         <activity android:name=".flutter.FlutterConnectActivity" />
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 
 </manifest>

@@ -176,12 +176,7 @@
 -keep class com.afollestad.materialdialogs.** { *; }
 #日历控件 github > material-calendarview
 -keep class com.prolificinteractive.** { *; }
-#pgy
--dontwarn com.pgyersdk.**
--keep class com.pgyersdk.** { *; }
-#umeng
--keep class com.umeng.analytics.** { *; }
--dontwarn com.umeng.analytics.**
+
 #log4j
 -keep class org.apache.log4j.** { *; }
 -dontwarn org.apache.log4j.**
@@ -563,3 +558,6 @@
 -keep class io.flutter.view.**  { *; }
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
+
+
+-keep class net.sourceforge.pinyin4j.** { *; }
