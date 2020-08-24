@@ -146,6 +146,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 						}
 						SortTools.asc(wos, "categorySeq");
 						CacheManager.put(cacheCategory, cacheKey, wos);
+						result.setData(wos);
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionCategoryInfoProcess(e, "将查询出来的分类信息对象转换为可输出的数据信息时发生异常。");
@@ -155,7 +156,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 				}
 			}
 		}
-		result.setData(wos);
+
 		return result;
 	}
 	

@@ -512,11 +512,16 @@ public class DocumentQueryService {
 	private List<Document> listDocumentsWithReview( List<Review> reviewList ) throws Exception {
 		List<String> docIds = new ArrayList<>();
 		if( ListTools.isNotEmpty( reviewList )) {
-			for( Review review : reviewList ) {
-				docIds.add( review.getDocId() );
+			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+				for( Review review : reviewList ) {
+					docIds.add( review.getDocId() );
+				}
+				return emc.list( Document.class, true, docIds );
+			} catch ( Exception e ) {
+				throw e;
 			}
 		}
-		return list( docIds );
+		return null;
 	}
 
 	/**
