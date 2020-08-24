@@ -1,6 +1,6 @@
 package com.x.program.center.jaxrs.jest;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.cms.core.entity.AppInfo;
@@ -34,76 +34,76 @@ class ActionClearCache extends BaseAction {
 			wo.setValue(false);
 		}else if("all".equalsIgnoreCase(source)){
 			//cms
-			ApplicationCache.notify(CategoryInfo.class);
-			ApplicationCache.notify(AppDictItem.class);
-			ApplicationCache.notify(AppDict.class);
-			ApplicationCache.notify(Form.class);
-			ApplicationCache.notify(Script.class);
-			ApplicationCache.notify(AppInfo.class);
+			CacheManager.notify(CategoryInfo.class);
+			CacheManager.notify(AppDictItem.class);
+			CacheManager.notify(AppDict.class);
+			CacheManager.notify(Form.class);
+			CacheManager.notify(Script.class);
+			CacheManager.notify(AppInfo.class);
 			//portal
-			ApplicationCache.notify(com.x.portal.core.entity.Script.class);
-			ApplicationCache.notify(Page.class);
-			ApplicationCache.notify(Widget.class);
-			ApplicationCache.notify(Portal.class);
+			CacheManager.notify(com.x.portal.core.entity.Script.class);
+			CacheManager.notify(Page.class);
+			CacheManager.notify(Widget.class);
+			CacheManager.notify(Portal.class);
 			//query
-			ApplicationCache.notify(Reveal.class);
-			ApplicationCache.notify(Stat.class);
-			ApplicationCache.notify(View.class);
-			ApplicationCache.notify(Table.class);
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Reveal.class);
+			CacheManager.notify(Stat.class);
+			CacheManager.notify(View.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 			//process
-			ApplicationCache.notify(ApplicationDictItem.class);
-			ApplicationCache.notify(ApplicationDict.class);
-			ApplicationCache.notify(FormField.class);
-			ApplicationCache.notify(com.x.processplatform.core.entity.element.Form.class);
-			ApplicationCache.notify(com.x.processplatform.core.entity.element.Script.class);
-			ApplicationCache.notify(Process.class);
-			ApplicationCache.notify(Application.class);
+			CacheManager.notify(ApplicationDictItem.class);
+			CacheManager.notify(ApplicationDict.class);
+			CacheManager.notify(FormField.class);
+			CacheManager.notify(com.x.processplatform.core.entity.element.Form.class);
+			CacheManager.notify(com.x.processplatform.core.entity.element.Script.class);
+			CacheManager.notify(Process.class);
+			CacheManager.notify(Application.class);
 			//agent
-			ApplicationCache.notify(Agent.class);
+			CacheManager.notify(Agent.class);
 			//invoke
-			ApplicationCache.notify(Invoke.class);
+			CacheManager.notify(Invoke.class);
 			wo.setValue(true);
 		}else if("cms".equalsIgnoreCase(source)){
-			ApplicationCache.notify(CategoryInfo.class);
-			ApplicationCache.notify(AppDictItem.class);
-			ApplicationCache.notify(AppDict.class);
-			ApplicationCache.notify(Form.class);
-			ApplicationCache.notify(Script.class);
-			ApplicationCache.notify(AppInfo.class);
+			CacheManager.notify(CategoryInfo.class);
+			CacheManager.notify(AppDictItem.class);
+			CacheManager.notify(AppDict.class);
+			CacheManager.notify(Form.class);
+			CacheManager.notify(Script.class);
+			CacheManager.notify(AppInfo.class);
 
 			wo.setValue(true);
 		}else if("portal".equalsIgnoreCase(source)){
-			ApplicationCache.notify(com.x.portal.core.entity.Script.class);
-			ApplicationCache.notify(Page.class);
-			ApplicationCache.notify(Widget.class);
-			ApplicationCache.notify(Portal.class);
+			CacheManager.notify(com.x.portal.core.entity.Script.class);
+			CacheManager.notify(Page.class);
+			CacheManager.notify(Widget.class);
+			CacheManager.notify(Portal.class);
 
 			wo.setValue(true);
 		}else if("query".equalsIgnoreCase(source)){
-			ApplicationCache.notify(Reveal.class);
-			ApplicationCache.notify(Stat.class);
-			ApplicationCache.notify(View.class);
-			ApplicationCache.notify(Table.class);
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Reveal.class);
+			CacheManager.notify(Stat.class);
+			CacheManager.notify(View.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 
 			wo.setValue(true);
 		}else if("process".equalsIgnoreCase(source)){
-			ApplicationCache.notify(ApplicationDictItem.class);
-			ApplicationCache.notify(ApplicationDict.class);
-			ApplicationCache.notify(FormField.class);
-			ApplicationCache.notify(com.x.processplatform.core.entity.element.Form.class);
-			ApplicationCache.notify(com.x.processplatform.core.entity.element.Script.class);
-			ApplicationCache.notify(Process.class);
-			ApplicationCache.notify(Application.class);
+			CacheManager.notify(ApplicationDictItem.class);
+			CacheManager.notify(ApplicationDict.class);
+			CacheManager.notify(FormField.class);
+			CacheManager.notify(com.x.processplatform.core.entity.element.Form.class);
+			CacheManager.notify(com.x.processplatform.core.entity.element.Script.class);
+			CacheManager.notify(Process.class);
+			CacheManager.notify(Application.class);
 
 			wo.setValue(true);
 		}else if("agent".equalsIgnoreCase(source)){
-			ApplicationCache.notify(Agent.class);
+			CacheManager.notify(Agent.class);
 
 			wo.setValue(true);
 		}else if("invoke".equalsIgnoreCase(source)){
-			ApplicationCache.notify(Invoke.class);
+			CacheManager.notify(Invoke.class);
 
 			wo.setValue(true);
 		}
