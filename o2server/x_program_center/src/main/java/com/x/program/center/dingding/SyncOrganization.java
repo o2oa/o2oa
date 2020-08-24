@@ -21,6 +21,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.entity.type.GenderType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -67,12 +67,12 @@ public class SyncOrganization {
 			this.check(business, result, units, people, personAttributes, identities, accessToken, factory, null, root);
 		}
 		this.clean(business, result, units, people, identities);
-		ApplicationCache.notify(Person.class);
-		ApplicationCache.notify(PersonAttribute.class);
-		ApplicationCache.notify(Unit.class);
-		ApplicationCache.notify(UnitAttribute.class);
-		ApplicationCache.notify(UnitDuty.class);
-		ApplicationCache.notify(Identity.class);
+		CacheManager.notify(Person.class);
+		CacheManager.notify(PersonAttribute.class);
+		CacheManager.notify(Unit.class);
+		CacheManager.notify(UnitAttribute.class);
+		CacheManager.notify(UnitDuty.class);
+		CacheManager.notify(Identity.class);
 		result.end();
 		if (!result.getCreateUnitList().isEmpty()) {
 			logger.print("创建组织({}):{}.", result.getCreateUnitList().size(),

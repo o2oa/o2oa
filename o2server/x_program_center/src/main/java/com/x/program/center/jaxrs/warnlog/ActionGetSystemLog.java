@@ -2,7 +2,9 @@ package com.x.program.center.jaxrs.warnlog;
 
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.bean.NameValuePair;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.ConnectionAction;
@@ -11,22 +13,16 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.jaxrs.WoValue;
-import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.ListTools;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class ActionGetSystemLog extends BaseAction {
 
@@ -70,11 +66,12 @@ class ActionGetSystemLog extends BaseAction {
 						dos.flush();
 
 						long lastPoint = 0;
-						String cacheKey = ApplicationCache.concreteCacheKey(key, node.toLowerCase());
-						Element element = cacheLog.get(cacheKey);
+						CacheCategory cacheCategory = new CacheCategory(CacheLogObject.class);
+						CacheKey cacheKey = new CacheKey(key, node.toLowerCase());
+						Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 						CacheLogObject clo = null;
-						if ((null != element) && (null != element.getObjectValue())) {
-							clo = (CacheLogObject) element.getObjectValue();
+						if (optional.isPresent()) {
+							clo = (CacheLogObject) optional.get();
 							lastPoint = clo.getLastPoint();
 						}
 						dos.writeLong(lastPoint);
@@ -95,7 +92,7 @@ class ActionGetSystemLog extends BaseAction {
 							}else{
 								clo.setLastPoint(returnLastPoint);
 							}
-							cacheLog.put(new Element(cacheKey, clo));
+							CacheManager.put(cacheCategory, cacheKey, clo);
 						}
 					}
 

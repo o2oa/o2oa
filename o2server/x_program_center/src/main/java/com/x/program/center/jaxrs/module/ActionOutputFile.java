@@ -2,6 +2,9 @@ package com.x.program.center.jaxrs.module;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -13,9 +16,9 @@ import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
 
 import com.x.program.center.core.entity.Structure;
-import net.sf.ehcache.Element;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
 
 public class ActionOutputFile extends BaseAction {
 
@@ -25,9 +28,11 @@ public class ActionOutputFile extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			Element element = cache.get(flag);
-			if (null != element && null != element.getObjectValue()) {
-				CacheObject cacheObject = (CacheObject) element.getObjectValue();
+			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+			CacheKey cacheKey = new CacheKey(flag);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				CacheObject cacheObject = (CacheObject) optional.get();
 				WrapModule module = cacheObject.getModule();
 				wo = new Wo(gson.toJson(module).getBytes(DefaultCharset.name),
 						this.contentType(true, module.getName() +"."+ Structure.default_extension),

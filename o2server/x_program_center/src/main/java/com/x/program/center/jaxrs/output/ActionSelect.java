@@ -4,6 +4,9 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.StringTools;
@@ -14,7 +17,6 @@ import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
 import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
-import net.sf.ehcache.Element;
 
 class ActionSelect extends BaseAction {
 
@@ -36,8 +38,10 @@ class ActionSelect extends BaseAction {
 			cacheObject.setName(serviceModuleEnum.getDescription());
 
 			String flag = StringTools.uniqueToken();
+			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(cacheCategory, cacheKey, cacheObject);
 
-			cache.put(new Element(flag, cacheObject));
 			Wo wo = gson.fromJson(gson.toJson(wrapAppInfo), Wo.class);
 			wo.setFlag(flag);
 			result.setData(wo);
