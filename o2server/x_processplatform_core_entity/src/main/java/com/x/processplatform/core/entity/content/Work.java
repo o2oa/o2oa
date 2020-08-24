@@ -19,7 +19,17 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -33,15 +43,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -96,6 +97,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void postLoad() {
 		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
 			this.title = this.getProperties().getTitle();
+			this.splitValueList = this.getProperties().getSplitValueList();
 		}
 	}
 
@@ -145,7 +147,19 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 				: WORKCREATETYPE_SURFACE;
 	}
 
+	public List<String> getSplitValueList() {
+		return this.splitValueList;
+	}
+
+	public void setSplitValueList(List<String> splitValueList) {
+		this.splitValueList = splitValueList;
+		this.getProperties().setSplitValueList(splitValueList);
+	}
+
 	/* 修改过的Set Get 方法 */
+
+	@Transient
+	private List<String> splitValueList;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
@@ -160,14 +174,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String title;
-
-	// public static final String titleLob_FIELDNAME = "titleLob";
-	// @FieldDescribe("标题,长文本")
-	// @Lob
-	// @Basic(fetch = FetchType.EAGER)
-	// @Column(length = JpaObject.length_1M, name = ColumnNamePrefix +
-	// titleLob_FIELDNAME)
-	// private String titleLob;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("工作开始时间")
