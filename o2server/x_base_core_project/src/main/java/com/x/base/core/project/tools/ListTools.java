@@ -598,4 +598,12 @@ public class ListTools {
 		return list.subList(start, end);
 	}
 
+	public static <E> void set(List<E> list, int index, E element) {
+		if (index < 0) {
+			list.set(list.size() + index, element);
+		} else {
+			list.set(index, element);
+		}
+	}
+
 }

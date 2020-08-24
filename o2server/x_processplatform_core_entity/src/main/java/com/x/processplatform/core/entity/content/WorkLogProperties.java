@@ -7,9 +7,11 @@ import com.x.base.core.entity.JsonProperties;
 
 public class WorkLogProperties extends JsonProperties {
 
+	private static final long serialVersionUID = -4149341123576111783L;
+
 	private List<String> splitTokenList;
 
-	private List<String> splitValueList;
+	private List<String> splitValueList = new ArrayList<>();
 
 	private String splitToken;
 
@@ -17,14 +19,14 @@ public class WorkLogProperties extends JsonProperties {
 
 	public List<String> getSplitTokenList() {
 		if (null == splitTokenList) {
-			this.splitTokenList = new ArrayList<String>();
+			this.splitTokenList = new ArrayList<>();
 		}
 		return splitTokenList;
 	}
 
 	public List<String> getSplitValueList() {
 		if (null == splitValueList) {
-			this.splitValueList = new ArrayList<String>();
+			this.splitValueList = new ArrayList<>();
 		}
 		return splitValueList;
 	}
