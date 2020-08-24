@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.internal.LinkedTreeMap;
@@ -56,6 +57,7 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
+			CacheManager.init(context.clazz().getSimpleName());
 			LoggerFactory.setLevel(Config.logLevel().x_program_center());
 			/* 20190927新报告机制 */
 			context().startQueue(centerQueue);
@@ -99,7 +101,7 @@ public class ThisApplication {
 			context().scheduleLocal(CleanupCode.class, 10, 60 * 30);
 			context().scheduleLocal(Cleanup.class, 10, 60 * 30);
 			context().scheduleLocal(CollectPerson.class, 10, 60 * 30);
-			context().scheduleLocal(CollectMarket.class, 10, 60 * 60 * 6);
+			context().scheduleLocal(CollectMarket.class, 10, 60 * 60 * 10);
 			context().scheduleLocal(CollectLog.class, 10, 60 * 30);
 			// 运行间隔由60秒缩减到30秒
 			context().scheduleLocal(TriggerAgent.class, 150, 30);
@@ -112,6 +114,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

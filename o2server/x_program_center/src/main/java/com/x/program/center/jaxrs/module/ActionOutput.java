@@ -1,11 +1,11 @@
 package com.x.program.center.jaxrs.module;
 
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -18,15 +18,15 @@ import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.tools.StringTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -35,7 +35,6 @@ import com.x.program.center.WrapModule;
 import com.x.program.center.core.entity.Structure;
 import com.x.query.core.entity.wrap.WrapQuery;
 
-import net.sf.ehcache.Element;
 
 public class ActionOutput extends BaseAction {
 
@@ -99,9 +98,11 @@ public class ActionOutput extends BaseAction {
 			emc.persist(structure);
 			emc.commit();
 
+			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+			CacheKey cacheKey = new CacheKey(wo.getFlag());
 			CacheObject cacheObject = new CacheObject();
 			cacheObject.setModule(wo);
-			this.cache.put(new Element(wo.getFlag(), cacheObject));
+			CacheManager.put(cacheCategory, cacheKey, cacheObject);
 			result.setData(wo);
 			return result;
 		}

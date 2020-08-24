@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.invoke;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,14 +12,16 @@ import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoContentType;
@@ -35,14 +38,9 @@ import com.x.organization.core.express.Organization;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Invoke;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 class ActionExecute extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
-
-	public static Ehcache CACHE = ApplicationCache.instance().getCache(Invoke.class);
 
 	ActionResult<Object> execute(HttpServletRequest request, EffectivePerson effectivePerson, String flag,
 			JsonElement jsonElement) throws Exception {
@@ -65,18 +63,17 @@ class ActionExecute extends BaseAction {
 			invoke.setLastStartTime(new Date());
 			emc.commit();
 
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), invoke.getId());
-
+			CacheCategory cacheCategory = new CacheCategory(Invoke.class);
+			CacheKey cacheKey = new CacheKey(ActionExecute.class, invoke.getId());
 			CompiledScript compiledScript = null;
-
-			Element element = CACHE.get(cacheKey);
-
-			if ((null != element) && (null != element.getObjectValue())) {
-				compiledScript = (CompiledScript) element.getObjectValue();
-			} else {
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				compiledScript = (CompiledScript)optional.get();
+			}else {
 				compiledScript = ScriptFactory.compile(invoke.getText());
-				CACHE.put(new Element(cacheKey, compiledScript));
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			}
+
 			ScriptContext scriptContext = new SimpleScriptContext();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
 			Resources resources = new Resources();

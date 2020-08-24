@@ -2,7 +2,9 @@ package com.x.file.assemble.control.jaxrs.share;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -13,17 +15,14 @@ import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 class ActionDownload extends BaseAction {
-
-	private Ehcache cache = ApplicationCache.instance().getCache(Attachment2.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String shareId, String fileId, String password) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -62,10 +61,11 @@ class ActionDownload extends BaseAction {
 				if (null == originFile) {
 					throw new ExceptionAttachmentNotExist(shareId, fileId);
 				}
-				String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), fileId);
-				Element element = cache.get(cacheKey);
-				if ((null != element) && (null != element.getObjectValue())) {
-					wo = (Wo) element.getObjectValue();
+				CacheCategory cacheCategory = new CacheCategory(Attachment2.class);
+				CacheKey cacheKey = new CacheKey(this.getClass(), fileId);
+				Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+				if (optional.isPresent()) {
+					wo = (Wo) optional.get();
 				} else {
 					StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
 							originFile.getStorage());
@@ -81,7 +81,7 @@ class ActionDownload extends BaseAction {
 						 * 对10M以下的文件进行缓存
 						 */
 						if (bs.length < (1024 * 1024 * 10)) {
-							cache.put(new Element(cacheKey, wo));
+							CacheManager.put(cacheCategory, cacheKey, wo);
 						}
 					}
 				}
