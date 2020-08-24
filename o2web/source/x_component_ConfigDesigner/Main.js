@@ -1,57 +1,57 @@
 o2.xApplication.ConfigDesigner.options = {
-	"multitask": true,
-	"executable": false
+    "multitask": true,
+    "executable": false
 };
 o2.xDesktop.requireApp("ConfigDesigner", "Script", null, false);
 o2.require("o2.xDesktop.UserData", null, false);
 o2.xApplication.ConfigDesigner.Main = new Class({
-	Extends: o2.xApplication.Common.Main,
-	Implements: [Options, Events],
-	options: {
-		"style": "default",
-		"name": "ConfigDesigner",
-		"icon": "icon.png",
-		"title": o2.xApplication.ConfigDesigner.LP.title,
-		"appTitle": o2.xApplication.ConfigDesigner.LP.title,
-		"id": "node_127.0.0.1.json",
-		"actions": null,
-		"category": null,
-		"portalData": null
-	},
-	onQueryLoad: function(){
+    Extends: o2.xApplication.Common.Main,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "name": "ConfigDesigner",
+        "icon": "icon.png",
+        "title": o2.xApplication.ConfigDesigner.LP.title,
+        "appTitle": o2.xApplication.ConfigDesigner.LP.title,
+        "id": "node_127.0.0.1.json",
+        "actions": null,
+        "category": null,
+        "portalData": null
+    },
+    onQueryLoad: function(){
 
         this.actions = o2.Actions.load("x_program_center");
-		
-		this.lp = o2.xApplication.ConfigDesigner.LP;
+
+        this.lp = o2.xApplication.ConfigDesigner.LP;
 
         this.addEvent("queryClose", function(e){
             if (this.explorer){
                 this.explorer.reload();
             }
         }.bind(this));
-	},
-	
-	loadApplication: function(callback){
-		this.createNode();
-		if (!this.options.isRefresh){
-			this.maxSize(function(){
-				this.openScript();
-			}.bind(this));
-		}else{
-			this.openScript();
-		}
-		if (callback) callback();
-	},
-	createNode: function(){
-		this.content.setStyle("overflow", "hidden");
-		this.node = new Element("div", {
-			"styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
-		}).inject(this.content);
-	},
+    },
+
+    loadApplication: function(callback){
+        this.createNode();
+        if (!this.options.isRefresh){
+            this.maxSize(function(){
+                this.openScript();
+            }.bind(this));
+        }else{
+            this.openScript();
+        }
+        if (callback) callback();
+    },
+    createNode: function(){
+        this.content.setStyle("overflow", "hidden");
+        this.node = new Element("div", {
+            "styles": {"width": "100%", "height": "100%", "overflow": "hidden"}
+        }).inject(this.content);
+    },
     getApplication:function(callback){
         if (callback) callback();
     },
-	openScript: function(){
+    openScript: function(){
         this.getApplication(function(){
             this.loadNodes();
             this.loadScriptListNodes();
@@ -77,20 +77,20 @@ o2.xApplication.ConfigDesigner.Main = new Class({
             }.bind(this));
 
         }.bind(this));
-	},
-	loadNodes: function(){
+    },
+    loadNodes: function(){
         this.scriptListNode = new Element("div", {
             "styles": this.css.scriptListNode
         }).inject(this.node);
 
-		this.propertyNode = new Element("div", {
-			"styles": this.css.propertyNode
-		}).inject(this.node);
+        this.propertyNode = new Element("div", {
+            "styles": this.css.propertyNode
+        }).inject(this.node);
 
-		this.contentNode = new Element("div", {
-			"styles": this.css.contentNode
-		}).inject(this.node);
-	},
+        this.contentNode = new Element("div", {
+            "styles": this.css.contentNode
+        }).inject(this.node);
+    },
     //loadScriptList-------------------------------
     loadScriptListNodes: function(){
         this.scriptListTitleNode = new Element("div", {
@@ -149,6 +149,9 @@ o2.xApplication.ConfigDesigner.Main = new Class({
             var config = JSON.parse(data.config);
             this.config = config;
             for (var key in config) {
+                if(key.indexOf("node_")>-1){
+                    this.options.id = key;
+                }
                 this.createListScriptItem(key,config[key]);
             }
             this.setScroll();
@@ -198,7 +201,7 @@ o2.xApplication.ConfigDesigner.Main = new Class({
                 "background-color": "#666",
                 "z-index": 50000,
                 "opacity": 0.3
-             //   "border": "2px solid #ffba00"
+                //   "border": "2px solid #ffba00"
             });
             markNode.position({
                 "relativeTo": inObj,
@@ -305,38 +308,38 @@ o2.xApplication.ConfigDesigner.Main = new Class({
             }.bind(this), true);
         }
     },
-	
-	//loadContentNode------------------------------
+
+    //loadContentNode------------------------------
     loadContentNode: function(toolbarCallback, contentCallback){
-		this.contentToolbarNode = new Element("div#contentToolbarNode", {
-			"styles": this.css.contentToolbarNode
-		}).inject(this.contentNode);
-		this.loadContentToolbar(toolbarCallback);
-		
-		this.editContentNode = new Element("div", {
-			"styles": this.css.editContentNode
-		}).inject(this.contentNode);
+        this.contentToolbarNode = new Element("div#contentToolbarNode", {
+            "styles": this.css.contentToolbarNode
+        }).inject(this.contentNode);
+        this.loadContentToolbar(toolbarCallback);
 
-		this.loadEditContent(function(){
-		//	if (this.designDcoument) this.designDcoument.body.setStyles(this.css.designBody);
-			if (this.designNode) this.designNode.setStyles(this.css.designNode);
+        this.editContentNode = new Element("div", {
+            "styles": this.css.editContentNode
+        }).inject(this.contentNode);
+
+        this.loadEditContent(function(){
+            //	if (this.designDcoument) this.designDcoument.body.setStyles(this.css.designBody);
+            if (this.designNode) this.designNode.setStyles(this.css.designNode);
             if (contentCallback) contentCallback();
-		}.bind(this));
-	},
+        }.bind(this));
+    },
     loadContentToolbar: function(callback){
-		this.getFormToolbarHTML(function(toolbarNode){
-			var spans = toolbarNode.getElements("span");
-			spans.each(function(item, idx){
-				var img = item.get("MWFButtonImage");
-				if (img){
-					item.set("MWFButtonImage", this.path+""+this.options.style+"/toolbar/"+img);
-				}
-			}.bind(this));
+        this.getFormToolbarHTML(function(toolbarNode){
+            var spans = toolbarNode.getElements("span");
+            spans.each(function(item, idx){
+                var img = item.get("MWFButtonImage");
+                if (img){
+                    item.set("MWFButtonImage", this.path+""+this.options.style+"/toolbar/"+img);
+                }
+            }.bind(this));
 
-			$(toolbarNode).inject(this.contentToolbarNode);
-			o2.require("o2.widget.Toolbar", function(){
-				this.toolbar = new o2.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
-				this.toolbar.load();
+            $(toolbarNode).inject(this.contentToolbarNode);
+            o2.require("o2.widget.Toolbar", function(){
+                this.toolbar = new o2.widget.Toolbar(toolbarNode, {"style": "ProcessCategory"}, this);
+                this.toolbar.load();
                 var _self = this;
                 //this.styleSelectNode = toolbarNode.getElement("select");
                 //this.styleSelectNode.addEvent("change", function(){
@@ -362,10 +365,10 @@ o2.xApplication.ConfigDesigner.Main = new Class({
                     _self.changeEditorStyle(this);
                 });
 
-				if (callback) callback();
-			}.bind(this));
-		}.bind(this));
-	},
+                if (callback) callback();
+            }.bind(this));
+        }.bind(this));
+    },
     changeEditor: function(node){
         var idx = node.selectedIndex;
         var value = node.options[idx].value;
@@ -450,21 +453,21 @@ o2.xApplication.ConfigDesigner.Main = new Class({
 
         o2.UD.putData("editor", o2.editorData);
     },
-	getFormToolbarHTML: function(callback){
-		var toolbarUrl = this.path+this.options.style+"/toolbars.html";
-		var r = new Request.HTML({
-			url: toolbarUrl,
-			method: "get",
-			onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
-				var toolbarNode = responseTree[0];
-				if (callback) callback(toolbarNode);
-			}.bind(this),
-			onFailure: function(xhr){
-				this.notice("request portalToolbars error: "+xhr.responseText, "error");
-			}.bind(this)
-		});
-		r.send();
-	},
+    getFormToolbarHTML: function(callback){
+        var toolbarUrl = this.path+this.options.style+"/toolbars.html";
+        var r = new Request.HTML({
+            url: toolbarUrl,
+            method: "get",
+            onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript){
+                var toolbarNode = responseTree[0];
+                if (callback) callback(toolbarNode);
+            }.bind(this),
+            onFailure: function(xhr){
+                this.notice("request portalToolbars error: "+xhr.responseText, "error");
+            }.bind(this)
+        });
+        r.send();
+    },
     maxOrReturnEditor: function(){
         if (!this.isMax){
             this.designNode.inject(this.node);
@@ -506,44 +509,44 @@ o2.xApplication.ConfigDesigner.Main = new Class({
 
 
         //o2.require("o2.widget.ScrollBar", function(){
-            //    new o2.widget.ScrollBar(this.designNode, {"distance": 100});
-            //}.bind(this));
-	},
-	
-	//loadProperty------------------------
-	loadProperty: function(){
-		this.propertyTitleNode = new Element("div", {
-			"styles": this.css.propertyTitleNode,
-			"text": o2.xApplication.ConfigDesigner.LP.property
-		}).inject(this.propertyNode);
-		
-		this.propertyResizeBar = new Element("div", {
-			"styles": this.css.propertyResizeBar
-		}).inject(this.propertyNode);
-		this.loadPropertyResize();
-		
-		this.propertyContentNode = new Element("div", {
-			"styles": this.css.propertyContentNode
-		}).inject(this.propertyNode);
-		
-		this.propertyDomArea = new Element("div", {
-			"styles": this.css.propertyDomArea
-		}).inject(this.propertyContentNode);
-		
-		this.propertyDomPercent = 0.3;
-		this.propertyContentResizeNode = new Element("div", {
-			"styles": this.css.propertyContentResizeNode
-		}).inject(this.propertyContentNode);
-		
-		this.propertyContentArea = new Element("div", {
-			"styles": this.css.propertyContentArea
-		}).inject(this.propertyContentNode);
-		
-		this.loadPropertyContentResize();
+        //    new o2.widget.ScrollBar(this.designNode, {"distance": 100});
+        //}.bind(this));
+    },
+
+    //loadProperty------------------------
+    loadProperty: function(){
+        this.propertyTitleNode = new Element("div", {
+            "styles": this.css.propertyTitleNode,
+            "text": o2.xApplication.ConfigDesigner.LP.property
+        }).inject(this.propertyNode);
+
+        this.propertyResizeBar = new Element("div", {
+            "styles": this.css.propertyResizeBar
+        }).inject(this.propertyNode);
+        this.loadPropertyResize();
+
+        this.propertyContentNode = new Element("div", {
+            "styles": this.css.propertyContentNode
+        }).inject(this.propertyNode);
+
+        this.propertyDomArea = new Element("div", {
+            "styles": this.css.propertyDomArea
+        }).inject(this.propertyContentNode);
+
+        this.propertyDomPercent = 0.3;
+        this.propertyContentResizeNode = new Element("div", {
+            "styles": this.css.propertyContentResizeNode
+        }).inject(this.propertyContentNode);
+
+        this.propertyContentArea = new Element("div", {
+            "styles": this.css.propertyContentArea
+        }).inject(this.propertyContentNode);
+
+        this.loadPropertyContentResize();
 
         this.setPropertyContent();
         this.setIncludeNode();
-	},
+    },
     setIncludeNode: function(){
         this.includeTitleNode = new Element("div", {"styles": this.css.includeTitleNode}).inject(this.propertyDomArea);
         this.includeTitleActionNode = new Element("div", {"styles": this.css.includeTitleActionNode}).inject(this.includeTitleNode);
@@ -587,82 +590,82 @@ o2.xApplication.ConfigDesigner.Main = new Class({
         node = new Element("div", {"styles": this.css.propertyItemTitleNode, "text": this.lp.description+":"}).inject(this.propertyContentArea);
         this.propertyDescriptionNode = new Element("div", {"styles": this.css.propertyTextNode, "text": ""}).inject(this.propertyContentArea);
     },
-	loadPropertyResize: function(){
+    loadPropertyResize: function(){
 //		var size = this.propertyNode.getSize();
 //		var position = this.propertyResizeBar.getPosition();
-		this.propertyResize = new Drag(this.propertyResizeBar,{
-			"snap": 1,
-			"onStart": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-				el.store("position", {"x": x, "y": y});
-				
-				var size = this.propertyNode.getSize();
-				el.store("initialWidth", size.x);
-			}.bind(this),
-			"onDrag": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+        this.propertyResize = new Drag(this.propertyResizeBar,{
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.propertyNode.getSize();
+                el.store("initialWidth", size.x);
+            }.bind(this),
+            "onDrag": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 //				var y = e.event.y;
-				var bodySize = this.content.getSize();
-				var position = el.retrieve("position");
-				var initialWidth = el.retrieve("initialWidth").toFloat();
-				var dx = position.x.toFloat()-x.toFloat();
-				
-				var width = initialWidth+dx;
-				if (width> bodySize.x/2) width =  bodySize.x/2;
-				if (width<40) width = 40;
-				this.contentNode.setStyle("margin-right", width+1);
-				this.propertyNode.setStyle("width", width);
-			}.bind(this)
-		});
-	},
-	loadPropertyContentResize: function(){
-		this.propertyContentResize = new Drag(this.propertyContentResizeNode, {
-			"snap": 1,
-			"onStart": function(el, e){
-				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
-				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-				el.store("position", {"x": x, "y": y});
+                var bodySize = this.content.getSize();
+                var position = el.retrieve("position");
+                var initialWidth = el.retrieve("initialWidth").toFloat();
+                var dx = position.x.toFloat()-x.toFloat();
 
-				var size = this.propertyDomArea.getSize();
-				el.store("initialHeight", size.y);
-			}.bind(this),
-			"onDrag": function(el, e){
-				var size = this.propertyContentNode.getSize();
+                var width = initialWidth+dx;
+                if (width> bodySize.x/2) width =  bodySize.x/2;
+                if (width<40) width = 40;
+                this.contentNode.setStyle("margin-right", width+1);
+                this.propertyNode.setStyle("width", width);
+            }.bind(this)
+        });
+    },
+    loadPropertyContentResize: function(){
+        this.propertyContentResize = new Drag(this.propertyContentResizeNode, {
+            "snap": 1,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
 
-	//			var x = e.event.x;
-				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
-				var position = el.retrieve("position");
-				var dy = y.toFloat()-position.y.toFloat();
+                var size = this.propertyDomArea.getSize();
+                el.store("initialHeight", size.y);
+            }.bind(this),
+            "onDrag": function(el, e){
+                var size = this.propertyContentNode.getSize();
 
-				var initialHeight = el.retrieve("initialHeight").toFloat();
-				var height = initialHeight+dy;
-				if (height<40) height = 40;
-				if (height> size.y-40) height = size.y-40;
+                //			var x = e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                var position = el.retrieve("position");
+                var dy = y.toFloat()-position.y.toFloat();
 
-				this.propertyDomPercent = height/size.y;
+                var initialHeight = el.retrieve("initialHeight").toFloat();
+                var height = initialHeight+dy;
+                if (height<40) height = 40;
+                if (height> size.y-40) height = size.y-40;
 
-				this.setPropertyContentResize();
+                this.propertyDomPercent = height/size.y;
 
-			}.bind(this)
-		});
-	},
-	setPropertyContentResize: function(){
-		var size = this.propertyContentNode.getSize();
-		var resizeNodeSize = this.propertyContentResizeNode.getSize();
-		var height = size.y-resizeNodeSize.y;
-		
-		var domHeight = this.propertyDomPercent*height;
-		var contentHeight = height-domHeight;
-		
-		this.propertyDomArea.setStyle("height", ""+domHeight+"px");
-		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
-	},
-	
+                this.setPropertyContentResize();
 
-	
-	//resizeNode------------------------------------------------
-	resizeNode: function(){
+            }.bind(this)
+        });
+    },
+    setPropertyContentResize: function(){
+        var size = this.propertyContentNode.getSize();
+        var resizeNodeSize = this.propertyContentResizeNode.getSize();
+        var height = size.y-resizeNodeSize.y;
+
+        var domHeight = this.propertyDomPercent*height;
+        var contentHeight = height-domHeight;
+
+        this.propertyDomArea.setStyle("height", ""+domHeight+"px");
+        this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
+    },
+
+
+
+    //resizeNode------------------------------------------------
+    resizeNode: function(){
         if (!this.isMax){
             var nodeSize = this.node.getSize();
             this.contentNode.setStyle("height", ""+nodeSize.y+"px");
@@ -708,31 +711,31 @@ o2.xApplication.ConfigDesigner.Main = new Class({
             this.scriptListAreaSccrollNode.setStyle("height", ""+y+"px");
             this.scriptListResizeNode.setStyle("height", ""+y+"px");
         }
-	},
-	
-	//loadForm------------------------------------------
+    },
+
+    //loadForm------------------------------------------
     loadScript: function(){
         //this.scriptTab.addTab(node, title);
-		this.getScriptData(this.options.id, function(data){
-		    data.name = this.config[this.options.id];
-			this.script = new o2.xApplication.ConfigDesigner.Script(this, data);
-			this.script.load();
-		}.bind(this));
-	},
+        this.getScriptData(this.options.id, function(data){
+            data.name = this.config[this.options.id];
+            this.script = new o2.xApplication.ConfigDesigner.Script(this, data);
+            this.script.load();
+        }.bind(this));
+    },
 
     getScriptData: function(id, callback){
         this.loadScriptData(id, callback);
-	},
+    },
     loadScriptData: function(id, callback, notSetTile){
-		this.actions.EditConfigAction.open({fileName:id}, function(json){
-			if (json){
-				var data = json.data;
-				data.id = id;
-				data.text = data.fileContent;
+        this.actions.EditConfigAction.open({fileName:id}, function(json){
+            if (json){
+                var data = json.data;
+                data.id = id;
+                data.text = data.fileContent;
                 if (callback) callback(data);
-			}
-		}.bind(this));
-	},
+            }
+        }.bind(this));
+    },
 
     saveScript: function(){
         if (this.scriptTab.showPage){
@@ -746,10 +749,10 @@ o2.xApplication.ConfigDesigner.Main = new Class({
                 }
             }.bind(this));
         }
-	},
+    },
     saveDictionaryAs: function(){
         this.dictionary.saveAs();
-	},
+    },
     dictionaryExplode: function(){
         this.dictionary.explode();
     },
