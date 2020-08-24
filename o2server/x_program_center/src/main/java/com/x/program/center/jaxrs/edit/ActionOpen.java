@@ -42,6 +42,7 @@ public class ActionOpen extends BaseAction {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
 		String fileName = wi.getFileName();
+	
 		File file = new File(Config.base(),"config/"+fileName);
 		wo.setSample(false);
 		 
@@ -65,17 +66,17 @@ public class ActionOpen extends BaseAction {
 	}
 	
 	public static class Wi  extends GsonPropertyObject{
-		
+		/*
 		@FieldDescribe("服务器地址(*代表多台应用服务器)")
 		private String nodeName;
 		
 		@FieldDescribe("服务端口")
 		private String nodePort;
-		
+		*/
 		@FieldDescribe("文件名")
 		private String fileName;
 		
-
+        /*
 		public String getNodeName() {
 			return nodeName;
 		}
@@ -87,7 +88,7 @@ public class ActionOpen extends BaseAction {
 		}
 		public void setNodePort(String nodePort) {
 			this.nodePort = nodePort;
-		}
+		}*/
 		public String getFileName() {
 			return fileName;
 		}
