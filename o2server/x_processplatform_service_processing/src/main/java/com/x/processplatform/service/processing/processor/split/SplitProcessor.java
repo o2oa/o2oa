@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.split;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,35 +44,43 @@ public class SplitProcessor extends AbstractSplitProcessor {
 		aeiObjects.getWork().setSplitting(true);
 		aeiObjects.getWork().setSplitToken(StringTools.uniqueToken());
 		aeiObjects.getWork().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
-		aeiObjects.getWork().setSplitValue("");
 		List<String> splitValues = this.splitWithPath(aeiObjects, split);
 		if (splitValues.isEmpty()) {
 			throw new ExceptionSplitEmptySplitValue(split.getName(), aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), aeiObjects.getWork().getJob());
 		}
-		/* 先将当前文档标志拆分值 */
+		// 先将当前文档标志拆分值
 		aeiObjects.getWork().setSplitValue(splitValues.get(0));
+		aeiObjects.getWork().getSplitValueList().add(splitValues.get(0));
 		results.add(aeiObjects.getWork());
-		WorkLog mainWorkLog = aeiObjects.getWorkLogs().stream()
+		Optional<WorkLog> optionalWorkLog = aeiObjects.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken()))
-				.findFirst().orElse(null);
-		mainWorkLog.setSplitting(true);
-		mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-		mainWorkLog.getProperties().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
-		mainWorkLog.setSplitValue(splitValues.get(0));
-		aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
-		/* 产生后续的拆分文档并标记拆分值 */
-		for (int i = 1; i < splitValues.size(); i++) {
-			Work splitWork = new Work(aeiObjects.getWork());
-			/* 将文档存放在一起 */
-			splitWork.setSplitValue(splitValues.get(i));
-			aeiObjects.getCreateWorks().add(splitWork);
-			WorkLog splitWorkLog = new WorkLog(mainWorkLog);
-			splitWorkLog.setSplitWork(aeiObjects.getWork().getId());
-			splitWorkLog.setWork(splitWork.getId());
-			splitWorkLog.setSplitValue(splitValues.get(i));
-			aeiObjects.getCreateWorkLogs().add(splitWorkLog);
-			results.add(splitWork);
+				.findFirst();
+		if (optionalWorkLog.isPresent()) {
+			WorkLog mainWorkLog = optionalWorkLog.get();
+			mainWorkLog.setSplitting(true);
+			mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
+			mainWorkLog.getProperties().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
+			mainWorkLog.setSplitValue(splitValues.get(0));
+			mainWorkLog.getProperties().getSplitValueList().add(aeiObjects.getWork().getSplitValue());
+			aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
+			// 产生后续的拆分文档并标记拆分值
+			for (int i = 1; i < splitValues.size(); i++) {
+				// 将文档存放在一起
+				Work splitWork = new Work(aeiObjects.getWork());
+				// 替work换拆分值
+				splitWork.setSplitValue(splitValues.get(i));
+				ListTools.set(splitWork.getSplitValueList(), -1, splitValues.get(i));
+				aeiObjects.getCreateWorks().add(splitWork);
+				WorkLog splitWorkLog = new WorkLog(mainWorkLog);
+				splitWorkLog.setSplitWork(aeiObjects.getWork().getId());
+				splitWorkLog.setWork(splitWork.getId());
+				// 替workLog换拆分值
+				splitWorkLog.setSplitValue(splitValues.get(i));
+				ListTools.set(splitWorkLog.getProperties().getSplitValueList(), -1, splitValues.get(i));
+				aeiObjects.getCreateWorkLogs().add(splitWorkLog);
+				results.add(splitWork);
+			}
 		}
 		return results;
 	}
