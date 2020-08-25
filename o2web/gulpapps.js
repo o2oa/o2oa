@@ -7,6 +7,7 @@ var apps = [
     { "folder": "x_component_Attendance", "tasks": ["move", "min"] },
     { "folder": "x_component_BAM", "tasks": ["move", "min"] },
     { "folder": "x_component_Calendar", "tasks": ["move", "min"] },
+    { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_Column", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_ColumnManager", "tasks": ["move", "min"] },
     { "folder": "x_component_cms_DictionaryDesigner", "tasks": ["move", "min"] },
