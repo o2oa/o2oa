@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.role;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,7 +19,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,8 +27,9 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListPinyinInitial extends BaseAction {
 
@@ -37,14 +38,14 @@ class ActionListPinyinInitial extends BaseAction {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), wi.getKey(),
+			CacheKey cacheKey = new Cache.CacheKey(this.getClass(), wi.getKey(),
 					StringUtils.join(wi.getGroupList(), ","), StringUtils.join(wi.getRoleList(), ","));
-			Element element = business.cache().get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((List<Wo>) element.getObjectValue());
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((List<Wo>) optional.get());
 			} else {
 				List<Wo> wos = this.list(business, wi);
-				business.cache().put(new Element(cacheKey, wos));
+				CacheManager.put(business.cache(), cacheKey, wos);
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());

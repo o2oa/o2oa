@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.function;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,7 +31,7 @@ public class ActionSetPassword {
 			business.person().setPassword(person, wrapIn.getValue(),false);
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Person.class);
+			CacheManager.notify(Person.class);
 			WrapOutId wrap = new WrapOutId(person.getId());
 			return wrap;
 		}

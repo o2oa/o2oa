@@ -3,6 +3,7 @@ package com.x.organization.assemble.control.factory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -14,20 +15,20 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitAttribute_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 public class UnitAttributeFactory extends AbstractFactory {
 
 	public UnitAttributeFactory(Business business) throws Exception {
 		super(business);
-		cache = ApplicationCache.instance().getCache(UnitAttribute.class);
+		cache = new CacheCategory(UnitAttribute.class);
 	}
 
 	public UnitAttribute pick(String flag) throws Exception {
@@ -35,14 +36,13 @@ public class UnitAttributeFactory extends AbstractFactory {
 			return null;
 		}
 		UnitAttribute o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (UnitAttribute) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (UnitAttribute) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}
@@ -81,14 +81,13 @@ public class UnitAttributeFactory extends AbstractFactory {
 	public List<UnitAttribute> pick(List<String> flags) throws Exception {
 		List<UnitAttribute> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((UnitAttribute) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				list.add((UnitAttribute) optional.get());
 			} else {
 				UnitAttribute o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}

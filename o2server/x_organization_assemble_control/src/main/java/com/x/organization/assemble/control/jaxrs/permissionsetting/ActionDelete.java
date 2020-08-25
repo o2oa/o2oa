@@ -3,7 +3,7 @@ package com.x.organization.assemble.control.jaxrs.permissionsetting;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -29,7 +29,7 @@ class ActionDelete extends BaseAction {
 			permission = emc.find(permission.getId(), PermissionSetting.class);
 			emc.remove(permission, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(PermissionSetting.class);
+			CacheManager.notify(PermissionSetting.class);
 			
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();

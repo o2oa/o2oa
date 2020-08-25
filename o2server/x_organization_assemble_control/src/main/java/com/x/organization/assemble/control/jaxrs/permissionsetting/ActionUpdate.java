@@ -1,13 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.permissionsetting;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.beanutils.PropertyUtils;
-import java.lang.reflect.Field;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,7 +10,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -25,9 +18,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.PermissionSetting;
-import com.x.organization.core.entity.PersonCard;
-
-
 
 public class ActionUpdate extends BaseAction{
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdate.class);
@@ -55,7 +45,7 @@ public class ActionUpdate extends BaseAction{
 			
 			emc.check(entityPerson, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(PermissionSetting.class);
+			CacheManager.notify(PermissionSetting.class);
 			
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "PermissionSetting", permission, effectivePerson);

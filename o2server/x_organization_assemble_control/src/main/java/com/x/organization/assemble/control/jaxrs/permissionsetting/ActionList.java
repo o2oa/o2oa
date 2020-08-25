@@ -2,7 +2,6 @@ package com.x.organization.assemble.control.jaxrs.permissionsetting;
 
 import java.util.List;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,8 +13,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PermissionSetting;
-import com.x.organization.core.entity.PersonCard;
-
 
 class ActionList extends BaseAction {
 
