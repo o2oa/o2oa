@@ -3,6 +3,7 @@ package com.x.organization.assemble.authentication.jaxrs.oauth;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.InitialManager;
 import com.x.base.core.project.config.Token.Oauth;
@@ -30,9 +30,9 @@ import com.x.base.core.project.script.ScriptFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.OauthCode;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionInfo extends BaseAction {
 
@@ -40,7 +40,7 @@ class ActionInfo extends BaseAction {
 
 	public static final Pattern SCRIPT_PATTERN = Pattern.compile("^\\((.+?)\\)$");
 
-	private static Ehcache cache = ApplicationCache.instance().getCache(Person.class);
+	private static CacheCategory cache = new CacheCategory(Person.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String accessToken) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -80,14 +80,13 @@ class ActionInfo extends BaseAction {
 
 	private CompiledScript compliedScript(String clientId, String scope, String text) throws Exception {
 
-		String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), clientId, scope);
-		Element element = cache.get(cacheKey);
-
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (CompiledScript) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(this.getClass(), clientId, scope);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (CompiledScript) optional.get();
 		} else {
 			CompiledScript compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(text));
-			cache.put(new Element(cacheKey, compiledScript));
+			CacheManager.put(cache, cacheKey, compiledScript);
 			return compiledScript;
 		}
 	}

@@ -5,8 +5,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
-import net.sf.ehcache.Element;
+import java.util.Optional;
 
 class ActionGetResult extends BaseAction {
 
@@ -15,11 +17,12 @@ class ActionGetResult extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		logger.debug(effectivePerson, "flag:{}.", flag);
 		ActionResult<Wo> result = new ActionResult<>();
-		Element element = cache.get(flag);
-		if (null == element || (null == element.getObjectValue())) {
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (!optional.isPresent()) {
 			throw new ExceptionResultNotFound(flag);
 		}
-		CacheFileResult o = (CacheFileResult) element.getObjectValue();
+		CacheFileResult o = (CacheFileResult) optional.get();
 		Wo wo = new Wo(o.getBytes(), this.contentType(true, o.getName()), this.contentDisposition(true, o.getName()));
 		result.setData(wo);
 		return result;

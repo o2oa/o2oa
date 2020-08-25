@@ -63,10 +63,7 @@ public class Attachment extends SliceJpaObject {
 	@FieldDescribe("文件名称.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, fileNameString = true, citationNotExists =
-	/* 同一应用下不能有重名 */
-	@CitationNotExist(fields = { "name", "id" }, type = Attachment.class, equals = {
-			@Equal(property = "application", field = "application") }))
+	@CheckPersist(allowEmpty = false)
 	private String name;
 
 	public static final String application_FIELDNAME = "application";
