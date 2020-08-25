@@ -22,6 +22,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -37,7 +38,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -61,8 +61,7 @@ import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
 
 class ActionInputAll extends BaseAction {
 
@@ -102,14 +101,15 @@ class ActionInputAll extends BaseAction {
 			cacheInputResult.setName(name);
 			cacheInputResult.setBytes(os.toByteArray());
 			String flag = StringTools.uniqueToken();
-			cache.put(new Element(flag, cacheInputResult));
-			ApplicationCache.notify(Person.class);
-			ApplicationCache.notify(Group.class);
-			ApplicationCache.notify(Role.class);
-			ApplicationCache.notify(Identity.class);
-			ApplicationCache.notify(PersonAttribute.class);
-			ApplicationCache.notify(Unit.class);
-			ApplicationCache.notify(UnitDuty.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+			CacheManager.put(business.cache(), cacheKey, cacheInputResult);
+			CacheManager.notify(Person.class);
+			CacheManager.notify(Group.class);
+			CacheManager.notify(Role.class);
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(PersonAttribute.class);
+			CacheManager.notify(Unit.class);
+			CacheManager.notify(UnitDuty.class);
 			Wo wo = new Wo();
 			wo.setFlag(flag);
 			result.setData(wo);
