@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.instrument.Instrument;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -43,19 +43,17 @@ import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitDuty;
 
 import org.apache.commons.collections4.CollectionUtils;
-
-import net.sf.ehcache.Ehcache;
 import org.apache.commons.collections4.set.ListOrderedSet;
 
 public class Business {
 
 	private EntityManagerContainer emc;
 
-	private Ehcache cache;
+	private CacheCategory cacheCategory;
 
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
-		this.cache = ApplicationCache.instance().getCache(Group.class, Role.class, Person.class, PersonAttribute.class,
+		this.cacheCategory = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class,
 				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class);
 	}
 
@@ -492,8 +490,8 @@ public class Business {
 		return set.asList();
 	}
 
-	public Ehcache cache() {
-		return cache;
+	public CacheCategory cache() {
+		return cacheCategory;
 	}
 
 	public List<Person> listPersonWithUnit(String unitFlag) throws Exception {

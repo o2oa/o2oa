@@ -1,19 +1,19 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListSubDirectWithGroup extends BaseAction {
 
@@ -21,13 +21,13 @@ class ActionListSubDirectWithGroup extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), groupFlag);
-			Element element =  business.cache().get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((List<Wo>) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), groupFlag);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((List<Wo>) optional.get());
 			} else {
 				List<Wo> wos = this.list(business, groupFlag);
-				 business.cache().put(new Element(cacheKey, wos));
+				CacheManager.put(business.cache(), cacheKey, wos);
 				result.setData(wos);
 			}
 			this.updateControl(effectivePerson, business, result.getData());

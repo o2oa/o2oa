@@ -14,6 +14,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
@@ -97,7 +98,7 @@ class ActionDelete extends BaseAction {
 				emc.beginTransaction(Person.class);
 				emc.remove(person, CheckRemoveType.all);
 				emc.commit();
-				ApplicationCache.notify(Person.class);
+				CacheManager.notify(Person.class);
 				/** 通知x_collect_service_transmit同步数据到collect */
 				business.instrument().collect().person();
 				

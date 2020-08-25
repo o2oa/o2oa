@@ -17,7 +17,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -84,7 +84,7 @@ class ActionEdit extends BaseAction {
 			}
 			emc.check(unit, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Unit.class);
+			CacheManager.notify(Unit.class);
 			
 			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
 			if(checkFlag){
@@ -169,7 +169,7 @@ class ActionEdit extends BaseAction {
 	}
 
 	void updateIdentityUnitNameAndUnitLevelName(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		ApplicationCache.notify(Unit.class);
+		CacheManager.notify(Unit.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -201,7 +201,7 @@ class ActionEdit extends BaseAction {
 						emc.beginTransaction(Identity.class);
 						emc.check(_identity, CheckPersistType.all);
 						emc.commit();
-						ApplicationCache.notify(Identity.class);
+						CacheManager.notify(Identity.class);
 					}
 				}
 

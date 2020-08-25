@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.assemble.control.ThisApplication;
@@ -26,11 +27,9 @@ import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -81,12 +80,12 @@ public class ActionWipeAll extends BaseAction {
 			System.out.println("开始删除组织--------");
 			this.deleteUnits(emc,business);
 			emc.commit();
-			
-			ApplicationCache.notify(UnitDuty.class);
-			ApplicationCache.notify(Group.class);
-			ApplicationCache.notify(Identity.class);
-			ApplicationCache.notify(Person.class);
-			ApplicationCache.notify(Unit.class);
+
+			CacheManager.notify(UnitDuty.class);
+			CacheManager.notify(Group.class);
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(Person.class);
+			CacheManager.notify(Unit.class);
 			
 			wo.setFlag("清空人员数据成功");
 			System.out.println("开始删除人员组织所有数据--------end");
