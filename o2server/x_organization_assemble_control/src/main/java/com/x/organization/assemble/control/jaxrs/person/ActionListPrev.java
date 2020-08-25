@@ -1,6 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,15 +10,13 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.jaxrs.person.ActionListNext.Wo;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListPrev extends BaseAction {
 
@@ -25,11 +24,11 @@ class ActionListPrev extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
 					flag, count);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				Co co = (Co) element.getObjectValue();
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				Co co = (Co) optional.get();
 				result.setData(co.getWos());
 				result.setCount(co.getCount());
 			} else {
@@ -46,7 +45,7 @@ class ActionListPrev extends BaseAction {
 						business.personPredicateWithTopUnit(effectivePerson));
 
 				Co co = new Co(result.getData(), result.getCount());
-				business.cache().put(new Element(cacheKey, co));
+				CacheManager.put(business.cache(), cacheKey, co);
 			}
 			this.updateControl(effectivePerson, business, result.getData());
 			this.hide(effectivePerson, business, result.getData());

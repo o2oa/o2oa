@@ -1,10 +1,6 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -17,7 +13,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.tools.JpaObjectTools;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.control.AbstractFactory;
@@ -25,14 +20,15 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 public class PersonFactory extends AbstractFactory {
 
 	public PersonFactory(Business business) throws Exception {
 		super(business);
-		cache = ApplicationCache.instance().getCache(Person.class);
+		cache = new CacheCategory(Person.class);
 	}
 
 	public Person pick(String flag) throws Exception {
@@ -40,14 +36,13 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Person) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}
@@ -86,14 +81,13 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Person) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}
