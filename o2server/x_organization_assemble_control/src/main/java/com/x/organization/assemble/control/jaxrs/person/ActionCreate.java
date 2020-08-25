@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -87,7 +88,7 @@ class ActionCreate extends BaseAction {
 			emc.persist(person, CheckPersistType.all);
 			emc.commit();
 			/** 刷新缓存 */
-			ApplicationCache.notify(Person.class);
+			CacheManager.notify(Person.class);
 			/** 通知x_collect_service_transmit同步数据到collect */
 			business.instrument().collect().person();
 

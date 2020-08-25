@@ -14,6 +14,7 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.SimpleScriptContext;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,7 +29,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -46,8 +46,7 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.Role;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
 
 class ActionInput extends BaseAction {
 
@@ -68,12 +67,13 @@ class ActionInput extends BaseAction {
 			cacheInputResult.setName(name);
 			cacheInputResult.setBytes(os.toByteArray());
 			String flag = StringTools.uniqueToken();
-			cache.put(new Element(flag, cacheInputResult));
-			ApplicationCache.notify(Person.class);
-			ApplicationCache.notify(Group.class);
-			ApplicationCache.notify(Role.class);
-			ApplicationCache.notify(Identity.class);
-			ApplicationCache.notify(PersonAttribute.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+			CacheManager.put(business.cache(), cacheKey, cacheInputResult);
+			CacheManager.notify(Person.class);
+			CacheManager.notify(Group.class);
+			CacheManager.notify(Role.class);
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(PersonAttribute.class);
 			Wo wo = new Wo();
 			wo.setFlag(flag);
 			result.setData(wo);

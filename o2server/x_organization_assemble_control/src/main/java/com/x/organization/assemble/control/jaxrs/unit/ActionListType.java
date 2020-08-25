@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.unit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -14,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
@@ -22,8 +22,8 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListType extends BaseAction {
 
@@ -31,13 +31,13 @@ class ActionListType extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass());
-			Element element = business.cache().get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass());
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
 			} else {
 				Wo wo = this.list(effectivePerson, business);
-				business.cache().put(new Element(cacheKey, wo));
+				CacheManager.put(business.cache(), cacheKey, wo);
 				result.setData(wo);
 			}
 			return result;

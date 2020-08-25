@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -57,7 +58,7 @@ public class ActionUpdate extends BaseAction{
 			
 			emc.check(entityPerson, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(PersonCard.class);
+			CacheManager.notify(PersonCard.class);
 			
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "personCard", personCard, effectivePerson);

@@ -30,8 +30,8 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionZhengwuDingdingPerson extends BaseAction {
 
@@ -88,7 +88,8 @@ class ActionZhengwuDingdingPerson extends BaseAction {
 			cacheFileResult.setName("政务钉钉人员.xlsx");
 			Wo wo = new Wo();
 			wo.setFlag(StringTools.uniqueToken());
-			this.cache.put(new Element(wo.getFlag(), cacheFileResult));
+			CacheKey cacheKey = new CacheKey(wo.getFlag());
+			CacheManager.put(this.cacheCategory, cacheKey, cacheFileResult);
 			result.setData(wo);
 			return result;
 		}

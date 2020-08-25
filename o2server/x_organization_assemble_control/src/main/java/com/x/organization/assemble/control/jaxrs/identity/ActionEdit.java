@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.identity;
 
 import java.util.List;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +14,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -81,8 +81,8 @@ class ActionEdit extends BaseAction {
 			person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Identity.class);
-			ApplicationCache.notify(Person.class);
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(Person.class);
 			
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
