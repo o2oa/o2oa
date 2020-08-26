@@ -2,17 +2,15 @@ package com.x.portal.assemble.designer.jaxrs.page;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	static Ehcache cache = ApplicationCache.instance().getCache(Page.class);
+	static CacheCategory cache = new CacheCategory(Page.class);
 
 	void checkName(Business business, Page page) throws Exception {
 		if (StringUtils.isEmpty(page.getName())) {

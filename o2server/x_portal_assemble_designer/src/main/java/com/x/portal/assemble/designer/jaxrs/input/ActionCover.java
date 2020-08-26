@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -146,10 +147,10 @@ class ActionCover extends BaseAction {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
-		ApplicationCache.notify(Script.class);
-		ApplicationCache.notify(Page.class);
-		ApplicationCache.notify(Widget.class);
-		ApplicationCache.notify(Portal.class);
+		CacheManager.notify(Script.class);
+		CacheManager.notify(Page.class);
+		CacheManager.notify(Widget.class);
+		CacheManager.notify(Portal.class);
 
 		return portal;
 	}

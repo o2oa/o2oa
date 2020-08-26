@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -24,7 +25,7 @@ class ActionManagerDelete extends BaseAction {
 				emc.beginTransaction(Empower.class);
 				emc.remove(empower, CheckRemoveType.all);
 				emc.commit();
-				ApplicationCache.notify(Empower.class);
+				CacheManager.notify(Empower.class);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				result.setData(wo);
