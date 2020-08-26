@@ -11,22 +11,27 @@ import com.x.base.core.project.tools.ListTools;
 
 public class DumpRestoreData extends ConfigObject {
 
-	public static String TYPE_FULL = "full";
-	public static String TYPE_LITE = "lite";
+	private static final long serialVersionUID = 8910820385137391619L;
 
 	public static DumpRestoreData defaultInstance() {
 		return new DumpRestoreData();
 	}
 
-	public static final int default_batchSize = 1000;
-	public static final String default_type = TYPE_LITE;
+	public static final String TYPE_FULL = "full";
+	public static final String TYPE_LITE = "lite";
+	public static final String DEFAULT_TYPE = TYPE_LITE;
+	public static final Boolean DEFAULT_PARALLEL = true;
+	public static final Boolean DEFAULT_REDISTRIBUTE = true;
+	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
 
 	public DumpRestoreData() {
 		this.enable = false;
-		this.includes = new ArrayList<String>();
-		this.excludes = new ArrayList<String>();
-		this.batchSize = default_batchSize;
-		this.mode = default_type;
+		this.includes = new ArrayList<>();
+		this.excludes = new ArrayList<>();
+		this.mode = DEFAULT_TYPE;
+		this.parallel = DEFAULT_PARALLEL;
+		this.redistribute = DEFAULT_REDISTRIBUTE;
+		this.exceptionInvalidStorage = DEFAULT_EXCEPTIONINVALIDSTORAGE;
 	}
 
 	@FieldDescribe("是否启用.")
@@ -38,11 +43,29 @@ public class DumpRestoreData extends ConfigObject {
 	@FieldDescribe("导出导入排除对象,可以使用通配符*.")
 	private List<String> excludes;
 
-	@FieldDescribe("批量对象数量.")
-	private Integer batchSize;
-
 	@FieldDescribe("导出数据模式,lite|full,默认使用lite")
 	private String mode;
+
+	@FieldDescribe("使用并行导出,默认true")
+	private Boolean parallel;
+
+	@FieldDescribe("是否进行重新分布.")
+	private Boolean redistribute;
+
+	@FieldDescribe("无法获取storage是否升起错误.")
+	private Boolean exceptionInvalidStorage;
+
+	public Boolean getRedistribute() {
+		return BooleanUtils.isNotFalse(redistribute);
+	}
+
+	public Boolean getExceptionInvalidStorage() {
+		return BooleanUtils.isNotFalse(exceptionInvalidStorage);
+	}
+
+	public Boolean getParallel() {
+		return BooleanUtils.isNotFalse(parallel);
+	}
 
 	public String getMode() {
 		return StringUtils.equals(TYPE_FULL, mode) ? TYPE_FULL : TYPE_LITE;
@@ -68,13 +91,6 @@ public class DumpRestoreData extends ConfigObject {
 		return list;
 	}
 
-	public Integer getBatchSize() {
-		if ((null == this.batchSize) || (this.batchSize < 1)) {
-			return default_batchSize;
-		}
-		return this.batchSize;
-	}
-
 	public void setIncludes(List<String> includes) {
 		this.includes = includes;
 	}
@@ -83,8 +99,16 @@ public class DumpRestoreData extends ConfigObject {
 		this.excludes = excludes;
 	}
 
-	public void setBatchSize(Integer batchSize) {
-		this.batchSize = batchSize;
+	public void setParallel(Boolean parallel) {
+		this.parallel = parallel;
+	}
+
+	public void setRedistribute(Boolean redistribute) {
+		this.redistribute = redistribute;
+	}
+
+	public void setExceptionInvalidStorage(Boolean exceptionInvalidStorage) {
+		this.exceptionInvalidStorage = exceptionInvalidStorage;
 	}
 
 	public void setEnable(Boolean enable) {
