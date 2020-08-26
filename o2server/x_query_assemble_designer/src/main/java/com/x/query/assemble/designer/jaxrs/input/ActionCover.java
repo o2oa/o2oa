@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
@@ -158,21 +159,21 @@ class ActionCover extends BaseAction {
 		}
 		business.entityManagerContainer().commit();
 		if(!wi.getTableList().isEmpty()){
-			ApplicationCache.notify(Table.class);
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 
 			business.buildAllTable();
 		}else if(!wi.getStatementList().isEmpty()){
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Statement.class);
 		}
 		if(!wi.getViewList().isEmpty()){
-			ApplicationCache.notify(View.class);
+			CacheManager.notify(View.class);
 		}
 		if(!wi.getStatList().isEmpty()){
-			ApplicationCache.notify(Stat.class);
+			CacheManager.notify(Stat.class);
 		}
 		if(!wi.getRevealList().isEmpty()){
-			ApplicationCache.notify(Reveal.class);
+			CacheManager.notify(Reveal.class);
 		}
 
 		return query;

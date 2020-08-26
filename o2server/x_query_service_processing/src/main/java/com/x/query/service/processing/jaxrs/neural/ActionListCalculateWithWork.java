@@ -20,7 +20,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -43,8 +42,9 @@ import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.helper.ExtractTextHelper;
 import com.x.query.service.processing.helper.LanguageProcessingHelper;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionListCalculateWithWork extends BaseAction {
 
@@ -63,10 +63,10 @@ class ActionListCalculateWithWork extends BaseAction {
 				throw new ExceptionModelNotReady(model.getName());
 			}
 			NeuralNetwork<MomentumBackpropagation> neuralNetwork = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), model.getId());
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				neuralNetwork = ((NeuralNetwork<MomentumBackpropagation>) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), model.getId());
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				neuralNetwork = ((NeuralNetwork<MomentumBackpropagation>) optional.get());
 			} else {
 				if (StringUtils.isEmpty(model.getNnet())) {
 					throw new ExceptionModelNotReady(model.getName());
@@ -75,7 +75,7 @@ class ActionListCalculateWithWork extends BaseAction {
 				NeuralNetworkCODEC.array2network(
 						DoubleTools.byteToDoubleArray(ByteTools.decompressBase64String(model.getNnet())),
 						neuralNetwork);
-				cache.put(new Element(cacheKey, neuralNetwork));
+				CacheManager.put(cache, cacheKey, neuralNetwork);
 			}
 			Wo wo = new Wo();
 			Work work = emc.flag(workId, Work.class);

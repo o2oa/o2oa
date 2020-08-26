@@ -16,8 +16,8 @@ import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.*;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionSelect extends BaseAction {
 
@@ -39,7 +39,8 @@ class ActionSelect extends BaseAction {
 			cacheObject.setName(query.getName());
 			cacheObject.setQuery(wrapQuery);
 			String flag = StringTools.uniqueToken();
-			this.cache.put(new Element(flag, cacheObject));
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(this.cache, cacheKey, cacheObject);
 			Wo wo = XGsonBuilder.convert(wrapQuery, Wo.class);
 			wo.setFlag(flag);
 			result.setData(wo);

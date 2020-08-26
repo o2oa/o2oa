@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -109,12 +110,12 @@ class ActionCreate extends BaseAction {
 		}
 		business.entityManagerContainer().commit();
 		if(!wi.getTableList().isEmpty()){
-			ApplicationCache.notify(Table.class);
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 
 			business.buildAllTable();
 		}else if(!wi.getStatementList().isEmpty()){
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Statement.class);
 		}
 		return query;
 	}
