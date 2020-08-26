@@ -33,9 +33,9 @@ public class ActionControl extends ActionBase {
 	private static final String CMD_TD = "td";
 	private static final String CMD_EC = "ec";
 	private static final String CMD_DD = "dd";
-	private static final String CMD_DS = "ds";
+	// private static final String CMD_DS = "ds";
 	private static final String CMD_RD = "rd";
-	private static final String CMD_RS = "rs";
+	// private static final String CMD_RS = "rs";
 	private static final String CMD_CLH2 = "clh2";
 	private static final String CMD_UF = "uf";
 	private static final String CMD_DDL = "ddl";
@@ -63,12 +63,12 @@ public class ActionControl extends ActionBase {
 				ec(cmd);
 			} else if (cmd.hasOption(CMD_DD)) {
 				dd(cmd);
-			} else if (cmd.hasOption(CMD_DS)) {
-				ds(cmd);
+//			} else if (cmd.hasOption(CMD_DS)) {
+//				ds(cmd);
 			} else if (cmd.hasOption(CMD_RD)) {
 				rd(cmd);
-			} else if (cmd.hasOption(CMD_RS)) {
-				rs(cmd);
+//			} else if (cmd.hasOption(CMD_RS)) {
+//				rs(cmd);
 			} else if (cmd.hasOption(CMD_CLH2)) {
 				clh2(cmd);
 			} else if (cmd.hasOption(CMD_UF)) {
@@ -96,9 +96,9 @@ public class ActionControl extends ActionBase {
 		options.addOption(tdOption());
 		options.addOption(ecOption());
 		options.addOption(ddOption());
-		options.addOption(dsOption());
+		// options.addOption(dsOption());
 		options.addOption(rdOption());
-		options.addOption(rsOption());
+		// options.addOption(rsOption());
 		options.addOption(clh2Option());
 		options.addOption(ufOption());
 		options.addOption(ddlOption());
@@ -145,20 +145,20 @@ public class ActionControl extends ActionBase {
 				.desc("导出数据库服务器的数据转换成json格式保存到本地文件.").build();
 	}
 
-	private static Option dsOption() {
-		return Option.builder("ds").longOpt("dumpStorage").argName("path").hasArg().optionalArg(true)
-				.desc("导出存储服务器的文件数据转换成json格式保存到本地文件.").build();
-	}
+//	private static Option dsOption() {
+//		return Option.builder("ds").longOpt("dumpStorage").argName("path").hasArg().optionalArg(true)
+//				.desc("导出存储服务器的文件数据转换成json格式保存到本地文件.").build();
+//	}
 
 	private static Option rdOption() {
 		return Option.builder("rd").longOpt("restoreData").argName("path or date").hasArg()
 				.desc("将导出的json格式数据恢复到数据库服务器.").build();
 	}
 
-	private static Option rsOption() {
-		return Option.builder("rs").longOpt("restoreStorage").argName("path or date").hasArg()
-				.desc("将导出的json格式文件数据恢复到存储服务器.").build();
-	}
+//	private static Option rsOption() {
+//		return Option.builder("rs").longOpt("restoreStorage").argName("path or date").hasArg()
+//				.desc("将导出的json格式文件数据恢复到存储服务器.").build();
+//	}
 
 	private static Option ufOption() {
 		return Option.builder("uf").longOpt("updateFile").argName("path").hasArg().desc("升级服务器,升级前请注意备份.").build();
@@ -229,11 +229,11 @@ public class ActionControl extends ActionBase {
 		dumpData.execute(path);
 	}
 
-	private void ds(CommandLine cmd) throws Exception {
-		String path = Objects.toString(cmd.getOptionValue(CMD_DS), "");
-		DumpStorage dumpStorage = new DumpStorage();
-		dumpStorage.execute(path);
-	}
+//	private void ds(CommandLine cmd) throws Exception {
+//		String path = Objects.toString(cmd.getOptionValue(CMD_DS), "");
+//		DumpStorage dumpStorage = new DumpStorage();
+//		dumpStorage.execute(path);
+//	}
 
 	private void rd(CommandLine cmd) throws Exception {
 		String path = Objects.toString(cmd.getOptionValue(CMD_RD), "");
@@ -241,11 +241,11 @@ public class ActionControl extends ActionBase {
 		restoreData.execute(path);
 	}
 
-	private void rs(CommandLine cmd) throws Exception {
-		String path = Objects.toString(cmd.getOptionValue(CMD_RS), "");
-		RestoreStorage restoreStorage = new RestoreStorage();
-		restoreStorage.execute(path);
-	}
+//	private void rs(CommandLine cmd) throws Exception {
+//		String path = Objects.toString(cmd.getOptionValue(CMD_RS), "");
+//		RestoreStorage restoreStorage = new RestoreStorage();
+//		restoreStorage.execute(path);
+//	}
 
 	private void hs(CommandLine cmd) {
 		final Integer repeat = this.getArgInteger(cmd, CMD_HS, 1);
