@@ -17,15 +17,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.personal.AbstractFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
-import net.sf.ehcache.Element;
 
 public class PersonFactory extends AbstractFactory {
 
@@ -38,14 +39,13 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		Element element = this.business.cache().get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Person) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+		Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+		if (optional.isPresent()) {
+			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			this.business.cache().put(new Element(flag, o));
+			CacheManager.put(business.cache(), cacheKey, o);
 		}
 		return o;
 	}
@@ -84,14 +84,13 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = this.business.cache().get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Person) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				this.business.cache().put(new Element(str, o));
+				CacheManager.put(business.cache(), cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}

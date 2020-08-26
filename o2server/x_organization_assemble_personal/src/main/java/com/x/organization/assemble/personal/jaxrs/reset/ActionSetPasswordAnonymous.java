@@ -1,5 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs.reset;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -98,7 +99,7 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 				emc.beginTransaction(Person.class);
 				business.person().setPassword(person, wi.getNewPassword());
 				emc.commit();
-				ApplicationCache.notify(Person.class);
+				CacheManager.notify(Person.class);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				result.setData(wo);

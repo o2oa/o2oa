@@ -9,17 +9,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.wrap.WrapPortal;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache cache = ApplicationCache.instance().getCache(CacheObject.class);
+	protected CacheCategory cache = new CacheCategory(CacheObject.class);
 
 	protected <T extends JpaObject> List<String> listWithPortal(Business business, Portal portal, Class<T> cls)
 			throws Exception {

@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.file;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -43,7 +44,7 @@ class ActionUpload extends BaseAction {
 				file.setFileName(fileName);
 			}
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);

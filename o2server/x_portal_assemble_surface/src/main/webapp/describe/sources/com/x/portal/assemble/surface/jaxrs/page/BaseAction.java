@@ -2,16 +2,14 @@ package com.x.portal.assemble.surface.jaxrs.page;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.core.entity.Page;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	Ehcache pageCache = ApplicationCache.instance().getCache(Page.class);
+	CacheCategory pageCache = new CacheCategory(Page.class);
 
 	protected boolean isNotLoginPage(String id) throws Exception {
 		return !(Config.portal().getIndexPage().getEnable()
