@@ -1,7 +1,6 @@
 package com.x.organization.assemble.personal;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.instrument.Instrument;
 import com.x.organization.assemble.personal.factory.GroupFactory;
 import com.x.organization.assemble.personal.factory.IdentityFactory;
@@ -11,27 +10,21 @@ import com.x.organization.assemble.personal.factory.RoleFactory;
 import com.x.organization.assemble.personal.factory.UnitAttributeFactory;
 import com.x.organization.assemble.personal.factory.UnitDutyFactory;
 import com.x.organization.assemble.personal.factory.UnitFactory;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.Role;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitAttribute;
-import com.x.organization.core.entity.UnitDuty;
-
-import net.sf.ehcache.Ehcache;
+import com.x.organization.core.entity.*;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.organization.core.entity.accredit.Empower;
 
 public class Business {
 
 	private EntityManagerContainer emc;
 
-	private Ehcache cache;
+	private CacheCategory cache;
 
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
-		this.cache = ApplicationCache.instance().getCache(Group.class, Role.class, Person.class, PersonAttribute.class,
-				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class);
+		this.cache = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class,
+				Unit.class, UnitDuty.class, UnitAttribute.class, Identity.class, Definition.class,
+				Empower.class, Custom.class);
 	}
 
 	public EntityManagerContainer entityManagerContainer() {
@@ -119,7 +112,7 @@ public class Business {
 		return instrument;
 	}
 
-	public Ehcache cache() {
+	public CacheCategory cache() {
 		return cache;
 	}
 

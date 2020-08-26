@@ -8,19 +8,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.portal.assemble.surface.AbstractFactory;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Page_;
 import com.x.portal.core.entity.Portal;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class PageFactory extends AbstractFactory {
 
-	static Ehcache pageCache = ApplicationCache.instance().getCache(Page.class);
+	static CacheCategory cache = new CacheCategory(Page.class);
 
 	public PageFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);
@@ -37,15 +37,15 @@ public class PageFactory extends AbstractFactory {
 	}
 
 	public Page pick(String id) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(id);
-		Element element = pageCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Page) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(id);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (Page) optional.get();
 		} else {
 			Page o = this.business().entityManagerContainer().find(id, Page.class);
 			if (null != o) {
 				this.business().entityManagerContainer().get(Page.class).detach(o);
-				pageCache.put(new Element(id, o));
+				CacheManager.put(cache, cacheKey, o);
 				return o;
 			}
 			return null;
@@ -53,15 +53,15 @@ public class PageFactory extends AbstractFactory {
 	}
 
 	public Page pick(Portal portal, String flag) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(portal.getId(), flag);
-		Element element = pageCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Page) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(portal.getId(), flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (Page) optional.get();
 		} else {
 			Page o = entityManagerContainer().restrictFlag(flag, Page.class, Page.portal_FIELDNAME, portal.getId());
 			if (null != o) {
 				this.business().entityManagerContainer().get(Page.class).detach(o);
-				pageCache.put(new Element(cacheKey, o));
+				CacheManager.put(cache, cacheKey, o);
 				return o;
 			}
 			return null;
