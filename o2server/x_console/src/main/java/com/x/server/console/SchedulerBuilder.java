@@ -28,14 +28,14 @@ public class SchedulerBuilder {
 					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpData().cron())).build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
-		if (Config.currentNode().dumpStorage().enable() && Config.currentNode().dumpStorage().available()) {
-			JobDetail jobDetail = JobBuilder.newJob(DumpStorageTask.class)
-					.withIdentity(DumpStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
-					.build();
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpStorageTask.class.getName(), scheduleGroup)
-					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpStorage().cron())).build();
-			scheduler.scheduleJob(jobDetail, trigger);
-		}
+//		if (Config.currentNode().dumpStorage().enable() && Config.currentNode().dumpStorage().available()) {
+//			JobDetail jobDetail = JobBuilder.newJob(DumpStorageTask.class)
+//					.withIdentity(DumpStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
+//					.build();
+//			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(DumpStorageTask.class.getName(), scheduleGroup)
+//					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().dumpStorage().cron())).build();
+//			scheduler.scheduleJob(jobDetail, trigger);
+//		}
 		if (Config.currentNode().restoreData().enable() && Config.currentNode().restoreData().available()) {
 			JobDetail jobDetail = JobBuilder.newJob(RestoreDataTask.class)
 					.withIdentity(RestoreDataTask.class.getName(), scheduleGroup).withDescription(Config.node())
@@ -44,16 +44,16 @@ public class SchedulerBuilder {
 					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreData().cron())).build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
-		if (Config.currentNode().restoreStorage().enable() && Config.currentNode().restoreStorage().available()) {
-			JobDetail jobDetail = JobBuilder.newJob(RestoreStorageTask.class)
-					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
-					.build();
-			Trigger trigger = TriggerBuilder.newTrigger()
-					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup)
-					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreStorage().cron()))
-					.build();
-			scheduler.scheduleJob(jobDetail, trigger);
-		}
+//		if (Config.currentNode().restoreStorage().enable() && Config.currentNode().restoreStorage().available()) {
+//			JobDetail jobDetail = JobBuilder.newJob(RestoreStorageTask.class)
+//					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup).withDescription(Config.node())
+//					.build();
+//			Trigger trigger = TriggerBuilder.newTrigger()
+//					.withIdentity(RestoreStorageTask.class.getName(), scheduleGroup)
+//					.withSchedule(CronScheduleBuilder.cronSchedule(Config.currentNode().restoreStorage().cron()))
+//					.build();
+//			scheduler.scheduleJob(jobDetail, trigger);
+//		}
 		this.registApplicationsAndVoteCenterTask(scheduler, scheduleGroup);
 		return scheduler;
 

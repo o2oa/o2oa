@@ -19,6 +19,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ContainerTable;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.entity.StorageObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.Module;
@@ -44,6 +46,7 @@ public class CheckCore {
 			checkTableNameUniqueConstraintName(classes);
 			checkIdCreateTimeUpdateTimeSequenceIndex(classes);
 			checkEnum(classes);
+			checkDumpSize(classes);
 		}
 	}
 
@@ -215,12 +218,28 @@ public class CheckCore {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
 			for (Field field : fields) {
-				if ((!String.class.isAssignableFrom(field.getType())) && (!field.getType().isEnum())) {
-					Column column = field.getAnnotation(Column.class);
-					if (column.length() != 255) {
-						System.err.println(String.format("checkColumnLength error: class: %s, field: %s.",
-								cls.getName(), field.getName()));
+				if ((!String.class.isAssignableFrom(field.getType())) && (!field.getType().isEnum())
+						&& (!JsonProperties.class.isAssignableFrom(field.getType()))) {
+					Lob lob = cls.getAnnotation(Lob.class);
+					if (null != lob) {
+						Column column = field.getAnnotation(Column.class);
+						if (column.length() > 255) {
+							System.err.println(String.format("checkColumnLength error: class: %s, field: %s.",
+									cls.getName(), field.getName()));
+						}
 					}
+				}
+			}
+		}
+	}
+
+	/* 检查StorageObject的dumpSize是否设置正确 */
+	public static void checkDumpSize(List<Class<?>> classes) throws Exception {
+		for (Class<?> cls : classes) {
+			if (StorageObject.class.isAssignableFrom(cls)) {
+				ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
+				if (containerEntity.dumpSize() > 10) {
+					System.err.println(String.format("checkDumpSize error: class: %s.", cls.getName()));
 				}
 			}
 		}

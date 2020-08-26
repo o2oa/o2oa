@@ -1,16 +1,16 @@
 package com.x.base.core.project.config;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.tools.DateTools;
+
 public class Node extends ConfigObject {
 
-	public static final Integer default_nodeAgentPort = 20010;
-	public static final String default_banner = "O2OA";
-	public static final Integer default_logSize = 14;
+	public static final Integer DEFAULT_NODEAGENTPORT = 20010;
+	public static final String DEFAULT_BANNER = "O2OA";
+	public static final Integer DEFAULT_LOGSIZE = 14;
 
 	public static Node defaultInstance() {
 		Node o = new Node();
@@ -23,12 +23,10 @@ public class Node extends ConfigObject {
 		o.storage = StorageServer.defaultInstance();
 		o.logLevel = "warn";
 		o.dumpData = new ScheduleDumpData();
-		o.dumpStorage = new ScheduleDumpStorage();
 		o.restoreData = new ScheduleRestoreData();
-		o.restoreStorage = new ScheduleRestoreStorage();
 		o.nodeAgentEnable = true;
 		o.nodeAgentEncrypt = true;
-		o.nodeAgentPort = default_nodeAgentPort;
+		o.nodeAgentPort = DEFAULT_NODEAGENTPORT;
 		o.quickStartWebApp = false;
 		o.autoStart = true;
 		return o;
@@ -52,12 +50,8 @@ public class Node extends ConfigObject {
 	private String logLevel;
 	@FieldDescribe("定时数据导出配置")
 	private ScheduleDumpData dumpData;
-	@FieldDescribe("定时存储文件导出配置")
-	private ScheduleDumpStorage dumpStorage;
 	@FieldDescribe("定时数据导入配置")
 	private ScheduleRestoreData restoreData;
-	@FieldDescribe("定时存储文件导入配置")
-	private ScheduleRestoreStorage restoreStorage;
 	@FieldDescribe("日志文件保留天数.")
 	private Integer logSize;
 	@FieldDescribe("审计日志文件保留天数.")
@@ -83,7 +77,6 @@ public class Node extends ConfigObject {
 	}
 	/* 20191009兼容centerServer end */
 
- 
 	public Boolean getEraseContentEnable() {
 		return BooleanUtils.isNotFalse(eraseContentEnable);
 	}
@@ -136,14 +129,14 @@ public class Node extends ConfigObject {
 	}
 
 	public String getBanner() {
-		return StringUtils.isBlank(this.banner) ? default_banner : this.banner;
+		return StringUtils.isBlank(this.banner) ? DEFAULT_BANNER : this.banner;
 	}
 
 	public Integer logSize() {
 		if ((this.logSize != null) && (this.logSize > 0)) {
 			return this.logSize;
 		}
-		return default_logSize;
+		return DEFAULT_LOGSIZE;
 	}
 
 	public Boolean getQuickStartWebApp() {
@@ -152,7 +145,7 @@ public class Node extends ConfigObject {
 
 	public Integer nodeAgentPort() {
 		if (null == this.nodeAgentPort || this.nodeAgentPort < 0) {
-			return default_nodeAgentPort;
+			return DEFAULT_NODEAGENTPORT;
 		}
 		return this.nodeAgentPort;
 	}
@@ -173,16 +166,8 @@ public class Node extends ConfigObject {
 		return (dumpData == null) ? new ScheduleDumpData() : this.dumpData;
 	}
 
-	public ScheduleDumpStorage dumpStorage() {
-		return (dumpStorage == null) ? new ScheduleDumpStorage() : this.dumpStorage;
-	}
-
 	public ScheduleRestoreData restoreData() {
 		return (restoreData == null) ? new ScheduleRestoreData() : this.restoreData;
-	}
-
-	public ScheduleRestoreStorage restoreStorage() {
-		return (restoreStorage == null) ? new ScheduleRestoreStorage() : this.restoreStorage;
 	}
 
 	public static class ScheduleDumpData extends ConfigObject {
@@ -225,83 +210,10 @@ public class Node extends ConfigObject {
 
 	}
 
-	public static class ScheduleDumpStorage extends ConfigObject {
-
-		public static ScheduleDumpStorage defaultInstance() {
-			return new ScheduleDumpStorage();
-		}
-
-		public boolean available() {
-			return DateTools.cronAvailable(this.cron());
-		}
-
-		@FieldDescribe("是否启用,默认每天凌晨4点进行备份.")
-		private Boolean enable = true;
-
-		@FieldDescribe("定时任务cron表达式")
-		private String cron = "";
-
-		@FieldDescribe("最大保留份数,超过将自动删除最久的数据.")
-		private Integer size = 7;
-
-		@FieldDescribe("备份路径")
-		private String path = "";
-
-		public Boolean enable() {
-			return (BooleanUtils.isTrue(this.enable)) ? true : false;
-		}
-
-		public String cron() {
-			return (null == cron) ? "5 0 4 * * ?" : this.cron;
-		}
-
-		public Integer size() {
-			return (null == size) ? 14 : this.size;
-		}
-
-		public String path() {
-			return StringUtils.trim(path);
-		}
-
-	}
-
 	public static class ScheduleRestoreData extends ConfigObject {
 
 		public static ScheduleRestoreData defaultInstance() {
 			return new ScheduleRestoreData();
-		}
-
-		public boolean available() {
-			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
-		}
-
-		@FieldDescribe("是否启用.")
-		private Boolean enable = false;
-
-		@FieldDescribe("定时任务cron表达式")
-		private String cron = "";
-
-		@FieldDescribe("恢复路径")
-		private String path = "";
-
-		public Boolean enable() {
-			return (BooleanUtils.isTrue(this.enable)) ? true : false;
-		}
-
-		public String cron() {
-			return (null == cron) ? "" : this.cron;
-		}
-
-		public String path() {
-			return StringUtils.trim(path);
-		}
-
-	}
-
-	public static class ScheduleRestoreStorage extends ConfigObject {
-
-		public static ScheduleRestoreStorage defaultInstance() {
-			return new ScheduleRestoreStorage();
 		}
 
 		public boolean available() {
