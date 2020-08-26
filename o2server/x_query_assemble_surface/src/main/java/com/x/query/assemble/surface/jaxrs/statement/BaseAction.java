@@ -1,25 +1,22 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.express.statement.Runtime;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache cache = ApplicationCache.instance().getCache(Statement.class);
+	protected CacheCategory cache = new CacheCategory(Statement.class);
 
 	protected Runtime runtime(EffectivePerson effectivePerson, JsonElement jsonElement, Business business, Integer page,
 			Integer size) throws Exception {
