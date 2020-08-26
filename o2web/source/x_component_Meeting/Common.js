@@ -712,7 +712,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
 
 
-        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:100px;height:130px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:150px;height:180px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr>"+
             "   <td styles='formTableTitle' width='70'>"+this.lp.applyPerson+":</td>" +
@@ -934,15 +934,16 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             var img = new Element("img",{
                 src : "data:image/png;base64,"+json.data.image,
                 styles : {
-                    width : "100px",
-                    height : "100px"
+                    width : "150px",
+                    height : "150px"
                 }
             }).inject( this.qrCodeArea );
             var div = new Element("div",{
                 text : "打印签到二维码",
                 styles : {
-                    color : "#3c75b7",
-                    cursor : "pointer"
+                    "color" : "#3c75b7",
+                    "cursor" : "pointer",
+                    "text-align": "center"
                 },
                 events : {
                     click : function(){
