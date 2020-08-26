@@ -6,8 +6,9 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.tools.DefaultCharset;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionSelectFile extends BaseAction {
 
@@ -16,11 +17,12 @@ class ActionSelectFile extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			Element element = cache.get(flag);
-			if (null == element || null == element.getObjectValue()) {
+			CacheKey cacheKey = new CacheKey(flag);
+			Optional<?> optional = CacheManager.get(this.cache, cacheKey);
+			if (!optional.isPresent()) {
 				throw new ExceptionFlagNotExist(flag);
 			}
-			CacheObject cacheObject = (CacheObject) element.getObjectValue();
+			CacheObject cacheObject = (CacheObject) optional.get();
 			Wo wo = new Wo(gson.toJson(cacheObject.getQuery()).getBytes(DefaultCharset.name),
 					this.contentType(true, cacheObject.getName() + extension),
 					this.contentDisposition(true, cacheObject.getName() + extension));

@@ -2,6 +2,7 @@ package com.x.query.assemble.designer.jaxrs.table;
 
 import java.util.Date;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -70,7 +71,7 @@ class ActionCreate extends BaseAction {
 			table.setBuildSuccess(false);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Table.class);
+			CacheManager.notify(Table.class);
 			Wo wo = new Wo();
 			wo.setId(table.getId());
 			result.setData(wo);

@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -12,8 +11,9 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.Business;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionExcelResult extends BaseAction {
 
@@ -24,10 +24,10 @@ class ActionExcelResult extends BaseAction {
 			logger.info("{}", flag);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(flag);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				ExcelResultObject obj = (ExcelResultObject) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(flag);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				ExcelResultObject obj = (ExcelResultObject) optional.get();
 				if (!StringUtils.equals(effectivePerson.getDistinguishedName(), obj.getPerson())) {
 					throw new ExceptionAccessDenied(effectivePerson);
 				}

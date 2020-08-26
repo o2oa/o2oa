@@ -2,6 +2,7 @@ package com.x.query.assemble.designer.jaxrs.statement;
 
 import java.util.Date;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -67,7 +68,7 @@ class ActionCreate extends BaseAction {
 			statement.setLastUpdateTime(new Date());
 			emc.persist(statement, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Statement.class);
 			Wo wo = new Wo();
 			wo.setId(statement.getId());
 			result.setData(wo);
