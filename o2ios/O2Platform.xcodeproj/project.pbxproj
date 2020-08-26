@@ -187,6 +187,11 @@
 		B167F7632362BFC200F182B8 /* CloudFileMoveFolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B167F7622362BFC200F182B8 /* CloudFileMoveFolderController.swift */; };
 		B167F7662362C60200F182B8 /* CloudFileMoveFolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B167F7642362C60200F182B8 /* CloudFileMoveFolderCell.swift */; };
 		B167F7672362C60200F182B8 /* CloudFileMoveFolderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B167F7652362C60200F182B8 /* CloudFileMoveFolderCell.xib */; };
+		B168BDC724F5FFA10070329F /* ScanQRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B168BDC624F5FFA10070329F /* ScanQRViewController.swift */; };
+		B168BDC924F5FFA80070329F /* ScanRecoObj.swift in Sources */ = {isa = PBXBuildFile; fileRef = B168BDC824F5FFA80070329F /* ScanRecoObj.swift */; };
+		B168BDCC24F607520070329F /* QRCodeResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B168BDCA24F607520070329F /* QRCodeResultViewController.swift */; };
+		B168BDCD24F607520070329F /* QRCodeResultViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B168BDCB24F607520070329F /* QRCodeResultViewController.xib */; };
+		B168BDCF24F62BA60070329F /* O2CanCopyUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B168BDCE24F62BA60070329F /* O2CanCopyUILabel.swift */; };
 		B169E3D421095EC9007156B3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B169E3D321095EC9007156B3 /* Date+Extension.swift */; };
 		B17126C121084A2F00369F15 /* calendar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B17126C021084A2F00369F15 /* calendar.storyboard */; };
 		B1750078233C6908003DA7B9 /* BlockPan.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750072233C6907003DA7B9 /* BlockPan.swift */; };
@@ -1532,6 +1537,11 @@
 		B167F7622362BFC200F182B8 /* CloudFileMoveFolderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileMoveFolderController.swift; sourceTree = "<group>"; };
 		B167F7642362C60200F182B8 /* CloudFileMoveFolderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFileMoveFolderCell.swift; sourceTree = "<group>"; };
 		B167F7652362C60200F182B8 /* CloudFileMoveFolderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CloudFileMoveFolderCell.xib; sourceTree = "<group>"; };
+		B168BDC624F5FFA10070329F /* ScanQRViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanQRViewController.swift; sourceTree = "<group>"; };
+		B168BDC824F5FFA80070329F /* ScanRecoObj.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanRecoObj.swift; sourceTree = "<group>"; };
+		B168BDCA24F607520070329F /* QRCodeResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeResultViewController.swift; sourceTree = "<group>"; };
+		B168BDCB24F607520070329F /* QRCodeResultViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QRCodeResultViewController.xib; sourceTree = "<group>"; };
+		B168BDCE24F62BA60070329F /* O2CanCopyUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = O2CanCopyUILabel.swift; sourceTree = "<group>"; };
 		B169E3D321095EC9007156B3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		B17126C021084A2F00369F15 /* calendar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = calendar.storyboard; sourceTree = "<group>"; };
 		B1750072233C6907003DA7B9 /* BlockPan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockPan.swift; sourceTree = "<group>"; };
@@ -2869,6 +2879,14 @@
 			path = Presentr;
 			sourceTree = "<group>";
 		};
+		B168BD9724F5FF410070329F /* m */ = {
+			isa = PBXGroup;
+			children = (
+				B168BDC824F5FFA80070329F /* ScanRecoObj.swift */,
+			);
+			path = m;
+			sourceTree = "<group>";
+		};
 		B18FFF3323756B24001B2887 /* JpushAPI */ = {
 			isa = PBXGroup;
 			children = (
@@ -3020,6 +3038,7 @@
 				090253DD1F0E8BA6006B1609 /* O2LoadingView.swift */,
 				B1298EB323682C21006E9236 /* O2SlideImageAFSource.swift */,
 				B1E95F4D2373DDC4004876B7 /* ZoomImageView.swift */,
+				B168BDCE24F62BA60070329F /* O2CanCopyUILabel.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -3447,6 +3466,7 @@
 		E45CD4211DFE503C008F99AD /* Scan-二维码扫码 */ = {
 			isa = PBXGroup;
 			children = (
+				B168BD9724F5FF410070329F /* m */,
 				E45CD4221DFE503C008F99AD /* c */,
 			);
 			path = "Scan-二维码扫码";
@@ -3455,8 +3475,11 @@
 		E45CD4221DFE503C008F99AD /* c */ = {
 			isa = PBXGroup;
 			children = (
+				B168BDC624F5FFA10070329F /* ScanQRViewController.swift */,
 				B1B21459216073B400D9CA7E /* ScanHelper.swift */,
 				E457558C1E0BA26000EC44F4 /* NewScanViewController.swift */,
+				B168BDCA24F607520070329F /* QRCodeResultViewController.swift */,
+				B168BDCB24F607520070329F /* QRCodeResultViewController.xib */,
 			);
 			path = c;
 			sourceTree = "<group>";
@@ -5628,6 +5651,7 @@
 				E46E6CAE1DD41F5D00AB7561 /* ZSSundo@2x.png in Resources */,
 				E46E6C921DD41F5D00AB7561 /* ZSSlink@2x.png in Resources */,
 				E4C24B4920844F3C00E426B0 /* JCMessageImageCollectionViewCell.xib in Resources */,
+				B168BDCD24F607520070329F /* QRCodeResultViewController.xib in Resources */,
 				E4C24C1820844F5200E426B0 /* yh_image_picked@2x.png in Resources */,
 				E45755A61E0BA72E00EC44F4 /* qrcode_scan_part_net.png in Resources */,
 				B1489B52248E192D009EE9FD /* IMChatMessageViewCell.xib in Resources */,
@@ -6236,6 +6260,7 @@
 				B12FD1D42283D5B700E636BA /* ThemeStatePicker.swift in Sources */,
 				E4B888FF1D9D48F1002E1A46 /* MainTodoTaskCell.swift in Sources */,
 				B1B6A8F9217710C800C10F3C /* FaceRecognizeAPI.swift in Sources */,
+				B168BDCF24F62BA60070329F /* O2CanCopyUILabel.swift in Sources */,
 				B1EE2CD02281771600842F48 /* O2JsApiUtil.swift in Sources */,
 				E4B6975020762EA00062F6E8 /* OOPasswordTextField.swift in Sources */,
 				E491664C1E03C09C006133C5 /* O2Account.swift in Sources */,
@@ -6385,6 +6410,7 @@
 				E4B6982E207B5BC30062F6E8 /* UIViewController+Extension.swift in Sources */,
 				E4C24B8B20844F3C00E426B0 /* JCBusinessCardContent.swift in Sources */,
 				E491664E1E03D2C1006133C5 /* O2CountdownButton.swift in Sources */,
+				B168BDC724F5FFA10070329F /* ScanQRViewController.swift in Sources */,
 				E4E212491E74F96400B1544D /* MainTaskSecondViewController.swift in Sources */,
 				09E02E021F12736C00579887 /* PersonV2.swift in Sources */,
 				B1B0102F23586B34002BF874 /* CFFileTableViewCell.swift in Sources */,
@@ -6436,6 +6462,7 @@
 				09E02E971F16319600579887 /* UIImageView+Haneke.swift in Sources */,
 				E4B8887D1D9D48F1002E1A46 /* FileMyDownloadViewController.swift in Sources */,
 				E4C24B6620844F3C00E426B0 /* DLFixedTabbarView.m in Sources */,
+				B168BDCC24F607520070329F /* QRCodeResultViewController.swift in Sources */,
 				B18398B3249B4154001C6FAA /* IMShowLocationViewController.swift in Sources */,
 				E4C24B3520844F3C00E426B0 /* NSLayoutConstraint+JChat.swift in Sources */,
 				E45DA9121DAF7EBE00E0735D /* SZKCleanCache.m in Sources */,
@@ -6494,6 +6521,7 @@
 				E4C24C0E20844F4400E426B0 /* JCAddFriendViewController.swift in Sources */,
 				E428AF6720AEA5E300D964B9 /* OOAttandanceSettingDataView.swift in Sources */,
 				E40502C520722208009A8D30 /* ImagePickerController.swift in Sources */,
+				B168BDC924F5FFA80070329F /* ScanRecoObj.swift in Sources */,
 				E4C24B7320844F3C00E426B0 /* JCCEmoticonGroup.swift in Sources */,
 				E4C24BB720844F3C00E426B0 /* JCEmoticonPreviewer.swift in Sources */,
 				8840A992248CDC9D005970A5 /* OOCalendarEditRemarkViewController.swift in Sources */,

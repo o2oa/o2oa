@@ -50,10 +50,8 @@ open class LBXScanViewController: UIViewController, UIImagePickerControllerDeleg
         // Do any additional setup after loading the view.
         
               // [self.view addSubview:_qRScanView];
-        print("viewDidLoad...........")
         self.view.backgroundColor = UIColor.black
         self.edgesForExtendedLayout = UIRectEdge(rawValue: 0)
-         print("viewDidLoad......end.....")
         
         drawScanView()
         
@@ -71,22 +69,18 @@ open class LBXScanViewController: UIViewController, UIImagePickerControllerDeleg
  
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-         print("viewWillAppear...........")
     }
     
     override open func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
-        print("viewDidAppear...........")
         
     }
     
     @objc open func startScan()
     {
-        print("startScan.     .................")
         if (scanObj == nil)
         {
-            print("scanObj   oooo..................")
             var cropRect = CGRect.zero
             if isOpenInterestRect
             {
@@ -96,7 +90,7 @@ open class LBXScanViewController: UIViewController, UIImagePickerControllerDeleg
             //指定识别几种码
             if arrayCodeType == nil
             {
-                arrayCodeType = [AVMetadataObject.ObjectType.qr as NSString ,AVMetadataObject.ObjectType.ean13 as NSString ,AVMetadataObject.ObjectType.code128 as NSString] as [AVMetadataObject.ObjectType]
+                arrayCodeType = [AVMetadataObject.ObjectType.qr as NSString] as [AVMetadataObject.ObjectType]
             }
             
             scanObj = LBXScanWrapper(videoPreView: self.view,objType:arrayCodeType!, isCaptureImg: isNeedCodeImage,cropRect:cropRect, success: { [weak self] (arrayResult) -> Void in
@@ -113,20 +107,16 @@ open class LBXScanViewController: UIViewController, UIImagePickerControllerDeleg
         
         //结束相机等待提示
         qRScanView?.deviceStopReadying()
-        print("qRScanView   deviceStopReadying..................")
         //开始扫描动画
         qRScanView?.startScanAnimation()
-        print("qRScanView   startScanAnimation..................")
         //相机运行
         scanObj?.start()
-        print("scanObj   start..................")
     }
     
     open func drawScanView()
     {
         if qRScanView == nil
         {
-            print("drawScanView..................")
             qRScanView = LBXScanView(frame: self.view.frame,vstyle:scanStyle! )
             self.view.addSubview(qRScanView!)
             delegate?.drawwed()
