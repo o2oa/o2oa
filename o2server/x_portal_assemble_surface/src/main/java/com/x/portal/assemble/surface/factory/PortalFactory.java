@@ -8,7 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -16,13 +15,14 @@ import com.x.portal.assemble.surface.AbstractFactory;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Portal_;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class PortalFactory extends AbstractFactory {
 
-	static Ehcache portalCache = ApplicationCache.instance().getCache(Portal.class);
+	static CacheCategory cache = new CacheCategory(Portal.class);
 
 	public PortalFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);
@@ -78,15 +78,15 @@ public class PortalFactory extends AbstractFactory {
 	}
 
 	public Portal pick(String flag) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(flag);
-		Element element = portalCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Portal) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (Portal) optional.get();
 		} else {
 			Portal o = this.business().entityManagerContainer().flag(flag, Portal.class);
 			if (null != o) {
 				this.business().entityManagerContainer().get(Portal.class).detach(o);
-				portalCache.put(new Element(flag, o));
+				CacheManager.put(cache, cacheKey, o);
 				return o;
 			}
 			return null;

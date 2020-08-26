@@ -14,14 +14,14 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.organization.assemble.personal.AbstractFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.PersonAttribute;
 import com.x.organization.core.entity.PersonAttribute_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class PersonAttributeFactory extends AbstractFactory {
 
@@ -34,14 +34,13 @@ public class PersonAttributeFactory extends AbstractFactory {
 			return null;
 		}
 		PersonAttribute o = null;
-		Element element = this.business.cache().get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (PersonAttribute) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+		Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+		if (optional.isPresent()) {
+			o = (PersonAttribute) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			this.business.cache().put(new Element(flag, o));
+			CacheManager.put(business.cache(), cacheKey, o);
 		}
 		return o;
 	}
@@ -80,14 +79,13 @@ public class PersonAttributeFactory extends AbstractFactory {
 	public List<PersonAttribute> pick(List<String> flags) throws Exception {
 		List<PersonAttribute> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = this.business.cache().get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((PersonAttribute) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				list.add((PersonAttribute) optional.get());
 			} else {
 				PersonAttribute o = this.pickObject(str);
-				this.business.cache().put(new Element(str, o));
+				CacheManager.put(business.cache(), cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}

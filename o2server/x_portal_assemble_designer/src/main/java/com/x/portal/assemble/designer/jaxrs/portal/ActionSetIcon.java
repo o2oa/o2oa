@@ -7,6 +7,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.imgscalr.Scalr;
@@ -45,7 +46,7 @@ class ActionSetIcon extends BaseAction {
 			portal.setIcon(icon);
 			emc.commit();
 			Wo wo = new Wo();
-			ApplicationCache.notify(Portal.class);
+			CacheManager.notify(Portal.class);
 			wo.setId(portal.getId());
 			result.setData(wo);
 			return result;

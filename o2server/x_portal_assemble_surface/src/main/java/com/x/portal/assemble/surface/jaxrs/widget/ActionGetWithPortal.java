@@ -5,14 +5,14 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Widget;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionGetWithPortal extends BaseAction {
 
@@ -21,10 +21,10 @@ class ActionGetWithPortal extends BaseAction {
 		Wo wo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, portalFlag);
-			Element element = widgetCache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, portalFlag);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 				Portal portal = business.portal().pick(wo.getPortal());
 				if (!business.portal().visible(effectivePerson, portal)) {
 					throw new ExceptionPortalAccessDenied(effectivePerson.getDistinguishedName(), portal.getName(),
@@ -45,7 +45,7 @@ class ActionGetWithPortal extends BaseAction {
 				}
 				wo = Wo.copier.copy(widget);
 				wo.setData(widget.getDataOrMobileData());
-				widgetCache.put(new Element(cacheKey, wo));
+				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
 			return result;
