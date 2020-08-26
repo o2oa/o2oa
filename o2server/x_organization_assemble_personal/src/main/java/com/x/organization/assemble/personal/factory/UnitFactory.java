@@ -21,8 +21,9 @@ import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class UnitFactory extends AbstractFactory {
 
@@ -35,14 +36,13 @@ public class UnitFactory extends AbstractFactory {
 			return null;
 		}
 		Unit o = null;
-		Element element = this.business.cache().get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Unit) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+		Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+		if (optional.isPresent()) {
+			o = (Unit) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			this.business.cache().put(new Element(flag, o));
+			CacheManager.put(business.cache(), cacheKey, o);
 		}
 		return o;
 	}
@@ -97,14 +97,13 @@ public class UnitFactory extends AbstractFactory {
 	public List<Unit> pick(List<String> flags) throws Exception {
 		List<Unit> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = this.business.cache().get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Unit) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				list.add((Unit) optional.get());
 			} else {
 				Unit o = this.pickObject(str);
-				this.business.cache().put(new Element(str, o));
+				CacheManager.put(business.cache(), cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}
