@@ -1,5 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.stat;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -50,7 +51,7 @@ class ActionCreate extends BaseAction {
 
 			emc.persist(stat, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Stat.class);
+			CacheManager.notify(Stat.class);
 			Wo wo = new Wo();
 			wo.setId(stat.getId());
 			result.setData(wo);

@@ -1,5 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.table;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,8 +32,8 @@ class ActionStatusBuild extends BaseAction {
 			table.setData(table.getDraftData());
 			table.setStatus(Table.STATUS_build);
 			emc.commit();
-			ApplicationCache.notify(Table.class);
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Table.class);
+			CacheManager.notify(Statement.class);
 			Wo wo = new Wo();
 			wo.setId(table.getId());
 			result.setData(wo);
