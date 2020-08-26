@@ -3,8 +3,11 @@ package com.x.server.console;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,11 +15,21 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.Scheduler;
 
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
@@ -34,14 +47,6 @@ import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.quartz.Scheduler;
-
 public class Main {
 
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
@@ -50,6 +55,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		String base = getBasePath();
+		pid(base);
 		scanWar(base);
 		loadJars(base);
 		/* getVersion需要FileUtils在后面运行 */
@@ -620,4 +626,12 @@ public class Main {
 		return false;
 	}
 
+	private static void pid(String base) throws IOException {
+		RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+		String jvmName = runtimeBean.getName();
+		long pid = Long.parseLong(jvmName.split("@")[0]);
+		Path path = Paths.get(base, "pid.log");
+		Files.write(path, Long.toString(pid).getBytes(), StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+	}
 }
