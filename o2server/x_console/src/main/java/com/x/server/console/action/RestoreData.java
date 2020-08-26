@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -99,8 +100,8 @@ public class RestoreData {
 				AtomicLong total = new AtomicLong(0);
 				stream.forEach(className -> {
 					String nameOfThread = Thread.currentThread().getName();
+					Thread.currentThread().setName(RestoreData.class.getName() + ":" + className);
 					try {
-						Thread.currentThread().setName(RestoreData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) Class.forName(className);
 						logger.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
@@ -135,6 +136,8 @@ public class RestoreData {
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
 					xml.getFileName().toString(),
 					PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+			EntityManager em = emf.createEntityManager();
+			em.setFlushMode(FlushModeType.COMMIT);
 			AtomicLong count = new AtomicLong(0);
 			AtomicInteger batch = new AtomicInteger(1);
 			try {
@@ -143,13 +146,12 @@ public class RestoreData {
 					throw new ExceptionDirectoryNotExist(directory);
 				}
 				StorageMappings storageMappings = Config.storageMappings();
-				this.clean(cls, emf, storageMappings, cls.getAnnotation(ContainerEntity.class));
+				this.clean(cls, em, storageMappings, cls.getAnnotation(ContainerEntity.class));
+				em.clear();
 				List<Path> paths = this.list(directory);
-				paths.stream().forEachOrdered(o -> {
+				paths.stream().forEach(o -> {
 					logger.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
-					EntityManager em = null;
 					try {
-						em = emf.createEntityManager();
 						em.getTransaction().begin();
 						JsonArray raws = this.convert(o);
 						for (JsonElement json : raws) {
@@ -165,14 +167,13 @@ public class RestoreData {
 						em.clear();
 					} catch (Exception e) {
 						logger.error(new Exception(String.format("restore error with file:%s.", o.toString()), e));
-					} finally {
-						em.close();
 					}
 				});
 				logger.print("restore data: {} completed, count: {}.", cls.getName(), count.intValue());
 			} catch (Exception e) {
 				logger.error(e);
 			} finally {
+				em.close();
 				emf.close();
 			}
 			return count.longValue();
@@ -219,15 +220,13 @@ public class RestoreData {
 			return jsonElement.getAsJsonArray();
 		}
 
-		private <T> void clean(Class<T> cls, EntityManagerFactory emf, StorageMappings storageMappings,
+		private <T> void clean(Class<T> cls, EntityManager em, StorageMappings storageMappings,
 				ContainerEntity containerEntity) throws Exception {
-			EntityManager em = emf.createEntityManager();
 			List<T> list = null;
 			do {
 				if (ListTools.isNotEmpty(list)) {
 					em.getTransaction().begin();
 					for (T t : list) {
-						em.remove(t);
 						if (StorageObject.class.isAssignableFrom(cls)) {
 							StorageObject so = (StorageObject) t;
 							@SuppressWarnings("unchecked")
@@ -236,6 +235,7 @@ public class RestoreData {
 								so.deleteContent(mapping);
 							}
 						}
+						em.remove(t);
 					}
 					em.getTransaction().commit();
 				}
