@@ -3,6 +3,7 @@ package com.x.query.assemble.designer.jaxrs.statement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -31,7 +32,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Statement.class);
 			emc.remove(statement);
 			emc.commit();
-			ApplicationCache.notify(Statement.class);
+			CacheManager.notify(Statement.class);
 			Wo wo = new Wo();
 			wo.setId(statement.getId());
 			result.setData(wo);
