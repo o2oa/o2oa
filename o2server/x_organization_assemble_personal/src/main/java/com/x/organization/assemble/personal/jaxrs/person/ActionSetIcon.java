@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.imgscalr.Scalr;
@@ -60,7 +61,7 @@ class ActionSetIcon extends BaseAction {
 				person.setIconLdpi(icon_l);
 
 				emc.commit();
-				ApplicationCache.notify(Person.class);
+				CacheManager.notify(Person.class);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				result.setData(wo);

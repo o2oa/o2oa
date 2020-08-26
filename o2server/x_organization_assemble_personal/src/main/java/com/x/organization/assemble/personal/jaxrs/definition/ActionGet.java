@@ -6,9 +6,11 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Definition;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionGet extends BaseAction {
 
@@ -16,17 +18,18 @@ class ActionGet extends BaseAction {
 
 	ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
 			ActionResult<String> result = new ActionResult<>();
-			String cacheKey = name;
-			Element element = cache.get(cacheKey);
+			CacheKey cacheKey = new CacheKey(name);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			String wo = "";
-			if (null != element) {
-				wo = (String) element.getObjectValue();
+			if (optional.isPresent()) {
+				wo = (String) optional.get();
 			} else {
 				Definition o = emc.flag(name, Definition.class);
 				if (null != o) {
 					wo = o.getData();
-					cache.put(new Element(cacheKey, wo));
+					CacheManager.put(business.cache(), cacheKey, wo);
 				}
 			}
 			result.setData(wo);

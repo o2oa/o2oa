@@ -23,22 +23,23 @@ import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.File;
 import com.x.portal.core.entity.File_;
 import com.x.portal.core.entity.Portal;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionContent extends StandardJaxrsAction {
 
-	private Ehcache cache = ApplicationCache.instance().getCache(File.class);
+	private CacheCategory cache = new CacheCategory(File.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String portalFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, portalFlag);
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				wo = ((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, portalFlag);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				wo = ((Wo) optional.get());
 			} else {
 				Business business = new Business(emc);
 				Portal portal = business.portal().pick(portalFlag);
@@ -56,7 +57,7 @@ class ActionContent extends StandardJaxrsAction {
 				}
 				wo = new Wo(bs, this.contentType(false, file.getFileName()),
 						this.contentDisposition(false, file.getFileName()));
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
 			return result;

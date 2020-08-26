@@ -9,7 +9,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -35,7 +35,7 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(TemplatePage.class);
 			emc.persist(o, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(TemplatePage.class);
+			CacheManager.notify(TemplatePage.class);
 			Wo wo  = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);

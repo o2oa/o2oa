@@ -8,6 +8,7 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -46,7 +47,7 @@ class ActionEdit extends BaseAction {
 			emc.check(person, CheckPersistType.all);
 			emc.commit();
 			/** 刷新缓存 */
-			ApplicationCache.notify(Person.class);
+			CacheManager.notify(Person.class);
 			/** 通知x_collect_service_transmit同步数据到collect */
 			business.instrument().collect().person();
 			Wo wo = new Wo();

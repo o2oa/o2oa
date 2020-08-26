@@ -10,29 +10,29 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.portal.assemble.surface.AbstractFactory;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
 import com.x.portal.core.entity.Script_;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class ScriptFactory extends AbstractFactory {
 
-	static Ehcache scriptCache = ApplicationCache.instance().getCache(Script.class);
+	static CacheCategory cache = new CacheCategory(Script.class);
 
 	public ScriptFactory(Business abstractBusiness) throws Exception {
 		super(abstractBusiness);
 	}
 
 	public Script flagWithPortalObject(String flag, String portalId) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey("flagObject", flag);
-		Element element = scriptCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Script) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey("flagObject", flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (Script) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(Script.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -46,22 +46,22 @@ public class ScriptFactory extends AbstractFactory {
 			} else {
 				Script o = list.get(0);
 				em.detach(o);
-				scriptCache.put(new Element(cacheKey, o));
+				CacheManager.put(cache, cacheKey, o);
 				return o;
 			}
 		}
 	}
 
 	public Script pick(String id) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(id);
-		Element element = scriptCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (Script) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(id);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (Script) optional.get();
 		} else {
 			Script o = this.business().entityManagerContainer().find(id, Script.class);
 			if (null != o) {
 				this.business().entityManagerContainer().get(Script.class).detach(o);
-				scriptCache.put(new Element(id, o));
+				CacheManager.put(cache, cacheKey, o);
 				return o;
 			}
 			return null;
@@ -81,10 +81,10 @@ public class ScriptFactory extends AbstractFactory {
 	@SuppressWarnings("unchecked")
 	public List<Script> listScriptNestedWithPortalWithFlag(Portal portal, String flag) throws Exception {
 		List<Script> list = new ArrayList<>();
-		String cacheKey = ApplicationCache.concreteCacheKey(flag, portal.getId(), "listScriptNestedWithPortalWithFlag");
-		Element element = scriptCache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			list = (List<Script>) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(flag, portal.getId(), "listScriptNestedWithPortalWithFlag");
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Script>) optional.get();
 		} else {
 			List<String> names = new ArrayList<>();
 			names.add(flag);
@@ -101,7 +101,7 @@ public class ScriptFactory extends AbstractFactory {
 			}
 			if (!list.isEmpty()) {
 				Collections.reverse(list);
-				scriptCache.put(new Element(cacheKey, list));
+				CacheManager.put(cache, cacheKey, list);
 			}
 		}
 		return list;
