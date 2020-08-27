@@ -20,6 +20,9 @@ let JPUSH_APP_KEY = "9aca7cc20fe0cc987cd913ca"
 let JPUSH_channel = "Publish channel"
 //百度
 let BAIDU_MAP_KEY = "ONb5sPKBzluXBq3c8ZSQ5ULlWauwZeZ3"
+let BAIDU_ASR_APP_ID = "17231925"
+let BAIDU_ASR_APP_KEY = "ONb5sPKBzluXBq3c8ZSQ5ULlWauwZeZ3"
+let BAIDU_ASR_APP_SECRET = "nKSgbGLKme6lPL3ORF6Z5LcQUX1nBnVo"
 
 
 

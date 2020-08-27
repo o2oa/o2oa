@@ -222,13 +222,6 @@ class SPersonViewController: FormViewController {
         O2AuthSDK.shared.logout { (result, msg) in
             DDLogInfo("O2 登出 \(result), msg：\(msg ?? "")")
         }
-        JMSGUser.logout { (resultObject, errMsg) in
-            if errMsg == nil {
-                print("IM成功退出")
-            }else{
-                print("IM退出失败,error = \(String(describing: errMsg))")
-            }
-        }
         if O2IsConnect2Collect == false {
             //解除绑定 设备号 内网直连版本
             O2JPushManager.shared.O2JPushUnBind()

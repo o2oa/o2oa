@@ -163,8 +163,7 @@ class OOCalendarViewController: UITableViewController {
             showError(title: "日历名称不能为空！")
             return
         }
-
-        MBProgressHUD_JChat.showMessage(message: "正在保存...", toView: self.view)
+        self.showLoading(title: "正在保存...")
         /*
       var calendar = self.calendarInfo
       if calendarInfo != nil && calendarInfo?.id != nil { // 修改
@@ -196,7 +195,7 @@ class OOCalendarViewController: UITableViewController {
                 DDLogInfo("保存日历成功！！！\(result)")
                 self.closeWindow()
             }.always {
-                MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "保存日历错误！")
@@ -204,12 +203,12 @@ class OOCalendarViewController: UITableViewController {
 
     }
     private func deleteCalendar() {
-        MBProgressHUD_JChat.showMessage(message: "正在删除...", toView: self.view)
+        self.showLoading()
         viewModel.deleteCalendar(id: (calendarInfo?.id!)!).then { (result) in
             DDLogInfo("删除结果：\(result)")
             self.closeWindow()
         }.always {
-            MBProgressHUD_JChat.hide(forView: self.view, animated: false)
+            self.hideLoading()
         }.catch { (error) in
             DDLogError(error.localizedDescription)
             self.showError(title: "删除日历错误！")

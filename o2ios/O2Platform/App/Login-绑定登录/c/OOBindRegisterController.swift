@@ -80,7 +80,7 @@ class OOBindRegisterController: OOBaseViewController {
             self.showError(title: "请输入验证码！")
             return
         }
-        MBProgressHUD_JChat.showMessage(message: "绑定中...", toView: self.view)
+        self.showLoading(title: "绑定中...")
         O2AuthSDK.shared.bindMobileToSever(mobile: mobile, code: value) { (state, msg) in
             switch state {
             case .goToChooseBindServer(let unitList):
@@ -111,7 +111,7 @@ class OOBindRegisterController: OOBaseViewController {
                 }
                 break
             }
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
         }
         
     }

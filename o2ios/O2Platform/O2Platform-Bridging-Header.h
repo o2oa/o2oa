@@ -16,12 +16,10 @@
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
 #endif
-#import <JMessage/JMessage.h>
-#import "KILabel.h"
-#import "DLSlideView.h"
-#import "DLTabedSlideView.h"
-#import "JCAddMapViewController.h"
-#import "Reachability.h"
+
+
+
+
 #import <FSCalendar/FSCalendar.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <JTCalendar/JTCalendar.h>
@@ -35,6 +33,10 @@
 #import <BaiduMapAPI_Utils/BMKUtilsComponent.h>
 #import <BaiduMapAPI_Map/BMKMapView.h>
 
+//baidu 语音识别
+#import "BDSEventManager.h"
+#import "BDSASRDefines.h"
+#import "BDSASRParameters.h"
 
 // DES加密使用的加密库
 #import <CommonCrypto/CommonCrypto.h>
