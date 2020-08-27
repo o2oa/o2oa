@@ -493,6 +493,7 @@ public class NodeAgent extends Thread {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
 		File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		FileUtils.writeByteArrayToFile(war, bytes, false);
+		boolean isStartApplication = false;//第一次上传
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -501,16 +502,20 @@ public class NodeAgent extends Thread {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
 					if (StringUtils.equals("/" + simpleName, app.getContextPath())) {
 						app.stop();
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						this.modified(bytes, war, dir);
 						app.start();
+						isStartApplication = true;
 					}
 				}
 			}
 			
 			if(rebootApp) {
+				if(!isStartApplication) {
 				  Servers.stopApplicationServer();
 				  Thread.sleep(3000);
 				  Servers.startApplicationServer();
+				}
 			}
 		}
 	}
@@ -519,6 +524,7 @@ public class NodeAgent extends Thread {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
 		List<String> contexts = new ArrayList<>();
+		boolean isStartApplication = false;
 		for (String s : Config.dir_custom().list(new WildcardFileFilter("*.war"))) {
 			contexts.add("/" + FilenameUtils.getBaseName(s));
 		}
@@ -530,16 +536,20 @@ public class NodeAgent extends Thread {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
 					if (contexts.contains(app.getContextPath())  ) {
 						app.stop();
+						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						Thread.sleep(3000);
 						app.start();
+						isStartApplication = true;
 					}
 				}
 			}
 			
 			if(rebootApp) {
+				if(!isStartApplication) {
 				  Servers.stopApplicationServer();
 				  Thread.sleep(1000);
 				  Servers.startApplicationServer();
+				}
 			}
 		}
 	}
