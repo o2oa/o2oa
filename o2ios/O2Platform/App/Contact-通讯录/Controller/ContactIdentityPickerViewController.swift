@@ -123,7 +123,7 @@ class ContactIdentityPickerViewController: UITableViewController {
     
     //获取组织数据 必须先操作面包屑导航数据
     private func loadData() {
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         viewModel.loadUnitList(parent: unitParent, topList: topUnitList)
             .then { (list) -> Promise<[OOIdentityModel]> in
                 DDLogDebug("loadUnitList 结果： \(list.count)")
@@ -144,10 +144,10 @@ class ContactIdentityPickerViewController: UITableViewController {
                 DDLogDebug("loadIdentityList 结果： \(result.count)")
                 self.identityDataList = result
                 self.tableView.reloadData()
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
             }).catch { (error) in
                 DDLogError(error.localizedDescription)
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
         }
     }
     

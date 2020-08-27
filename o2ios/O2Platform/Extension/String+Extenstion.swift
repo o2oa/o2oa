@@ -32,6 +32,13 @@ extension String {
         }
     }
     
+    public func trim(trimNewline: Bool = false) ->String {
+        if trimNewline {
+            return self.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return self.trimmingCharacters(in: .whitespaces)
+    }
+    
     /// 字符串时间转 Date
     ///
     /// - Parameter formatter: 字符串时间的格式 yyyy-MM-dd/YYYY-MM-dd/HH:mm:ss/yyyy-MM-dd HH:mm:ss
@@ -42,6 +49,11 @@ extension String {
         dateFormatter.dateFormat = formatter
         let date = dateFormatter.date(from: self)
         return date!
+    }
+    
+    
+    var length: Int {
+        return self.count
     }
     
     func subString(from: Int, to: Int? = nil) -> String {

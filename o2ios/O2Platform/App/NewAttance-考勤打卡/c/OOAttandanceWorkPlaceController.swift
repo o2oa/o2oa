@@ -27,21 +27,24 @@ class OOAttandanceWorkPlaceController: UITableViewController {
     }
     
     private func loadWorkPlace() {
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         models.removeAll()
         viewModel.getLocationWorkPlace { (result) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            
             switch result {
             case .ok(let item):
                 let items = item as? [OOAttandanceWorkPlace]
                 DispatchQueue.main.async {
+                    self.hideLoading()
                     items?.forEach({ (place) in
                         self.models.append(place)
                     })
                 }
                 break
             case .fail(let errorMessage):
-                MBProgressHUD_JChat.show(text: "读取位置列表出错\n,\(errorMessage)", view: self.view, 1)
+                DispatchQueue.main.async {
+                    self.showError(title: "读取位置列表出错\n,\(errorMessage)" )
+                }
                 break
             default:
                 break
@@ -90,19 +93,20 @@ class OOAttandanceWorkPlaceController: UITableViewController {
     
     private func _delete(_ indexPath:IndexPath){
         let item = models[indexPath.row]
-        MBProgressHUD_JChat.showMessage(message: "删除中，请稍候...", toView: view)
+        self.showLoading(title: "删除中，请稍候...")
         viewModel.deleteLocationWorkPlace(item) { (resultType) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+             self.hideLoading()
             switch resultType {
             case .reload:
                 DispatchQueue.main.async {
+                    
                     self.models.remove(at: indexPath.row)
                     self.tableView.reloadData()
                 }
                 break
             case .fail(let errorMessage):
                 DispatchQueue.main.async {
-                    MBProgressHUD_JChat.show(text: "删除不成功\n\(errorMessage)", view: self.view, 1)
+                    self.showError(title: "删除不成功\n\(errorMessage)" )
                     self.tableView.reloadData()
                 }
             default:

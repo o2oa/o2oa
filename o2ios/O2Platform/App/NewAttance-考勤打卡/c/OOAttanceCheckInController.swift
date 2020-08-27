@@ -128,21 +128,21 @@ class OOAttanceCheckInController: UITableViewController {
             }
         }
         
-        MBProgressHUD_JChat.showMessage(message: "打卡中...", toView: self.view)
+        self.showLoading(title: "打卡中...")
         checkinForm.checkin_type = self.feature?.checkinType ?? ""
         viewModel.postMyCheckin(checkinForm) { (result) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
             switch result {
             case .ok(_):
                 DispatchQueue.main.async {
-                    MBProgressHUD_JChat.show(text:"打卡成功", view: self.view)
+                    self.showSuccess(title: "打卡成功")
                     self.getCurrentCheckinList()
                     self.getMyRecords()
                 }
                 break
             case .fail(let errorMessage):
                 DispatchQueue.main.async {
-                    MBProgressHUD_JChat.show(text:"打卡失败,\n\(errorMessage)", view: self.view)
+                    self.showError(title: "打卡失败,\n\(errorMessage)")
                 }
                 break
             default:
@@ -201,12 +201,13 @@ class OOAttanceCheckInController: UITableViewController {
         let currentDate = Date().toString("yyyy-MM-dd")
         bean.startDate = currentDate
         bean.endDate = currentDate
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: self.view)
+        
+        self.showLoading()
         viewModel.getMyCheckinList(model, bean) { (myResult) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
             switch myResult {
             case .fail(let s):
-                MBProgressHUD_JChat.show(text: "错误:\n\(s)", view: self.view, 2)
+                self.showError(title: "错误:\n\(s)")
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }

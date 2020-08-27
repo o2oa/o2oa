@@ -45,7 +45,7 @@ class OOAppEditController: UITableViewController {
         }
         
         delegate?.appEditControllerUpdater()
-        MBProgressHUD_JChat.show(text: "更新成功", view: view, 2)
+        self.showMessage(msg: "更新成功")
     }
     
     func loadData() {

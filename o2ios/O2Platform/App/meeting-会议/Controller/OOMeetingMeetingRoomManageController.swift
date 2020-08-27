@@ -90,7 +90,7 @@ class OOMeetingMeetingRoomManageController: UIViewController {
     }
     
     private func loadAllBuildByDate(_ startDate:String,_ endDate:String){
-         MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         viewModel.loadAllBuildByDate(startDate, endDate).then { (builds) in
             DispatchQueue.main.async {
                 self.viewModel.builds.removeAll()
@@ -98,13 +98,13 @@ class OOMeetingMeetingRoomManageController: UIViewController {
                 self.tableView.reloadData()
             }
             }.always {
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
                 if self.tableView.mj_header.isRefreshing() {
                     self.tableView.mj_header.endRefreshing()
                 }
             }.catch { (myerror) in
                 let customError = myerror as! OOAppError
-                MBProgressHUD_JChat.show(text: customError.failureReason ?? "", view: self.view)
+                self.showError(title: customError.failureReason ?? "")
         }
     }
     

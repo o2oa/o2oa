@@ -52,22 +52,22 @@ public class DeviceUtil {
         return net.subscriberCellularProvider?.carrierName ?? ""
     }
     //获取当前网络情况
-    func getNetInfo(callback: @escaping (String)->Void ) {
-        let reachability = Reachability.init(hostName: "www.o2oa.net")
-        let status = reachability?.currentReachabilityStatus()
-        if status != nil {
-            switch status! {
-            case ReachableViaWiFi:
-                callback("wifi")
-            case ReachableViaWWAN:
-                callback(self.getNetType())
-            default:
-                callback("none")
-            }
-        }else {
-            callback("none")
-        }
-    }
+//    func getNetInfo(callback: @escaping (String)->Void ) {
+//        let reachability = Reachability.init(hostName: "www.o2oa.net")
+//        let status = reachability?.currentReachabilityStatus()
+//        if status != nil {
+//            switch status! {
+//            case ReachableViaWiFi:
+//                callback("wifi")
+//            case ReachableViaWWAN:
+//                callback(self.getNetType())
+//            default:
+//                callback("none")
+//            }
+//        }else {
+//            callback("none")
+//        }
+//    }
     
     func getDeviceInfoForJsApi(callback: @escaping (O2UtilPhoneInfo)->Void ) {
         var info = O2UtilPhoneInfo()
@@ -77,10 +77,12 @@ public class DeviceUtil {
         info.model = self.getDeviceModel()
         info.version = self.getSystemVersion()
         info.operatorType = self.getCarrier()
-        getNetInfo { (type) in
-            info.netInfo = type
-            callback(info)
-        }
+//        getNetInfo { (type) in
+//            info.netInfo = type
+//            callback(info)
+//        }
+        //TODO 网络情况
+        callback(info)
     }
     
     

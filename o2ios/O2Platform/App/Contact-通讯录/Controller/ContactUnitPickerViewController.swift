@@ -117,7 +117,7 @@ class ContactUnitPickerViewController: UITableViewController {
     
     //获取组织数据 必须先操作面包屑导航数据
     private func loadData() {
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         viewModel.loadUnitList(parent: unitParent, topList: topUnitList, unitType: unitType)
             .then { (list)  in
                 DDLogDebug("loadUnitList 结果： \(list.count)")
@@ -128,10 +128,10 @@ class ContactUnitPickerViewController: UITableViewController {
                 bean.level = self.breadcrumbList.count
                 self.breadcrumbList.append(bean)
                 self.tableView.reloadData()
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
         }
     }
     

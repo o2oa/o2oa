@@ -101,7 +101,7 @@ class OOAttanceSettingController: UIViewController {
     @objc private func createNewWorkPlace(_ notification:Notification){
         DDLogDebug("接收到消息。。。。。。。。。。。。。。。。。。。。。。")
         if self.isAdmin == false {
-            MBProgressHUD_JChat.show(text: "你不是管理员，无操作权限", view: self.view)
+            self.showError(title: "你不是管理员，无操作权限")
             return
         }
         if let obj = notification.object as? (String,String,String) {
@@ -109,15 +109,15 @@ class OOAttanceSettingController: UIViewController {
             settingBean.placeAlias = obj.1
             settingBean.errorRange = obj.2
         }
-        MBProgressHUD_JChat.showMessage(message: "创建打卡地址...", toView: view)
+        self.showLoading(title: "创建打卡地址...")
         viewModel.postCheckinLocation(settingBean) { (resultType) in
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
             switch resultType {
             case .ok(_):
-                MBProgressHUD_JChat.show(text: "打卡地址设置成功", view: self.view, 1)
+                self.showSuccess(title:  "打卡地址设置成功")
                 break
             case .fail(let errorMessage):
-                MBProgressHUD_JChat.show(text: "打卡地址设置失败\n\(errorMessage)", view: self.view, 1)
+                self.showError(title: "打卡地址设置失败\n\(errorMessage)" )
                 break
             default:
                 break
@@ -132,7 +132,7 @@ class OOAttanceSettingController: UIViewController {
             let destVC = OOAttandanceWorkPlaceController(nibName: "OOAttandanceWorkPlaceController", bundle: nil)
             self.pushVC(destVC)
         }else {
-            MBProgressHUD_JChat.show(text: "你不是管理员，无操作权限", view: self.view)
+            self.showMessage(msg: "你不是管理员，无操作权限")
         }
     }
     
