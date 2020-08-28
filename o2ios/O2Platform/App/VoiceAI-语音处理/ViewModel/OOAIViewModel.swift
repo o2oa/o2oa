@@ -58,6 +58,13 @@ class OOAIViewModel: NSObject {
     private var taskList:[O2TodoTask] = []
     private var currentDealTaskIndex: Int = -1
     
+    /// 前台ui获取当前任务，展现路由命令给UI
+    func getCurrentDealTask() -> O2TodoTask? {
+        if self.currentDealTaskIndex >= 0 && self.taskList.count > 0 {
+            return self.taskList[self.currentDealTaskIndex]
+        }
+        return nil
+    }
     
     /// 当前路由
     private var commandRoute: AICommandRoute = .listen
@@ -65,7 +72,10 @@ class OOAIViewModel: NSObject {
     /// 当前状态
     private var aiStatus: AIStatus = .normal
     
-    
+    /// 前台ui获取当前状态
+    func getAIStatus() -> AIStatus {
+        return aiStatus
+    }
     
     /// ViewController里面实现处理前台页面UI相关的
     var aiVoiceControllerDelegate: OOAIVoiceControllerDelegate?
@@ -97,6 +107,7 @@ class OOAIViewModel: NSObject {
             self.aiVoiceControllerDelegate?.changeSpeakMessage(message: speakMessage)
         }
     }
+    
     
     
 }
@@ -294,16 +305,33 @@ extension OOAIViewModel {
     }
     
     private func isInStopCommand() -> Bool {
-        return AI_COMMAND_STOP.contains(self.command!)
+        guard let c = self.command else {
+            return false
+        }
+        return AI_COMMAND_STOP.contains(c)
     }
     private func isInTaskCommand() -> Bool {
-        return AI_COMMAND_TASK.contains(self.command!)
+        guard let c = self.command else {
+            return false
+        }
+        if AI_COMMAND_TASK.contains(c) {
+            return true
+        }else if AI_COMMAND_TASK_TYPO.contains(c) {
+            return true
+        }
+        return false
     }
     private func isInTaskNeuralCommand() -> Bool {
-        return AI_COMMAND_TASK_NEURAL.contains(self.command!)
+        guard let c = self.command else {
+            return false
+        }
+        return AI_COMMAND_TASK_NEURAL.contains(c)
     }
     private func isInIgnoreCommand() -> Bool {
-        return AI_COMMAND_IGNORE.contains(self.command!)
+        guard let c = self.command else {
+            return false
+        }
+        return AI_COMMAND_IGNORE.contains(c)
     }
     
 
