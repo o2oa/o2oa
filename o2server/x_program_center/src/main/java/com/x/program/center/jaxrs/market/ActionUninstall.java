@@ -47,13 +47,17 @@ class ActionUninstall extends BaseAction {
 			}
 			logger.print("{}发起卸载应用：{}", effectivePerson.getDistinguishedName(), app.getName());
 			Wo wo = new Wo();
-			WrapModule module = gson.fromJson(installLog.getData(), WrapModule.class);
-			this.uninstall(module);
-			emc.beginTransaction(InstallLog.class);
-			installLog.setStatus(CommonStatus.INVALID.getValue());
-			installLog.setUnInstallPerson(effectivePerson.getDistinguishedName());
-			installLog.setUnInstallTime(new Date());
-			emc.commit();
+			InstallData installData = gson.fromJson(installLog.getData(), InstallData.class);
+			WrapModule module = installData.getWrapModule();
+			if(module!=null) {
+				this.uninstall(module);
+
+				emc.beginTransaction(InstallLog.class);
+				installLog.setStatus(CommonStatus.INVALID.getValue());
+				installLog.setUnInstallPerson(effectivePerson.getDistinguishedName());
+				installLog.setUnInstallTime(new Date());
+				emc.commit();
+			}
 			wo.setValue(true);
 			result.setData(wo);
 			return result;
