@@ -94,5 +94,26 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	@JaxrsMethodDescribe(value = "uninstall customWar 包并删除", action = ActionUninstall.class)
+	@POST
+	@Path("uninstall")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void uninstall(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("命令名称(customWar)") @FormDataParam("ctl") String ctl,
+			@JaxrsParameterDescribe("服务器地址(*代表多台应用服务器)") @FormDataParam("nodeName") String nodeName,
+			@JaxrsParameterDescribe("服务端口") @FormDataParam("nodePort") String nodePort,
+			@JaxrsParameterDescribe("War名称") @FormDataParam(FILENAME_FIELD) String fileName) {
+		ActionResult<ActionUninstall.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionUninstall().execute(request , effectivePerson, ctl, nodeName, nodePort, fileName);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 
 }
