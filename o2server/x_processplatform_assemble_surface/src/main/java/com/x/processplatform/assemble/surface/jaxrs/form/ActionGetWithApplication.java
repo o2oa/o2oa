@@ -2,10 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.form;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -23,7 +21,7 @@ class ActionGetWithApplication extends BaseAction {
 				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
 			}
 			Form form = business.form().pick(application, flag);
-			//Wo wo = Wo.copier.copy(form);
+			// Wo wo = Wo.copier.copy(form);
 			Wo wo = new Wo();
 			wo.setData(form.getDataOrMobileData());
 			result.setData(wo);
@@ -31,13 +29,25 @@ class ActionGetWithApplication extends BaseAction {
 		}
 	}
 
-	public static class Wo extends Form {
+//	public static class Wo extends Form {
+//
+//		private static final long serialVersionUID = 1541438199059150837L;
+//
+//		static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
+//				JpaObject.FieldsInvisible);
+//
+//	}
+	public static class Wo extends GsonPropertyObject {
 
-		private static final long serialVersionUID = 1541438199059150837L;
+		private String data;
 
-		static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+		public String getData() {
+			return data;
+		}
+
+		public void setData(String data) {
+			this.data = data;
+		}
 
 	}
-
 }
