@@ -46,7 +46,7 @@ class ActionListPaging extends BaseAction {
 			}
 			List<Wo> wos = new ArrayList<>();
 			if(BooleanUtils.isTrue(wi.getAsc())){
-				emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
+				wos = emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
 			}else {
 				wos = emc.fetchDescPaging(Application.class, Wo.copier, p, page, size, orderBy);
 			}
