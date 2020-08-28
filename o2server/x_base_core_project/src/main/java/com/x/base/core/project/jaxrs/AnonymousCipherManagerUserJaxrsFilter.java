@@ -24,6 +24,8 @@ public abstract class AnonymousCipherManagerUserJaxrsFilter extends TokenFilter 
 				HttpToken httpToken = new HttpToken();
 				httpToken.who(request, response, Config.token().getCipher());
 				chain.doFilter(request, response);
+			} else {
+				options(request,response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
