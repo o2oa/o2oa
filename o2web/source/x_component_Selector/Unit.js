@@ -798,6 +798,8 @@ MWF.xApplication.Selector.Unit.ItemCategory = new Class({
                 subJson.data.each(function(subData){
                     if( !this.selector.isExcluded( subData ) ) {
                         var category = this.selector._newItem(subData, this.selector, this.children, this.level+1, this);
+                        category.isItem = true;
+                        category.isCategory = true;
                         this.selector.items.push( category );
                         if(this.subItems)this.subItems.push( category );
                         this.subCategorys.push( category );
