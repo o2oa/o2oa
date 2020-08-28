@@ -94,10 +94,11 @@ MWF.xApplication.ConfigDesigner.Script = new Class({
             if (this.lisNode) this.lisNode.setStyles(this.designer.css.listScriptItem);
         }.bind(this));
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
-
-
-
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode);
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode,{"option": {
+                value: "",
+                mode: "json",
+                "lineNumbers": true
+            }});
         this.editor.load(function(){
             if (this.data.text){
                 this.editor.setValue(this.data.text);
