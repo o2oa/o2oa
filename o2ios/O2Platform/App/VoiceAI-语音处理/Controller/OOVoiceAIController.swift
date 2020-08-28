@@ -15,14 +15,13 @@ import O2OA_Auth_SDK
 class OOVoiceAIController: UIViewController {
     
     @IBOutlet weak var voiceView: OOVoiceView!
-    
+    @IBOutlet weak var tipsLabel: UILabel!
     @IBOutlet weak var showLabel: UILabel!
     
     
     var closeVC = false
     var animation = false
-//    var lastRecognizeTime = -1 // 没有识别出内容的时间  计算持续多久没识别内容出来了
-//    var beginRecognizeFirstTime = -1 //是否有开始识别出内容
+ 
     
     // 语音合成
     var synthersizer:AVSpeechSynthesizer!
@@ -100,6 +99,24 @@ class OOVoiceAIController: UIViewController {
         }
         self.bdmanager?.sendCommand(BDS_ASR_CMD_START)
         self.showLabel.text = "等待命令中....."
+        //根据当前状态 展现提示命令
+        if self.viewModel.getAIStatus() == .normal {
+            let taskCommand = AI_COMMAND_TASK.joined(separator: ",")
+            let outCommand = AI_COMMAND_STOP.joined(separator: ",")
+            self.tipsLabel.text = "可以使用如下命令：\(taskCommand) , \(outCommand)"
+        }else if self.viewModel.getAIStatus() == .working {
+            let ignoreCommand = AI_COMMAND_IGNORE.joined(separator: ",")
+            let aiCommand = AI_COMMAND_TASK_NEURAL.joined(separator: ",")
+            let outCommand = AI_COMMAND_STOP.joined(separator: ",")
+            if let task = self.viewModel.getCurrentDealTask() {
+                let routeList = task.routeNameList?.joined(separator: "或") ?? ""
+                self.tipsLabel.text = "可以使用如下命令：\(routeList) , \(ignoreCommand), \(aiCommand)"
+            }else {
+                self.tipsLabel.text = "可以使用如下命令：\(outCommand)"
+            }
+        }else {
+            self.tipsLabel.text = ""
+        }
         animation = true
         voiceView.startAnimation()
     }
@@ -109,6 +126,7 @@ class OOVoiceAIController: UIViewController {
         guard animation else {
             return
         }
+        self.tipsLabel.text = ""
         self.bdmanager?.sendCommand(BDS_ASR_CMD_STOP)
         animation = false
         voiceView.stopAnimation()
@@ -158,7 +176,6 @@ extension OOVoiceAIController: OOAIVoiceControllerDelegate {
             DispatchQueue.main.async {
                 self.startListen()
             }
-            
             break
         case .speak:
             DDLogInfo("开始说话。。。。。。。。。。。。。。")
