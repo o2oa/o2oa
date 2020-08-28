@@ -38,6 +38,8 @@ public abstract class UserJaxrsFilter extends TokenFilter {
 				} else {
 					chain.doFilter(request, response);
 				}
+			} else {
+				options(request,response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
