@@ -245,8 +245,25 @@ MWF.xApplication.Setting.BaseExplorer = new Class({
                 "text": this.app.lp.tab_sso,
                 "icon": "sso",
                 "action": "loadSystemSSOSetting"
+            },
+            {
+                "text": this.app.lp.tab_config,
+                "icon": "config",
+                "action": "loadSystemConfigSetting"
             }
         ];
+    },
+    loadSystemConfigSetting:function(item){
+        if (MWF.AC.isAdministrator()) {
+            var appId = "ConfigDesigner";
+            if (layout.desktop.apps["ConfigDesigner"]){
+                layout.desktop.apps[appId].setCurrent();
+                return;
+            }
+            layout.openApplication(null, "ConfigDesigner",{
+                "appId": appId
+            });
+        }
     },
     loadSystemNameSetting: function(item){
         if (MWF.AC.isAdministrator()) {
