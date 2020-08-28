@@ -1,7 +1,9 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -183,7 +185,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 					i = 0;
 					for (SelectEntry o : plan.selectList) {
 						c = r.createCell(i);
-						c.setCellValue(Objects.toString(row.find(o.column)));
+						//c.setCellValue(Objects.toString(row.find(o.column)));
+						c.setCellValue(objectToString(row.find(o.column)));
 						i++;
 					}
 				}
@@ -200,7 +203,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return flag;
 		}
 	}
-
+    
+	protected String objectToString(Object object) {
+		String  str = "";
+		if (object instanceof Integer) {
+			str = object.toString();
+		}else if (object instanceof Double) {
+			str = object.toString();
+		}else if (object instanceof Float) {
+			str = object.toString();
+		}else if (object instanceof Boolean) {
+			str = String.valueOf(object);
+		} else if (object instanceof Date) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			str= formatter.format(object);
+		}else {
+			str = object.toString();
+		}
+		return str;
+	}
+	
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
 			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();
