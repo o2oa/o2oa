@@ -72,7 +72,7 @@ public class SerialBuilder {
 	}.getType();
 
 	public String concrete(AeiObjects aeiObjects) throws Exception {
-		StringBuffer buffer = new StringBuffer("");
+		StringBuilder buffer = new StringBuilder("");
 		String data = process.getSerialTexture();
 		if (StringUtils.isNotEmpty(data)) {
 			List<SerialTextureItem> list = XGsonBuilder.instance().fromJson(data, collectionType);
@@ -84,8 +84,7 @@ public class SerialBuilder {
 				for (SerialTextureItem o : list) {
 					if ((!StringUtils.equalsIgnoreCase(o.getKey(), "number"))
 							&& StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(o.getScript()),
-								scriptContext);
+						Object v = ScriptFactory.scriptEngine.eval(functionBind(o), scriptContext);
 						itemResults.add(v);
 					} else {
 						itemResults.add("");
@@ -94,8 +93,7 @@ public class SerialBuilder {
 				for (int i = 0; i < list.size(); i++) {
 					SerialTextureItem o = list.get(i);
 					if ((StringUtils.equalsIgnoreCase(o.getKey(), "number")) && StringUtils.isNotEmpty(o.getScript())) {
-						Object v = ScriptFactory.scriptEngine.eval(ScriptFactory.functionalization(o.getScript()),
-								scriptContext);
+						Object v = ScriptFactory.scriptEngine.eval(functionBind(o), scriptContext);
 						itemResults.set(i, v);
 					}
 				}
@@ -106,6 +104,14 @@ public class SerialBuilder {
 			}
 		}
 		return buffer.toString();
+	}
+
+	private String functionBind(SerialTextureItem o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(function(){").append(System.lineSeparator());
+		sb.append(o.getScript()).append(System.lineSeparator());
+		sb.append("}).apply(bind);");
+		return sb.toString();
 	}
 
 	public class Serial {
