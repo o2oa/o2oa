@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.script.Bindings;
@@ -249,7 +250,7 @@ public class AeiObjects extends GsonPropertyObject {
 		if (null == this.workLogs) {
 			List<WorkLog> os = this.business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
 					this.work.getJob());
-			/* 保持和前端得到的相同排序 */
+			// 保持和前端得到的相同排序
 			this.workLogs = os.stream()
 					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
 							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
@@ -298,9 +299,8 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	public List<TaskCompleted> getJoinInquireTaskCompleteds() throws Exception {
-		return this.getTaskCompleteds().stream().filter(o -> {
-			return BooleanUtils.isNotFalse(o.getJoinInquire());
-		}).collect(Collectors.toList());
+		return this.getTaskCompleteds().stream().filter(o -> BooleanUtils.isNotFalse(o.getJoinInquire()))
+				.collect(Collectors.toList());
 	}
 
 	public List<Read> getReads() throws Exception {
@@ -538,7 +538,6 @@ public class AeiObjects extends GsonPropertyObject {
 		this.commitDocumentVersion();
 		this.commitRecord();
 		this.commitAttachment();
-		// this.getWorkDataHelper().update(this.getData());
 		this.commitData();
 		this.commitDynamicEntity();
 		this.entityManagerContainer().commit();
@@ -721,9 +720,9 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void executeMapping() throws Exception {
 		for (Mapping m : this.getMappings()) {
-			/* 仅处理最后work转workCompleted的事件 */
+			// 仅处理最后work转workCompleted的事件
 			if ((!this.getCreateWorkCompleteds().isEmpty()) || (!this.getUpdateTaskCompleteds().isEmpty())) {
-				List<WorkCompleted> list = new ArrayList<WorkCompleted>();
+				List<WorkCompleted> list = new ArrayList<>();
 				list.addAll(this.getCreateWorkCompleteds());
 				list.addAll(this.getUpdateWorkCompleteds());
 				for (WorkCompleted workCompleted : list) {
@@ -733,7 +732,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.entityManagerContainer().beginTransaction(cls);
 					JpaObject o = this.entityManagerContainer().find(workCompleted.getJob(), cls);
 					if (null == o) {
-						o = (JpaObject) cls.newInstance();
+						o = cls.newInstance();
 						o.setId(workCompleted.getJob());
 						this.entityManagerContainer().persist(o, CheckPersistType.all);
 					}
@@ -914,7 +913,7 @@ public class AeiObjects extends GsonPropertyObject {
 			commitTaskCompletedCreatePart();
 			// 更新已办
 			commitTaskCompletedUpdatePart();
-			// 删除已办
+			// 删除已办 */
 			commitTaskCompletedDeletePart();
 		}
 	}
@@ -946,22 +945,19 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void commitTaskCompletedDeletePart() {
 		this.getDeleteTaskCompleteds().stream().forEach(o -> {
-			TaskCompleted obj;
 			try {
-				// 要删除此已经办前此人其他的已办lastest标记为true
-				TaskCompleted lastest = this.getTaskCompleteds().stream()
-						.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
-								&& (!StringUtils.equals(o.getId(), p.getId())))
-						.sorted(Comparator
-								.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
-								.reversed())
-						.findFirst().orElse(null);
-				if (null != lastest) {
-					lastest.setLatest(true);
-				}
-				obj = this.business.entityManagerContainer().find(o.getId(), TaskCompleted.class);
-				if (null != obj) {
-					this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+				TaskCompleted deleteTaskCompleted = this.business.entityManagerContainer().find(o.getId(),
+						TaskCompleted.class);
+				if (null != deleteTaskCompleted) {
+					this.business.entityManagerContainer().remove(deleteTaskCompleted, CheckRemoveType.all);
+					// 要删除此已经办前此人其他的已办lastest标记为true
+					this.getTaskCompleteds().stream()
+							.filter(p -> StringUtils.equals(o.getPerson(), p.getPerson())
+									&& (!StringUtils.equals(o.getId(), p.getId())))
+							.sorted(Comparator
+									.comparing(TaskCompleted::getStartTime, Comparator.nullsFirst(Date::compareTo))
+									.reversed())
+							.findFirst().ifPresent(q -> q.setLatest(true));
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -985,27 +981,33 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitReadCreatePart() {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Read
 		this.getCreateReads().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson())).entrySet()
-				.forEach(entry -> {
-					Read obj = entry.getValue().stream()
-							.sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-									.reversed().thenComparing(
-											Comparator.comparing(Read::getId, Comparator.nullsLast(String::compareTo))))
-							.findFirst().get();
-					try {
-						Read existed = this.getReads().stream().filter(p -> StringUtils.equals(obj.getJob(), p.getJob())
-								&& StringUtils.equals(obj.getPerson(), p.getPerson())).findFirst().orElse(null);
-						// 不存在内容重复的待阅
-						if (null == existed) {
-							this.business.entityManagerContainer().persist(obj, CheckPersistType.all);
-							/* 创建待阅的参阅 */
-							this.createReview(new Review(this.getWork(), obj.getPerson()));
-						} else {
-							obj.copyTo(existed, JpaObject.FieldsUnmodify);
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-				});
+				.forEach(
+						entry -> entry
+								.getValue().stream().sorted(
+										Comparator
+												.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+												.reversed()
+												.thenComparing(Comparator.comparing(Read::getId,
+														Comparator.nullsLast(String::compareTo))))
+								.findFirst().ifPresent(o -> {
+									try {
+										Optional<Read> existOptional = this.getReads().stream()
+												.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
+														&& StringUtils.equals(o.getPerson(), p.getPerson()))
+												.findFirst();
+										// 不存在内容重复的待阅
+										if (!existOptional.isPresent()) {
+											this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+											// 创建待阅的参阅
+											this.createReview(new Review(this.getWork(), o.getPerson()));
+										} else {
+											o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+										}
+									} catch (Exception e) {
+										logger.error(e);
+									}
+								}));
+
 	}
 
 	private void commitReadUpdatePart() {
@@ -1047,18 +1049,19 @@ public class AeiObjects extends GsonPropertyObject {
 
 	private void commitReadCompletedCreatePart() {
 		this.getCreateReadCompleteds().stream().forEach(o -> {
-			ReadCompleted obj;
 			try {
 				// 已阅唯一
-				obj = this.getReadCompleteds().stream().filter(p -> StringUtils.equals(o.getJob(), p.getJob())
-						&& StringUtils.equals(o.getPerson(), p.getPerson())).findFirst().orElse(null);
-				if (null == obj) {
+				Optional<ReadCompleted> optional = this.getReadCompleteds().stream()
+						.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
+								&& StringUtils.equals(o.getPerson(), p.getPerson()))
+						.findFirst();
+				if (!optional.isPresent()) {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
 					// 创建已阅参阅
 					this.createReview(new Review(this.getWork(), o.getPerson()));
 				} else {
 					// 如果逻辑上相同的已阅已经存在,覆盖内容.
-					o.copyTo(obj, JpaObject.FieldsUnmodify);
+					o.copyTo(optional.get(), JpaObject.FieldsUnmodify);
 				}
 			} catch (Exception e) {
 				logger.error(e);
@@ -1106,28 +1109,27 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitReviewCreatePart() {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Review
 		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
-				.entrySet().forEach(entry -> {
-					Review obj = entry.getValue().stream()
-							.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-									.reversed().thenComparing(Comparator.comparing(Review::getId,
-											Comparator.nullsLast(String::compareTo))))
-							.findFirst().get();
-					try {
-						// 参阅唯一
-						Review existed = this.getReviews().stream()
-								.filter(p -> StringUtils.equals(obj.getJob(), p.getJob())
-										&& StringUtils.equals(obj.getPerson(), p.getPerson()))
-								.findFirst().orElse(null);
-						if (null == existed) {
-							this.business.entityManagerContainer().persist(obj, CheckPersistType.all);
-						} else {
-							// 如果逻辑上相同的已阅已经存在,覆盖内容.
-							obj.copyTo(existed, JpaObject.FieldsUnmodify);
-						}
-					} catch (Exception e) {
-						logger.error(e);
-					}
-				});
+				.entrySet()
+				.forEach(entry -> entry.getValue().stream()
+						.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+								.reversed().thenComparing(
+										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo))))
+						.findFirst().ifPresent(o -> {
+							try {
+								Optional<Review> existOptional = this.getReviews().stream()
+										.filter(p -> StringUtils.equals(o.getJob(), p.getJob())
+												&& StringUtils.equals(o.getPerson(), p.getPerson()))
+										.findFirst();
+								if (!existOptional.isPresent()) {
+									this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+								} else {
+									// 如果逻辑上相同的已阅已经存在,覆盖内容.
+									o.copyTo(existOptional.get(), JpaObject.FieldsUnmodify);
+								}
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						}));
 	}
 
 	private void commitReviewUpdatePart() {
@@ -1159,7 +1161,7 @@ public class AeiObjects extends GsonPropertyObject {
 				|| ListTools.isNotEmpty(this.getDeleteDocumentVersions())
 				|| ListTools.isNotEmpty(this.getUpdateDocumentVersions())) {
 			this.entityManagerContainer().beginTransaction(DocumentVersion.class);
-			/* 保存版式文件 */
+			// 保存版式文件
 			this.getCreateDocumentVersions().stream().forEach(o -> {
 				try {
 					this.business.entityManagerContainer().persist(o, CheckPersistType.all);
@@ -1177,9 +1179,8 @@ public class AeiObjects extends GsonPropertyObject {
 			});
 			// 删除版式文件
 			this.getDeleteDocumentVersions().stream().forEach(o -> {
-				DocumentVersion obj;
 				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), DocumentVersion.class);
+					DocumentVersion obj = this.business.entityManagerContainer().find(o.getId(), DocumentVersion.class);
 					if (null != obj) {
 						this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 					}
@@ -1230,9 +1231,8 @@ public class AeiObjects extends GsonPropertyObject {
 			this.entityManagerContainer().beginTransaction(Attachment.class);
 			// 保存,更新附件是不可能的,删除附件
 			this.getDeleteAttachments().stream().forEach(o -> {
-				Attachment obj;
 				try {
-					obj = this.business.entityManagerContainer().find(o.getId(), Attachment.class);
+					Attachment obj = this.business.entityManagerContainer().find(o.getId(), Attachment.class);
 					if (null != obj) {
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								obj.getStorage());
@@ -1251,11 +1251,11 @@ public class AeiObjects extends GsonPropertyObject {
 	private void commitData() throws Exception {
 		List<Attachment> os = ListUtils.subtract(this.getAttachments(), this.getDeleteAttachments());
 		os = ListUtils.sum(os, this.getCreateAttachments());
-		Data data = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
+		Data d = this.getData().removeWork().removeAttachmentList().setAttachmentList(os);
 		if (ListTools.isNotEmpty(this.getCreateWorkCompleteds())) {
-			data.setWork(this.getCreateWorkCompleteds().get(0));
+			d.setWork(this.getCreateWorkCompleteds().get(0));
 		} else {
-			data.setWork(this.getWork());
+			d.setWork(this.getWork());
 		}
 		this.getWorkDataHelper().update(data);
 	}
@@ -1401,18 +1401,26 @@ public class AeiObjects extends GsonPropertyObject {
 	private void messageCreateRead() {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Read
 		this.getCreateReads().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson())).entrySet()
-				.forEach(entry -> {
-					Read obj = entry.getValue().stream()
-							.sorted(Comparator.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-									.reversed().thenComparing(
-											Comparator.comparing(Read::getId, Comparator.nullsLast(String::compareTo))))
-							.findFirst().get();
-					try {
-						MessageFactory.read_create(obj);
-					} catch (Exception e) {
-						logger.error(e);
-					}
-				});
+				.forEach(
+						entry -> entry
+								.getValue().stream().sorted(
+										Comparator
+												.comparing(Read::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+												.reversed()
+												.thenComparing(Comparator.comparing(Read::getId,
+														Comparator.nullsLast(String::compareTo))))
+								.findFirst().ifPresent(o -> {
+									try {
+										if (this.getReads().stream()
+												.noneMatch(p -> StringUtils.equals(o.getJob(), p.getJob())
+														&& StringUtils.equals(o.getPerson(), p.getPerson()))) {
+											// 不存在内容重复的待阅
+											MessageFactory.read_create(o);
+										}
+									} catch (Exception e) {
+										logger.error(e);
+									}
+								}));
 	}
 
 	private void messageDeleteReadCompleted() throws Exception {
@@ -1436,18 +1444,22 @@ public class AeiObjects extends GsonPropertyObject {
 	private void messageCreateReview() {
 		// 去重可能的在同一次提交中产生的对同一个人的多份Review
 		this.getCreateReviews().stream().collect(Collectors.groupingBy(o -> o.getJob() + "#" + o.getPerson()))
-				.entrySet().forEach(entry -> {
-					Review obj = entry.getValue().stream()
-							.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
-									.reversed().thenComparing(Comparator.comparing(Review::getId,
-											Comparator.nullsLast(String::compareTo))))
-							.findFirst().get();
-					try {
-						MessageFactory.review_create(obj);
-					} catch (Exception e) {
-						logger.error(e);
-					}
-				});
+				.entrySet()
+				.forEach(entry -> entry.getValue().stream()
+						.sorted(Comparator.comparing(Review::getCreateTime, Comparator.nullsFirst(Date::compareTo))
+								.reversed().thenComparing(
+										Comparator.comparing(Review::getId, Comparator.nullsLast(String::compareTo))))
+						.findFirst().ifPresent(o -> {
+							try {
+								if (this.getReviews().stream().noneMatch(p -> StringUtils.equals(o.getJob(), p.getJob())
+										&& StringUtils.equals(o.getPerson(), p.getPerson()))) {
+									// 不存在内容重复的待阅
+									MessageFactory.review_create(o);
+								}
+							} catch (Exception e) {
+								logger.error(e);
+							}
+						}));
 	}
 
 	private void messageDeleteAttachment() throws Exception {
