@@ -75,6 +75,13 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
         this.load();
     },
     load: function(){
+        this.charts = this.data.calculate.chart;
+        if( !this.charts ){
+            this.charts = ["bar", "pie", "line"];
+        }else if( typeOf( this.charts ) === "string" ){
+            this.charts = [this.charts];
+        }
+
         if (this.json.isChart) this.chartAreaNode = new Element("div", {"styles": this.css.statChartAreaNode}).inject(this.node);
         if (this.json.isTable) this.tableAreaNode = new Element("div#tableAreaNode", {"styles": this.css.statTableAreaNode}).inject(this.node);
         this.loadData();
@@ -87,8 +94,16 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
     },
     createChart: function(){
         this.chartToolbarNode = new Element("div", {"styles": this.css.statChartToolbarNode}).inject(this.chartAreaNode);
-        this.chartNode = new Element("div", {"styles": this.css.statChartNode}).inject(this.chartAreaNode);
-        this.loadChartToolbar();
+        if( this.charts.length > 0 ){
+            this.chartNode = new Element("div", {"styles": this.css.statChartNode}).inject(this.chartAreaNode);
+        }else{
+            this.chartAreaNode.setStyles( this.css.statChartAreaNode_noChart )
+        }
+        if( this.charts.length > 0 || this.data.calculate.isGroup ){
+            this.loadChartToolbar();
+        }else{
+            this.chartAreaNode.hide();
+        }
         //this.loadChart();
         if (this.statistician.app){
             this.resizeChartFun = this.reloadChart.bind(this);
@@ -100,8 +115,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
     loadChartToolbar: function(){
         MWF.require("MWF.widget.Toolbar", function(){
             this.toolbar = new MWF.widget.Toolbar(this.chartToolbarNode, {"style": "simple"}, this);
-            var charts = this.data.calculate.chart;
-            charts = ["bar", "pie", "line"];
+            var charts = this.charts;
             if (charts.indexOf("bar")!==-1){
                 var actionNode = new Element("div", {
                     "MWFnodeid": "bar",
@@ -132,7 +146,7 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
                     "MWFButtonText": this.lp.chart.line
                 }).inject(this.chartToolbarNode);
             }
-            if (this.data.calculate.isGroup){
+            if (this.data.calculate.isGroup ){
                 var actionNode = new Element("div", {
                     "MWFnodeid": "rowToColumn",
                     "MWFnodetype": "MWFToolBarButton",
@@ -141,31 +155,46 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
                     "MWFButtonAction": "loadRowToColumn",
                     "MWFButtonText": this.lp.chart.rowToColumn
                 }).inject(this.chartToolbarNode);
+            }else if( charts.length === 0 ){
+                this.chartToolbarNode.hide();
             }
 
             this.toolbar.load();
 
-            this.changeChartBar("on", this.toolbar.items["bar"]);
+            var defaultChart = "";
+            if( charts.indexOf( "bar" ) !== -1 ){
+                defaultChart = "bar"
+            }else{
+                defaultChart = charts[0];
+            }
+
+            if( defaultChart === "bar" ){
+                this.changeChartBar("on", this.toolbar.items[ defaultChart ]);
+            }else if( defaultChart === "pie" ){
+                this.changeChartPie("on", this.toolbar.items[ defaultChart ]);
+            }else if( defaultChart === "line" ){
+                this.changeChartLine("on", this.toolbar.items[ defaultChart ]);
+            }
             //this.reloadChart();
         }.bind(this));
     },
     changeChartBar: function(status, btn){
-        this.toolbar.items["pie"].off();
-        this.toolbar.items["line"].off();
+        if(this.toolbar.items["pie"])this.toolbar.items["pie"].off();
+        if(this.toolbar.items["line"])this.toolbar.items["line"].off();
         btn.on();
         this.currentChart = "bar";
         this.reloadChart();
     },
     changeChartPie: function(status, btn){
-        this.toolbar.items["bar"].off();
-        this.toolbar.items["line"].off();
+        if(this.toolbar.items["bar"])this.toolbar.items["bar"].off();
+        if(this.toolbar.items["line"])this.toolbar.items["line"].off();
         btn.on();
         this.currentChart = "pie";
         this.reloadChart();
     },
     changeChartLine: function(status, btn){
-        this.toolbar.items["pie"].off();
-        this.toolbar.items["bar"].off();
+        if(this.toolbar.items["pie"])this.toolbar.items["pie"].off();
+        if(this.toolbar.items["bar"])this.toolbar.items["bar"].off();
         btn.on();
         this.currentChart = "line";
         this.reloadChart();
@@ -322,8 +351,15 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
     createChart: function(){
         this.chartToolbarNode = new Element("div", {"styles": this.css.statChartToolbarNode}).inject(this.chartAreaNode);
-        if (this.json.isLegend) this.chartFlagNode = new Element("div", {"styles": this.css.statChartFlagAreaNode}).inject(this.chartAreaNode);
-        this.chartNode = new Element("div", {"styles": this.css.statChartNode}).inject(this.chartAreaNode);
+
+        if( this.charts.length > 0 ){
+            if (this.json.isLegend) this.chartFlagNode = new Element("div", {"styles": this.css.statChartFlagAreaNode}).inject(this.chartAreaNode);
+            this.chartNode = new Element("div", {"styles": this.css.statChartNode}).inject(this.chartAreaNode);
+        }else{
+            this.chartAreaNode.setStyles( this.css.statChartAreaNode_noChart )
+        }
+
+
         this.loadChartToolbar();
         //this.loadChartBar();
         if (this.statistician.app){
@@ -946,7 +982,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         }
     },
     reloadChart: function(){
-        if (this.json.isChart){
+        if (this.json.isChart && this.charts.length > 0 ){
             if (this.bar) this.bar.destroy();
             this.bar = null;
             if (this.chartFlagNode){
