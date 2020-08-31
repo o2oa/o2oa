@@ -67,6 +67,24 @@ public class ActionQueryPermissionReadDocument extends BaseAction {
 			}
 			List<String> unitNames = userManagerService.listUnitNamesWithPerson(personName);
 			List<String> groupNames = userManagerService.listGroupNamesByPerson(personName);
+			//是否是读者
+			if(ListTools.contains(document.getReadPersonList(), getShortTargetFlag(personName)) ||
+					ListTools.contains(document.getReadPersonList(), "所有人")){
+				wo.setValue(true);
+				return result;
+			}
+			for(String unitName : unitNames){
+				if(ListTools.contains(document.getReadUnitList(), getShortTargetFlag(unitName))){
+					wo.setValue(true);
+					return result;
+				}
+			}
+			for(String groupName : groupNames){
+				if(ListTools.contains(document.getReadGroupList(), getShortTargetFlag(groupName))){
+					wo.setValue(true);
+					return result;
+				}
+			}
 			//是否是作者
 			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
 				if( document.getAuthorPersonList().contains( personName ) ) {
@@ -86,23 +104,17 @@ public class ActionQueryPermissionReadDocument extends BaseAction {
 					return result;
 				}
 			}
-			//是否是读者
-			if(ListTools.contains(document.getReadPersonList(), getShortTargetFlag(personName)) ||
-					ListTools.contains(document.getReadPersonList(), "所有人")){
+			//是否是分类的管理者
+			CategoryInfo categoryInfo = categoryInfoServiceAdv.get(document.getCategoryId());
+			if ( categoryInfoServiceAdv.isCategoryInfoManager( categoryInfo, personName, unitNames, groupNames )) {
 				wo.setValue(true);
 				return result;
 			}
-			for(String unitName : unitNames){
-				if(ListTools.contains(document.getReadUnitList(), getShortTargetFlag(unitName))){
-					wo.setValue(true);
-					return result;
-				}
-			}
-			for(String groupName : groupNames){
-				if(ListTools.contains(document.getReadGroupList(), getShortTargetFlag(groupName))){
-					wo.setValue(true);
-					return result;
-				}
+			//是否是栏目的管理者
+			AppInfo appInfo = appInfoServiceAdv.get( document.getAppId() );
+			if (appInfoServiceAdv.isAppInfoManager( appInfo, personName, unitNames, groupNames )) {
+				wo.setValue(true);
+				return result;
 			}
 		}
 		return result;			
