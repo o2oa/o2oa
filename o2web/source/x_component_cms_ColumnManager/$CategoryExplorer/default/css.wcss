@@ -403,9 +403,12 @@
   "newCategoryNaviNode" : {
 	"color" : "#333",
 	"padding-left" : "45px",
-	"height" : "39px",
+	  "padding-right" : "10px",
+	"min-height" : "24px",
+	  "padding-top" : "8px",
+	  "padding-bottom" : "8px",
 	"font-weight" : "normal",
-	"line-height" : "39px",
+	"line-height" : "24px",
 	"font-family": "Microsoft YaHei",
 	"overflow" : "hidden",
 	"font-size": "14px",
@@ -418,10 +421,13 @@
 	"cursor" : "pointer",
 	"color" : "#666",
 	"padding-left" : "55px",
-	"height" : "39px",
+	  "padding-right" : "10px",
+	  "min-height" : "24px",
+	  "padding-top" : "8px",
+	  "padding-bottom" : "8px",
 	"overflow" : "hidden",
 	"font-weight" : "normal",
-	"line-height" : "39px",
+	"line-height" : "24px",
 	"font-family": "Microsoft YaHei",
 	"font-size": "14px",
 	//"background" : "url(../x_component_cms_Module/$Main/default/icon/category_folder.png) no-repeat 20px 12px",
@@ -436,6 +442,7 @@
   "categoryNaviNode_selected" : {
 	//"color" : "#447bbb",
 	//"background-color" : "#f2f8ff"
+	  "padding-top" : "30px",
 	"color" : "#fff",
 	"background-color" : "#3c76b7"
   },
@@ -647,7 +654,7 @@
   },
   "categoryInput" : {
 	"height" : "24px",
-	"width" : "180px",
+	"width" : "210px",
 	"color" : "#666",
 	"border" : "1px dashed #666"
   },
@@ -676,7 +683,7 @@
 	//"box-shadow": "0px 2px 5px #999",
 	"opacity": 1,
 	"top" : "10px",
-	"right" : "5px",
+	"left" : "55px",
 	"z-index": 100
   },
   "actionNodeStyles": {
