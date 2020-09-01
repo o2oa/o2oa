@@ -362,7 +362,14 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
         scriptAreas.each(function (node) {
             var title = node.get("title");
             var name = node.get("name");
-            var scriptContent = this.data[name];
+            var names = name.split(".");
+
+            var scriptContent = this.data;
+            Array.each(names, function (n) {
+                if (scriptContent) scriptContent = scriptContent[n];
+            });
+
+            // var scriptContent = this.data[name];
 
             MWF.require("MWF.widget.ScriptArea", function () {
                 var scriptArea = new MWF.widget.ScriptArea(node, {
@@ -370,7 +377,16 @@ MWF.xApplication.query.ViewDesigner.Property = MWF.FVProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.editContentNode,
                     "onChange": function () {
-                        this.data[name] = scriptArea.toJson().code;
+
+                        var scriptObj = this.data;
+                        Array.each(names, function (n, idx) {
+                            if( idx === names.length -1 )return;
+                            if (scriptObj) scriptObj = scriptObj[n];
+                        });
+
+                        scriptObj[names[names.length -1]] = scriptArea.toJson().code;
+
+                        // this.data[name] = scriptArea.toJson().code;
                     }.bind(this),
                     "onSave": function () {
                         this.designer.saveView();
