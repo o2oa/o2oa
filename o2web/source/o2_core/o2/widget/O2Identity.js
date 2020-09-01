@@ -100,7 +100,16 @@ o2.widget.O2Identity = new Class({
             }.bind(this)
         });
     },
-    setEvent: function(){},
+    setEvent: function(){
+	    if( this.open ){
+            this.node.addEvents({
+                "click": function(ev){
+                    this.open(ev);
+                    ev.stopPropagation();
+                }.bind(this)
+            });
+        }
+    },
     getPersonData: function(){
         if (!this.data.dutys){
             var action = o2.Actions.get("x_organization_assemble_control");
@@ -446,6 +455,17 @@ o2.widget.O2QueryView = new Class({
         }else{
             return this.data;
         }
+    },
+    open : function (e) {
+        if( this.data.id && this.data.query ){
+            var appId = "query.ViewDesigner" + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id, "application": this.data.query, "appId": appId};
+                layout.desktop.openApplication(e, "query.ViewDesigner", options);
+            }
+        }
     }
 });
 o2.widget.O2QueryStat = new Class({
@@ -461,6 +481,17 @@ o2.widget.O2QueryStat = new Class({
         }else{
             return this.data;
         }
+    },
+    open : function (e) {
+        if( this.data.id && this.data.query){
+            var appId = "query.StatDesigner" + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                layout.desktop.openApplication(e, "query.StatDesigner", options);
+            }
+        }
     }
 });
 o2.widget.O2QueryTable = new Class({
@@ -475,6 +506,17 @@ o2.widget.O2QueryTable = new Class({
             return data;
         }else{
             return this.data;
+        }
+    },
+    open : function (e) {
+        if( this.data.id && this.data.query){
+            var appId = "query.TableDesigner" + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id,"application": this.data.query, "appId": appId};
+                layout.desktop.openApplication(e, "query.TableDesigner", options);
+            }
         }
     }
 });
@@ -524,6 +566,120 @@ o2.widget.O2File = new Class({
         return this.data;
     }
 });
+
+o2.widget.O2Script = new Class({
+    Extends: o2.widget.O2Group,
+    getPersonData: function(){
+        return this.data;
+    },
+    createInforNode: function(){
+        if( !this.data.appType )return false;
+
+        this.inforNode = new Element("div", {
+            "styles": this.style.identityInforNode
+        });
+        var nameNode = new Element("div", {
+            "text": o2.LP[this.data.appType+"Name"]
+        }).inject(this.inforNode);
+        var nameTextNode = new Element("div", {
+            "text": this.data.applicationName || this.data.appName
+        }).inject(this.inforNode);
+        this.tooltip = new mBox.Tooltip({
+            content: this.inforNode,
+            setStyles: {content: {padding: 15, lineHeight: 20}},
+            attach: this.node,
+            transition: 'flyin'
+        });
+    },
+    open : function (e) {
+        if( this.data.id && this.data.appId &&  this.data.appType){
+            var appName;
+            if( this.data.appType === "cms" ){
+                appName = "cms.ScriptDesigner";
+            }else if( this.data.appType === "portal" ){
+                appName = "portal.ScriptDesigner";
+            }else if( this.data.appType === "process" ) {
+                appName = "process.ScriptDesigner";
+            }
+            var appId = appName + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                layout.desktop.openApplication(e, appName, options);
+            }
+        }
+    }
+});
+
+o2.widget.O2FormStyle = new Class({
+    Extends: o2.widget.O2Group,
+    getPersonData: function(){
+        return this.data;
+    },
+    open : function (e) {
+        if( typeOf(this.data)==="object" && this.data.id && this.data.appId && this.data.type === "script"){
+            var appName;
+            if( this.data.appType === "cms" ){
+                appName = "cms.ScriptDesigner";
+            }else{
+                appName = "process.ScriptDesigner";
+            }
+            var appId = appName + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                layout.desktop.openApplication(e, appName, options);
+            }
+        }
+    }
+});
+
+o2.widget.O2Dictionary = new Class({
+    Extends: o2.widget.O2Group,
+    getPersonData: function(){
+        return this.data;
+    },
+    createInforNode: function(){
+        if( !this.data.appType )return false;
+
+        this.inforNode = new Element("div", {
+            "styles": this.style.identityInforNode
+        });
+        var nameNode = new Element("div", {
+            "text": o2.LP[this.data.appType+"Name"]
+        }).inject(this.inforNode);
+        var nameTextNode = new Element("div", {
+            "text": this.data.applicationName || this.data.appName
+        }).inject(this.inforNode);
+        this.tooltip = new mBox.Tooltip({
+            content: this.inforNode,
+            setStyles: {content: {padding: 15, lineHeight: 20}},
+            attach: this.node,
+            transition: 'flyin'
+        });
+    },
+    open : function (e) {
+        if( this.data.id && this.data.appId && this.data.appType){
+            var appName;
+            if( this.data.appType === "cms" ){
+                appName = "cms.DictionaryDesigner";
+            }else if( this.data.appType === "process" ) {
+                appName = "process.DictionaryDesigner";
+            }
+            var appId = appName + this.data.id;
+            if (layout.desktop.apps[appId]){
+                layout.desktop.apps[appId].setCurrent();
+            }else {
+                var options = {"id": this.data.id, "appId": appId, "application":this.data.appId};
+                layout.desktop.openApplication(e, appName, options);
+            }
+        }
+    }
+});
+
+
 o2.widget.O2Other = new Class({
     Extends: o2.widget.O2Group,
     getPersonData: function(){
