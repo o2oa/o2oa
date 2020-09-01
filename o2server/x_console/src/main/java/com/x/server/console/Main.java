@@ -57,7 +57,7 @@ public class Main {
 		String base = getBasePath();
 		pid(base);
 		scanWar(base);
-		loadJars(base);
+		// loadJars(base);
 		/* getVersion需要FileUtils在后面运行 */
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
