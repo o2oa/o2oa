@@ -45,6 +45,8 @@ class ActionGetWithAppAndName extends BaseAction {
 				if (StringUtils.isNotEmpty(id)) {
 					Script script = emc.find(id, Script.class);
 					wrap = Wo.copier.copy( script );
+					wrap.setAppName(appInfo.getAppName());
+					wrap.setAppAlias(appInfo.getAppAlias());
 				} else {
 					throw new Exception("[getWithAppWithName]script not existed with name or alias : " + name + ".");
 				}
@@ -77,6 +79,10 @@ class ActionGetWithAppAndName extends BaseAction {
 		private Boolean validated;
 		
 		private String appId;
+
+		private String appName;
+
+		private String appAlias;
 		
 		private String text;
 		
@@ -192,6 +198,22 @@ class ActionGetWithAppAndName extends BaseAction {
 
 		public void setText(String text) {
 			this.text = text;
+		}
+
+		public String getAppName() {
+			return appName;
+		}
+
+		public void setAppName(String appName) {
+			this.appName = appName;
+		}
+
+		public String getAppAlias() {
+			return appAlias;
+		}
+
+		public void setAppAlias(String appAlias) {
+			this.appAlias = appAlias;
 		}
 	}
 }
