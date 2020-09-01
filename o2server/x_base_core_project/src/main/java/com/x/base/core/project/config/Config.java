@@ -64,6 +64,7 @@ public class Config {
 	public static final String PATH_CONFIG_WELINK = "config/welink.json";
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
+	public static final String PATH_CONFIG_MQ = "config/mq.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_CONFIG_SLICE = "config/slice.json";
@@ -75,7 +76,9 @@ public class Config {
 	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
+	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
+	public static final String PATH_CONFIG_EMAIL = "config/email.json";
 
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
@@ -1094,6 +1097,23 @@ public class Config {
 		return instance().zhengwuDingding;
 	}
 
+	private MQ mq;
+
+	public static MQ mq() throws Exception {
+		if (null == instance().mq) {
+			synchronized (Config.class) {
+				if (null == instance().mq) {
+					MQ obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, MQ.class);
+					if (null == obj) {
+						obj = MQ.defaultInstance();
+					}
+					instance().mq = obj;
+				}
+			}
+		}
+		return instance().mq;
+	}
+	
 	private Vfs vfs;
 
 	public static Vfs vfs() throws Exception {
@@ -1260,6 +1280,32 @@ public class Config {
 			}
 		}
 		return instance().portal;
+	}
+
+	public Cache cache;
+
+	public static synchronized Cache cache() throws Exception {
+		if (null == instance().cache) {
+			Cache obj = BaseTools.readConfigObject(PATH_CONFIG_CACHE, Cache.class);
+			if (null == obj) {
+				obj = Cache.defaultInstance();
+			}
+			instance().cache = obj;
+		}
+		return instance().cache;
+	}
+
+	public Email email;
+
+	public static synchronized Email email() throws Exception {
+		if (null == instance().email) {
+			Email obj = BaseTools.readConfigObject(PATH_CONFIG_EMAIL, Email.class);
+			if (null == obj) {
+				obj = Email.defaultInstance();
+			}
+			instance().email = obj;
+		}
+		return instance().email;
 	}
 
 	private Components components = null;

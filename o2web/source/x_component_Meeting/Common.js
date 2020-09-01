@@ -655,7 +655,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             this.formTopTextNode.set( "text", this.lp.addMeeting );
         }else if( this.isEdited ){
             this.formTopTextNode.set( "text", this.lp.editMeeting );
-            this.options.height = "610";
+            this.options.height = "630";
         }else{
             this.formTopTextNode.set( "text", this.lp.metting );
             this.options.height = "540";
@@ -692,9 +692,27 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var data = this.data;
 
         var isEditer = this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator();
-        var editEnable = ( !this.isEdited && !this.isNew && this.data.status == "wait" &&  isEditer  );
+        var editEnable = ( !this.isEdited && !this.isNew && this.data.status == "wait" &&  isEditer );
+        var isEditing = this.isNew || (this.isEdited  && this.data.status == "wait" &&  isEditer);
 
-        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:100px;height:130px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
+        var startImmediatelyEnable = false;
+        if( editEnable ){
+            if( MWF.AC.isMeetingAdministrator() ){
+                startImmediatelyEnable = true;
+            }else{
+                if( this.userName == this.data.applicant || this.userId == this.data.applicant ){
+                    if( !this.app.meetingConfig.process )startImmediatelyEnable = true;
+                }
+            }
+        }
+
+        var finishImmediatelyEnable = false;
+        if( isEditer && !this.isEdited && !this.isNew && this.data.status == "processing" ){
+            finishImmediatelyEnable = true;
+        }
+
+
+        var html = "<div item='qrCode' style='position: absolute;right:0px;top:-20px;width:150px;height:180px;'></div><table width='100%' bordr='0' cellpadding='7' cellspacing='0' styles='formTable'>" +
                 //"<tr><td colspan='2' styles='formTableHead'>申诉处理单</td></tr>" +
             "<tr>"+
             "   <td styles='formTableTitle' width='70'>"+this.lp.applyPerson+":</td>" +
@@ -706,7 +724,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "<tr><td styles='formTableTitle'>"+ this.lp.time +":</td>" +
             "    <td styles='formTableValue'>" +
             "       <div item='beginTimeInput' style='float:left'></div>"+
-            "       <div style='float:left; "+ ( this.isNew ? "margin:5px;" : "margin:0px 5px;") + "'>"+ this.lp.to+ "</div>"+
+            "       <div style='float:left; "+ ( isEditing ? "margin:5px;" : "margin:0px 5px;") + "'>"+ this.lp.to+ "</div>"+
             "       <div item='endTimeInput' style='float:left'></div>"+
             "   </td></tr>" +
             "<tr><td styles='formTableTitle'>"+ this.lp.selectRoom +":</td>" +
@@ -732,8 +750,10 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             "    <td styles='formTableValue' style='padding-top: 10px;'>"+
             "       <div item='saveAction' style='float:left;display:"+ ( (this.isEdited || this.isNew) ? "" : "none") +";'></div>"+
             "       <div item='editAction' style='float:left;display:"+ ( editEnable ? "" : "none") +";'></div>"+
+            "       <div item='startImmediatelyAction' style='float:left;display:"+ ( startImmediatelyEnable ? "" : "none") +";'></div>"+
+            "       <div item='finishImmediatelyAction' style='float:left;display:"+ ( finishImmediatelyEnable ? "" : "none") +";'></div>"+
             "       <div item='removeAction' style='float:left;display:"+ ( this.isEdited ? "" : "none") +";'></div>"+
-            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
+            "       <div item='cancelAction' style='"+( (this.isEdited || this.isNew || editEnable || startImmediatelyEnable || finishImmediatelyEnable ) ? "float:left;" : "float:right;margin-right:15px;")+"'></div>"+
             "   </td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
@@ -763,23 +783,23 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     applicant : { type : "org", orgType : "person", isEdited : false,
                         defaultValue : this.userName
                     },
-                    dateInput: {tType: "date", isEdited : this.isNew, defaultValue: defaultDate,
+                    dateInput: {tType: "date", isEdited : isEditing, defaultValue: defaultDate,
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
                             }.bind(this)
                         }
                     },
-                    beginTimeInput: { tType: "time", isEdited : this.isNew,
-                        defaultValue: defaultBeginTime, className : ( this.isNew ?  "inputTimeUnformatWidth" : "" ),
+                    beginTimeInput: { tType: "time", isEdited : isEditing,
+                        defaultValue: defaultBeginTime, className : ( isEditing ?  "inputTimeUnformatWidth" : "" ),
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
                             }.bind(this)
                         }
                     },
-                    endTimeInput: { tType: "time",  isEdited : this.isNew,
-                        defaultValue: defaultEndTime, className : ( this.isNew ?  "inputTimeUnformatWidth" : "" ),
+                    endTimeInput: { tType: "time",  isEdited : isEditing,
+                        defaultValue: defaultEndTime, className : ( isEditing ?  "inputTimeUnformatWidth" : "" ),
                         event : {
                             change : function( item, ev ){
                                 this.clearRoom();
@@ -844,6 +864,12 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                     editAction : { type : "button", className : "inputOkButton", value : this.lp.editMeeting , event : {
                         click : function(){ this.editMeeting(); }.bind(this)
                     } },
+                    startImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.startMeetingImmediately , event : {
+                        click : function(){ this.startImmediately(); }.bind(this)
+                    } },
+                    finishImmediatelyAction : { type : "button", className : "inputCancelButton", value : this.lp.endMeetingImmediately , event : {
+                            click : function(){ this.finishImmediately(); }.bind(this)
+                        } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
                         click : function(){ this.close(); }.bind(this)
                     } }
@@ -851,15 +877,39 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             }, this.app);
             this.form.load();
 
-            this.loadSelectRoom();
+            if( isEditing ){
+                this.loadSelectRoom();
+            }else{
+                this.loadSelectRoom_read();
+            }
             if( this.data.id )this.loadAttachment();
 
-            if( isEditer && !this.isNew ){
+            if( isEditer && !this.isNew && !this.isEdited ){
                 this.loadQrCode();
             }else{
                 this.qrCodeArea.destroy();
             }
         }.bind(this), true);
+    },
+    startImmediately : function(){
+        o2.Actions.load("x_meeting_assemble_control").MeetingAction.editStartTime( this.data.id, {
+            room : this.roomId || this.data.room,
+            startTime : ( new Date() ).format("db")
+        }, function () {
+            this.app.notice( this.lp.startMeetingSucccess, "success");
+            this.waitReload = true;
+            this.reload()
+        }.bind(this))
+    },
+    finishImmediately : function(){
+        o2.Actions.load("x_meeting_assemble_control").MeetingAction.editCompletedTime( this.data.id, {
+            room : this.roomId || this.data.room,
+            completedTime : ( new Date() ).format("db")
+        }, function () {
+            this.app.notice( this.lp.endMeetingSucccess, "success");
+            this.waitReload = true;
+            this.reload()
+        }.bind(this))
     },
     getInvitePersonExclude : function(){
         var invitePersonList = this.invitePersonList || this.data.invitePersonList;
@@ -884,19 +934,20 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             var img = new Element("img",{
                 src : "data:image/png;base64,"+json.data.image,
                 styles : {
-                    width : "100px",
-                    height : "100px"
+                    width : "150px",
+                    height : "150px"
                 }
             }).inject( this.qrCodeArea );
             var div = new Element("div",{
                 text : "打印签到二维码",
                 styles : {
-                    color : "#3c75b7",
-                    cursor : "pointer"
+                    "color" : "#3c75b7",
+                    "cursor" : "pointer",
+                    "text-align": "center"
                 },
                 events : {
                     click : function(){
-                        window.open(o2.filterUrl("../x_component_Meeting/$Main/qrPrint.html?meeting="+this.data.id), "_blank" );
+                        window.open(o2.filterUrl("../x_desktop/meetingQrPrint.html?meeting="+this.data.id), "_blank" );
                     }.bind(this)
                 }
             }).inject( this.qrCodeArea );
@@ -968,22 +1019,33 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         this.roomId = "";
         if(this.roomInput)this.roomInput.set("text", "");
     },
+    loadSelectRoom_read : function(){
+        var roomId = this.data.room || this.options.room;
+        if (roomId){
+            ( this.app.actions || this.actions ).getRoom(roomId, function(json){
+                ( this.app.actions || this.actions ).getBuilding(json.data.building, function(bjson){
+                    this.roomId = roomId;
+                    this.meetingRoomArea.set("text", json.data.name+" ("+bjson.data.name+")");
+                }.bind(this));
+            }.bind(this));
+        }
+    },
     loadSelectRoom: function(){
-        var lineNode = new Element("div", {"styles": this.css.createMeetingInfoLineNode}).inject(this.meetingRoomArea);
+        var css = this.app.css;
+
+        var lineNode = new Element("div", {"styles": css.createMeetingInfoLineNode}).inject(this.meetingRoomArea);
         var editNode = new Element("div", {
-            "styles": this.css.createMeetingInfoItemEditNode,
+            "styles": css.createMeetingInfoItemEditNode,
             "html": "<div></div>"
         }).inject(lineNode);
         this.roomInput = editNode.getFirst();
-        this.roomInput.setStyles(this.css.createMeetingInfoItemDivNode);
+        this.roomInput.setStyles( css.createMeetingInfoItemDivNode);
 
         //var downNode = new Element("div", {"styles": this.css.createMeetingInfoItemDownNode}).inject(editNode);
 
-        if( this.isNew ){
-            this.roomInput.addEvents({
-                "click": function(e){this.selectRooms();}.bind(this)
-            });
-        }
+        this.roomInput.addEvents({
+            "click": function(e){this.selectRooms();}.bind(this)
+        });
 
         var roomId = this.data.room || this.options.room;
         if (roomId){
@@ -1018,8 +1080,9 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     },
 
     createRoomNode: function(callback){
+        var css = this.app.css;
         if (!this.selectRoomNode){
-            this.selectRoomNode = new Element("div", {"styles": this.css.createMeetingInfoSelectRoomNode}).inject(this.formNode);
+            this.selectRoomNode = new Element("div", {"styles": css.createMeetingInfoSelectRoomNode}).inject(this.formNode);
             this.selectRoomNode.addEvent("mousedown", function(e){e.stopPropagation();});
             if (callback) callback();
         }else{
@@ -1027,6 +1090,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
     },
     loadSelectRooms: function(){
+        var css = this.app.css;
         var result = this.form.getResult(false,null,false,false,true);
         var d = result.dateInput;
         var bt = result.beginTimeInput;
@@ -1034,11 +1098,11 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         var start = d+" "+bt;
         var completed = d+" "+et;
 
-        this.app.actions.listBuildingByRange(start, completed, function(json){
+        var success = function(json){
             json.data.each(function(building){
-                var node = new Element("div", {"styles": this.css.createMeetingInfoSelectRoomItem1Node}).inject(this.selectRoomNode);
-                var nodeName = new Element("div", {"styles": this.css.createMeetingInfoSelectRoomItem1NameNode, "text": building.name}).inject(node);
-                var nodeAddr = new Element("div", {"styles": this.css.createMeetingInfoSelectRoomItem1AddrNode, "text": building.address}).inject(node);
+                var node = new Element("div", {"styles": css.createMeetingInfoSelectRoomItem1Node}).inject(this.selectRoomNode);
+                var nodeName = new Element("div", {"styles": css.createMeetingInfoSelectRoomItem1NameNode, "text": building.name}).inject(node);
+                var nodeAddr = new Element("div", {"styles": css.createMeetingInfoSelectRoomItem1AddrNode, "text": building.address}).inject(node);
 
 
                 building.roomList.each(function(room, i){
@@ -1046,24 +1110,36 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 }.bind(this));
 
             }.bind(this));
-        }.bind(this));
+        }.bind(this);
+
+        if( this.isEdited && this.data.room ){
+            o2.Actions.load("x_meeting_assemble_control").BuildingAction.listWithStartCompletedRoom( start, completed, this.data.room, this.data.id,  function ( json ) {
+                    success( json );
+                }
+            )
+        }else{
+            this.app.actions.listBuildingByRange(start, completed, function(json){
+                success( json )
+            }.bind(this));
+        }
     },
 
     createRoomSelectNode: function(room, i, building){
-        var roomNode = new Element("div", {"styles": this.css.roomTitleNode}).inject(this.selectRoomNode);
-        var capacityNode = new Element("div", {"styles": this.css.roomTitleCapacityNode, "text": room.capacity+this.lp.person}).inject(roomNode);
-        var inforNode = new Element("div", {"styles": this.css.roomTitleInforNode}).inject(roomNode);
+        var css = this.app.css;
+        var roomNode = new Element("div", {"styles": css.roomTitleNode}).inject(this.selectRoomNode);
+        var capacityNode = new Element("div", {"styles": css.roomTitleCapacityNode, "text": room.capacity+this.lp.person}).inject(roomNode);
+        var inforNode = new Element("div", {"styles": css.roomTitleInforNode}).inject(roomNode);
 
         var node = new Element("div", {"styles": {"height": "20px"}}).inject(inforNode);
-        var numberNode = new Element("div", {"styles": this.css.roomTitleNumberNode, "text": (room.roomNumber) ? "#"+room.roomNumber : ""}).inject(node);
-        var nameNode = new Element("div", {"styles": this.css.roomTitleNameNode, "text": room.name}).inject(node);
+        var numberNode = new Element("div", {"styles": css.roomTitleNumberNode, "text": (room.roomNumber) ? "#"+room.roomNumber : ""}).inject(node);
+        var nameNode = new Element("div", {"styles": css.roomTitleNameNode, "text": room.name}).inject(node);
 
-        var iconsNode = new Element("div", {"styles": this.css.roomTitleIconsNode}).inject(inforNode);
+        var iconsNode = new Element("div", {"styles": css.roomTitleIconsNode}).inject(inforNode);
 
         var deviceList = ( room.device || "" ).split("#");
         deviceList.each(function(name){
             if( name ){
-                var node = new Element("div", {"styles": this.css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
+                var node = new Element("div", {"styles": css.roomTitleIconNode, "title": this.lp.device[name]}).inject(iconsNode);
                 node.setStyle("background-image", "url(../x_component_Meeting/$RoomView/default/icon/device/"+name+"_disable.png)");
             }
         }.bind(this));
@@ -1092,7 +1168,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
             });
         }else{
             roomNode.setStyle("background-color", "#fff6f6");
-            var disabledNode = new Element("div", {"styles": this.css.roomTitleDisabledIconNode}).inject(roomNode);
+            var disabledNode = new Element("div", {"styles": css.roomTitleDisabledIconNode}).inject(roomNode);
         }
 
     },
@@ -1260,17 +1336,17 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
         }
 
         var d = this.data.dateInput;
-        if( this.isNew ) {
-            var startTime = d + " " + this.data.beginTimeInput + ":0";
-            var completedTime = d + " " + this.data.endTimeInput + ":0";
-            var startTimeDate = Date.parse(startTime);
-            var completedTimeDate = Date.parse(completedTime);
+        // if( this.isNew ) {
+        var startTime = d + " " + this.data.beginTimeInput + ":0";
+        var completedTime = d + " " + this.data.endTimeInput + ":0";
+        var startTimeDate = Date.parse(startTime);
+        var completedTimeDate = Date.parse(completedTime);
 
-            this.data.startTime = startTime;
-            this.data.completedTime = completedTime;
-            this.data.startTimeDate = startTimeDate;
-            this.data.completedTimeDate = completedTimeDate;
-        }
+        this.data.startTime = startTime;
+        this.data.completedTime = completedTime;
+        this.data.startTimeDate = startTimeDate;
+        this.data.completedTimeDate = completedTimeDate;
+        // }
 
         if( this.isNew ){
             delete this.data.applicant;

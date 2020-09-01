@@ -5,14 +5,17 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.*;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -24,8 +27,15 @@ import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 class ActionUninstall extends BaseAction {
 
@@ -47,8 +57,14 @@ class ActionUninstall extends BaseAction {
 			}
 			logger.print("{}发起卸载应用：{}", effectivePerson.getDistinguishedName(), app.getName());
 			Wo wo = new Wo();
-			WrapModule module = gson.fromJson(installLog.getData(), WrapModule.class);
-			this.uninstall(module);
+			InstallData installData = gson.fromJson(installLog.getData(), InstallData.class);
+			WrapModule module = installData.getWrapModule();
+			if(module!=null) {
+				this.uninstall(module);
+			}
+			if(StringUtils.isNotEmpty(installData.getCustomApp())){
+				this.uninstallCustomApp(installData.getCustomApp());
+			}
 			emc.beginTransaction(InstallLog.class);
 			installLog.setStatus(CommonStatus.INVALID.getValue());
 			installLog.setUnInstallPerson(effectivePerson.getDistinguishedName());
@@ -126,6 +142,30 @@ class ActionUninstall extends BaseAction {
 			logger.warn("卸载服务模块异常：{}",e.getMessage());
 		}
 
+	}
+
+	private void uninstallCustomApp(String fileName) throws Exception{
+		Nodes nodes = Config.nodes();
+		for (String node : nodes.keySet()){
+			if(nodes.get(node).getApplication().getEnable()) {
+				logger.print("socket uninstall custom app{} to {}:{}",fileName, node, nodes.get(node).nodeAgentPort());
+				try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
+					socket.setKeepAlive(true);
+					socket.setSoTimeout(5000);
+					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+						Map<String, Object> commandObject = new HashMap<>();
+						commandObject.put("command", "uninstall:customWar");
+						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+
+						dos.writeUTF(XGsonBuilder.toJson(commandObject));
+						dos.flush();
+						dos.writeUTF(fileName);
+						dos.flush();
+					}
+				}
+			}
+		}
 	}
 
 	public static class Wo extends WrapBoolean {

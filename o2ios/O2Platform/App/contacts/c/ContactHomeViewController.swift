@@ -83,11 +83,11 @@ class ContactHomeViewController: UITableViewController {
         searchController.searchResultsUpdater = self
         
         searchController.dimsBackgroundDuringPresentation = false
-        //searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
         
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
-        let textFont = UIFont(name: "PingFangTC-Light", size: 14.0)
-        let attrs = [NSAttributedString.Key.font: textFont!]
+        let attrs =  [NSAttributedString.Key.font: UIFont.init(name: "PingFangTC-Light", size: 14) ?? UIFont.systemFont(ofSize: 14),
+         NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color") ?? UIColor.red]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attrs, for: .normal)
         
         searchController.searchBar.searchBarStyle = UISearchBar.Style.minimal
@@ -241,7 +241,7 @@ class ContactHomeViewController: UITableViewController {
                     DDLogError("error message =\(value["message"])")
                 }
             case .failure(let err):
-                DDLogDebug(err as? String ?? "未知错误")
+                DDLogError(err.localizedDescription)
             }
         }
     }
@@ -372,33 +372,33 @@ class ContactHomeViewController: UITableViewController {
 extension ContactHomeViewController:UISearchControllerDelegate{
     func willPresentSearchController(_ searchController: UISearchController) {
         NSLog("willPresentSearchController")
-        searchController.searchBar.searchBarStyle = UISearchBar.Style.default
-        self.tableView.mj_header.isHidden = true
+//        searchController.searchBar.searchBarStyle = UISearchBar.Style.default
+//        self.tableView.mj_header.isHidden = true
         
     }
     
     func didPresentSearchController(_ searchController: UISearchController) {
         NSLog("didPresentSearchController")
-        UIView.animate(withDuration: 0.1, animations:{
-            ()-> Void in
-            self.tableView.contentInset = UIEdgeInsets(top: 25, left: 0, bottom: 0, right: 0)
-        })
+//        UIView.animate(withDuration: 0.1, animations:{
+//            ()-> Void in
+//            self.tableView.contentInset = UIEdgeInsets(top: 25, left: 0, bottom: 0, right: 0)
+//        })
         
     }
     
     func willDismissSearchController(_ searchController: UISearchController) {
         NSLog("willDismissSearchController")
-        searchController.searchBar.searchBarStyle = UISearchBar.Style.minimal
+//        searchController.searchBar.searchBarStyle = UISearchBar.Style.minimal
     }
     
     func didDismissSearchController(_ searchController: UISearchController) {
         NSLog("didDismissSearchController")
-        UIView.animate(withDuration: 0.15, animations:{
-            ()-> Void in
-            self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        },completion:{(finished:Bool) -> Void in
-            self.tableView.mj_header.isHidden = false
-        })
+//        UIView.animate(withDuration: 0.15, animations:{
+//            ()-> Void in
+//            self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        },completion:{(finished:Bool) -> Void in
+//            self.tableView.mj_header.isHidden = false
+//        })
         
         
     }

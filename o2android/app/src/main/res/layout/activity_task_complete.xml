@@ -10,7 +10,7 @@
 
     <include layout="@layout/snippet_appbarlayout_toolbar"></include>
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_task_completed_list_application"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -48,7 +48,7 @@
                 android:layout_height="1dp"
                 android:background="@color/z_color_primary" />
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/task_complete_view_pager_id"
                 android:layout_width="fill_parent"
                 android:layout_height="0dp"
@@ -65,5 +65,5 @@
             android:choiceMode="singleChoice"
             android:divider="@color/z_color_split_line_ddd"
             android:dividerHeight="0.5dp" />
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

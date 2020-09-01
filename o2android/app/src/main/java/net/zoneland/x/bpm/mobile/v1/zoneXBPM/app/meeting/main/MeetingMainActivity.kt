@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.meeting.main
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import kotlinx.android.synthetic.main.activity_meeting.*
 import kotlinx.android.synthetic.main.fragment_meeting_bottom_bar.*

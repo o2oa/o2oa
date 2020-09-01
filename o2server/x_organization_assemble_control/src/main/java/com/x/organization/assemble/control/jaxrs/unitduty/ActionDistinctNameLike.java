@@ -2,6 +2,7 @@ package com.x.organization.assemble.control.jaxrs.unitduty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -14,15 +15,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionDistinctNameLike extends BaseAction {
 
@@ -30,13 +30,13 @@ class ActionDistinctNameLike extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), key);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), key);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
 			} else {
 				Wo wo = this.list(business, key);
-				business.cache().put(new Element(cacheKey, wo));
+				CacheManager.put(business.cache(), cacheKey, wo);
 				result.setData(wo);
 			}
 			return result;

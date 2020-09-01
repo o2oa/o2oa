@@ -1,31 +1,33 @@
 package com.x.attendance.assemble.control.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+
 
 
 public class AttendanceWorkDayConfigService {
 
-	private Ehcache cache_AttendanceWorkDayConfig = ApplicationCache.instance().getCache( AttendanceWorkDayConfig.class);
+	private CacheCategory cache_AttendanceWorkDayConfig = new CacheCategory( AttendanceWorkDayConfig.class);
 	/**
 	 * 从缓存中获取所有的工作日配置
 	 * @return
 	 * @throws Exception
 	 */
 	public List<AttendanceWorkDayConfig> getAllWorkDayConfigWithCache(Boolean debugger) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey( "list#all" );
-		Element element = cache_AttendanceWorkDayConfig.get(cacheKey);
+		CacheKey cacheKey = new CacheKey("list#all");
+		Optional<?> optional = CacheManager.get(cache_AttendanceWorkDayConfig, cacheKey);
 		List<AttendanceWorkDayConfig> workDayConfigList = null;
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (List<AttendanceWorkDayConfig>) element.getObjectValue();
+		if (optional.isPresent()) {
+			return ((List<AttendanceWorkDayConfig>) optional.get());
 		}else{
 			return listAll();
 		}

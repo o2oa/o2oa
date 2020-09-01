@@ -151,13 +151,9 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getMiddleRestStartTimeFromDetail(AttendanceDetail detail, AttendanceScheduleSetting scheduleSetting, Boolean debugger) {
 		try {
-			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
-				logger.debug( debugger, "middleRestEndTime " );
-			}else{
-				if( scheduleSetting.getMiddayRestStartTime() != null ){
-					logger.debug(debugger, "middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime());
-					return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestStartTime());
-				}
+			if( scheduleSetting.getMiddayRestStartTime() != null ){
+				logger.debug(debugger, "middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime());
+				return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestStartTime());
 			}
 		} catch (Exception e) {
 			detail.setDescription(detail.getDescription() + "; 系统进行时间转换时发生异常,middleRestStartTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime() + " - " + scheduleSetting.getMiddayRestEndTime());
@@ -176,13 +172,9 @@ class AttendanceDetailAnalyseCoreService {
 	 */
 	static Date getMiddleRestEndTimeFromDetail(AttendanceDetail detail, AttendanceScheduleSetting scheduleSetting, Boolean debugger) {
 		try {
-			if( StringUtils.isEmpty( detail.getOnDutyTime() ) ){
-				logger.debug( debugger, "middleRestEndTime " );
-			}else{
-				if( scheduleSetting.getMiddayRestEndTime() != null ){
-					logger.debug(debugger, "middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestEndTime());
-					return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestEndTime());
-				}
+			if( scheduleSetting.getMiddayRestEndTime() != null ){
+				logger.debug(debugger, "middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestEndTime());
+				return dateOperation.getDateFromString(detail.getRecordDateString() + " " + detail.getMiddayRestEndTime());
 			}
 		} catch (Exception e) {
 			detail.setDescription(detail.getDescription() + "; 系统进行时间转换时发生异常,middleRestEndTime=" + detail.getRecordDateString() + " " + scheduleSetting.getMiddayRestStartTime() + " - " + scheduleSetting.getMiddayRestEndTime());

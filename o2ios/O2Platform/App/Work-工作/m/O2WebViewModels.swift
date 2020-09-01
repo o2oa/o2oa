@@ -93,6 +93,13 @@ class O2UtilNavigation: HandyJSON {
     var title: String!
     required init() {}
 }
+//地图展现位置
+struct O2UtilOpenMap: HandyJSON {
+    var address: String?
+    var addressDetail: String?
+    var latitude: Double?
+    var longitude: Double?
+}
 
 struct O2UtilPhoneInfo: HandyJSON {
     var screenWidth: String?
@@ -155,3 +162,8 @@ struct O2BizContactPickerResult: HandyJSON {
     var users: [O2PersonPickerItem]?
 }
 
+struct O2DeviceLocationResult: HandyJSON {
+    var latitude: Double?
+    var longitude: Double?
+    var address: String?
+}

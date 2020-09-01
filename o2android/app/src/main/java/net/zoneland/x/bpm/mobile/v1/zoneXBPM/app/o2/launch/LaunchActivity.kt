@@ -12,8 +12,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -37,7 +37,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertDialogBuilder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2AlertIconEnum
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import org.jetbrains.anko.dip
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.service.DownloadAPKService
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.O2AppUpdateBean
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
@@ -78,7 +78,7 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
     }
 
     override fun afterSetContentView(savedInstanceState: Bundle?) {
-        val deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "")//检查本地是否存在设备号
+        val deviceId = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_PHONE_TOKEN_KEY, "") ?: ""//检查本地是否存在设备号
         if (!TextUtils.isEmpty(deviceId)) {
             Log.d("LaunchActivity", "本地存在设备号：$deviceId")
             pushToken = deviceId
@@ -361,7 +361,6 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
     }
 
     private fun gotoMain() {
-        O2App.instance._JMLoginInner()//im
         circleProgressBar_launch.gone()
         if (mStyleUpdate) {
             goAndClearBefore<MainActivity>()
@@ -401,7 +400,7 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
         }
         view_pager_launch_introduction_page.adapter = object : PagerAdapter() {
 
-            override fun instantiateItem(container: ViewGroup?, position: Int): Any {
+            override fun instantiateItem(container: ViewGroup, position: Int): Any {
                 var page = container?.findViewWithTag<ImageView>(introductionPageTag(position))
                 if (page == null) {
                     page = ImageView(this@LaunchActivity)
@@ -414,14 +413,12 @@ class LaunchActivity : BaseMVPActivity<LaunchContract.View, LaunchContract.Prese
                 return page
             }
 
-            override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-                if (`object` != null) {
-                    `object` as ImageView
-                    container?.removeView(`object`)
-                }
+            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                `object` as ImageView
+                container.removeView(`object`)
             }
 
-            override fun isViewFromObject(view: View?, `object`: Any?): Boolean = view == `object`
+            override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
             override fun getCount(): Int = introductionArray.size
         }

@@ -90,15 +90,15 @@ class ContactPersonPickerViewController: UITableViewController {
             self.personDataList.removeAll()
             self.tableView.reloadData()
         }else{
-            MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+            self.showLoading()
             viewModel.searchPersonList(searchText: searchText!).then { (list)  in
                 self.personDataList.removeAll()
                 self.personDataList = list
                 self.tableView.reloadData()
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                   self.hideLoading()
                      
             }
         }

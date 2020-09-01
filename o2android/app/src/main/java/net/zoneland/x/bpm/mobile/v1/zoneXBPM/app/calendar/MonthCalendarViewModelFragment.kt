@@ -1,11 +1,11 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
@@ -82,10 +82,10 @@ class MonthCalendarViewModelFragment : CalendarBaseFragment(), OnDateSelectedLis
     override fun layoutResId(): Int = R.layout.fragment_calendar_month
 
     override fun bindViewModel() {
-        monthViewModel.currentFilter().observe(this, android.arch.lifecycle.Observer { filter->
+        monthViewModel.currentFilter().observe(this, androidx.lifecycle.Observer { filter->
             updateTitle(filter?.start)
         })
-        monthViewModel.getEventMap().observe(this, android.arch.lifecycle.Observer { map->
+        monthViewModel.getEventMap().observe(this, androidx.lifecycle.Observer { map->
             val meetingDays = ArrayList<CalendarDay>()
             if (map!=null) {
                 map.forEach { (day, events) ->
@@ -112,16 +112,16 @@ class MonthCalendarViewModelFragment : CalendarBaseFragment(), OnDateSelectedLis
             mcv_fragment_calendar_month.removeDecorators()
             mcv_fragment_calendar_month.addDecorators(TodayDecorator(activity), selectorDecorator)
             //addDecorator
-            mcv_fragment_calendar_month.addDecorator(EventDecorator(FancySkinManager.instance().getColor(activity, R.color.z_color_primary), meetingDays))
+            mcv_fragment_calendar_month.addDecorator(EventDecorator(FancySkinManager.instance().getColor(activity!!, R.color.z_color_primary), meetingDays))
 
         })
-        monthViewModel.getSelectDay().observe(this, android.arch.lifecycle.Observer { day->
+        monthViewModel.getSelectDay().observe(this, androidx.lifecycle.Observer { day->
             if (day!=null) {
                 val dayStr = DateHelper.getDate(day.time)
                 tv_fragment_calendar_month_current_day.text = dayStr
             }
         })
-        monthViewModel.getDayEvenList().observe(this, android.arch.lifecycle.Observer { eventList->
+        monthViewModel.getDayEvenList().observe(this, androidx.lifecycle.Observer { eventList->
             list.clear()
             if (eventList!=null && !eventList.isEmpty()) {
                 eventList.forEach {
@@ -178,10 +178,10 @@ class MonthCalendarViewModelFragment : CalendarBaseFragment(), OnDateSelectedLis
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putSerializable(DAY_KEY, selectDay)
-        outState?.putSerializable(MY_FILTER_KEY, myFilter)
+        outState.putSerializable(DAY_KEY, selectDay)
+        outState.putSerializable(MY_FILTER_KEY, myFilter)
     }
 
     override fun onResume() {

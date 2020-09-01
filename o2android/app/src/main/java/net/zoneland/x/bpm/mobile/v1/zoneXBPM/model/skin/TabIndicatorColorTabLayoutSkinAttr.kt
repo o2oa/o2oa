@@ -1,6 +1,6 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.skin
 
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 import android.view.View
 import net.muliba.changeskin.FancySkinManager
 import net.muliba.changeskin.data.BaseSkinAttr

@@ -1,34 +1,31 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.PersonCard;
 import com.x.organization.core.entity.PersonCard_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 public class PersonCardFactory extends AbstractFactory {
 
 	public PersonCardFactory(Business business) throws Exception {
 		super(business);
-		cache = ApplicationCache.instance().getCache(PersonCard.class);
+		cache = new CacheCategory(PersonCard.class);
 	}
 
 	public PersonCard pick(String flag) throws Exception {
@@ -36,14 +33,13 @@ public class PersonCardFactory extends AbstractFactory {
 			return null;
 		}
 		PersonCard o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (PersonCard) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (PersonCard) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}

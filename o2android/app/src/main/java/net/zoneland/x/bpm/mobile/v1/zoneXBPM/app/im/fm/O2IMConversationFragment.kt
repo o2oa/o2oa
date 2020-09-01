@@ -1,11 +1,11 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.im.fm
 
-import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.wugang.activityresult.library.ActivityResult
 import kotlinx.android.synthetic.main.fragment_o2_im_conversation.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
@@ -22,7 +22,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.APIAddressHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.InstantMessage
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMConversationInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessage
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.IMMessageBody
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.MessageType
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.vo.ContactPickerResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.DateHelper
@@ -107,11 +106,11 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
         rv_o2_im_conversation.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         rv_o2_im_conversation.adapter = adapter
         adapter.setOnItemClickListener { _, position ->
-            O2ChatActivity.startChat(activity, cList[position].id!!)
+            O2ChatActivity.startChat(activity!!, cList[position].id!!)
         }
         ll_o2_instant_message.setOnClickListener {
             if (instantList.isNotEmpty()) {
-                O2InstantMessageActivity.openInstantActivity(instantList, activity)
+                O2InstantMessageActivity.openInstantActivity(instantList, activity!!)
             }
         }
     }
@@ -123,12 +122,12 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_news_tribe_create, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_news_tribe_create, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.menu_single_create -> {
                 openCreateSingleConversation()
@@ -183,7 +182,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
             cList.add(conv)
             adapter.notifyDataSetChanged()
         }
-        O2ChatActivity.startChat(activity, conv.id!!)
+        O2ChatActivity.startChat(activity!!, conv.id!!)
     }
 
     override fun createConvFail(message: String) {
@@ -210,7 +209,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     }
 
     private fun openCreateSingleConversation() {
-        ActivityResult.of(activity)
+        ActivityResult.of(activity!!)
                 .className(ContactPickerActivity::class.java)
                 .params(ContactPickerActivity.startPickerBundle(pickerModes = arrayListOf(ContactPickerActivity.personPicker), multiple = false))
                 .greenChannel().forResult { _, data ->
@@ -228,7 +227,7 @@ class O2IMConversationFragment : BaseMVPViewPagerFragment<O2IMConversationContra
     }
 
     private fun openCreateTribeConversation() {
-        ActivityResult.of(activity)
+        ActivityResult.of(activity!!)
                 .className(ContactPickerActivity::class.java)
                 .params(ContactPickerActivity.startPickerBundle(pickerModes = arrayListOf(ContactPickerActivity.personPicker), multiple = true))
                 .greenChannel().forResult { _, data ->

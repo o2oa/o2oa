@@ -6,9 +6,9 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.os.Build
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatButton
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatButton
 import android.util.AttributeSet
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 
@@ -65,15 +65,17 @@ class O2ProgressButton : AppCompatButton {
     }
 
     override fun onDraw(canvas: Canvas?) {
-        if (mProgress in (mMinProgress + 1)..mMaxProgress && !isFinish) {
-            val scale = (mProgress.toFloat() / mMaxProgress.toFloat())
-            val nowWidth = measuredWidth.toFloat() * scale
-            mButtonDrawable.setBounds(0, 0, nowWidth.toInt(), measuredHeight)
-            mButtonDrawable.draw(canvas)
-            if (mProgress == mMaxProgress) {
-                setBackgroundCompat(mButtonDrawable)
-                isFinish = true
-                mFinishListener?.onFinish()
+        if (canvas != null) {
+            if (mProgress in (mMinProgress + 1)..mMaxProgress && !isFinish) {
+                val scale = (mProgress.toFloat() / mMaxProgress.toFloat())
+                val nowWidth = measuredWidth.toFloat() * scale
+                mButtonDrawable.setBounds(0, 0, nowWidth.toInt(), measuredHeight)
+                mButtonDrawable.draw(canvas)
+                if (mProgress == mMaxProgress) {
+                    setBackgroundCompat(mButtonDrawable)
+                    isFinish = true
+                    mFinishListener?.onFinish()
+                }
             }
         }
         super.onDraw(canvas)

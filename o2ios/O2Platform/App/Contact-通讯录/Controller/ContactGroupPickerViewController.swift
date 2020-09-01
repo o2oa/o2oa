@@ -85,19 +85,19 @@ class ContactGroupPickerViewController: UITableViewController {
     
     private func loadFirstPageData() {
          DDLogDebug("loadFirstPageData ............group")
-        MBProgressHUD_JChat.showMessage(message: "loading...", toView: view)
+        self.showLoading()
         viewModel.loadGroupList(lastId: "(0)").then { (list)  in
             self.groupDataList.removeAll()
             self.groupDataList = list
             self.tableView.reloadData()
-            MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
             if self.tableView.mj_header.isRefreshing(){
                 self.tableView.mj_header.endRefreshing()
             }
             DDLogDebug("loadFirstPageData ............finish")
         }.catch { (error) in
                 DDLogError(error.localizedDescription)
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+            self.hideLoading()
             if self.tableView.mj_header.isRefreshing(){
                 self.tableView.mj_header.endRefreshing()
             }
@@ -111,13 +111,13 @@ class ContactGroupPickerViewController: UITableViewController {
                     self.groupDataList.append(model)
                 })
                 self.tableView.reloadData()
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
                 if self.tableView.mj_footer.isRefreshing(){
                     self.tableView.mj_footer.endRefreshing()
                 }
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
-                    MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                    self.hideLoading()
                     if self.tableView.mj_footer.isRefreshing(){
                         self.tableView.mj_footer.endRefreshing()
                     }

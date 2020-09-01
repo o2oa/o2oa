@@ -2,9 +2,9 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.calendar.vm
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import android.graphics.Color
 import net.zoneland.o2.view.CalendarViewEvent
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App

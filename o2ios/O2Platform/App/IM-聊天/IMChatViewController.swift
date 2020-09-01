@@ -241,7 +241,7 @@ class IMChatViewController: UIViewController {
         DispatchQueue.main.async {
             self.tableView.reloadData()
             if self.chatMessageList.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count - 1, section: 0), at: .bottom, animated: true)
+                self.tableView.scrollToRow(at: IndexPath(row: self.chatMessageList.count - 1, section: 0), at: .bottom, animated: false)
             }
         }
     }
@@ -633,12 +633,8 @@ extension IMChatViewController: IMChatMessageDelegate {
     
     
     func openLocatinMap(info: IMMessageBodyInfo) {
-        let map = IMShowLocationViewController()
-        map.address = info.address
-        map.addressDetail = info.addressDetail
-        map.latitude = info.latitude
-        map.longitude = info.longitude
-        self.navigationController?.pushViewController(map, animated: false)
+        IMShowLocationViewController.pushShowLocation(vc: self, latitude: info.latitude, longitude: info.longitude,
+                                                      address: info.address, addressDetail: info.addressDetail)
     }
     
     func clickImageMessage(info: IMMessageBodyInfo) {

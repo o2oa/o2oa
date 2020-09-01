@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -49,7 +50,7 @@ public class DisableExpiredEmpower extends AbstractJob {
 				o.setEnable(false);
 			}
 			emc.commit();
-			ApplicationCache.notify(Empower.class);
+			CacheManager.notify(Empower.class);
 		}
 
 	}

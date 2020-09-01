@@ -1,4 +1,4 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
@@ -7,7 +7,7 @@
     tools:context=".app.o2.person.PersonActivity">
 
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@android:color/white">
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_person_top_bar"
                 android:layout_width="match_parent"
                 android:layout_height="230dp"
@@ -50,17 +50,22 @@
                     tools:text="刘振兴" />
 
                 <TextView
-                    android:id="@+id/tv_person_qq"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_person_sign"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_small"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
+                    android:textAlignment="center"
                     app:layout_constraintTop_toBottomOf="@+id/tv_person_name"
-                    tools:text="QQ 171600000" />
-            </android.support.constraint.ConstraintLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:layout_marginEnd="@dimen/spacing_normal"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    tools:text="个性签名：就看见看见看见看见" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:id="@+id/relative_person_operation_bar"
@@ -73,8 +78,8 @@
                     android:id="@+id/linear_person_gender_men_button"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="90dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="90dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
@@ -99,8 +104,8 @@
                     android:id="@+id/linear_person_gender_women_button"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="90dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="90dp"
                     android:gravity="center_horizontal"
                     android:visibility="gone"
                     android:orientation="vertical">
@@ -126,9 +131,9 @@
                     android:id="@+id/linear_person_collection_button"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:gravity="center_horizontal"
-                    android:layout_marginRight="90dp"
+                    android:layout_marginEnd="90dp"
                     android:orientation="vertical">
 
                     <ImageView
@@ -196,7 +201,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -226,7 +230,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -256,7 +259,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -286,7 +288,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -322,7 +323,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
                 <LinearLayout
@@ -358,7 +358,6 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
                     android:background="@color/z_color_split_line_ddd" />
 
 
@@ -393,7 +392,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_alignParentBottom="true"
                 android:background="@color/z_color_split_line_ddd" />
 
             <Button
@@ -410,7 +408,7 @@
                 />
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <RelativeLayout
@@ -440,4 +438,4 @@
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,12 +2,12 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension
 
 import android.app.Activity
 import android.content.SharedPreferences
-import android.support.annotation.AnimRes
-import android.support.annotation.IdRes
-import android.support.v4.app.Fragment
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.AnimRes
+import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.AppCompatActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func.KTXDrawerListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func._OnPageChangeListener
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.high_order_func._OnSubscribe
@@ -89,11 +89,11 @@ fun AppCompatActivity.replaceFragmentSafely(fragment: Fragment, tag: String, @Id
 }
 
 fun <T : Fragment> AppCompatActivity.addFragmentSafely(fragment: T, tag: String, allowState: Boolean = false,
-                                                       @IdRes containerViewId: Int,
-                                                       @AnimRes enterAnimation: Int = 0,
-                                                       @AnimRes exitAnimation: Int = 0,
-                                                       @AnimRes enterPopAnimation: Int = 0,
-                                                       @AnimRes exitPopAnimation: Int = 0): T {
+                                                                                                @IdRes containerViewId: Int,
+                                                                                                @AnimRes enterAnimation: Int = 0,
+                                                                                                @AnimRes exitAnimation: Int = 0,
+                                                                                                @AnimRes enterPopAnimation: Int = 0,
+                                                                                                @AnimRes exitPopAnimation: Int = 0): T {
     if (!exitsFragmentByTag(tag)) {
         val ft = supportFragmentManager.beginTransaction()
                 .setCustomAnimations(enterAnimation, exitAnimation, enterPopAnimation, exitPopAnimation)

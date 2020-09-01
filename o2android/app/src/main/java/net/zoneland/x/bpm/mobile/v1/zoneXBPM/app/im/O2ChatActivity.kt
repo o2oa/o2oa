@@ -17,8 +17,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.MediaStore
 import android.provider.Settings
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -61,7 +61,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         fun startChat(activity: Activity, conversationId: String) {
             val bundle = Bundle()
             bundle.putString(con_id_key, conversationId)
-            activity.go<O2ChatActivity>(bundle)
+            activity?.go<O2ChatActivity>(bundle)
         }
     }
 
@@ -343,7 +343,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
         ivLoad = view.findViewById<ImageView>(R.id.iv_load)
         dialogBuilder.setView(view)
         val dialog = dialogBuilder.create()
-        dialog.window.setBackgroundDrawable(BitmapDrawable())
+        dialog.window?.setBackgroundDrawable(BitmapDrawable())
         return dialog
     }
     private fun updateRecordingDialogUI(resId: Int, prompt: String?) {
@@ -553,14 +553,19 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     }
         }
         ll_o2_chat_camera_btn.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            //return-data false 不是直接返回拍照后的照片Bitmap 因为照片太大会传输失败
-            intent.putExtra("return-data", false)
-            //改用Uri 传递
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
-            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
-            intent.putExtra("noFaceDetection", true)
-            startActivityForResult(intent, camera_result_code)
+            PermissionRequester(this@O2ChatActivity).request(Manifest.permission.CAMERA)
+                    .o2Subscribe {
+                        onNext {  (granted, _, _) ->
+                            if (!granted){
+                                O2DialogSupport.openAlertDialog(this@O2ChatActivity, "拍照需要权限, 去设置", { permissionSetting() })
+                            } else {
+                                openCamera()
+                            }
+                        }
+                        onError { e, _ ->
+                            XLog.error("", e)
+                        }
+                    }
         }
         ll_o2_chat_location_btn.setOnClickListener {
             ActivityResult.of(this)
@@ -569,7 +574,7 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     .greenChannel()
                     .forResult { resultCode, data ->
                         if (resultCode == Activity.RESULT_OK) {
-                            val location = data.extras.getParcelable<O2LocationActivity.LocationData>(O2LocationActivity.RESULT_LOCATION_KEY)
+                            val location = data.extras?.getParcelable<O2LocationActivity.LocationData>(O2LocationActivity.RESULT_LOCATION_KEY)
                             if (location != null) {
                                 newLocationMessage(location)
                             }
@@ -577,6 +582,19 @@ class O2ChatActivity : BaseMVPActivity<O2ChatContract.View, O2ChatContract.Prese
                     }
         }
     }
+
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //return-data false 不是直接返回拍照后的照片Bitmap 因为照片太大会传输失败
+        intent.putExtra("return-data", false)
+        //改用Uri 传递
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString())
+        intent.putExtra("noFaceDetection", true)
+        startActivityForResult(intent, camera_result_code)
+    }
+
 
     private fun permissionSetting() {
         val packageUri = Uri.parse("package:$packageName")

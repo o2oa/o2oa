@@ -1,8 +1,9 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,8 @@ abstract class BaseMVPViewPagerFragment<in V : BaseView, T : BasePresenter<V>> :
     /** Fragment当前状态是否可见 */
     protected var isViewVisible = false
 
-    override fun getContext(): Context = activity
+
+    override fun getContext(): Context? = activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +42,9 @@ abstract class BaseMVPViewPagerFragment<in V : BaseView, T : BasePresenter<V>> :
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val mRootView =   inflater?.inflate(layoutResId(), container, false)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val mRootView =   inflater.inflate(layoutResId(), container, false)
         mPresenter.attachView(this as V)
         XLog.info("onCreateView.............res:"+layoutResId())
         if (mRootView == null) {
@@ -55,7 +58,7 @@ abstract class BaseMVPViewPagerFragment<in V : BaseView, T : BasePresenter<V>> :
         isViewInit = true
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         XLog.info("onViewCreated.............")
         if (view == null) {

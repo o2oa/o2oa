@@ -12,8 +12,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.FileProvider
+import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.text.format.Formatter
@@ -122,19 +122,21 @@ object AndroidUtils {
         var carrierName = ""
         val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         if (checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
-            val imsi = telephonyManager.subscriberId
-            XLog.debug("运营商代码" + imsi!!)
-            return if (imsi != null) {
-                if (imsi.startsWith("46000") || imsi.startsWith("46002") || imsi.startsWith("46007")) {
-                    carrierName = "中国移动"
-                } else if (imsi.startsWith("46001") || imsi.startsWith("46006")) {
-                    carrierName = "中国联通"
-                } else if (imsi.startsWith("46003")) {
-                    carrierName = "中国电信"
+            try {
+                val imsi = telephonyManager.subscriberId
+                XLog.debug("运营商代码" + imsi!!)
+                return run {
+                    if (imsi.startsWith("46000") || imsi.startsWith("46002") || imsi.startsWith("46007")) {
+                        carrierName = "中国移动"
+                    } else if (imsi.startsWith("46001") || imsi.startsWith("46006")) {
+                        carrierName = "中国联通"
+                    } else if (imsi.startsWith("46003")) {
+                        carrierName = "中国电信"
+                    }
+                    carrierName
                 }
-                carrierName
-            } else {
-                "none"
+            } catch (e: Exception) {
+                return "none"
             }
         }else {
             return "none"
@@ -149,11 +151,14 @@ object AndroidUtils {
     fun getIMEI(ctx: Context): String? {
         return if (checkPermission(ctx, Manifest.permission.READ_PHONE_STATE)) {
             val tm = ctx.getSystemService(Activity.TELEPHONY_SERVICE) as TelephonyManager
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                tm.imei
-            } else {
-                tm.deviceId
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    tm.imei
+                } else {
+                    tm.deviceId
+                }
+            } catch (e: Exception) {
+                null
             }
         } else {
             null
@@ -245,7 +250,7 @@ object AndroidUtils {
         // 得到剪贴板管理器
         val cmb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Text", content.trim { it <= ' ' })
-        cmb.primaryClip = clip
+        cmb.setPrimaryClip(clip)
     }
 
     /**

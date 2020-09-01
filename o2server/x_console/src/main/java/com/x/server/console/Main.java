@@ -3,8 +3,11 @@ package com.x.server.console;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,11 +15,21 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.Scheduler;
 
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
@@ -34,14 +47,6 @@ import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.LogTools;
 import com.x.server.console.server.Servers;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.deploy.App;
-import org.eclipse.jetty.deploy.DeploymentManager;
-import org.quartz.Scheduler;
-
 public class Main {
 
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
@@ -50,17 +55,18 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		String base = getBasePath();
+		pid(base);
 		scanWar(base);
 		loadJars(base);
 		/* getVersion需要FileUtils在后面运行 */
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		//LogTools.setSlf4jSimple();
+		// LogTools.setSlf4jSimple();
 		try {
 			Main.class.getClassLoader().loadClass("org.slf4j.impl.SimpleLogger");
 			LogTools.setSlf4jSimple();
-		}catch(ClassNotFoundException ex) {
-			System.out.println("ignore:"+ex.getMessage());
+		} catch (ClassNotFoundException ex) {
+			System.out.println("ignore:" + ex.getMessage());
 			slf4jOtherImplOn = true;
 		}
 		org.slf4j.impl.StaticLoggerBinder.getSingleton();
@@ -125,7 +131,7 @@ public class Main {
 				}
 			}
 		}.start();
-		
+
 		/* 启动NodeAgent */
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
 			NodeAgent nodeAgent = new NodeAgent();
@@ -157,48 +163,48 @@ public class Main {
 			matcher = CommandFactory.start_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-					case "application":
-						startApplicationServer();
-						break;
-					case "center":
-						startCenterServer();
-						break;
-					case "web":
-						startWebServer();
-						break;
-					case "storage":
-						startStorageServer();
-						break;
-					case "data":
-						startDataServer();
-						break;
-					default:
-						startAll();
-						break;
+				case "application":
+					startApplicationServer();
+					break;
+				case "center":
+					startCenterServer();
+					break;
+				case "web":
+					startWebServer();
+					break;
+				case "storage":
+					startStorageServer();
+					break;
+				case "data":
+					startDataServer();
+					break;
+				default:
+					startAll();
+					break;
 				}
 				continue;
 			}
 			matcher = CommandFactory.stop_pattern.matcher(cmd);
 			if (matcher.find()) {
 				switch (matcher.group(1)) {
-					case "application":
-						stopApplicationServer();
-						break;
-					case "center":
-						stopCenterServer();
-						break;
-					case "web":
-						stopWebServer();
-						break;
-					case "storage":
-						stopStorageServer();
-						break;
-					case "data":
-						stopDataServer();
-						break;
-					default:
-						stopAll();
-						break;
+				case "application":
+					stopApplicationServer();
+					break;
+				case "center":
+					stopCenterServer();
+					break;
+				case "web":
+					stopWebServer();
+					break;
+				case "storage":
+					stopStorageServer();
+					break;
+				case "data":
+					stopDataServer();
+					break;
+				default:
+					stopAll();
+					break;
 				}
 				continue;
 			}
@@ -245,23 +251,7 @@ public class Main {
 		}
 		/* 关闭定时器 */
 		scheduler.shutdown();
-		// }
 		SystemOutErrorSideCopyBuilder.stop();
-	}
-
-	private static boolean test() {
-		try {
-			DeploymentManager deployer = Servers.applicationServer.getBean(DeploymentManager.class);
-			for (App app : deployer.getApps()) {
-				System.out.println(app.getContextPath());
-				if (StringUtils.equals("/x_query_assemble_designer", app.getContextPath())) {
-					app.getContextHandler().stop();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
 	}
 
 	private static boolean createEncryptKey() {
@@ -636,4 +626,12 @@ public class Main {
 		return false;
 	}
 
+	private static void pid(String base) throws IOException {
+		RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+		String jvmName = runtimeBean.getName();
+		long pid = Long.parseLong(jvmName.split("@")[0]);
+		Path path = Paths.get(base, "pid.log");
+		Files.write(path, Long.toString(pid).getBytes(), StandardOpenOption.CREATE,
+				StandardOpenOption.TRUNCATE_EXISTING);
+	}
 }

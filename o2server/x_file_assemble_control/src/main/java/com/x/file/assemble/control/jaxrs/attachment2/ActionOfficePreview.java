@@ -2,7 +2,9 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -12,15 +14,12 @@ import com.x.base.core.project.tools.DocumentTools;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
 
 class ActionOfficePreview extends StandardJaxrsAction {
-
-	private Ehcache cache = ApplicationCache.instance().getCache(Attachment2.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String type) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -38,10 +37,11 @@ class ActionOfficePreview extends StandardJaxrsAction {
 			if (null == originFile) {
 				throw new ExceptionAttachmentNotExist(id,attachment.getOriginFile());
 			}
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), id, type);
-			Element element = cache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheCategory cacheCategory = new CacheCategory(Attachment2.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), id);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
 						originFile.getStorage());
@@ -66,7 +66,7 @@ class ActionOfficePreview extends StandardJaxrsAction {
 						 * 对10M以下的文件进行缓存
 						 */
 						if (bs.length < (1024 * 1024 * 10)) {
-							cache.put(new Element(cacheKey, wo));
+							CacheManager.put(cacheCategory, cacheKey, wo);
 						}
 					}else{
 						wo = new Wo(bs, this.contentType(false, attachment.getName()),

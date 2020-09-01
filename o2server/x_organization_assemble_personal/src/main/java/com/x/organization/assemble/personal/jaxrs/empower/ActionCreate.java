@@ -1,5 +1,6 @@
 package com.x.organization.assemble.personal.jaxrs.empower;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -44,7 +45,7 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(Empower.class);
 			emc.persist(empower, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(Empower.class);
+			CacheManager.notify(Empower.class);
 			Wo wo = new Wo();
 			wo.setId(empower.getId());
 			result.setData(wo);

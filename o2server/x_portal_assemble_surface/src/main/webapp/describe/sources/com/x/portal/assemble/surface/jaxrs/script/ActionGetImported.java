@@ -10,15 +10,15 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.portal.assemble.surface.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Script;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionGetImported extends BaseAction {
 
@@ -26,10 +26,10 @@ class ActionGetImported extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, portalId);
-			Element element = CACHE.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, portalId);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				Business business = new Business(emc);
 				Portal portal = business.portal().pick(portalId);
@@ -59,7 +59,7 @@ class ActionGetImported extends BaseAction {
 				}
 				wo.setImportedList(imported);
 				wo.setText(buffer.toString());
-				CACHE.put(new Element(cacheKey, wo));
+				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
 			return result;

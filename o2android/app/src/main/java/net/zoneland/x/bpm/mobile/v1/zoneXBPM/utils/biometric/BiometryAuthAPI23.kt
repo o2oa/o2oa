@@ -3,7 +3,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric
 import android.app.Activity
 import android.os.Build
 import android.os.CancellationSignal
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.hardware.fingerprint.FingerprintManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 

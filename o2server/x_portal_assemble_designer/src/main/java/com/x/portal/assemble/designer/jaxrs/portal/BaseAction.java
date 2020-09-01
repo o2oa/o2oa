@@ -11,18 +11,16 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Portal_;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	static Ehcache cache = ApplicationCache.instance().getCache(Portal.class);
+	static CacheCategory cache = new CacheCategory(Portal.class);
 
 	void checkName(Business business, Portal portal) throws Exception {
 		if (StringUtils.isEmpty(portal.getName())) {

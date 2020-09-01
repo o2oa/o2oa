@@ -1,6 +1,6 @@
 package com.x.program.center.jaxrs.agent;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -15,6 +15,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.program.center.core.entity.Agent;
+
+import javax.script.CompiledScript;
 
 class ActionEdit extends BaseAction {
 
@@ -39,8 +41,7 @@ class ActionEdit extends BaseAction {
 			this.addComment(agent);
 			emc.check(agent, CheckPersistType.all);
 			emc.commit();
-
-			ApplicationCache.notify(Agent.class);
+			CacheManager.notify(Agent.class);
 			Wo wo = new Wo();
 			wo.setId(agent.getId());
 			result.setData(wo);

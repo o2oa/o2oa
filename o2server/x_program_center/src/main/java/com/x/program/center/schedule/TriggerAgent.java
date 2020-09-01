@@ -3,6 +3,7 @@ package com.x.program.center.schedule;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -21,10 +22,11 @@ import javax.script.SimpleScriptContext;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
@@ -38,16 +40,11 @@ import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Agent_;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 public class TriggerAgent extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TriggerAgent.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
-
-	private static Ehcache cache = ApplicationCache.instance().getCache(Agent.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -186,14 +183,15 @@ public class TriggerAgent extends BaseAction {
 				try {
 					LOCK.add(agent.getId());
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						String cacheKey = ApplicationCache.concreteCacheKey(TriggerAgent.class, agent.getId());
-						Element element = cache.get(cacheKey);
+						CacheCategory cacheCategory = new CacheCategory(Agent.class);
+						CacheKey cacheKey = new CacheKey(TriggerAgent.class, agent.getId());
 						CompiledScript compiledScript = null;
-						if ((null != element) && (null != element.getObjectValue())) {
-							compiledScript = (CompiledScript) element.getObjectValue();
+						Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+						if (optional.isPresent()) {
+							compiledScript = (CompiledScript) optional.get();
 						} else {
 							compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
-							cache.put(new Element(cacheKey, compiledScript));
+							CacheManager.put(cacheCategory, cacheKey, compiledScript);
 						}
 						ScriptContext scriptContext = new SimpleScriptContext();
 						Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);

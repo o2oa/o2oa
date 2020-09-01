@@ -99,7 +99,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
     
     private func nextAction() {
         if let node = selectedNode {
-            MBProgressHUD_JChat.showMessage(message: "绑定中...", toView: self.view)
+            self.showLoading(title: "绑定中...")
             O2AuthSDK.shared.bindMobileToServer(unit: node, mobile: mobile, code: value) { (state, msg) in
                 switch state {
                 case .goToChooseBindServer(_):
@@ -132,7 +132,7 @@ class OOBindNodeViewController:OOBaseViewController,UITableViewDataSource,UITabl
                     }
                     break
                 }
-                MBProgressHUD_JChat.hide(forView: self.view, animated: true)
+                self.hideLoading()
             }
         }else{
             //请选择指定的目标服务

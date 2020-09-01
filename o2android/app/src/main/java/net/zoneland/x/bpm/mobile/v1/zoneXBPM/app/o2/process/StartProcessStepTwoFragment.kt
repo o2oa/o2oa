@@ -72,25 +72,27 @@ class StartProcessStepTwoFragment : BaseMVPFragment<StartProcessStepTwoContract.
     override fun loadCurrentPersonIdentity(list: List<ProcessWOIdentityJson>) {
         radio_group_process_step_two_department.removeAllViews()
         identityList.clear()
-        identityList.addAll(list)
+        //根据主身份排序
+        val newList = list.sortedByDescending { id-> id.major }.toList()
+        identityList.addAll(newList)
         if (identityList.size>0) {
             identityList.mapIndexed { index, it ->
                 val radio = layoutInflater.inflate(R.layout.snippet_radio_button, null) as RadioButton
-                radio.text = if (TextUtils.isEmpty(it.unitName)) it.name else it.unitName
+                radio.text = if (TextUtils.isEmpty(it.unitLevelName)) it.unitName else it.unitLevelName
                 if (index==0) {
                     radio.isChecked = true
-                    tv_start_process_step_two_identity.text = it.name
+                    tv_start_process_step_two_identity.text = it.name + "("+it.unitName+")"
                     identity = it.distinguishedName
                 }
                 radio.id = 100 + index//这里必须添加id 否则后面获取选中Radio的时候 group.getCheckedRadioButtonId() 拿不到id 会有空指针异常
                 val layoutParams = RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT)
-                layoutParams.setMargins(0, activity.dip(10f), 0, 0)
+                layoutParams.setMargins(0, activity?.dip(10f) ?: 10, 0, 0)
                 radio_group_process_step_two_department.addView(radio, layoutParams)
             }
         }
         radio_group_process_step_two_department.setOnCheckedChangeListener { _, checkedId ->
             val index = checkedId - 100
-            tv_start_process_step_two_identity.text = identityList[index].name
+            tv_start_process_step_two_identity.text = identityList[index].name + "("+identityList[index].unitName+")"
             identity = identityList[index].distinguishedName
 
         }

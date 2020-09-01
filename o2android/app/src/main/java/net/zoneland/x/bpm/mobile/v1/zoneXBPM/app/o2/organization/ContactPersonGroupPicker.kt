@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.widget.CheckBox
 import kotlinx.android.synthetic.main.fragment_person_group_picker.*
@@ -103,7 +103,7 @@ class ContactPersonGroupPicker : BaseMVPFragment<ContactPersonGroupActivityContr
         multiple = arguments?.getBoolean(multiple_KEY) ?: true
         maxNumber = arguments?.getInt(MAX_NUMBER_KEY) ?: 0
 
-        swipe_refresh_contact_person_group_picker_main.touchSlop = activity.dip(70f)
+        swipe_refresh_contact_person_group_picker_main.touchSlop = activity?.dip(70f) ?: 70
         swipe_refresh_contact_person_group_picker_main.setColorSchemeResources(R.color.z_color_refresh_scuba_blue,
                 R.color.z_color_refresh_red, R.color.z_color_refresh_purple, R.color.z_color_refresh_orange)
         swipe_refresh_contact_person_group_picker_main.recyclerViewPageNumber = O2.DEFAULT_PAGE_NUMBER

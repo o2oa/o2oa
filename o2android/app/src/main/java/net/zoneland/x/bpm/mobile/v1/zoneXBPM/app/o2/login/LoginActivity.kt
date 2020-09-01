@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.text.InputType
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -32,7 +32,6 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.BottomSheetMenu
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.CountDownButtonHelper
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialog.O2DialogSupport
 import java.io.IOException
-import kotlin.math.log
 
 
 /**
@@ -249,7 +248,6 @@ class LoginActivity: BaseMVPActivity<LoginContract.View, LoginContract.Presenter
         }
         hideLoadingDialog()
         O2SDKManager.instance().setCurrentPersonData(data)
-        O2App.instance._JMLoginInner()
         goThenKill<MainActivity>()
     }
 

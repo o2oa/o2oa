@@ -1,0 +1,68 @@
+package com.x.processplatform.service.processing.jaxrs.work;
+
+import java.util.concurrent.Callable;
+
+import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Work;
+
+class ActionEdit extends BaseAction {
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		String executorSeed = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
+			if (null == work) {
+				throw new ExceptionEntityNotExist(id, Work.class);
+			}
+			executorSeed = work.getJob();
+		}
+
+		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
+			public ActionResult<Wo> call() throws Exception {
+				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+					Wi wi = convertToWrapIn(jsonElement, Wi.class);
+					Work work = emc.find(id, Work.class);
+					if (null == work) {
+						throw new ExceptionEntityNotExist(id, Work.class);
+					}
+					emc.beginTransaction(Work.class);
+					Wi.copier.copy(wi, work);
+					emc.commit();
+					ActionResult<Wo> result = new ActionResult<>();
+					Wo wo = new Wo();
+					wo.setValue(true);
+					result.setData(wo);
+					return result;
+				}
+			}
+		};
+
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+
+	}
+
+	public static class Wi extends Work {
+
+		private static final long serialVersionUID = 5099568433277325703L;
+
+		static WrapCopier<Wi, Work> copier = WrapCopierFactory.wi(Wi.class, Work.class, null, JpaObject.FieldsUnmodify);
+
+	}
+
+	public static class Wo extends WrapBoolean {
+
+	}
+
+}

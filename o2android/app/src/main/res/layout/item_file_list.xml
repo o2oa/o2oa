@@ -24,7 +24,7 @@
             android:button="@null"
             android:visibility="gone" />
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1">
@@ -88,7 +88,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="128 K" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <View

@@ -24,11 +24,11 @@ public class ActionGetWithProcessWithApplication extends BaseAction {
 			if (null == application) {
 				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
 			}
-			Process process = business.process().pickObject(application, flag);
+			Process process = business.process().pick(application, flag);
 			if (null == process) {
 				throw new ExceptionEntityNotExist(flag, Process.class);
 			}
-			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
 				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 			Wo wo = Wo.copier.copy(process);

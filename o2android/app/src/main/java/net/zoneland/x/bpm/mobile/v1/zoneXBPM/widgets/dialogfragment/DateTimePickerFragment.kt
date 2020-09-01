@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.widgets.dialogfragment
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -49,8 +49,8 @@ class DateTimePickerFragment: DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = false
-        pickerType = arguments.getString(PICKER_TYPE) ?: DATEPICKER_TYPE
-        val dTime = arguments.getString(DEFAULT_TIME)
+        pickerType = arguments?.getString(PICKER_TYPE) ?: DATEPICKER_TYPE
+        val dTime = arguments?.getString(DEFAULT_TIME)
         XLog.debug("pickerType:$pickerType, defaultTime: $dTime")
         val date = if (TextUtils.isEmpty(dTime)){
             Date()
@@ -65,16 +65,13 @@ class DateTimePickerFragment: DialogFragment() {
         defaultTime.time = date ?: Date()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (inflater == null) {
-            return super.onCreateView(inflater, container, savedInstanceState)
-        }
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setDimAmount(0.8f)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setDimAmount(0.8f)
         return inflater.inflate(net.zoneland.x.bpm.mobile.v1.zoneXBPM.R.layout.dialog_fragment_date_time_picker, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         datePickerView.descendantFocusability = DatePicker.FOCUS_BLOCK_DESCENDANTS
         timePickerView.descendantFocusability = TimePicker.FOCUS_BLOCK_DESCENDANTS

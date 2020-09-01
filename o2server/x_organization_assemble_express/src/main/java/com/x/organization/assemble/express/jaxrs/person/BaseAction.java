@@ -6,17 +6,24 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.CacheFactory;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Ehcache;
+import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.Role;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitAttribute;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.accredit.Empower;
 
 class BaseAction extends StandardJaxrsAction {
 
-	Ehcache cache = CacheFactory.getOrganizationCache();
+	CacheCategory cacheCategory = new CacheCategory(Identity.class, Unit.class, UnitAttribute.class, UnitDuty.class,
+			Role.class, Person.class, PersonAttribute.class, Group.class, Empower.class);
 
 	static class WoPersonListAbstract extends GsonPropertyObject {
 
@@ -36,6 +43,7 @@ class BaseAction extends StandardJaxrsAction {
 	protected <T extends com.x.base.core.project.organization.Person> T convert(Business business, Person person,
 			Class<T> clz) throws Exception {
 		T t = clz.newInstance();
+		t.setId(person.getId());
 		t.setName(person.getName());
 		t.setGenderType(person.getGenderType());
 		t.setSignature(person.getSignature());
@@ -61,6 +69,7 @@ class BaseAction extends StandardJaxrsAction {
 		t.setQiyeweixinId(person.getQiyeweixinId());
 		t.setDingdingId(person.getDingdingId());
 		t.setZhengwuDingdingId(person.getZhengwuDingdingId());
+		t.setWeLinkId(person.getWeLinkId());
 		return t;
 
 	}

@@ -1,7 +1,7 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.webview
 
 import android.graphics.BitmapFactory
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import kotlinx.android.synthetic.main.activity_local_image_view.*
@@ -29,8 +29,8 @@ class LocalImageViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_local_image_view)
-        title = intent.extras.getString(local_image_view_title_key) ?: "图片查看"
-        filePath = intent.extras.getString(local_image_view_file_path_key) ?: ""
+        title = intent.extras?.getString(local_image_view_title_key) ?: "图片查看"
+        filePath = intent.extras?.getString(local_image_view_file_path_key) ?: ""
         if (TextUtils.isEmpty(filePath)) {
             XToast.toastShort(this, "传入参数不正确！")
             finish()

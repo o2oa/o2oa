@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager_launch_introduction_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -42,7 +42,7 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_launch_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -86,5 +86,5 @@
             android:layout_marginEnd="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/spacing_normal"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

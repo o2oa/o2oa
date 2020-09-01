@@ -90,61 +90,6 @@ extension OOLoginViewModel {
     
     
     
-    // MARK:- Login IM
-    
-    func loginIM() -> Promise<Bool> {
-        return Promise { fulfill,reject in
-            if let account = O2AuthSDK.shared.myInfo() {
-                JMSGUser.login(withUsername: account.id!, password: "QazWsxEdc!@#", completionHandler: { (resultObject, errMsg) in
-                    if errMsg == nil {
-                        O2Logger.info("IM登录成功,user = \(String(describing: resultObject))")
-                        fulfill(true)
-                    }else{
-                        O2Logger.error("IM登录失改,error = \(String(describing: errMsg))")
-                        let loginErr = OOAppError.common(type: "im", message: "im login Fail,\(String(describing: errMsg))", statusCode: 40001)
-                        reject(loginErr)
-                    }
-                })
-            }else {
-                O2Logger.error("IM登录失改,error = 当前登录用户为空！！！")
-                let loginErr = OOAppError.common(type: "im", message: "im login Fail,前登录用户为空！！", statusCode: 40001)
-                reject(loginErr)
-            }
-        }
-    }
-    
-    // MARK:- register IM
-    func registerIM() -> Promise<Bool> {
-        return Promise { fulfill,reject in
-            if let account = O2AuthSDK.shared.myInfo() {
-                let username = account.id
-                let nickname = account.name
-                let gener = account.genderType
-                let info = JMSGUserInfo()
-                info.nickname = nickname!
-                if gener == "f" {
-                    info.gender = .female
-                }else if gener == "m" {
-                    info.gender = .male
-                }else{
-                    info.gender = .unknown
-                }
-
-                JMSGUser.register(withUsername: username!, password: "QazWsxEdc!@#", userInfo: info, completionHandler: { (resultObject, regError) in
-                    if let error = regError {
-                        let registerErr = OOAppError.common(type: "im", message: "im register Fail,\(String(describing: error))", statusCode: 40001)
-                        reject(OOLoginError.imRegisterFail(registerErr))
-                    }else{
-                        fulfill(true)
-                    }
-                })
-            }else {
-                let registerErr = OOAppError.common(type: "im", message: "im register Fail,当前登录用户为空", statusCode: 40001)
-                reject(OOLoginError.imRegisterFail(registerErr))
-            }
-            
-        }
-    }
     
    
     

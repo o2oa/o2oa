@@ -17,7 +17,7 @@ import rx.schedulers.Schedulers
 
 class BindPhonePresenter: BasePresenterImpl<BindPhoneContract.View>(), BindPhoneContract.Presenter {
     override fun checkCustomStyle() {
-        val url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "")
+        val url = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_URL_KEY, "") ?: ""
         val hash = O2SDKManager.instance().prefs().getString(O2CustomStyle.CUSTOM_STYLE_UPDATE_HASH_KEY, "") ?: ""
         XLog.info("centerUrl:$url, hash:$hash")
         getApiService(mView?.getContext(), url)?.let { api ->

@@ -2,8 +2,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.attendance.main
 
 import android.os.Handler
 import android.os.Message
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import com.baidu.location.BDLocation
 import com.baidu.location.BDLocationListener
@@ -109,7 +109,7 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
 
     private fun clickCheckIn() {
         if (!isInCheckInPositionRange) {
-            XToast.toastShort(activity, "还未进入打卡范围，无法打卡！")
+            XToast.toastShort(activity!!, "还未进入打卡范围，无法打卡！")
             return
         }
         if (myLocation!=null ){
@@ -259,8 +259,8 @@ class AttendanceCheckInFragment : BaseMVPViewPagerFragment<AttendanceCheckInCont
                 val llCircle = LatLng(checkInPosition!!.latitude.toDouble(), checkInPosition!!.longitude.toDouble())
                 val ooCircle = CircleOptions()
                         .center(llCircle)
-                        .fillColor(ContextCompat.getColor(activity, R.color.overlay_work_place))
-                        .stroke(Stroke(2, ContextCompat.getColor(activity, R.color.overlay_work_place_border)))
+                        .fillColor(ContextCompat.getColor(activity!!, R.color.overlay_work_place))
+                        .stroke(Stroke(2, ContextCompat.getColor(activity!!, R.color.overlay_work_place_border)))
                         .radius(checkInPosition!!.errorRange)
                 workplaceCircle = mBaiduMap?.addOverlay(ooCircle) as Circle
                 XLog.info("draw circle over...............zoom map..")

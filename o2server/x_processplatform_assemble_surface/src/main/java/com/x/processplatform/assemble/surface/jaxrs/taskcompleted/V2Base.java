@@ -103,6 +103,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		@FieldDescribe("关键字")
 		private String key;
 
+		@FieldDescribe("标题")
+		private String title;
+
 		public Boolean getNotCompleted() {
 			return notCompleted;
 		}
@@ -205,6 +208,14 @@ abstract class V2Base extends StandardJaxrsAction {
 
 		public void setLatest(Boolean latest) {
 			this.latest = latest;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
 		}
 	}
 
@@ -464,6 +475,12 @@ abstract class V2Base extends StandardJaxrsAction {
 					cb.or(cb.like(root.get(TaskCompleted_.title), key), cb.like(root.get(TaskCompleted_.serial), key),
 							cb.like(root.get(TaskCompleted_.creatorPerson), key),
 							cb.like(root.get(TaskCompleted_.creatorUnit), key)));
+		}
+		if (StringUtils.isNotEmpty(wi.getTitle())) {
+			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
+			if (StringUtils.isNotEmpty(title)) {
+				p = cb.and(cb.like(root.get(TaskCompleted_.title), "%" + title + "%"));
+			}
 		}
 		return p;
 	}

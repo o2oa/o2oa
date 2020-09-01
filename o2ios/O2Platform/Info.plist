@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>iosamap</string>
+		<string>qqmap</string>
+		<string>baidumap</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh_CN</string>
 	<key>CFBundleDisplayName</key>
@@ -17,7 +23,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>5.1.3</string>
+	<string>5.1.6</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -32,7 +38,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>73</string>
+	<string>76</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -135,6 +141,10 @@
 	<string>使用图片资料库</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>应用会识别您的语音来了解您的命令</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>login</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -163,11 +173,11 @@
 		<key>centerContext</key>
 		<string>/x_program_center</string>
 		<key>centerHost</key>
-		<string>sample.o2oa.net</string>
+		<string>dd.o2oa.net</string>
 		<key>centerPort</key>
-		<integer>40030</integer>
+		<integer>20030</integer>
 		<key>httpProtocol</key>
-		<string>https</string>
+		<string>http</string>
 		<key>id</key>
 		<string>o2CenterServer</string>
 		<key>name</key>

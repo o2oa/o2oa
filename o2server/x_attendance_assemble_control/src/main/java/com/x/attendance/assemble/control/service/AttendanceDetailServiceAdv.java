@@ -146,9 +146,25 @@ public class AttendanceDetailServiceAdv {
 		}
 	}
 	
+	public List<String> getAllAnalysenessDetailsForce( String startDate, String endDate, String personName ,Boolean forceFlag) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.getAllAnalysenessDetailsForce( emc, startDate, endDate, personName ,forceFlag);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
 	public List<String> getAllAnalysenessPersonNames( String startDate, String endDate ) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			return attendanceDetailService.getAllAnalysenessPersonNames( emc, startDate, endDate );
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+	
+	public List<String> getAllAnalysenessPersonNamesForce( String startDate, String endDate ,Boolean forceFlag) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceDetailService.getAllAnalysenessPersonNamesForce( emc, startDate, endDate , forceFlag);
 		} catch ( Exception e ) {
 			throw e;
 		}

@@ -1,6 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.unit;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,7 +17,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
@@ -30,8 +30,8 @@ import com.x.organization.core.entity.UnitAttribute_;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionGetWithIdentityWithLevel extends BaseAction {
 
@@ -40,13 +40,13 @@ class ActionGetWithIdentityWithLevel extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), identityFlag, level);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), identityFlag, level);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
 			} else {
 				Wo wo = this.get(effectivePerson, business, identityFlag, level);
-				business.cache().put(new Element(cacheKey, wo));
+				CacheManager.put(business.cache(), cacheKey, wo);
 				result.setData(wo);
 			}
 			this.updateControl(effectivePerson, business, result.getData());

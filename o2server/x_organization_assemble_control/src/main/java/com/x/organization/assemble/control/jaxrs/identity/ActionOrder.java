@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -83,8 +84,8 @@ class ActionOrder extends BaseAction {
 			Wo wo = new Wo();
 			wo.setValue(true);
 			result.setData(wo);
-			ApplicationCache.notify(Identity.class);
-			ApplicationCache.notify(Unit.class);
+			CacheManager.notify(Identity.class);
+			CacheManager.notify(Unit.class);
 			return result;
 		}
 	}

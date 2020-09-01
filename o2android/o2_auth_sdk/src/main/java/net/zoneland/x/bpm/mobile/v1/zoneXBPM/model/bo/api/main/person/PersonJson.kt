@@ -22,6 +22,7 @@ data class PersonJson(
         var mail: String = "",
         var signature: String = "",
         var mobile: String = "",
+        var officePhone: String = "",
         var pinyinInitial: String = "",
         var pinyin: String = "",
         var qq: String = "",

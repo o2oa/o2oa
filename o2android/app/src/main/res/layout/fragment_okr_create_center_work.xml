@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -183,13 +183,13 @@
                     android:layout_height="1dp"
                     android:background="@color/z_color_gray_light"
                     android:visibility="gone"/>
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_okr_center_work_create_type_list"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
                     android:background="@android:color/white"
                     android:scrollbars="none"
-                    android:visibility="gone"></android.support.v7.widget.RecyclerView>
+                    android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
@@ -260,15 +260,15 @@
                     android:textSize="@dimen/font_normal"/>
             </RelativeLayout>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_okr_center_work_create_submit"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="@dimen/spacing_large"
                 android:theme="@style/LoginButtonStyle"
-                android:text="@string/submit"></android.support.v7.widget.AppCompatButton>
+                android:text="@string/submit"></androidx.appcompat.widget.AppCompatButton>
         </LinearLayout>
 
 
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -101,9 +101,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         //JPush
         _setupJPUSH()
         JPUSHService.setup(withOption: launchOptions, appKey: JPUSH_APP_KEY, channel: JPUSH_channel, apsForProduction: isProduction)
-        //JMessage
-        JMessage.setupJMessage(launchOptions, appKey: JPUSH_APP_KEY, channel: JPUSH_channel, apsForProduction: isProduction, category: nil, messageRoaming: true)
-        _setupJMessage()
         
         _mapManager = BMKMapManager()
         BMKMapManager.setCoordinateTypeUsedInBaiduMapSDK(.COORDTYPE_BD09LL)
@@ -140,16 +137,7 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         JPUSHService.register(forRemoteNotificationConfig: entity, delegate: self)
     }
     
-    // MARK: - private func
-    private func _setupJMessage() {
-//        JMessage.setDebugMode()
-        JMessage.add(self, with: nil)
-        JMessage.register(forRemoteNotificationTypes:
-            UNAuthorizationOptions.badge.rawValue |
-                            UNAuthorizationOptions.sound.rawValue |
-                            UNAuthorizationOptions.alert.rawValue,
-                        categories: nil)
-    }
+ 
     
     //注册 APNs 获得device token
     override func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -157,7 +145,6 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
         DDLogDebug("get the deviceToken  \(deviceToken)")
         NotificationCenter.default.post(name: Notification.Name(rawValue: "DidRegisterRemoteNotification"), object: deviceToken)
         JPUSHService.registerDeviceToken(deviceToken)
-        JMessage.registerDeviceToken(deviceToken)
     }
     
    
@@ -275,93 +262,3 @@ class AppDelegate: FlutterAppDelegate, JPUSHRegisterDelegate, UNUserNotification
     
     
 }
-
-//MARK: - JMessage Delegate
-extension AppDelegate: JMessageDelegate {
-    func onDBMigrateStart() {
-
-    }
-    
-    func onDBMigrateFinishedWithError(_ error: Error!) {
-       // self.showSuccess(title: "数据库升级完成")
-    }
-    
-    func onReceive(_ event: JMSGUserLoginStatusChangeEvent!) {
-        switch event.eventType.rawValue {
-//        case JMSGLoginStatusChangeEventType.eventNotificationLoginKicked.rawValue:
-//            DDLogInfo("被踢 重新登录")
-//            _reLogin()
-//            break
-        case JMSGLoginStatusChangeEventType.eventNotificationLoginKicked.rawValue,
-             JMSGLoginStatusChangeEventType.eventNotificationServerAlterPassword.rawValue,
-             JMSGLoginStatusChangeEventType.eventNotificationUserLoginStatusUnexpected.rawValue:
-            DDLogInfo("被踢 重新登录")
-            _reLogin()
-        default:
-            break
-        }
-    }
-    func onReceive(_ event: JMSGFriendNotificationEvent!) {
-        switch event.eventType.rawValue {
-        case JMSGFriendEventType.eventNotificationReceiveFriendInvitation.rawValue,
-             JMSGFriendEventType.eventNotificationAcceptedFriendInvitation.rawValue,
-             JMSGFriendEventType.eventNotificationDeclinedFriendInvitation.rawValue:
-            cacheInvitation(event: event)
-        case JMSGFriendEventType.eventNotificationDeletedFriend.rawValue,
-             JMSGFriendEventType.eventNotificationReceiveServerFriendUpdate.rawValue:
-            NotificationCenter.default.post(name: Notification.Name(rawValue: kUpdateFriendList), object: nil)
-        default:
-            break
-        }
-    }
-    
-    private func cacheInvitation(event: JMSGNotificationEvent) {
-        let friendEvent =  event as! JMSGFriendNotificationEvent
-        let user = friendEvent.getFromUser()
-        let reason = friendEvent.getReason()
-        let info = JCVerificationInfo.create(username: user!.username, nickname: user?.nickname, appkey: user!.appKey!, resaon: reason, state: JCVerificationType.wait.rawValue)
-        switch event.eventType.rawValue {
-        case JMSGFriendEventType.eventNotificationReceiveFriendInvitation.rawValue:
-            info.state = JCVerificationType.receive.rawValue
-            JCVerificationInfoDB.shareInstance.insertData(info)
-        case JMSGFriendEventType.eventNotificationAcceptedFriendInvitation.rawValue:
-            info.state = JCVerificationType.accept.rawValue
-            JCVerificationInfoDB.shareInstance.updateData(info)
-            NotificationCenter.default.post(name: Notification.Name(rawValue: kUpdateFriendList), object: nil)
-        case JMSGFriendEventType.eventNotificationDeclinedFriendInvitation.rawValue:
-            info.state = JCVerificationType.reject.rawValue
-            JCVerificationInfoDB.shareInstance.updateData(info)
-        default:
-            break
-        }
-        if UserDefaults.standard.object(forKey: kUnreadInvitationCount) != nil {
-            let count = UserDefaults.standard.object(forKey: kUnreadInvitationCount) as! Int
-            UserDefaults.standard.set(count + 1, forKey: kUnreadInvitationCount)
-        } else {
-            UserDefaults.standard.set(1, forKey: kUnreadInvitationCount)
-        }
-        NotificationCenter.default.post(name: Notification.Name(rawValue: kUpdateVerification), object: nil)
-    }
-    
-    func _logout() {
-        JMSGUser.logout(nil)
-        JCVerificationInfoDB.shareInstance.queue = nil
-        UserDefaults.standard.removeObject(forKey: kCurrentUserName)
- 
-    }
-    
-    func _reLogin() {
-        if let account = O2AuthSDK.shared.myInfo() {
-            JMSGUser.login(withUsername: account.id!, password: "QazWsxEdc!@#", completionHandler: { (resultObject, errMsg) in
-                if errMsg == nil {
-                    DDLogInfo("IM登录成功,user = \(String(describing: resultObject))")
-                }else{
-                    DDLogError("IM登录失改,error = \(String(describing: errMsg))")
-                }
-            })
-        }else {
-            DDLogError("_reLogin 。。。。。 IM登录失败,error = 当前登录用户为空！！！")
-        }
-    }
-}
-

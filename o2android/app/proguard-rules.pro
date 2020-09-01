@@ -50,9 +50,8 @@
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
--keep public class com.android.vending.licensing.ILicensingService
 #如果有引用v4包可以添加下面这行
--keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends androidx.fragment.app.Fragment
 
 
 -ignorewarnings
@@ -177,12 +176,7 @@
 -keep class com.afollestad.materialdialogs.** { *; }
 #日历控件 github > material-calendarview
 -keep class com.prolificinteractive.** { *; }
-#pgy
--dontwarn com.pgyersdk.**
--keep class com.pgyersdk.** { *; }
-#umeng
--keep class com.umeng.analytics.** { *; }
--dontwarn com.umeng.analytics.**
+
 #log4j
 -keep class org.apache.log4j.** { *; }
 -dontwarn org.apache.log4j.**
@@ -564,3 +558,6 @@
 -keep class io.flutter.view.**  { *; }
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
+
+
+-keep class net.sourceforge.pinyin4j.** { *; }

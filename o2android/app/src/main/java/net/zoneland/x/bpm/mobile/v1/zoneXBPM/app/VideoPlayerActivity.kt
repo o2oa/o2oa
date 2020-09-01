@@ -2,7 +2,7 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.shuyu.gsyvideoplayer.GSYVideoManager
@@ -23,7 +23,7 @@ class VideoPlayerActivity : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putString(VIDEO_URL_KEY, videoUrl)
             bundle.putString(VIDEO_TITLE_KEY, title)
-            activity.go<VideoPlayerActivity>(bundle)
+            activity?.go<VideoPlayerActivity>(bundle)
         }
     }
 

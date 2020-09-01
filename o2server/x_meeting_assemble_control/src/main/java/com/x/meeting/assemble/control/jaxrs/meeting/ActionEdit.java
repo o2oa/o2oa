@@ -1,6 +1,7 @@
 package com.x.meeting.assemble.control.jaxrs.meeting;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
@@ -41,6 +42,18 @@ class ActionEdit extends BaseAction {
 			if (null == room) {
 				throw new ExceptionRoomNotExist(wi.getRoom());
 			}
+			
+			//判断开始时间或者结束时间有没有修改过
+			boolean modifyTime = false;
+			Date StartTime = wi.getStartTime();
+			Date CompletedTime = wi.getCompletedTime();
+			if(StartTime.getTime() != meeting.getStartTime().getTime() ) {
+				modifyTime = true;
+			}
+			if(CompletedTime.getTime() != meeting.getCompletedTime().getTime()) {
+				modifyTime = true;
+			}
+			
 			emc.beginTransaction(Meeting.class);
 			List<String> modifyInvitePersonList = ListUtils.subtract(
 					this.convertToPerson(business, ListTools.trim(wi.getInvitePersonList(), true, true)),
@@ -56,9 +69,17 @@ class ActionEdit extends BaseAction {
 			emc.persist(meeting, CheckPersistType.all);
 			emc.commit();
 			if (ConfirmStatus.allow.equals(meeting.getConfirmStatus())) {
-				for (String _s : modifyInvitePersonList) {
-					MessageFactory.meeting_invite(_s, meeting, room);
+				
+				if(modifyTime) { //开始时间或者结束时间有修改过
+					for (String _s : wi.getInvitePersonList()) {
+						MessageFactory.meeting_invite(_s, meeting, room);
+					}
+				}else {
+					for (String _s : modifyInvitePersonList) {
+						MessageFactory.meeting_invite(_s, meeting, room);
+					}
 				}
+				
 				this.notifyMeetingInviteMessage(business, meeting);
 			}
 			Wo wo = new Wo();

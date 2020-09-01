@@ -10,7 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +21,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -324,13 +324,13 @@ class ActionCover extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Route.class);
 		business.entityManagerContainer().commit();
 
-		ApplicationCache.notify(ApplicationDictItem.class);
-		ApplicationCache.notify(ApplicationDict.class);
-		ApplicationCache.notify(FormField.class);
-		ApplicationCache.notify(Form.class);
-		ApplicationCache.notify(Script.class);
-		ApplicationCache.notify(Process.class);
-		ApplicationCache.notify(Application.class);
+		CacheManager.notify(ApplicationDictItem.class);
+		CacheManager.notify(ApplicationDict.class);
+		CacheManager.notify(FormField.class);
+		CacheManager.notify(Form.class);
+		CacheManager.notify(Script.class);
+		CacheManager.notify(Process.class);
+		CacheManager.notify(Application.class);
 
 		return application;
 	}

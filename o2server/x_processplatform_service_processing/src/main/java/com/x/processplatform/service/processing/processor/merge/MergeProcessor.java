@@ -58,7 +58,6 @@ public class MergeProcessor extends AbstractMergeProcessor {
 						aeiObjects.getDeleteWorkLogs().add(obj);
 					});
 		} else {
-			/* 完全找不到合并的文档,唯一一份 */
 			Work branch = this.findWorkBranch(aeiObjects);
 			if (null != branch) {
 				aeiObjects.getWork().setSplitting(true);
@@ -69,10 +68,12 @@ public class MergeProcessor extends AbstractMergeProcessor {
 				aeiObjects.getWork().setSplitValue("");
 				results.add(aeiObjects.getWork());
 			} else {
+				// 完全找不到合并的文档,唯一一份
 				aeiObjects.getWork().setSplitting(false);
-				aeiObjects.getWork().setSplitTokenList(new ArrayList<String>());
 				aeiObjects.getWork().setSplitToken("");
+				aeiObjects.getWork().setSplitTokenList(new ArrayList<>());
 				aeiObjects.getWork().setSplitValue("");
+				aeiObjects.getWork().setSplitValueList(new ArrayList<>());
 				results.add(aeiObjects.getWork());
 			}
 		}

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -46,8 +48,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpda
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
-import org.apache.commons.lang3.StringUtils;
-
 class ActionProcessing extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
@@ -67,8 +67,8 @@ class ActionProcessing extends BaseAction {
 	private Record record;
 	private String series = StringTools.uniqueToken();
 
-	private final String TYPE_APPENDTASK = "appendTask";
-	private final String TYPE_TASK = "task";
+	private static final String TYPE_APPENDTASK = "appendTask";
+	private static final String TYPE_TASK = "task";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		Audit audit = logger.audit(effectivePerson);
@@ -144,12 +144,12 @@ class ActionProcessing extends BaseAction {
 
 	private void processing() throws Exception {
 		switch (type) {
-			case TYPE_APPENDTASK:
-				this.processingAppendTask();
-				break;
-			default:
-				this.processingTask();
-				break;
+		case TYPE_APPENDTASK:
+			this.processingAppendTask();
+			break;
+		default:
+			this.processingTask();
+			break;
 		}
 	}
 
@@ -174,7 +174,7 @@ class ActionProcessing extends BaseAction {
 	private void processingTask() throws Exception {
 		this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_TASK);
 		this.processing_processingWork(ProcessingAttributes.TYPE_TASK);
-		//流程流转到取消环节，此时工作已被删除
+		// 流程流转到取消环节，此时工作已被删除
 		boolean flag = true;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
@@ -182,11 +182,11 @@ class ActionProcessing extends BaseAction {
 				flag = false;
 			}
 		}
-		if(flag) {
+		if (flag) {
 			this.processing_record(Record.TYPE_TASK);
 			this.processing_updateTaskCompleted();
 			this.processing_updateTask();
-		}else{
+		} else {
 			record = new Record(workLog, task);
 			record.setCompleted(true);
 			record.setType(Record.TYPE_TASK);
@@ -315,6 +315,7 @@ class ActionProcessing extends BaseAction {
 			prevTask.setUnit(task.getUnit());
 			prevTask.setRouteName(task.getRouteName());
 			req.getPrevTaskIdentityList().add(prevTask.getIdentity());
+			req.setPrevTaskIdentity(prevTask.getIdentity());
 			req.getPrevTaskList().add(prevTask);
 			req.setPrevTask(prevTask);
 			// 去重

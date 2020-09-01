@@ -73,8 +73,6 @@ class TodoTaskViewController: UITableViewController {
         
         return [0: TaskURLGenenater(url: todoTaskURL!,pageModel: CommonPageModel()),2: TaskURLGenenater(url: todoedTaskURL!,pageModel: CommonPageModel()),1 : TaskURLGenenater(url: readTaskURL!,pageModel: CommonPageModel()),3: TaskURLGenenater(url: readedTaskURL!,pageModel: CommonPageModel())]
     }
-    //容器视图
-    var searchBarContainerView = UIView()
     
     //搜索文本
     var searchText = ""
@@ -92,10 +90,10 @@ class TodoTaskViewController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if self.searchController.isActive {
-            self.searchController.isActive = false
-        }
-        self.searchController.searchBar.removeFromSuperview()
+//        if self.searchController.isActive {
+//            self.searchController.isActive = false
+//        }
+//        self.searchController.searchBar.removeFromSuperview()
     }
     
     override func viewDidLoad() {
@@ -104,17 +102,24 @@ class TodoTaskViewController: UITableViewController {
         let taskIndex = AppConfigSettings.shared.taskIndex
         self.currentTaskURLGenenater = self.urls[taskIndex]
 //        //添加搜索功能
-//        self.searchController.searchResultsUpdater = self
-//        self.searchController.delegate = self
-//        self.searchController.dimsBackgroundDuringPresentation = false
-//        self.searchController.hidesNavigationBarDuringPresentation = false
-//        definesPresentationContext = true
-//        self.searchController.searchBar.sizeToFit()
+        self.searchController.searchResultsUpdater = self
+        self.searchController.delegate = self
+        self.searchController.dimsBackgroundDuringPresentation = false
+        self.searchController.hidesNavigationBarDuringPresentation = false
+        definesPresentationContext = true
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
+        let attrs =  [NSAttributedString.Key.font: UIFont.init(name: "PingFangTC-Light", size: 14) ?? UIFont.systemFont(ofSize: 14),
+         NSAttributedString.Key.foregroundColor: O2ThemeManager.color(for: "Base.base_color") ?? UIColor.red]
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attrs, for: .normal)
+        self.searchController.searchBar.searchBarStyle = UISearchBar.Style.minimal
+        self.searchController.searchBar.sizeToFit()
 //        self.searchController.searchBar.backgroundColor = RGB(251, g: 71, b: 71)
-//        self.tableView.tableHeaderView = self.searchController.searchBar
-//        
-//        //设置搜索框是否显示
-//        self.setSearchBarIsShow()
+//        self.searchController.searchBar.setImage(UIImage(named: "contact_search"), for: .search, state: .normal)
+//        if let searchField = self.searchController.searchBar.value(forKey: "searchField") as? UITextField {
+//            searchField.textColor = .white
+//        }
+        //设置搜索框是否显示
+        self.setSearchBarIsShow()
         
         //分页刷新功能
         self.tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: {
@@ -125,21 +130,23 @@ class TodoTaskViewController: UITableViewController {
             self.footerLoadData()
         })
         self.headerLoadData()
-        //self.tableView.mj_header.beginRefreshing()
-        //self.loadDataByURL(genernater!.nextPage(nil))
     }
     
     //隐藏搜索框
     func setSearchBarIsShow(){
-
-//        if taskIndex ==  0 {
-//            self.searchController.searchBar.isHidden = true
-//        }else{
-//            self.searchController.searchBar.isHidden = false
-//        }
+        let taskIndex = AppConfigSettings.shared.taskIndex
+        if taskIndex ==  2 {
+            self.tableView.tableHeaderView = self.searchController.searchBar
+        }else{
+            if self.searchController.isActive {
+                self.searchController.isActive = false
+            }
+            self.tableView.tableHeaderView = nil
+        }
     }
     
     func headerLoadData(){
+        DDLogDebug("加载数据。。。。。。。。。")
         let taskIndex = AppConfigSettings.shared.taskIndex
         if !self.searchController.isActive {
             self.currentTaskURLGenenater = self.urls[taskIndex]
@@ -155,6 +162,7 @@ class TodoTaskViewController: UITableViewController {
     }
     
     func footerLoadData(){
+        DDLogDebug("获取更多数据。。。。。。。。。。。。。。")
         var genernater = self.currentTaskURLGenenater
         if !(genernater?.pageModel.isLast())! {
             genernater?.pageModel.nextPage()
@@ -172,15 +180,15 @@ class TodoTaskViewController: UITableViewController {
     }
     
     func loadFilterFirstDataByURL(){
+        DDLogDebug("查询数据   loadFilterFirstDataByURL")
         let tv = self.tableView as! ZLBaseTableView
         tv.emptyTitle = self.emptyTexts[AppConfigSettings.shared.taskIndex]
-        //ProgressHUD.show("加载中...",interaction: false)
-        self.filterModels.removeAll()
         Alamofire.request(self.currentTaskURLGenenater.pagingURL(), method: .post, parameters: ["key":self.searchText], encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
                 let type = JSON(val)["type"]
                 if type == "success" {
+                    self.filterModels.removeAll()
                     let data = JSON(val)["data"]
                     let todoTaskArray = Mapper<TodoTask>().mapArray(JSONString: data.description)
                     if let todoTasks = todoTaskArray {
@@ -194,23 +202,22 @@ class TodoTaskViewController: UITableViewController {
                     //第一次设置总数
                     self.currentTaskURLGenenater.pageModel.setPageTotal(count.int!)
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        //ProgressHUD.showSuccess("加载成功")
+                        if self.searchController.isActive {
+                            self.tableView.reloadData()
+                        }
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
-                        self.tableView.reloadData()
-                        //ProgressHUD.showError("加载失败")
+                        self.showError(title: "查询失败！")
                     }
                 }
             case .failure(let err):
-                DispatchQueue.main.async {
-                    DDLogError(err.localizedDescription)
-                    self.tableView.reloadData()
-                    //ProgressHUD.showError("加载失败")
-                }
+               DispatchQueue.main.async {
+                   DDLogError(err.localizedDescription)
+                   self.showError(title: "查询失败！")
+               }
             }
             if tv.mj_header.isRefreshing(){
                 tv.mj_header.endRefreshing()
@@ -220,11 +227,14 @@ class TodoTaskViewController: UITableViewController {
     }
     
     func loadFilterNexdataByURL(){
+        DDLogDebug("下一页数据   loadFilterNexdataByURL")
         let tv = self.tableView as! ZLBaseTableView
         tv.emptyTitle = self.emptyTexts[AppConfigSettings.shared.taskIndex]
-        //ProgressHUD.show("加载中...",interaction: false)
-        let todoTask = self.models.last?.sourceObj!
-        self.currentTaskURLGenenater.pageModel.nextPageId = (todoTask?.id)!
+        guard let todoTask = self.filterModels.last?.sourceObj else {
+            DDLogError("没有最后一条数据，无法加载更多。。。。")
+            return
+        }
+        self.currentTaskURLGenenater.pageModel.nextPageId = todoTask.id!
         Alamofire.request(self.currentTaskURLGenenater.pagingURL(), method: .post, parameters: ["key":self.searchText], encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
@@ -239,22 +249,21 @@ class TodoTaskViewController: UITableViewController {
                         }
                     }
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        // ProgressHUD.showSuccess("加载成功")
+                        if self.searchController.isActive {
+                            self.tableView.reloadData()
+                        }
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
-                        self.tableView.reloadData()
-                        //ProgressHUD.showSuccess("加载失败")
+                        self.showError(title: "查询失败！")
                     }
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    self.tableView.reloadData()
-                    //ProgressHUD.showSuccess("加载失败")
+                    self.showError(title: "查询失败！")
                 }
             }
             if tv.mj_footer.isRefreshing() {
@@ -267,15 +276,15 @@ class TodoTaskViewController: UITableViewController {
     
     //加载第一页数据
     func loadFirstDataByURL(){
+        DDLogDebug("加载数据   loadFirstDataByURL")
         let tv = self.tableView as! ZLBaseTableView
         tv.emptyTitle = self.emptyTexts[AppConfigSettings.shared.taskIndex]
-        //ProgressHUD.show("加载中...",interaction: false)
-        self.models.removeAll()
         Alamofire.request(self.currentTaskURLGenenater.pagingURL(), method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
             switch response.result {
             case .success(let val):
                 let type = JSON(val)["type"]
                 if type == "success" {
+                    self.models.removeAll()
                     let data = JSON(val)["data"]
                     let todoTaskArray = Mapper<TodoTask>().mapArray(JSONString: data.description)
                     if let todoTasks = todoTaskArray {
@@ -289,22 +298,21 @@ class TodoTaskViewController: UITableViewController {
                     //第一次设置总数
                     self.currentTaskURLGenenater.pageModel.setPageTotal(count.int!)
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        //ProgressHUD.showSuccess("加载成功")
+                        if !self.searchController.isActive {
+                            self.tableView.reloadData()
+                        }
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
-                        self.tableView.reloadData()
-                        //ProgressHUD.showError("加载失败")
+                        self.showError(title: "查询失败！")
                     }
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    self.tableView.reloadData()
-                    //ProgressHUD.showError("加载失败")
+                    self.showError(title: "查询失败！")
                 }
             }
             if tv.mj_header.isRefreshing(){
@@ -316,9 +324,9 @@ class TodoTaskViewController: UITableViewController {
     
     //加载下一页数据
     func loadDataNextByURL() {
+        DDLogDebug("下一页数据   loadDataNextByURL")
         let tv = self.tableView as! ZLBaseTableView
         tv.emptyTitle = self.emptyTexts[AppConfigSettings.shared.taskIndex]
-        //ProgressHUD.show("加载中...",interaction: false)
         let todoTask = self.models.last?.sourceObj!
         self.currentTaskURLGenenater.pageModel.nextPageId = (todoTask?.id)!
         Alamofire.request(self.currentTaskURLGenenater.pagingURL(), method: .get, parameters: nil, encoding: JSONEncoding.default, headers: nil).responseJSON { (response) in
@@ -335,22 +343,21 @@ class TodoTaskViewController: UITableViewController {
                         }
                     }
                     DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                       // ProgressHUD.showSuccess("加载成功")
+                        if !self.searchController.isActive {
+                            self.tableView.reloadData()
+                        }
                     }
                     
                 }else{
                     DispatchQueue.main.async {
                         DDLogError(JSON(val).description)
-                        self.tableView.reloadData()
-                        //ProgressHUD.showSuccess("加载失败")
+                        self.showError(title: "查询失败！")
                     }
                 }
             case .failure(let err):
                 DispatchQueue.main.async {
                     DDLogError(err.localizedDescription)
-                    self.tableView.reloadData()
-                    //ProgressHUD.showSuccess("加载失败")
+                    self.showError(title: "查询失败！")
                 }
             }
             if tv.mj_footer.isRefreshing() {
@@ -475,16 +482,17 @@ class TodoTaskViewController: UITableViewController {
     //backWindtodoTask
     @IBAction func unWindForTodoTask(_ segue:UIStoryboardSegue){
         DDLogDebug(segue.identifier!)
-        if segue.identifier == "backToTodoTask" {
-            self.segmentedControl.setSelected(at: 0, animated: true)
-            AppConfigSettings.shared.taskIndex = 0
-            self.tableView.mj_header.beginRefreshing()
+        self.tableView.mj_header.beginRefreshing()
+//        if segue.identifier == "backToTodoTask" {
+//            self.segmentedControl.setSelected(at: 0, animated: true)
+//            AppConfigSettings.shared.taskIndex = 0
+//            self.tableView.mj_header.beginRefreshing()
             //self.segmentedSelected(self.taskSegmentedControl)
-        }else if segue.identifier == "backToReadTask" {
-            self.segmentedControl.setSelected(at: 1, animated: true)
-            AppConfigSettings.shared.taskIndex = 1
-            self.tableView.mj_header.beginRefreshing()
-        }
+//        }else if segue.identifier == "backToReadTask" {
+//            self.segmentedControl.setSelected(at: 1, animated: true)
+//            AppConfigSettings.shared.taskIndex = 1
+//            self.tableView.mj_header.beginRefreshing()
+//        }
     }
     
 }
@@ -511,9 +519,12 @@ extension TodoTaskViewController:UISearchResultsUpdating,UISearchControllerDeleg
     }
     
     func updateSearchResults(for searchController: UISearchController) {
+        DDLogDebug("updateSearchResults........")
         if let sText = searchController.searchBar.text {
             self.searchText = sText
             self.headerLoadData()
+        }else {
+            DDLogDebug("search text is nil ..................")
         }
         
     }

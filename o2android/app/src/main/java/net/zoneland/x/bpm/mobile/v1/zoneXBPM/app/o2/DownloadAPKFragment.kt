@@ -4,8 +4,8 @@ import android.content.*
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.LocalBroadcastManager
+import androidx.fragment.app.DialogFragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.view.*
 import com.race604.drawable.wave.WaveDrawable
 import kotlinx.android.synthetic.main.fragment_download_progress.*
@@ -27,37 +27,37 @@ class DownloadAPKFragment : DialogFragment()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(android.app.DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.customStyleDialogStyle) //NO_FRAME就是dialog无边框，0指的是默认系统Theme
     }
 
     override fun onStart() {
         super.onStart()
-        val window = dialog.window
+        val window = dialog?.window
         window?.setGravity(Gravity.CENTER)
         window?.setWindowAnimations(R.style.DialogEmptyAnimation)//取消过渡动画 , 使DialogSearch的出现更加平滑
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater?.inflate(R.layout.fragment_download_progress, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_download_progress, container, false)
 
 
     var wave : WaveDrawable? = null
-    private val localBroadcastManager: LocalBroadcastManager by lazy {
-        LocalBroadcastManager.getInstance(activity.applicationContext)
+    private val localBroadcastManager: LocalBroadcastManager? by lazy {
+        if (activity != null) {LocalBroadcastManager.getInstance(activity!!) }else {null}
     }
     private var receiver : BroadcastReceiver? = null
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.setOnKeyListener(DialogInterface.OnKeyListener { _, keyCode, _ ->
+        dialog?.setCancelable(false)
+        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.setOnKeyListener(DialogInterface.OnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 return@OnKeyListener true
             }
             false
         })
-        val bit = BitmapFactory.decodeResource(activity.resources, R.mipmap.icon_down_arrow)
-        val draw = BitmapDrawable(activity.resources, bit)
+        val bit = BitmapFactory.decodeResource(activity?.resources, R.mipmap.icon_down_arrow)
+        val draw = BitmapDrawable(activity?.resources, bit)
         wave = WaveDrawable(draw)
         image_logo_wave.setImageDrawable(wave)
 
@@ -76,14 +76,15 @@ class DownloadAPKFragment : DialogFragment()  {
             }
 
         }
-        localBroadcastManager.registerReceiver(receiver, intentfilter)
+
+        localBroadcastManager?.registerReceiver(receiver!!, intentfilter)
 
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         if (receiver!=null) {
-            localBroadcastManager.unregisterReceiver(receiver)
+            localBroadcastManager?.unregisterReceiver(receiver!!)
         }
     }
 }

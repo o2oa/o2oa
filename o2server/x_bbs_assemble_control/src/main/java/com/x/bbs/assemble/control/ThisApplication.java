@@ -2,7 +2,11 @@ package com.x.bbs.assemble.control;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
@@ -23,11 +27,15 @@ import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 
 public class ThisApplication {
-	
+
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 	public static final String BBSMANAGER = "BBSManager@CMSManagerSystemRole@R";
-	public static QueueNewReplyNotify queueNewReplyNotify;
-	public static QueueNewSubjectNotify queueNewSubjectNotify;
+	public static final QueueNewReplyNotify queueNewReplyNotify = new QueueNewReplyNotify();
+	public static final QueueNewSubjectNotify queueNewSubjectNotify = new QueueNewSubjectNotify();
 	public static String CONFIG_BBS_ANONYMOUS_PERMISSION = "YES";
 
 	public static Context context() {
@@ -36,19 +44,18 @@ public class ThisApplication {
 
 	public static void init() throws Exception {
 		try {
-			CONFIG_BBS_ANONYMOUS_PERMISSION = (new BBSConfigSettingService()).getValueWithConfigCode("BBS_ANONYMOUS_PERMISSION");;
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_bbs_assemble_control());
+			CONFIG_BBS_ANONYMOUS_PERMISSION = (new BBSConfigSettingService())
+					.getValueWithConfigCode("BBS_ANONYMOUS_PERMISSION");
 			initAllSystemConfig();
-			queueNewReplyNotify = new QueueNewReplyNotify();
-			queueNewSubjectNotify = new QueueNewSubjectNotify();
-
 			MessageConnector.start(context());
-
-			context().startQueue( queueNewReplyNotify );
-			context().startQueue( queueNewSubjectNotify );
-			context.schedule( SubjectTotalStatisticTask.class, "0 0 1 * * ?"); //每天凌晨一点执行
-			context.schedule( UserCountTodaySetZeroTask.class, "0 1 0 * * ?"); //每天凌晨执行
-			context.schedule( SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
-			context.schedule( UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
+			context().startQueue(queueNewReplyNotify);
+			context().startQueue(queueNewSubjectNotify);
+			context.schedule(SubjectTotalStatisticTask.class, "0 0 1 * * ?"); // 每天凌晨一点执行
+			context.schedule(UserCountTodaySetZeroTask.class, "0 1 0 * * ?"); // 每天凌晨执行
+			context.schedule(SubjectReplyTotalStatisticTask.class, "0 40 * * * ?");
+			context.schedule(UserSubjectReplyPermissionStatisticTask.class, "0 0/30 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,15 +63,16 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static String getRoleAndPermissionCacheKey( String personName ) {
+	public static String getRoleAndPermissionCacheKey(String personName) {
 		return "RoleAndPermission.withPerson." + personName;
 	}
-	
+
 	private static void initAllSystemConfig() {
 		BBSPermissionInfoService permissionInfoService = new BBSPermissionInfoService();
 		BBSRoleInfoService roleInfoService = new BBSRoleInfoService();
@@ -87,7 +95,7 @@ public class ThisApplication {
 			if (forumInfoList != null) {
 				for (BBSForumInfo forumInfo : forumInfoList) {
 					permissionInfoService.createForumPermission(forumInfo);
-					roleInfoService.createForumRole( null, forumInfo);
+					roleInfoService.createForumRole(null, forumInfo);
 				}
 			}
 		} catch (Exception e) {
@@ -101,7 +109,7 @@ public class ThisApplication {
 			if (sectionInfoList != null) {
 				for (BBSSectionInfo sectionInfo : sectionInfoList) {
 					permissionInfoService.createSectionPermission(sectionInfo);
-					roleInfoService.createSectionRole( "System", sectionInfo);
+					roleInfoService.createSectionRole("System", sectionInfo);
 				}
 			}
 		} catch (Exception e) {
@@ -110,19 +118,18 @@ public class ThisApplication {
 			LoggerFactory.getLogger(ThisApplication.class).error(e);
 		}
 	}
-	
+
 	/**
-	 * 判断用户是否有BBS系统管理权限
-	 * 1、系统管理员Manager或者xadmin
-	 * 2、拥有BBSManager角色的人员
+	 * 判断用户是否有BBS系统管理权限 1、系统管理员Manager或者xadmin 2、拥有BBSManager角色的人员
+	 * 
 	 * @param effectivePerson
 	 * @return
 	 */
-	public static Boolean isBBSManager( EffectivePerson effectivePerson ) {
+	public static Boolean isBBSManager(EffectivePerson effectivePerson) {
 		UserManagerService userManagerService = new UserManagerService();
 		try {
-			if ( userManagerService.isHasPlatformRole( effectivePerson.getDistinguishedName(), ThisApplication.BBSMANAGER  )
-				|| effectivePerson.isManager()) {
+			if (userManagerService.isHasPlatformRole(effectivePerson.getDistinguishedName(), ThisApplication.BBSMANAGER)
+					|| effectivePerson.isManager()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -130,27 +137,26 @@ public class ThisApplication {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * 判断用户是否有权限对指定的论坛进行管理
-	 * 1、系统管理员、BBS管理员
-	 * 2、指定论坛设置的管理员
+	 * 判断用户是否有权限对指定的论坛进行管理 1、系统管理员、BBS管理员 2、指定论坛设置的管理员
+	 * 
 	 * @param effectivePerson
 	 * @param forumInfo
 	 * @return
 	 */
-	public static Boolean isForumManager( EffectivePerson effectivePerson, BBSForumInfo forumInfo ) {
-		if( isBBSManager( effectivePerson ) ) {
+	public static Boolean isForumManager(EffectivePerson effectivePerson, BBSForumInfo forumInfo) {
+		if (BooleanUtils.isTrue(isBBSManager(effectivePerson))) {
 			return true;
 		}
-		if ( forumInfo != null && ListTools.isNotEmpty( forumInfo.getForumManagerList() ) ) {
+		if (forumInfo != null && ListTools.isNotEmpty(forumInfo.getForumManagerList())) {
 			for (String name : forumInfo.getForumManagerList()) {
-				if ( effectivePerson.getDistinguishedName().equals( name ) ) {
+				if (effectivePerson.getDistinguishedName().equals(name)) {
 					return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
 }

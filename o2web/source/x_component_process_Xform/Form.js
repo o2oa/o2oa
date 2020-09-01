@@ -1656,7 +1656,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             "buttonList": [
                 {
                     "text": this.app.lp.closePage,
-                    "action": function () { dlg.close(); this.app.close(); }.bind(this)
+                    "action": function () {
+                        dlg.close();
+                        if (this.json.afterProcessAction=="redirect" && this.json.afterProcessRedirectScript && this.json.afterProcessRedirectScript.code){
+                            var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
+                            (new URI(url)).go();
+                        }else{
+                            this.app.close();
+                        }
+                    }.bind(this)
                 }
             ]
         };
@@ -2790,7 +2798,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
-            "workHtml": this.app.content.get("html")
+            "workHtml": this.app.content.get("html"),
+            "pageWidth" : 1000
         }, function (json) {
             htmlFormId = json.data.id;
         }.bind(this), null, false);
@@ -2875,11 +2884,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 //     this.selectPeopleCompany(dlg, json.data, count)
                 // }.bind(this), null, this.businessData.task.identity);
                 break;
+            case "script" :
+                o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getActivity( this.businessData.work.activity,"manual",function (activityJson) {
+                    var scriptText = activityJson.data.activity.resetRangeScriptText;
+                    if( !scriptText )return;
+                    var resetRange = this.Macro.exec(activityJson.data.activity.resetRangeScriptText, this);
+                    this.selectPeopleUnit(dlg, "", count, resetRange);
+                }.bind(this))
+                break;
             default:
                 this.selectPeopleAll(dlg, count);
         }
     },
-    selectPeopleUnit: function (dlg, unit, count) {
+    selectPeopleUnit: function (dlg, unit, count, include) {
         var names = dlg.identityList || [];
         var areaNode = $("resetWork_selPeopleArea");
         var options = {
@@ -2898,6 +2915,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 dlg.identityList = identityList;
             }.bind(this)
         };
+        if( include ){
+            options.noUnit = true;
+            options.include = typeOf(include)==="array" ? include : [include];
+        }
         MWF.xDesktop.requireApp("Selector", "package", function () {
             var selector = new MWF.O2Selector(this.app.content, options);
         }.bind(this));
@@ -3531,7 +3552,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
-                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        _self.app.notice("request json error: " + errorText, "error");
                         if (_self.mask) {
                             _self.mask.hide();
                             _self.mask = null;
@@ -3567,7 +3588,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }.bind(this), function (xhr, text, error) {
                         var errorText = error + ":" + text;
                         if (xhr) errorText = xhr.responseText;
-                        _self.app.notice("request json error: " + errorText, "error", dlg.node);
+                        _self.app.notice("request json error: " + errorText, "error");
                         if (_self.mask) {
                             _self.mask.hide();
                             _self.mask = null;

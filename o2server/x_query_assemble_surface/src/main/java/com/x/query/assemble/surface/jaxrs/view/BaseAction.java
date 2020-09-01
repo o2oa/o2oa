@@ -1,13 +1,14 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -32,22 +32,23 @@ import com.x.query.core.express.plan.ProcessPlatformPlan;
 import com.x.query.core.express.plan.Row;
 import com.x.query.core.express.plan.Runtime;
 import com.x.query.core.express.plan.SelectEntry;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
 	protected Plan accessPlan(Business business, View view, Runtime runtime) throws Exception {
 		Plan plan = null;
 		if (BooleanUtils.isTrue(view.getCacheAccess())) {
-			String cacheKey = ApplicationCache.concreteCacheKey("accessPlan", view.getId(),
+			CacheKey cacheKey = new CacheKey("accessPlan", view.getId(),
 					StringTools.sha(gson.toJson(runtime)));
-			Element element = business.cache().get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				plan = (Plan) element.getObjectValue();
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				plan = (Plan) optional.get();
 			} else {
 				plan = this.dealPlan(business, view, runtime);
-				business.cache().put(new Element(cacheKey, plan));
+				CacheManager.put(business.cache(), cacheKey, plan);
 			}
 		} else {
 			plan = this.dealPlan(business, view, runtime);
@@ -112,14 +113,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected List<String> fetchBundle(Business business, View view, Runtime runtime) throws Exception {
 		List<String> os = null;
 		if (BooleanUtils.isTrue(view.getCacheAccess())) {
-			String cacheKey = ApplicationCache.concreteCacheKey("fetchBundle", view.getId(),
+			CacheKey cacheKey = new CacheKey("fetchBundle", view.getId(),
 					StringTools.sha(gson.toJson(runtime)));
-			Element element = business.cache().get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				os = (List<String>) element.getObjectValue();
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				os = (List<String>) optional.get();
 			} else {
 				os = this.dealBundle(business, view, runtime);
-				business.cache().put(new Element(cacheKey, os));
+				CacheManager.put(business.cache(), cacheKey, os);
 			}
 		} else {
 			os = this.dealBundle(business, view, runtime);
@@ -184,7 +185,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 					i = 0;
 					for (SelectEntry o : plan.selectList) {
 						c = r.createCell(i);
-						c.setCellValue(Objects.toString(row.find(o.column)));
+						//c.setCellValue(Objects.toString(row.find(o.column)));
+						c.setCellValue(objectToString(row.find(o.column)));
 						i++;
 					}
 				}
@@ -196,11 +198,31 @@ abstract class BaseAction extends StandardJaxrsAction {
 			obj.setName(name);
 			obj.setPerson(effectivePerson.getDistinguishedName());
 			String flag = StringTools.uniqueToken();
-			business.cache().put(new Element(flag, obj));
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(business.cache(), cacheKey, obj);
 			return flag;
 		}
 	}
-
+    
+	protected String objectToString(Object object) {
+		String  str = "";
+		if (object instanceof Integer) {
+			str = object.toString();
+		}else if (object instanceof Double) {
+			str = object.toString();
+		}else if (object instanceof Float) {
+			str = object.toString();
+		}else if (object instanceof Boolean) {
+			str = String.valueOf(object);
+		} else if (object instanceof Date) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			str= formatter.format(object);
+		}else {
+			str = object.toString();
+		}
+		return str;
+	}
+	
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
 			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle) throws Exception {
 		Runtime runtime = new Runtime();

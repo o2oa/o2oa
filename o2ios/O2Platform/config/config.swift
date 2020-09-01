@@ -20,6 +20,9 @@ let JPUSH_APP_KEY = "9aca7cc20fe0cc987cd913ca"
 let JPUSH_channel = "Publish channel"
 //百度
 let BAIDU_MAP_KEY = "ONb5sPKBzluXBq3c8ZSQ5ULlWauwZeZ3"
+let BAIDU_ASR_APP_ID = "17231925"
+let BAIDU_ASR_APP_KEY = "ONb5sPKBzluXBq3c8ZSQ5ULlWauwZeZ3"
+let BAIDU_ASR_APP_SECRET = "nKSgbGLKme6lPL3ORF6Z5LcQUX1nBnVo"
 
 
 
@@ -72,6 +75,9 @@ let setting_value_textColor = RGB(85, g: 85, b: 85)
 let setting_content_textFont = UIFont(name: "PingFangSC-Light", size: 12.0)
 let setting_content_textColor = RGB(155, g: 155, b: 155)
 
+
+let text_primary_color = UIColor(hex: "#333333")
+let text_normal_color = UIColor(hex: "#666666")
 
 
 

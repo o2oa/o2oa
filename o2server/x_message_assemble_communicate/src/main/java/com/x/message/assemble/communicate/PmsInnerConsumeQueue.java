@@ -9,6 +9,7 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.x_jpush_assemble_control;
 import com.x.message.core.entity.Message;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
 
@@ -21,6 +22,10 @@ public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
 			innerMessage.setMessage(message.getTitle());
 			WrapBoolean wrapBoolean = ThisApplication.context().applications().postQuery(false, app, "message/send", innerMessage)
 					.getData(WrapBoolean.class);
+			//单独发送推送消息用，没有存message对象 所以没有id，不需要更新
+			if (StringUtils.isEmpty(message.getId())) {
+				return;
+			}
 			if (BooleanUtils.isTrue(wrapBoolean.getValue())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Message messageEntityObject = emc.find(message.getId(), Message.class);

@@ -30,10 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/z_color_subtitle_font"/>
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_pop_work_log_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        ></android.support.v7.widget.RecyclerView>
+        ></androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

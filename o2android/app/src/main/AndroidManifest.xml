@@ -11,7 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 网络通信 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 获取设备信息 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 读写sdcard，storage等等 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" android:maxSdkVersion="28"/>
+    <!-- 读写sdcard，storage等等 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序录制音频 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 拨打电话 -->
     <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- 拍照 -->
@@ -40,8 +41,10 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_round"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/XBPMTheme.NoActionBar">
-        <activity android:name=".app.im.O2LocationActivity"></activity>
+
+        <activity android:name=".app.im.O2LocationActivity" />
         <activity android:name=".app.im.O2InstantMessageActivity" />
         <activity android:name=".app.im.O2ChatActivity" />
         <activity android:name=".app.VideoPlayerActivity" />
@@ -62,6 +65,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/XBPMTheme.fullscreen" />
         <activity android:name=".app.o2.security.DeviceManagerActivity" />
+
         <activity
             android:name=".app.o2.launch.LaunchActivity"
             android:label="@string/app_name"
@@ -296,98 +300,14 @@
             android:name=".app.o2.skin.SkinManagerActivity"
             android:label="@string/skin_manager"
             android:screenOrientation="portrait" />
-        <activity android:name=".app.o2.skin.SkinShowActivity" /> <!-- im -->
-        <activity
-            android:name=".app.o2.openim.IMTribeCreateActivity"
-            android:label="@string/activity_im_tribe_create_label"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".app.o2.openim.IMPersonConfigActivity"
-            android:label="@string/activity_im_person_config_label"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".app.o2.openim.IMTribeInfoActivity"
-            android:label="@string/activity_im_tribe_update_label"
-            android:screenOrientation="portrait" /> <!-- 蓝牙相关 -->
+        <activity android:name=".app.o2.skin.SkinShowActivity" />
+
+        <!-- 蓝牙相关 -->
         <activity android:name=".app.bluetooth.BlueToothClientActivity" />
         <activity android:name=".app.bluetooth.BlueToothServerActivity" />
         <activity android:name=".app.bluetooth.BlueToothBLEClientActivity" />
-        <activity android:name=".app.bluetooth.BlueToothBLEServerActivity" /> <!-- IM -->
-        <activity
-            android:name="jiguang.chat.activity.ChatActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.BrowserViewPagerActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="jiguang.chat.activity.ForwardMsgActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="jiguang.chat.activity.CreateGroupActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name="jiguang.chat.activity.GroupActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.MembersInChatActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name="jiguang.chat.activity.SearchContactsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="jiguang.chat.activity.SearchMoreFriendsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name="jiguang.chat.activity.SearchMoreGroupActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name="jiguang.chat.activity.ChatDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.NickSignActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.historyfile.activity.HistoryFileActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.DownLoadActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.SendFileActivity"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.activity.FriendListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/IMBaseThemes" />
-        <activity
-            android:name="jiguang.chat.location.activity.MapPickerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" /> <!-- ```````````````````service```````````````````` -->
+        <activity android:name=".app.bluetooth.BlueToothBLEServerActivity" />
+        <!-- ```````````````````service```````````````````` -->
         <!-- baidu -->
         <service
             android:name="com.baidu.location.f"
@@ -443,9 +363,7 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="JM_IM_USER_PASSWORD"
-            android:value="${JM_IM_USER_PASSWORD}" /> <!-- ```````````````````meta```````````````````` -->
+
         <!-- bugly -->
         <!-- 配置APP ID -->
         <meta-data
@@ -456,7 +374,7 @@
             android:value="${JPUSH_CHANNEL}" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -472,6 +390,8 @@
 
         <activity android:name=".app.tbs.FileReaderActivity" />
         <activity android:name=".flutter.FlutterConnectActivity" />
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 
 </manifest>

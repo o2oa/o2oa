@@ -2,8 +2,8 @@
 //  OOVoiceAIController.swift
 //  O2Platform
 //
-//  Created by 刘振兴 on 2018/6/12.
-//  Copyright © 2018年 zoneland. All rights reserved.
+//  Created by FancyLou on 2020/8/27.
+//  Copyright © 2020年 zoneland. All rights reserved.
 //
 
 import UIKit
@@ -15,28 +15,20 @@ import O2OA_Auth_SDK
 class OOVoiceAIController: UIViewController {
     
     @IBOutlet weak var voiceView: OOVoiceView!
-    
+    @IBOutlet weak var tipsLabel: UILabel!
     @IBOutlet weak var showLabel: UILabel!
     
     
     var closeVC = false
     var animation = false
-    var lastRecognizeTime = -1 // 没有识别出内容的时间  计算持续多久没识别内容出来了
-    var beginRecognizeFirstTime = -1 //是否有开始识别出内容
+ 
     
     // 语音合成
     var synthersizer:AVSpeechSynthesizer!
     var voice: AVSpeechSynthesisVoice!
     
-    // 语音识别
-    let recognizeBus = 0
-    var recognizer: SFSpeechRecognizer!
-    var recAudioEngine: AVAudioEngine!
-    var recAudioInputNode: AVAudioInputNode!
-    //
-    var recRequest: SFSpeechAudioBufferRecognitionRequest?
-    var recTask: SFSpeechRecognitionTask?
-    var timer: Timer?
+    //百度语音识别
+    var bdmanager: BDSEventManager? = nil
     
     private lazy var viewModel: OOAIViewModel = {
         return OOAIViewModel()
@@ -55,10 +47,7 @@ class OOVoiceAIController: UIViewController {
         }
         viewModel.aiVoiceControllerDelegate = self
         initSpeak()
-        // init recognizer
-        recognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh_CN"))
-        recAudioEngine = AVAudioEngine()
-        recAudioInputNode = recAudioEngine.inputNode
+        configASR()
     }
     
     override func didReceiveMemoryWarning() {
@@ -88,89 +77,58 @@ class OOVoiceAIController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    //MARK: - recoginzer
+    // MARK: - 语音识别
+    ///初始化语音识别
+   private func configASR() {
+       self.bdmanager = BDSEventManager.createEventManager(withName: BDS_ASR_NAME)
+       self.bdmanager?.setDelegate(self)
+       //百度语音识别 appkey 和 secret
+       self.bdmanager?.setParameter([BAIDU_ASR_APP_KEY, BAIDU_ASR_APP_SECRET], forKey: BDS_ASR_API_SECRET_KEYS)
+       self.bdmanager?.setParameter(BAIDU_ASR_APP_ID, forKey: BDS_ASR_OFFLINE_APP_CODE)
+       // 获取VAD模型的路径
+       let path = Bundle.main.path(forResource: "bds_easr_basic_model", ofType: "dat")
+       self.bdmanager?.setParameter(path, forKey: BDS_ASR_MODEL_VAD_DAT_FILE)
+       self.bdmanager?.setParameter(true, forKey: BDS_ASR_ENABLE_MODEL_VAD)
+       //关闭标点
+       self.bdmanager?.setParameter(true, forKey: BDS_ASR_DISABLE_PUNCTUATION)
+   }
+    
     private func startListen() {
         guard !animation else {
             return
         }
-        
-        //清除任务
-        if recTask != nil {
-            recTask?.cancel()
-            recTask = nil
-        }
-        
-        // 清除定时器
-        if self.timer != nil {
-            self.timer?.invalidate()
-            self.timer = nil
-        }
-        
-        // 录音session
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default, options: .defaultToSpeaker)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation) // 这句话很重要，一定要，不然识别不到你的声音
-        } catch {
-            DDLogError("audioSession set failed.")
-        }
-        
-        // 开始设置任务
-        recRequest = SFSpeechAudioBufferRecognitionRequest()
-        recRequest!.shouldReportPartialResults = true // 每个片段都返回 还是识别完成后返回
-        recTask = recognizer.recognitionTask(with: recRequest!, delegate: self)
-        
-        // 监听一个标识位并拼接流文件
-        let format = self.recAudioInputNode.outputFormat(forBus: self.recognizeBus)
-        self.recAudioInputNode.installTap(onBus: self.recognizeBus, bufferSize: 1024, format: format) { (pcmBuffer, time) in
-            self.recRequest?.append(pcmBuffer)
-        }
-        
-        // 准备并启动引擎
-        self.recAudioEngine.prepare()
-        do {
-            try self.recAudioEngine.start()
-        }catch  {
-            DDLogError("录音 识别 异常")
-        }
+        self.bdmanager?.sendCommand(BDS_ASR_CMD_START)
         self.showLabel.text = "等待命令中....."
-        animation = true
-        voiceView.startAnimation()
-        // 开始计时
-        self.beginRecognizeFirstTime = Int(Date().timeIntervalSince1970)
-        // 开启定时器 判断语音识别
-        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(tickTimer), userInfo: nil, repeats: true)
-        self.timer?.fire()
-    }
-    
-    @objc private func tickTimer() {
-         let cTime = Int(Date().timeIntervalSince1970)
-        if self.lastRecognizeTime < 0 {
-            if self.beginRecognizeFirstTime > 0 && (cTime - self.beginRecognizeFirstTime) > 60 {
-                // 超过60秒结束
-                self.stopListen()
+        //根据当前状态 展现提示命令
+        if self.viewModel.getAIStatus() == .normal {
+            let taskCommand = AI_COMMAND_TASK.joined(separator: ",")
+            let outCommand = AI_COMMAND_STOP.joined(separator: ",")
+            self.tipsLabel.text = "可以使用如下命令：\(taskCommand) , \(outCommand)"
+        }else if self.viewModel.getAIStatus() == .working {
+            let ignoreCommand = AI_COMMAND_IGNORE.joined(separator: ",")
+            let aiCommand = AI_COMMAND_TASK_NEURAL.joined(separator: ",")
+            let outCommand = AI_COMMAND_STOP.joined(separator: ",")
+            if let task = self.viewModel.getCurrentDealTask() {
+                let routeList = task.routeNameList?.joined(separator: "或") ?? ""
+                self.tipsLabel.text = "可以使用如下命令：\(routeList) , \(ignoreCommand), \(aiCommand)"
+            }else {
+                self.tipsLabel.text = "可以使用如下命令：\(outCommand)"
             }
         }else {
-            if (cTime - self.lastRecognizeTime) > 3 { //超过3秒没说话
-                self.stopListen()
-            }
+            self.tipsLabel.text = ""
         }
+        animation = true
+        voiceView.startAnimation()
     }
     
+     
     private func stopListen() {
         guard animation else {
             return
         }
-        self.timer?.invalidate()
-        self.timer = nil
-        self.recAudioEngine.stop()
-        self.recAudioInputNode.removeTap(onBus: self.recognizeBus)
-        self.recRequest?.endAudio()
-        self.recRequest = nil
-        self.recTask?.finish()
-        self.recTask = nil
+        self.tipsLabel.text = ""
+        self.bdmanager?.sendCommand(BDS_ASR_CMD_STOP)
         animation = false
-        self.beginRecognizeFirstTime = -1
         voiceView.stopAnimation()
     }
     
@@ -189,14 +147,7 @@ class OOVoiceAIController: UIViewController {
         DDLogInfo("speak:\(txt)")
         do {
             let audioSession = AVAudioSession.sharedInstance()
-//            try audioSession.overrideOutputAudioPort(.speaker)
             try audioSession.setCategory(.ambient, mode: .default)
-//            let route = audioSession.currentRoute
-//            route.outputs.forEach { (port) in
-//                DDLogInfo("name:\(port.portName)")
-//                DDLogInfo("type:\(port.portType)")
-//                DDLogInfo("channels:\(String(describing: port.channels?.count))")
-//            }
         }catch {
             DDLogError("异常：\(error)")
         }
@@ -217,6 +168,7 @@ extension OOVoiceAIController: OOAIVoiceControllerDelegate {
     func changeSpeakMessage(message: String?) {
         self.showLabel.text = message
     }
+    
     func changeActivityStatus(status: AIActivityStatus?) {
         switch status! {
         case .listen:
@@ -224,7 +176,6 @@ extension OOVoiceAIController: OOAIVoiceControllerDelegate {
             DispatchQueue.main.async {
                 self.startListen()
             }
-            
             break
         case .speak:
             DDLogInfo("开始说话。。。。。。。。。。。。。。")
@@ -268,39 +219,99 @@ extension OOVoiceAIController : AVSpeechSynthesizerDelegate {
     }
 }
 
-extension OOVoiceAIController: SFSpeechRecognitionTaskDelegate {
-    func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
-        DDLogInfo("did detect speech。。。。。。。")
-    }
-    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
-        DDLogInfo("cancel recognizer....")
-    }
-    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didHypothesizeTranscription transcription: SFTranscription) {
-        DDLogInfo("hypothesize recognize .....")
-        let c = transcription.formattedString
-        DDLogInfo("选：\(c)")
-        let time = Int(Date().timeIntervalSince1970)
-        self.lastRecognizeTime = time
-    }
-    func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
-        DDLogInfo("finish recognize end reading audio   .....")
-    }
-    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition recognitionResult: SFSpeechRecognitionResult) {
-        DDLogInfo("finish recognize result...........")
-        let best = recognitionResult.bestTranscription.formattedString
-        DDLogInfo("最佳：\(best)")
-        let removePunctuation = best.trimmingCharacters(in: CharacterSet.punctuationCharacters)
-        DDLogInfo("最佳去掉标点：\(removePunctuation)")
-        if !self.closeVC {
-            self.viewModel.command = removePunctuation
-            self.lastRecognizeTime = -1
+extension OOVoiceAIController: BDSClientASRDelegate {
+       //EVoiceRecognitionClientWorkStatusStartWorkIng 识别工作开始，开始采集及处理数据 0
+        //EVoiceRecognitionClientWorkStatusStart,                  // 检测到用户开始说话1
+    //    EVoiceRecognitionClientWorkStatusEnd,                    // 本地声音采集结束，等待识别结果返回并结束录音2
+    //    EVoiceRecognitionClientWorkStatusNewRecordData,          // 录音数据回调3
+    //    EVoiceRecognitionClientWorkStatusFlushData,              // 连续上屏4
+    //    EVoiceRecognitionClientWorkStatusFinish,                 // 语音识别功能完成，服务器返回正确结果5
+    //    EVoiceRecognitionClientWorkStatusMeterLevel,             // 当前音量回调6
+    //    EVoiceRecognitionClientWorkStatusCancel,                 // 用户取消7
+    //    EVoiceRecognitionClientWorkStatusError,                  // 发生错误8
+    //    /* 离线引擎状态 */
+    //    EVoiceRecognitionClientWorkStatusLoaded,                 // 离线引擎加载完成9
+    //    EVoiceRecognitionClientWorkStatusUnLoaded,               // 离线引擎卸载完成10
+    //    /* CHUNK状态 */
+    //    EVoiceRecognitionClientWorkStatusChunkThirdData,         // CHUNK: 识别结果中的第三方数据11
+    //    EVoiceRecognitionClientWorkStatusChunkNlu,               // CHUNK: 识别结果中的语义结果12
+    //    EVoiceRecognitionClientWorkStatusChunkEnd,               // CHUNK: 识别过程结束13
+    //    /* LOG */
+    //    EVoiceRecognitionClientWorkStatusFeedback,               // Feedback: 识别过程反馈的打点数据14
+    //    /* Only for iOS */
+    //    EVoiceRecognitionClientWorkStatusRecorderEnd,            // 录音机关闭，页面跳转需检测此时间，规避状态条 (iOS) 15
+    //    /* LONG SPEECH END */
+    //    EVoiceRecognitionClientWorkStatusLongSpeechEnd           // 长语音结束状态16
+    func voiceRecognitionClientWorkStatus(_ workStatus: Int32, obj aObj: Any!) {
+        switch workStatus {
+        case 0: //EVoiceRecognitionClientWorkStatusStartWorkIng 识别工作开始，开始采集及处理数据
+            DDLogInfo("开始识别。。。。。")
+            break
+        case 5: //EVoiceRecognitionClientWorkStatusFinish 语音识别功能完成，服务器返回正确结果
+            if let resDic = aObj as? NSDictionary, let arr = resDic["results_recognition"] as? Array<String> {
+                let first = arr[0]
+                DDLogInfo("识别成功 返回结果 \(first)")
+                DispatchQueue.main.async {
+                    if !self.closeVC {
+                        self.stopListen()
+                        self.viewModel.command = first
+                    }
+                }
+            }else {
+                if !self.closeVC {
+                    self.stopListen()
+                     self.viewModel.command = nil
+                }
+            }
+            break
+        case 8://EVoiceRecognitionClientWorkStatusError,                  // 发生错误8
+            let err = aObj as? Error
+            DDLogError("err : \(String(describing: err?.localizedDescription))")
+            DispatchQueue.main.async {
+                if !self.closeVC {
+                    self.stopListen()
+                     self.viewModel.command = nil
+                }
+            }
+        default:
+            break
         }
     }
-    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
-        DDLogInfo("finish recognize task ....... \(successfully)")
-        if !successfully && !self.closeVC {
-             self.viewModel.command = nil
-        }
-    }
-    
 }
+//
+//extension OOVoiceAIController: SFSpeechRecognitionTaskDelegate {
+//    func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
+//        DDLogInfo("did detect speech。。。。。。。")
+//    }
+//    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
+//        DDLogInfo("cancel recognizer....")
+//    }
+//    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didHypothesizeTranscription transcription: SFTranscription) {
+//        DDLogInfo("hypothesize recognize .....")
+//        let c = transcription.formattedString
+//        DDLogInfo("选：\(c)")
+//        let time = Int(Date().timeIntervalSince1970)
+//        self.lastRecognizeTime = time
+//    }
+//    func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
+//        DDLogInfo("finish recognize end reading audio   .....")
+//    }
+//    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition recognitionResult: SFSpeechRecognitionResult) {
+//        DDLogInfo("finish recognize result...........")
+//        let best = recognitionResult.bestTranscription.formattedString
+//        DDLogInfo("最佳：\(best)")
+//        let removePunctuation = best.trimmingCharacters(in: CharacterSet.punctuationCharacters)
+//        DDLogInfo("最佳去掉标点：\(removePunctuation)")
+//        if !self.closeVC {
+//            self.viewModel.command = removePunctuation
+//            self.lastRecognizeTime = -1
+//        }
+//    }
+//    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
+//        DDLogInfo("finish recognize task ....... \(successfully)")
+//        if !successfully && !self.closeVC {
+//             self.viewModel.command = nil
+//        }
+//    }
+//
+//}

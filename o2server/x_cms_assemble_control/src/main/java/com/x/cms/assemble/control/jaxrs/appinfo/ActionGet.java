@@ -1,6 +1,8 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -11,6 +13,8 @@ import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 public class ActionGet extends BaseAction {
 
@@ -28,13 +32,12 @@ public class ActionGet extends BaseAction {
 			Exception exception = new ExceptionAppInfoIdEmpty();
 			result.error( exception );
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( flag );
-		Element element = cache.get( cacheKey );
-		
-		if (( null != element ) && ( null != element.getObjectValue()) ) {
-			wo = ( Wo ) element.getObjectValue();
-			result.setData( wo );
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), flag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			result.setData((Wo)optional.get());
 		} else {
 			if( check ){
 				try {
@@ -70,8 +73,7 @@ public class ActionGet extends BaseAction {
 					}else{
 						wo.setConfig( "{}" );
 					}
-
-					cache.put(new Element( cacheKey, wo ));
+					CacheManager.put(cacheCategory, cacheKey, wo);
 					result.setData( wo );
 				} catch (Exception e) {
 					Exception exception = new ExceptionAppInfoProcess( e, "将查询出来的应用栏目信息对象转换为可输出的数据信息时发生异常。" );

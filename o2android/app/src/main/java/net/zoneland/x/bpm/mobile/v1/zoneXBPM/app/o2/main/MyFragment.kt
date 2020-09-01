@@ -32,7 +32,7 @@ class MyFragment: BaseMVPViewPagerFragment<MyContract.View, MyContract.Presenter
     override fun layoutResId(): Int = R.layout.fragment_main_my
 
     val avatarMenuList: ArrayList<String> = arrayListOf("拍照", "从手机相册选择")
-    val avatarMenu: CommonMenuPopupWindow by lazy { CommonMenuPopupWindow(avatarMenuList, activity) }
+    val avatarMenu: CommonMenuPopupWindow by lazy { CommonMenuPopupWindow(avatarMenuList, activity!!) }
 
     var person: PersonJson? = null
     var isEdit = false

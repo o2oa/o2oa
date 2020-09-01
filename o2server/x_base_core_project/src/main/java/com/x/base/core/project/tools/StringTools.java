@@ -35,7 +35,26 @@ public class StringTools {
 	/** 中文,英文,数字,-,.· 【】（） */
 	public static final Pattern SIMPLY_REGEX = Pattern
 			.compile("^[\u4e00-\u9fa5a-zA-Z0-9\\_\\(\\)\\-\\ \\.\\ \\·\\【\\】\\（\\）]*$");
-	public static final Pattern FILENAME_REGEX = Pattern.compile("[^/\\\\<>*?|\"]+(\\.?)[^/\\\\<>*?|\"]+");
+	/**
+	 * MSDN
+	 * https://docs.microsoft.com/zh-cn/windows/win32/fileio/naming-a-file?redirectedfrom=MSDN#file_and_directory_names
+	 */
+	public static final Pattern FILENAME_REGEX = Pattern.compile(
+			"# Match a valid Windows filename (unspecified file system).          \n"
+					+ "^                                # Anchor to start of string.        \n"
+					+ "(?!                              # Assert filename is not: CON, PRN, \n"
+					+ "  (?:                            # AUX, NUL, COM1, COM2, COM3, COM4, \n"
+					+ "    CON|PRN|AUX|NUL|             # COM5, COM6, COM7, COM8, COM9,     \n"
+					+ "    COM[1-9]|LPT[1-9]            # LPT1, LPT2, LPT3, LPT4, LPT5,     \n"
+					+ "  )                              # LPT6, LPT7, LPT8, and LPT9...     \n"
+					+ "  (?:\\.[^.]*)?                  # followed by optional extension    \n"
+					+ "  $                              # and end of string                 \n"
+					+ ")                                # End negative lookahead assertion. \n"
+					+ "[^<>:\"/\\\\|?*\\x00-\\x1F]*     # Zero or more valid filename chars.\n"
+					+ "[^<>:\"/\\\\|?*\\x00-\\x1F\\ .]  # Last char is not a space or dot.  \n"
+					+ "$                                # Anchor to end of string.            ",
+			Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.COMMENTS);
+
 	/**
 	 * RFC822 compliant regex adapted for Java
 	 * http://stackoverflow.com/questions/8204680/java-regex-email
@@ -480,37 +499,37 @@ public class StringTools {
 		while (tok.hasMoreTokens()) {
 			String nextTok = tok.nextToken();
 			switch (state) {
-				case inQuote:
-					if ("\'".equals(nextTok)) {
-						lastTokenHasBeenQuoted = true;
-						state = normal;
-					} else {
-						current.append(nextTok);
+			case inQuote:
+				if ("\'".equals(nextTok)) {
+					lastTokenHasBeenQuoted = true;
+					state = normal;
+				} else {
+					current.append(nextTok);
+				}
+				break;
+			case inDoubleQuote:
+				if ("\"".equals(nextTok)) {
+					lastTokenHasBeenQuoted = true;
+					state = normal;
+				} else {
+					current.append(nextTok);
+				}
+				break;
+			default:
+				if ("\'".equals(nextTok)) {
+					state = inQuote;
+				} else if ("\"".equals(nextTok)) {
+					state = inDoubleQuote;
+				} else if (" ".equals(nextTok)) {
+					if (lastTokenHasBeenQuoted || current.length() > 0) {
+						result.add(current.toString());
+						current.setLength(0);
 					}
-					break;
-				case inDoubleQuote:
-					if ("\"".equals(nextTok)) {
-						lastTokenHasBeenQuoted = true;
-						state = normal;
-					} else {
-						current.append(nextTok);
-					}
-					break;
-				default:
-					if ("\'".equals(nextTok)) {
-						state = inQuote;
-					} else if ("\"".equals(nextTok)) {
-						state = inDoubleQuote;
-					} else if (" ".equals(nextTok)) {
-						if (lastTokenHasBeenQuoted || current.length() > 0) {
-							result.add(current.toString());
-							current.setLength(0);
-						}
-					} else {
-						current.append(nextTok);
-					}
-					lastTokenHasBeenQuoted = false;
-					break;
+				} else {
+					current.append(nextTok);
+				}
+				lastTokenHasBeenQuoted = false;
+				break;
 			}
 		}
 		if (lastTokenHasBeenQuoted || current.length() > 0) {

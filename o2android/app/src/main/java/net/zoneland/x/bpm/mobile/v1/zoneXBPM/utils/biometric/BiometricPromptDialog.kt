@@ -1,13 +1,13 @@
 package net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric
 
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.content.DialogInterface
 import android.os.Bundle
 import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
 import android.content.Context
-import android.support.annotation.Nullable
+import androidx.annotation.Nullable
 import android.view.*
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -95,7 +95,7 @@ class BiometricPromptDialog : DialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         if (dialog.window != null) {
-            dialog.window.setBackgroundDrawableResource(R.color.bg_biometry_dialog)
+            dialog.window!!.setBackgroundDrawableResource(R.color.bg_biometry_dialog)
         }
         return dialog
     }

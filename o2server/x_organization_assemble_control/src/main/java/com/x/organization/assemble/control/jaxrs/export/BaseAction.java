@@ -1,13 +1,12 @@
 package com.x.organization.assemble.control.jaxrs.export;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 
-import net.sf.ehcache.Ehcache;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected Ehcache cache = ApplicationCache.instance().getCache(CacheFileResult.class);
+	protected CacheCategory cacheCategory = new CacheCategory(CacheFileResult.class);
 
 	public static class CacheFileResult {
 

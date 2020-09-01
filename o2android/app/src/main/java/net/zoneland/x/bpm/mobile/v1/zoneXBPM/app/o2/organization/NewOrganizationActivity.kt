@@ -4,8 +4,8 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.organization
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.Toolbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_organization_new.*
 import net.muliba.changeskin.FancySkinManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.R
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
-import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.openim.IMTribeCreateActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.person.PersonActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.CommonRecyclerViewHolder
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.adapter.NewContactListAdapter
@@ -352,14 +351,7 @@ class NewOrganizationActivity : BaseMVPActivity<NewOrganizationContract.View, Ne
                     MULTI_PERSON_CHOOSE_MODE -> {
                         when (fromImChoose) {
                             IM_CHOOSE_NEED_START_ACTIVITY -> {
-                                if (mSelectPersonSet.size < 3) {
-                                    XToast.toastShort(this, "创建群组至少需要选择3个人！")
-                                    return true
-                                } else {
-                                    val list = ArrayList<String>()
-                                    mSelectPersonSet.map { list.add(it) }
-                                    goThenKill<IMTribeCreateActivity>(IMTribeCreateActivity.startCreate(list))
-                                }
+                                //todo 已删除
                             }
                             IM_CHOOSE_FROM_REQUEST -> {
 //                                if (mSelectPersonSet.size < 3) {

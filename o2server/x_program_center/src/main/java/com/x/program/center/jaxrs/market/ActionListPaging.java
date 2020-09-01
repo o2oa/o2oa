@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -15,6 +16,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Application_;
+import com.x.program.center.core.entity.InstallLog;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +36,7 @@ class ActionListPaging extends BaseAction {
 			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
@@ -43,9 +46,17 @@ class ActionListPaging extends BaseAction {
 			}
 			List<Wo> wos = new ArrayList<>();
 			if(BooleanUtils.isTrue(wi.getAsc())){
-				emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
+				wos = emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
 			}else {
 				wos = emc.fetchDescPaging(Application.class, Wo.copier, p, page, size, orderBy);
+			}
+			for(Wo wo : wos){
+				InstallLog installLog = emc.find(wo.getId(), InstallLog.class);
+				if(installLog!=null && CommonStatus.VALID.getValue().equals(installLog.getStatus())){
+					wo.setInstalledVersion(installLog.getVersion());
+				}else{
+					wo.setInstalledVersion("");
+				}
 			}
 			result.setData(wos);
 			result.setCount(emc.count(Application.class, p));
@@ -155,6 +166,17 @@ class ActionListPaging extends BaseAction {
 
 		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class,
 				JpaObject.singularAttributeField(Application.class, true, false), Arrays.asList("abort", "installSteps"));
+
+		@FieldDescribe("已安装的版本，空表示未安装")
+		private String installedVersion;
+
+		public String getInstalledVersion() {
+			return installedVersion;
+		}
+
+		public void setInstalledVersion(String installedVersion) {
+			this.installedVersion = installedVersion;
+		}
 
 
 	}

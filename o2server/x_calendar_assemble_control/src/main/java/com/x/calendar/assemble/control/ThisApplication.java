@@ -1,7 +1,14 @@
 package com.x.calendar.assemble.control;
 
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.assemble.control.schedule.AlarmTrigger;
@@ -10,22 +17,27 @@ import com.x.calendar.assemble.control.service.UserManagerService;
 import com.x.calendar.core.entity.Calendar;
 import com.x.calendar.core.entity.Calendar_Event;
 
-import java.util.List;
-
 public class ThisApplication {
+
+	private ThisApplication() {
+		// nothing
+	}
 
 	protected static Context context;
 	public static final String CalendarMANAGER = "CalendarManager";
+
 	public static Context context() {
 		return context;
 	}
 
 	public static void init() throws Exception {
 		try {
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_calendar_assemble_control());
 			MessageConnector.start(context());
-			//每30秒检查一次需要推送的消息
+			// 每30秒检查一次需要推送的消息
 			context.schedule(AlarmTrigger.class, "0/30 * * * * ?");
-			//每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
+			// 每两小时检查一次comment信息的引用情况，删除多余的不必要的数据
 			context.schedule(CheckEventComment.class, "* * */2 * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -34,6 +46,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -66,7 +79,7 @@ public class ThisApplication {
 	 * @return
 	 */
 	public static Boolean isCalendarManager(EffectivePerson effectivePerson, Calendar calendar) {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		if (calendar != null) {
@@ -91,11 +104,11 @@ public class ThisApplication {
 	 */
 	public static Boolean isCalendarPublisher(EffectivePerson effectivePerson, List<String> unitNames,
 			List<String> groupNames, Calendar calendar) {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		if (calendar != null) {
-			if (isCalendarManager(effectivePerson, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarManager(effectivePerson, calendar))) {
 				return true;
 			}
 			// 判断发布权限
@@ -135,13 +148,13 @@ public class ThisApplication {
 	 * @throws Exception
 	 */
 	public static Boolean isCalendarPublisher(EffectivePerson effectivePerson, Calendar calendar) throws Exception {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		List<String> unitNames = null;
 		List<String> groupNames = null;
 		if (calendar != null) {
-			if (isCalendarManager(effectivePerson, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarManager(effectivePerson, calendar))) {
 				return true;
 			}
 			UserManagerService userManagerService = new UserManagerService();
@@ -185,7 +198,7 @@ public class ThisApplication {
 	 */
 	public static Boolean isEventManager(EffectivePerson effectivePerson, Calendar calendar, Calendar_Event event)
 			throws Exception {
-		if (isCalendarSystemManager(effectivePerson)) {
+		if (BooleanUtils.isTrue(isCalendarSystemManager(effectivePerson))) {
 			return true;
 		}
 		List<String> unitNames = null;
@@ -196,7 +209,7 @@ public class ThisApplication {
 			unitNames = userManagerService.listUnitNamesWithPerson(personName);
 			groupNames = userManagerService.listGroupNamesByPerson(personName);
 			// 判断日历的发布权限
-			if (isCalendarPublisher(effectivePerson, unitNames, groupNames, calendar)) {
+			if (BooleanUtils.isTrue(isCalendarPublisher(effectivePerson, unitNames, groupNames, calendar))) {
 				return true;
 			}
 			// 判断事件的管理权限

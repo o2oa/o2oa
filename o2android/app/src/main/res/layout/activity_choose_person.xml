@@ -38,12 +38,12 @@
                 android:text="(点击头像可删除)"
                 />
         </RelativeLayout>
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_choose_person_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
-            ></android.support.v7.widget.RecyclerView>
+            ></androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
     <include layout="@layout/snippet_bottom_operate_single_button" />
 </RelativeLayout>

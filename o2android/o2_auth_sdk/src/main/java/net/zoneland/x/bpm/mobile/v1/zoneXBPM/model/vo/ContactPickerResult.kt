@@ -15,10 +15,10 @@ class ContactPickerResult(
         var users: ArrayList<O2PersonPickerResultItem>
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.createTypedArrayList(O2UnitPickerResultItem.CREATOR),
-            source.createTypedArrayList(O2IdentityPickerResultItem.CREATOR),
-            source.createTypedArrayList(O2GroupPickerResultItem.CREATOR),
-            source.createTypedArrayList(O2PersonPickerResultItem.CREATOR)
+            source.createTypedArrayList(O2UnitPickerResultItem.CREATOR) ?: ArrayList(),
+            source.createTypedArrayList(O2IdentityPickerResultItem.CREATOR) ?: ArrayList(),
+            source.createTypedArrayList(O2GroupPickerResultItem.CREATOR) ?: ArrayList(),
+            source.createTypedArrayList(O2PersonPickerResultItem.CREATOR) ?: ArrayList()
     )
 
     override fun describeContents() = 0
@@ -51,14 +51,14 @@ class O2UnitPickerResultItem(
         var levelName: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.createStringArrayList(),
-            source.readString(),
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.createStringArrayList() ?: ArrayList(),
+            source.readString() ?: "",
             source.readInt(),
-            source.readString()
+            source.readString() ?: ""
     )
 
     override fun describeContents() = 0
@@ -98,18 +98,18 @@ class O2IdentityPickerResultItem(
         var unitLevelName: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
             source.readInt(),
-            source.readString()
+            source.readString() ?: ""
     )
 
     override fun describeContents() = 0
@@ -145,10 +145,10 @@ class O2GroupPickerResultItem(
         var distinguishedName: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString()
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: ""
     )
 
     override fun describeContents() = 0
@@ -183,17 +183,17 @@ class O2PersonPickerResultItem(
         var officePhone: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readString()
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: "",
+            source.readString() ?: ""
     )
 
     override fun describeContents() = 0
