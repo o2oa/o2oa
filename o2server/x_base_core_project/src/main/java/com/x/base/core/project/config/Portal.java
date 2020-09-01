@@ -141,6 +141,7 @@ public class Portal extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PORTAL);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		this.executeSyncFile(Config.PATH_CONFIG_PORTAL);
 	}
 
 	public LinkedHashMap<String, String> getUrlMapping() {
