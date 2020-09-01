@@ -1391,6 +1391,8 @@ MWF.xApplication.Selector.Person = new Class({
             }else{
                 this._selectSingleItem();
             }
+        }else{
+            this._selectSingleItem();
         }
     },
     _selectSingleItem : function(){
