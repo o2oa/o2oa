@@ -1,0 +1,216 @@
+{
+    "titleBar": {
+        "overflow": "hidden",
+        "height": "50px",
+        "background-color": "#4c6b87"
+    },
+    "titleActionNode": {
+        "float": "right",
+        "margin-right": "20px",
+        "height": "26px",
+        "border": "1px solid #ffffff",
+        "border-radius": "5px",
+        "line-height": "26px",
+        "text-align": "center",
+        "padding": "0 20px",
+        "margin-top": "12px",
+        "cursor": "pointer",
+        "color": "#ffffff"
+    },
+    "titleTextNode": {
+        "padding-left": "20px",
+        "color": "#FFF",
+        "font-size": "18px",
+        "line-height": "50px",
+        "font-weight": "bold",
+        "width": "160px",
+        "float": "left"
+    },
+    "contentNode": {
+        "overflow": "auto",
+        "background-color": "#eeeeee"
+    },
+    "contentModuleArea": {
+        "width": "90%",
+        "margin": "20px auto",
+        "overflow": "hidden"
+    },
+
+    "moduleNode": {
+        "width": "160px",
+        "height": "300px",
+        "float": "left",
+        "background-color": "#f5f5f5",
+        "margin": "20px 5px"
+    },
+    "moduleIconNode": {
+        "width": "160px",
+        "height": "160px",
+        "background-image": "url(../x_component_AppMarket/$Main/default/icon/logo1.png)",
+        "background-repeat": "no-repeat",
+        "background-position": "center"
+    },
+    "moduleIconAreaNode": {
+        "width": "160px",
+        "height": "160px",
+        "background-color": "#666666",
+        "overflow": "hidden"
+    },
+
+
+    "moduleContentNode": {
+        "height": "130px",
+        "padding": "5px 0px",
+        "cursor": "pointer"
+    },
+    "moduleNameNode": {
+        "height": "40px",
+        "line-height": "20px",
+        "padding": "0px 10px",
+        "font-size": "16px",
+        "font-weight": "bold",
+        "color": "#333333",
+    },
+    "moduleCategoryNode": {
+        "padding": "5px 10px 0px 10px",
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#333333"
+    },
+    "moduleDescriptionNode": {
+        "height": "36px",
+        "line-height": "18px",
+        "font-size": "12px",
+        "padding": "0px 10px",
+        "color": "#999999"
+    },
+    "moduleActionNode": {
+        "height": "28px",
+        "border": "1px solid #999999",
+        "line-height": "28px",
+        "font-size": "14px",
+        "color": "#ffffff",
+        "background-color": "#4c6b87",
+        "cursor": "pointer",
+        "text-align": "center"
+    },
+    "moduleLoadingAreaNode": {
+        "margin": "auto",
+        "width": "100px"
+    },
+    "moduleLoadingImgNode": {
+        "margin-top": "60px",
+        "margin-bottom": "60px",
+        "width": "100px",
+        "height": "100px",
+        "border": "0px"
+    },
+
+    "moduleSetupContentNode": {
+        "width": "90%",
+        "margin": "auto",
+        "overflow": "hidden"
+    },
+
+    "moduleSetupTitleNode": {
+        "margin-top": "10px",
+        "height": "130px",
+        "background-color": "#ffffff"
+    },
+    "moduleSetupIconAreaNode": {
+        "width": "130px",
+        "height": "130px",
+        "background-color": "#666666",
+        "overflow": "hidden",
+        "float": "left"
+    },
+    "moduleSetupIconNode": {
+        "width": "130px",
+        "height": "130px",
+        "background": "url(../x_component_AppMarket/$Main/default/icon/logo1.png) center center no-repeat"
+    },
+
+    "moduleSetupTitleContentNode": {
+        "margin-left": "140px",
+        "padding-top": "10px",
+        "padding-bottom": "10px",
+        "height": "110px"
+    },
+    "moduleSetupNameNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "font-size": "16px",
+        "font-weight": "bold",
+        "color": "#333333"
+    },
+    "moduleSetupCategoryNode": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#777777"
+    },
+    "moduleSetupDescriptionNode": {
+        "height": "40px",
+        "line-height": "20px",
+        "font-size": "12px",
+        "color": "#999999"
+    },
+    "moduleSetupCompareContentNode": {
+        //"border": "1px solid #cccccc",
+        "margin": "10px auto",
+        "overflow": "hidden"
+    },
+    "moduleSetupContentInforNode": {
+        "height": "36px",
+        "line-height": "36px",
+        "color": "#666666",
+        "font-size": "14px",
+        "padding-left": "6px"
+    },
+    "moduleSetupListAreaTitleNode": {
+        "height": "30px",
+        "line-height": "30px",
+        "background-color": "#dddddd",
+        "color": "#333333",
+        "padding-left": "10px",
+        "font-weight": "bold",
+        "font-size": "14px"
+    },
+    "moduleSetupListAreaContentNode": {
+        "min-height": "30px",
+        "background-color": "#ffffff"
+    },
+    "moduleSetupListContentNode": {
+        "height": "36px",
+        "line-height": "36px",
+        "margin": "0px 10px",
+        "font-size": "14px",
+        "color": "#666666",
+        "border-bottom": "1px solid #eeeeee"
+    },
+    moduleSetupListIconNode: {
+        "height": "36px",
+        "float": "left",
+        "width": "36px"
+    },
+    moduleSetupListNameNode: {
+        "height": "36px",
+        "margin-right": "160px",
+        "margin-left": "36px"
+    },
+    moduleSetupListActionNode: {
+        "height": "36px",
+        "float": "right",
+        "width": "60px"
+    },
+    moduleSetupListInforNode: {
+        "height": "36px",
+        "float": "right",
+        "width": "100px"
+    },
+    "moduleSetupListActionSelectNode": {
+        "border": "1px solid #333333"
+    }
+
+}
