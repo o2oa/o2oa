@@ -447,6 +447,7 @@ public class Qiyeweixin extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_QIYEWEIXIN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		this.executeSyncFile(Config.PATH_CONFIG_QIYEWEIXIN);
 	}
 
 

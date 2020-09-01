@@ -223,6 +223,7 @@ public class Dingding extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_DINGDING);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		this.executeSyncFile(Config.PATH_CONFIG_DINGDING);
 	}
 
 	public void setEnable(Boolean enable) {
