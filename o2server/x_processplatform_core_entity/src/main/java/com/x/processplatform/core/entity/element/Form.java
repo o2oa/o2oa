@@ -1,6 +1,7 @@
 package com.x.processplatform.core.entity.element;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -11,11 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -31,6 +30,13 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -200,6 +206,29 @@ public class Form extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
 	private Boolean hasMobile;
 
+	public static final String relatedFormList_FIELDNAME = "relatedFormList";
+	@FieldDescribe("related form.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + relatedFormList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + relatedFormList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + relatedFormList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + relatedFormList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> relatedFormList;
+
+	public static final String relatedScriptList_FIELDNAME = "relatedScriptList";
+	@FieldDescribe("related form.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ relatedScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ relatedScriptList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + relatedScriptList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + relatedScriptList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> relatedScriptList;
+
 	public void setCategory(String category) {
 		this.category = category;
 	}
@@ -282,6 +311,22 @@ public class Form extends SliceJpaObject {
 
 	public void setHasMobile(Boolean hasMobile) {
 		this.hasMobile = hasMobile;
+	}
+
+	public List<String> getRelatedFormList() {
+		return relatedFormList;
+	}
+
+	public void setRelatedFormList(List<String> relatedFormList) {
+		this.relatedFormList = relatedFormList;
+	}
+
+	public List<String> getRelatedScriptList() {
+		return relatedScriptList;
+	}
+
+	public void setRelatedScriptList(List<String> relatedScriptList) {
+		this.relatedScriptList = relatedScriptList;
 	}
 
 }
