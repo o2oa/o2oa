@@ -1,6 +1,7 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -176,6 +177,7 @@ public class Token extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_TOKEN);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+        this.executeSyncFile(Config.PATH_CONFIG_TOKEN);
 	}
 
 	public boolean isInitialManager(String name) {

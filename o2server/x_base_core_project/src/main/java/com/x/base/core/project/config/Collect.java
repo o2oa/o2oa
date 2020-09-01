@@ -245,6 +245,7 @@ public class Collect extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_COLLECT);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		this.executeSyncFile(Config.PATH_CONFIG_COLLECT);
 	}
 
 	public void setSecret(String secret) {
