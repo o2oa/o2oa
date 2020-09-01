@@ -50,6 +50,8 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             }.bind(this));
         }
 
+        debugger;
+
         //var data = JSON.parse(this.json.data);
         var viewJson = {
             "application": (this.json.queryView) ? this.json.queryView.appName : this.json.application,
@@ -60,7 +62,8 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class({
             "itemStyles": this.json.itemStyles,
             "isExpand": this.json.isExpand || "no",
             "showActionbar" : this.json.actionbar === "show",
-            "filter": filter
+            "filter": filter,
+            "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null
         };
 
         //MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
