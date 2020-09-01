@@ -495,7 +495,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
 
-        if ((!att.data.control.allowControl) && att.data.person !== user) { //|| !att.data.control.allowEdit
+        if (!att.data.control.allowControl && att.data.person !== user) {
             flag = false;
         }
         return flag;
