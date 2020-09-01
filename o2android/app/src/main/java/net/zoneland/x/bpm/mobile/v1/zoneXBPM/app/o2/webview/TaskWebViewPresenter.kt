@@ -13,6 +13,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.AttachmentInfo
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.ReadData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.TaskData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkLog
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.o2.WorkPostResult
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.extension.o2Subscribe
 import okhttp3.MediaType
@@ -93,7 +94,7 @@ class TaskWebViewPresenter : BasePresenterImpl<TaskWebViewContract.View>(), Task
                         service.postTask(taskBody, data.id)
                     }
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(ResponseHandler<List<WorkLog>> { list -> mView?.submitSuccess() },
+                    .subscribe(ResponseHandler<WorkPostResult> { _ -> mView?.submitSuccess() },
                             ExceptionHandler(mView?.getContext()) { e ->
                                 XLog.error("", e)
                                 mView?.finishLoading() })

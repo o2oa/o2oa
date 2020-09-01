@@ -229,7 +229,7 @@ interface ProcessAssembleSurfaceService {
      */
     @Headers("Content-Type:application/json;charset=UTF-8")
     @POST("jaxrs/task/{taskId}/processing")
-    fun postTask(@Body taskBody: RequestBody, @Path("taskId") taskId: String): Observable<ApiResponse<List<WorkLog>>>
+    fun postTask(@Body taskBody: RequestBody, @Path("taskId") taskId: String): Observable<ApiResponse<WorkPostResult>>
 
 
     /**

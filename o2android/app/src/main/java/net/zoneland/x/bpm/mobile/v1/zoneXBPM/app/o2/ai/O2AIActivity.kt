@@ -137,6 +137,7 @@ class O2AIActivity : AppCompatActivity(), O2AIContract.View {
         tv_o2_ai_voice_transaction.text = message
         circle_ripple.stop()
         stopRecord()
+        tv_o2_ai_tips.text = ""//清除提示
         synthesizer?.speak(message, id)
     }
 
@@ -145,7 +146,9 @@ class O2AIActivity : AppCompatActivity(), O2AIContract.View {
         finish()
     }
 
-
+    override fun showTips(message: String) {
+        tv_o2_ai_tips.text = message
+    }
 
     private fun startRecord() {
         XLog.info("start Record.......................")
