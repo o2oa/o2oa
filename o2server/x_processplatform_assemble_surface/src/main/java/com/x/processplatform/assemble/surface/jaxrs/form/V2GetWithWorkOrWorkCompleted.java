@@ -2,10 +2,15 @@ package com.x.processplatform.assemble.surface.jaxrs.form;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -20,8 +25,6 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
-
-import org.apache.commons.lang3.StringUtils;
 
 import net.sf.ehcache.Element;
 
@@ -38,10 +41,11 @@ class V2GetWithWorkOrWorkCompleted extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), workOrWorkCompleted);
-			Element element = CACHE.get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				wo = (Wo) element.getObjectValue();
+			CacheCategory cacheCategory = new CacheCategory(Form.class, Script.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), workOrWorkCompleted);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				Work work = emc.find(workOrWorkCompleted, Work.class);
 				if (null != work) {
@@ -49,7 +53,7 @@ class V2GetWithWorkOrWorkCompleted extends BaseAction {
 				} else {
 					wo = this.workCompleted(business, emc.flag(workOrWorkCompleted, WorkCompleted.class));
 				}
-				CACHE.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
 			}
 			return result;
