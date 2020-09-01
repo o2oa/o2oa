@@ -57,21 +57,44 @@ class O2TodoTask:NSObject,DataModel {
 }
 
 class  O2TodoTaskNeural:NSObject,DataModel {
-    var routeName: String?
+    @objc var routeName: String?
     //var workLogList
     required override init() {
         
     }
 }
 
+class O2WorkPostResult:NSObject,DataModel {
+    required override init() {
+           
+       }
+    
+    @objc var id: String?
+    @objc var application: String?
+    @objc var process: String?
+    @objc var job: String?
+    @objc var work: String?
+    var completed: Bool?
+    @objc var fromActivity: String?
+    @objc var fromActivityType: String?
+    @objc var fromActivityName: String?
+    @objc var fromActivityAlias: String?
+    @objc var fromActivityToken: String?
+    @objc var recordTime: String?
+    @objc var person: String?
+    @objc var identity: String?
+    @objc var unit: String?
+    @objc var type: String?
+}
+
 class O2AppProcess: NSObject,DataModel {
-    var id:String?
-    var name:String?
-    var alias:String?
-    var desc:String?
-    var creatorPerson:String?
-    var application:String?
-    var icon:String?
+    @objc var id:String?
+    @objc var name:String?
+    @objc var alias:String?
+    @objc var desc:String?
+    @objc var creatorPerson:String?
+    @objc var application:String?
+    @objc var icon:String?
     
     func mapping(mapper: HelpingMapper) {
         mapper <<<

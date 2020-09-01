@@ -229,7 +229,7 @@ extension OOAIViewModel {
         let param:[String:String] = ["routeName":routeName, "opinion":""]
         let task = self.taskList[self.currentDealTaskIndex]
         self.taskAPI.request(.taskSaveAndSubmit(task.id!, (param as Dictionary<String, AnyObject>)), completion: { result in
-            let response = OOResult<BaseModelClass<[O2TodoTaskNeural]>>(result)
+            let response = OOResult<BaseModelClass<O2WorkPostResult>>(result)
             if response.isResultSuccess() {
                 self.currentDealTaskIndex = self.currentDealTaskIndex + 1
                 self.speakMessage = "工作处理完成！"

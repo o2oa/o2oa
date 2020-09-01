@@ -164,12 +164,6 @@ class OOCalendarViewController: UITableViewController {
             return
         }
         self.showLoading(title: "正在保存...")
-        /*
-      var calendar = self.calendarInfo
-      if calendarInfo != nil && calendarInfo?.id != nil { // 修改
-          //calendar.id = calendarInfo?.id!
-          calendar = calendarInfo ?? OOCalendarInfo.init()
-      }*/
 
         self.calendarInfo!.name = name
         self.calendarInfo!.isPublic = isopen
@@ -191,11 +185,11 @@ class OOCalendarViewController: UITableViewController {
         }
 
         viewModel.saveCalendar(calendar: self.calendarInfo!)
-            .then { (result) in
+            .always {
+                self.hideLoading()
+            }.then { (result) in
                 DDLogInfo("保存日历成功！！！\(result)")
                 self.closeWindow()
-            }.always {
-                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "保存日历错误！")
