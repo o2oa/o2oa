@@ -10,6 +10,7 @@ MWF.xApplication.Setting.LP = {
     "tab_user": "系统用户配置",
     "tab_login": "系统登录配置",
     "tab_sso": "系统SSO配置",
+    "tab_config": "平台配置",
 
     "tab_mobile_connect": "连接配置",
     "tab_mobile_module": "模块配置",
