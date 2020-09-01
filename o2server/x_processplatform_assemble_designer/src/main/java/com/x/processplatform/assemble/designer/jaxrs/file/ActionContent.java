@@ -1,34 +1,33 @@
 package com.x.processplatform.assemble.designer.jaxrs.file;
 
+import java.util.Optional;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoFile;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 
-import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-class ActionContent extends StandardJaxrsAction {
-
-	private Ehcache cache = ApplicationCache.instance().getCache(File.class);
+class ActionContent extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag);
-			Element element = cache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				File file = emc.flag(flag, File.class);
 				if (null == file) {
@@ -48,7 +47,7 @@ class ActionContent extends StandardJaxrsAction {
 				 * 对10M以下的文件进行缓存
 				 */
 				if (bs.length < (1024 * 1024 * 10)) {
-					cache.put(new Element(cacheKey, wo));
+					CacheManager.put(cacheCategory, cacheKey, wo);
 				}
 			}
 			result.setData(wo);

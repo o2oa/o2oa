@@ -86,6 +86,42 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "会议提前开始,修改开始时间", action = ActionEditStartTime.class)
+	@PUT
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}/modify/starttime")
+	public void editStartTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditStartTime.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditStartTime().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "会议提前结束,修改结束时间", action = ActionEditCompleteTime.class)
+	@PUT
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("{id}/modify/completedtime")
+	public void editCompletedTime(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<ActionEditCompleteTime.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionEditCompleteTime().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "删除会议.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -284,6 +320,42 @@ public class MeetingAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "普通用户，分页列示Meeing对象", action = ActionPaging.class)
+	@POST
+	@Path("list/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMeetingPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("page") Integer page , @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<ActionPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
+	@JaxrsMethodDescribe(value = "管理员，分页列示Meeing对象", action = ActionPagingManage.class)
+	@POST
+	@Path("list/{page}/size/{size}/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listMeetingPagingManage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@PathParam("page") Integer page , @PathParam("size") Integer size , JsonElement jsonElement) {
+		ActionResult<List<ActionPagingManage.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPagingManage().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+	
 	@JaxrsMethodDescribe(value = "列示我参与从当前日期开始指定月份范围的会议，或者被邀请，或者是申请人,或者是审核人，管理员可以看到所有.", action = ActionListComingMonth.class)
 	@GET
 	@Path("list/coming/month/{count}")

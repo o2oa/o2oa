@@ -1,6 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.unitattribute;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,15 +14,14 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitAttribute;
 import com.x.organization.core.entity.UnitAttribute_;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListWithUnit extends BaseAction {
 
@@ -34,15 +34,15 @@ class ActionListWithUnit extends BaseAction {
 			if (null == unit) {
 				throw new ExceptionUnitNotExist(unitFlag);
 			}
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), unitFlag);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				result.setData((List<Wo>) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), unitFlag);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				result.setData((List<Wo>) optional.get());
 			} else {
 				List<UnitAttribute> os = this.list(business, unit);
 				List<Wo> wos = Wo.copier.copy(os);
 				wos = business.unitAttribute().sort(wos);
-				business.cache().put(new Element(cacheKey, wos));
+				CacheManager.put(business.cache(), cacheKey, wos);
 				result.setData(wos);
 			}
 			return result;

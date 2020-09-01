@@ -388,6 +388,24 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "预计下一活动处理状态及处理人.", action = ActionWill.class)
+	@GET
+	@Path("{id}/will")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void will(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+		ActionResult<ActionWill.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionWill().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "取得复合的待办.", action = ActionReference.class)
 	@GET
 	@Path("{id}/reference")
@@ -815,14 +833,13 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-
 	@JaxrsMethodDescribe(value = "待办提醒，message类型:task_press.", action = ActionManagePress.class)
 	@GET
 	@Path("{id}/press/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void managePress(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManagePress.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

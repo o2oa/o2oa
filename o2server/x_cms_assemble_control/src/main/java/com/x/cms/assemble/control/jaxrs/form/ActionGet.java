@@ -2,6 +2,7 @@ package com.x.cms.assemble.control.jaxrs.form;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,8 +12,11 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.http.WrapOutString;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.Form;
 
@@ -24,11 +28,11 @@ public class ActionGet extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( id );
-		Element element = cache.get(cacheKey);
-		
-		if ((null != element) && ( null != element.getObjectValue()) ) {
-			wo = (Wo) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wo = (Wo)optional.get();
 			result.setData( wo );
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -39,7 +43,7 @@ public class ActionGet extends BaseAction {
 				}
 				wo = new Wo();
 				Wo.copier.copy( form, wo );
-				cache.put(new Element( cacheKey, wo ));
+				CacheManager.put(cacheCategory, cacheKey, wo );
 				result.setData( wo );
 			} catch (Throwable th) {
 				th.printStackTrace();

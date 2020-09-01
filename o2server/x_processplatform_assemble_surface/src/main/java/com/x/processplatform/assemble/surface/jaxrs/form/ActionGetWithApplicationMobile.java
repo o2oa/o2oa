@@ -6,6 +6,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.surface.Business;
@@ -31,12 +32,17 @@ class ActionGetWithApplicationMobile extends BaseAction {
 		}
 	}
 
-	public static class Wo extends Form {
+	public static class Wo extends GsonPropertyObject {
 
-		private static final long serialVersionUID = 1541438199059150837L;
+		private String data;
 
-		static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
+		public String getData() {
+			return data;
+		}
+
+		public void setData(String data) {
+			this.data = data;
+		}
 
 	}
 

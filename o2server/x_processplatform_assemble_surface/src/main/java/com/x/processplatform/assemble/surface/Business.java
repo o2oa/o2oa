@@ -2,15 +2,19 @@ package com.x.processplatform.assemble.surface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import com.x.base.core.project.config.StorageMapping;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -46,8 +50,6 @@ import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
 import com.x.processplatform.assemble.surface.factory.element.MessageFactory;
 import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
 import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
-import com.x.processplatform.assemble.surface.factory.element.QueryStatFactory;
-import com.x.processplatform.assemble.surface.factory.element.QueryViewFactory;
 import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
 import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
 import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
@@ -385,23 +387,23 @@ public class Business {
 		return script;
 	}
 
-	private QueryViewFactory queryView;
-
-	public QueryViewFactory queryView() throws Exception {
-		if (null == this.queryView) {
-			this.queryView = new QueryViewFactory(this);
-		}
-		return queryView;
-	}
-
-	private QueryStatFactory queryStat;
-
-	public QueryStatFactory queryStat() throws Exception {
-		if (null == this.queryStat) {
-			this.queryStat = new QueryStatFactory(this);
-		}
-		return queryStat;
-	}
+//	private QueryViewFactory queryView;
+//
+//	public QueryViewFactory queryView() throws Exception {
+//		if (null == this.queryView) {
+//			this.queryView = new QueryViewFactory(this);
+//		}
+//		return queryView;
+//	}
+//
+//	private QueryStatFactory queryStat;
+//
+//	public QueryStatFactory queryStat() throws Exception {
+//		if (null == this.queryStat) {
+//			this.queryStat = new QueryStatFactory(this);
+//		}
+//		return queryStat;
+//	}
 
 	private FileFactory file;
 

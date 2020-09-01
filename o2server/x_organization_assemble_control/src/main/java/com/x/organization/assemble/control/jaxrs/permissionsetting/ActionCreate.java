@@ -1,31 +1,20 @@
 package com.x.organization.assemble.control.jaxrs.permissionsetting;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.Gson;
+import com.x.base.core.project.cache.CacheManager;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.ThisApplication;
-import com.x.organization.assemble.control.message.OrgBodyMessage;
-import com.x.organization.assemble.control.message.OrgMessage;
 import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.PermissionSetting;
  
@@ -43,7 +32,7 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(PermissionSetting.class);
 			emc.persist(permission, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(PermissionSetting.class);  
+			CacheManager.notify(PermissionSetting.class);
 			
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();

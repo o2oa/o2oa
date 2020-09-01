@@ -3,9 +3,9 @@ package com.x.program.center.jaxrs.module;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
-import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -16,6 +16,8 @@ import com.x.base.core.project.x_portal_assemble_designer;
 import com.x.base.core.project.x_processplatform_assemble_designer;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
@@ -31,8 +33,6 @@ import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
 import com.x.query.core.entity.wrap.WrapQuery;
-
-import net.sf.ehcache.Element;
 
 class ActionCompare extends BaseAction {
 
@@ -64,7 +64,9 @@ class ActionCompare extends BaseAction {
 			CacheObject cacheObject = new CacheObject();
 			cacheObject.setModule(module);
 			String flag = StringTools.uniqueToken();
-			cache.put(new Element(flag, cacheObject));
+			CacheCategory cacheCategory = new CacheCategory(CacheObject.class);
+			CacheKey cacheKey = new CacheKey(flag);
+			CacheManager.put(cacheCategory, cacheKey, cacheObject);
 			wo.setFlag(flag);
 			for (WrapProcessPlatform o : module.getProcessPlatformList()) {
 				ActionResponse r = ThisApplication.context().applications().putQuery(effectivePerson.getDebugger(),

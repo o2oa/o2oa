@@ -9,8 +9,13 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class WrapUpdatePrevTaskIdentity extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 6036782582457148615L;
+
 	@FieldDescribe("上一人工环节处理人列表")
 	private List<String> prevTaskIdentityList = new ArrayList<>();
+
+	@FieldDescribe("上一人工环节处理人")
+	private String prevTaskIdentity;
 
 	@FieldDescribe("要更新的待办对象")
 	private List<String> taskList;
@@ -60,6 +65,14 @@ public class WrapUpdatePrevTaskIdentity extends GsonPropertyObject {
 
 	public void setPrevTask(PrevTask prevTask) {
 		this.prevTask = prevTask;
+	}
+
+	public String getPrevTaskIdentity() {
+		return prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public static class PrevTask extends GsonPropertyObject {

@@ -194,6 +194,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     createViewNode: function(data){
         this.viewAreaNode.empty();
 
+        this.selectedItems = [];
+
         var viewStyles = this.viewJson.viewStyles;
 
         this.contentAreaNode = new Element("div", {"styles":
@@ -275,7 +277,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.lookup(data);
         }
     },
-    isSelectTdHidden(){
+    isSelectTdHidden :function(){
         if( !this.viewJson.firstTdHidden ){
             return false;
         }
@@ -386,7 +388,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
         var i = this.count/this.json.pageSize;
         this.pages = (i.toInt()<i) ? i.toInt()+1 : i;
-        this.currentPage = 1;
+        this.currentPage = this.options.defaultPage || 1;
+        this.options.defaultPage = null;
     },
     lookup: function(data){
         this.getLookupAction(function(){

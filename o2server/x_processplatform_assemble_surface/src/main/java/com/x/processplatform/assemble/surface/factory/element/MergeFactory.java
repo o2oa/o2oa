@@ -17,12 +17,12 @@ public class MergeFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Merge pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Merge.class);
 	}
 
 	public List<Merge> listWithProcess(Process process) throws Exception {
-		List<Merge> list = this.listWithProcess(Merge.class, process);
-		return list;
+		return this.listWithProcess(Merge.class, process);
 	}
 }

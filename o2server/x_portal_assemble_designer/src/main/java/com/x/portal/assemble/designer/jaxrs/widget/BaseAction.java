@@ -2,16 +2,14 @@ package com.x.portal.assemble.designer.jaxrs.widget;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Widget;
-
-import net.sf.ehcache.Ehcache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	static Ehcache cache = ApplicationCache.instance().getCache(Widget.class);
+	static CacheCategory cache = new CacheCategory(Widget.class);
 
 	void checkName(Business business, Widget widget) throws Exception {
 		if (StringUtils.isEmpty(widget.getName())) {

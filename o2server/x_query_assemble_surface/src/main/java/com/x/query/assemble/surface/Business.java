@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
@@ -19,16 +18,17 @@ import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class Business {
 
-	private static Ehcache cache = ApplicationCache.instance().getCache(Query.class, View.class, Stat.class,
+	private static CacheCategory cache = new CacheCategory(Query.class, View.class, Stat.class,
 			Reveal.class, Table.class, Statement.class);
 
-	public Ehcache cache() {
+	public CacheCategory cache() {
 		return cache;
 	}
 
@@ -98,15 +98,15 @@ public class Business {
 
 	@SuppressWarnings("unchecked")
 	public <T extends JpaObject> T pick(String flag, Class<T> cls) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(cls, flag);
-		Element element = cache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			return (T) element.getObjectValue();
+		CacheKey cacheKey = new CacheKey(cls, flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			return (T) optional.get();
 		} else {
 			T t = this.entityManagerContainer().flag(flag, cls);
 			if (null != t) {
 				entityManagerContainer().get(cls).detach(t);
-				cache.put(new Element(cacheKey, t));
+				CacheManager.put(cache, cacheKey, t);
 				return t;
 			}
 			return null;

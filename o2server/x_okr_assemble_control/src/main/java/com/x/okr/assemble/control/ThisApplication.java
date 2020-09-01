@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.x.base.core.project.Context;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.okr.assemble.control.jaxrs.queue.QueueWorkDynamicRecord;
 import com.x.okr.assemble.control.jaxrs.workimport.CacheImportFileStatus;
 import com.x.okr.assemble.control.schedule.ErrorIdentityCheckTask;
@@ -17,13 +20,17 @@ import com.x.okr.assemble.control.service.OkrConfigSystemService;
 
 public class ThisApplication {
 
+	private ThisApplication() {
+		// nothing
+	}
+
 	protected static Context context;
 
 	public static Map<String, CacheImportFileStatus> importFileStatusMap = new HashMap<String, CacheImportFileStatus>();
 
 	public static final String OKRMANAGER = "OKRManager";
 
-	public static QueueWorkDynamicRecord queueWorkDynamicRecord;
+	public static final QueueWorkDynamicRecord queueWorkDynamicRecord = new QueueWorkDynamicRecord();
 
 	public static Context context() {
 		return context;
@@ -31,12 +38,10 @@ public class ThisApplication {
 
 	public static void init() {
 		try {
-
-			queueWorkDynamicRecord = new QueueWorkDynamicRecord();
+			CacheManager.init(context.clazz().getSimpleName());
+			LoggerFactory.setLevel(Config.logLevel().x_okr_assemble_control());
 			context().startQueue(queueWorkDynamicRecord);
-
 			new OkrConfigSystemService().initAllSystemConfig();
-
 			// 每天凌晨2点执行一次
 			context.schedule(St_WorkReportContent.class, "0 0 2 * * ?");
 			// 每天凌晨2点30执行一次
@@ -59,6 +64,7 @@ public class ThisApplication {
 
 	public static void destroy() {
 		try {
+			CacheManager.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

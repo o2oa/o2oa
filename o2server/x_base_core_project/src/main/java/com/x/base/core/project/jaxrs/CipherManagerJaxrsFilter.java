@@ -39,6 +39,8 @@ public abstract class CipherManagerJaxrsFilter extends TokenFilter {
 				} else {
 					chain.doFilter(request, response);
 				}
+			} else {
+				options(request,response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

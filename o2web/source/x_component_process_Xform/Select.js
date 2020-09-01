@@ -169,17 +169,28 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
 		//this.node.set("value", value);
 	},
 	getTextData: function(){
-		var ops = this.node.getElements("option");
 		var value = [];
 		var text = [];
-		ops.each(function(op){
-			if (op.selected){
-				var v = op.get("value");
-				var t = op.get("text");
-				value.push(v || "");
-				text.push(t || v || "");
-			}
-		});
+		if (this.readonly|| this.json.isReadonly){
+			var ops = this.getOptionsObj();
+			var data = this._getBusinessData();
+			var d = typeOf(data) === "array" ? data : [data];
+			d.each( function (v) {
+				var idx = ops.valueList.indexOf( v );
+				value.push( v || "" );
+				text.push( idx > -1 ? ops.textList[idx] : (v || "") );
+			});
+		}else{
+			var ops = this.node.getElements("option");
+			ops.each(function(op){
+				if (op.selected){
+					var v = op.get("value");
+					var t = op.get("text");
+					value.push(v || "");
+					text.push(t || v || "");
+				}
+			});
+		}
 		if (!value.length) value = [""];
 		if (!text.length) text = [""];
 		return {"value": value, "text": text};
@@ -199,25 +210,49 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class({
     resetData: function(){
         this.setData(this.getValue());
     },
+	getOptionsObj : function(){
+		var textList = [];
+		var valueList = [];
+		var optionItems = this.getOptions();
+		if (!optionItems) optionItems = [];
+		if (o2.typeOf(optionItems)==="array"){
+			optionItems.each(function(item){
+				var tmps = item.split("|");
+				textList.push( tmps[0] );
+				valueList.push( tmps[1] || tmps[0] );
+			}.bind(this));
+		}
+		return { textList : textList, valueList : valueList };
+	},
 	setData: function(data){
         this._setBusinessData(data);
-		var ops = this.node.getElements("option");
-		
-		ops.each(function(op){
-			if (typeOf(data)=="array"){
-				if (data.indexOf(op.get("value"))!=-1){
-					op.set("selected", true);
+		if (this.readonly|| this.json.isReadonly){
+			var d = typeOf(data) === "array" ? data : [data];
+			var ops = this.getOptionsObj();
+			var result = [];
+			d.each( function (v) {
+				var idx = ops.valueList.indexOf( v );
+				result.push( idx > -1 ? ops.textList[idx] : v);
+			})
+			this.node.set("text", result.join(","))
+		}else{
+			var ops = this.node.getElements("option");
+			ops.each(function(op){
+				if (typeOf(data)=="array"){
+					if (data.indexOf(op.get("value"))!=-1){
+						op.set("selected", true);
+					}else{
+						op.set("selected", false);
+					}
 				}else{
-					op.set("selected", false);
+					if (data == op.get("value")){
+						op.set("selected", true);
+					}else{
+						op.set("selected", false);
+					}
 				}
-			}else{
-				if (data == op.get("value")){
-					op.set("selected", true);
-				}else{
-					op.set("selected", false);
-				}
-			}
-		});
+			});
+		}
 		this.fireEvent("setData", [data]);
 	}
 	

@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -52,9 +53,11 @@ class ActionEdit extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			Application application = business.application().pick(work.getApplication());
-			Process process = business.process().pick(work.getProcess());
-			if (!business.controllerable(effectivePerson, application, process, attachment)) {
+
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			boolean canControl = this.control(attachment, effectivePerson, identities, units);
+			if(!canControl){
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 		}

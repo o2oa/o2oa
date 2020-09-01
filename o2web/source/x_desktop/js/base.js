@@ -270,7 +270,7 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         if (status) statusStr = JSON.encode(status);
 
         var port = uri.get("port");
-        window.location = o2.filterUrl(uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "") + ((layout.debugger) ? "&debugger" : ""));
+        window.location = o2.filterUrl(uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((optionsStr) ? JSON.encode(optionsStr) : "") + ((layout.debugger) ? "&debugger" : ""));
     };
 
     layout.load = function (appNames, options, statusObj) {

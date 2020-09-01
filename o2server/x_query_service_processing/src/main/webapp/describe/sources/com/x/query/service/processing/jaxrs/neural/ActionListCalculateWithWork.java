@@ -21,6 +21,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -121,6 +122,12 @@ class ActionListCalculateWithWork extends BaseAction {
 				Attachment.job_FIELDNAME, work.getJob());
 		StorageMapping mapping = null;
 		for (Attachment o : attachments) {
+			if (Config.query().getCrawlWorkCompleted().getExcludeAttachment().contains(o.getName())
+					|| Config.query().getCrawlWorkCompleted().getExcludeSite().contains(o.getSite())
+					|| StringUtils.equalsIgnoreCase(o.getName(), Config.processPlatform().getDocToWordDefaultFileName())
+					|| StringUtils.equalsIgnoreCase(o.getSite(), Config.processPlatform().getDocToWordDefaultSite())) {
+				continue;
+			}
 			if (o.getLength() < MAX_ATTACHMENT_BYTE_LENGTH) {
 				mapping = ThisApplication.context().storageMappings().get(Attachment.class, o.getStorage());
 				if (null != mapping) {

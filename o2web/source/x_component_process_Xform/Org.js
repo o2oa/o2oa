@@ -566,6 +566,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
         this.node = node;
     },
     _loadNodeInputEdit: function(){
+        debugger;
+        this.node.setStyle("overflow","visible");
         var input=null;
         MWF.require("MWF.widget.Combox", function(){
             this.combox = input = new MWF.widget.Combox({
@@ -773,6 +775,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }else{
                 var node = this.node.getFirst();
                 if (node){
+                    node.empty();
                     comboxValues.each(function(v, i){
                         this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
                     }.bind(this));
@@ -898,6 +901,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class({
             }else{
                 var node = this.node.getFirst();
                 if (node){
+                    node.empty();
                     comboxValues.each(function(v, i){
                         this.creteShowNode(v, (i===comboxValues.length-1)).inject(node);
                     }.bind(this));
@@ -1557,13 +1561,13 @@ MWF.APPOrg.UnitOptions = new Class({
                 if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
                 v.each(function(d){
                     if (d){
-                        if (typeOf(d)==="string"){
-                            var data;
-                            this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                            rangeValues.push(data);
-                        }else{
+                        // if (typeOf(d)==="string"){
+                        //     var data;
+                        //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                        //     rangeValues.push(data);
+                        // }else{
                             rangeValues.push(d);
-                        }
+                        // }
                     }
                 }.bind(this));
             }.bind(this));
@@ -1573,13 +1577,13 @@ MWF.APPOrg.UnitOptions = new Class({
             if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
             v.each(function(d){
                 if (d){
-                    if (typeOf(d)==="string"){
-                        var data;
-                        this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                        rangeValues.push(data);
-                    }else{
+                    // if (typeOf(d)==="string"){
+                    //     var data;
+                    //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                    //     rangeValues.push(data);
+                    // }else{
                         rangeValues.push(d);
-                    }
+                    // }
                 }
             }.bind(this));
         }
@@ -1748,13 +1752,13 @@ MWF.APPOrg.IdentityOptions = new Class({
                 if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
                 v.each(function(d){
                     if (d){
-                        if (typeOf(d)==="string"){
-                            var data;
-                            this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                            rangeValues.push(data);
-                        }else{
+                        // if (typeOf(d)==="string"){
+                        //     var data;
+                        //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                        //     rangeValues.push(data);
+                        // }else{
                             rangeValues.push(d);
-                        }
+                        // }
                     }
                 }.bind(this));
             }.bind(this));
@@ -1764,13 +1768,13 @@ MWF.APPOrg.IdentityOptions = new Class({
             if (typeOf(v)!=="array") v = (v) ? [v.toString()] : [];
             v.each(function(d){
                 if (d){
-                    if (typeOf(d)==="string"){
-                        var data;
-                        this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
-                        rangeValues.push(data);
-                    }else{
+                    // if (typeOf(d)==="string"){
+                    //     var data;
+                    //     this.orgAction.getUnit(function(json){ data = json.data }.bind(this), null, d, false);
+                    //     rangeValues.push(data);
+                    // }else{
                         rangeValues.push(d);
-                    }
+                    // }
                 }
             }.bind(this));
         }

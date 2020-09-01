@@ -9,7 +9,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionDuplicateFlag;
 import com.x.base.core.project.exception.ExceptionDuplicateRestrictFlag;
@@ -57,7 +57,7 @@ class ActionEdit extends BaseAction {
 			}
 			emc.check(file, CheckPersistType.all);
 			emc.commit();
-			ApplicationCache.notify(File.class);
+			CacheManager.notify(File.class);
 			Wo wo = new Wo();
 			wo.setId(file.getId());
 			result.setData(wo);

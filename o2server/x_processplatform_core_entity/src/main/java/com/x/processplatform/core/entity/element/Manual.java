@@ -589,6 +589,13 @@ public class Manual extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String displayLogScriptText;
 
+	@FieldDescribe("重置处理人脚本文本.")
+	@Lob
+	@Basic(fetch = FetchType.EAGER)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + resetRangeScriptText_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String resetRangeScriptText;
+
 	public static final String edition_FIELDNAME = "edition";
 	@FieldDescribe("版本编码.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + edition_FIELDNAME)
@@ -1206,4 +1213,11 @@ public class Manual extends Activity {
 		this.manualUncompletedTaskToRead = manualUncompletedTaskToRead;
 	}
 
+	public String getResetRangeScriptText() {
+		return resetRangeScriptText;
+	}
+
+	public void setResetRangeScriptText(String resetRangeScriptText) {
+		this.resetRangeScriptText = resetRangeScriptText;
+	}
 }

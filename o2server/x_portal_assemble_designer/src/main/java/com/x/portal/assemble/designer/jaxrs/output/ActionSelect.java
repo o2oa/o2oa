@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -20,8 +19,8 @@ import com.x.portal.core.entity.wrap.WrapPage;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.portal.core.entity.wrap.WrapScript;
 import com.x.portal.core.entity.wrap.WrapWidget;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionSelect extends BaseAction {
 
@@ -44,7 +43,8 @@ class ActionSelect extends BaseAction {
 			cacheObject.setName(portal.getName());
 			cacheObject.setPortal(wrapPortal);
 			String flag = StringTools.uniqueToken();
-			this.cache.put(new Element(flag, cacheObject));
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+			CacheManager.put(this.cache, cacheKey, cacheObject);
 			Wo wo = XGsonBuilder.convert(wrapPortal, Wo.class);
 			wo.setFlag(flag);
 			result.setData(wo);

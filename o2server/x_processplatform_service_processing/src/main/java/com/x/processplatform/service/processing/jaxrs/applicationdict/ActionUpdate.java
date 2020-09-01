@@ -8,7 +8,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -38,8 +38,8 @@ class ActionUpdate extends BaseAction {
 					emc.check(dict, CheckPersistType.all);
 					update(business, dict, wi.getData());
 					emc.commit();
-					/* 这个Action是更新ApplicationDict需要刷新缓存 */
-					ApplicationCache.notify(ApplicationDict.class);
+					// 这个Action是更新ApplicationDict需要刷新缓存
+					CacheManager.notify(ApplicationDict.class);
 					Wo wo = new Wo();
 					wo.setId(dict.getId());
 					result.setData(wo);

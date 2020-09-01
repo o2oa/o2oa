@@ -346,11 +346,25 @@ MWF.xApplication.Forum.TopNode = new Class({
         });
     },
     logout: function(){
-        MWF.Actions.get("x_organization_assemble_authentication").logout( function(){
+
+        MWF.Actions.get("x_organization_assemble_authentication").logout(function () {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+            Cookie.dispose("x-token");
+            if (layout.session && layout.session.user) layout.session.user.token = "";
+
             layout.desktop.session.user.distinguishedName = "anonymous";
             this.app.clearContent();
             this.app.loadApplicationContent();
             this.openLoginForm();
-        }.bind(this))
+
+            // if( callback ){
+            //     callback()
+            // }else{
+            //      window.location.reload();
+            // }
+        }.bind(this));
     }
 });

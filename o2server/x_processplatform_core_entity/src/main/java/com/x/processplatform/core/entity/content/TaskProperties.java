@@ -10,7 +10,12 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class TaskProperties extends JsonProperties {
 
+	private static final long serialVersionUID = 5628694071505848771L;
+
 	@FieldDescribe("上一人工环节处理人")
+	private String prevTaskIdentity;
+
+	@FieldDescribe("上一人工环节处理人列表")
 	private List<String> prevTaskIdentityList;
 
 	@FieldDescribe("标题")
@@ -57,6 +62,14 @@ public class TaskProperties extends JsonProperties {
 
 	public void setOpinion(String opinion) {
 		this.opinion = opinion;
+	}
+
+	public String getPrevTaskIdentity() {
+		return prevTaskIdentity;
+	}
+
+	public void setPrevTaskIdentity(String prevTaskIdentity) {
+		this.prevTaskIdentity = prevTaskIdentity;
 	}
 
 	public static class PrevTask extends GsonPropertyObject {

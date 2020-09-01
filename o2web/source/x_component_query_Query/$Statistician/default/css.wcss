@@ -9,6 +9,11 @@
         "overflow": "hidden",
         "border": "1px solid #999"
     },
+    "statChartAreaNode_noChart": {
+        "height": "44px",
+        "overflow": "hidden",
+        "border": "1px solid #999"
+    },
     "statTableAreaNode": {
         "margin-top": "10px",
         "max-height": "600px",

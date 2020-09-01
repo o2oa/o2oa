@@ -12,14 +12,13 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
 		String executorSeed = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
@@ -31,27 +30,32 @@ class ActionDelete extends BaseAction {
 
 			executorSeed = task.getJob();
 		}
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Task task = emc.find(id, Task.class);
-					if (null == task) {
-						throw new ExceptionEntityNotExist(id, Task.class);
-					}
-					emc.beginTransaction(Task.class);
-					emc.remove(task, CheckRemoveType.all);
-					emc.commit();
-					MessageFactory.task_delete(task);
-					wo.setId(task.getId());
-					result.setData(wo);
-					return "";
+		Callable<ActionResult<Wo>> callable = () -> {
+			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Task task = emc.find(id, Task.class);
+				if (null == task) {
+					throw new ExceptionEntityNotExist(id, Task.class);
 				}
+				Work work = emc.find(task.getWork(), Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+				}
+				emc.beginTransaction(Task.class);
+				emc.beginTransaction(Work.class);
+				emc.remove(task, CheckRemoveType.all);
+				work.getManualTaskIdentityList().remove(task.getIdentity());
+				emc.commit();
+				MessageFactory.task_delete(task);
+				wo.setId(task.getId());
+				result.setData(wo);
+				return result;
 			}
 		};
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get();
 
-		return result;
 	}
 
 	public static class Wo extends WoId {

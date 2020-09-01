@@ -1,6 +1,7 @@
 package com.x.program.center.jaxrs.agent;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.script.Bindings;
@@ -10,7 +11,9 @@ import javax.script.SimpleScriptContext;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -24,14 +27,9 @@ import com.x.organization.core.express.Organization;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Agent;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 class ActionExecute extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
-
-	private static Ehcache CACHE = ApplicationCache.instance().getCache(Agent.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
@@ -61,14 +59,18 @@ class ActionExecute extends BaseAction {
 					resources.setWebservicesClient(new WebservicesClient());
 					bindings.put(ScriptFactory.BINDING_NAME_RESOURCES, resources);
 					bindings.put(ScriptFactory.BINDING_NAME_APPLICATIONS, ThisApplication.context().applications());
-					String cacheKey = ApplicationCache.concreteCacheKey(ActionExecute.class, agent.getId());
-					Element element = CACHE.get(cacheKey);
+
+					CacheCategory cacheCategory = new CacheCategory(Agent.class);
+					CacheKey cacheKey = new CacheKey(ActionExecute.class, agent.getId());
 					CompiledScript compiledScript = null;
-					if ((null != element) && (null != element.getObjectValue())) {
-						logger.print("has agent cache {}", agent.getId());
+					Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+					if (optional.isPresent()) {
+						compiledScript = (CompiledScript)optional.get();
+					}else {
+						compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
+						CacheManager.put(cacheCategory, cacheKey, compiledScript);
 					}
-					compiledScript = ScriptFactory.compile(ScriptFactory.functionalization(agent.getText()));
-					CACHE.put(new Element(cacheKey, compiledScript));
+
 					try {
 						ScriptFactory.initialServiceScriptText().eval(scriptContext);
 						compiledScript.eval(scriptContext);

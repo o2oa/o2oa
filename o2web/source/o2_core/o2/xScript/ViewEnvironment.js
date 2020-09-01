@@ -1155,10 +1155,10 @@ if( !MWF.xScript.createDict ){
                 return ar.join("/");
             };
 
-            this.get = function(path, success, failure, async){
+            this.get = function(path, success, failure, async, refresh){
                 var value = null;
                 if (path){
-                    if (this.dictData[path]){
+                    if (!refresh && this.dictData[path]){
                         if (success) success(this.dictData[path]);
                         return this.dictData[path];
                     }

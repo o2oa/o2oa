@@ -9,10 +9,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.assemble.express.CacheFactory;
 import com.x.organization.core.entity.Unit;
-
-import net.sf.ehcache.Ehcache;
 
 class BaseAction extends StandardJaxrsAction {
 

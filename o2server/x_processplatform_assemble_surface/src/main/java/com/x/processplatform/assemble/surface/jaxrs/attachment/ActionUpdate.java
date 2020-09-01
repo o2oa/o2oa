@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import java.util.List;
+
 class ActionUpdate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdate.class);
@@ -61,6 +63,14 @@ class ActionUpdate extends BaseAction {
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
+			}
+
+			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
+			boolean canControl = this.control(attachment, effectivePerson, identities, units);
+			boolean canEdit = (this.edit(attachment, effectivePerson, identities, units) || canControl);
+			if(!canEdit){
+				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,

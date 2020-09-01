@@ -3,6 +3,7 @@ package com.x.organization.assemble.express.jaxrs.person;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,17 +14,15 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
-
-import net.sf.ehcache.Element;
 
 class ActionListLoginAfter extends BaseAction {
 
@@ -32,13 +31,13 @@ class ActionListLoginAfter extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), DateTools.format(wi.getDate()));
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getDate());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
 			} else {
 				Wo wo = this.list(business, wi);
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
 			}
 			return result;

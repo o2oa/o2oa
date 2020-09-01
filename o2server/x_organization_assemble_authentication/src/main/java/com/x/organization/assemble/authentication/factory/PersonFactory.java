@@ -2,10 +2,10 @@ package com.x.organization.assemble.authentication.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -13,24 +13,22 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.organization.assemble.authentication.AbstractFactory;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.CacheFactory;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 public class PersonFactory extends AbstractFactory {
 
-	private Ehcache cache;
+	private CacheCategory cache;
 
 	public PersonFactory(Business business) throws Exception {
 		super(business);
-		this.cache = CacheFactory.getPersonCache();
+		this.cache = new CacheCategory(Person.class);
 	}
 
 	public Person pick(String flag) throws Exception {
@@ -38,14 +36,13 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Person) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}
@@ -84,14 +81,13 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Person) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}

@@ -99,11 +99,13 @@ public class ActionExportAbnormalDetail extends BaseAction {
 			row.createCell(2).setCellValue("员工姓名");
 			row.createCell(3).setCellValue("打卡日期");
 			row.createCell(4).setCellValue("异常原因");
-			row.createCell(5).setCellValue("签到时间");
-			row.createCell(6).setCellValue("签退时间");
-			row.createCell(7).setCellValue("申诉原因");
-			row.createCell(8).setCellValue("申诉具体原因");
-			row.createCell(9).setCellValue("直接主管审批");
+			row.createCell(5).setCellValue("上午上班打卡时间");
+			row.createCell(6).setCellValue("上午下班打卡时间");
+			row.createCell(7).setCellValue("下午上班打卡时间");
+			row.createCell(8).setCellValue("下午下班打开时间");
+			row.createCell(9).setCellValue("申诉原因");
+			row.createCell(10).setCellValue("申诉具体原因");
+			row.createCell(11).setCellValue("直接主管审批");
 
 			for (int i = 0; i < detailList.size(); i++) {
 				attendanceDetail = detailList.get(i);
@@ -118,14 +120,18 @@ public class ActionExportAbnormalDetail extends BaseAction {
 					row.createCell(4).setCellValue("工时不足");
 				} else if (attendanceDetail.getIsAbnormalDuty()) {
 					row.createCell(4).setCellValue("异常打卡");
+				}else if(attendanceDetail.getIsLeaveEarlier()){
+					row.createCell(4).setCellValue("早退");
 				} else if (attendanceDetail.getIsLate()) {
 					row.createCell(4).setCellValue("迟到");
 				} else {
 					row.createCell(4).setCellValue("未知原因");
 				}
 				row.createCell(5).setCellValue(attendanceDetail.getOnDutyTime());
-				row.createCell(6).setCellValue(attendanceDetail.getOffDutyTime());
-				row.createCell(7).setCellValue(attendanceDetail.getAppealReason());
+				row.createCell(6).setCellValue(attendanceDetail.getMorningOffDutyTime());
+				row.createCell(7).setCellValue(attendanceDetail.getAfternoonOnDutyTime());
+				row.createCell(8).setCellValue(attendanceDetail.getOffDutyTime());
+				row.createCell(9).setCellValue(attendanceDetail.getAppealReason());
 				if (attendanceDetail.getAppealStatus() != 0) {
 					// 查询该条打卡信息的申诉信息
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -136,11 +142,11 @@ public class ActionExportAbnormalDetail extends BaseAction {
 						e.printStackTrace();
 					}
 					if (attendanceAppealInfo != null) {
-						row.createCell(8).setCellValue(attendanceAppealInfo.getAppealDescription());
+						row.createCell(10).setCellValue(attendanceAppealInfo.getAppealDescription());
 						if (attendanceAppealInfo.getStatus() == 0) {
-							row.createCell(9).setCellValue("未审批");
+							row.createCell(11).setCellValue("未审批");
 						} else if (attendanceAppealInfo.getStatus() == -1) {
-							row.createCell(9).setCellValue("已审批未通过");
+							row.createCell(11).setCellValue("已审批未通过");
 						}
 					}
 				}

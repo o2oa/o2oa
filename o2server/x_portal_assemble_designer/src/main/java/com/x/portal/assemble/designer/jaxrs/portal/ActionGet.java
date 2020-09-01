@@ -5,13 +5,13 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionGet extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
@@ -19,10 +19,10 @@ class ActionGet extends BaseAction {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(id);
-			Element element = cache.get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				wo = (Wo) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(id);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				Portal o = emc.find(id, Portal.class);
 				if (null == o) {
@@ -32,7 +32,7 @@ class ActionGet extends BaseAction {
 					throw new InvisibleException(effectivePerson.getDistinguishedName(), o.getName(), o.getId());
 				}
 				wo = Wo.copier.copy(o);
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
 			return result;

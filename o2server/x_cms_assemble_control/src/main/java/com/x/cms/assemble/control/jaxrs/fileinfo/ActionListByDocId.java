@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -33,9 +36,6 @@ public class ActionListByDocId extends BaseAction {
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String docId ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = null;
-//		AppInfo appInfo = null;
-//		CategoryInfo categoryInfo = null;
-//		Document document = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		Boolean isManager = false;
 		Boolean check = true;
@@ -53,61 +53,13 @@ public class ActionListByDocId extends BaseAction {
 			}
 		}
 		
-		String cacheKey = ApplicationCache.concreteCacheKey( "document", docId, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
-		Element element = cache.get(cacheKey);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), docId, isAnonymous, isManager, effectivePerson.getDistinguishedName() );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
-		if ( (null != element) && (null != element.getObjectValue()) ) {
-			wos = (List<Wo>) element.getObjectValue();
+		if (optional.isPresent()) {
+			wos = (List<Wo>) optional.get();
 			result.setData(wos);
 		} else {
-//			if (check) {
-//				try {
-//					document = documentQueryService.get( docId );
-//					if (document == null) {
-//						check = false;
-//						Exception exception = new ExceptionDocumentNotExists( docId );
-//						result.error(exception);
-//					}
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new ExceptionFileInfoProcess(e, "文档信息获取操作时发生异常。Id:" + docId + ", Name:" + effectivePerson.getDistinguishedName());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-//			
-//			if (check) {
-//				try {
-//					categoryInfo = categoryInfoServiceAdv.get( document.getCategoryId() );
-//					if (categoryInfo == null) {
-//						check = false;
-//						Exception exception = new ExceptionCategoryInfoNotExists(document.getCategoryId());
-//						result.error(exception);
-//					}
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new ExceptionFileInfoProcess(e, "系统在根据ID查询分类信息时发生异常！ID：" + document.getCategoryId());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-//			
-//			if (check) {
-//				try {
-//					appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
-//					if (appInfo == null) {
-//						check = false;
-//						Exception exception = new ExceptionAppInfoNotExists(categoryInfo.getAppId());
-//						result.error(exception);
-//					}
-//				} catch (Exception e) {
-//					check = false;
-//					Exception exception = new ExceptionFileInfoProcess(e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
-//					result.error(exception);
-//					logger.error(e, effectivePerson, request, null);
-//				}
-//			}
-			
 			if (check) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
@@ -131,7 +83,7 @@ public class ActionListByDocId extends BaseAction {
 						}
 					}
 					wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime)).collect(Collectors.toList());
-					cache.put(new Element(cacheKey, wos));
+					CacheManager.put(cacheCategory, cacheKey, wos );
 					result.setData(wos);
 				} catch (Throwable th) {
 					th.printStackTrace();

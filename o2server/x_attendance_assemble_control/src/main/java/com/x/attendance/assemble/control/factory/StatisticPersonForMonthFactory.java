@@ -21,6 +21,7 @@ import com.x.attendance.entity.StatisticPersonForMonth_;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class StatisticPersonForMonthFactory extends AbstractFactory {
 
@@ -95,6 +96,39 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class );
 		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class );
 		Predicate p = root.get( StatisticPersonForMonth_.unitName ).in(unitNameList);
+		if( year == null || year.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticYear ), year ) );
+		}
+		if( month == null || month.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get( StatisticPersonForMonth_.statisticMonth ), month ));
+		}
+		cq.select(root.get( StatisticPersonForMonth_.id ));
+		return em.createQuery( cq.where( p ) ).setMaxResults( 60 ).getResultList();
+	}
+	
+	//排除不需要的组织和人员
+	public List<String> listPersonForMonthByUnitYearMonthAndUn( List<String> unitNameList,List<String> unUnitNameList,List<String> personNameList, String year, String month ) throws Exception{
+		
+		if( unitNameList == null || unitNameList.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}
+		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class );
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class );
+		Predicate p = root.get( StatisticPersonForMonth_.unitName ).in(unitNameList);
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( year == null || year.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{

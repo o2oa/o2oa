@@ -4,7 +4,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
 	Extends: MWF.APP$Input,
 	iconStyle: "calendarIcon",
     options: {
-        "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change"]
+        "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change","show","hide"]
     },
     _loadNode: function(){
         if (this.readonly || this.json.isReadonly){
@@ -78,10 +78,11 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class({
                                 //offset : { y : -25 }
                             });
                         }
-
+                        _self.fireEvent("show");
                     },
                     "onHide": function(){
                         if (!this.node.getFirst().get("value")) if (this.descriptionNode)  this.descriptionNode.setStyle("display", "block");
+                        _self.fireEvent("hide");
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();

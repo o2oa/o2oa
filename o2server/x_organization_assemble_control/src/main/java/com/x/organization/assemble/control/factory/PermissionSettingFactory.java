@@ -1,35 +1,32 @@
 package com.x.organization.assemble.control.factory;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.PermissionSetting;
 import com.x.organization.core.entity.PermissionSetting_;
 import com.x.organization.core.entity.PersistenceProperties;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 public class PermissionSettingFactory extends AbstractFactory {
 
 	public PermissionSettingFactory(Business business) throws Exception {
 		super(business);
-		cache = ApplicationCache.instance().getCache(PermissionSetting.class);
+		cache = new CacheCategory(PermissionSetting.class);
 	}
 
 	public PermissionSetting pick(String flag) throws Exception {
@@ -37,28 +34,26 @@ public class PermissionSettingFactory extends AbstractFactory {
 			return null;
 		}
 		PermissionSetting o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (PermissionSetting) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (PermissionSetting) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}
 	public List<PermissionSetting> pick(List<String> flags) throws Exception {
 		List<PermissionSetting> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((PermissionSetting) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				list.add((PermissionSetting) optional.get());
 			} else {
 				PermissionSetting o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}
