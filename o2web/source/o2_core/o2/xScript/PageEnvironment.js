@@ -811,6 +811,12 @@ MWF.xScript.PageEnvironment = function (ev) {
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
                 includedScripts.push( key );
+
+                //名称、别名、id
+                json.data.importedList.each( function ( flag ) {
+                    includedScripts.push( type + "-" + json.applicationName + "-" + flag );
+                });
+
                 includedScripts = includedScripts.concat(json.data.importedList);
                 MWF.Macro.exec(json.data.text, this);
                 if (callback) callback.apply(this);
