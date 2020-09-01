@@ -2,6 +2,7 @@ o2.widget = o2.widget || {};
 o2.widget.chart = o2.widget.chart || {};
 o2.require("o2.widget.Common", null, false);
 o2.require("o2.widget.chart.d3", null, false);
+o2.require("o2.widget.chart.Bar", null, false);
 o2.widget.chart.Line = new Class({
     Implements: [Options, Events],
     Extends: o2.widget.chart.Bar,

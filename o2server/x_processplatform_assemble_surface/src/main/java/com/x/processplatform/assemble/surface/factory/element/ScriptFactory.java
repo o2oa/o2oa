@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.factory.element;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -10,15 +11,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.core.entity.element.Script_;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 public class ScriptFactory extends ElementFactory {
 
@@ -30,6 +30,7 @@ public class ScriptFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Script pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Script.class);
 	}
@@ -38,14 +39,15 @@ public class ScriptFactory extends ElementFactory {
 	public List<Script> listScriptNestedWithApplicationWithUniqueName(Application application, String uniqueName)
 			throws Exception {
 		List<Script> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Script.class);
-		String cacheKey = ApplicationCache.concreteCacheKey("listScriptNestedWithWithApplicationWithUniqueName",
-				application.getId(), uniqueName);
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				list = (List<Script>) element.getObjectValue();
-			}
+		if (null == application) {
+			return list;
+		}
+		CacheCategory cacheCategory = new CacheCategory(Script.class);
+		CacheKey cacheKey = new CacheKey("listScriptNestedWithApplicationWithUniqueName", application.getId(),
+				uniqueName);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Script>) optional.get();
 		} else {
 			List<String> names = new ArrayList<>();
 			names.add(uniqueName);
@@ -62,7 +64,7 @@ public class ScriptFactory extends ElementFactory {
 			}
 			if (!list.isEmpty()) {
 				Collections.reverse(list);
-				cache.put(new Element(cacheKey, list));
+				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
 		return list;

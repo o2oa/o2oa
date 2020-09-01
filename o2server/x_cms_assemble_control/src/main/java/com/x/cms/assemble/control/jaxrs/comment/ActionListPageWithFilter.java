@@ -6,6 +6,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -18,6 +20,7 @@ import net.sf.ehcache.Element;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ActionListPageWithFilter extends BaseAction {
 
@@ -30,7 +33,6 @@ public class ActionListPageWithFilter extends BaseAction {
 		ResultObject resultObject = null;
 		Wi wrapIn = null;
 		Boolean check = true;
-		String cacheKey = null;
 		Element element = null;
 		QueryFilter queryFilter = null;
 
@@ -46,17 +48,14 @@ public class ActionListPageWithFilter extends BaseAction {
 		if( check ) {
 			queryFilter = wrapIn.getQueryFilter();
 		}
-		
+
 		if( check ) {
-			
-			cacheKey = ApplicationCache.concreteCacheKey( "ActionListPageWithFilter", effectivePerson.getDistinguishedName(), 
+			Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(),
 					pageNum, count, wrapIn.getOrderField(), wrapIn.getOrderType(), queryFilter.getContentSHA1() );
-			element = commentInfoCache.get( cacheKey );
-		}
-		
-		if( check ) {
-			if ((null != element) && (null != element.getObjectValue())) {
-				resultObject = (ResultObject) element.getObjectValue();
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+			if (optional.isPresent()) {
+				resultObject = (ResultObject)optional.get();
 				result.setCount( resultObject.getTotal() );
 				result.setData( resultObject.getWos() );
 			} else {				
@@ -73,7 +72,7 @@ public class ActionListPageWithFilter extends BaseAction {
 					}
 
 					resultObject = new ResultObject( total, wos );
-					commentInfoCache.put(new Element( cacheKey, resultObject ));
+					CacheManager.put(cacheCategory, cacheKey, resultObject );
 					result.setCount( resultObject.getTotal() );
 					result.setData( resultObject.getWos() );
 				} catch (Exception e) {

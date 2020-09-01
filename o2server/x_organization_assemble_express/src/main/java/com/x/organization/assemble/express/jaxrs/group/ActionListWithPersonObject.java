@@ -2,42 +2,41 @@ package com.x.organization.assemble.express.jaxrs.group;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.x.organization.core.entity.Identity;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-
-import net.sf.ehcache.Element;
 
 class ActionListWithPersonObject extends BaseAction {
 
+	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					StringUtils.join(wi.getPersonList(), ","),
+			CacheKey cacheKey = new CacheKey(this.getClass(),  wi.getPersonList() ,
 					wi.getRecursiveGroupFlag(), wi.getReferenceFlag(), wi.getRecursiveOrgFlag());
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((List<Wo>) element.getObjectValue());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				result.setData((List<Wo>) optional.get());
 			} else {
 				List<Wo> wos = this.list(business, wi);
-				cache.put(new Element(cacheKey, wos));
+				CacheManager.put(cacheCategory, cacheKey, wos);
 				result.setData(wos);
 			}
 			return result;
@@ -101,14 +100,14 @@ class ActionListWithPersonObject extends BaseAction {
 		List<String> groupIds = new ArrayList<>();
 		for (Person person : os) {
 			groupIds.addAll(business.group().listSupDirectWithPerson(person.getId()));
-			if(BooleanUtils.isTrue(wi.getReferenceFlag())){
+			if (BooleanUtils.isTrue(wi.getReferenceFlag())) {
 				List<Identity> identityList = business.identity().listByPerson(person.getId());
-				for(Identity identity : identityList){
+				for (Identity identity : identityList) {
 					groupIds.addAll(business.group().listSupDirectWithIdentity(identity.getId()));
 					groupIds.addAll(business.group().listSupDirectWithUnit(identity.getUnit()));
-					if(BooleanUtils.isTrue(wi.getRecursiveOrgFlag())){
+					if (BooleanUtils.isTrue(wi.getRecursiveOrgFlag())) {
 						List<String> orgIds = business.unit().listSupNested(identity.getUnit());
-						for (String orgId : orgIds){
+						for (String orgId : orgIds) {
 							groupIds.addAll(business.group().listSupDirectWithUnit(orgId));
 						}
 					}
@@ -118,8 +117,8 @@ class ActionListWithPersonObject extends BaseAction {
 		groupIds = ListTools.trim(groupIds, true, true);
 		List<String> groupIds2 = new ArrayList<>();
 		groupIds2.addAll(groupIds);
-		if(!BooleanUtils.isFalse(wi.getRecursiveGroupFlag())){
-			for(String groupId : groupIds){
+		if (!BooleanUtils.isFalse(wi.getRecursiveGroupFlag())) {
+			for (String groupId : groupIds) {
 				groupIds2.addAll(business.group().listSupNested(groupId));
 			}
 			groupIds2 = ListTools.trim(groupIds2, true, true);

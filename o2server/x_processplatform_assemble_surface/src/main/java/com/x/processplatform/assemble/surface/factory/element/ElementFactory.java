@@ -1,8 +1,10 @@
 package com.x.processplatform.assemble.surface.factory.element;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,15 +13,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
-import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.processplatform.assemble.surface.AbstractFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 public abstract class ElementFactory extends AbstractFactory {
 
@@ -31,21 +34,31 @@ public abstract class ElementFactory extends AbstractFactory {
 
 	@SuppressWarnings("unchecked")
 	protected <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
+		CacheCategory cacheCategory = new CacheCategory(clz);
+		CacheKey cacheKey = new CacheKey(flag);
 		T t = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				t = (T) element.getObjectValue();
-			}
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			t = (T) optional.get();
 		} else {
 			t = this.entityManagerContainer().flag(flag, clz);
 			if (t != null) {
 				this.entityManagerContainer().get(clz).detach(t);
+				CacheManager.put(cacheCategory, cacheKey, t);
 			}
-			cache.put(new Element(flag, t));
 		}
 		return t;
+	}
+
+	protected <T extends JpaObject> List<T> pick(Collection<String> flags, Class<T> clz) throws Exception {
+		List<T> list = new ArrayList<>();
+		for (String str : flags) {
+			T t = pick(str, clz);
+			if (null != t) {
+				list.add(t);
+			}
+		}
+		return list;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -53,52 +66,50 @@ public abstract class ElementFactory extends AbstractFactory {
 		if (null == application) {
 			return null;
 		}
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
+		CacheCategory cacheCategory = new CacheCategory(clz);
+		CacheKey cacheKey = new CacheKey(application.getId(), flag);
 		T t = null;
-		String cacheKey = ApplicationCache.concreteCacheKey(application.getId(), flag);
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				t = (T) element.getObjectValue();
-			}
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			t = (T) optional.get();
 		} else {
 			t = this.entityManagerContainer().restrictFlag(flag, clz, Process.application_FIELDNAME,
 					application.getId());
 			if (t != null) {
 				this.entityManagerContainer().get(clz).detach(t);
+				CacheManager.put(cacheCategory, cacheKey, t);
 			}
-			cache.put(new Element(cacheKey, t));
 		}
 		return t;
 	}
 
-	/* 取得属于指定Process 的设计元素 */
+	// 取得属于指定Process 的设计元素
 	@SuppressWarnings("unchecked")
 	protected <T extends JpaObject> List<T> listWithProcess(Class<T> clz, Process process) throws Exception {
 		List<T> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
-		String cacheKey = "listWithProcess#" + process.getId() + "#" + clz.getName();
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			Object obj = element.getObjectValue();
-			if (null != obj) {
-				list = (List<T>) obj;
-			}
+		if (null == process) {
+			return list;
+		}
+		CacheCategory cacheCategory = new CacheCategory(clz);
+		CacheKey cacheKey = new CacheKey("listWithProcess", process.getId());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<T>) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(clz);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<T> cq = cb.createQuery(clz);
 			Root<T> root = cq.from(clz);
-			Predicate p = cb.equal(root.get("process"), process.getId());
+			Predicate p = cb.equal(root.get(Activity.process_FIELDNAME), process.getId());
 			cq.select(root).where(p);
 			List<T> os = em.createQuery(cq).getResultList();
 			for (T t : os) {
 				em.detach(t);
 				list.add(t);
 			}
-			/* 将object改为unmodifiable */
+			// 将object改为unmodifiable
 			list = Collections.unmodifiableList(list);
-			cache.put(new Element(cacheKey, list));
+			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
 	}

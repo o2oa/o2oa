@@ -17,12 +17,12 @@ public class InvokeFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Invoke pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
-		return this.pick(flag, Invoke.class );
+		return this.pick(flag, Invoke.class);
 	}
 
 	public List<Invoke> listWithProcess(Process process) throws Exception {
-		List<Invoke> list = this.listWithProcess(Invoke.class, process);
-		return list;
+		return this.listWithProcess(Invoke.class, process);
 	}
 }

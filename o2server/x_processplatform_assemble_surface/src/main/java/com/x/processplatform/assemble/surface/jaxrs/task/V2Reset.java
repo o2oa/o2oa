@@ -120,7 +120,7 @@ public class V2Reset extends BaseAction {
 
 		this.reset();
 
-		if (!wi.getKeep()) {
+		if (BooleanUtils.isFalse(wi.getKeep())) {
 			this.processingTask();
 		}
 
@@ -157,7 +157,7 @@ public class V2Reset extends BaseAction {
 	private void reset() throws Exception {
 		V2ResetWi req = new V2ResetWi();
 		req.setIdentityList(identites);
-		req.setKeep(BooleanUtils.isTrue(wi.getKeep()));
+		req.setKeep(BooleanUtils.isNotFalse(wi.getKeep()));
 		WrapBoolean resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("task", "v2", task.getId(), "reset"), req, task.getJob())
@@ -200,7 +200,7 @@ public class V2Reset extends BaseAction {
 					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
 							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
 							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-			if (BooleanUtils.isTrue(wi.getKeep())) {
+			if (BooleanUtils.isNotFalse(wi.getKeep())) {
 				// 不排除自己,那么把自己再加进去
 				list.add(task);
 			}
@@ -247,6 +247,7 @@ public class V2Reset extends BaseAction {
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
 			req.setTaskList(newTasks);
+			req.setPrevTaskIdentity(task.getIdentity());
 			req.getPrevTaskIdentityList().add(task.getIdentity());
 			ThisApplication.context().applications()
 					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,

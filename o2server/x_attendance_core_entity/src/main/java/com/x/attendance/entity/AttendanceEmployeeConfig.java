@@ -81,7 +81,7 @@ public class AttendanceEmployeeConfig extends SliceJpaObject {
 	public static final String employeeName_FIELDNAME = "employeeName";
 	@FieldDescribe("员工姓名distinguishedName")
 	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + employeeName_FIELDNAME )
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private String employeeName = "";
 
 	public static final String employeeNumber_FIELDNAME = "employeeNumber";

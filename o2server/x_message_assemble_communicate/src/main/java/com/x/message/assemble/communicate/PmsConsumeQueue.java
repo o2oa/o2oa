@@ -47,6 +47,10 @@ public class PmsConsumeQueue extends AbstractQueue<Message> {
 					result = wrapBoolean.getValue();
 				}
 			}
+			// 单独发送推送消息用，没有存message对象 所以没有id，不需要更新
+			if (StringUtils.isEmpty(message.getId())) {
+				return;
+			}
 			if (BooleanUtils.isTrue(result)) {
 				Message messageEntityObject = emc.find(message.getId(), Message.class);
 				if (null != messageEntityObject) {

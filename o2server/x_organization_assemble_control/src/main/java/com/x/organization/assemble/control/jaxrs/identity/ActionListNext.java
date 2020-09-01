@@ -1,7 +1,7 @@
 package com.x.organization.assemble.control.jaxrs.identity;
 
 import java.util.List;
-
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -10,14 +10,13 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Identity;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 
 class ActionListNext extends BaseAction {
 
@@ -25,10 +24,10 @@ class ActionListNext extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, count);
-			Element element = business.cache().get(cacheKey);
-			if (null != element && null != element.getObjectValue()) {
-				Co co = (Co) element.getObjectValue();
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, count);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				Co co = (Co) optional.get();
 				result.setData(co.getWos());
 				result.setCount(co.getCount());
 			} else {
@@ -44,7 +43,7 @@ class ActionListNext extends BaseAction {
 				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null,
 						null, null, true, DESC);
 				Co co = new Co(result.getData(), result.getCount());
-				business.cache().put(new Element(cacheKey, co));
+				CacheManager.put(business.cache(), cacheKey, co);
 			}
 		}
 		return result;

@@ -17,12 +17,12 @@ public class EmbedFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Embed pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Embed.class);
 	}
 
 	public List<Embed> listWithProcess(Process process) throws Exception {
-		List<Embed> list = this.listWithProcess(Embed.class, process);
-		return list;
+		return this.listWithProcess(Embed.class, process);
 	}
 }

@@ -6,13 +6,13 @@ import java.io.ByteArrayOutputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.imgscalr.Scalr;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -59,7 +59,7 @@ class ActionSetIcon extends BaseAction {
 				person.setIconLdpi(icon_l);
 
 				emc.commit();
-				ApplicationCache.notify(Person.class);
+				CacheManager.notify(Person.class);
 				Wo wo = new Wo();
 				wo.setValue(true);
 				result.setData(wo);

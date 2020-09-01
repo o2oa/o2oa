@@ -11,13 +11,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.cache.CacheManager;
 import com.x.organization.core.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -76,7 +76,7 @@ public class ActionDelete extends BaseAction {
 			emc.beginTransaction(Identity.class);
 			emc.remove(identity, CheckRemoveType.all);
 			emc.commit();
-			ApplicationCache.notify(Identity.class);
+			CacheManager.notify(Identity.class);
 			
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();

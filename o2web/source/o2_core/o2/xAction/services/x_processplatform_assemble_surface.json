@@ -230,7 +230,7 @@
   "getWorkcompletedAttachmentStream": {"uri": "/jaxrs/attachment/download/{id}/workcompleted/{workCompletedId}/stream", "method": "GET"},
 
   "getAttachment": {"uri": "/jaxrs/attachment/{id}/work/{workid}"},
-  "getAttachmentWorkcompleted": {"uri": "/jaxrs/attachment/{id}/workCompletedId/{workCompletedId}"},
+  "getAttachmentWorkcompleted": {"uri": "/jaxrs/attachment/{id}/workcompleted/{workCompletedId}"},
   "deleteAttachment": {"uri": "/jaxrs/attachment/{id}/work/{workid}", "method": "DELETE"},
   "deleteWorkCompletedAttachment": {"uri": "/jaxrs/attachment/{id}/workcompleted/{workCompletedId}", "method": "DELETE"},
 

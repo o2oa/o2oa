@@ -30,7 +30,7 @@ Describe.doPost = function(address, m, data) {
 			headers : {
 				'x-debugger' : true
 			},
-			contentType : (m.contentType.indexOf('application/json') > -1) ? m.contentType : m.contentType,
+		    contentType : (m.contentType.indexOf('multipart/form-data') > -1) ? false : m.contentType ,
 			processData : (m.contentType.indexOf('application/json') > -1) ? true : false,
 			xhrFields : {
 				'withCredentials' : true
@@ -868,7 +868,6 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															if($('#' + i.name, '#ins').val() == ""){
 																/*
 																if(i.isCollection){
@@ -877,7 +876,19 @@ Describe.prototype = {
 																	data[i.name] = {};
 																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																    if (i.isCollection) {
+																       data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															        } else {
+																       data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															        }
+																}
 															}
 														}
 													}
@@ -910,7 +921,23 @@ Describe.prototype = {
 																	data[i.name] = {};
 																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+															   if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   if (i.isCollection) {
+																      data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+															       } else {
+																         if (i.isCollection) {
+																			   data[i.name] = Describe.splitValue($('#' + i.name, '#ins').val());
+																		} else {
+																			   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																		}
+															       }
+																}
 															}
 														
 														}
@@ -1217,15 +1244,22 @@ Describe.prototype = {
 																data[i.name] = $('#' + i.name, '#ins').val();
 															}
 														} else {
-															//data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
 															if($('#' + i.name, '#ins').val() == ""){
-																if(i.isCollection){
+																/*if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														}
 													}
@@ -1251,13 +1285,21 @@ Describe.prototype = {
 															}
 														} else {
 															if($('#' + i.name, '#ins').val() == ""){
-																if(i.isCollection){
+																/*if(i.isCollection){
 																	data[i.name] = [{}];
 																}else{
 																	data[i.name] = {};
-																}
+																}*/
 															}else{
-																data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																if(i.fieldType){
+																	if(i.fieldType == "enum"){
+																	   data[i.name] = $('#' + i.name, '#ins').val();
+																	}else{
+																		data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																	}
+																}else{
+																   data[i.name] = $.parseJSON($('#' + i.name, '#ins').val());
+																}
 															}
 														
 														}

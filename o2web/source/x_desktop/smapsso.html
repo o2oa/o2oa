@@ -77,7 +77,9 @@
                     var uri = new URI(window.location.toString());
                     var xtoken = uri.getData("SMAP_SESSION_DATA");
                     var appID = uri.getData("appID");
+                    var uniqueId = uri.getData("uniqueId");
                     var redirect = uri.getData("redirect");
+                    redirect = redirect + "&uniqueId=" + uniqueId;
                     if (xtoken){
                         var res = new Request.JSON({
                             url: o2.filterUrl(address+"?SMAP_SESSION_DATA="+encodeURIComponent(xtoken)+"&appID="+appID+"&date="+(new Date()).getTime()),

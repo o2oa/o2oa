@@ -17,12 +17,12 @@ public class CancelFactory extends ElementFactory {
 		return this.pick(flag, ExceptionWhen.none);
 	}
 
+	@Deprecated
 	public Cancel pick(String flag, ExceptionWhen exceptionWhen) throws Exception {
 		return this.pick(flag, Cancel.class);
 	}
 
 	public List<Cancel> listWithProcess(Process process) throws Exception {
-		List<Cancel> list = this.listWithProcess(Cancel.class, process);
-		return list;
+		return this.listWithProcess(Cancel.class, process);
 	}
 }

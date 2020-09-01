@@ -1,13 +1,9 @@
 package com.x.program.center.jaxrs.command;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import net.sf.ehcache.Ehcache;
 
 abstract class BaseAction extends StandardJaxrsAction {
-
-    public static Ehcache cacheLog = ApplicationCache.instance().getCache(CacheLogObject.class);
 
     public static class CacheLogObject extends GsonPropertyObject {
 

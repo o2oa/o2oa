@@ -32,15 +32,10 @@ MWF.xApplication.Selector.Identity = new Class({
         if(this.options.noUnit){
             this.loadInclude(afterLoadSelectItemFun);
         }else if (this.options.units.length){
-            var unitLoaded = 0;
-
             var loadUnitSuccess = function () {
-                unitLoaded++;
-                if( unitLoaded === this.options.units.length ){
-                    this.unitLoaded = true;
-                    if( this.includeLoaded ){
-                        afterLoadSelectItemFun();
-                    }
+                this.unitLoaded = true;
+                if( this.includeLoaded ){
+                    afterLoadSelectItemFun();
                 }
             }.bind(this);
             var loadUnitFailure = loadUnitSuccess;
@@ -52,41 +47,78 @@ MWF.xApplication.Selector.Identity = new Class({
                 }
             }.bind(this));
 
-
-            this.options.units.each(function(unit){
-
-                var container = new Element("div").inject( this.itemAreaNode );
-
-                if (typeOf(unit)==="string"){
-                    this.orgAction.getUnit(unit, function(json){
-                        if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-                            this.subCategorys.push( category );
-                        }
-                        loadUnitSuccess();
-                    }.bind(this), function(){
-                        this.orgAction.listUnitByKey(function(json){
-                            if (json.data.length){
-                                json.data.each(function(data){
-                                    var category = this._newItemCategory("ItemUnitCategory", data, this, container);
-                                    this.subCategorys.push( category );
-                                }.bind(this))
-                            }
-                            loadUnitSuccess();
-                        }.bind(this), loadUnitFailure, unit);
-                    }.bind(this));
-                }else{
-                    this.orgAction.getUnit(function(json){
-                        if (json.data){
-                            var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
-                            this.subCategorys.push( category );
-                        }
-                        loadUnitSuccess();
-                    }.bind(this), loadUnitFailure, unit.distinguishedName);
-                    //var category = this._newItemCategory("ItemCategory", unit, this, this.itemAreaNode);
+            var unitList = [];
+            for( var i=0 ; i<this.options.units.length; i++ ){
+                var unit = this.options.units[i];
+                if( typeOf( unit ) === "string" ){
+                    unitList.push(unit);
+                }else if( typeOf(unit)==="object"){
+                    unitList.push(unit.id ||  unit.distinguishedName || unit.unique || unit.levelName);
                 }
+            }
+            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {"unitList" : unitList} , function (json) {
+                if (json.data.length){
+                    json.data.each( function(data){
+                        var category = this._newItemCategory("ItemUnitCategory", data, this, this.itemAreaNode );
+                        this.subCategorys.push(category);
+                    }.bind(this));
+                }
+                loadUnitSuccess();
+            }.bind(this), loadUnitFailure );
 
-            }.bind(this));
+
+            // var unitLoaded = 0;
+            //
+            // var loadUnitSuccess = function () {
+            //     unitLoaded++;
+            //     if( unitLoaded === this.options.units.length ){
+            //         this.unitLoaded = true;
+            //         if( this.includeLoaded ){
+            //             afterLoadSelectItemFun();
+            //         }
+            //     }
+            // }.bind(this);
+            // var loadUnitFailure = loadUnitSuccess;
+            //
+            // this.loadInclude( function () {
+            //     this.includeLoaded = true;
+            //     if( this.unitLoaded ){
+            //         afterLoadSelectItemFun();
+            //     }
+            // }.bind(this));
+            // this.options.units.each(function(unit){
+            //
+            //     var container = new Element("div").inject( this.itemAreaNode );
+            //
+            //     if (typeOf(unit)==="string"){
+            //         this.orgAction.getUnit(unit, function(json){
+            //             if (json.data){
+            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
+            //                 this.subCategorys.push( category );
+            //             }
+            //             loadUnitSuccess();
+            //         }.bind(this), function(){
+            //             this.orgAction.listUnitByKey(function(json){
+            //                 if (json.data.length){
+            //                     json.data.each(function(data){
+            //                         var category = this._newItemCategory("ItemUnitCategory", data, this, container);
+            //                         this.subCategorys.push( category );
+            //                     }.bind(this))
+            //                 }
+            //                 loadUnitSuccess();
+            //             }.bind(this), loadUnitFailure, unit);
+            //         }.bind(this));
+            //     }else{
+            //         this.orgAction.getUnit(function(json){
+            //             if (json.data){
+            //                 var category = this._newItemCategory("ItemUnitCategory", json.data, this, container);
+            //                 this.subCategorys.push( category );
+            //             }
+            //             loadUnitSuccess();
+            //         }.bind(this), loadUnitFailure, unit.distinguishedName);
+            //     }
+            //
+            // }.bind(this));
         }else{
             // this.loadInclude( function () {
             //     this.includeLoaded = true;
@@ -175,8 +207,8 @@ MWF.xApplication.Selector.Identity = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item)
+    _newItemSelected: function(data, selector, item, selectedNode){
+        return new MWF.xApplication.Selector.Identity.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
         this._listItem( "pinyin", callback, failure, key );
@@ -425,10 +457,49 @@ MWF.xApplication.Selector.Identity.ItemCategory = new Class({
         var style = this.selector.options.style;
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
+    _beforeSelectAll : function( _selectAllFun ){
+        if( this.selector.options.ignorePerson ){
+            _selectAllFun();
+            return;
+        }
+        //批量获取个人
+        var object = {};
+        if( this.selector.options.resultType === "person" ){
+            this.subItems.each( function(item){
+                var isPerson = false;
+                if( item.data && item.data.distinguishedName ){
+                    var dn = item.data.distinguishedName;
+                    if( dn.substr(dn.length-1, 1).toLowerCase() === "p" )isPerson = true;
+                }
+                if( !isPerson && !item.data.woPerson && item.data.person ){
+                    object[ item.data.person ] = item;
+                }
+            }.bind(this))
+        }else{
+            this.subItems.each( function (item) {
+                if (!item.data.woPerson && item.data.person ){
+                    object[ item.data.person ] = item;
+                }
+            }.bind(this))
+        }
+        var keys = Object.keys( object );
+        if( keys.length > 0 ){
+            o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({"personList":keys}, function (json) {
+                json.data.each( function ( p ){
+                    if(object[ p.id ])object[ p.id ].data.woPerson = p;
+                }.bind(this));
+                _selectAllFun();
+            })
+        }else{
+            _selectAllFun();
+        }
+    },
     clickItem: function( callback ){
-        if (this._hasChild()){
+        if (this._hasChild() && !this.loading){
             var firstLoaded = !this.loaded;
+            this.loading = true;
             this.loadSub(function(){
+                this.loading = false;
                 if( firstLoaded ){
                     if( !this.selector.isFlatCategory ){
                         this.children.setStyles({"display": "block", "height": "auto"});

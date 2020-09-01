@@ -312,6 +312,7 @@
       device
         o2m.util.device.getPhoneInfo
         o2m.util.device.scan
+        o2m.util.deveice.location
       navigation
         o2m.util.navigation.setTitle
         o2m.util.navigation.close
@@ -510,7 +511,7 @@
 
   //o2m.util.device.scan
   this.o2m.util.device.scanSuccess = function (result) {
-    console.log("util calendar chooseInterval back, result:" + result);
+    console.log("util device scan back, result:" + result);
   };
   var _o2m_u_device_scan = function (c) {
     var onSuccess = c && c.onSuccess ? c.onSuccess : null;
@@ -528,6 +529,28 @@
     _util_post(body, onFail);
   };
   this.o2m.util.device.scan = _o2m_u_device_scan;
+
+  
+  //o2m.util.device.location
+  this.o2m.util.device.locationSuccess = function (result) {
+    console.log("util device location back, result:" + result);
+  };
+  var _o2m_u_device_location = function(c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.device.locationSuccess = onSuccess;
+    }
+    var body = {
+      type: "device.location",
+      callback: "o2m.util.device.locationSuccess",
+      data: {
+
+      }
+    };
+    _util_post(body, onFail);
+  };
+  this.o2m.util.device.location = _o2m_u_device_location;
 
 
   //o2m.util.navigation.setTitle

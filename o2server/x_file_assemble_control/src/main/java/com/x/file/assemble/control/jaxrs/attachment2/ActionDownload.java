@@ -2,7 +2,9 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -13,18 +15,13 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
 
 class ActionDownload extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger( ActionDownload.class );
-
-	private Ehcache cache = ApplicationCache.instance().getCache(Attachment2.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -42,10 +39,11 @@ class ActionDownload extends StandardJaxrsAction {
 			if (null == originFile) {
 				throw new ExceptionAttachmentNotExist(id,attachment.getOriginFile());
 			}
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), id);
-			Element element = cache.get(cacheKey);
-			if ((null != element) && (null != element.getObjectValue())) {
-				wo = (Wo) element.getObjectValue();
+			CacheCategory cacheCategory = new CacheCategory(Attachment2.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), id);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(OriginFile.class,
 						originFile.getStorage());
@@ -61,7 +59,7 @@ class ActionDownload extends StandardJaxrsAction {
 					 * 对10M以下的文件进行缓存
 					 */
 					if (bs.length < (1024 * 1024 * 10)) {
-						cache.put(new Element(cacheKey, wo));
+						CacheManager.put(cacheCategory, cacheKey, wo);
 					}
 				}catch (Exception e){
 					if(e.getMessage().indexOf("existed") > -1){
@@ -77,51 +75,6 @@ class ActionDownload extends StandardJaxrsAction {
 			return result;
 		}
 	}
-
-	// @HttpMethodDescribe(value =
-	// "创建Attachment对象./servlet/attachment/download/{id}")
-	// protected void doGet(HttpServletRequest request, HttpServletResponse
-	// response)
-	// throws ServletException, IOException {
-	// try (EntityManagerContainer emc =
-	// EntityManagerContainerFactory.instance().create()) {
-	// request.setCharacterEncoding(DefaultCharset.name);
-	// EffectivePerson effectivePerson = this.effectivePerson(request);
-	// String id = this.getURIPart(request.getRequestURI(), "download");
-	// /* 确定是否要用application/octet-stream输出 */
-	// boolean streamContentType = StringUtils.endsWith(request.getRequestURI(),
-	// "/stream");
-	// Attachment attachment = emc.find(id, Attachment.class,
-	// ExceptionWhen.not_found);
-	// if (!StringUtils.equals(effectivePerson.getDistinguishedName(),
-	// attachment.getPerson())
-	// &&
-	// (!attachment.getShareList().contains(effectivePerson.getDistinguishedName()))
-	// &&
-	// (!attachment.getEditorList().contains(effectivePerson.getDistinguishedName())))
-	// {
-	// throw new Exception("person{name:" +
-	// effectivePerson.getDistinguishedName() + "} access attachment{id:"
-	// + id + "} access denied.");
-	// }
-	// this.setResponseHeader(response, attachment, streamContentType);
-	// StorageMapping mapping =
-	// ThisApplication.context().storageMappings().get(Attachment.class,
-	// attachment.getStorage());
-	// if (null == mapping) {
-	// throw new ExceptionStorageMappingNotExist(attachment.getStorage());
-	// }
-	// OutputStream output = response.getOutputStream();
-	// attachment.readContent(mapping, output);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// ActionResult<Object> result = new ActionResult<>();
-	// result.error(e);
-	// response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	// response.getWriter().print(result.toJson());
-	// }
-	//
-	// }
 
 	public static class Wo extends WoFile {
 

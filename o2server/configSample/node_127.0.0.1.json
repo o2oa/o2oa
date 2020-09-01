@@ -94,6 +94,7 @@
     "statEnable": true,
     "statFilter": "mergeStat",
     "slowSqlMillis": 2000.0,
+    "lockTimeout": 120000.0,
     "###enable": "是否启用,如果没有可用的externalDataSources.json文件,那么默认会在节点中启用本地的H2数据库作为默认的数据库.###",
     "###tcpPort": "H2数据库jdbc连接端口,登录的用户名:sa,密码为xadmin的密码.数据库创建在/o2server/local/repository/data/X.mv.db,一旦数据库文件被创建,那么该数据库的密码被创建.###",
     "###webPort": "H2数据库web端口,H2提供一个web端的client,此端口为web端client的访问端口.用户名sa,密码为xadmin数据库初始创建的密码.###",
@@ -106,7 +107,8 @@
     "###maxIdle": "最大空闲连接数###",
     "###statEnable": "启用统计,默认启用###",
     "###statFilter": "统计方式配置,默认mergeStat###",
-    "###slowSqlMillis": "执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.###"
+    "###slowSqlMillis": "执行缓慢sql毫秒数,默认2000毫秒,执行缓慢的sql将被单独记录.###",
+    "###lockTimeout": "默认锁超时时间()毫秒).###"
   },
   "storage": {
     "enable": true,
@@ -136,25 +138,7 @@
     "###size": "最大保留份数,超过将自动删除最久的数据.###",
     "###path": "备份路径###"
   },
-  "dumpStorage": {
-    "enable": true,
-    "cron": "",
-    "size": 7.0,
-    "path": "",
-    "###enable": "是否启用,默认每天凌晨4点进行备份.###",
-    "###cron": "定时任务cron表达式###",
-    "###size": "最大保留份数,超过将自动删除最久的数据.###",
-    "###path": "备份路径###"
-  },
   "restoreData": {
-    "enable": false,
-    "cron": "",
-    "path": "",
-    "###enable": "是否启用.###",
-    "###cron": "定时任务cron表达式###",
-    "###path": "恢复路径###"
-  },
-  "restoreStorage": {
     "enable": false,
     "cron": "",
     "path": "",
@@ -176,9 +160,7 @@
   "###storage": "Storage服务器配置###",
   "###logLevel": "日志级别,默认当前节点的slf4j日志级别,通过系统变量\"org.slf4j.simpleLogger.defaultLogLevel\"设置到当前jvm中.###",
   "###dumpData": "定时数据导出配置###",
-  "###dumpStorage": "定时存储文件导出配置###",
   "###restoreData": "定时数据导入配置###",
-  "###restoreStorage": "定时存储文件导入配置###",
   "###logSize": "日志文件保留天数.###",
   "###auditLogSize": "审计日志文件保留天数.###",
   "###nodeAgentEnable": "是否启用节点代理###",

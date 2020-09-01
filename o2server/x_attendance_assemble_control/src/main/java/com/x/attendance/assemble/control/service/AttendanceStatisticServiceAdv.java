@@ -236,6 +236,15 @@ public class AttendanceStatisticServiceAdv {
 			throw e;
 		}
 	}
+	
+	//排除不需要的组织和人员
+	public List<String> listPersonForMonthByUnitYearMonthAndUn(List<String> unitNameList,List<String> unUnitNameList,List<String> personNameList, String year, String month) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return attendanceStatisticService.listPersonForMonthByUnitYearMonthAndUn( emc, unitNameList,unUnitNameList,personNameList, year, month);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
 
 	public List<String> listUnitForMonthByUnitYearAndMonth(List<String> unitNameList, String year, String month) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

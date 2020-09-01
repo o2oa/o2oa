@@ -3,12 +3,15 @@ package com.x.cms.assemble.control.jaxrs.script;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -25,11 +28,12 @@ class ActionListWithApplication extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wraps = new ArrayList<>();
 		Wo wrap = null;
-		String cacheKey = "script.listWithApp.appFlag." + appFlag;
-		Element element = null;
-		element = cache.get(cacheKey);
-		if (element != null) {
-			wraps = (List<Wo>) element.getObjectValue();
+
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), appFlag );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wraps = (List<Wo>) optional.get();
 			result.setData(wraps);
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -45,7 +49,7 @@ class ActionListWithApplication extends BaseAction {
 					wraps.add( wrap );
 				}
 				// 将查询结果放进缓存里
-				cache.put(new Element(cacheKey, wraps));
+				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

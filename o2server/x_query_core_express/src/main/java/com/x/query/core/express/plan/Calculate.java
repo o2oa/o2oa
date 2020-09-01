@@ -43,7 +43,10 @@ public class Calculate extends GsonPropertyObject {
 	public String groupMergeType;
 
 	public List<CalculateEntry> calculateList;
-
+	
+	@FieldDescribe("图表")
+	public List<String> chart;
+	
 	public Boolean available() {
 		for (CalculateEntry o : ListTools.nullToEmpty(this.calculateList)) {
 			if (o.available()) {

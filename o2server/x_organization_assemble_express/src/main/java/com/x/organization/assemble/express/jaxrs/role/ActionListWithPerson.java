@@ -2,6 +2,7 @@ package com.x.organization.assemble.express.jaxrs.role;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,7 +14,8 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -25,10 +27,6 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sf.ehcache.Element;
-
 class ActionListWithPerson extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
@@ -36,14 +34,13 @@ class ActionListWithPerson extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(),
-					StringUtils.join(wi.getPersonList(), ","));
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				result.setData((Wo) element.getObjectValue());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getPersonList());
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				result.setData((Wo) optional.get());
 			} else {
 				Wo wo = this.list(business, wi);
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo);
 				result.setData(wo);
 			}
 			return result;
@@ -99,9 +96,8 @@ class ActionListWithPerson extends BaseAction {
 	}
 
 	private List<Identity> identities(Business business, List<String> personIds) throws Exception {
-		return business.entityManagerContainer().fetchIn(Identity.class,
-				ListTools.toList(Identity.unit_FIELDNAME), Identity.person_FIELDNAME,
-				personIds);
+		return business.entityManagerContainer().fetchIn(Identity.class, ListTools.toList(Identity.unit_FIELDNAME),
+				Identity.person_FIELDNAME, personIds);
 	}
 
 	private List<String> groupsContainsUnit(Business business, List<String> units) throws Exception {

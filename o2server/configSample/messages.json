@@ -9,9 +9,11 @@
   "attachment_editor": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -19,9 +21,11 @@
   "attachment_editorCancel": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -29,9 +33,11 @@
   "attachment_editorModify": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -39,9 +45,11 @@
   "attachment_share": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -49,9 +57,11 @@
   "attachment_shareCancel": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -76,6 +86,7 @@
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -89,9 +100,11 @@
   "meeting_delete": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -99,9 +112,11 @@
   "meeting_invite": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -131,9 +146,11 @@
   "read_create": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -153,9 +170,11 @@
   "task_create": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }
@@ -167,9 +186,11 @@
   "task_press": {
     "consumers": [],
     "consumersV2": {
+      "mq": "",
       "pms": "",
       "zhengwuDingding": "",
       "qiyeweixin": "",
+      "welink": "",
       "ws": "",
       "dingding": ""
     }

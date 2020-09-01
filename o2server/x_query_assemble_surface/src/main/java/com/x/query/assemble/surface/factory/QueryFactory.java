@@ -7,35 +7,34 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.surface.AbstractFactory;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
-
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class QueryFactory extends AbstractFactory {
 
-	private Ehcache cache;
+	private CacheCategory cache;
 
 	public QueryFactory(Business business) throws Exception {
 		super(business);
-		this.cache = ApplicationCache.instance().getCache(Query.class);
+		this.cache = new CacheCategory(Query.class);
 	}
 
 	public List<Query> pick(List<String> flags) throws Exception {
 		List<Query> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = cache.get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Query) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(cache, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Query) optional.get());
 			} else {
 				Query o = this.pickObject(str);
-				cache.put(new Element(str, o));
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}
@@ -49,14 +48,13 @@ public class QueryFactory extends AbstractFactory {
 			return null;
 		}
 		Query o = null;
-		Element element = cache.get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Query) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(flag);
+		Optional<?> optional = CacheManager.get(cache, cacheKey);
+		if (optional.isPresent()) {
+			o = (Query) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			cache.put(new Element(flag, o));
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}

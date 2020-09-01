@@ -10,21 +10,20 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.FileTools;
-import com.x.base.core.project.tools.JarTools;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.*;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
@@ -41,11 +40,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.net.Socket;
+import java.util.*;
 
 class ActionInstallOrUpdate extends BaseAction {
 
@@ -71,8 +71,8 @@ class ActionInstallOrUpdate extends BaseAction {
 					byte[] bytes = ConnectionAction.getFile(Config.collect().url(Collect.ADDRESS_COLLECT_APPLICATION_DOWN + "/" + id),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 					if(bytes!=null){
-						WrapModule module = this.install(id, bytes);
-						if(module!=null) {
+						InstallData installData = this.install(id, bytes);
+						if(installData!=null) {
 							wo.setValue(true);
 							emc.beginTransaction(InstallLog.class);
 							InstallLog installLog = emc.find(id, InstallLog.class);
@@ -86,7 +86,7 @@ class ActionInstallOrUpdate extends BaseAction {
 							installLog.setVersion(app.getVersion());
 							installLog.setCategory(app.getCategory());
 							installLog.setStatus(CommonStatus.VALID.getValue());
-							installLog.setData(gson.toJson(module));
+							installLog.setData(gson.toJson(installData));
 							installLog.setInstallPerson(effectivePerson.getDistinguishedName());
 							installLog.setInstallTime(new Date());
 							installLog.setUnInstallPerson(null);
@@ -105,8 +105,8 @@ class ActionInstallOrUpdate extends BaseAction {
 		}
 	}
 
-	private WrapModule install(String id, byte[] bytes) throws Exception{
-		WrapModule module = null;
+	private InstallData install(String id, byte[] bytes) throws Exception{
+		InstallData installData = new InstallData();
 		File tempFile = new File(Config.base(), "local/temp/install");
 		FileTools.forceMkdir(tempFile);
 		FileUtils.cleanDirectory(tempFile);
@@ -123,21 +123,30 @@ class ActionInstallOrUpdate extends BaseAction {
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 					Gson gson = new Gson();
 					JsonElement jsonElement = gson.fromJson(json, JsonElement.class);
-					module = this.convertToWrapIn(jsonElement, WrapModule.class);
+					WrapModule module = this.convertToWrapIn(jsonElement, WrapModule.class);
 					this.installModule(module);
+					installData.setWrapModule(module);
+
 				}
 				if(file.getName().toLowerCase().endsWith(".zip")){
 					logger.print("开始安装静态资源");
 					try {
 						Business.dispatch(false, file.getName(), "", FileUtils.readFileToByteArray(file));
+						installData.setStaticResource(file.getName());
 					} catch (Exception e) {
 						logger.print("模块安装成功但静态资源安装失败:{}",e.getMessage());
 					}
 				}
+				if(file.getName().toLowerCase().endsWith(".war")){
+					logger.print("开始安装自定义应用：{}", file.getName());
+					this.installCustomApp(file.getName(), FileUtils.readFileToByteArray(file));
+					installData.setCustomApp(file.getName());
+					logger.print("完成自定义应用安装：{}", file.getName());
+				}
 			}
 		}
 		FileUtils.cleanDirectory(tempFile);
-		return module;
+		return installData;
 	}
 
 	private InstallWo installModule(WrapModule module) throws Exception{
@@ -223,6 +232,40 @@ class ActionInstallOrUpdate extends BaseAction {
 		}
 
 		return wo;
+	}
+
+	private void installCustomApp(String fileName, byte[] bytes) throws Exception{
+		Nodes nodes = Config.nodes();
+		for (String node : nodes.keySet()){
+			if(nodes.get(node).getApplication().getEnable()) {
+				logger.print("socket deploy custom app{} to {}:{}",fileName, node, nodes.get(node).nodeAgentPort());
+				try (Socket socket = new Socket(node, nodes.get(node).nodeAgentPort())) {
+					socket.setKeepAlive(true);
+					socket.setSoTimeout(10000);
+					try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+						 DataInputStream dis = new DataInputStream(socket.getInputStream())) {
+						Map<String, Object> commandObject = new HashMap<>();
+						commandObject.put("command", "redeploy:customWar");
+						commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+
+						dos.writeUTF(XGsonBuilder.toJson(commandObject));
+						dos.flush();
+						dos.writeUTF(fileName);
+						dos.flush();
+
+						try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
+							byte[] onceBytes = new byte[1024];
+							int length = 0;
+							while ((length = bis.read(onceBytes, 0, onceBytes.length)) != -1) {
+								dos.write(onceBytes, 0, length);
+								dos.flush();
+							}
+						}
+					}
+
+				}
+			}
+		}
 	}
 
 	public static class Wo extends WrapBoolean {

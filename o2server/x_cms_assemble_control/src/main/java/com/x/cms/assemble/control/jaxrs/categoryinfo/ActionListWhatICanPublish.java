@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -86,13 +89,12 @@ public class ActionListWhatICanPublish extends BaseAction {
 				}
 			}
 		}
-		
-		String cacheKey = ApplicationCache.concreteCacheKey( personName, appId, "publish",	isAnonymous, manager, appManager, appPublisher);
-		Element element = cache.get(cacheKey);
 
-		if ((null != element) && (null != element.getObjectValue())) {
-			wos = (List<Wo>) element.getObjectValue();
-			result.setData(wos);
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appId, isAnonymous, manager, appManager, appPublisher );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			result.setData((List<Wo>)optional.get());
 		} else {
 			if (check) {
 				if ( manager || appManager || appPublisher) {
@@ -143,7 +145,8 @@ public class ActionListWhatICanPublish extends BaseAction {
 							wo.setExtContent( categoryInfoServiceAdv.getExtContentWithId( wo.getId() ));
 						}
 						SortTools.asc(wos, "categorySeq");
-						cache.put(new Element(cacheKey, wos));
+						CacheManager.put(cacheCategory, cacheKey, wos);
+						result.setData(wos);
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionCategoryInfoProcess(e, "将查询出来的分类信息对象转换为可输出的数据信息时发生异常。");
@@ -153,7 +156,7 @@ public class ActionListWhatICanPublish extends BaseAction {
 				}
 			}
 		}
-		result.setData(wos);
+
 		return result;
 	}
 	

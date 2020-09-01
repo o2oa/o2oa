@@ -8,6 +8,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Person extends GsonPropertyObject {
 
+	@FieldDescribe("数据库主键")
+	private String id;
 	@FieldDescribe("个人名称")
 	private String name;
 	@FieldDescribe("性别,m:男,f:女,d:未知")
@@ -48,6 +50,16 @@ public class Person extends GsonPropertyObject {
 	private String dingdingId;
 	@FieldDescribe("政务钉钉Id")
 	private String zhengwuDingdingId;
+	@FieldDescribe("华为WeLink id")
+	private String weLinkId;
+
+	public String getWeLinkId() {
+		return weLinkId;
+	}
+
+	public void setWeLinkId(String weLinkId) {
+		this.weLinkId = weLinkId;
+	}
 
 	public String getName() {
 		return name;
@@ -209,4 +221,11 @@ public class Person extends GsonPropertyObject {
 		this.zhengwuDingdingId = zhengwuDingdingId;
 	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 }

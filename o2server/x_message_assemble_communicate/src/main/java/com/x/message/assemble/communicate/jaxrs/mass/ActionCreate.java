@@ -1,7 +1,13 @@
 package com.x.message.assemble.communicate.jaxrs.mass;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.config.WeLink;
+import com.x.base.core.project.message.WeLinkMessage;
+import com.x.message.assemble.communicate.WeLinkConsumeQueue;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -48,7 +54,7 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionEmptyBody();
 			}
 			if ((!Config.qiyeweixin().getEnable()) && (!Config.dingding().getEnable())
-					&& (!Config.zhengwuDingding().getEnable())) {
+					&& (!Config.zhengwuDingding().getEnable()) && (!Config.weLink().getEnable())) {
 				throw new ExceptionDisable();
 			}
 			Mass mass = Wi.copier.copy(wi);
@@ -70,6 +76,9 @@ class ActionCreate extends BaseAction {
 			} else if (Config.zhengwuDingding().getEnable()) {
 				this.zhengwuDingding(business, mass.getBody(), list);
 				mass.setType(Mass.TYPE_ZHENGWUDINGDING);
+			} else if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
+				this.welink(business, mass.getBody(), list);
+				mass.setType(Mass.TYPE_WELINK);
 			}
 			emc.beginTransaction(Mass.class);
 			emc.persist(mass, CheckPersistType.all);
@@ -133,6 +142,64 @@ class ActionCreate extends BaseAction {
 			if (resp.getRetCode() != 0) {
 				throw new ExceptionZhengwuDingdingMessage(resp.getRetCode(), resp.getRetMessage());
 			}
+		}
+	}
+
+	private void welink(Business business, String body, List<List<String>> list) throws Exception {
+		for (List<String> os : list) {
+			List<String> ids = ListTools.extractProperty(business.organization().person().listObject(os),
+					Person.weLinkId_FIELDNAME, String.class, true, true);
+			WeLinkMessage m = new WeLinkMessage();
+			m.setToUserList(ids);
+			m.setMsgRange("0");
+			m.setMsgTitle("消息");
+			m.setMsgContent(body);
+			Date now = new Date();
+			m.setCreateTime(now.getTime()+"");
+			logger.info("welink send body: " + m.toString());
+
+			String address = Config.weLink().getOapiAddress() + "/messages/v3/send";
+			logger.info("welink send url: " + address);
+			List<NameValuePair> heads = new ArrayList<>();
+			heads.add(new NameValuePair(WeLink.WeLink_Auth_Head_Key, Config.weLink().accessToken()));
+			WeLinkMessageResp resp = HttpConnection.postAsObject(address, heads, m.toString(), WeLinkMessageResp.class);
+			if (!"0".equals(resp.getCode())) {
+				throw new ExceptionWeLinkMessage(resp.getCode(), resp.getMessage());
+			}
+		}
+
+
+	}
+
+
+	public static class WeLinkMessageResp {
+
+		private String code;
+		private String message;
+		private List<String> failedUserId;
+
+		public String getCode() {
+			return code;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
+
+		public List<String> getFailedUserId() {
+			return failedUserId;
+		}
+
+		public void setFailedUserId(List<String> failedUserId) {
+			this.failedUserId = failedUserId;
 		}
 	}
 

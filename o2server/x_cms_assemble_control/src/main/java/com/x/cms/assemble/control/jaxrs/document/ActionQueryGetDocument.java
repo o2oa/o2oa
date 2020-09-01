@@ -2,9 +2,12 @@ package com.x.cms.assemble.control.jaxrs.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -68,10 +71,11 @@ public class ActionQueryGetDocument extends BaseAction {
 			}
 		}
 
-		String cacheKey = ApplicationCache.concreteCacheKey( id, "get", isManager, effectivePerson.getDistinguishedName() );
-		Element element = cache.get(cacheKey);
-		if ((null != element) && (null != element.getObjectValue())) {
-			wo = (Wo) element.getObjectValue();
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), id, effectivePerson.getDistinguishedName(), isManager );
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
+
+		if (optional.isPresent()) {
+			wo = (Wo) optional.get();
 			document = wo.getDocument();
 			wrapOutDocument = wo.getDocument();
 			result.setData(wo);
@@ -155,7 +159,7 @@ public class ActionQueryGetDocument extends BaseAction {
 			
 			if (check) {
 				wo.setDocumentLogList(new ArrayList<WoLog>());
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo );
 			}
 		}
 		

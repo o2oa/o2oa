@@ -692,6 +692,13 @@ public class AttendanceStatisticService {
 		Business business =  new Business( emc );
 		return business.getStatisticPersonForMonthFactory().listByUnitYearAndMonth( unitNameList, year, month );
 	}
+	//排除不需要的组织和人员
+	public List<String> listPersonForMonthByUnitYearMonthAndUn(EntityManagerContainer emc, List<String> unitNameList,List<String> unUnitNameList,List<String> personNameList,
+			String year, String month) throws Exception {
+		Business business =  new Business( emc );
+		return business.getStatisticPersonForMonthFactory().listPersonForMonthByUnitYearMonthAndUn( unitNameList,unUnitNameList,personNameList, year, month );
+	}
+	
 	public List<String> listUnitForMonthByUnitYearAndMonth(EntityManagerContainer emc, List<String> unitNameList, String year, String month) throws Exception {
 		Business business =  new Business( emc );
 		return business.getStatisticUnitForMonthFactory().listByUnitYearAndMonth( unitNameList, year, month );

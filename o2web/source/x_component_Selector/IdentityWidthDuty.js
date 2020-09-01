@@ -122,8 +122,8 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
             if (callback) callback.apply(this, [json]);
         }.bind(this), failure, ((typeOf(id)==="string") ? id : id.distinguishedName), async);
     },
-    _newItemSelected: function(data, selector, item){
-        return new MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected(data, selector, item)
+    _newItemSelected: function(data, selector, item, selectedNode){
+        return new MWF.xApplication.Selector.IdentityWidthDuty.ItemSelected(data, selector, item, selectedNode)
     },
     _listItemByPinyin: function(callback, failure, key){
         if (this.options.units.length) key = {"key": key, "unitList": this.options.units};
@@ -193,8 +193,8 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/companyicon.png)");
     },
     loadSub: function(callback){
-        if (!this.loaded  && !this.loading){
-            this.loading = true;
+        if (!this.loaded  && !this.loadingsub){
+            this.loadingsub = true;
             if (this.selector.options.units.length){
                 var action = MWF.Actions.get("x_organization_assemble_express");
                 var data = {"name":this.data.name, "unit":""};
@@ -234,7 +234,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                         if (i>=count){
                             if (!this.loaded) {
                                 this.loaded = true;
-                                this.loading = false;
+                                this.loadingsub = false;
                                 this.itemLoaded = true;
                                 if (callback) callback();
                             }
@@ -259,7 +259,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                             if (i>=count){
                                 if (!this.loaded) {
                                     this.loaded = true;
-                                    this.loading = false;
+                                    this.loadingsub = false;
                                     this.itemLoaded = true;
                                     if (callback) callback();
                                 }
@@ -279,7 +279,7 @@ MWF.xApplication.Selector.IdentityWidthDuty.ItemCategory = new Class({
                         }
                     }.bind(this));
                     this.loaded = true;
-                    this.loading = false;
+                    this.loadingsub = false;
                     if (callback) callback();
                 }.bind(this), null, this.data.name);
             }

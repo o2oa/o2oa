@@ -1,6 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.file;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,7 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -24,21 +27,17 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 import com.x.processplatform.core.entity.element.File_;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 class ActionContent extends StandardJaxrsAction {
-
-	private Ehcache cache = ApplicationCache.instance().getCache(File.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String applicationFlag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, applicationFlag);
-			Element element = cache.get(cacheKey);
-			if (null != element && (null != element.getObjectValue())) {
-				wo = ((Wo) element.getObjectValue());
+			CacheCategory cacheCategory = new CacheCategory(File.class);
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, applicationFlag);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				wo = (Wo) optional.get();
 			} else {
 				Business business = new Business(emc);
 				Application application = business.application().pick(applicationFlag);
@@ -56,7 +55,7 @@ class ActionContent extends StandardJaxrsAction {
 				}
 				wo = new Wo(bs, this.contentType(false, file.getFileName()),
 						this.contentDisposition(false, file.getFileName()));
-				cache.put(new Element(cacheKey, wo));
+				CacheManager.put(cacheCategory, cacheKey, wo);
 			}
 			result.setData(wo);
 			return result;

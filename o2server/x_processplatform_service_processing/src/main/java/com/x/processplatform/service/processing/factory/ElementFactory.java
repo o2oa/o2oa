@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -17,7 +18,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.cache.ApplicationCache;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.ScriptFactory;
@@ -25,9 +28,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Begin_;
 import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Choice;
 import com.x.processplatform.core.entity.element.Delay;
@@ -50,9 +51,6 @@ import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.service.processing.AbstractFactory;
 import com.x.processplatform.service.processing.Business;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-
 public class ElementFactory extends AbstractFactory {
 
 	private static Logger logger = LoggerFactory.getLogger(ElementFactory.class);
@@ -61,50 +59,40 @@ public class ElementFactory extends AbstractFactory {
 		super(business);
 	}
 
-	/* 取得属于指定Process 的设计元素 */
+	// 取得属于指定Process 的设计元素
 	@SuppressWarnings("unchecked")
 	public <T extends JpaObject> List<T> listWithProcess(Class<T> clz, Process process) throws Exception {
 		List<T> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
-		String cacheKey = ApplicationCache.concreteCacheKey("listWithProcess", process.getId(), clz.getName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			Object obj = element.getObjectValue();
-			if (null != obj) {
-				list = (List<T>) obj;
-			}
+		CacheCategory cacheCategory = new CacheCategory(clz);
+		CacheKey cacheKey = new CacheKey("listWithProcess", process.getId());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<T>) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(clz);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<T> cq = cb.createQuery(clz);
-			Root<T> root = cq.from(clz);
-			Predicate p = cb.equal(root.get(Agent.process_FIELDNAME), process.getId());
-			cq.select(root).where(p);
-			List<T> os = em.createQuery(cq).getResultList();
+			List<T> os = this.entityManagerContainer().listEqual(clz, Activity.process_FIELDNAME, process.getId());
 			for (T t : os) {
 				em.detach(t);
 				list.add(t);
 			}
-			/* 将object改为unmodifiable */
+			// 将object改为unmodifiable
 			list = Collections.unmodifiableList(list);
-			cache.put(new Element(cacheKey, list));
+			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends JpaObject> T get(String id, Class<T> clz) throws Exception {
-		Ehcache cache = ApplicationCache.instance().getCache(clz);
+		CacheCategory cacheCategory = new CacheCategory(clz);
+		CacheKey cacheKey = new CacheKey(id);
 		T t = null;
-		String cacheKey = id;
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			t = (T) element.getObjectValue();
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			t = (T) optional.get();
 		} else {
 			t = this.entityManagerContainer().find(id, clz);
-			if (null != t) {
-				cache.put(new Element(cacheKey, t));
-			}
+			CacheManager.put(cacheCategory, cacheKey, t);
 		}
 		return t;
 	}
@@ -189,28 +177,17 @@ public class ElementFactory extends AbstractFactory {
 		}
 	}
 
-	/* 用Process的updateTime作为缓存值 */
+	// 用Process的updateTime作为缓存值
 	public Begin getBeginWithProcess(String id) throws Exception {
 		Begin begin = null;
-		Ehcache cache = ApplicationCache.instance().getCache(Begin.class);
-		String cacheKey = id;
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			begin = (Begin) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(Begin.class);
+		CacheKey cacheKey = new CacheKey("getBeginWithProcess", id);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			begin = (Begin) optional.get();
 		} else {
-			EntityManager em = this.entityManagerContainer().get(Begin.class);
-			Process process = this.get(id, Process.class);
-			if (null != process) {
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Begin> cq = cb.createQuery(Begin.class);
-				Root<Begin> root = cq.from(Begin.class);
-				Predicate p = cb.equal(root.get(Begin_.process), process.getId());
-				List<Begin> list = em.createQuery(cq.where(p)).setMaxResults(1).getResultList();
-				if (!list.isEmpty()) {
-					begin = list.get(0);
-					cache.put(new Element(cacheKey, begin));
-				}
-			}
+			begin = this.entityManagerContainer().firstEqual(Begin.class, Activity.process_FIELDNAME, id);
+			CacheManager.put(cacheCategory, cacheKey, begin);
 		}
 		return begin;
 	}
@@ -218,11 +195,11 @@ public class ElementFactory extends AbstractFactory {
 	@SuppressWarnings("unchecked")
 	public List<Route> listRouteWithChoice(String id) throws Exception {
 		List<Route> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Route.class);
-		String cacheKey = ApplicationCache.concreteCacheKey(id, Choice.class.getCanonicalName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list = (List<Route>) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(Route.class);
+		CacheKey cacheKey = new CacheKey(id, Choice.class.getName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Route>) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(Route.class);
 			Choice choice = this.get(id, Choice.class);
@@ -232,9 +209,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(choice.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				if (!list.isEmpty()) {
-					cache.put(new Element(cacheKey, list));
-				}
+				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
 		return list;
@@ -243,11 +218,11 @@ public class ElementFactory extends AbstractFactory {
 	@SuppressWarnings("unchecked")
 	public List<Route> listRouteWithManual(String id) throws Exception {
 		List<Route> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Manual.class);
-		String cacheKey = ApplicationCache.concreteCacheKey(id, Manual.class.getCanonicalName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list = (List<Route>) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(Route.class);
+		CacheKey cacheKey = new CacheKey(id, Manual.class.getName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Route>) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(Route.class);
 			Manual manual = this.get(id, Manual.class);
@@ -257,9 +232,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(manual.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				if (!list.isEmpty()) {
-					cache.put(new Element(cacheKey, list));
-				}
+				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
 		return list;
@@ -268,11 +241,11 @@ public class ElementFactory extends AbstractFactory {
 	@SuppressWarnings("unchecked")
 	public List<Route> listRouteWithParallel(String id) throws Exception {
 		List<Route> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Parallel.class);
-		String cacheKey = ApplicationCache.concreteCacheKey(id, Parallel.class.getCanonicalName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list = (List<Route>) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(Route.class);
+		CacheKey cacheKey = new CacheKey(id, Parallel.class.getName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Route>) optional.get();
 		} else {
 			EntityManager em = this.entityManagerContainer().get(Route.class);
 			Parallel parallel = this.get(id, Parallel.class);
@@ -282,9 +255,7 @@ public class ElementFactory extends AbstractFactory {
 				Root<Route> root = cq.from(Route.class);
 				Predicate p = root.get(Route_.id).in(parallel.getRouteList());
 				list = em.createQuery(cq.where(p).orderBy(cb.asc(root.get(Route_.orderNumber)))).getResultList();
-				if (!list.isEmpty()) {
-					cache.put(new Element(cacheKey, list));
-				}
+				CacheManager.put(cacheCategory, cacheKey, list);
 			}
 		}
 		return list;
@@ -294,11 +265,11 @@ public class ElementFactory extends AbstractFactory {
 	public List<Script> listScriptNestedWithApplicationWithUniqueName(String applicationId, String uniqueName)
 			throws Exception {
 		List<Script> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Script.class);
-		String cacheKey = applicationId + "." + uniqueName;
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list = (List<Script>) element.getObjectValue();
+		CacheCategory cacheCategory = new CacheCategory(Script.class);
+		CacheKey cacheKey = new CacheKey("listScriptNestedWithApplicationWithUniqueName", applicationId, uniqueName);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list = (List<Script>) optional.get();
 		} else {
 			List<String> names = new ArrayList<>();
 			names.add(uniqueName);
@@ -313,10 +284,8 @@ public class ElementFactory extends AbstractFactory {
 				}
 				names = loops;
 			}
-			if (!list.isEmpty()) {
-				Collections.reverse(list);
-				cache.put(new Element(cacheKey, list));
-			}
+			Collections.reverse(list);
+			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
 	}
@@ -452,15 +421,15 @@ public class ElementFactory extends AbstractFactory {
 		return ListTools.trim(ids, true, true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Mapping> listMappingEffectiveWithApplicationAndProcess(String application, String process)
 			throws Exception {
 		final List<Mapping> list = new ArrayList<>();
-		Ehcache cache = ApplicationCache.instance().getCache(Mapping.class);
-		String cacheKey = ApplicationCache.concreteCacheKey(application, process, Application.class.getName(),
-				Process.class.getName());
-		Element element = cache.get(cacheKey);
-		if (null != element) {
-			list.addAll((List<Mapping>) element.getObjectValue());
+		CacheCategory cacheCategory = new CacheCategory(Mapping.class);
+		CacheKey cacheKey = new CacheKey("listMappingEffectiveWithApplicationAndProcess", application, process);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			list.addAll((List<Mapping>) optional.get());
 		} else {
 			EntityManager em = this.entityManagerContainer().get(Mapping.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -476,20 +445,18 @@ public class ElementFactory extends AbstractFactory {
 			})).forEach((k, v) -> {
 				list.add(v.stream().filter(i -> StringUtils.isNotEmpty(i.getProcess())).findFirst().orElse(v.get(0)));
 			});
-			if (!list.isEmpty()) {
-				cache.put(new Element(cacheKey, list));
-			}
+			CacheManager.put(cacheCategory, cacheKey, list);
 		}
 		return list;
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Activity o, String event) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
-		Ehcache cache = ApplicationCache.instance().getCache(o.getClass());
-		Element element = cache.get(cacheKey);
+		CacheCategory cacheCategory = new CacheCategory(o.getClass());
+		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
-		if (null != element && null != element.getObjectValue()) {
-			compiledScript = (CompiledScript) element.getObjectValue();
+		if (optional.isPresent()) {
+			compiledScript = (CompiledScript) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -606,7 +573,7 @@ public class ElementFactory extends AbstractFactory {
 			default:
 				break;
 			}
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			try {
 				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
@@ -620,7 +587,7 @@ public class ElementFactory extends AbstractFactory {
 				}
 				sb.append("}).apply(bind);");
 				compiledScript = ScriptFactory.compile(sb.toString());
-				cache.put(new Element(cacheKey, compiledScript));
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -629,12 +596,12 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Route o, String event) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
-		Ehcache cache = ApplicationCache.instance().getCache(Route.class);
-		Element element = cache.get(cacheKey);
+		CacheCategory cacheCategory = new CacheCategory(Route.class);
+		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
-		if (null != element && null != element.getObjectValue()) {
-			compiledScript = (CompiledScript) element.getObjectValue();
+		if (optional.isPresent()) {
+			compiledScript = (CompiledScript) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -651,7 +618,7 @@ public class ElementFactory extends AbstractFactory {
 			default:
 				break;
 			}
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			try {
 				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
@@ -665,7 +632,7 @@ public class ElementFactory extends AbstractFactory {
 				}
 				sb.append("}).apply(bind);");
 				compiledScript = ScriptFactory.compile(sb.toString());
-				cache.put(new Element(cacheKey, compiledScript));
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -674,12 +641,12 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(String applicationId, Process o, String event) throws Exception {
-		String cacheKey = ApplicationCache.concreteCacheKey(o.getId(), event);
-		Ehcache cache = ApplicationCache.instance().getCache(Process.class);
-		Element element = cache.get(cacheKey);
+		CacheCategory cacheCategory = new CacheCategory(Process.class);
+		CacheKey cacheKey = new CacheKey("getCompiledScript", applicationId, o.getId(), event);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
-		if (null != element && null != element.getObjectValue()) {
-			compiledScript = (CompiledScript) element.getObjectValue();
+		if (optional.isPresent()) {
+			compiledScript = (CompiledScript) optional.get();
 		} else {
 			String scriptName = null;
 			String scriptText = null;
@@ -723,7 +690,7 @@ public class ElementFactory extends AbstractFactory {
 			default:
 				break;
 			}
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			try {
 				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(scriptName)) {
@@ -737,7 +704,7 @@ public class ElementFactory extends AbstractFactory {
 				}
 				sb.append("}).apply(bind);");
 				compiledScript = ScriptFactory.compile(sb.toString());
-				cache.put(new Element(cacheKey, compiledScript));
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -746,14 +713,14 @@ public class ElementFactory extends AbstractFactory {
 	}
 
 	public CompiledScript getCompiledScript(Activity activity, String event, String name, String code) {
-		String cacheKey = ApplicationCache.concreteCacheKey(activity.getId(), event, name, code);
-		Ehcache cache = ApplicationCache.instance().getCache(activity.getClass());
-		Element element = cache.get(cacheKey);
+		CacheCategory cacheCategory = new CacheCategory(activity.getClass());
+		CacheKey cacheKey = new CacheKey("getCompiledScript", activity.getId(), event, name, code);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		CompiledScript compiledScript = null;
-		if (null != element && null != element.getObjectValue()) {
-			compiledScript = (CompiledScript) element.getObjectValue();
+		if (optional.isPresent()) {
+			compiledScript = (CompiledScript) optional.get();
 		} else {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			try {
 				sb.append("(function(){").append(System.lineSeparator());
 				if (StringUtils.isNotEmpty(code)) {
@@ -761,7 +728,7 @@ public class ElementFactory extends AbstractFactory {
 				}
 				sb.append("}).apply(bind);");
 				compiledScript = ScriptFactory.compile(sb.toString());
-				cache.put(new Element(cacheKey, compiledScript));
+				CacheManager.put(cacheCategory, cacheKey, compiledScript);
 			} catch (Exception e) {
 				logger.error(e);
 			}

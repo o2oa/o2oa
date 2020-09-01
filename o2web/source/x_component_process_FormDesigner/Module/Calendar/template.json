@@ -1,98 +1,107 @@
 {
-	"id": "",
-	"name": "",
-	"type": "Calendar",
-	"description": "",
-	"defaultValue": {
-		"code": "",
-		"html": ""
-	},
-	"range": "single",
-	"selectType": "datetime",
-	"format": "%Y-%m-%d %H:%M:%S",
-    "compute": "create", //create, show, save
-    "section": "no",
-    "sectionBy": "person",
-    "sectionByScript": {
+  "id": "",
+  "name": "",
+  "type": "Calendar",
+  "description": "",
+  "defaultValue": {
+    "code": "",
+    "html": ""
+  },
+  "range": "single",
+  "selectType": "datetime",
+  "format": "%Y-%m-%d %H:%M:%S",
+  "compute": "create",
+  //create, show, save
+  "section": "no",
+  "sectionBy": "person",
+  "sectionByScript": {
+    "code": "",
+    "html": ""
+  },
+  "events": {
+    "queryLoad": {
       "code": "",
       "html": ""
     },
-	"events": {
-	  "queryLoad": {
-		"code": "",
-		"html": ""
-	  },
-	  "postLoad": {
-		"code": "",
-		"html": ""
-	  },
-	  "load": {
-		"code": "",
-		"html": ""
-	  },
-	  "complete": {
-		"code": "",
-		"html": ""
-	  },
-	  "clear": {
-		"code": "",
-		"html": ""
-	  },
-		"click": {
-			"code": "",
-			"html": ""
-		},
-		"dblclick": {
-			"code": "",
-			"html": ""
-		},
-		"change": {
-			"code": "",
-			"html": ""
-		},
-		"keydown": {
-			"code": "",
-			"html": ""
-		},
-		"keypress": {
-			"code": "",
-			"html": ""
-		},
-		"keyup": {
-			"code": "",
-			"html": ""
-		},
-		"mousedown": {
-			"code": "",
-			"html": ""
-		},
-		"mousemove": {
-			"code": "",
-			"html": ""
-		},
-		"mouseout": {
-			"code": "",
-			"html": ""
-		},
-		"mouseover": {
-			"code": "",
-			"html": ""
-		},
-		"mouseup": {
-			"code": "",
-			"html": ""
-		},
-		"focus": {
-			"code": "",
-			"html": ""
-		},
-		"blur": {
-			"code": "",
-			"html": ""
-		}
-	},
-	"properties": {},
-	"class": "",
-	"styles": {},
-	"container": ""
+    "postLoad": {
+      "code": "",
+      "html": ""
+    },
+    "load": {
+      "code": "",
+      "html": ""
+    },
+    "complete": {
+      "code": "",
+      "html": ""
+    },
+    "clear": {
+      "code": "",
+      "html": ""
+    },
+    "show": {
+      "code": "",
+      "html": ""
+    },
+    "hide": {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "dblclick": {
+      "code": "",
+      "html": ""
+    },
+    "change": {
+      "code": "",
+      "html": ""
+    },
+    "keydown": {
+      "code": "",
+      "html": ""
+    },
+    "keypress": {
+      "code": "",
+      "html": ""
+    },
+    "keyup": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mousemove": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    },
+    "focus": {
+      "code": "",
+      "html": ""
+    },
+    "blur": {
+      "code": "",
+      "html": ""
+    }
+  },
+  "properties": {},
+  "class": "",
+  "styles": {},
+  "container": ""
 }

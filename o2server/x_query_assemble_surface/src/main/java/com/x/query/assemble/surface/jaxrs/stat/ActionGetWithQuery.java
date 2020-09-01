@@ -5,7 +5,6 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -13,8 +12,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Stat;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 class ActionGetWithQuery extends BaseAction {
 
@@ -29,17 +29,17 @@ class ActionGetWithQuery extends BaseAction {
 			if (!business.readable(effectivePerson, query)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			String cacheKey = ApplicationCache.concreteCacheKey(this.getClass(), flag, queryFlag);
-			Element element = business.cache().get(cacheKey);
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag, queryFlag);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			Stat stat = null;
-			if ((null != element) && (null != element.getObjectValue())) {
-				stat = (Stat) element.getObjectValue();
+			if (optional.isPresent()) {
+				stat = (Stat) optional.get();
 			} else {
 				String id = business.stat().getWithQuery(flag, query);
 				stat = business.pick(id, Stat.class);
 				if (null != stat) {
 					business.entityManagerContainer().get(Stat.class).detach(stat);
-					business.cache().put(new Element(cacheKey, stat));
+					CacheManager.put(business.cache(), cacheKey, stat);
 				}
 			}
 			if (null == stat) {

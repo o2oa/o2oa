@@ -70,7 +70,7 @@ public class View extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 
-		if ((this.count == null) || (this.count < 1) || (this.count > MAX_COUNT)) {
+		if ((this.count == null) || (this.count < 1)) {
 			this.count = MAX_COUNT;
 		}
 
@@ -81,7 +81,7 @@ public class View extends SliceJpaObject {
 	}
 
 	public Integer getCount() {
-		if ((this.count == null) || (this.count < 1) || (this.count > MAX_COUNT)) {
+		if ((this.count == null) || (this.count < 1)) {
 			return MAX_COUNT;
 		} else {
 			return this.count;

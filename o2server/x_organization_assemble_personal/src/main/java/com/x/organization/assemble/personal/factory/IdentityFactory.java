@@ -14,14 +14,14 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.organization.assemble.personal.AbstractFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.PersistenceProperties;
-
-import net.sf.ehcache.Element;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import java.util.Optional;
 
 public class IdentityFactory extends AbstractFactory {
 
@@ -34,14 +34,13 @@ public class IdentityFactory extends AbstractFactory {
 			return null;
 		}
 		Identity o = null;
-		Element element = this.business.cache().get(flag);
-		if (null != element) {
-			if (null != element.getObjectValue()) {
-				o = (Identity) element.getObjectValue();
-			}
+		CacheKey cacheKey = new CacheKey(this.getClass(), flag);
+		Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+		if (optional.isPresent()) {
+			o = (Identity) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			this.business.cache().put(new Element(flag, o));
+			CacheManager.put(business.cache(), cacheKey, o);
 		}
 		return o;
 	}
@@ -80,14 +79,13 @@ public class IdentityFactory extends AbstractFactory {
 	public List<Identity> pick(List<String> flags) throws Exception {
 		List<Identity> list = new ArrayList<>();
 		for (String str : flags) {
-			Element element = this.business.cache().get(str);
-			if (null != element) {
-				if (null != element.getObjectValue()) {
-					list.add((Identity) element.getObjectValue());
-				}
+			CacheKey cacheKey = new CacheKey(str);
+			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
+			if (optional.isPresent()) {
+				list.add((Identity) optional.get());
 			} else {
 				Identity o = this.pickObject(str);
-				this.business.cache().put(new Element(str, o));
+				CacheManager.put(business.cache(), cacheKey, o);
 				if (null != o) {
 					list.add(o);
 				}

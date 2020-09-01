@@ -72,6 +72,14 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
         this.checkActions();
     },
+    getAttachmentById: function(attId){
+        for( var i=0; i<this.attachments.length; i++ ){
+            if( this.attachments[i].data.id === attId ){
+                return this.attachments[i];
+            }
+        }
+        return null;
+    },
 	loadMax: function(){
         if (!this.node) this.node = new Element("div", {"styles": this.css.container});
 
@@ -710,7 +718,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                     if( !att.data.person && att.data.creatorUid )att.data.person = att.data.creatorUid;
 
-                    if ((!att.data.control.allowControl || !att.data.control.allowEdit) && att.data.person!==user){
+                    if ((!att.data.control.allowControl ) && att.data.person!==user){ //|| !att.data.control.allowEdit
                         flag = false;
                     }
                 }
@@ -1253,7 +1261,7 @@ o2.widget.AttachmentController.Attachment = new Class({
     },
     createInforNode: function(callback){
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1295,7 +1303,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1335,7 +1343,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.textTitleNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1747,7 +1755,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode.set("text", this.data.name);
 
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;
@@ -1802,7 +1810,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
         this.textNode.set("text", this.data.name);
         var size = "";
-        var k = this.data.length/1204;
+        var k = this.data.length/1024;
         if (k>1024){
             var m = k/1024;
             m = Math.round(m*100)/100;

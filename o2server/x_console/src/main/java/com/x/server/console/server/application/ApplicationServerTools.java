@@ -2,6 +2,7 @@ package com.x.server.console.server.application;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
@@ -65,7 +67,6 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -126,7 +127,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.setResourceBase(dir.getAbsolutePath());
 				webApp.setDescriptor(new File(dir, "WEB-INF/web.xml").getAbsolutePath());
 				webApp.setExtraClasspath(calculateExtraClassPath(clz));
-				//webApp.getMimeTypes().addMimeMapping("wcss", "application/json");
+				// webApp.getMimeTypes().addMimeMapping("wcss", "application/json");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
@@ -166,7 +167,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 				webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
 				/* stat */
-				if (applicationServer.getStatEnable()) {
+				if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
 					FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
 					statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
 					webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -187,7 +188,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		Server server = new Server(threadPool);
 		server.setAttribute("maxFormContentSize", applicationServer.getMaxFormContent() * 1024 * 1024);
 
-		if (applicationServer.getSslEnable()) {
+		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
 			addHttpsConnector(server, applicationServer.getPort());
 		} else {
 			addHttpConnector(server, applicationServer.getPort());
@@ -292,7 +293,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void modified(File war, File dir) throws Exception {
+	private static void modified(File war, File dir) throws IOException {
 		File lastModified = new File(dir, "WEB-INF/lastModified");
 		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
 				.toLong(FileUtils.readFileToString(lastModified, DefaultCharset.charset_utf_8), 0))) {
