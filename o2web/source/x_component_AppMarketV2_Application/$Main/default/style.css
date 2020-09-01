@@ -1,0 +1,418 @@
+.o2_appmarket_application_introduce {
+    margin: auto auto;
+    width:100%;
+    min-width: 1280px;
+    min-height: 700px;
+    font-size: 14px;
+    overflow: auto;
+}
+
+.o2_appmarket_application_introduce_top {
+    min-width: 1280px;
+    min-height: 530px;
+    height: 35%;
+    background:rgba(255,255,255,1);
+    border-radius:16px;
+    width:95%;
+    margin:auto auto;
+
+}
+
+.o2_appmarket_application_introduce_iconcontain{
+    width:16%;
+    height:100%;
+    margin:42px 20px 38px 20px;
+    position:relative;
+    float:left;
+}
+.o2_appmarket_application_introduce_icon{
+    width:300px;
+    height:450px;
+    border-radius:16px;    
+    position:absolute;
+    left:0px;
+    top:0px;
+    background-size: cover;
+
+}
+.o2_appmarket_application_introduce_memo{
+    width:60%;
+    height:100%;
+    margin:42px 10px 38px 10px;
+    float:left;
+}
+.o2_appmarket_application_introduce_memo_free{
+    width:34px;
+    height:21px;
+    font-size:16px;
+    font-family:MicrosoftYaHei;
+    color:rgba(74,144,226,1);
+    line-height:21px;    
+}
+.o2_appmarket_application_introduce_memo_name{
+    height:51px;
+    font-size:36px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:47px;
+    overflow:hidden;       
+}
+.o2_appmarket_application_introduce_memo_recommend{
+    width:437px;
+    height:51px;
+    font-size:36px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:47px;       
+}
+.o2_appmarket_application_introduce_memo_remark{
+    width:90%;
+    height:19px;
+    font-size:14px;
+    font-family:MicrosoftYaHei;
+    color:rgba(102,102,102,1);
+    line-height:19px;        
+}
+.o2_appmarket_application_introduce_memo_category{
+    width:90%;
+    height:19px;
+    font-size:14px;
+    font-family:MicrosoftYaHei;
+    color:rgba(153,153,153,1);
+    line-height:19px;
+    margin-top:40px;
+}
+.o2_appmarket_application_introduce_memo_content{
+    width:870px;
+    height:280px;
+    font-size:18px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:30px;
+    overflow: hidden;
+}
+
+.o2_appmarket_application_introduce_memo_remark_inner{
+    float:left;
+    margin:5px 5px;
+}
+
+.o2_appmarket_application_introduce_memo_remark_inner_pic{
+    margin-right:8px;
+    height:19px;
+}
+.o2_appmarket_application_introduce_memo_remark_inner_text{
+    width:22px;
+    height:24px;
+    font-size:18px;
+    font-family:MicrosoftYaHei;
+    color:rgba(102,102,102,1);
+    line-height:24px;   
+    margin-left:8px; 
+}
+.o2_appmarket_application_introduce_download{
+    width:16%;
+    height:100%;
+    margin:42px 10px 38px 10px;
+    float:left;
+}
+.o2_appmarket_application_introduce_download_price{
+    width:88px;
+    height:37px;
+    font-size:28px;
+    font-family:MicrosoftYaHei;
+    color:rgba(74,144,226,1);
+    line-height:37px;
+    margin:0px 0px 20px 20px;  
+}
+.o2_appmarket_application_introduce_download_downbtn{
+    width:240px;
+    height:58px;
+    background:rgba(74,144,226,1);
+    border-radius:30px;
+    text-align: center;      
+}
+.o2_appmarket_application_introduce_download_downbtn_text{
+    width:94px;
+    height:29px;
+    font-size:22px;
+    font-family:MicrosoftYaHei;
+    color:rgba(255,255,255,1);
+    line-height:29px;
+    padding-top:10px;
+    margin:auto auto;        
+}
+.o2_appmarket_application_introduce_download_favbtn{
+    width:240px;
+    height:58px;
+    background:rgba(240,240,240,1);
+    border-radius:30px; 
+    margin-top:58px; 
+    text-align: center;        
+}
+.o2_appmarket_application_introduce_download_favbtn_text{
+    width:143px;
+    height:29px;
+    font-size:22px;
+    font-family:MicrosoftYaHei;
+    color:rgba(102,102,102,1);
+    line-height:29px; 
+    padding-top:10px;
+    margin:auto auto;       
+}
+
+.o2_appmarket_application_introduce_bottom{
+    min-width: 1280px;
+    min-height: 800px;
+    height: 65%;
+    width:70%;
+    margin:auto auto;
+}
+
+.o2_appmarket_application_introduce_tabdiv{
+    height:128px;
+    background:rgba(216,216,216,0); 
+    text-align: center;
+}
+.o2_appmarket_application_introduce_tab_current{
+    color: #4A90E2;
+    border-color: #4A90E2;
+    height:26px;
+    font-size:20px;
+    font-family:MicrosoftYaHei;
+    line-height:26px;
+    margin:40px 20px 40px 20px;
+    cursor: pointer;
+}
+
+.o2_appmarket_appcategory_tab_over {
+    border-bottom: 1px solid rgba(151,151,151,1);
+}
+
+.o2_appmarket_application_introduce_tab{
+    height:26px;
+    font-size:20px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);;
+    line-height:26px;
+    margin:40px 20px 40px 20px;
+    cursor: pointer;
+}
+.o2_appmarket_application_introduce_tab_current{
+    color:rgba(74,144,226,1);
+}
+.o2_appmarket_application_introduce_contentdiv{
+    width:100%;
+    min-height:672px;
+    background:rgba(216,216,216,0);
+    border-radius:6px; 
+    margin:20px 0px 20px 20px; 
+}
+.o2_appmarket_application_introduce_content{
+    width:100%;
+    height:70%;
+}
+.o2_appmarket_application_introduce_picslable{
+    width:200px;
+    height:30px;
+    font-size:28px;
+    font-family:MicrosoftYaHei-Bold,MicrosoftYaHei;
+    font-weight:bold;
+    color:rgba(51,51,51,1);
+    line-height:29px;
+    margin:50px 0px 30px 0px;
+}
+.o2_appmarket_application_introduce_pics{
+    width:100%;
+    height:10%;
+}
+.o2_appmarket_application_introduce_pic{
+    float:left;
+    width:280px;
+    height:158px;
+    margin:0px 20px 20px 0px;
+    border-radius: 16px;
+}
+
+.o2_appmarket_application_comment_top{
+    width:100%;
+    height:300px;
+}
+
+.o2_appmarket_application_comment_top_left{
+    width:19%;
+    height:230px;
+    float:left;
+    margin-right:1%
+}
+.o2_appmarket_application_comment_top_right{
+    width:80%;
+    float:left;
+    height:230px;
+}
+.o2_appmarket_application_comment_top_left_grade{
+    width:90%;
+    height:183px;
+    font-size:150px;
+    font-family:MicrosoftYaHeiLight;
+    color:rgba(51,51,51,1);
+    line-height:213px;
+    margin:auto auto;
+
+}
+.o2_appmarket_application_comment_top_right_graderatio{
+
+}
+.o2_appmarket_application_comment_top_right_graderatioItem{
+    float:left;
+    margin-top:26px;
+    margin-right:5px;
+}
+.o2_appmarket_application_comment_gradetotal{
+    width:85%;
+    height:14px;
+    border-radius:4px;    
+    background:rgba(216,216,216,1);
+    float:left;
+    margin-top:26px;
+    margin-right:5px;
+}
+.o2_appmarket_application_comment_graderatio{
+    width:740px;
+    height:14px;
+    background:rgba(102,102,102,1);
+    border-radius:30px;
+
+}
+.o2_appmarket_application_comment_middle{
+    height:100px;
+    width:98%;
+}
+.o2_appmarket_application_comment_middle_commentbutton{
+    width:200px;
+    height:50px;
+    background:rgba(230,230,230,1);
+    border-radius:30px;  
+    float:left;  
+    text-align:center;
+    position:relative;
+    cursor: pointer;
+}
+.o2_appmarket_application_comment_middle_commentbutton_InnerSpan{
+    width:144px;
+    height:29px;
+    font-size:20px;
+    font-family:MicrosoftYaHei;
+    color:rgba(102,102,102,1);
+    line-height:29px;
+    left:26px;
+    top:5px;
+    position: absolute;
+}
+.o2_appmarket_application_comment_middle_tip{
+    width:420px;
+    height:21px;
+    font-size:16px;
+    font-family:MicrosoftYaHei;
+    color:rgba(102,102,102,1);
+    line-height:21px;
+}
+
+.o2_appmarket_application_comment_bottom{
+    width:98%;
+}
+.o2_appmarket_application_comment_content{
+    width:98%;
+    height:220px;
+    background:rgba(255,255,255,1);
+    border-radius:16px; 
+    margin-top:20px;
+}
+.o2_appmarket_application_comment_content_right{
+    width:68%;
+    height:220px;
+    float:left;
+    margin-top:10px;
+}
+.o2_appmarket_application_comment_content_left_icon{
+    width: 72px;
+    height:72px;
+    float:left;
+    margin:0px 5px auto 10px;
+}
+.o2_appmarket_application_comment_content_left_name{
+    width:147px;
+    height:24px;
+    font-size:18px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:24px;
+    float:left;
+    margin:20px 5px auto 0px;
+
+}
+.o2_appmarket_application_comment_content_left{
+    width:30%;
+    height:220px;
+    float:left;
+    margin-top:10px;
+}
+.o2_appmarket_application_comment_content_title{
+    width:399px;
+    height:26px;
+    font-size:20px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:26px;
+
+}
+.o2_appmarket_application_comment_content_text{
+    width:90%;
+    height:58%;
+    font-size:16px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:21px;
+    overflow: hidden;
+
+}
+.comment_dlg_title{
+    width:60px;
+    height:20px;
+    font-size:15px;
+    font-family:MicrosoftYaHei;
+    color:rgba(51,51,51,1);
+    line-height:20px;
+    margin: 10px 0px 10px 0px;
+}
+.comment_dlg_png{
+    float:left;
+}
+.comment_dlg_input_div{
+    float:left;
+}
+.comment_dlg_input{
+    width:600px;
+    height:200px;
+    background:rgba(255,255,255,1);
+    border-radius:10px;
+    border:1px solid rgba(222,222,222,1);   
+
+}
+.comment_dlg_star{
+    margin-right: 15px;
+    hwidth:21px;
+    height:20px;
+}
+.comment_dlg_button_ok{
+    width:250px;
+    height:40px;
+    background:rgba(74,144,226,1);
+    border-radius:20px;
+}
+.comment_dlg_button_cancel{
+    width:130px;
+    height:40px;
+    background:rgba(240,240,240,1);
+    border-radius:20px;
+}

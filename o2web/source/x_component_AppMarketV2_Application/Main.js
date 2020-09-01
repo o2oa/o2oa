@@ -1,0 +1,328 @@
+MWF.xApplication.AppMarketV2.Application.options.multitask = true;
+MWF.require("MWF.widget.MaskNode", null, false);
+MWF.xApplication.AppMarketV2.Application.Main = new Class({
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+		"mvcStyle": "style.css",
+		"view": "applicationView.html",
+        "name": "AppMarketV2.Application",
+        "icon": "icon.png",
+        "width": "1000",
+        "height": "700",
+        "isResize": true,
+		"isMax": true,
+        "title": MWF.xApplication.AppMarketV2.Application.LP.title,
+        "minHeight": 700
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.AppMarketV2.Application.LP;
+        this.actions = MWF.Actions.load("x_program_center");
+		this.viewPath = this.path+this.options.style+"/"+this.options.view;
+		this.iconPath = this.path+this.options.style+"/icon/";
+		this.collectToken = "";
+        this.collectUrl = "";
+		if (!this.status) {
+        } else {
+            this.options.appid = this.status.appid;
+        }
+		this.appdata = {};
+	},
+	mask: function(){
+        if (!this.maskNode){
+            this.maskNode = new MWF.widget.MaskNode(this.introducenode, {"style": "bam"});
+            this.maskNode.load();
+        }
+    },
+    unmask: function(){
+        if (this.maskNode) this.maskNode.hide(function(){
+            MWF.release(this.maskNode);
+            this.maskNode = null;
+        }.bind(this));
+    },
+    loadApplication: function(callback){
+
+		if (this.collectToken=="" || this.collectUrl==""){
+            //先登录collcect
+            this.actions.CollectAction.login(//平台封装好的方法
+                function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+                    if (json.type && json.type=="success"){
+                        data = json.data; //为变量data赋值
+                        this.collectUrl = data.collectUrl;
+                        this.collectToken = data.collectToken;
+                        this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp}, "module": this}, function(){
+							if (!this.options.isRefresh){
+								this.maxSize(function(){
+									this.loadIntroduce(callback);
+								}.bind(this));
+							}else{
+								this.loadIntroduce(callback);
+							}
+						}.bind(this));
+                    }
+                }.bind(this),null,false //同步执行 
+            );
+		}	
+		
+	},
+	initNodeSize: function(){
+		this.resizeNodeSize();
+		this.addEvent("resize", this.resizeNodeSize.bind(this));
+	},
+	resizeNodeSize: function(){
+		var size = this.content.getSize();
+		var edge = this.introducenode.getEdgeHeight();
+		var height = size.y - edge;
+		if (height<this.options.minHeight) height = this.options.minHeight;
+		this.introducenode.setStyle("height", ""+height+"px");
+	},
+	loadIntroduce:function(callback){
+		debugger;
+		this.initNodeSize();
+		if (this.options.appid){
+			this.actions.MarketAction.get(this.options.appid,function(json){
+				if (json.data && json.data.icon){
+					this.appdata = json.data;
+					var applicationicon = new Element("div",{"class":"o2_appmarket_application_introduce_icon"}).inject(this.applicationintroduceiconcontain);
+					applicationicon.setStyle("background-image", "url(data:image/png;base64,"+this.appdata.icon+")");
+					if (this.applicationintroduceiconcontain.clientWidth<300){
+						applicationicon.setStyle("width",this.applicationintroduceiconcontain.clientWidth);
+						applicationicon.setStyle("height",450*this.applicationintroduceiconcontain.clientWidth/300);
+					}
+					
+					var price=this.appdata.price>0?this.appdata.price+"":"Free";
+					this.applicationintroducememofree.set("text",price);
+					this.applicationintroducememoname.set("text",this.appdata.name);
+					var grade = this.numberFix(this.appdata.grade,1);
+					this.applicationintroducememoremarkgrade.set("text",grade);
+					var intgrade = parseInt(grade);
+					var dotgrade = grade - intgrade;
+					for (var tmpnum=0;tmpnum<intgrade;tmpnum++){
+						new Element("img",{"src":this.iconPath+"blackfiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular)
+					}
+					if (dotgrade>=0.5){
+						new Element("img",{"src":this.iconPath+"halffiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
+						intgrade++;
+					}
+					for (var tmpnum=0;tmpnum<5-intgrade;tmpnum++){
+						new Element("img",{"src":this.iconPath+"whitefiveangular.png","class":"o2_appmarket_application_introduce_memo_remark_inner_pic"}).inject(this.applicationintroducememoremarkiconangular);
+					}
+					if (!this.appdata.commentCount) this.appdata.commentCount=0;					
+					this.applicationintroducememoremarkcommentcount.set("text","共"+this.appdata.commentCount+"个评分")
+					//this.applicationintroducememodownload.set("text",this.appdata.downloadCount);
+					this.applicationintroducememocategory.set("text","分类:"+this.appdata.category);
+					this.applicationintroducememocontent.set("html",this.appdata.abort);
+					this.applicationintroducedownloadprice.set("text","$"+this.appdata.price);
+
+					var bottomtext =this.lp.setup;
+					if (this.appdata.installedVersion && this.appdata.installedVersion!=""){
+						if (this.appdata.installedVersion==this.appdata.version){
+							 bottomtext = this.lp.setupDone;
+						}else{
+							 bottomtext = this.lp.update;
+						}
+					}
+					this.applicationintroducedownloadbtntext.set("text",bottomtext);
+					
+					var _self = this;
+					this.applicationintroducedownloadbtn.store("data",this.appdata);
+					this.applicationintroducedownloadbtn.addEvents({
+						"click": function(e){
+							//updateorinstall application
+							var d = this.retrieve("data");
+							if (d){
+								_self.installapp(e,d);
+							}
+						}
+					})
+					
+					//this.applicationintroducefavbtntext.set("text","下载");
+
+					this.loadIntroduceInfo();
+					
+				}
+				this.fireEvent("load");
+			}.bind(this));
+		}
+		
+		if (callback) callback();
+	},
+    tabover: function(e){
+        e.currentTarget.addClass("o2_appmarket_appcategory_tab_over");
+    },
+    tabout: function(e){
+        e.currentTarget.removeClass("o2_appmarket_appcategory_tab_over");
+        //e.currentTarget.removeClass("mainColor_border").removeClass("mainColor_color");
+	},
+	mouseover:function(){
+		debugger;
+		this.addClass("o2_appmarket_appcategory_tab_over");
+	},
+	mouseout:function(){
+		this.removeClass("o2_appmarket_appcategory_tab_over");
+	},
+	installapp:function(e,d){
+		var p = e.target.getPosition();
+		var tmpe = {"event": {"x": p.x+40, "y": p.y}};
+		var confirmtitle = d.installedVersion==""?this.lp.confirmsetupTitle:this.lp.confirmupdateTitle;
+		var confirmcontent = d.installedVersion==""?this.lp.confirmsetupContent:this.lp.confirmupdateContent;
+		var _self = this;
+		MWF.xDesktop.confirm("warn", tmpe, confirmtitle, confirmcontent, 300, 120, function(){
+			_self.mask();
+			//this.createLoading(this.container,true);  
+			//alert("after createLoading")          
+			_self.actions.MarketAction.installOrUpdate(
+				d.id,
+			function( json ){ 
+				data = json.data; 
+				_self.notice(d.name+" "+_self.lp.setupSuccess, "success");
+				_self.unmask();
+				//this.clearLoading()
+			}.bind(_self),
+			function( json ){ 
+				data = json.data; 
+				debugger;
+				_self.unmask();
+				//this.clearLoading()
+			}.bind(_self),
+				true
+			);
+			this.close();
+		}, function(){
+			this.close();
+		}, null, null, "o2");        
+	},
+
+	loadIntroduceInfo: function(callback){
+		debugger;
+		var _self = this;
+		this.applicationintroducesinfoTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
+		this.applicationintroducesinfoTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
+		this.applicationintroducecontent.set("html","");
+		this.applicationintroducecontent.set("html",this.appdata.abort);
+		this.applicationintroducepicslable.set("html","");
+		this.applicationintroducepics.set("html","")
+		this.applicationintroducepicslable.set("html","屏幕截图");			//截图
+		this.appdata.attList.each(function(peratt,i){
+				if (peratt.type == "image"){
+					picdiv = new Element("img",{"class":"o2_appmarket_application_introduce_pic"}).inject(this.applicationintroducepics);
+					picdiv.setProperty("src", "data:image/png;base64,"+peratt.icon);
+					picdiv.setProperty("data-original",this.collectUrl +'/o2_collect_assemble/jaxrs/attachment/download/'+peratt.id+"?c-token="+this.collectToken);
+					picdiv.setProperty("alt",peratt.name);
+					//picdiv.store("id",peratt.id);
+					/*
+					picdiv.addEvents({
+						"click": function(e){
+							//updateorinstall application
+							var d = this.retrieve("id");
+							if (d){
+								_self.openLargeImage(e,d);
+							}
+						}
+					})
+					*/
+				}
+		}.bind(this));
+		this.loadImgView();
+	},
+	
+	loadImgView:function(){				
+        if(this.viewer) this.viewer.destroy();
+        this.applicationintroducepics.setProperty("id","list");
+        o2.loadCss(this.path+this.options.style+"/viewer.css", this.content,function(){
+            o2.load(this.path+this.options.style+"/viewer.js", function(){
+                this.viewer = new Viewer(document.getElementById('list'), {
+                	url: 'data-original'
+                });                
+            }.bind(this));
+        }.bind(this));           
+	},
+	
+	loadIntroduceDemand:function(callback){
+		debugger;
+		this.applicationintroducedemandTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
+		this.applicationintroducedemandTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
+		this.applicationintroducecontent.set("html","");
+		this.applicationintroducepicslable.set("html","");
+		this.applicationintroducepics.set("html","")
+		this.applicationintroducecontent.set("html",this.appdata.installSteps);
+
+	},
+	loadIntroduceComment:function(callback){
+		debugger;
+		this.applicationintroducecommentTab.getParent().getElements(".o2_appmarket_application_introduce_tab_current").removeClass("mainColor_color").removeClass("o2_appmarket_application_introduce_tab_current").addClass("o2_appmarket_application_introduce_tab");
+		this.applicationintroducecommentTab.removeClass("o2_appmarket_application_introduce_tab").addClass("mainColor_color").addClass("o2_appmarket_application_introduce_tab_current");
+		this.applicationintroducecontent.set("html","");
+		this.applicationintroducepicslable.set("html","");
+		this.applicationintroducepics.set("html","");
+		o2.requireApp("AppMarketV2.Application", "Comment", function(){
+			new MWF.xApplication.AppMarketV2.Application.Comment(this, this.applicationintroducecontent, {
+				"onLoad": function(){if (callback) callback();}
+			});
+		}.bind(this));
+	},
+	/*
+	openLargeImage:function(e,id){
+		//alert(this.collectUrl)
+		if (this.collectUrl=="" || this.collectToken==""){
+			this.actions.CollectAction.login(//平台封装好的方法
+				function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+					if (json.type && json.type=="success"){
+						data = json.data; //为变量data赋值
+						this.collectUrl = data.collectUrl;
+						this.collectToken = data.collectToken;						
+						//download large image by attimageid
+						this.openLargeImageDl(id);
+					}					
+				}.bind(this),null,false //同步执行 	
+			)    
+		}else{
+			this.openLargeImageDl(id);
+		}		
+	},
+	openLargeImageDl:function(id){
+		var downloadurl = this.collectUrl +'/o2_collect_assemble/jaxrs/attachment/download/'+id+"?c-token="+this.collectToken;
+		var content = new Element("div", {"styles": {"overflow": "auto"}});
+				var largepicdiv = new Element("div", {"styles": {"overflow": "hidden"}}).inject(content);
+				new Element("img",{"src":downloadurl}).inject(largepicdiv);
+				o2.DL.open({
+					"title": "",
+					"content": content,
+					"width": 1200,
+					"height": 800,
+					"buttonList": [
+					]
+				});
+	},
+	*/
+	recordStatus: function(){
+	    debugger;
+        return {"appid": this.options.appid};x
+    },
+    numberFix:function(data,n){
+        var numbers = '';
+        // 保留几位小数后面添加几个0
+        for (var i = 0; i < n; i++) {
+            numbers += '0';
+        }
+        var s = 1 + numbers;
+        // 如果是整数需要添加后面的0
+        var spot = "." + numbers;
+        // Math.round四舍五入  
+        //  parseFloat() 函数可解析一个字符串，并返回一个浮点数。
+        var value = Math.round(parseFloat(data) * s) / s;
+        // 从小数点后面进行分割
+        var d = value.toString().split(".");
+        if (d.length == 1) {
+            value = value.toString();
+            return value;
+        }
+        if (d.length > 1) {
+            if (d[1].length < n) {
+                value = value.toString() + "0";
+            }
+            return value;
+        }
+    }
+});
