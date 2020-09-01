@@ -4,6 +4,8 @@ var apps = [
     { "folder": "x_component_ANN", "tasks": ["move", "min"] },
     { "folder": "x_component_AppCenter", "tasks": ["move", "min"] },
     { "folder": "x_component_AppMarket", "tasks": ["move", "min"] },
+    { "folder": "x_component_AppMarketV2", "tasks": ["move", "min"] },
+    { "folder": "x_component_AppMarketV2_Application", "tasks": ["move", "min"] },
     { "folder": "x_component_Attendance", "tasks": ["move", "min"] },
     { "folder": "x_component_BAM", "tasks": ["move", "min"] },
     { "folder": "x_component_Calendar", "tasks": ["move", "min"] },
