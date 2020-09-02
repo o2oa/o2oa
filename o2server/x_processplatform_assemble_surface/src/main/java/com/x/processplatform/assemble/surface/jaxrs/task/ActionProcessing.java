@@ -93,7 +93,7 @@ class ActionProcessing extends BaseAction {
 			if (null == this.work) {
 				throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
 			}
-			if (effectivePerson.isNotPerson(this.task.getPerson())) {
+			if ((!effectivePerson.isCipher()) && effectivePerson.isNotPerson(this.task.getPerson())) {
 				throw new ExceptionAccessDenied(effectivePerson, this.task);
 			}
 			if (StringUtils.isNotEmpty(wi.getRouteName()) || StringUtils.isNotEmpty(wi.getOpinion())
