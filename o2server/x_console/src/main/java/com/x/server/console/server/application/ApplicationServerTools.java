@@ -83,8 +83,8 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
-	private static int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 50;
+	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MAX = 500;
 
 	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
