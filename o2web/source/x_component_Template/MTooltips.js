@@ -904,3 +904,5 @@ var MTooltips = new Class({
         if(callback)callback();
     }
 });
+MWF.xApplication.Template = MWF.xApplication.Template || {};
+MWF.xApplication.Template.MTooltips = MTooltips;

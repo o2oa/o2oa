@@ -694,3 +694,5 @@ MSelector.Tootips = new Class({
         _selector._postCreateItem(listItemNode, data)
     }
 });
+MWF.xApplication.Template = MWF.xApplication.Template || {};
+MWF.xApplication.Template.MSelector = MSelector;
