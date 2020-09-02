@@ -16,6 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.attendancestatistic.WrapInFilterStatisticPersonForMonth;
+import com.x.attendance.assemble.control.service.AttendanceEmployeeConfigServiceAdv;
+import com.x.attendance.assemble.control.service.UserManagerService;
+import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.attendance.entity.StatisticPersonForMonth;
 import com.x.attendance.entity.StatisticPersonForMonth_;
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -416,6 +419,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
 	
+	/**
+	 * 根据组织，统计年月，计算组织内所有员工迟到数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumLateCountByUnitYearAndMonthUn(List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.lateTimes ) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
 	
 	/**
 	 * 根据组织列表，统计年月，计算组织内所有员工出勤天数总和
@@ -437,6 +480,45 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		//查询总数
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onDutyDayCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工出勤天数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Double sumAttendanceDayCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Double> cq = cb.createQuery(Double.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onDutyDayCount) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( sYear == null || sYear.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{
@@ -484,6 +566,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	}
 	
 	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工异常打卡数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumAbNormalDutyCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.abNormalDutyCount) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
 	 * 根据组织列表，统计年月，计算组织内所有员工工时不足次数总和
 	 * @param unitName
 	 * @param sYear
@@ -503,6 +625,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		//查询总数
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.lackOfTimeCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工工时不足次数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumLackOfTimeCountByUnitYearAndMonthUn(List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.lackOfTimeCount) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( sYear == null || sYear.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{
@@ -550,6 +712,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	}
 	
 	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工早退次数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumLeaveEarlyCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.leaveEarlyTimes ) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
 	 * 根据组织列表，统计年月，计算组织内所有员工签退次数总和
 	 * @param unitName
 	 * @param sYear
@@ -569,6 +771,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		//查询总数
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.offDutyTimes ) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工签退次数总和
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumOffDutyCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.offDutyTimes ) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( sYear == null || sYear.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{
@@ -616,6 +858,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 	}
 	
 	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工签到退次数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Long sumOnDutyCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onDutyTimes ) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
 	 * 根据组织列表，统计年月，计算组织内所有员工请假天数总和
 	 * @param unitName
 	 * @param sYear
@@ -635,6 +917,46 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		//查询总数
 		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onSelfHolidayCount) ) );		
 		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工请假天数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Double sumOnSelfHolidayCountByUnitYearAndMonthUn( List<String> unitName, List<String> unUnitNameList,List<String> personNameList,String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}		
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Double> cq = cb.createQuery(Double.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.onSelfHolidayCount) ) );		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( sYear == null || sYear.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{
@@ -670,6 +992,48 @@ public class StatisticPersonForMonthFactory extends AbstractFactory {
 		
 		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
 		
+		if( sYear == null || sYear.isEmpty() ){
+			logger.error( new StatisticYearEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticYear), sYear));
+		}
+		
+		if( sMonth == null || sMonth.isEmpty() ){
+			logger.error( new StatisticMonthEmptyException() );
+		}else{
+			p = cb.and( p, cb.equal( root.get(StatisticPersonForMonth_.statisticMonth), sMonth));
+		}
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+	
+	/**
+	 * 根据组织列表，统计年月，计算组织内所有员工缺勤天数总和(排除不参加考勤的员工)
+	 * @param unitName
+	 * @param sYear
+	 * @param sMonth
+	 * @return
+	 * @throws Exception
+	 */
+	public Double sumAbsenceDayCountByUnitYearAndMonthUn( List<String> unitName,List<String> unUnitNameList,List<String> personNameList, String sYear, String sMonth) throws Exception{
+		if( unitName == null || unitName.size() == 0 ){
+			logger.error( new UnitNamesEmptyException() );
+			return null;
+		}
+		EntityManager em = this.entityManagerContainer().get( StatisticPersonForMonth.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Double> cq = cb.createQuery(Double.class);
+		Root<StatisticPersonForMonth> root = cq.from( StatisticPersonForMonth.class);		
+		//查询总数
+		cq.select( cb.sum( root.get(StatisticPersonForMonth_.absenceDayCount) ) );	
+		
+		Predicate p = root.get(StatisticPersonForMonth_.unitName).in( unitName );
+		
+		if(ListTools.isNotEmpty(unUnitNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.unitName ), cb.literal(unUnitNameList)));
+		}
+		if(ListTools.isNotEmpty(personNameList)){
+			p = cb.and( p, cb.isNotMember(root.get( StatisticPersonForMonth_.employeeName ), cb.literal(personNameList)));
+		}
 		if( sYear == null || sYear.isEmpty() ){
 			logger.error( new StatisticYearEmptyException() );
 		}else{
