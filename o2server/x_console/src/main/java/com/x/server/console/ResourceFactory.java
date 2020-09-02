@@ -14,6 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.util.RolloverFileOutputStream;
 
@@ -52,10 +53,10 @@ public class ResourceFactory {
 			containerEntityNames(sr);
 			stroageContainerEntityNames(sr);
 		}
-		if (Config.logLevel().audit().enable()) {
+		if (BooleanUtils.isTrue(Config.logLevel().audit().enable())) {
 			auditLog();
 		}
-		if (Config.externalDataSources().enable()) {
+		if (BooleanUtils.isTrue(Config.externalDataSources().enable())) {
 			external();
 		} else {
 			internal();
@@ -117,7 +118,7 @@ public class ResourceFactory {
 			/* 增加校验 */
 			dataSource.setTestConnectionOnCheckin(true);
 			dataSource.setAcquireIncrement(0);
-			if (ds.getStatEnable()) {
+			if (BooleanUtils.isTrue(ds.getStatEnable())) {
 				dataSource.setFilters(ds.getStatFilter());
 				Properties properties = new Properties();
 				// property name="connectionProperties" value="druid.stat.slowSqlMillis=5000
@@ -253,7 +254,6 @@ public class ResourceFactory {
 	private static void processPlatformExecutors() throws Exception {
 		ExecutorService[] services = new ExecutorService[Config.processPlatform().getExecutorCount()];
 		for (int i = 0; i < Config.processPlatform().getExecutorCount(); i++) {
-			// services[i] = Executors.newSingleThreadExecutor();
 			services[i] = Executors.newFixedThreadPool(1);
 		}
 

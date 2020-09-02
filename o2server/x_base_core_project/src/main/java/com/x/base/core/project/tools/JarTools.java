@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -19,7 +20,11 @@ import org.apache.commons.lang3.StringUtils;
 public class JarTools {
 
 	private JarTools() {
-	};
+	}
+
+	public static void unjar(byte[] bytes, String sub, Path dist, boolean force) {
+		unjar(bytes, sub, dist.toFile(), force);
+	}
 
 	public static void unjar(byte[] bytes, String sub, String dist, boolean force) {
 		unjar(bytes, sub, new File(dist), force);
@@ -64,6 +69,10 @@ public class JarTools {
 
 	public static void unjar(String source, String sub, String dist, boolean force) {
 		unjar(new File(source), sub, new File(dist), force);
+	}
+
+	public static void unjar(Path source, String sub, Path dist, boolean force) {
+		unjar(source.toFile(), sub, dist.toFile(), force);
 	}
 
 	public static void unjar(File source, String sub, File dist, boolean force) {

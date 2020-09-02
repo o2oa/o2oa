@@ -3,7 +3,6 @@ package com.x.server.console.server;
 import java.io.File;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ import com.x.base.core.project.config.Config;
 public abstract class JettySeverTools {
 
 	protected static void addHttpsConnector(Server server, Integer port) throws Exception {
-		SslContextFactory sslContextFactory = new SslContextFactory();
+		SslContextFactory sslContextFactory = new SslContextFactory.Server();
 		sslContextFactory.setKeyStorePath(Config.sslKeyStore().getAbsolutePath());
 		sslContextFactory.setKeyStorePassword(Config.token().getSslKeyStorePassword());
 		sslContextFactory.setKeyManagerPassword(Config.token().getSslKeyManagerPassword());
@@ -115,11 +114,9 @@ public abstract class JettySeverTools {
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-		if (!com.x.server.console.Main.slf4jOtherImplOn) {
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
-		}
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
 		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
 			jars.add(o.getAbsolutePath());
