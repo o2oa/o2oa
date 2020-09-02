@@ -59,6 +59,9 @@ class ActionGetImported extends BaseAction {
 				}
 				wo.setImportedList(imported);
 				wo.setText(sb.toString());
+				wo.setApplication(application.getId());
+				wo.setAppName(application.getName());
+				wo.setAppAlias(application.getAlias());
 				CacheManager.put(cacheCategory, cacheKey, wo);
 			}
 			result.setData(wo);
@@ -76,6 +79,15 @@ class ActionGetImported extends BaseAction {
 		@FieldDescribe("应用脚本")
 		private List<String> importedList;
 
+		@FieldDescribe("脚本所属应用.")
+		private String application;
+
+		@FieldDescribe("应用名称.")
+		private String appName;
+
+		@FieldDescribe("应用别名.")
+		private String appAlias;
+
 		public List<String> getImportedList() {
 			return importedList;
 		}
@@ -92,6 +104,29 @@ class ActionGetImported extends BaseAction {
 			this.text = text;
 		}
 
+		public String getApplication() {
+			return application;
+		}
+
+		public void setApplication(String application) {
+			this.application = application;
+		}
+
+		public String getAppName() {
+			return appName;
+		}
+
+		public void setAppName(String appName) {
+			this.appName = appName;
+		}
+
+		public String getAppAlias() {
+			return appAlias;
+		}
+
+		public void setAppAlias(String appAlias) {
+			this.appAlias = appAlias;
+		}
 	}
 
 }

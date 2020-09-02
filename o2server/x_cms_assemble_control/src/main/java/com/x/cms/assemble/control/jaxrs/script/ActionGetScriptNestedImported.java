@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.cache.ApplicationCache;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -18,8 +17,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Script;
-
-import net.sf.ehcache.Element;
 
 class ActionGetScriptNestedImported extends BaseAction {
 
@@ -63,6 +60,9 @@ class ActionGetScriptNestedImported extends BaseAction {
 					wrap = new Wo();
 					wrap.setImportedList(imported);
 					wrap.setText(buffer.toString());
+					wrap.setAppId(appInfo.getId());
+					wrap.setAppName(appInfo.getAppName());
+					wrap.setAppAlias(appInfo.getAppAlias());
 					CacheManager.put(cacheCategory, cacheKey, wrap );
 				}
 			} catch (Throwable th) {
@@ -95,6 +95,12 @@ class ActionGetScriptNestedImported extends BaseAction {
 
 		private List<String> importedList;
 
+		private String appId;
+
+		private String appName;
+
+		private String appAlias;
+
 		public List<String> getImportedList() {
 			return importedList;
 		}
@@ -109,6 +115,30 @@ class ActionGetScriptNestedImported extends BaseAction {
 
 		public void setText(String text) {
 			this.text = text;
+		}
+
+		public String getAppId() {
+			return appId;
+		}
+
+		public void setAppId(String appId) {
+			this.appId = appId;
+		}
+
+		public String getAppName() {
+			return appName;
+		}
+
+		public void setAppName(String appName) {
+			this.appName = appName;
+		}
+
+		public String getAppAlias() {
+			return appAlias;
+		}
+
+		public void setAppAlias(String appAlias) {
+			this.appAlias = appAlias;
 		}
 	}
 }
