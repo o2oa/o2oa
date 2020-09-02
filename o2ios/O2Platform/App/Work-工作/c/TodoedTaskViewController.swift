@@ -33,7 +33,11 @@ class TodoedTaskViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = self.todoTask?.title
+        var t = self.todoTask?.title
+        if t == nil || t?.isEmpty == true {
+            t = self.todoTask?.processName ?? ""
+        }
+        title = t
         self.loadTodoedData()
     }
     
@@ -68,14 +72,14 @@ class TodoedTaskViewController: UITableViewController {
         if actionArray != nil {
         for action  in actionArray! {
             if completed {
-                let title = "\(action["title"].stringValue)于\(action["completedTime"].stringValue) 已完成"
+                let title = "[\(action["title"].stringValue)]完成于\(action["completedTime"].stringValue)"
                 let id = action["id"].stringValue
                 let workType = "workCompletedList"
                 let actionModel = TodoedActionModel(destText: title, workType: workType, workId: id)
                 self.todoedActions.append(actionModel)
             }else{
 //                %@于%@ 停留在%@",item[@"title"],item[@"updateTime"],item[@"activityName"]
-                let title = "\(action["title"].stringValue)于\(action["updateTime"].stringValue) 停留在\(action["activityName"].stringValue)"
+                let title = "[\(action["title"].stringValue)]当前在\(action["activityName"].stringValue)"
                 let id = action["id"].stringValue
                 let workType = "workList"
                 let actionModel = TodoedActionModel(destText: title, workType: workType, workId: id)
@@ -92,7 +96,7 @@ class TodoedTaskViewController: UITableViewController {
             if task.fromActivityType == "begin" {
                 continue
             }
-            let activity = task.arrivedActivityName == nil ? task.fromActivityName:task.arrivedActivityName
+            let activity = task.arrivedActivityName == nil ? task.fromActivityName : "\(task.fromActivityName ?? "") -> \(task.arrivedActivityName ?? "")"
             var identity = ""
             if (task.taskCompletedList ==  nil || task.taskCompletedList!.count == 0) {
                 if (task.taskList!.count > 0 ) {
@@ -103,8 +107,7 @@ class TodoedTaskViewController: UITableViewController {
             }else{
                 identity = (task.taskCompletedList![0] as! NSDictionary)["identity"]! as! String;
             }
-            let status = task.routeName == nil ? "当前节点":task.routeName
-//            text22 = task.arrivedTime == nil ? task.fromTime : task.arrivedTime;
+            let status = task.routeName == nil ? "正在处理":"【\(task.routeName ?? "")】"
             let time = task.arrivedTime == nil ? task.fromTime : task.arrivedTime
             identity = identity.components(separatedBy: "@").first ?? ""
             let statusModel = TodoedStatusModel(activity: activity, identity: identity, status: status, statusTime: time)

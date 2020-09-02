@@ -42,7 +42,6 @@ class OOCalendarViewController: UITableViewController {
     @IBOutlet weak var calendarIsOpenSwitch: UISwitch!
     @IBOutlet weak var calendarColorStackView: UIStackView!
     @IBOutlet weak var calendarRemarkField: UITextField!
-    @IBOutlet weak var calendarDeleteBtn: UIButton!
 
 
     @IBOutlet weak var calendarTypeField: UITextField!
@@ -55,18 +54,10 @@ class OOCalendarViewController: UITableViewController {
 
     @IBOutlet weak var calendarIsOpenBtn: UIButton!
 
-    @IBAction func editRemarkBtn(_ sender: Any) {
-        self.performSegue(withIdentifier: "ShowEditRemark", sender: nil)
-    }
+//    @IBAction func editRemarkBtn(_ sender: Any) {
+//        self.performSegue(withIdentifier: "ShowEditRemark", sender: nil)
+//    }
 
-
-
-
-    @IBAction func deleteBtnTap(_ sender: UIButton) {
-        showDefaultConfirm(title: "删除日历", message: "确定要删除当前日历吗，会同时删除该日历下的日程事件？") { (action) in
-            self.deleteCalendar()
-        }
-    }
 
     //选择是否公开
     @IBAction func selectType(_ sender: Any) {
@@ -100,22 +91,18 @@ class OOCalendarViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if calendarInfo != nil && calendarInfo?.id != nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "修改", style: .plain, target: self, action: #selector(tapSave))
+            self.navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(title: "修改保存", style: .plain, target: self, action: #selector(tapSave)),
+                UIBarButtonItem(title: "删除", style: .plain, target: self, action: #selector(tapDelete))
+            ]
             self.navigationItem.title = "修改日历"
+            loadCalendarInfoFromNet()
         } else {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "保存", style: .plain, target: self, action: #selector(tapSave))
             self.navigationItem.title = "新增日历"
+            self.calendarInfo = OOCalendarInfo.init()
         }
         self.tableView.tableFooterView = UIView(frame: CGRect.zero)
-
-        if calendarInfo != nil && calendarInfo?.id != nil {
-            loadCalendarInfoFromNet()
-            calendarDeleteBtn.isHidden = false
-        } else {
-            self.calendarInfo = OOCalendarInfo.init()
-            calendarDeleteBtn.isHidden = true
-        }
-
 
         //隐藏输入法
         calendarNameField.delegate = self
@@ -145,6 +132,11 @@ class OOCalendarViewController: UITableViewController {
         self.view.endEditing(true)
     }
 
+    @objc func tapDelete() {
+        showDefaultConfirm(title: "删除日历", message: "确定要删除当前日历吗，会同时删除该日历下的日程事件？") { (action) in
+            self.deleteCalendar()
+        }
+    }
     @objc func tapSave() {
         hideKeyboard()
         let name = calendarNameField.text
@@ -198,11 +190,13 @@ class OOCalendarViewController: UITableViewController {
     }
     private func deleteCalendar() {
         self.showLoading()
-        viewModel.deleteCalendar(id: (calendarInfo?.id!)!).then { (result) in
+        viewModel.deleteCalendar(id: (calendarInfo?.id!)!)
+        .always {
+            self.hideLoading()
+        }
+        .then { (result) in
             DDLogInfo("删除结果：\(result)")
             self.closeWindow()
-        }.always {
-            self.hideLoading()
         }.catch { (error) in
             DDLogError(error.localizedDescription)
             self.showError(title: "删除日历错误！")
@@ -427,6 +421,7 @@ class OOCalendarViewController: UITableViewController {
 
 
     private func loadCalendarInfoFromNet() {
+        DDLogDebug("loadCalendarInfoFromNet............")
         viewModel.getCalendar(id: (calendarInfo?.id)!)
             .then { (calendar) in
                 self.updateStuffValue(calendar: calendar)
@@ -436,6 +431,7 @@ class OOCalendarViewController: UITableViewController {
     }
 
     private func updateStuffValue(calendar: OOCalendarInfo) {
+        DDLogDebug("updateStuffValue............\(calendar.color)")
         calendarNameField.text = calendar.name
 
         if calendar.type == "UNIT" {

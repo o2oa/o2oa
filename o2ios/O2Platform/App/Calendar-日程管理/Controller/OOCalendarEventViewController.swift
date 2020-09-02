@@ -465,11 +465,11 @@ class OOCalendarEventViewController: UITableViewController {
             event.recurrenceRule = rruleEncode()
             event.valarmTime_config = remindValue == "NONE" ? "" : remindValue
             event.comment = remark
-            viewModel.saveCalendarEvent(event: event).then { (result)  in
+            viewModel.saveCalendarEvent(event: event).always{
+                self.hideLoading()
+            }.then { (result)  in
                 DDLogInfo("保存结果：\(result)")
                 self.closeWindow()
-                }.always{
-                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "保存日程错误！")
@@ -526,33 +526,33 @@ class OOCalendarEventViewController: UITableViewController {
     }
     
     private func updateSingle() {
-        viewModel.updateCalendarEventSingle(id: (eventInfo?.id!)!, event: eventInfo!).then { (result)  in
+        viewModel.updateCalendarEventSingle(id: (eventInfo?.id!)!, event: eventInfo!).always {
+            self.hideLoading()
+        }.then { (result)  in
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
-            }.always{
-                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新单个日程错误！")
         }
     }
     private func updateAfter() {
-        viewModel.updateCalendarEventAfter(id: (eventInfo?.id!)!, event: eventInfo!).then { (result)  in
+        viewModel.updateCalendarEventAfter(id: (eventInfo?.id!)!, event: eventInfo!).always {
+            self.hideLoading()
+        }.then { (result)  in
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
-            }.always{
-                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新after日程错误！")
         }
     }
     private func updateAll() {
-        viewModel.updateCalendarEventAll(id: (eventInfo?.id!)!, event: eventInfo!).then { (result)  in
+        viewModel.updateCalendarEventAll(id: (eventInfo?.id!)!, event: eventInfo!).always {
+            self.hideLoading()
+        }.then { (result)  in
             DDLogInfo("保存结果：\(result)")
             self.closeWindow()
-            }.always{
-                self.hideLoading()
             }.catch { (error) in
                 DDLogError(error.localizedDescription)
                 self.showError(title: "更新all日程错误！")
@@ -581,31 +581,31 @@ class OOCalendarEventViewController: UITableViewController {
         self.showLoading()
         switch type {
         case 0:
-            viewModel.deleteCalendarEventSingle(id: (eventInfo?.id!)!).then { (result)  in
+            viewModel.deleteCalendarEventSingle(id: (eventInfo?.id!)!).always{
+                self.hideLoading()
+            }.then { (result)  in
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
-                }.always{
-                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除Single日程错误！")
             }
         case 1:
-            viewModel.deleteCalendarEventAfter(id: (eventInfo?.id!)!).then { (result)  in
+            viewModel.deleteCalendarEventAfter(id: (eventInfo?.id!)!).always{
+                self.hideLoading()
+            }.then { (result)  in
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
-                }.always{
-                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除After日程错误！")
             }
         case 2:
-            viewModel.deleteCalendarEventAll(id: (eventInfo?.id!)!).then { (result)  in
+            viewModel.deleteCalendarEventAll(id: (eventInfo?.id!)!).always {
+                self.hideLoading()
+            }.then { (result)  in
                 DDLogInfo("删除结果：\(result)")
                 self.closeWindow()
-                }.always{
-                    self.hideLoading()
                 }.catch { (error) in
                     DDLogError(error.localizedDescription)
                     self.showError(title: "删除All日程错误！")
