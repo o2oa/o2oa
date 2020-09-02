@@ -1,5 +1,5 @@
 o2.widget = o2.widget || {};
-o2.widget.css = {};
+o2.widget.css = o2.widget.css || {};
 o2.widget.Common = new Class({
 	Implements: [Options, Events],
 	options: {},
