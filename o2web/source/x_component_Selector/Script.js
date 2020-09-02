@@ -8,7 +8,7 @@ MWF.xApplication.Selector.Script = new Class({
         "title": MWF.xApplication.Selector.LP.selectScript,
         "values": [],
         "names": [],
-        "appType" : ["process","portal"],
+        "appType" : ["process","portal","cms"],
         "expand": false,
         "forceSearchInItem" : true
     },
@@ -50,9 +50,15 @@ MWF.xApplication.Selector.Script = new Class({
                 }.bind(this));
                 for (var application in json) {
                     if (json[application].scriptList && json[application].scriptList.length) {
+                        json[application].scriptList.sort(function (a, b) {
+                            return (a.name||"").localeCompare((b.name||""));
+                        });
                         array.push(json[application]);
                     }
                 }
+                array.sort( function (a, b) {
+                    return (a.name||"").localeCompare((b.name||""));
+                });
 
                 if( this.options.appType.length === 1 ){
                     array.each( function (data) {

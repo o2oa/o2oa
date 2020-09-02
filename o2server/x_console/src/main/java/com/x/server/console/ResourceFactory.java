@@ -30,6 +30,7 @@ import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.config.ExternalDataSource;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.server.console.node.EventQueueExecutor;
@@ -43,7 +44,9 @@ public class ResourceFactory {
 	private static Logger logger = LoggerFactory.getLogger(ResourceFactory.class);
 
 	public static void bind() throws Exception {
-		try (ScanResult sr = new ClassGraph().enableAnnotationInfo().scan()) {
+		try (ScanResult sr = new ClassGraph()
+				.addClassLoader(ClassLoaderTools.urlClassLoader(true, false, true, true, true)).enableAnnotationInfo()
+				.scan()) {
 			node(sr);
 			containerEntities(sr);
 			containerEntityNames(sr);

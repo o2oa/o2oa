@@ -54,9 +54,15 @@ MWF.xApplication.Selector.FormStyle = new Class({
                         }.bind(this));
                         for (var application in json) {
                             if (json[application].scriptList && json[application].scriptList.length) {
+                                json[application].scriptList.sort(function (a, b) {
+                                    return (a.name||"").localeCompare((b.name||""));
+                                });
                                 array.push(json[application]);
                             }
                         }
+                        array.sort( function (a, b) {
+                            return (a.name||"").localeCompare((b.name||""));
+                        });
 
                         var category = this._newItemCategory({
                             name : "自定义样式（脚本）",

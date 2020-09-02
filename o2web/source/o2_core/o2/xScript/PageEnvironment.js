@@ -811,6 +811,24 @@ MWF.xScript.PageEnvironment = function (ev) {
         scriptAction.getScriptByName( application, name, includedScripts, function(json){
             if (json.data){
                 includedScripts.push( key );
+
+                //名称、别名、id
+                json.data.importedList.each( function ( flag ) {
+                    if( type === "portal" ){
+                        includedScripts.push( type + "-" + json.data.portal + "-" + flag );
+                        if( json.data.portalName )includedScripts.push( type + "-" + json.data.portalName + "-" + flag );
+                        if( json.data.portalAlias )includedScripts.push( type + "-" + json.data.portalAlias + "-" + flag );
+                    }else if( type === "cms" ){
+                        includedScripts.push( type + "-" + json.data.appId + "-" + flag );
+                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
+                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                    }else if( type === "process" ){
+                        includedScripts.push( type + "-" + json.data.application + "-" + flag );
+                        if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
+                        if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                    }
+                });
+
                 includedScripts = includedScripts.concat(json.data.importedList);
                 MWF.Macro.exec(json.data.text, this);
                 if (callback) callback.apply(this);

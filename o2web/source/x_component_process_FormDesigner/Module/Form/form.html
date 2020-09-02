@@ -65,7 +65,16 @@
                     <div class="MWFFormSelect" name="printForm"></div>
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">数据字典:</td>
+                <td class="editTableValue">
+                    <div class="MWFDictionarySelect" name="dictionaries"></div>
+                </td>
+            </tr>
         </table>
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999;font-weight:bold;">加载脚本</div>
+        <div class="MWFScriptIncluder" name="scripts"></div>
+
 
 		<!--<div class="MWFArraylist" name="cssLinks" title="CSS引用"></div>-->
 		<!--<div class="MWFArraylist" name="scriptSrc" title="JS引用"></div>-->
@@ -75,10 +84,6 @@
 
         <div class="MWFCssArea" name="css" title="CSS"></div>
 		<!--<div class="MWFScriptArea" name="jsheader" title="JS Header"></div>-->
-
-        <div class="MWFScriptArea" name="validationOpinion" title="校验意见 (S)"></div>
-        <div class="MWFScriptArea" name="validationRoute" title="校验路由 (S)"></div>
-        <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
 
 	</div>
 	<div title="提交" class="MWFTab">
@@ -200,6 +205,11 @@
             <div class="MWFScriptArea" name="afterProcessRedirectScript" title="重定向地址脚本"></div>
             <span>(返回一个URL用于重定向)</span>
         </div>
+
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">校验</div>
+        <div class="MWFScriptArea" name="validationOpinion" title="校验意见 (S)"></div>
+        <div class="MWFScriptArea" name="validationRoute" title="校验路由 (S)"></div>
+        <div class="MWFScriptArea" name="validationFormCustom" title="流转校验 (S)"></div>
 
     </div>
     <div title="操作"  class="MWFTab" style="overflow: hidden; display: text{($.mode=='Mobile')?'block':'none'}">
