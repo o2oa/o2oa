@@ -35,14 +35,14 @@ public class InstrumentationAgent {
 			if (Files.exists(base.resolve(DYNAMIC_JARS))) {
 				load(base, DYNAMIC_JARS);
 			}
-			load(base, STORE_JARS);
-			load(base, COMMONS_EXT);
+			loadWithCfg(base, STORE_JARS);
+			loadWithCfg(base, COMMONS_EXT);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void load(Path base, String sub) throws IOException {
+	private static void loadWithCfg(Path base, String sub) throws IOException {
 		Path dir = base.resolve(sub);
 		Path cfg = dir.resolve(CFG);
 		if (Files.exists(dir) && Files.isDirectory(dir) && Files.exists(cfg) && Files.isRegularFile(cfg)) {
@@ -68,6 +68,25 @@ public class InstrumentationAgent {
 			}
 			for (String name : names) {
 				System.out.println(String.format("can not load jar from %s: %s", sub, name));
+			}
+		} else {
+			throw new IOException(String.format("invalid directory: %s", sub));
+		}
+	}
+
+	private static void load(Path base, String sub) throws IOException {
+		Path dir = base.resolve(sub);
+		if (Files.exists(dir) && Files.isDirectory(dir)) {
+			try (Stream<Path> stream = Files.list(dir)) {
+				stream.filter(
+						o -> o.toString().toLowerCase().endsWith(".zip") || o.toString().toLowerCase().endsWith(".jar"))
+						.forEach(o -> {
+							try {
+								INST.appendToSystemClassLoaderSearch(new JarFile(o.toString()));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						});
 			}
 		} else {
 			throw new IOException(String.format("invalid directory: %s", sub));
