@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Yna-g7-LKp">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -336,10 +336,10 @@
                                                 <constraint firstAttribute="width" constant="16" id="0v3-hp-qId"/>
                                             </constraints>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="申请人" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZKr-jv-hUf">
-                                            <rect key="frame" x="59" y="25.000000000000004" width="107" height="15.666666666666668"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="申请人 -&gt; 核稿" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZKr-jv-hUf">
+                                            <rect key="frame" x="59" y="25.000000000000004" width="196" height="15.666666666666668"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="107" id="0av-YQ-zfd"/>
+                                                <constraint firstAttribute="width" constant="196" id="0av-YQ-zfd"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="13"/>
                                             <color key="textColor" red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -352,13 +352,13 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="申请人身份" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1sJ-rz-ZFy">
-                                            <rect key="frame" x="174" y="26.000000000000004" width="220" height="15.666666666666668"/>
+                                            <rect key="frame" x="263" y="26.000000000000004" width="131" height="15.666666666666668"/>
                                             <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="15"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="状态" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zrc-o6-jGO">
-                                            <rect key="frame" x="99" y="51" width="161" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="【送核稿】" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zrc-o6-jGO">
+                                            <rect key="frame" x="59" y="51" width="161" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="ddj-1s-uER"/>
                                                 <constraint firstAttribute="width" constant="161" id="iCD-8x-Mpe"/>
@@ -369,7 +369,6 @@
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="1sJ-rz-ZFy" firstAttribute="leading" secondItem="zrc-o6-jGO" secondAttribute="leading" constant="75" id="0Vm-Ud-9rI"/>
                                         <constraint firstItem="1sJ-rz-ZFy" firstAttribute="trailing" secondItem="FMH-Ke-HJw" secondAttribute="trailingMargin" id="1GM-sD-cLK"/>
                                         <constraint firstItem="3Ey-5T-s87" firstAttribute="top" secondItem="FMH-Ke-HJw" secondAttribute="topMargin" constant="14" id="AK1-r8-HqO"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="zrc-o6-jGO" secondAttribute="bottom" constant="17" id="AwQ-o8-1Zc"/>
@@ -387,6 +386,7 @@
                                         <constraint firstItem="cyz-8F-h4h" firstAttribute="leading" secondItem="zrc-o6-jGO" secondAttribute="trailing" constant="32" id="jff-ld-CUs"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="ZKr-jv-hUf" secondAttribute="bottom" constant="48.5" id="mkv-jE-3PC"/>
                                         <constraint firstItem="3Ey-5T-s87" firstAttribute="top" secondItem="ZKr-jv-hUf" secondAttribute="top" id="n7P-R7-wjy"/>
+                                        <constraint firstItem="zrc-o6-jGO" firstAttribute="leading" secondItem="ZKr-jv-hUf" secondAttribute="leading" id="tao-3Q-I1s"/>
                                         <constraint firstItem="0rT-J1-BMA" firstAttribute="top" secondItem="FMH-Ke-HJw" secondAttribute="top" id="u6Z-ov-7cF"/>
                                         <constraint firstItem="3Ey-5T-s87" firstAttribute="leading" secondItem="FMH-Ke-HJw" secondAttribute="leadingMargin" constant="9" id="z0H-ba-Zj0"/>
                                     </constraints>
@@ -661,7 +661,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="QJV-sf-Oi5"/>
+        <segue reference="9TQ-Eb-h06"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="icon_daiban" width="38" height="38"/>

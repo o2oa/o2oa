@@ -58,6 +58,8 @@ class OOAttanceTotalController: UITableViewController {
         viewModel.getCheckinCycle(self.year, self.month).then { (cycleDetail) -> Promise<(OOAttandanceAnalyze,[OOAttandanceCheckinTotal])> in
                 self.headerView.requestBean = cycleDetail
                return all(self.viewModel.getCheckinAnalyze(cycleDetail), self.viewModel.getCheckinTotal(cycleDetail))
+            }.always {
+                self.hideLoading()
             }.then { (result) in
                 self.headerView.config(withItem: result.0)
                 let list = result.1
@@ -72,14 +74,10 @@ class OOAttanceTotalController: UITableViewController {
                     }
                     self.models.append(contentsOf: newList)
                 }
-                
-            }.always {
-                self.hideLoading()
                 self.tableView.reloadData()
                 if self.tableView.mj_header.isRefreshing() {
                     self.tableView.mj_header.endRefreshing()
                 }
-                
             }.catch { (myError) in
                 let customError = myError as? OOAppError
                 self.showError(title: (customError?.failureReason)!)

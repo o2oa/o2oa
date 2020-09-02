@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tKt-3P-uQz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tKt-3P-uQz">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -922,16 +922,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请选择类型" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6Nq-Qx-KK4">
-                                                    <rect key="frame" x="16" y="6" width="291" height="32"/>
+                                                    <rect key="frame" x="16" y="6" width="287" height="32"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="calendarType"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GjW-u2-fg5">
-                                                    <rect key="frame" x="319" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="32" id="W9a-KM-Bba"/>
-                                                        <constraint firstAttribute="width" constant="32" id="rno-Bo-Yb6"/>
+                                                        <constraint firstAttribute="width" constant="44" id="rno-Bo-Yb6"/>
                                                     </constraints>
                                                     <state key="normal" title="选择"/>
                                                     <connections>
@@ -942,7 +941,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="6Nq-Qx-KK4" secondAttribute="bottom" constant="6" id="AIZ-wd-7mK"/>
                                                 <constraint firstItem="GjW-u2-fg5" firstAttribute="top" secondItem="EZA-d2-7f1" secondAttribute="top" constant="6" id="MIe-qp-SqM"/>
-                                                <constraint firstAttribute="trailing" secondItem="GjW-u2-fg5" secondAttribute="trailing" constant="24" id="YZn-fx-RPo"/>
+                                                <constraint firstAttribute="trailing" secondItem="GjW-u2-fg5" secondAttribute="trailing" constant="16" id="YZn-fx-RPo"/>
                                                 <constraint firstItem="GjW-u2-fg5" firstAttribute="leading" secondItem="6Nq-Qx-KK4" secondAttribute="trailing" constant="12" id="aCh-YM-UYH"/>
                                                 <constraint firstItem="6Nq-Qx-KK4" firstAttribute="top" secondItem="EZA-d2-7f1" secondAttribute="top" constant="6" id="aY8-2v-BEC"/>
                                                 <constraint firstAttribute="bottom" secondItem="GjW-u2-fg5" secondAttribute="bottom" constant="6" id="dTF-AD-Pg2"/>
@@ -1229,16 +1228,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="选择所属组织" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vpF-O7-lvf">
-                                                    <rect key="frame" x="16" y="6" width="291" height="32"/>
+                                                    <rect key="frame" x="16" y="6" width="287" height="32"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="calendarType"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kae-RP-FyB">
-                                                    <rect key="frame" x="319" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="32" id="Hwl-ng-8iq"/>
-                                                        <constraint firstAttribute="height" constant="32" id="ZuX-YZ-s8I"/>
+                                                        <constraint firstAttribute="width" constant="44" id="Hwl-ng-8iq"/>
                                                     </constraints>
                                                     <state key="normal" title="选择"/>
                                                     <connections>
@@ -1250,7 +1248,7 @@
                                                 <constraint firstItem="vpF-O7-lvf" firstAttribute="top" secondItem="SSH-zn-oXh" secondAttribute="top" constant="6" id="J2T-eN-he2"/>
                                                 <constraint firstItem="kae-RP-FyB" firstAttribute="top" secondItem="SSH-zn-oXh" secondAttribute="top" constant="6" id="Q0R-ZW-QPM"/>
                                                 <constraint firstAttribute="bottom" secondItem="kae-RP-FyB" secondAttribute="bottom" constant="6" id="Q2f-Im-2VI"/>
-                                                <constraint firstAttribute="trailing" secondItem="kae-RP-FyB" secondAttribute="trailing" constant="24" id="S3M-PM-Qan"/>
+                                                <constraint firstAttribute="trailing" secondItem="kae-RP-FyB" secondAttribute="trailing" constant="16" id="S3M-PM-Qan"/>
                                                 <constraint firstItem="kae-RP-FyB" firstAttribute="leading" secondItem="vpF-O7-lvf" secondAttribute="trailing" constant="12" id="ZdW-3y-eX1"/>
                                                 <constraint firstAttribute="bottom" secondItem="vpF-O7-lvf" secondAttribute="bottom" constant="6" id="gkU-as-WY8"/>
                                                 <constraint firstItem="vpF-O7-lvf" firstAttribute="leading" secondItem="SSH-zn-oXh" secondAttribute="leading" constant="16" id="iuw-nj-CGt"/>
@@ -1265,16 +1263,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="选择管理者" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bIB-vr-JmD">
-                                                    <rect key="frame" x="16" y="6" width="291" height="32"/>
+                                                    <rect key="frame" x="16" y="6" width="287" height="32"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="calendarType"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4R-gF-vOd">
-                                                    <rect key="frame" x="319" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="32" id="L1T-hn-46f"/>
-                                                        <constraint firstAttribute="height" constant="32" id="TkP-zZ-3HE"/>
+                                                        <constraint firstAttribute="width" constant="44" id="L1T-hn-46f"/>
                                                     </constraints>
                                                     <state key="normal" title="选择"/>
                                                     <connections>
@@ -1285,7 +1282,7 @@
                                             <constraints>
                                                 <constraint firstItem="bIB-vr-JmD" firstAttribute="leading" secondItem="iOf-91-Mpo" secondAttribute="leading" constant="16" id="4ou-CN-BP7"/>
                                                 <constraint firstAttribute="bottom" secondItem="m4R-gF-vOd" secondAttribute="bottom" constant="6" id="LoN-Hb-nig"/>
-                                                <constraint firstAttribute="trailing" secondItem="m4R-gF-vOd" secondAttribute="trailing" constant="24" id="UfC-cM-iMM"/>
+                                                <constraint firstAttribute="trailing" secondItem="m4R-gF-vOd" secondAttribute="trailing" constant="16" id="UfC-cM-iMM"/>
                                                 <constraint firstItem="m4R-gF-vOd" firstAttribute="top" secondItem="iOf-91-Mpo" secondAttribute="top" constant="6" id="XNp-6R-SxO"/>
                                                 <constraint firstItem="m4R-gF-vOd" firstAttribute="leading" secondItem="bIB-vr-JmD" secondAttribute="trailing" constant="12" id="cd8-WC-7bV"/>
                                                 <constraint firstItem="bIB-vr-JmD" firstAttribute="top" secondItem="iOf-91-Mpo" secondAttribute="top" constant="6" id="yY4-uT-gAH"/>
@@ -1301,16 +1298,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="选择可见范围" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5RB-dp-23j">
-                                                    <rect key="frame" x="16" y="6" width="291" height="32"/>
+                                                    <rect key="frame" x="16" y="6" width="287" height="32"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="calendarType"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yrc-Ws-oZH">
-                                                    <rect key="frame" x="319" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="32" id="Xvt-5E-w3M"/>
-                                                        <constraint firstAttribute="width" constant="32" id="qzS-jN-n7Y"/>
+                                                        <constraint firstAttribute="width" constant="44" id="qzS-jN-n7Y"/>
                                                     </constraints>
                                                     <state key="normal" title="选择"/>
                                                     <connections>
@@ -1325,7 +1321,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="5RB-dp-23j" secondAttribute="bottom" constant="6" id="ggd-Id-8Ql"/>
                                                 <constraint firstAttribute="bottom" secondItem="Yrc-Ws-oZH" secondAttribute="bottom" constant="6" id="nG1-Sd-yel"/>
                                                 <constraint firstItem="Yrc-Ws-oZH" firstAttribute="top" secondItem="08M-eV-Wtw" secondAttribute="top" constant="6" id="olv-zV-pqA"/>
-                                                <constraint firstAttribute="trailing" secondItem="Yrc-Ws-oZH" secondAttribute="trailing" constant="24" id="zUH-nC-fcT"/>
+                                                <constraint firstAttribute="trailing" secondItem="Yrc-Ws-oZH" secondAttribute="trailing" constant="16" id="zUH-nC-fcT"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1337,16 +1333,15 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="选择可新建范围" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HYK-cG-NOj">
-                                                    <rect key="frame" x="16" y="6" width="291" height="32"/>
+                                                    <rect key="frame" x="16" y="6" width="287" height="32"/>
                                                     <accessibility key="accessibilityConfiguration" identifier="calendarType"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ueU-we-edj">
-                                                    <rect key="frame" x="319" y="6" width="32" height="32"/>
+                                                    <rect key="frame" x="315" y="6" width="44" height="32"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="32" id="LGG-fL-DaH"/>
-                                                        <constraint firstAttribute="height" constant="32" id="WoG-4j-BlE"/>
+                                                        <constraint firstAttribute="width" constant="44" id="LGG-fL-DaH"/>
                                                     </constraints>
                                                     <state key="normal" title="选择"/>
                                                     <connections>
@@ -1358,7 +1353,7 @@
                                                 <constraint firstItem="ueU-we-edj" firstAttribute="top" secondItem="uYh-KG-FIU" secondAttribute="top" constant="6" id="0QB-av-9Fw"/>
                                                 <constraint firstAttribute="bottom" secondItem="ueU-we-edj" secondAttribute="bottom" constant="6" id="1Ed-sZ-eSS"/>
                                                 <constraint firstItem="HYK-cG-NOj" firstAttribute="leading" secondItem="uYh-KG-FIU" secondAttribute="leading" constant="16" id="H6R-aE-WPo"/>
-                                                <constraint firstAttribute="trailing" secondItem="ueU-we-edj" secondAttribute="trailing" constant="24" id="JgJ-Gq-FTQ"/>
+                                                <constraint firstAttribute="trailing" secondItem="ueU-we-edj" secondAttribute="trailing" constant="16" id="JgJ-Gq-FTQ"/>
                                                 <constraint firstItem="HYK-cG-NOj" firstAttribute="top" secondItem="uYh-KG-FIU" secondAttribute="top" constant="6" id="XlS-j1-UkW"/>
                                                 <constraint firstItem="ueU-we-edj" firstAttribute="leading" secondItem="HYK-cG-NOj" secondAttribute="trailing" constant="12" id="i3z-wh-vsK"/>
                                                 <constraint firstAttribute="bottom" secondItem="HYK-cG-NOj" secondAttribute="bottom" constant="6" id="wJ6-a2-pUy"/>
@@ -1399,40 +1394,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="113" id="8mT-v2-Qx8">
-                                        <rect key="frame" x="0.0" y="641" width="375" height="113"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8mT-v2-Qx8" id="87S-Cm-kNa">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="113"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ceC-iW-RJC">
-                                                    <rect key="frame" x="10" y="30" width="343" height="40"/>
-                                                    <color key="backgroundColor" red="0.98431372549999996" green="0.2784313725" blue="0.2784313725" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="40" id="hsv-E0-CNX"/>
-                                                    </constraints>
-                                                    <state key="normal" title="删   除">
-                                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </state>
-                                                    <userDefinedRuntimeAttributes>
-                                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                            <real key="value" value="5"/>
-                                                        </userDefinedRuntimeAttribute>
-                                                    </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <action selector="deleteBtnTap:" destination="6hI-Zf-Dol" eventType="touchUpInside" id="Xes-eC-VfF"/>
-                                                        <action selector="tapDeleteBtn:" destination="Vxk-45-vB1" eventType="touchUpInside" id="IFP-6l-1ZD"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="ceC-iW-RJC" secondAttribute="trailing" constant="16" id="Hrn-eU-isu"/>
-                                                <constraint firstItem="ceC-iW-RJC" firstAttribute="leading" secondItem="87S-Cm-kNa" secondAttribute="leading" constant="16" id="clh-qU-E5h"/>
-                                                <constraint firstItem="ceC-iW-RJC" firstAttribute="centerY" secondItem="87S-Cm-kNa" secondAttribute="centerY" id="eix-O3-ypw"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -1443,7 +1404,6 @@
                     </tableView>
                     <connections>
                         <outlet property="calendarColorStackView" destination="sc4-ds-up5" id="M83-qQ-5Dg"/>
-                        <outlet property="calendarDeleteBtn" destination="ceC-iW-RJC" id="hSl-e9-yib"/>
                         <outlet property="calendarIsOpenBtn" destination="GjW-u2-fg5" id="qt3-Vs-Ni9"/>
                         <outlet property="calendarIsOpenSwitch" destination="fl8-ZU-9Cp" id="B0z-eA-yDa"/>
                         <outlet property="calendarManagerField" destination="bIB-vr-JmD" id="vj2-pN-AIk"/>

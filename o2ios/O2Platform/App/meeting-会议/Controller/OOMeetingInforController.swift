@@ -78,19 +78,21 @@ class OOMeetingInforController: UIViewController {
 
     func loadData() {
         self.showLoading()
-        all(viewModel.getMeetingsByYearAndMonth(Date()), viewModel.getMeetingByTheDay(Date())).then { (result) in
+        all(viewModel.getMeetingsByYearAndMonth(Date()), viewModel.getMeetingByTheDay(Date()))
+            .always {
+                self.hideLoading()
+                if self.tableView.mj_header.isRefreshing() {
+                    self.tableView.mj_header.endRefreshing()
+                }
+                //self.tableView.reloadData()
+            }
+        .then { (result) in
             DispatchQueue.main.async {
                 self.headerView.eventsByDate = result.0 as? [String: [OOMeetingInfo]]
                 self.viewModel.theMeetingsByDay.removeAll()
                 self.viewModel.theMeetingsByDay.append(contentsOf: result.1)
                 self.tableView.reloadData()
             }
-        }.always {
-            self.hideLoading()
-            if self.tableView.mj_header.isRefreshing() {
-                self.tableView.mj_header.endRefreshing()
-            }
-            //self.tableView.reloadData()
         }.catch { (myerror) in
             let customError = myerror as! OOAppError
             self.showError(title: customError.failureReason ?? "")
@@ -100,10 +102,12 @@ class OOMeetingInforController: UIViewController {
 
     func loadCurrentMonthCalendar(_ theDate: Date?) {
         self.showLoading()
-        viewModel.getMeetingsByYearAndMonth(theDate ?? Date()).then { (resultDict) in
+        viewModel.getMeetingsByYearAndMonth(theDate ?? Date())
+            .always {
+                self.hideLoading()
+            }
+        .then { (resultDict) in
             self.headerView.eventsByDate = resultDict as? [String: [OOMeetingInfo]]
-        }.always {
-            self.hideLoading()
         }.catch { (myerror) in
             let customError = myerror as! OOAppError
             self.showError(title:  customError.failureReason ?? "")
@@ -112,12 +116,12 @@ class OOMeetingInforController: UIViewController {
 
     func loadtheDayMeetingInfo(_ theDate: Date?) {
         self.showLoading()
-        viewModel.getMeetingByTheDay(theDate ?? Date()).then { (infos) in
+        viewModel.getMeetingByTheDay(theDate ?? Date()).always {
+            self.hideLoading()
+        }.then { (infos) in
             self.viewModel.theMeetingsByDay.removeAll()
             self.viewModel.theMeetingsByDay.append(contentsOf: infos)
             self.tableView.reloadData()
-        }.always {
-            self.hideLoading()
         }.catch { (myerror) in
             let customError = myerror as! OOAppError
             self.showError(title:  customError.failureReason ?? "")
