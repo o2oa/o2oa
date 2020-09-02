@@ -1414,22 +1414,24 @@ debugger;
                     "count": 0,
                     "names": typeOf(data)==="array" ? data : [data],
                     "onChange": function(ids){
-                        var d = ids[0].data;
                         var data = [];
-                        ids.each( function (id) {
-                            var d = id.data;
-                            data.push({
-                                "type" : "dictionary",
-                                "name": d.name,
-                                "alias": d.alias,
-                                "id": d.id,
-                                "appName" : d.appName || d.applicationName,
-                                "appId": d.appId,
-                                "application": d.application,
-                                "appType" : d.appType
-                            })
-                        });
                         var name = node.get("name");
+                        if( ids.length > 0 ){
+                            // var d = ids[0].data;
+                            ids.each( function (id) {
+                                var d = id.data;
+                                data.push({
+                                    "type" : "dictionary",
+                                    "name": d.name,
+                                    "alias": d.alias,
+                                    "id": d.id,
+                                    "appName" : d.appName || d.applicationName,
+                                    "appId": d.appId,
+                                    "application": d.application,
+                                    "appType" : d.appType
+                                })
+                            });
+                        }
                         var oldValue = this.data[name];
                         this.data[name] = data;
                         this.changeData(name, node, oldValue);
