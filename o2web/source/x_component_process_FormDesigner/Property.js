@@ -1417,7 +1417,7 @@ debugger;
                         var data = [];
                         var name = node.get("name");
                         if( ids.length > 0 ){
-                            var d = ids[0].data;
+                            // var d = ids[0].data;
                             ids.each( function (id) {
                                 var d = id.data;
                                 data.push({
