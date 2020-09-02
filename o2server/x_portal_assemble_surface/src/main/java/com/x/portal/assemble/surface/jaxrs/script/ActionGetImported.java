@@ -3,6 +3,7 @@ package com.x.portal.assemble.surface.jaxrs.script;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.annotation.FieldDescribe;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -59,6 +60,9 @@ class ActionGetImported extends BaseAction {
 				}
 				wo.setImportedList(imported);
 				wo.setText(buffer.toString());
+				wo.setPortal(portal.getId());
+				wo.setPortalName(portal.getName());
+				wo.setPortalAlias(portal.getAlias());
 				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
@@ -81,6 +85,28 @@ class ActionGetImported extends BaseAction {
 
 		public void setImportedList(List<String> importedList) {
 			this.importedList = importedList;
+		}
+
+		@FieldDescribe("门户应用名称.")
+		private String portalName;
+
+		@FieldDescribe("门户应用别名.")
+		private String portalAlias;
+
+		public String getPortalName() {
+			return portalName;
+		}
+
+		public void setPortalName(String portalName) {
+			this.portalName = portalName;
+		}
+
+		public String getPortalAlias() {
+			return portalAlias;
+		}
+
+		public void setPortalAlias(String portalAlias) {
+			this.portalAlias = portalAlias;
 		}
 	}
 
