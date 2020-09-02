@@ -90,6 +90,18 @@ MWF.xApplication.process.FormDesigner.LP = {
             "selectDefaultTool" : "选择系统操作"
         },
         "isSave": "正在保存，请稍候...",
+        "scriptIncluder" : {
+		    "yes" : "是",
+            "no" : "否",
+		    "selectScript" : "选择脚本：",
+		    "repeatAddScriptNotice" : "请不要重复添加脚本",
+		    "selectScriptNotice" : "请先选择脚本",
+            "asyncLoad" : "异步加载：",
+		    "asyncLoadScript" : "异步加载脚本：",
+            "syncLoadScript" : "同步加载脚本：",
+            "delete_title": "取消加载脚本确认",
+            "delete_text": "您确定要取消加载选择的脚本？"
+        },
         "validation": {
             "validation": "校验",
             "anytime": "任何时候",
