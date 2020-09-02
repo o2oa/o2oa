@@ -148,4 +148,4 @@ if [ -d ${current_dir}/local/update ]; then
 		sudo rm -Rf ${current_dir}/local/update
 	fi
 fi
-sudo setsid ${current_dir}/jvm/raspberrypi/bin/java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms1g -Xmx1g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
+sudo setsid ${current_dir}/jvm/raspberrypi/bin/java -javaagent:${current_dir}/console.jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=20000 -Djava.awt.headless=true -Xms1g -Xmx1g -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -jar ${current_dir}/console.jar
