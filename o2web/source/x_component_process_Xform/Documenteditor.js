@@ -38,6 +38,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }
     },
     load: function(){
+        if (!this.json.isDelay){
+            this.active();
+        }
+    },
+    active: function(){
         this._loadModuleEvents();
         if (this.fireEvent("queryLoad")){
             this.fireEvent("beforeLoad");
@@ -62,7 +67,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this._loadStyles();
 
             this._afterLoaded();
-
         }
     },
 
