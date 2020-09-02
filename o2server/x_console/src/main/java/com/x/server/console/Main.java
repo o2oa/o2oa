@@ -51,88 +51,77 @@ public class Main {
 
 	private static final String MANIFEST_FILENAME = "manifest.cfg";
 	private static final String GITIGNORE_FILENAME = ".gitignore";
-	public static boolean slf4jOtherImplOn = false;
+	private static final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
 
-	public static void main(String[] args) throws Exception {
+	private static final Thread swapCommandThread = new Thread(() -> {
+		// 文件中的命令输出到解析器
+		try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw")) {
+			FileChannel fc = raf.getChannel();
+			MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, 256);
+			byte[] fillBytes = new byte[256];
+			byte[] readBytes = new byte[256];
+			Arrays.fill(fillBytes, (byte) 0);
+			mbb.put(fillBytes);
+			FileLock flock = null;
+			String cmd = "";
+			while (true) {
+				flock = fc.lock();
+				mbb.position(0);
+				mbb.get(readBytes, 0, 256);
+				mbb.position(0);
+				mbb.put(fillBytes);
+				flock.release();
+				if (!Arrays.equals(readBytes, fillBytes)) {
+					cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
+					System.out.println("read command:" + cmd);
+					commandQueue.put(cmd);
+					continue;
+				}
+				Thread.sleep(1500);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	});
+
+	private static final Thread consoleCommandThread = new Thread(() -> {
+		// 将屏幕命令输出到解析器
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+			String cmd = "";
+			while (null != cmd) {
+				cmd = reader.readLine();
+				// 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值
+				if (null != cmd) {
+					commandQueue.put(cmd);
+					continue;
+				}
+				Thread.sleep(5000);
+			}
+		} catch (Exception e) {
+			System.out.println("console input closed!");
+		}
+	});
+
+	private static void init() throws Exception {
 		String base = getBasePath();
 		pid(base);
 		scanWar(base);
-		// loadJars(base);
-		/* getVersion需要FileUtils在后面运行 */
 		cleanTempDir(base);
 		createTempClassesDirectory(base);
-		// LogTools.setSlf4jSimple();
-		try {
-			Main.class.getClassLoader().loadClass("org.slf4j.impl.SimpleLogger");
-			LogTools.setSlf4jSimple();
-		} catch (ClassNotFoundException ex) {
-			System.out.println("ignore:" + ex.getMessage());
-			slf4jOtherImplOn = true;
-		}
-		org.slf4j.impl.StaticLoggerBinder.getSingleton();
+		LogTools.setSlf4jSimple();
+		// org.slf4j.impl.StaticLoggerBinder.getSingleton();
 		SystemOutErrorSideCopyBuilder.start();
 		ResourceFactory.bind();
 		CommandFactory.printStartHelp();
-		/* 以下可以使用Config */
+	}
+
+	public static void main(String[] args) throws Exception {
+		init();
 		if (null == Config.currentNode()) {
 			throw new Exception("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
 		}
-		final LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
-		// try (PipedInputStream pipedInput = new PipedInputStream();
-		// PipedOutputStream pipedOutput = new PipedOutputStream(pipedInput)) {
-		new Thread() {
-			/* 文件中的命令输出到解析器 */
-			public void run() {
-				try (RandomAccessFile raf = new RandomAccessFile(Config.base() + "/command.swap", "rw")) {
-					FileChannel fc = raf.getChannel();
-					MappedByteBuffer mbb = fc.map(MapMode.READ_WRITE, 0, 256);
-					byte[] fillBytes = new byte[256];
-					byte[] readBytes = new byte[256];
-					Arrays.fill(fillBytes, (byte) 0);
-					mbb.put(fillBytes);
-					FileLock flock = null;
-					String cmd = "";
-					while (true) {
-						flock = fc.lock();
-						mbb.position(0);
-						mbb.get(readBytes, 0, 256);
-						mbb.position(0);
-						mbb.put(fillBytes);
-						flock.release();
-						if (!Arrays.equals(readBytes, fillBytes)) {
-							cmd = StringUtils.trim(new String(readBytes, DefaultCharset.charset));
-							System.out.println("read command:" + cmd);
-							commandQueue.put(cmd);
-							continue;
-						}
-						Thread.sleep(1000);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
-		new Thread() {
-			/* 将屏幕命令输出到解析器 */
-			public void run() {
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-					String cmd = "";
-					while (null != cmd) {
-						cmd = reader.readLine();
-						/** 在linux环境中当前端console窗口关闭后会导致可以立即read到一个null的input值 */
-						if (null != cmd) {
-							commandQueue.put(cmd);
-							continue;
-						}
-						Thread.sleep(5000);
-					}
-				} catch (Exception e) {
-					System.out.println("console input closed!");
-				}
-			}
-		}.start();
-
-		/* 启动NodeAgent */
+		swapCommandThread.start();
+		consoleCommandThread.start();
 		if (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())) {
 			NodeAgent nodeAgent = new NodeAgent();
 			nodeAgent.setCommandQueue(commandQueue);
@@ -143,7 +132,7 @@ public class Main {
 		SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
 		Scheduler scheduler = schedulerBuilder.start();
 
-		if (Config.currentNode().autoStart()) {
+		if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
 			startAll();
 		}
 
@@ -246,10 +235,9 @@ public class Main {
 			if (matcher.find()) {
 				exit();
 			}
-
 			System.out.println("unknown command:" + cmd);
 		}
-		/* 关闭定时器 */
+		// 关闭定时器
 		scheduler.shutdown();
 		SystemOutErrorSideCopyBuilder.stop();
 	}
@@ -282,7 +270,7 @@ public class Main {
 
 	private static void startDataServer() {
 		try {
-			if (Servers.dataServerIsRunning()) {
+			if (BooleanUtils.isTrue(Servers.dataServerIsRunning())) {
 				System.out.println("data server is running.");
 			} else {
 				Servers.startDataServer();
@@ -294,7 +282,7 @@ public class Main {
 
 	private static void stopDataServer() {
 		try {
-			if (!Servers.dataServerIsRunning()) {
+			if (BooleanUtils.isFalse(Servers.dataServerIsRunning())) {
 				System.out.println("data server is not running.");
 			} else {
 				Servers.stopDataServer();
@@ -306,7 +294,7 @@ public class Main {
 
 	private static void startStorageServer() {
 		try {
-			if (Servers.storageServerIsRunning()) {
+			if (BooleanUtils.isTrue(Servers.storageServerIsRunning())) {
 				System.out.println("storage server is running.");
 			} else {
 				Servers.startStorageServer();
@@ -318,7 +306,7 @@ public class Main {
 
 	private static void stopStorageServer() {
 		try {
-			if (!Servers.storageServerIsRunning()) {
+			if (BooleanUtils.isFalse(Servers.storageServerIsRunning())) {
 				System.out.println("storage server is not running.");
 			} else {
 				Servers.stopStorageServer();
@@ -330,7 +318,7 @@ public class Main {
 
 	private static void startApplicationServer() {
 		try {
-			if (Servers.applicationServerIsRunning()) {
+			if (BooleanUtils.isTrue(Servers.applicationServerIsRunning())) {
 				System.out.println("application server is running.");
 			} else {
 				Servers.startApplicationServer();
@@ -342,7 +330,7 @@ public class Main {
 
 	private static void stopApplicationServer() {
 		try {
-			if (!Servers.applicationServerIsRunning()) {
+			if (BooleanUtils.isFalse(Servers.applicationServerIsRunning())) {
 				System.out.println("application server is not running.");
 			} else {
 				Servers.stopApplicationServer();
@@ -354,7 +342,7 @@ public class Main {
 
 	private static void startCenterServer() {
 		try {
-			if (Servers.centerServerIsRunning()) {
+			if (BooleanUtils.isTrue(Servers.centerServerIsRunning())) {
 				System.out.println("center server is running.");
 			} else {
 				Servers.startCenterServer();
@@ -366,7 +354,7 @@ public class Main {
 
 	private static void stopCenterServer() {
 		try {
-			if (!Servers.centerServerIsRunning()) {
+			if (BooleanUtils.isFalse(Servers.centerServerIsRunning())) {
 				System.out.println("center server is not running.");
 			} else {
 				Servers.stopCenterServer();
@@ -378,7 +366,7 @@ public class Main {
 
 	private static void startWebServer() {
 		try {
-			if (Servers.webServerIsRunning()) {
+			if (BooleanUtils.isTrue(Servers.webServerIsRunning())) {
 				System.out.println("web server is running.");
 			} else {
 				Servers.startWebServer();
@@ -390,7 +378,7 @@ public class Main {
 
 	private static void stopWebServer() {
 		try {
-			if (!Servers.webServerIsRunning()) {
+			if (BooleanUtils.isFalse(Servers.webServerIsRunning())) {
 				System.out.println("web server is not running.");
 			} else {
 				Servers.stopWebServer();

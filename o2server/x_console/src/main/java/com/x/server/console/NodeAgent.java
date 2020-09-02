@@ -63,13 +63,10 @@ public class NodeAgent extends Thread {
 
 	private static Logger logger = LoggerFactory.getLogger(NodeAgent.class);
 
-	public NodeAgent() {
-	}
-
 	public static final Pattern redeploy_pattern = Pattern.compile("^redeploy:(.+)$", Pattern.CASE_INSENSITIVE);
-	
+
 	public static final Pattern uninstall_pattern = Pattern.compile("^uninstall:(.+)$", Pattern.CASE_INSENSITIVE);
-	
+
 	public static final Pattern syncFile_pattern = Pattern.compile("^syncFile:(.+)$", Pattern.CASE_INSENSITIVE);
 
 	public static final Pattern upload_resource_pattern = Pattern.compile("^uploadResource:(.+)$",
@@ -114,7 +111,7 @@ public class NodeAgent extends Thread {
 								continue;
 							}
 						}
-						
+
 						matcher = syncFile_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							String strCommand = commandObject.getCommand();
@@ -122,7 +119,7 @@ public class NodeAgent extends Thread {
 							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
 							logger.info("收接到同步命令:" + strCommand);
 							String syncFilePath = dis.readUTF();
-							File file  = new File(Config.base(), syncFilePath);
+							File file = new File(Config.base(), syncFilePath);
 							fos = new FileOutputStream(file);
 							byte[] bytes = new byte[1024];
 							int length = 0;
@@ -131,11 +128,11 @@ public class NodeAgent extends Thread {
 								fos.flush();
 							}
 							fos.close();
-                         	logger.info("同步完成");
+							logger.info("同步完成");
 							continue;
 
 						}
-						
+
 						matcher = uninstall_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							String strCommand = commandObject.getCommand();
@@ -145,25 +142,24 @@ public class NodeAgent extends Thread {
 							String filename = dis.readUTF();
 							File tempFile = null;
 							switch (strCommand) {
-								case "customWar":
-									tempFile = Config.dir_custom();
-									break;
-								case "customJar":
-									tempFile = Config.dir_custom_jars();
-									break;
+							case "customWar":
+								tempFile = Config.dir_custom();
+								break;
+							case "customJar":
+								tempFile = Config.dir_custom_jars();
+								break;
 							}
 							logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
 							File file = new File(tempFile.getAbsolutePath() + File.separator + filename);
-							
+
 							filename = filename.substring(0, filename.lastIndexOf("."));
 							// uninstall
-							 boolean result = this.customWarUninstall(filename);
-							 
+							boolean result = this.customWarUninstall(filename);
+
 							logger.info("uninstall:" + result);
 							continue;
 						}
 
-						
 						matcher = redeploy_pattern.matcher(commandObject.getCommand());
 						if (matcher.find()) {
 							String strCommand = commandObject.getCommand();
@@ -173,18 +169,18 @@ public class NodeAgent extends Thread {
 							String filename = dis.readUTF();
 							File tempFile = null;
 							switch (strCommand) {
-								case "storeWar":
-									tempFile = Config.dir_store();
-									break;
-								case "storeJar":
-									tempFile = Config.dir_store_jars();
-									break;
-								case "customWar":
-									tempFile = Config.dir_custom();
-									break;
-								case "customJar":
-									tempFile = Config.dir_custom_jars();
-									break;
+							case "storeWar":
+								tempFile = Config.dir_store();
+								break;
+							case "storeJar":
+								tempFile = Config.dir_store_jars();
+								break;
+							case "customWar":
+								tempFile = Config.dir_custom();
+								break;
+							case "customJar":
+								tempFile = Config.dir_custom_jars();
+								break;
 							}
 							FileTools.forceMkdir(tempFile);
 							logger.info("文件名path:" + tempFile.getAbsolutePath() + File.separator + filename);
@@ -200,7 +196,7 @@ public class NodeAgent extends Thread {
 							bytes = FileUtils.readFileToByteArray(file);
 							filename = filename.substring(0, filename.lastIndexOf("."));
 							// 部署
-							String result = this.redeploy(filename, bytes,true);
+							String result = this.redeploy(filename, bytes, true);
 							logger.info("部署:" + result);
 							continue;
 
@@ -242,28 +238,28 @@ public class NodeAgent extends Thread {
 							strCommand = strCommand.trim();
 							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
 							logger.info("收接到命令:" + strCommand);
-							
-							//为了同步文件
-	                        if (strCommand.indexOf("create encrypt")>-1) {
-	                        	matcher = CommandFactory.create_encrypt_key_pattern.matcher(strCommand);
-	                			if (matcher.find()) {
-	                				try {
-	                					boolean CreateEncryptKey = new ActionCreateEncryptKey().execute();
-	                					if(CreateEncryptKey) {
-	                						dos.writeUTF("Create Encrypt Key true");
-	                						dos.flush();
-	                					}else {
-	                						dos.writeUTF("Create Encryp tKey false");
-	                						dos.flush();
-	                					}
-	                				} catch (Exception e) {
-	                					e.printStackTrace();
-	                				}
-	                			}
-							}else {
-							    commandQueue.add(strCommand);
+
+							// 为了同步文件
+							if (strCommand.indexOf("create encrypt") > -1) {
+								matcher = CommandFactory.create_encrypt_key_pattern.matcher(strCommand);
+								if (matcher.find()) {
+									try {
+										boolean CreateEncryptKey = new ActionCreateEncryptKey().execute();
+										if (CreateEncryptKey) {
+											dos.writeUTF("Create Encrypt Key true");
+											dos.flush();
+										} else {
+											dos.writeUTF("Create Encryp tKey false");
+											dos.flush();
+										}
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							} else {
+								commandQueue.add(strCommand);
 							}
-	                        
+
 							continue;
 						}
 
@@ -414,18 +410,18 @@ public class NodeAgent extends Thread {
 		try {
 			logger.print("redeploy:{}.", name);
 			switch (this.type(name)) {
-				case "storeWar":
-					storeWar(name, bytes);
-					break;
-				case "storeJar":
-					storeJar(name, bytes);
-					break;
-				case "customWar":
-					customWar(name, bytes,rebootApp);
-					break;
-				case "customJar":
-					customJar(name, bytes,rebootApp);
-					break;
+			case "storeWar":
+				storeWar(name, bytes);
+				break;
+			case "storeJar":
+				storeJar(name, bytes);
+				break;
+			case "customWar":
+				customWar(name, bytes, rebootApp);
+				break;
+			case "customJar":
+				customJar(name, bytes, rebootApp);
+				break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -485,8 +481,7 @@ public class NodeAgent extends Thread {
 		for (ClassInfo info : classInfos) {
 			contextPaths.add("/" + info.getSimpleName());
 		}
-		
-		
+
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -513,7 +508,7 @@ public class NodeAgent extends Thread {
 				}
 			}
 		}
-		
+
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -542,10 +537,10 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private  boolean customWarUninstall(String simpleName) throws Exception {
+	private boolean customWarUninstall(String simpleName) throws Exception {
 		boolean stop = false;
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
-		//File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
+		// File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -564,12 +559,12 @@ public class NodeAgent extends Thread {
 		}
 		return stop;
 	}
-	
-	private void customWar(String simpleName, byte[] bytes,boolean rebootApp) throws Exception {
+
+	private void customWar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File war = new File(Config.dir_custom(true), simpleName + ".war");
 		File dir = new File(Config.dir_servers_applicationServer_work(), simpleName);
 		FileUtils.writeByteArrayToFile(war, bytes, false);
-		boolean isStartApplication = false;//第一次上传
+		boolean isStartApplication = false;// 第一次上传
 		if (Servers.applicationServerIsRunning()) {
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
@@ -585,15 +580,15 @@ public class NodeAgent extends Thread {
 					}
 				}
 			}
-			
-			if(rebootApp) {
-				if(!isStartApplication) {
-				  customWarPublish(simpleName);
+
+			if (rebootApp) {
+				if (!isStartApplication) {
+					customWarPublish(simpleName);
 				}
 			}
 		}
 	}
-	
+
 	private void customWarPublish(String name) throws Exception {
 		File war = new File(Config.dir_custom(), name + ".war");
 		File dir = new File(Config.dir_servers_applicationServer_work(), name);
@@ -613,11 +608,12 @@ public class NodeAgent extends Thread {
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
 			webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled", "true");
 			webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-			
+
 			/* stat */
 			if (BooleanUtils.isTrue(Config.currentNode().getApplication().getStatEnable())) {
 				FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-				statFilterHolder.setInitParameter("exclusions",  Config.currentNode().getApplication().getStatExclusions());
+				statFilterHolder.setInitParameter("exclusions",
+						Config.currentNode().getApplication().getStatExclusions());
 				webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 				ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 				statServletHolder.setInitParameter("sessionStatEnable", "false");
@@ -625,7 +621,7 @@ public class NodeAgent extends Thread {
 			}
 			/* stat end */
 			logger.print("addHandler {} ", webApp.getDisplayName());
-			
+
 			GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
 			HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
 			hanlderList.addHandler(webApp);
@@ -635,7 +631,7 @@ public class NodeAgent extends Thread {
 		}
 	}
 
-	private void customJar(String simpleName, byte[] bytes,boolean rebootApp) throws Exception {
+	private void customJar(String simpleName, byte[] bytes, boolean rebootApp) throws Exception {
 		File jar = new File(Config.dir_custom_jars(true), simpleName + ".jar");
 		FileUtils.writeByteArrayToFile(jar, bytes, false);
 		List<String> contexts = new ArrayList<>();
@@ -649,7 +645,7 @@ public class NodeAgent extends Thread {
 			for (Handler handler : hanlderList.getHandlers()) {
 				if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 					QuickStartWebApp app = (QuickStartWebApp) handler;
-					if (contexts.contains(app.getContextPath())  ) {
+					if (contexts.contains(app.getContextPath())) {
 						app.stop();
 						logger.print("{} need restart because {} redeployed.", app.getDisplayName(), simpleName);
 						Thread.sleep(3000);
@@ -658,12 +654,12 @@ public class NodeAgent extends Thread {
 					}
 				}
 			}
-			
-			if(rebootApp) {
-				if(!isStartApplication) {
-				  Servers.stopApplicationServer();
-				  Thread.sleep(1000);
-				  Servers.startApplicationServer();
+
+			if (rebootApp) {
+				if (!isStartApplication) {
+					Servers.stopApplicationServer();
+					Thread.sleep(1000);
+					Servers.startApplicationServer();
 				}
 			}
 		}
@@ -671,7 +667,7 @@ public class NodeAgent extends Thread {
 
 	private List<ClassInfo> listModuleDependencyWith(String name) throws Exception {
 		List<ClassInfo> list = new ArrayList<>();
-		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph().addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false,false,false)).enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				Class<?> cls = Class.forName(info.getName());
@@ -690,7 +686,7 @@ public class NodeAgent extends Thread {
 	}
 
 	private ClassInfo scanModuleClassInfo(String name) throws Exception {
-		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
+		try (ScanResult scanResult = new ClassGraph().addClassLoader(ClassLoaderTools.urlClassLoader(true, false, false, false, false)).enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
 				Class<?> clz = Class.forName(info.getName());
@@ -713,7 +709,7 @@ public class NodeAgent extends Thread {
 			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
 		}
 	}
-   
+
 	private static void modified(File war, File dir) throws IOException {
 		File lastModified = new File(dir, "WEB-INF/lastModified");
 		if ((!lastModified.exists()) || lastModified.isDirectory() || (war.lastModified() != NumberUtils
@@ -725,7 +721,7 @@ public class NodeAgent extends Thread {
 			FileUtils.writeStringToFile(lastModified, war.lastModified() + "", DefaultCharset.charset_utf_8, false);
 		}
 	}
-	
+
 	private static String contextParamProject(File dir) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -737,7 +733,7 @@ public class NodeAgent extends Thread {
 		String str = expr.evaluate(doc, XPathConstants.STRING).toString();
 		return StringUtils.trim(str);
 	}
-	
+
 	protected static String calculateExtraClassPath(Class<?> cls, Path... paths) throws Exception {
 		List<String> jars = new ArrayList<>();
 		jars.addAll(calculateExtraClassPathDefault());
@@ -771,7 +767,7 @@ public class NodeAgent extends Thread {
 		}
 		return StringUtils.join(jars, ";");
 	}
-	
+
 	private static List<String> calculateExtraClassPathDefault() throws Exception {
 		List<String> jars = new ArrayList<>();
 		IOFileFilter filter = new WildcardFileFilter(x_base_core_project.class.getSimpleName() + "*.jar");
@@ -783,18 +779,16 @@ public class NodeAgent extends Thread {
 		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-		if (!com.x.server.console.Main.slf4jOtherImplOn) {
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
-			filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
-		}
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("slf4j-simple-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jul-to-slf4j-*.jar"));
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("log4j-*.jar"));
 		/* jersey从AppClassLoader加载 */
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
 		return jars;
 	}
-	
+
 	public static class CommandObject {
 
 		private String command;
