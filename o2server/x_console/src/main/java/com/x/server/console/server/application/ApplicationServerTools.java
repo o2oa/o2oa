@@ -323,6 +323,9 @@ public class ApplicationServerTools extends JettySeverTools {
 				PathUtils.cleanDirectory(dir);
 			}
 			JarTools.unjar(war, "", dir, true);
+			if (!Files.exists(lastModified)) {
+				Files.createFile(Files.createDirectories(lastModified));
+			}
 			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(lastModified).toMillis() + "",
 					DefaultCharset.charset_utf_8, false);
 		}

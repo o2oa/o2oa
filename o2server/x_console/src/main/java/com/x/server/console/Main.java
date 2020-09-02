@@ -82,7 +82,7 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	});
+	}, "swapCommandThread");
 
 	private static final Thread consoleCommandThread = new Thread(() -> {
 		// 将屏幕命令输出到解析器
@@ -100,7 +100,7 @@ public class Main {
 		} catch (Exception e) {
 			System.out.println("console input closed!");
 		}
-	});
+	}, "consoleCommandThread");
 
 	private static void init() throws Exception {
 		String base = getBasePath();
