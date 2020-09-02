@@ -188,7 +188,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         }
     },
     load: function (callback) {
-        debugger;
         this.checkLock();
         this.loadExtendStyle(function () {
             if (this.app) {
@@ -199,7 +198,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }.bind(this));
                     this.app.addEvent("queryClose", function () {
                         this.beforeCloseWork();
-                    }.bind(this))
+                    }.bind(this));
                 }
             }
             if (!this.businessData.control.allowSave) this.setOptions({ "readonly": true });
@@ -219,13 +218,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                 this.fireEvent("queryLoad");
                 if (this.event_resolve){
                     this.event_resolve(function(){
-                        this.loadForm(callback)
+                        this.loadForm(callback);
                     }.bind(this));
                 }else{
                     this.loadForm(callback);
                 }
             }.bind(this));
-        }.bind(this))
+        }.bind(this));
     },
     loadForm: function(callback){
         if (this.lockDataPerson){
@@ -243,6 +242,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     },
     loadExtendStyle: function (callback) {
         if (!this.json.styleConfig || !this.json.styleConfig.extendFile) {
+            if (callback) callback();
+            return;
+        }
+        if (this.json["$version"]=="5.2"){
             if (callback) callback();
             return;
         }

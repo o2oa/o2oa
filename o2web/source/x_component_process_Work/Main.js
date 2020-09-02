@@ -1,3 +1,4 @@
+MWF.xApplication.process.Work.options = Object.clone(o2.xApplication.Common.options);
 MWF.xApplication.process.Work.options.multitask = true;
 MWF.xApplication.process.Work.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
