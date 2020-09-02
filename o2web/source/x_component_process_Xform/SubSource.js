@@ -1,5 +1,5 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-COMMON.AjaxModule.load("JSONTemplate", null, false);
+//COMMON.AjaxModule.load("JSONTemplate", null, false);
 MWF.xApplication.process.Xform.SubSource = MWF.APPSubSource =  new Class({
     Extends: MWF.APP$Module,
     options: {
