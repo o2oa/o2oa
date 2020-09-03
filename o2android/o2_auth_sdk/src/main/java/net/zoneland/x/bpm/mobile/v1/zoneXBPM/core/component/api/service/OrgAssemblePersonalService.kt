@@ -4,6 +4,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ApiResponse
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.IdData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.ValueData
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonJson
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.main.person.PersonPwdForm
 import okhttp3.MultipartBody
 import retrofit2.http.*
 import rx.Observable
@@ -45,4 +46,11 @@ interface OrgAssemblePersonalService {
      */
     @GET("jaxrs/definition/meetingConfig")
     fun getMeetingConfig() : Observable<ApiResponse<String>>
+
+
+    /**
+     * 更新当前用户密码
+     */
+    @PUT("jaxrs/password")
+    fun modifyCurrentPersonPassword(@Body body: PersonPwdForm): Observable<ApiResponse<ValueData>>
 }
