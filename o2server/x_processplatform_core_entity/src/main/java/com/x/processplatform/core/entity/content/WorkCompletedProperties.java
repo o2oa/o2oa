@@ -6,7 +6,6 @@ import java.util.List;
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Script;
 
 public class WorkCompletedProperties extends JsonProperties {
 
@@ -107,6 +106,64 @@ public class WorkCompletedProperties extends JsonProperties {
 
 	public void setMobileRelatedScriptList(List<Script> mobileRelatedScriptList) {
 		this.mobileRelatedScriptList = mobileRelatedScriptList;
+	}
+
+	public static class Script {
+
+		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
+		public static final String TYPE_CMS = "cms";
+		public static final String TYPE_PORTAL = "portal";
+
+		private String id;
+
+		private String alias;
+
+		private String name;
+
+		private String type;
+
+		private String text;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getAlias() {
+			return alias;
+		}
+
+		public void setAlias(String alias) {
+			this.alias = alias;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public void setText(String text) {
+			this.text = text;
+		}
+
 	}
 
 }

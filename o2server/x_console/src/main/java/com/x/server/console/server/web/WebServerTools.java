@@ -1,6 +1,8 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -9,11 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Server;
@@ -27,6 +31,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.google.gson.Gson;
+import com.x.base.core.project.x_program_center;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -104,6 +109,16 @@ public class WebServerTools extends JettySeverTools {
 		}
 		/* stat end */
 		server.setHandler(context);
+
+		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
+			proxyCenter(context);
+		}
+
+		if (BooleanUtils.isTrue(webServer.getProxyApplicationEnable())) {
+			proxyApplication(context, Config.dir_store().toPath());
+			proxyApplication(context, Config.dir_custom().toPath());
+		}
+
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
@@ -115,6 +130,27 @@ public class WebServerTools extends JettySeverTools {
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static void proxyCenter(WebAppContext context) throws Exception {
+		ServletHolder proxyHolder = new ServletHolder(Proxy.class);
+		proxyHolder.setInitParameter("port", Config.currentNode().getCenter().getPort() + "");
+		context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
+	}
+
+	private static void proxyApplication(WebAppContext context, Path path) throws Exception {
+		try (Stream<Path> stream = Files.list(path)) {
+			stream.filter(o -> StringUtils.endsWithIgnoreCase(o.getFileName().toString(), ".war"))
+					.map(Path::getFileName).map(Path::toString).map(FilenameUtils::getBaseName).forEach(o -> {
+						try {
+							ServletHolder proxyHolder = new ServletHolder(Proxy.class);
+							proxyHolder.setInitParameter("port", Config.currentNode().getApplication().getPort() + "");
+							context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
+						} catch (Exception e) {
+							logger.error(e);
+						}
+					});
+		}
 	}
 
 	private static void copyDefaultHtml() throws Exception {
@@ -205,16 +241,16 @@ public class WebServerTools extends JettySeverTools {
 			/* 密码规则 */
 			map.put("passwordRegex", Config.person().getPasswordRegex());
 			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
-			
-		    /*RSA*/
+
+			/* RSA */
 			File publicKeyFile = new File(Config.base(), "config/public.key");
 			if (publicKeyFile.exists() && publicKeyFile.isFile()) {
-					 String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
-					 byte[] publicKeyB = Base64.decodeBase64(publicKey);
-					 publicKey = new String(Base64.encodeBase64(publicKeyB));
-					 map.put("publicKey", publicKey);
+				String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
+				byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				publicKey = new String(Base64.encodeBase64(publicKeyB));
+				map.put("publicKey", publicKey);
 			}
-			
+
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
