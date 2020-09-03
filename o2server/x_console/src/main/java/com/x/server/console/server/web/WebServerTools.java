@@ -141,17 +141,19 @@ public class WebServerTools extends JettySeverTools {
 	private static void proxyApplication(WebAppContext context, Path path) throws Exception {
 		try (Stream<Path> stream = Files.list(path)) {
 			stream.filter(o -> StringUtils.endsWithIgnoreCase(o.getFileName().toString(), ".war"))
-					.map(Path::getFileName).map(Path::toString).map(FilenameUtils::getBaseName).forEach(o -> {
+					.map(Path::getFileName).map(Path::toString).map(FilenameUtils::getBaseName)
+					.filter(o -> !StringUtils.equals(o, x_program_center.class.getSimpleName())).forEach(o -> {
 						try {
 							ServletHolder proxyHolder = new ServletHolder(Proxy.class);
 							proxyHolder.setInitParameter("port", Config.currentNode().getApplication().getPort() + "");
-							context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
+							context.addServlet(proxyHolder, "/" + o + "/*");
 						} catch (Exception e) {
 							logger.error(e);
 						}
 					});
 		}
 	}
+
 
 	private static void copyDefaultHtml() throws Exception {
 		File file = new File(Config.dir_config(), "default.html");
