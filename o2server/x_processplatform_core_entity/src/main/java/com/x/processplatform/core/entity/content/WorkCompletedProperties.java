@@ -28,6 +28,12 @@ public class WorkCompletedProperties extends JsonProperties {
 	@FieldDescribe("合并工作relatedScriptList")
 	private List<Script> relatedScriptList = new ArrayList<>();
 
+	@FieldDescribe("合并工作mobileRelatedFormList")
+	private List<Form> mobileRelatedFormList = new ArrayList<>();
+
+	@FieldDescribe("合并工作relatedScriptList")
+	private List<Script> mobileRelatedScriptList = new ArrayList<>();
+
 	@FieldDescribe("标题")
 	private String title;
 
@@ -85,6 +91,22 @@ public class WorkCompletedProperties extends JsonProperties {
 
 	public void setRelatedScriptList(List<Script> relatedScriptList) {
 		this.relatedScriptList = relatedScriptList;
+	}
+
+	public List<Form> getMobileRelatedFormList() {
+		return mobileRelatedFormList;
+	}
+
+	public void setMobileRelatedFormList(List<Form> mobileRelatedFormList) {
+		this.mobileRelatedFormList = mobileRelatedFormList;
+	}
+
+	public List<Script> getMobileRelatedScriptList() {
+		return mobileRelatedScriptList;
+	}
+
+	public void setMobileRelatedScriptList(List<Script> mobileRelatedScriptList) {
+		this.mobileRelatedScriptList = mobileRelatedScriptList;
 	}
 
 }
