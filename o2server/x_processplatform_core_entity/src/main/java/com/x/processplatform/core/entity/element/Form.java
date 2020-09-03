@@ -16,6 +16,13 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.ContainerTable;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
+import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.jdbc.Index;
+
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -30,13 +37,6 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -228,6 +228,46 @@ public class Form extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + relatedScriptList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> relatedScriptList;
+
+	public static final String mobileRelatedFormList_FIELDNAME = "mobileRelatedFormList";
+	@FieldDescribe("关联移动表单.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ mobileRelatedFormList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ mobileRelatedFormList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mobileRelatedFormList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + mobileRelatedFormList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> mobileRelatedFormList;
+
+	public static final String mobileRelatedScriptList_FIELDNAME = "mobileRelatedScriptList";
+	@FieldDescribe("关联移动脚本.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ mobileRelatedScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ mobileRelatedScriptList_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mobileRelatedScriptList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + mobileRelatedScriptList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> mobileRelatedScriptList;
+
+	public List<String> getMobileRelatedFormList() {
+		return mobileRelatedFormList;
+	}
+
+	public void setMobileRelatedFormList(List<String> mobileRelatedFormList) {
+		this.mobileRelatedFormList = mobileRelatedFormList;
+	}
+
+	public List<String> getMobileRelatedScriptList() {
+		return mobileRelatedScriptList;
+	}
+
+	public void setMobileRelatedScriptList(List<String> mobileRelatedScriptList) {
+		this.mobileRelatedScriptList = mobileRelatedScriptList;
+	}
 
 	public void setCategory(String category) {
 		this.category = category;
