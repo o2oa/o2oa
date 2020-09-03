@@ -1,6 +1,7 @@
 MWF.xDesktop.requireApp("Setting", "Document", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingBase", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingMobile", null, false);
+MWF.xDesktop.requireApp("Setting", "SettingCloud", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingLoginUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingIndexUI", null, false);
 MWF.xDesktop.requireApp("Setting", "SettingModuleUI", null, false);
@@ -9,26 +10,27 @@ MWF.xDesktop.requireApp("Setting", "SettingModuleResource", null, false);
 
 
 MWF.xApplication.Setting.Main = new Class({
-	Extends: MWF.xApplication.Common.Main,
-	Implements: [Options, Events],
+    Extends: MWF.xApplication.Common.Main,
+    Implements: [Options, Events],
 
-	options: {
-		"style": "default",
-		"name": "Setting",
-		"icon": "icon.png",
-		"width": "1020",
-		"height": "660",
-		"title": MWF.xApplication.Setting.LP.title
-	},
-	onQueryLoad: function(){
-		this.lp = MWF.xApplication.Setting.LP;
+    options: {
+        "style": "default",
+        "name": "Setting",
+        "icon": "icon.png",
+        "width": "1020",
+        "height": "660",
+        "title": MWF.xApplication.Setting.LP.title
+    },
+    onQueryLoad: function(){
+        this.lp = MWF.xApplication.Setting.LP;
         this.actions = MWF.Actions.get("x_program_center");
         //this.actions = new MWF.xApplication.Setting.Actions.RestActions();
-	},
-	loadApplication: function(callback){
+    },
+    loadApplication: function(callback){
         this.baseAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         this.uiAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
         this.mobileAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
+        this.cloudAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
 
         this.disposeAreaNode = new Element("div", {"styles": this.css.tabAreaNode}).inject(this.content);
 
@@ -44,8 +46,8 @@ MWF.xApplication.Setting.Main = new Class({
 
             this.basePage = this.tab.addTab(this.baseAreaNode, this.lp.tab_base, false);
             this.uiPage = this.tab.addTab(this.uiAreaNode, this.lp.tab_ui, false);
+            this.cloudPage = this.tab.addTab(this.cloudAreaNode, this.lp.tab_cloud, false);
             this.mobilePage = this.tab.addTab(this.mobileAreaNode, this.lp.tab_mobile, false);
-
             this.disposePage = this.tab.addTab(this.disposeAreaNode, this.lp.tab_dispose, false);
 
             this.basePage.addEvent("postShow", function(){
@@ -59,6 +61,11 @@ MWF.xApplication.Setting.Main = new Class({
             this.mobilePage.addEvent("postShow", function(){
                 if (!this.mobileExplorer) this.mobileExplorer = new MWF.xApplication.Setting.MobileExplorer(this, this.mobileAreaNode);
             }.bind(this));
+
+            this.cloudPage.addEvent("postShow", function(){
+                if (!this.cloudExplorer) this.cloudExplorer = new MWF.xApplication.Setting.CloudExplorer(this, this.cloudAreaNode);
+            }.bind(this));
+
 
             this.disposePage.addEvent("postShow", function(){
                 if (!this.disposeExplorer) this.disposeExplorer = new MWF.xApplication.Setting.DisposeExplorer(this, this.disposeAreaNode);
@@ -98,7 +105,7 @@ MWF.xApplication.Setting.Main = new Class({
         //}.bind(this));
 
         //this.loadApplicationServers();
-	},
+    },
 
 
     loadTitle: function(){
@@ -321,11 +328,6 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
     getNaviJson: function(){
         return [
             {
-                "text": this.app.lp.tab_mobile_connect,
-                "icon": "connect",
-                "action": "loadMobileConnectSetting"
-            },
-            {
                 "text": this.app.lp.tab_mobile_module,
                 "icon": "module",
                 "action": "loadMobileModuleSetting"
@@ -364,14 +366,14 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
 
     },
 
-    loadMobileConnectSetting: function(item){
-        if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
-            this.mobileConnectSetting = new MWF.xApplication.Setting.MobileConnectDocument(this, this.contentAreaNode);
-            item.store("content", this.mobileConnectSetting);
-        }else{
-            this.loadDataBack = function(){this.loadMobileConnectSetting(item)}.bind(this);
-        }
-    },
+    // loadMobileConnectSetting: function(item){
+    //     if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
+    //         this.mobileConnectSetting = new MWF.xApplication.Setting.MobileConnectDocument(this, this.contentAreaNode);
+    //         item.store("content", this.mobileConnectSetting);
+    //     }else{
+    //         this.loadDataBack = function(){this.loadMobileConnectSetting(item)}.bind(this);
+    //     }
+    // },
 
     loadMobileModuleSetting: function(item){
         if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
@@ -390,6 +392,67 @@ MWF.xApplication.Setting.MobileExplorer = new Class({
             this.loadDataBack = function(){this.loadMobileStyleSetting(item)}.bind(this);
         }
     }
+});
+MWF.xApplication.Setting.CloudExplorer = new Class({
+    Extends: MWF.xApplication.Setting.BaseExplorer,
+    initialize: function(app, content){
+        this.app = app;
+        this.lp = this.app.lp;
+        this.container = content;
+        this.actions = this.app.actions;
+        this.css = this.app.css;
+        this.naviItems = [];
+        this.collectData = null;
+        this.personData = null;
+        this.tokenData = null;
+        this.loadDataBack = null;
+        this.load();
+    },
+
+    getNaviJson: function(){
+        return [
+            {
+                "text": this.app.lp.tab_cloud_connect,
+                "icon": "connect",
+                "action": "loadCloudConnectSetting"
+            }
+        ];
+    },
+    getData: function(){
+        var checkData = function(){
+            if (this.proxyData && this.nativeData && this.imagesData){
+                if (this.loadDataBack){
+                    var fun = this.loadDataBack;
+                    this.loadDataBack = null;
+                    fun();
+                }
+            }
+        }.bind(this);
+        this.actions.getProxy(function(json){
+            this.proxyData = json.data;
+            checkData();
+        }.bind(this));
+        this.actions.mobile_currentStyle(function(json){
+            this.nativeData = {"indexType": json.data.indexType, "indexPortal": json.data.indexPortal, "nativeAppList": Array.clone(json.data.nativeAppList)};
+            this.imagesData = {"images": Array.clone(json.data.images)};
+            //this.indexData = {"indexType": json.data.indexType, "indexId": json.data.indexId};
+            this.portalData = {"portalList": Array.clone(json.data.portalList)};
+
+            delete json.data;
+            json = null;
+            checkData();
+        }.bind(this));
+
+    },
+    loadCloudConnectSetting: function(item){
+        if (MWF.AC.isAdministrator()) if (this.proxyData && this.nativeData && this.imagesData){
+            this.mobileConnectSetting = new MWF.xApplication.Setting.CloudConnectDocument(this, this.contentAreaNode);
+            item.store("content", this.mobileConnectSetting);
+        }else{
+            this.loadDataBack = function(){this.loadCloudConnectSetting(item)}.bind(this);
+        }
+    },
+
 });
 MWF.xApplication.Setting.UIExplorer = new Class({
     Extends: MWF.xApplication.Setting.BaseExplorer,
