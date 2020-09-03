@@ -61,8 +61,8 @@ public abstract class EraseContent {
 	protected void run() throws Exception {
 		new Thread(() -> {
 			try {
-				Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, true, true, true,
-						true, Config.dir_local_temp_classes().toPath()));
+				Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false, false, false,
+						false, Config.dir_local_temp_classes().toPath()));
 				logger.print("erase {} content data: start at {}.", name, DateTools.format(start));
 				this.classNames = ListUtils.intersection(this.classNames,
 						(List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES));
@@ -77,7 +77,6 @@ public abstract class EraseContent {
 							persistence.getName(),
 							PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 					EntityManager em = emf.createEntityManager();
-
 					if (DataItem.class.isAssignableFrom(cls)) {
 						Long total = this.estimateItemCount(em, cls);
 						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
@@ -87,6 +86,8 @@ public abstract class EraseContent {
 						logger.print("erase {} content data:{}, total {}.", name, cls.getName(), total);
 						this.erase(cls, em, storageMappings, total);
 					}
+					em.close();
+					emf.close();
 				}
 				Date end = new Date();
 				logger.print("erase {} content data: completed at {}, elapsed {} ms.", name, DateTools.format(end),
