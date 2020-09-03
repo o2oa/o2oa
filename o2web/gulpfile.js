@@ -155,6 +155,7 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/Textfield.js',
             'source/' + path + '/Personfield.js',
             'source/' + path + '/*.js',
+            'source/x_component_process_Work/Processor.js',
             '!source/' + path + '/Office.js'
         ];
         var dest = option.dest+'/' + path + '/';
@@ -356,7 +357,6 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
         var option = thisOptions || options;
         var src = [
             'source/' + path + '/js/base_work_begin.js',
-            'source/' + path + '/js/base.js',
             'source/o2_core/o2/widget/Common.js',
             'source/o2_core/o2/widget/Dialog.js',
             'source/o2_core/o2/widget/UUID.js',
@@ -383,12 +383,12 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xScript/Actions/ScriptActions.js',
             'source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
             'source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
-            'source/x_component_process_Work/Processor.js',
             'source/x_component_Template/MTooltips.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
             'source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
-            'source/' + path + '/js/base_work_end.js'
+            'source/' + path + '/js/base_work_end.js',
+            'source/' + path + '/js/base.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src)
