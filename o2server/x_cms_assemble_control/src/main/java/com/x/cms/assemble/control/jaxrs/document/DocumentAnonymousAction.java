@@ -119,4 +119,29 @@ public class DocumentAnonymousAction extends StandardJaxrsAction{
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容.", action = ActionQueryListWithFilterPaging.class)
+	@PUT
+	@Path("filter/list/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void query_listWithFilterPaging( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+											@JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson( request );
+		ActionResult<List<ActionQueryListWithFilterPaging.Wo>> result = new ActionResult<>();
+		Boolean check = true;
+
+		if( check ){
+			try {
+				result = new ActionQueryListWithFilterPaging().execute( request, page, size, jsonElement, effectivePerson );
+			} catch (Exception e) {
+				result = new ActionResult<>();
+				result.error( e );
+				logger.error( e, effectivePerson, request, null);
+			}
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
