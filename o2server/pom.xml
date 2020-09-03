@@ -145,6 +145,10 @@
 			<artifactId>jetty-quickstart</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-proxy</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>core</artifactId>
 		</dependency>
@@ -544,6 +548,11 @@
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-quickstart</artifactId>
 				<version>9.4.20.v20190813</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-proxy</artifactId>
+				<version>9.4.31.v20200723</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.zxing</groupId>
