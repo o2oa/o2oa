@@ -1318,8 +1318,8 @@ debugger;
             scriptNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "Script",
-                    "count": 1,
-                    "names": [this.data[node.get("name")]],
+                    "count": node.dataset["count"] || 1,
+                    "names": (!node.dataset["count"] || node.dataset["count"].toInt()==1) ? [this.data[node.get("name")]] : this.data[node.get("name")],
                     "onChange": function(ids){
                         this.saveScriptSelectItem(node, ids);
                     }.bind(this)
@@ -1530,27 +1530,49 @@ debugger;
 
     },
     saveScriptSelectItem: function(node, ids){
-	    debugger;
-        if (ids[0]){
-            var script = ids[0].data;
-            var data = {
-                "type" : "script",
-                "name": script.name,
-                "alias": script.alias,
-                "id": script.id,
-                "appName" : script.appName || script.applicationName,
-                "appId": script.appId,
-                "application": script.application
-            };
+        var count = (node.dataset["count"] || 1).toInt();
+        if (count==1){
+            if (ids[0]){
+                var script = ids[0].data;
+                var data = {
+                    "appType": script.appType,
+                    "type" : "script",
+                    "name": script.name,
+                    "alias": script.alias,
+                    "id": script.id,
+                    "appName" : script.appName || script.applicationName,
+                    "appId": script.appId,
+                    "application": script.application
+                };
 
+                var name = node.get("name");
+                var oldValue = this.data[name];
+                this.data[name] = data;
+
+                // this.changeJsonDate(name, data );
+                this.changeData(name, node, oldValue);
+            }else{
+                // this.data[node.get("name")] = null;
+            }
+        }else{
+            var scriptValues = [];
+            ids.each(function(s){
+                var scriptValue = {
+                    "appType": s.data.appType,
+                    "type" : "script",
+                    "name": s.data.name,
+                    "alias": s.data.alias,
+                    "id": s.data.id,
+                    "appName" : s.data.appName || s.data.applicationName,
+                    "appId": s.data.appId,
+                    "application": s.data.application
+                }
+                scriptValues.push(scriptValue);
+            }.bind(this));
             var name = node.get("name");
             var oldValue = this.data[name];
-            this.data[name] = data;
-
-            // this.changeJsonDate(name, data );
+            this.data[name] = scriptValues;
             this.changeData(name, node, oldValue);
-        }else{
-            // this.data[node.get("name")] = null;
         }
     },
     removeDutyItem: function(node, item){
