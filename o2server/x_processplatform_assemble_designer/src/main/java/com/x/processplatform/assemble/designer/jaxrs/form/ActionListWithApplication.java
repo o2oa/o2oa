@@ -12,6 +12,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.assemble.designer.jaxrs.form.ActionListNext.Wo;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 
@@ -41,7 +42,8 @@ class ActionListWithApplication extends BaseAction {
 
 		private static final long serialVersionUID = -7495725325510376323L;
 
-		public static WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class, null,
+		public static final WrapCopier<Form, Wo> copier = WrapCopierFactory.wo(Form.class, Wo.class,
+				JpaObject.singularAttributeField(Form.class, true, true),
 				ListTools.toList(JpaObject.FieldsInvisible, Form.data_FIELDNAME, Form.mobileData_FIELDNAME));
 
 	}
