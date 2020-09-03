@@ -1,10 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.Work = MWF.xApplication.process.Work || {};
 MWF.xDesktop.requireApp("process.Work", "lp."+MWF.language, null, false);
-//兼容快速流转，所以需要判断
-if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
-    MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
-}
 
 MWF.xApplication.process.Work.Processor = new Class({
     Extends: MWF.widget.Common,
@@ -1673,8 +1669,10 @@ MWF.xApplication.process.Work.Processor = new Class({
 
 });
 
-
+//兼容快速流转，所以需要判断
 if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
+    MWF.xDesktop.requireApp("process.Xform", "Org", null, false);
+
     MWF.xApplication.process.Work.Processor.Org = new Class({
         Implements: [Options, Events],
         options: {
@@ -2662,6 +2660,4 @@ if( MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.Form ){
     MWF.xApplication.process.Work.Processor.IdentityOptions = new Class({
         Extends : MWF.APPOrg.IdentityOptions
     });
-
-
 }
