@@ -72,14 +72,14 @@ class TodoedTaskViewController: UITableViewController {
         if actionArray != nil {
         for action  in actionArray! {
             if completed {
-                let title = "[\(action["title"].stringValue)]完成于\(action["completedTime"].stringValue)"
+                let title = "\(action["title"].stringValue) 完成于\(action["completedTime"].stringValue)"
                 let id = action["id"].stringValue
                 let workType = "workCompletedList"
                 let actionModel = TodoedActionModel(destText: title, workType: workType, workId: id)
                 self.todoedActions.append(actionModel)
             }else{
 //                %@于%@ 停留在%@",item[@"title"],item[@"updateTime"],item[@"activityName"]
-                let title = "[\(action["title"].stringValue)]当前在\(action["activityName"].stringValue)"
+                let title = "\(action["title"].stringValue) 当前在\(action["activityName"].stringValue)"
                 let id = action["id"].stringValue
                 let workType = "workList"
                 let actionModel = TodoedActionModel(destText: title, workType: workType, workId: id)
@@ -107,8 +107,8 @@ class TodoedTaskViewController: UITableViewController {
             }else{
                 identity = (task.taskCompletedList![0] as! NSDictionary)["identity"]! as! String;
             }
-            let status = task.routeName == nil ? "正在处理":"【\(task.routeName ?? "")】"
-            let time = task.arrivedTime == nil ? task.fromTime : task.arrivedTime
+            let status = task.routeName == nil ? "正在处理":"选择了【\(task.routeName ?? "")】"
+            let time = task.arrivedTime == nil ? "到达于：\(task.fromTime ?? "")" : "提交于：\(task.arrivedTime ?? "")"
             identity = identity.components(separatedBy: "@").first ?? ""
             let statusModel = TodoedStatusModel(activity: activity, identity: identity, status: status, statusTime: time)
             self.todoedStatus.append(statusModel)
