@@ -1153,11 +1153,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         return names;
     },
 
-    addAttachment: function(data, messageId){
+    addAttachment: function(data, messageId, isCheckPosition){
         if (this.options.size=="min"){
-            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId));
+            this.attachments.push(new o2.widget.AttachmentController.AttachmentMin(data, this, messageId, isCheckPosition));
         }else{
-            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId));
+            this.attachments.push(new o2.widget.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
         }
         this.checkActions();
     },
@@ -1190,7 +1190,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
 o2.widget.AttachmentController.Attachment = new Class({
 	Implements: [Events],
-	initialize: function(data, controller, messageId){
+	initialize: function(data, controller, messageId, isCheckPosition){
 		this.data = data;
 
         if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
@@ -1201,6 +1201,7 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.content = this.controller.content;
         this.isSelected = false;
         this.seq = this.controller.attachments.length+1;
+        this.isCheckPosition = isCheckPosition;
         this.actions = [];
 
         if (messageId && this.controller.messageItemList) {
@@ -1216,6 +1217,9 @@ o2.widget.AttachmentController.Attachment = new Class({
             "par": "@url#"+url
         };
     },
+    isNumber : function( d ){
+        return parseFloat(d).toString() !== "NaN"
+    },
     load: function(){
 	    if (this.message){
             this.node = new Element("div").inject(this.message.node, "after");
@@ -1223,6 +1227,16 @@ o2.widget.AttachmentController.Attachment = new Class({
             delete this.controller.messageItemList[this.message.data.id];
         }else{
             this.node = new Element("div").inject(this.content);
+        }
+	    if( this.isCheckPosition && this.isNumber(this.data.orderNumber) ){
+	        var attList = this.controller.attachments;
+            for( var i=0; i<attList.length; i++ ){
+                var att = attList[i];
+                if( !this.isNumber(att.data.orderNumber) || this.data.orderNumber < att.data.orderNumber ){
+                    this.node.inject( att.node, "before" );
+                    break;
+                }
+            }
         }
 
         switch (this.controller.options.listStyle){
@@ -1657,7 +1671,7 @@ o2.widget.AttachmentController.Attachment = new Class({
 o2.widget.AttachmentController.AttachmentMin = new Class({
     Extends: o2.widget.AttachmentController.Attachment,
 
-    initialize: function(data, controller, messageId){
+    initialize: function(data, controller, messageId, isCheckPosition){
         this.data = data;
 
         if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
@@ -1666,6 +1680,7 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.css = this.controller.css;
         this.content = this.controller.minContent;
         this.isSelected = false;
+        this.isCheckPosition = isCheckPosition;
         this.seq = this.controller.attachments.length+1;
 
         if (messageId && this.controller.messageItemList) {
@@ -1681,6 +1696,17 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             delete this.controller.messageItemList[this.message.data.id];
         }else{
             this.node = new Element("div").inject(this.content);
+        }
+
+        if( this.isCheckPosition && this.isNumber(this.data.orderNumber) ){
+            var attList = this.controller.attachments;
+            for( var i=0; i<attList.length; i++ ){
+                var att = attList[i];
+                if( !this.isNumber(att.data.orderNumber) || this.data.orderNumber < att.data.orderNumber ){
+                    this.node.inject( att.node, "before" );
+                    break;
+                }
+            }
         }
 
         //this.node = new Element("div").inject(this.content);
