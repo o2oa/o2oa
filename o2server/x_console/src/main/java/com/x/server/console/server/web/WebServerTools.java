@@ -104,6 +104,16 @@ public class WebServerTools extends JettySeverTools {
 		}
 		/* stat end */
 		server.setHandler(context);
+
+		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
+			proxyCenter(context);
+		}
+
+		if (BooleanUtils.isTrue(webServer.getProxyApplicationEnable())) {
+			proxyApplication(context, Config.dir_store().toPath());
+			proxyApplication(context, Config.dir_custom().toPath());
+		}
+
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
@@ -115,6 +125,27 @@ public class WebServerTools extends JettySeverTools {
 		System.out.println("* port: " + webServer.getPort() + ".");
 		System.out.println("****************************************");
 		return server;
+	}
+
+	private static void proxyCenter(WebAppContext context) throws Exception {
+		ServletHolder proxyHolder = new ServletHolder(Proxy.class);
+		proxyHolder.setInitParameter("port", Config.currentNode().getCenter().getPort() + "");
+		context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
+	}
+
+	private static void proxyApplication(WebAppContext context, Path path) throws Exception {
+		try (Stream<Path> stream = Files.list(path)) {
+			stream.filter(o -> StringUtils.endsWithIgnoreCase(o.getFileName().toString(), ".war"))
+					.map(Path::getFileName).map(Path::toString).map(FilenameUtils::getBaseName).forEach(o -> {
+						try {
+							ServletHolder proxyHolder = new ServletHolder(Proxy.class);
+							proxyHolder.setInitParameter("port", Config.currentNode().getApplication().getPort() + "");
+							context.addServlet(proxyHolder, "/" + x_program_center.class.getSimpleName() + "/*");
+						} catch (Exception e) {
+							logger.error(e);
+						}
+					});
+		}
 	}
 
 	private static void copyDefaultHtml() throws Exception {
@@ -205,16 +236,16 @@ public class WebServerTools extends JettySeverTools {
 			/* 密码规则 */
 			map.put("passwordRegex", Config.person().getPasswordRegex());
 			map.put("passwordRegexHint", Config.person().getPasswordRegexHint());
-			
-		    /*RSA*/
+
+			/* RSA */
 			File publicKeyFile = new File(Config.base(), "config/public.key");
 			if (publicKeyFile.exists() && publicKeyFile.isFile()) {
-					 String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
-					 byte[] publicKeyB = Base64.decodeBase64(publicKey);
-					 publicKey = new String(Base64.encodeBase64(publicKeyB));
-					 map.put("publicKey", publicKey);
+				String publicKey = FileUtils.readFileToString(publicKeyFile, "utf-8");
+				byte[] publicKeyB = Base64.decodeBase64(publicKey);
+				publicKey = new String(Base64.encodeBase64(publicKeyB));
+				map.put("publicKey", publicKey);
 			}
-			
+
 			FileUtils.writeStringToFile(file, gson.toJson(map), DefaultCharset.charset);
 		}
 	}
