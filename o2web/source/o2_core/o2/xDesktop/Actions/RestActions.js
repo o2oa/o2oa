@@ -5,7 +5,6 @@ MWF.xDesktop.Actions.RestActions = new Class({
 		this.actionPath = actionPath;
 		this.serviceName = serviceName;
         this.root = root;
-		this.getAddress();
 	},
 	
 	listApplicationAddress: function(success, failure){
@@ -56,6 +55,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         }
     },
     invokeUri: function(option){
+        if (!this.address) this.getAddress();
         var uri = this.address+option.uri;
         var async = (option.async===false) ? false : true;
         var method = option.method || "GET";
@@ -69,6 +69,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
         MWF.restful(method, uri, data, callback, async, credentials);
     },
 	invoke: function(option){
+        if (!this.address) this.getAddress();
         var res = null;
         this.getActions(function(){
             //name, parameter, data, async, success, failure, withCredentials, urlEncode
