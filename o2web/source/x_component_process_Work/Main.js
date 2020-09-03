@@ -342,6 +342,8 @@ MWF.xApplication.process.Work.Main = new Class({
         return "";
     },
     parseData: function(workData, controlData, formData, logData, recordData, attData){
+        debugger;
+
         var title = workData.work.title;
         //this.setTitle(this.options.title+"-"+title);
         this.setTitle(title || this.options.title);
@@ -370,11 +372,25 @@ MWF.xApplication.process.Work.Main = new Class({
         this.attachmentList = attData;
         //this.inheritedAttachmentList = data.inheritedAttachmentList;
 
+
         this.control = controlData;
         if (formData){
-            this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
-            delete formData.data;
-            this.formInfor = formData;
+            if (formData.form){
+                this.form = (formData.form.data) ? JSON.decode(MWF.decodeJsonString(formData.form.data)): null;
+                //
+                // var rex = /mwftype="subform"/gi;
+                //
+                //
+                // debugger;
+                this.relatedFormMap = formData.relatedFormMap;
+                this.relatedScriptMap = formData.relatedScriptMap;
+                delete formData.form.data;
+                this.formInfor = formData.form;
+            }else{
+                this.form = (formData.data) ? JSON.decode(MWF.decodeJsonString(formData.data)): null;
+                delete formData.data;
+                this.formInfor = formData;
+            }
         }
     },
 

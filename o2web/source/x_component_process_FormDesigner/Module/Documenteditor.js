@@ -121,14 +121,17 @@ MWF.xApplication.process.FormDesigner.Module.Documenteditor = MWF.FCDocumentedit
 				delete this.json.styles[key];
 			}
 		}.bind(this));
+		// var size = this.node.getSize();
 		this.node.empty();
-		this.node.setStyles(this.css.documentEditorNode);
+		//this.node.getFirst().getFirst().empty();
+		//this.node.setStyles(this.css.documentEditorNode);
 
 		this.json.preprocessing = "y";
 	},
 	_recoveryModuleData: function(){
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
 		this.json.recoveryStyles = null;
+		this.node.empty();
 		this._resetContent();
 	}
 });
