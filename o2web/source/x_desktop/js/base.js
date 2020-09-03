@@ -221,6 +221,53 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
         }
     };
 
+    var _openApplicationPC = function (appNames, options, statusObj) {
+        var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+        switch (appNames) {
+            case "process.Work":
+                var url = "../x_desktop/work.html";
+                if (options.workId) {
+                    url += "?workid=" + options.workId;
+                    //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workid=" + options.workId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+                } else if (options.workCompletedId) {
+                    url += "?workcompletedid=" + options.workCompletedId;
+                    //window.location = o2.filterUrl("../x_desktop/workmobilewithaction.html?workcompletedid=" + options.workCompletedId + ((layout.debugger) ? "&debugger" : "") + "&redirectlink=" + redirectlink);
+                }
+                var job = (options.jobid || options.jobId || options.job);
+                if (job) url += ((url.indexOf("?")!=-1) ? "&" : "?") + "jobid="+job;
+                url +=((layout.debugger) ? "&debugger" : "");
+
+                if (layout.app.$openWithSelf) {
+                    return window.location = o2.filterUrl(url);
+                } else {
+                    return window.open(o2.filterUrl(url), par);
+                }
+                break;
+            // case "cms.Document":
+            //     _openDocument(appNames, options, statusObj);
+            //     break;
+            // case "cms.Module":
+            //     _openCms(appNames, options, statusObj);
+            //     break;
+            // case "Meeting":
+            //     _openMeeting(appNames, options, statusObj);
+            //     break;
+            // case "Calendar":
+            //     _openCalendar(appNames, options, statusObj);
+            //     break;
+            // case "process.TaskCenter":
+            //     _openTaskCenter(appNames, options, statusObj);
+            //     break;
+            default:
+                //var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+                if (layout.app.$openWithSelf) {
+                    return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
+                } else {
+                    return window.open(o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "")), par);
+                }
+        }
+    };
+
     layout.openApplication = function (e, appNames, options, statusObj, inBrowser, taskitem, notCurrent) {
         if (appNames.substring(0, 4) === "@url") {
             var url = appNames.replace(/\@url\:/i, "");
@@ -235,13 +282,14 @@ o2.xDesktop.requireApp = function (module, clazz, callback, async) {
             if (layout.mobile) {
                 _openApplicationMobile(appNames, options, statusObj);
             } else {
-                var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-
-                if (layout.app.$openWithSelf) {
-                    return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
-                } else {
-                    return window.open(o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "")), par);
-                }
+                _openApplicationPC(appNames, options, statusObj);
+                // var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+                //
+                // if (layout.app.$openWithSelf) {
+                //     return window.location = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
+                // } else {
+                //     return window.open(o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : "")), par);
+                // }
             }
         } else {
             var appPath = appNames.split(".");
