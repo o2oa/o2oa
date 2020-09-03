@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.form;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Audit;
@@ -20,6 +18,7 @@ import com.x.base.core.project.tools.PropertyTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
@@ -65,35 +64,11 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isNotEmpty(id)) {
 			Form form = business.form().pick(id);
 			if (null != form) {
-				wo.setForm(toWoForm(form));
+				wo.setForm(toWoFormDataOrMobileData(form));
 				related(business, wo, form);
 			}
 		}
 		return wo;
-	}
-
-	private void related(Business business, Wo wo, Form form) throws Exception {
-		if (StringUtils.isNotBlank(form.getData())) {
-			for (String relatedFormId : form.getRelatedFormList()) {
-				Form relatedForm = business.form().pick(relatedFormId);
-				if (null != relatedForm) {
-					wo.getRelatedFormMap().put(relatedFormId, toWoForm(relatedForm));
-				}
-			}
-		} else {
-			for (String relatedFormId : form.getMobileRelatedFormList()) {
-				Form relatedForm = business.form().pick(relatedFormId);
-				if (null != relatedForm) {
-					wo.getRelatedFormMap().put(relatedFormId, toWoMobileForm(relatedForm));
-				}
-			}
-		}
-		for (String relatedScriptId : form.getRelatedScriptList()) {
-			Script relatedScript = business.script().pick(relatedScriptId);
-			if (null != relatedScript) {
-				wo.getRelatedScriptMap().put(relatedScriptId, toWoScript(relatedScript));
-			}
-		}
 	}
 
 	private Wo workCompleted(Business business, WorkCompleted workCompleted) throws Exception {
@@ -102,167 +77,71 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		if (StringUtils.isNotEmpty(workCompleted.getForm())) {
 			Form form = business.form().pick(workCompleted.getForm());
 			if (null != form) {
-				wo.setForm(toWoForm(form));
+				wo.setForm(toWoFormDataOrMobileData(form));
 				related(business, wo, form);
 			}
-		} else {
-			if (null != workCompleted.getProperties().getForm()) {
-				wo.form = toWoForm(workCompleted.getProperties().getForm());
-			}
+		} else if (null != workCompleted.getProperties().getForm()) {
+			wo.setForm(toWoFormDataOrMobileData(workCompleted.getProperties().getForm()));
 			if (StringUtils.isNotBlank(workCompleted.getProperties().getForm().getData())) {
-				for (Form f : workCompleted.getProperties().getRelatedFormList()) {
-					wo.getRelatedFormMap().put(f.getId(), toWoForm(f));
-				}
+				workCompleted.getProperties().getRelatedFormList()
+						.forEach(o -> wo.getRelatedFormMap().put(o.getId(), toWoFormDataOrMobileData(o)));
 			} else {
-				for (Form f : workCompleted.getProperties().getRelatedFormList()) {
-					wo.getRelatedFormMap().put(f.getId(), toWoMobileForm(f));
+				workCompleted.getProperties().getMobileRelatedFormList()
+						.forEach(o -> wo.getRelatedFormMap().put(o.getId(), toWoFormMobileDataOrData(o)));
+			}
+		}
+		workCompleted.getProperties().getRelatedScriptList().stream()
+				.forEach(o -> wo.getRelatedScriptMap().put(o.getId(), toWoScript(o)));
+		return wo;
+	}
+
+	private void related(Business business, Wo wo, Form form) throws Exception {
+		if (StringUtils.isNotBlank(form.getData())) {
+			for (String relatedFormId : form.getProperties().getRelatedFormList()) {
+				Form relatedForm = business.form().pick(relatedFormId);
+				if (null != relatedForm) {
+					wo.getRelatedFormMap().put(relatedFormId, toWoFormDataOrMobileData(relatedForm));
 				}
 			}
-			for (Script s : workCompleted.getProperties().getRelatedScriptList()) {
-				wo.getRelatedScriptMap().put(s.getId(), toWoScript(s));
+		} else {
+			for (String mobileRelatedFormId : form.getProperties().getMobileRelatedFormList()) {
+				Form mobileRelatedForm = business.form().pick(mobileRelatedFormId);
+				if (null != mobileRelatedForm) {
+					wo.getRelatedFormMap().put(mobileRelatedFormId, toWoFormMobileDataOrData(mobileRelatedForm));
+				}
 			}
 		}
-		return wo;
+		relatedScript(business, wo, form);
 	}
 
-	private WoForm toWoForm(Form form) {
-		WoForm wo = new WoForm();
-		wo.setId(form.getId());
-		wo.setName(form.getName());
-		wo.setAlias(form.getAlias());
-		wo.setData(form.getDataOrMobileData());
-		return wo;
-	}
-
-	private WoForm toWoMobileForm(Form form) {
-		WoForm wo = new WoForm();
-		wo.setId(form.getId());
-		wo.setName(form.getName());
-		wo.setAlias(form.getAlias());
-		wo.setData(form.getMobileDataOrData());
-		return wo;
-	}
-
-	private WoScript toWoScript(Script script) {
-		WoScript wo = new WoScript();
-		wo.setId(script.getId());
-		wo.setName(script.getName());
-		wo.setAlias(script.getAlias());
-		wo.setText(script.getText());
-		return wo;
-	}
-
-	public static class WoForm extends GsonPropertyObject {
-		private String id;
-		private String alias;
-		private String name;
-		private String data;
-
-		public String getAlias() {
-			return alias;
-		}
-
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getData() {
-			return data;
-		}
-
-		public void setData(String data) {
-			this.data = data;
+	protected void relatedScript(Business business, AbstractWo wo, Form form) throws Exception {
+		for (Entry<String, String> entry : form.getProperties().getRelatedScriptMap().entrySet()) {
+			switch (entry.getValue()) {
+			case WorkCompletedProperties.Script.TYPE_PROCESSPLATFORM:
+				Script relatedScript = business.script().pick(entry.getKey());
+				if (null != relatedScript) {
+					wo.getRelatedScriptMap().put(entry.getKey(), toWoScript(relatedScript));
+				}
+				break;
+			case WorkCompletedProperties.Script.TYPE_CMS:
+				com.x.cms.core.entity.element.Script relatedCmsScript = business.cms().script().pick(entry.getKey());
+				if (null != relatedCmsScript) {
+					wo.getRelatedScriptMap().put(entry.getKey(), toWoScript(relatedCmsScript));
+				}
+				break;
+			case WorkCompletedProperties.Script.TYPE_PORTAL:
+				com.x.portal.core.entity.Script relatedPortalScript = business.portal().script().pick(entry.getKey());
+				if (null != relatedPortalScript) {
+					wo.getRelatedScriptMap().put(entry.getKey(), toWoScript(relatedPortalScript));
+				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
-	public static class WoScript extends GsonPropertyObject {
-
-		private String id;
-		private String alias;
-		private String name;
-		private String text;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getText() {
-			return text;
-		}
-
-		public void setText(String text) {
-			this.text = text;
-		}
-
-		public String getAlias() {
-			return alias;
-		}
-
-		public void setAlias(String alias) {
-			this.alias = alias;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-	}
-
-	public static class Wo extends GsonPropertyObject {
-
-		private WoForm form;
-
-		private Map<String, WoForm> relatedFormMap = new HashMap<>();
-
-		private Map<String, WoScript> relatedScriptMap = new HashMap<>();
-
-		public WoForm getForm() {
-			return form;
-		}
-
-		public void setForm(WoForm form) {
-			this.form = form;
-		}
-
-		public Map<String, WoForm> getRelatedFormMap() {
-			return relatedFormMap;
-		}
-
-		public void setRelatedFormMap(Map<String, WoForm> relatedFormMap) {
-			this.relatedFormMap = relatedFormMap;
-		}
-
-		public Map<String, WoScript> getRelatedScriptMap() {
-			return relatedScriptMap;
-		}
-
-		public void setRelatedScriptMap(Map<String, WoScript> relatedScriptMap) {
-			this.relatedScriptMap = relatedScriptMap;
-		}
+	public static class Wo extends AbstractWo {
 
 	}
 
