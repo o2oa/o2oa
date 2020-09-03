@@ -2,11 +2,14 @@ package net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.security
 
 
 import android.os.Bundle
+import android.text.TextUtils
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_account_security.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.*
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseMVPActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.bind.BindPhoneActivity
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.my.MyInfoActivity
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.im.MessageType
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XToast
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.biometric.BioConstants
@@ -36,8 +39,12 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
             go<MyInfoActivity>()
         }
 
-        val unitName = O2SDKManager.instance().prefs().getString(O2.PRE_BIND_UNIT_KEY, "")
-        tv_account_security_unit_name.text = "当前绑定服务器：$unitName"
+        rl_account_security_password_btn.setOnClickListener {
+            changeMyPassword()
+        }
+
+        val unitHost = O2SDKManager.instance().prefs().getString(O2.PRE_CENTER_HOST_KEY, "")
+        tv_account_security_unit_name.text = "当前绑定服务器：$unitHost"
 
         initBiometryAuthView()
 
@@ -57,6 +64,14 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
         O2SDKManager.instance().logoutCleanCurrentPerson()
         O2SDKManager.instance().clearBindUnit()
         goAndClearBefore<BindPhoneActivity>()
+    }
+
+    override fun updateMyPasswordFail(message: String) {
+        XToast.toastLong(this, message)
+    }
+
+    override fun updateMyPasswordSuccess() {
+        XToast.toastShort(this, "修改密码成功！")
     }
 
     private val bioManager: BiometryManager by lazy { BiometryManager(this) }
@@ -118,6 +133,27 @@ class AccountSecurityActivity : BaseMVPActivity<AccountSecurityContract.View, Ac
             image_btn_account_security_biometry_enable.setOnClickListener {
                 XToast.toastShort(this, "指纹识别不可用或未启用！")
             }
+        }
+    }
+
+    private fun changeMyPassword() {
+        O2DialogSupport.openCustomViewDialog(this, "修改密码", R.layout.dialog_password_modify) { dialog ->
+            val old = dialog.findViewById<EditText>(R.id.dialog_password_old_edit_id).text.toString()
+            if (TextUtils.isEmpty(old)) {
+                XToast.toastShort(this@AccountSecurityActivity, "旧密码不能为空")
+                return@openCustomViewDialog
+            }
+            val newpwd = dialog.findViewById<EditText>(R.id.dialog_password_new_edit_id).text.toString()
+            if (TextUtils.isEmpty(newpwd)) {
+                XToast.toastShort(this@AccountSecurityActivity, "新密码不能为空")
+                return@openCustomViewDialog
+            }
+            val newpwdAgain = dialog.findViewById<EditText>(R.id.dialog_password_confirm_edit_id).text.toString()
+            if (newpwd != newpwdAgain) {
+                XToast.toastShort(this@AccountSecurityActivity, "新密码和确认新密码不一样")
+                return@openCustomViewDialog
+            }
+            mPresenter.updateMyPassword(old, newpwd, newpwdAgain)
         }
     }
 

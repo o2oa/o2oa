@@ -88,6 +88,54 @@
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:background="@color/z_color_split_line_ddd" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rl_account_security_password_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:layout_marginLeft="@dimen/spacing_normal"
+                    android:layout_marginRight="@dimen/spacing_normal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="登录密码"
+                        android:layout_alignParentStart="true"
+                        android:textSize="15sp"
+                        android:textColor="@color/z_color_text_hint"
+                        android:layout_centerVertical="true" />
+                    <ImageView
+                        android:id="@+id/image_account_security_password_arrow"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/icon_arrow_22dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@id/image_account_security_password_arrow"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/spacing_tiny"
+                        android:textSize="13sp"
+                        android:text="修改密码"
+                        android:textColor="@color/z_color_text_primary_dark"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:background="@color/z_color_split_line_ddd" />
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
