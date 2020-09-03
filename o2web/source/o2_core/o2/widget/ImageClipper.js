@@ -439,7 +439,7 @@ o2.widget.HTML5ImageClipper = new Class({
 
 			this.fileNode = new Element("input.file", {
 				"type" : "file",
-				"accept":"images/*",
+				"accept":"image/*",
 				"styles" : {"display":"none"}
 			}).inject(this.container);
 			this.fileNode.addEvent("change", function(event){
