@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 
 import org.apache.commons.io.FileUtils;
@@ -141,6 +142,7 @@ public class Portal extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PORTAL);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		BaseTools.executeSyncFile(Config.PATH_CONFIG_PORTAL);
 	}
 
 	public LinkedHashMap<String, String> getUrlMapping() {
