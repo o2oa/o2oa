@@ -205,6 +205,23 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
         var data, mobileDataStr;
         if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
         if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
+
+        var relatedScriptMap = null;
+        if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
+            relatedScriptMap = {};
+            formData.json.includeScripts.each(function(s){
+                relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        };
+
+        var mobileRelatedScriptMap = null;
+        if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+            mobileRelatedScriptMap = {};
+            mobileData.json.includeScripts.each(function(s){
+                mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
+
         var json = {
             "id": formData.json.id,
             "name": formData.json.name,
@@ -214,7 +231,11 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
             "application": formData.json.application,
             "category": formData.json.category,
             "icon": formData.json.formIcon,
-            "formFieldList": fieldList
+            "formFieldList": fieldList,
+            "relatedScriptMap": relatedScriptMap,
+            "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
+            "mobileRelatedScriptMap": mobileRelatedScriptMap,
+            "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
         };
         if (mobileData && mobileData.json.moduleList){
             if (Object.keys(mobileData.json.moduleList).length){
@@ -239,6 +260,23 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
                 if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
 
+                var relatedScriptMap = null;
+                if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
+                    relatedScriptMap = {};
+                    formData.json.includeScripts.each(function(s){
+                        relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                };
+
+                var mobileRelatedScriptMap = null;
+                if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+                    mobileRelatedScriptMap = {};
+                    mobileData.json.includeScripts.each(function(s){
+                        mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+                    });
+                }
+
+
                 var json = {
                     "id": formData.json.id,
                     "name": formData.json.name,
@@ -248,7 +286,11 @@ MWF.xAction.RestActions.Action["x_processplatform_assemble_designer"] = new Clas
                     "application": formData.json.application,
                     "category": formData.json.category,
                     "icon": formData.json.formIcon,
-                    "formFieldList": fieldList
+                    "formFieldList": fieldList,
+                    "relatedScriptMap": relatedScriptMap,
+                    "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
+                    "mobileRelatedScriptMap": mobileRelatedScriptMap,
+                    "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
                 };
 
                 if (mobileData && mobileData.json.moduleList){
