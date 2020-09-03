@@ -39,6 +39,7 @@ import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 
@@ -78,7 +79,7 @@ public class DumpData {
 			this.pureGsonDateFormated = XGsonBuilder.instance();
 		}
 
-		public void run() {
+		private Thread dumpDataThread = new Thread(() -> {
 			try {
 				List<String> classNames = entities();
 				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
@@ -95,9 +96,12 @@ public class DumpData {
 					EntityManagerFactory emf = null;
 					EntityManager em = null;
 					try {
+						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false,false,false,
+								false, false, Config.dir_local_temp_classes().toPath()));
 						Thread.currentThread().setName(DumpData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
-						Class<JpaObject> cls = (Class<JpaObject>) Class.forName(className);
+						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
+								.loadClass(className);
 						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
 								PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 						em = emf.createEntityManager();
@@ -120,6 +124,10 @@ public class DumpData {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}, "dumpDataThread");
+
+		public void run() {
+			dumpDataThread.start();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -130,7 +138,7 @@ public class DumpData {
 				return list;
 			}
 			for (String str : (List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES)) {
-				Class<?> cls = Class.forName(str);
+				Class<?> cls = Thread.currentThread().getContextClassLoader().loadClass(str);
 				ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
 				if (Objects.equals(containerEntity.reference(), Reference.strong)) {
 					list.add(str);
