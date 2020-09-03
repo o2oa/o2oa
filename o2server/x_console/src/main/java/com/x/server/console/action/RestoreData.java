@@ -38,6 +38,7 @@ import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 
@@ -100,10 +101,13 @@ public class RestoreData {
 				AtomicLong total = new AtomicLong(0);
 				stream.forEach(className -> {
 					String nameOfThread = Thread.currentThread().getName();
-					Thread.currentThread().setName(RestoreData.class.getName() + ":" + className);
 					try {
+						Thread.currentThread().setContextClassLoader(ClassLoaderTools.urlClassLoader(false, false,
+								false, false, false, Config.dir_local_temp_classes().toPath()));
+						Thread.currentThread().setName(RestoreData.class.getName() + ":" + className);
 						@SuppressWarnings("unchecked")
-						Class<JpaObject> cls = (Class<JpaObject>) Class.forName(className);
+						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
+								.loadClass(className);
 						logger.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
 						long size = restore(cls, xml);
 						total.getAndAdd(size);
