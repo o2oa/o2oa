@@ -19,12 +19,12 @@ MWF.xApplication.AppMarketV2.Main = new Class({
         this.lp = MWF.xApplication.AppMarketV2.LP;
         this.actions = MWF.Actions.load("x_program_center");
 		this.viewPath = this.path+this.options.style+"/view.html";
-		this.iconPath = this.path+this.options.style+"/icon/";
+		this.iconPath = this.path+this.options.style+"/icon/";		
 	},
 	mask: function(){
         if (!this.maskNode){
             this.maskNode = new MWF.widget.MaskNode(this.marketnode, {"style": "bam"});
-            this.maskNode.load();
+			this.maskNode.load();
         }
     },
     unmask: function(){
@@ -37,7 +37,19 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 		this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp}, "module": this}, function(){
 			if (!this.options.isRefresh){
 				this.maxSize(function(){
-					this.loadApp(callback);
+					//检查是否在云服务器上已注册
+					this.actions.CollectAction.login(//平台封装好的方法
+						function( json ){ //服务调用成功的回调函数, json为服务传回的数据
+							//alert(json.type)
+							if (json.type && json.type=="error"){
+								o2.xDesktop.notice("error", {x: "right", y:"top"}, json.message+"请至系统配置——云服务配置——连接配置注册并连接到O2云");
+							}
+							if (json.type && json.type=="success"){
+								this.loadApp(callback);
+							}
+						}.bind(this),null,false //同步执行 
+					);
+					
 				}.bind(this));
 			}else{
 				this.loadApp(callback);
