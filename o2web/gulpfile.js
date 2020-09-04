@@ -390,6 +390,7 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_query_assemble_surface.js',
             'source/' + path + '/js/base_work_end.js',
             'source/' + path + '/js/base.js'
         ];
