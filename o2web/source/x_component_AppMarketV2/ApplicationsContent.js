@@ -50,7 +50,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent = new Class({
         }else{
             this.searchAppClearNode.removeClass("icon_clear");
         }
-        if (e.keyCode===13) this.doSearch();
+        if (e.keyCode===13) this.doAppSearch();
     },
     clearAppSearch: function(){
         this.searchAppInputNode.set("value", "");
@@ -68,6 +68,8 @@ MWF.xApplication.AppMarketV2.ApplicationsContent = new Class({
             }else{
                 this.applicationsContentV.load();
             }
+        }else{
+            this.clearSearchResult();
         }
     },
     clearSearchResult: function(){
@@ -182,8 +184,8 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
     showApplications: function(data){
         debugger;
         //show category count
-        this.content.appCategory_count.empty();
-        new Element("div",{"text":this.content.currentcategory.name+"("+this.content.currentcategory.count+")"}).inject(this.content.appCategory_count);        
+        //this.content.appCategory_count.empty();
+        //new Element("div",{"text":this.content.currentcategory.name+"("+this.content.currentcategory.count+")"}).inject(this.content.appCategory_count);        
         var appsdiv = this.content.appList;
         var appsdivwidth= appsdiv.clientWidth-80;
         //appwidth = (appsdivwidth-200)/7;
