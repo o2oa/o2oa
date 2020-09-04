@@ -379,14 +379,17 @@ function createBaseWorkConcatTask(path, isMin, thisOptions) {
             'source/x_component_Selector/Person.js',
             'source/x_component_Selector/Identity.js',
             'source/x_component_Selector/Unit.js',
-            'source/o2_core/o2/xScript/Environment.js',
+            'source/o2_core/o2/xScript/Actions/UnitActions.js',
             'source/o2_core/o2/xScript/Actions/ScriptActions.js',
             'source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
             'source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
+            'source/o2_core/o2/xScript/Environment.js',
             'source/x_component_Template/MTooltips.js',
+            'source/x_component_Template/MSelector.js',
             'source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
             'source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
             'source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
+            'source/o2_core/o2/xAction/services/x_organization_assemble_control.js',
             'source/' + path + '/js/base_work_end.js',
             'source/' + path + '/js/base.js'
         ];
