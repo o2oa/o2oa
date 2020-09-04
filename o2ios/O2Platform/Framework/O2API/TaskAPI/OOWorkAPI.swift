@@ -13,6 +13,7 @@ import O2OA_Auth_SDK
 // MARK:- 所有调用的API枚举
 enum OOWorkAPI {
     case createTask(String,Dictionary<String,String>)
+    case getWork(String)//获取工作对象 如果工作已经结束了 500错误
 }
 
 // MARK:- 上下文实现
@@ -41,11 +42,18 @@ extension OOWorkAPI:TargetType {
         switch self {
         case .createTask(let processId,_):
             return "/jaxrs/work/process/\(processId)"
+        case .getWork(let workId):
+            return "/jaxrs/work/\(workId)"
         }
     }
     
     var method: Moya.Method {
-        return .post
+        switch self {
+            case .createTask(_,_):
+                return .post
+            case .getWork(_):
+                return .get
+        }
     }
     
     var sampleData: Data {
@@ -56,7 +64,9 @@ extension OOWorkAPI:TargetType {
         switch self {
         case .createTask(_,let param):
             return .requestParameters(parameters: param, encoding: JSONEncoding.default)
-        }
+        default:
+           return .requestPlain
+       }
     }
     
     var headers: [String : String]? {

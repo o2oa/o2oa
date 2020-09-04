@@ -16,6 +16,7 @@ class IMViewModel: NSObject {
 
 
     private let communicateAPI = OOMoyaProvider<CommunicateAPI>()
+    private let workAPI = OOMoyaProvider<OOWorkAPI>()
 }
 
 extension IMViewModel {
@@ -204,6 +205,20 @@ extension IMViewModel {
                         reject(response.error!)
                     }
                 })
+        }
+    }
+    
+    ///判断是否工作已经完成
+    func isWorkCompleted(work: String) -> Promise<Bool> {
+        return Promise { fulfill, reject in
+            self.workAPI.request(.getWork(work), completion: {result in
+                let response = OOResult<BaseModelClass<WorkInfoResData>>(result)
+                if response.isResultSuccess() {
+                    fulfill(false)
+                }else {
+                    fulfill(true)
+                }
+            })
         }
     }
 }
