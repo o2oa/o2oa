@@ -202,17 +202,18 @@
 .o2_appmarket_app_search_inputArea{
     height: 28px;
     border-radius: 20px;
-    padding: 0 10px;
+    padding: 1px 10px;
     margin-right: 52px;
 }
 
 .o2_appmarket_app_searchinput{
-    height: 26px;
+    height: 25px;
     width: 99%;
-    line-height: 26px;
+    line-height: 25px;
     border: 0;
     border-radius: 20px;
     float: left;
+    background-color: #f0f0f0;
 }
 .o2_appmarket_applist{
     min-width: 1280px;
@@ -230,7 +231,7 @@
 }
 .o2_appmarket_application{
     width:285px;
-    height:555px;
+    height:452px;
     background:rgba(255,255,255,1);
     box-shadow:0px 0px 8px 0px rgba(0,0,0,0.25);
     border-radius:16px;

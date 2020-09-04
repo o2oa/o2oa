@@ -1248,7 +1248,8 @@
         /jaxrs\/document\/.+/ig,
         /jaxrs\/applicationdict\/.+/ig,
         /jaxrs\/custom\/.+/ig,
-        /jaxrs\/definition\/idea.+/ig
+        /jaxrs\/definition\/idea.+/ig,
+        /jaxrs\/distribute\/assemble\/source\/.+/ig,
 
         ///jaxrs\/form\/workorworkcompleted\/.+/ig,
         //    /jaxrs\/script/ig,

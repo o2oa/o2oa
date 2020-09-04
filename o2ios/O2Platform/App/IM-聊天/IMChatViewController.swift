@@ -620,10 +620,27 @@ extension IMChatViewController: IMChatMessageDelegate {
     }
     
     func openWork(workId: String) {
+        self.showLoading()
+        self.viewModel.isWorkCompleted(work: workId).always {
+            self.hideLoading()
+        }.then{ result in
+            if result {
+                self.showMessage(msg: "工作已经完成了！")
+            }else {
+                self.openWorkPage(work: workId)
+            }
+        }.catch {_ in
+            self.showMessage(msg: "工作已经完成了！")
+        }
+        
+        
+    }
+    
+    private func openWorkPage(work: String) {
         let storyBoard = UIStoryboard(name: "task", bundle: nil)
         let destVC = storyBoard.instantiateViewController(withIdentifier: "todoTaskDetailVC") as! TodoTaskDetailViewController
         let json = """
-        {"work":"\(workId)", "workCompleted":"", "title":""}
+        {"work":"\(work)", "workCompleted":"", "title":""}
         """
         let todo = TodoTask(JSONString: json)
         destVC.todoTask = todo
