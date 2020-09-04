@@ -1,16 +1,19 @@
 MWF.xApplication.Setting.LP = {
-	"title": "系统设置",
+    "title": "系统设置",
     "default": "默认",
 
     "tab_base": "基础配置",
     "tab_ui": "界面配置",
     "tab_mobile": "移动办公配置",
+    "tab_cloud": "云服务配置",
     "tab_dispose": "系统部署",
     "tab_name": "系统名称配置",
     "tab_user": "系统用户配置",
     "tab_login": "系统登录配置",
     "tab_sso": "系统SSO配置",
     "tab_config": "平台配置",
+
+    "tab_cloud_connect": "连接配置",
 
     "tab_mobile_connect": "连接配置",
     "tab_mobile_module": "模块配置",
@@ -117,6 +120,7 @@ MWF.xApplication.Setting.LP = {
 
 
     "mobile_connectSetting": "移动办公连接配置",
+    "cloud_connectSetting": "云服务连接配置",
 
     "mobile_connectO2Cloud": "连接到O2云",
     "mobile_connectO2Cloud_infor": "使用移动办公请先连接到O2云，这有助于APP定位到您的企业服务器，可以使用短信服务等",
