@@ -5,9 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.factory.AttendanceDetailStatisticFactory;
 import com.x.attendance.assemble.control.factory.StatisticUnitForMonthFactory;
+import com.x.attendance.entity.AttendanceEmployeeConfig;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
@@ -27,6 +30,7 @@ public class AttendanceStatisticService {
 	
 	private static  Logger logger = LoggerFactory.getLogger( AttendanceStatisticService.class );
 	private UserManagerService userManagerService = new UserManagerService();
+	protected AttendanceEmployeeConfigServiceAdv attendanceEmployeeConfigServiceAdv = new AttendanceEmployeeConfigServiceAdv();
 	
 	/**
 	 * 根据数据统计需求，进行员工每月考勤分析结果统计
@@ -229,7 +233,8 @@ public class AttendanceStatisticService {
 		Object workDayCountForMonth = 0.0, absenceDayCount=0.0, onSelfHolidayCount=0.0;
 		String cycleYear = null, cycleMonth = null;
 		Business business = null;
-		
+		List<String> unUnitNameList = new ArrayList<String>();
+		List<String> personNameList = new ArrayList<String>();
 
 		cycleYear = attendanceStatisticRequireLog.getStatisticYear();
 		cycleMonth = attendanceStatisticRequireLog.getStatisticMonth();
@@ -237,6 +242,8 @@ public class AttendanceStatisticService {
 		query_unitNames.add( unitName );
 		
 		try {
+			unUnitNameList = getUnUnitNameList();
+			personNameList = getUnPersonNameList();
 			business = new Business(emc);
 			statisticUnitForMonth = new StatisticUnitForMonth();
 			statisticUnitForMonth.setUnitName( unitName );
@@ -250,42 +257,51 @@ public class AttendanceStatisticService {
 				logger.warn( "根据组织名称["+unitName+"]未查询到组织信息。" );
 			}
 			//    1.2.1 应出勤天数
-			workDayCountForMonth = business.getStatisticPersonForMonthFactory().sumAttendanceDayCountByUnitYearAndMonth(query_unitNames, cycleYear, cycleMonth);
+			//workDayCountForMonth = business.getStatisticPersonForMonthFactory().sumAttendanceDayCountByUnitYearAndMonth(query_unitNames, cycleYear, cycleMonth);
+			workDayCountForMonth = business.getStatisticPersonForMonthFactory().sumAttendanceDayCountByUnitYearAndMonthUn(query_unitNames,unUnitNameList,personNameList, cycleYear, cycleMonth);
 			double count = 0.0;
 			if( workDayCountForMonth != null ){
 				count = (double)workDayCountForMonth;
 			}
 			statisticUnitForMonth.setOnDutyEmployeeCount( count );
 			//    1.2.3 异常打卡次数
-			abNormalDutyCount = business.getStatisticPersonForMonthFactory().sumAbNormalDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth );
+			//abNormalDutyCount = business.getStatisticPersonForMonthFactory().sumAbNormalDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth );
+			abNormalDutyCount = business.getStatisticPersonForMonthFactory().sumAbNormalDutyCountByUnitYearAndMonthUn( query_unitNames,unUnitNameList,personNameList, cycleYear, cycleMonth );
 			if( abNormalDutyCount == null ){ abNormalDutyCount = 0L;}
 			statisticUnitForMonth.setAbNormalDutyCount((long)abNormalDutyCount);
 			//    1.2.4 工时不足次数
-			lackOfTimeCount = business.getStatisticPersonForMonthFactory().sumLackOfTimeCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//lackOfTimeCount = business.getStatisticPersonForMonthFactory().sumLackOfTimeCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			lackOfTimeCount = business.getStatisticPersonForMonthFactory().sumLackOfTimeCountByUnitYearAndMonthUn( query_unitNames,unUnitNameList,personNameList, cycleYear, cycleMonth);
 			if( lackOfTimeCount == null ){ lackOfTimeCount = 0L;}
 			statisticUnitForMonth.setLackOfTimeCount((long)lackOfTimeCount);
 			//    1.2.5 签到次数
-			onDutyTimes = business.getStatisticPersonForMonthFactory().sumOnDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//onDutyTimes = business.getStatisticPersonForMonthFactory().sumOnDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			onDutyTimes = business.getStatisticPersonForMonthFactory().sumOnDutyCountByUnitYearAndMonthUn( query_unitNames,unUnitNameList,personNameList, cycleYear, cycleMonth);
 			if( onDutyTimes == null ){ onDutyTimes = 0L;}
 			statisticUnitForMonth.setOnDutyCount( (long)onDutyTimes);
 			//    1.2.6 签退次数
-			offDutyTimes = business.getStatisticPersonForMonthFactory().sumOffDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//offDutyTimes = business.getStatisticPersonForMonthFactory().sumOffDutyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			offDutyTimes = business.getStatisticPersonForMonthFactory().sumOffDutyCountByUnitYearAndMonthUn( query_unitNames, unUnitNameList,personNameList,cycleYear, cycleMonth);
 			if( offDutyTimes == null ){ offDutyTimes = 0L;}
 			statisticUnitForMonth.setOffDutyCount((long)offDutyTimes);
 			//    1.2.7 迟到次数
-			lateTimes = business.getStatisticPersonForMonthFactory().sumLateCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//lateTimes = business.getStatisticPersonForMonthFactory().sumLateCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			lateTimes = business.getStatisticPersonForMonthFactory().sumLateCountByUnitYearAndMonthUn( query_unitNames, unUnitNameList,personNameList,cycleYear, cycleMonth);
 			if( lateTimes == null ){ lateTimes = 0L;}
 			statisticUnitForMonth.setLateCount((long)lateTimes);
 			//    1.2.8 缺勤天数
-			absenceDayCount = business.getStatisticPersonForMonthFactory().sumAbsenceDayCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//absenceDayCount = business.getStatisticPersonForMonthFactory().sumAbsenceDayCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			absenceDayCount = business.getStatisticPersonForMonthFactory().sumAbsenceDayCountByUnitYearAndMonthUn( query_unitNames, unUnitNameList,personNameList,cycleYear, cycleMonth);
 			if( absenceDayCount == null ){ absenceDayCount = 0.0;}
 			statisticUnitForMonth.setAbsenceDayCount((double)absenceDayCount);
 			//    1.2.9 早退次数
-			leaveEarlyTimes = business.getStatisticPersonForMonthFactory().sumLeaveEarlyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//leaveEarlyTimes = business.getStatisticPersonForMonthFactory().sumLeaveEarlyCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			leaveEarlyTimes = business.getStatisticPersonForMonthFactory().sumLeaveEarlyCountByUnitYearAndMonthUn( query_unitNames, unUnitNameList,personNameList,cycleYear, cycleMonth);
 			if( leaveEarlyTimes == null ){ leaveEarlyTimes = 0L;}
 			statisticUnitForMonth.setLeaveEarlyCount((long)leaveEarlyTimes);
 			//    1.2.10 休假天数
-			onSelfHolidayCount = business.getStatisticPersonForMonthFactory().sumOnSelfHolidayCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			//onSelfHolidayCount = business.getStatisticPersonForMonthFactory().sumOnSelfHolidayCountByUnitYearAndMonth( query_unitNames, cycleYear, cycleMonth);
+			onSelfHolidayCount = business.getStatisticPersonForMonthFactory().sumOnSelfHolidayCountByUnitYearAndMonthUn( query_unitNames,unUnitNameList,personNameList, cycleYear, cycleMonth);
 			if( onSelfHolidayCount == null ){ onSelfHolidayCount = 0.0;}
 			statisticUnitForMonth.setOnSelfHolidayCount((double)onSelfHolidayCount);
 			
@@ -860,5 +876,57 @@ public class AttendanceStatisticService {
 	public List<StatisticTopUnitForDay> listTopUnitForDay(EntityManagerContainer emc, List<String> ids) throws Exception {
 		Business business =  new Business( emc );
 		return business.getStatisticTopUnitForDayFactory().list( ids );
+	}
+	
+	/**
+	 * 获取不需要考勤的组织
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnUnitNameList() throws Exception {
+		List<String> unUnitNameList = new ArrayList<String>();
+
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String unitName = attendanceEmployeeConfig.getUnitName();
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isEmpty(employeeName) && StringUtils.isNotEmpty(unitName)){
+					unUnitNameList.add(unitName);
+					List<String> tempUnitNameList = userManagerService.listSubUnitNameWithParent(unitName);
+					if(ListTools.isNotEmpty(tempUnitNameList)){
+						for(String tempUnit:tempUnitNameList){
+							if(!ListTools.contains(unUnitNameList, tempUnit)){
+								unUnitNameList.add(tempUnit);
+							}
+						}
+					}
+				}
+			} 
+		}
+		return unUnitNameList;
+	}
+	
+	/**
+	 * 获取不需要考勤的人员
+	 * @return
+	 * @throws Exception 
+	 */
+	protected  List<String> getUnPersonNameList() throws Exception {
+		List<String> personNameList = new ArrayList<String>();
+		List<AttendanceEmployeeConfig> attendanceEmployeeConfigs = attendanceEmployeeConfigServiceAdv.listByConfigType("NOTREQUIRED");
+
+		if(ListTools.isNotEmpty(attendanceEmployeeConfigs)){
+			for (AttendanceEmployeeConfig attendanceEmployeeConfig : attendanceEmployeeConfigs) {
+				String employeeName = attendanceEmployeeConfig.getEmployeeName();
+
+				if(StringUtils.isNotEmpty(employeeName) && !ListTools.contains(personNameList, employeeName)){
+					personNameList.add(employeeName);
+				}
+			}
+		}
+		return personNameList;
 	}
 }

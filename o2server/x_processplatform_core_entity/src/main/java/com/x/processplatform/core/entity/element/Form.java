@@ -1,7 +1,6 @@
 package com.x.processplatform.core.entity.element;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Basic;
@@ -12,16 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
+import org.apache.openjpa.persistence.Persistent;
 import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
 
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
@@ -96,6 +92,17 @@ public class Form extends SliceJpaObject {
 
 	public void onPersist() throws Exception {
 		// nothing
+	}
+
+	public Form() {
+		this.properties = new FormProperties();
+	}
+
+	public FormProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new FormProperties();
+		}
+		return this.properties;
 	}
 
 	public String getDataOrMobileData() {
@@ -187,8 +194,8 @@ public class Form extends SliceJpaObject {
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("文本内容.")
 	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	// @Persistent(fetch = FetchType.EAGER)
+@Basic(fetch = FetchType.EAGER)
+//	@Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String data;
@@ -196,7 +203,8 @@ public class Form extends SliceJpaObject {
 	public static final String mobileData_FIELDNAME = "mobileData";
 	@FieldDescribe("移动端文本内容.")
 	@Lob
-	@Basic(fetch = FetchType.EAGER)
+	 @Basic(fetch = FetchType.EAGER)
+	//@Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mobileData;
@@ -206,68 +214,14 @@ public class Form extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
 	private Boolean hasMobile;
 
-	public static final String relatedFormList_FIELDNAME = "relatedFormList";
-	@FieldDescribe("related form.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + relatedFormList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + relatedFormList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + relatedFormList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + relatedFormList_FIELDNAME + ElementIndexNameSuffix)
+	public static final String properties_FIELDNAME = "properties";
+	// @Basic(fetch = FetchType.EAGER)
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent(fetch = FetchType.EAGER)
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private List<String> relatedFormList;
-
-	public static final String relatedScriptList_FIELDNAME = "relatedScriptList";
-	@FieldDescribe("related form.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ relatedScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ relatedScriptList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + relatedScriptList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + relatedScriptList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> relatedScriptList;
-
-	public static final String mobileRelatedFormList_FIELDNAME = "mobileRelatedFormList";
-	@FieldDescribe("关联移动表单.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ mobileRelatedFormList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ mobileRelatedFormList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mobileRelatedFormList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + mobileRelatedFormList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> mobileRelatedFormList;
-
-	public static final String mobileRelatedScriptList_FIELDNAME = "mobileRelatedScriptList";
-	@FieldDescribe("关联移动脚本.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ mobileRelatedScriptList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-					+ mobileRelatedScriptList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mobileRelatedScriptList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + mobileRelatedScriptList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> mobileRelatedScriptList;
-
-	public List<String> getMobileRelatedFormList() {
-		return mobileRelatedFormList;
-	}
-
-	public void setMobileRelatedFormList(List<String> mobileRelatedFormList) {
-		this.mobileRelatedFormList = mobileRelatedFormList;
-	}
-
-	public List<String> getMobileRelatedScriptList() {
-		return mobileRelatedScriptList;
-	}
-
-	public void setMobileRelatedScriptList(List<String> mobileRelatedScriptList) {
-		this.mobileRelatedScriptList = mobileRelatedScriptList;
-	}
+	private FormProperties properties;
 
 	public void setCategory(String category) {
 		this.category = category;
@@ -353,20 +307,8 @@ public class Form extends SliceJpaObject {
 		this.hasMobile = hasMobile;
 	}
 
-	public List<String> getRelatedFormList() {
-		return relatedFormList;
-	}
-
-	public void setRelatedFormList(List<String> relatedFormList) {
-		this.relatedFormList = relatedFormList;
-	}
-
-	public List<String> getRelatedScriptList() {
-		return relatedScriptList;
-	}
-
-	public void setRelatedScriptList(List<String> relatedScriptList) {
-		this.relatedScriptList = relatedScriptList;
+	public void setProperties(FormProperties properties) {
+		this.properties = properties;
 	}
 
 }

@@ -215,7 +215,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                 this._loadEvents();
 
-                this.loadResource( function () {
+                this.loadRelatedScript();
+                //this.loadResource( function () {
                     this.fireEvent("queryLoad");
                     if (this.event_resolve){
                         this.event_resolve(function(){
@@ -224,20 +225,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }else{
                         this.loadForm(callback);
                     }
-                }.bind(this));
+                //}.bind(this));
 
             }.bind(this));
         }.bind(this));
     },
-    loadResource : function( callback ){
-        var cb = function () {
-            if( this.syncScriptLoaded && this.asyncScriptLoaded && this.dictionaryLoaded ){
-                if(callback)callback();
-            }
-        }.bind(this);
-        this.loadScriptList( cb );
-        this.loadDictionaryList( cb );
+    loadRelatedScript: function(){
+        debugger;
+        if (this.json.includeScripts && this.json.includeScripts.length){
+            var includeScriptText = "";
+            var includedIds = [];
+            this.json.includeScripts.each(function(s){
+                if (this.app.relatedScriptMap && this.app.relatedScriptMap[s.id]){
+                    includeScriptText+="\n"+this.app.relatedScriptMap[s.id].text;
+                    includedIds.push(s.id);
+                }
+            }.bind(this));
+
+            if (includeScriptText) this.Macro.exec(includeScriptText, this);
+        }
     },
+    //@todo 载入脚本和数据字典
+    // loadResource : function( callback ){
+    //     var cb = function () {
+    //         if( this.syncScriptLoaded && this.asyncScriptLoaded && this.dictionaryLoaded ){
+    //             if(callback)callback();
+    //         }
+    //     }.bind(this);
+    //     // this.loadScriptList( cb );
+    //     this.loadDictionaryList( cb );
+    // },
     loadDictionaryList: function( callback ){
         this.dictionaryLoaded = false;
         var loadedCount = 0;

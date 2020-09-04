@@ -72,6 +72,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     names = JSON.parse( names );
                 }
                 names.each(function(name){
+                    debugger;
                     if (name){
                         var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
                         MWF.require("MWF.widget.O2Identity", function(){
