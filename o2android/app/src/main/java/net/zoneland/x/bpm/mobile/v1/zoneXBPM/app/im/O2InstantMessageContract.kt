@@ -10,9 +10,9 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BaseView
  */
 object O2InstantMessageContract {
     interface View: BaseView {
-
+        fun workIsCompleted(flag: Boolean, workId: String)
     }
     interface Presenter: BasePresenter<View> {
-
+        fun getWorkInfo(workId: String)
     }
 }
