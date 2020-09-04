@@ -20,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
+import com.x.processplatform.assemble.surface.factory.cms.CmsFactory;
 import com.x.processplatform.assemble.surface.factory.content.AttachmentFactory;
 import com.x.processplatform.assemble.surface.factory.content.ItemFactory;
 import com.x.processplatform.assemble.surface.factory.content.JobFactory;
@@ -54,6 +55,7 @@ import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
 import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
 import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
 import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
+import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -387,24 +389,6 @@ public class Business {
 		return script;
 	}
 
-//	private QueryViewFactory queryView;
-//
-//	public QueryViewFactory queryView() throws Exception {
-//		if (null == this.queryView) {
-//			this.queryView = new QueryViewFactory(this);
-//		}
-//		return queryView;
-//	}
-//
-//	private QueryStatFactory queryStat;
-//
-//	public QueryStatFactory queryStat() throws Exception {
-//		if (null == this.queryStat) {
-//			this.queryStat = new QueryStatFactory(this);
-//		}
-//		return queryStat;
-//	}
-
 	private FileFactory file;
 
 	public FileFactory file() throws Exception {
@@ -412,6 +396,24 @@ public class Business {
 			this.file = new FileFactory(this);
 		}
 		return file;
+	}
+
+	private CmsFactory cms;
+
+	public CmsFactory cms() throws Exception {
+		if (null == this.cms) {
+			this.cms = new CmsFactory(this);
+		}
+		return cms;
+	}
+
+	private PortalFactory portal;
+
+	public PortalFactory portal() throws Exception {
+		if (null == this.portal) {
+			this.portal = new PortalFactory(this);
+		}
+		return portal;
 	}
 
 	public Activity getActivity(Work work) throws Exception {
@@ -422,50 +424,50 @@ public class Business {
 		Activity o = null;
 		if (null != activityType) {
 			switch (activityType) {
-				case agent:
-					o = agent().pick(id);
-					break;
-				case begin:
-					o = begin().pick(id);
-					break;
-				case cancel:
-					o = cancel().pick(id);
-					break;
-				case choice:
-					o = choice().pick(id);
-					break;
-				case delay:
-					o = delay().pick(id);
-					break;
-				case embed:
-					o = embed().pick(id);
-					break;
-				case end:
-					o = end().pick(id);
-					break;
-				case invoke:
-					o = invoke().pick(id);
-					break;
-				case manual:
-					o = manual().pick(id);
-					break;
-				case merge:
-					o = merge().pick(id);
-					break;
-				case message:
-					o = message().pick(id);
-					break;
-				case parallel:
-					o = parallel().pick(id);
-					break;
-				case service:
-					o = service().pick(id);
-					break;
-				case split:
-					o = service().pick(id);
-					break;
-				default:
-					break;
+			case agent:
+				o = agent().pick(id);
+				break;
+			case begin:
+				o = begin().pick(id);
+				break;
+			case cancel:
+				o = cancel().pick(id);
+				break;
+			case choice:
+				o = choice().pick(id);
+				break;
+			case delay:
+				o = delay().pick(id);
+				break;
+			case embed:
+				o = embed().pick(id);
+				break;
+			case end:
+				o = end().pick(id);
+				break;
+			case invoke:
+				o = invoke().pick(id);
+				break;
+			case manual:
+				o = manual().pick(id);
+				break;
+			case merge:
+				o = merge().pick(id);
+				break;
+			case message:
+				o = message().pick(id);
+				break;
+			case parallel:
+				o = parallel().pick(id);
+				break;
+			case service:
+				o = service().pick(id);
+				break;
+			case split:
+				o = service().pick(id);
+				break;
+			default:
+				break;
 			}
 		}
 		return o;

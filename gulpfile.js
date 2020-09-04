@@ -461,6 +461,7 @@ function build_concat_xform(){
         'o2web/source/' + path + '/Textfield.js',
         'o2web/source/' + path + '/Personfield.js',
         'o2web/source/' + path + '/*.js',
+        'o2web/source/x_component_process_Work/Processor.js',
         '!o2web/source/' + path + '/Office.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
@@ -493,7 +494,6 @@ function build_bundle(){
 function build_concat_basework() {
     var src = [
         'o2web/source/x_desktop/js/base_work_begin.js',
-        'o2web/source/x_desktop/js/base.js',
         'o2web/source/o2_core/o2/widget/Common.js',
         'o2web/source/o2_core/o2/widget/Dialog.js',
         'o2web/source/o2_core/o2/widget/UUID.js',
@@ -520,12 +520,12 @@ function build_concat_basework() {
         'o2web/source/o2_core/o2/xScript/Actions/ScriptActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/CMSScriptActions.js',
         'o2web/source/o2_core/o2/xScript/Actions/PortalScriptActions.js',
-        'o2web/source/x_component_process_Work/Processor.js',
         'o2web/source/x_component_Template/MTooltips.js',
         'o2web/source/o2_core/o2/xAction/services/x_organization_assemble_authentication.js',
         'o2web/source/o2_core/o2/xAction/services/x_processplatform_assemble_surface.js',
         'o2web/source/o2_core/o2/xAction/services/x_cms_assemble_control.js',
-        'o2web/source/x_desktop/js/base_work_end.js'
+        'o2web/source/x_desktop/js/base_work_end.js',
+        'o2web/source/x_desktop/js/base.js'
     ];
     var dest = 'target/o2server/servers/webServer/x_desktop/js/';
     return gulp.src(src)

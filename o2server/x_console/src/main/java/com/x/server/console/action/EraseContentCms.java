@@ -12,6 +12,7 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.ReadRemind;
 import com.x.cms.core.entity.Review;
+import com.x.query.core.entity.Item;
 
 public class EraseContentCms extends EraseContent {
 
@@ -29,6 +30,7 @@ public class EraseContentCms extends EraseContent {
 		addClass(DocumentCommentCommend.class);
 		addClass(DocumentCommend.class);
 		addClass(CmsBatchOperation.class);
+		addClass(Item.class);
 		this.run();
 		return true;
 	}

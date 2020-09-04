@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.tools.BaseTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -245,6 +246,7 @@ public class Collect extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_COLLECT);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		BaseTools.executeSyncFile(Config.PATH_CONFIG_COLLECT);
 	}
 
 	public void setSecret(String secret) {

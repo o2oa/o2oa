@@ -13,6 +13,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             this.form.checkSubformLoaded();
             this.checked = true;
         } else {
+            debugger;
             this.getSubform(function () {
                 this.loadSubform();
             }.bind(this));
@@ -31,8 +32,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             this.loadSubform();
             if(callback)callback();
         }.bind(this));
-    }
-    ,
+    },
     loadCss: function () {
         if (this.subformData.json.css && this.subformData.json.css.code) {
             var cssText = this.form.parseCSS(this.subformData.json.css.code);
@@ -176,22 +176,27 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class({
             }
         } else {
             if (this.json.subformSelected && this.json.subformSelected !== "none") {
-                var app;
-                if (this.json.subformAppSelected) {
-                    app = this.json.subformAppSelected;
-                } else {
-                    app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
-                }
-                MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.subformSelected, app, function (json) {
-                    this.getSubformData(json.data);
+                var subformData = (this.form.app.relatedFormMap) ? this.form.app.relatedFormMap[this.json.subformSelected] : null;
+                if (subformData){
+                    this.getSubformData({"data": subformData.data});
                     if (callback) callback();
-                }.bind(this));
+                }else{
+                    var app;
+                    if (this.json.subformAppSelected) {
+                        app = this.json.subformAppSelected;
+                    } else {
+                        app = (this.form.businessData.work || this.form.businessData.workCompleted).application;
+                    }
+                    MWF.Actions.get("x_processplatform_assemble_surface")[method](this.json.subformSelected, app, function (json) {
+                        this.getSubformData(json.data);
+                        if (callback) callback();
+                    }.bind(this));
+                }
             } else {
                 if (callback) callback();
             }
         }
-    }
-    ,
+    },
     getSubformData: function (data) {
         if (!data || typeOf(data) !== "object")return;
         var subformDataStr = null;

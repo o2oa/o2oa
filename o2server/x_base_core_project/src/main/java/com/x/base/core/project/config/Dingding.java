@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.x.base.core.project.tools.BaseTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -223,6 +224,7 @@ public class Dingding extends ConfigObject {
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_DINGDING);
 		FileUtils.write(file, XGsonBuilder.toJson(this), DefaultCharset.charset);
+		BaseTools.executeSyncFile(Config.PATH_CONFIG_DINGDING);
 	}
 
 	public void setEnable(Boolean enable) {

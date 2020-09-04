@@ -305,7 +305,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			throws Exception {
 		List<String> names = new ArrayList<>();
 		officialClassInfos.stream().map(ClassInfo::getSimpleName).forEach(names::add);
-		// names.addAll(customNames);
+		names.addAll(customNames);
 		for (String str : Config.dir_servers_applicationServer_work(true).list()) {
 			if (!names.contains(str)) {
 				FileUtils.forceDelete(new File(Config.dir_servers_applicationServer_work(), str));
@@ -316,7 +316,7 @@ public class ApplicationServerTools extends JettySeverTools {
 	private static void modified(Path war, Path dir) throws IOException {
 		Path lastModified = Paths.get(dir.toString(), PathTools.WEB_INF_LASTMODIFIED);
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
-				|| (Files.getLastModifiedTime(lastModified).toMillis() != NumberUtils
+				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
 						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
 			logger.print("deploy war:{}.", war.getFileName().toAbsolutePath());
 			if (Files.exists(dir)) {
@@ -327,7 +327,7 @@ public class ApplicationServerTools extends JettySeverTools {
 				Files.createDirectories(lastModified.getParent());
 				Files.createFile(lastModified);
 			}
-			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(lastModified).toMillis() + "",
+			FileUtils.writeStringToFile(lastModified.toFile(), Files.getLastModifiedTime(war).toMillis() + "",
 					DefaultCharset.charset_utf_8, false);
 		}
 	}
