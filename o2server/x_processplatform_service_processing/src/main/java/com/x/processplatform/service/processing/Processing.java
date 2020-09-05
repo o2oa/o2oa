@@ -36,20 +36,12 @@ public class Processing extends BaseProcessing {
 		this.entityManagerContainer = EntityManagerContainerFactory.instance().create();
 	}
 
-//	public Processing(ProcessingAttributes processingAttributes, EntityManagerContainer entityManagerContainer)
-//			throws Exception {
-//		this.processingAttributes = processingAttributes;
-//		this.entityManagerContainer = entityManagerContainer;
-//		if (this.processingAttributes.getLoop() > 64) {
-//			throw new Exception("processing too many.");
-//		}
-//	}
-
 	public void processing(String workId) throws Exception {
 		this.processing(workId, new ProcessingConfigurator());
 	}
 
 	public void processing(String workId, ProcessingConfigurator processingConfigurator) throws Exception {
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!11" + Processing.class);
 		try {
 			Work work = null;
 			work = this.entityManagerContainer().fetch(workId, Work.class, ListTools.toList(Work.workStatus_FIELDNAME));
@@ -101,9 +93,10 @@ public class Processing extends BaseProcessing {
 				if (StringUtils.isNotEmpty(str)) {
 					if (processingConfigurator.getContinueLoop()) {
 //						new Processing(processingAttributes, this.entityManagerContainer()).processing(str);
-						/* clone processingAttributes 对象 */
-						new Processing(XGsonBuilder.convert(processingAttributes, ProcessingAttributes.class))
-								.processing(str);
+//						new Processing(XGsonBuilder.convert(processingAttributes, ProcessingAttributes.class))
+//								.processing(str);
+						// clone processingAttributes 对象
+						new Processing(processingAttributes.copyInstanceButSameSignal()).processing(str);
 					}
 				}
 			}
@@ -111,6 +104,7 @@ public class Processing extends BaseProcessing {
 			throw new Exception("processing fialure.", e);
 		} finally {
 			this.entityManagerContainer().close();
+			processingAttributes.signal().close();
 		}
 	}
 
