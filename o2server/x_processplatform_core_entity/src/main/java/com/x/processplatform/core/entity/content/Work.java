@@ -97,8 +97,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void postLoad() {
 		if ((null != this.properties) && StringUtils.isNotEmpty(this.getProperties().getTitle())) {
 			this.title = this.getProperties().getTitle();
-			this.splitValueList = this.getProperties().getSplitValueList();
 		}
+		this.splitValueList = this.getProperties().getSplitValueList();
 	}
 
 	/* 更新运行方法 */
