@@ -72,7 +72,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
-
+		this.processingSignal = new ProcessingSignal();
 	}
 
 	public Integer getExecutorCount() {
@@ -165,6 +165,9 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
+	@FieldDescribe("流程处理型号设置.")
+	private ProcessingSignal processingSignal;
+
 	public ExtensionEvents getExtensionEvents() {
 		if (null == extensionEvents) {
 			this.extensionEvents = new ExtensionEvents();
@@ -210,6 +213,13 @@ public class ProcessPlatform extends ConfigObject {
 
 	public String getMaintenanceIdentity() {
 		return maintenanceIdentity;
+	}
+
+	public ProcessingSignal getProcessingSignal() {
+		if (this.processingSignal == null) {
+			this.processingSignal = new ProcessingSignal();
+		}
+		return this.processingSignal;
 	}
 
 	public void save() throws Exception {
@@ -793,6 +803,22 @@ public class ProcessPlatform extends ConfigObject {
 
 		public void setCustom(String custom) {
 			this.custom = custom;
+		}
+
+	}
+
+	public static class ProcessingSignal extends ConfigObject {
+
+		public static final Integer DEFAULT_SPLITTHRESHOLD = 5;
+
+		private Integer splitThreshold = DEFAULT_SPLITTHRESHOLD;
+
+		public Integer getSplitThreshold() {
+			return splitThreshold == null ? DEFAULT_SPLITTHRESHOLD : this.splitThreshold;
+		}
+
+		public void setSplitThreshold(Integer splitThreshold) {
+			this.splitThreshold = splitThreshold;
 		}
 
 	}
