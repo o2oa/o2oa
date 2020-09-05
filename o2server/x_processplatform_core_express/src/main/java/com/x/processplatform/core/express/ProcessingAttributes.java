@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.executor.Signal;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.StringTools;
 
 public class ProcessingAttributes extends GsonPropertyObject {
@@ -19,6 +21,8 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	public static final String TYPE_ROLLBACK = "rollback";
 	public static final String TYPE_SERVICE = "service";
 	private Integer loop = 1;
+
+	private transient Signal signal = null;
 
 	@FieldDescribe("强制从arrive开始")
 	private Boolean forceJoinAtArrive;
@@ -37,6 +41,11 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public ProcessingAttributes() {
 		this.series = StringTools.uniqueToken();
+		this.signal = new Signal();
+	}
+
+	public Signal signal() {
+		return this.signal;
 	}
 
 	private Boolean debugger = false;
@@ -164,6 +173,16 @@ public class ProcessingAttributes extends GsonPropertyObject {
 
 	public void setIdentity(String identity) {
 		this.identity = identity;
+	}
+
+	public ProcessingAttributes copyInstanceButSameSignal() {
+		ProcessingAttributes p = XGsonBuilder.convert(this, ProcessingAttributes.class);
+		p.signal(this.signal);
+		return p;
+	}
+
+	private void signal(Signal signal) {
+		this.signal = signal;
 	}
 
 }
