@@ -293,7 +293,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 			logger.info("工作设置的处理人已经全部无效,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.", aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), identities);
 			// 后面进行了identitis.remove()这里必须用一个新对象包装
-			aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<String>(identities));
+			aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>(identities));
 		}
 
 		// 发送ProcessingSignal

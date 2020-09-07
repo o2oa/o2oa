@@ -68,7 +68,7 @@ public class Manual extends Activity {
 
 	@PostLoad
 	public void postLoad() {
-		this.asyncSupported = this.getProperties().getAsyncSupported();
+		// this.asyncSupported = this.getProperties().getAsyncSupported();
 	}
 
 	public Manual() {
@@ -82,17 +82,17 @@ public class Manual extends Activity {
 		return this.properties;
 	}
 
-	public Boolean getAsyncSupported() {
-		return asyncSupported;
-	}
-
-	public void setAsyncSupported(Boolean asyncSupported) {
-		this.asyncSupported = asyncSupported;
-		this.getProperties().setAsyncSupported(asyncSupported);
-	}
-
-	@Transient
-	private Boolean asyncSupported;
+//	public Boolean getAsyncSupported() {
+//		return asyncSupported;
+//	}
+//
+//	public void setAsyncSupported(Boolean asyncSupported) {
+//		this.asyncSupported = asyncSupported;
+//		this.getProperties().setAsyncSupported(asyncSupported);
+//	}
+//
+//	@Transient
+//	private Boolean asyncSupported;
 
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)

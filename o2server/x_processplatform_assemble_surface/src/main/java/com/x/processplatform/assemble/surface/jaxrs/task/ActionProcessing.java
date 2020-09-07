@@ -84,7 +84,7 @@ class ActionProcessing extends BaseAction {
 			Business business = new Business(emc);
 			init(effectivePerson, business, id, jsonElement);
 			updateTaskIfNecessary(business);
-			seeManual(business);
+			seeManualRoute(business);
 		}
 
 		LinkedBlockingQueue<Wo> responeQueue = new LinkedBlockingQueue<>();
@@ -193,10 +193,9 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private void seeManual(Business business) throws Exception {
+	private void seeManualRoute(Business business) throws Exception {
 		Manual manual = business.manual().pick(this.task.getActivity());
 		if (null != manual) {
-			this.asyncSupported = BooleanUtils.isNotFalse(manual.getAsyncSupported());
 			Route route = null;
 			for (Route o : business.route().pick(manual.getRouteList())) {
 				if (StringUtils.equals(o.getName(), this.task.getRouteName())) {
@@ -204,9 +203,12 @@ class ActionProcessing extends BaseAction {
 					break;
 				}
 			}
-			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK))
-					&& StringUtils.equals(manual.getId(), route.getActivity())) {
-				this.type = TYPE_APPENDTASK;
+			if (null != route) {
+				this.asyncSupported = BooleanUtils.isNotFalse(route.getAsyncSupported());
+				if (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK)
+						&& StringUtils.equals(manual.getId(), route.getActivity())) {
+					this.type = TYPE_APPENDTASK;
+				}
 			}
 		}
 	}
