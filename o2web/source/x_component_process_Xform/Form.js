@@ -217,6 +217,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                 this.loadRelatedScript();
                 //this.loadResource( function () {
+                this.loadDictionaryList( function () {
                     this.fireEvent("queryLoad");
                     if (this.event_resolve){
                         this.event_resolve(function(){
@@ -225,6 +226,8 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
                     }else{
                         this.loadForm(callback);
                     }
+                }.bind(this));
+
                 //}.bind(this));
 
             }.bind(this));
@@ -258,72 +261,87 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     loadDictionaryList: function( callback ){
         this.dictionaryLoaded = false;
         var loadedCount = 0;
-        if( this.json.dictionaries && this.json.dictionaries.length ){
-            this.json.dictionaries.map(function (d) {
-                d.type = d.appType;
-                d.application = d.application || d.appId || d.appName;
-                new this.Macro.environment.Dict( d ).get( "", function(){
-                    loadedCount++;
-                    if (this.json.dictionaries.length <= loadedCount){
-                        this.dictionaryLoaded = true;
-                        if(callback)callback();
-                    }
-                }.bind(this), null, true);
+        if( this.json.includeDictionaries && this.json.includeDictionaries.length ){
+            var fun = function () {
+                loadedCount++;
+                if (this.json.includeDictionaries.length <= loadedCount){
+                    this.dictionaryLoaded = true;
+                    if(callback)callback();
+                }
+            }.bind(this);
+
+            this.json.includeDictionaries.map(function (d) {
+                var action = MWF.Actions.get( d.dictionary.appType === "cms" ? "x_cms_assemble_control" : "x_processplatform_assemble_surface");
+                if ( d.path && d.path !== "root" ){
+                    action[ "getDictData" ]( d.dictionary.id, d.dictionary.appId, d.path, function(json){
+                        MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
+                        fun();
+                    }.bind(this), function(){
+                        fun();
+                    }.bind(this), true );
+                }else{
+                    action[ "getDictRoot" ](d.dictionary.id, d.dictionary.appId, function(json){
+                        MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
+                        fun();
+                    }.bind(this), function(){
+                        fun();
+                    }.bind(this), true );
+                }
             }.bind(this));
         }else{
             this.dictionaryLoaded = true;
             if(callback)callback();
         }
     },
-    loadScriptList : function( callback ){
-        var asyncList = [];
-        var syncList = [];
-
-        this.syncScriptLoaded = false;
-        this.asyncScriptLoaded = false;
-
-        if( this.json.scripts && this.json.scripts.length ){
-            for( var i=0; i<this.json.scripts.length; i++ ){
-                var script = this.json.scripts[i];
-                script.scriptList.map( function ( s ) {
-                    s.type = s.appType;
-                    s.application = s.application || s.appId || s.appName;
-                });
-                if( script.async ){
-                    asyncList = asyncList.concat( script.scriptList );
-                }else{
-                    syncList = syncList.concat( script.scriptList );
-                }
-            }
-        }
-
-        var loadSyncList = function () {
-            if( syncList.length === 0 ){
-                this.syncScriptLoaded = true;
-                if(callback)callback();
-            }else{
-                this.Macro.environment.include(syncList, function(){
-                    this.syncScriptLoaded = true;
-                    if(callback)callback();
-                }.bind(this), false);
-            }
-        }.bind(this);
-
-        var loadAsyncList = function () {
-            if( asyncList.length === 0 ){
-                this.asyncScriptLoaded = true;
-                if(callback)callback();
-            }else{
-                this.Macro.environment.include(asyncList, function(){
-                    this.asyncScriptLoaded = true;
-                    if(callback)callback();
-                }.bind(this), true);
-            }
-        }.bind(this);
-
-        loadAsyncList();
-        loadSyncList();
-    },
+    // loadScriptList : function( callback ){
+    //     var asyncList = [];
+    //     var syncList = [];
+    //
+    //     this.syncScriptLoaded = false;
+    //     this.asyncScriptLoaded = false;
+    //
+    //     if( this.json.scripts && this.json.scripts.length ){
+    //         for( var i=0; i<this.json.scripts.length; i++ ){
+    //             var script = this.json.scripts[i];
+    //             script.scriptList.map( function ( s ) {
+    //                 s.type = s.appType;
+    //                 s.application = s.application || s.appId || s.appName;
+    //             });
+    //             if( script.async ){
+    //                 asyncList = asyncList.concat( script.scriptList );
+    //             }else{
+    //                 syncList = syncList.concat( script.scriptList );
+    //             }
+    //         }
+    //     }
+    //
+    //     var loadSyncList = function () {
+    //         if( syncList.length === 0 ){
+    //             this.syncScriptLoaded = true;
+    //             if(callback)callback();
+    //         }else{
+    //             this.Macro.environment.include(syncList, function(){
+    //                 this.syncScriptLoaded = true;
+    //                 if(callback)callback();
+    //             }.bind(this), false);
+    //         }
+    //     }.bind(this);
+    //
+    //     var loadAsyncList = function () {
+    //         if( asyncList.length === 0 ){
+    //             this.asyncScriptLoaded = true;
+    //             if(callback)callback();
+    //         }else{
+    //             this.Macro.environment.include(asyncList, function(){
+    //                 this.asyncScriptLoaded = true;
+    //                 if(callback)callback();
+    //             }.bind(this), true);
+    //         }
+    //     }.bind(this);
+    //
+    //     loadAsyncList();
+    //     loadSyncList();
+    // },
     loadForm: function(callback){
         if (this.lockDataPerson){
             var text = MWF.xApplication.process.Xform.LP.keyLockInfor;
