@@ -7,6 +7,7 @@ import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2App
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.O2SDKManager
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.base.BasePresenterImpl
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.core.component.api.ResponseHandler
+import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentFilter
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.model.bo.api.cms.CMSDocumentInfoJson
 import net.zoneland.x.bpm.mobile.v1.zoneXBPM.utils.XLog
 import okhttp3.MediaType
@@ -21,14 +22,14 @@ class CMSCategoryPresenter : BasePresenterImpl<CMSCategoryContract.View>(), CMSC
             mView?.loadFail()
             return
         }
-        val wrapIn = HashMap<String, ArrayList<String>>()
         val category = ArrayList<String>()
         category.add(id)
-        wrapIn["categoryIdList"] = category
         val status = ArrayList<String>()
         status.add("published")
-        wrapIn["statusList"] = status
-        val json = O2SDKManager.instance().gson.toJson(wrapIn)
+        val filter = CMSDocumentFilter()
+        filter.categoryIdList = category
+        filter.statusList = status
+        val json = O2SDKManager.instance().gson.toJson(filter)
         val body = RequestBody.create(MediaType.parse("text/json"), json)
         getCMSAssembleControlService(mView?.getContext())?.let { service ->
             service.filterDocumentList(body, lastId, O2.DEFAULT_PAGE_NUMBER)
