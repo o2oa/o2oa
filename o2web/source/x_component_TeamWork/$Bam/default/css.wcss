@@ -191,7 +191,7 @@
     "templateItemContent":{
         "float":"left",
         "margin-left":"20px",
-        "width":"600px",
+        "width":"200px",
         "height":"100%",
         "font-size":"12px"
     },

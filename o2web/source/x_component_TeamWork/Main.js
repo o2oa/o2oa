@@ -44,7 +44,6 @@ MWF.xApplication.TeamWork.Main = new Class({
 
 		//初始化一些信息
 		//初始化优先级
-
 		this.rootActions.GlobalAction.initConfig()
 
 
