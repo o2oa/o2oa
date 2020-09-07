@@ -1142,8 +1142,6 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		this.currentActivityName = currentActivityName;
 	}
 
-	public void setProperties(ReadCompletedProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 }

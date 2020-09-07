@@ -238,8 +238,6 @@ public class Draft extends SliceJpaObject {
 		this.unit = unit;
 	}
 
-	public void setProperties(DraftProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 }
