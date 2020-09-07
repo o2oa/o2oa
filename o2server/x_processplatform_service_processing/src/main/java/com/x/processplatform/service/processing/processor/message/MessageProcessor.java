@@ -36,7 +36,7 @@ public class MessageProcessor extends AbstractMessageProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Message message) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.embedExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.messageExecute());
 		MessageFactory.activity_message(aeiObjects.getWork(), null);
 		List<Work> results = new ArrayList<>();
 		results.add(aeiObjects.getWork());

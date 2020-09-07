@@ -1,7 +1,6 @@
 package com.x.processplatform.service.processing;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.list.SetUniqueList;
@@ -10,11 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.log.SignalStackLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
@@ -64,9 +60,9 @@ public class Processing extends BaseProcessing {
 			if (StringUtils.isEmpty(workId)) {
 				return;
 			}
-			/* workStatus is processing */
+			// workStatus is processing
 			List<String> nextLoops = SetUniqueList.setUniqueList(new ArrayList<String>());
-			/* 强制从arrived开始 */
+			// 强制从arrived开始
 			if (BooleanUtils.isTrue(processingAttributes.ifForceJoinAtArrive())) {
 				workId = this.arrive(workId, processingConfigurator, processingAttributes);
 			}
@@ -80,7 +76,7 @@ public class Processing extends BaseProcessing {
 			if (BooleanUtils.isFalse(processingAttributes.ifForceJoinAtInquire())) {
 				executed = this.execute(workId, processingConfigurator, processingAttributes);
 			} else {
-				/* 强制从inquire开始 */
+				// 强制从inquire开始
 				executed = new ArrayList<>();
 				executed.add(workId);
 			}
