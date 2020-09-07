@@ -6,7 +6,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 public class SignalStackLogProperties extends JsonProperties {
 
 	private static final long serialVersionUID = 5194057760551594662L;
-	@FieldDescribe("型号栈.")
+	@FieldDescribe("信号栈.")
 	private SignalStack signalStack;
 
 	public SignalStack getSignalStack() {
