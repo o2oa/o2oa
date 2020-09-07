@@ -1,8 +1,8 @@
 package com.x.base.core.project.http;
 
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,13 +41,14 @@ public class HttpToken {
 		effectivePerson.setRemoteAddress(this.remoteAddress(request));
 		effectivePerson.setUserAgent(this.userAgent(request));
 		effectivePerson.setUri(request.getRequestURI());
-		/* 加入调试标记 */
+		// 加入调试标记
 		Object debugger = request.getHeader(HttpToken.X_Debugger);
-		if (null != debugger && BooleanUtils.toBoolean(Objects.toString(debugger))) {
-			effectivePerson.setDebugger(true);
-		} else {
-			effectivePerson.setDebugger(false);
-		}
+		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
+//		if (null != debugger && BooleanUtils.toBoolean(Objects.toString(debugger))) {
+//			effectivePerson.setDebugger(true);
+//		} else {
+//			effectivePerson.setDebugger(false);
+//		}
 		setAttribute(request, effectivePerson);
 		setToken(request, response, effectivePerson);
 		return effectivePerson;
@@ -69,7 +70,7 @@ public class HttpToken {
 			Pattern pattern = Pattern.compile(RegularExpression_Token, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
-				/* 不报错,跳过错误,将用户设置为anonymous */
+				// 不报错,跳过错误,将用户设置为anonymous
 				logger.warn("token format error:{}.", plain);
 				return EffectivePerson.anonymous();
 			}
@@ -79,21 +80,18 @@ public class HttpToken {
 			diff = Math.abs(diff);
 			if (TokenType.user.equals(tokenType) || TokenType.manager.equals(tokenType)) {
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
-					// throw new Exception("token expired." + token);
-					/* 不报错,跳过错误,将用户设置为anonymous */
-					logger.warn("token expired:{}.", plain);
+					// 不报错,跳过错误,将用户设置为anonymous
+					logger.warn("token expired, user:{}, token:{}.",
+							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain);
 					return EffectivePerson.anonymous();
 				}
 			}
-			if (TokenType.cipher.equals(tokenType)) {
-				if (diff > (60000 * 20)) {
-					/* 不报错,跳过错误,将用户设置为anonymous */
-					return EffectivePerson.anonymous();
-				}
+			if (TokenType.cipher.equals(tokenType) && (diff > (60000 * 20))) {
+				// 不报错,跳过错误,将用户设置为anonymous
+				return EffectivePerson.anonymous();
 			}
-			EffectivePerson effectivePerson = new EffectivePerson(URLDecoder.decode(matcher.group(3), "utf-8"),
-					tokenType, key);
-			return effectivePerson;
+			return new EffectivePerson(URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), tokenType,
+					key);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,20 +110,20 @@ public class HttpToken {
 	public void setToken(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
 		switch (effectivePerson.getTokenType()) {
-			case anonymous:
-				// this.deleteToken(request, response);
-				break;
-			case user:
-				this.setResponseToken(request, response, effectivePerson);
-				break;
-			case manager:
-				this.setResponseToken(request, response, effectivePerson);
-				break;
-			case cipher:
-				this.deleteToken(request, response);
-				break;
-			default:
-				break;
+		case anonymous:
+			// this.deleteToken(request, response);
+			break;
+		case user:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case manager:
+			this.setResponseToken(request, response, effectivePerson);
+			break;
+		case cipher:
+			this.deleteToken(request, response);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -138,8 +136,8 @@ public class HttpToken {
 		}
 	}
 
-	public void setResponseToken(HttpServletRequest request, HttpServletResponse response,
-								  String tokenName, String token) throws Exception {
+	public void setResponseToken(HttpServletRequest request, HttpServletResponse response, String tokenName,
+			String token) throws Exception {
 		if (!StringUtils.isEmpty(token)) {
 			String cookie = tokenName + "=" + token + "; path=/; domain=" + this.domain(request);
 			response.setHeader("Set-Cookie", cookie);
