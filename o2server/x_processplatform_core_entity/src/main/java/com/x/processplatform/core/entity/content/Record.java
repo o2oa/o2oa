@@ -467,9 +467,7 @@ public class Record extends SliceJpaObject {
 		this.type = type;
 	}
 
-	public void setProperties(RecordProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 	public String getApplication() {
 		return application;
