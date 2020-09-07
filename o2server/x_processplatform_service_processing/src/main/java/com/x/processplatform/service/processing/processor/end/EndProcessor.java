@@ -48,9 +48,8 @@ public class EndProcessor extends AbstractEndProcessor {
 		aeiObjects.getProcessingAttributes().push(Signal.endExecute());
 		List<Work> results = new ArrayList<>();
 
-		Work other = aeiObjects.getWorks().stream().filter(o -> {
-			return o != aeiObjects.getWork();
-		}).sorted(Comparator.comparing(Work::getCreateTime)).findFirst().orElse(null);
+		Work other = aeiObjects.getWorks().stream().filter(o -> o != aeiObjects.getWork())
+				.sorted(Comparator.comparing(Work::getCreateTime)).findFirst().orElse(null);
 
 		if (null != other) {
 			aeiObjects.getUpdateWorks().add(other);
