@@ -848,14 +848,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.form = form;
 	}
 
-	// public Integer getErrorRetry() {
-	// return errorRetry;
-	// }
-	//
-	// public void setErrorRetry(Integer errorRetry) {
-	// this.errorRetry = errorRetry;
-	// }
-
 	public String getDestinationRoute() {
 		return destinationRoute;
 	}
