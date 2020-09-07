@@ -1486,9 +1486,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.empowerFromIdentity = empowerFromIdentity;
 	}
 
-	public void setProperties(TaskCompletedProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 	public String getProcessingType() {
 		return processingType;

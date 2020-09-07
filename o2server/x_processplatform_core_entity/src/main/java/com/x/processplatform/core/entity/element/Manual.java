@@ -636,9 +636,7 @@ public class Manual extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private ManualProperties properties;
 
-	public void setProperties(ManualProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 	public String getDisplayLogScript() {
 		return displayLogScript;
