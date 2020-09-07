@@ -587,7 +587,7 @@ MWF.xApplication.Meeting.Main = new Class({
         //) )
         return {
             action : this.currentTopMenuNode ? this.currentTopMenuNode.retrieve("action") : "toMyMeeting",
-            options : this.currentView.recordStatus ? this.currentView.recordStatus() : null
+            options : (this.currentView && this.currentView.recordStatus) ? this.currentView.recordStatus() : null
         };
     },
     reload: function( ){
