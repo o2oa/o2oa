@@ -2,29 +2,37 @@ package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.concurrent.Callable;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.log.SignalStackLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.ProcessingSignal;
 import com.x.processplatform.service.processing.Processing;
+import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionProcessing extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionProcessing.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
 		String job;
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
+		ActionResult<Wo> result = new ActionResult<>();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
@@ -40,72 +48,68 @@ class ActionProcessing extends BaseAction {
 
 		}
 
-		ActionResult<Wo> result = new ActionResult<>();
-
-		result.setData(new Wo());
-
-		ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id, result));
-
-		String value = wi.signal().read();
-
-		if (StringUtils.isNotBlank(value)) {
-			result.getData().setId(id);
-			result.getData().setOccurProcessingSignal(true);
-			result.getData().setProcessingSignal(gson.fromJson(value, ProcessingSignal.class));
+		try {
+			open(id, wi);
+			Wo wo = ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get();
+			persistSignalStack(id, job, wi);
+			result.setData(wo);
 			return result;
-		} else {
-			return result;
+		} finally {
+			close(id, wi);
 		}
-
 	}
 
-	private class CallableExecute implements Callable<ActionResult<Wo>> {
+	private void open(String id, Wi wi) {
+		ThisApplication.getProcessingToProcessingSignalStack().open(id, wi.getSeries(), wi.getSignalStack());
+	}
+
+	private void close(String id, Wi wi) {
+		ThisApplication.getProcessingToProcessingSignalStack().close(id, wi.getSeries());
+	}
+
+	private void persistSignalStack(String id, String job, Wi wi) throws Exception {
+		if (BooleanUtils.isNotTrue(Config.processPlatform().getProcessingSignalPersistEnable())) {
+			return;
+		}
+		new Thread(() -> {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				emc.beginTransaction(SignalStackLog.class);
+				SignalStackLog log = new SignalStackLog(id, job, wi.getSignalStack());
+				emc.persist(log, CheckPersistType.all);
+				emc.commit();
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}).start();
+	}
+
+	private class CallableExecute implements Callable<Wo> {
 		private Wi wi;
 		private String id;
-		private ActionResult<Wo> result;
 
-		private CallableExecute(Wi wi, String id, ActionResult<Wo> result) {
+		private CallableExecute(Wi wi, String id) {
 			this.wi = wi;
 			this.id = id;
-			this.result = result;
 		}
 
-		public ActionResult<Wo> call() throws Exception {
+		public Wo call() throws Exception {
 			Processing processing = new Processing(wi);
 			processing.processing(id);
-			result.getData().setId(id);
-			return result;
+			Wo wo = new Wo();
+			wo.setId(id);
+			return wo;
 		}
 	}
 
 	public static class Wi extends ProcessingAttributes {
 
+		private static final long serialVersionUID = -7448961581565944869L;
+
 	}
 
 	public static class Wo extends WoId {
 
-		@FieldDescribe("是否发生流程信号.")
-		private Boolean occurProcessingSignal = false;
-
-		@FieldDescribe("流程信号.")
-		private ProcessingSignal processingSignal;
-
-		public Boolean getOccurProcessingSignal() {
-			return occurProcessingSignal;
-		}
-
-		public void setOccurProcessingSignal(Boolean occurProcessingSignal) {
-			this.occurProcessingSignal = occurProcessingSignal;
-		}
-
-		public ProcessingSignal getProcessingSignal() {
-			return processingSignal;
-		}
-
-		public void setProcessingSignal(ProcessingSignal processingSignal) {
-			this.processingSignal = processingSignal;
-		}
-
+		private static final long serialVersionUID = 3933030965024291084L;
 	}
 
 }
