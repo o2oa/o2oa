@@ -107,16 +107,17 @@ public class WorkAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "流程信号.", action = ActionProcessingSignal.class)
 	@GET
-	@Path("{id}/series/{series}/processing/signal")
+	@Path("{id}/series/{series}/activitytoken/{activityToken}/processing/signal")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void processing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("串号") @PathParam("series") String series) {
+			@JaxrsParameterDescribe("串号") @PathParam("series") String series,
+			@JaxrsParameterDescribe("活动Token") @PathParam("activityToken") String activityToken) {
 		ActionResult<ActionProcessingSignal.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionProcessingSignal().execute(effectivePerson, id, series);
+			result = new ActionProcessingSignal().execute(effectivePerson, id, series, activityToken);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

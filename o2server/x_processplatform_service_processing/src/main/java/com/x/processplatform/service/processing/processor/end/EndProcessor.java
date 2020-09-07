@@ -33,7 +33,7 @@ public class EndProcessor extends AbstractEndProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, End end) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.endArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.endArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -45,7 +45,7 @@ public class EndProcessor extends AbstractEndProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, End end) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.endExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.endExecute(aeiObjects.getWork().getActivityToken()));
 		List<Work> results = new ArrayList<>();
 
 		Work other = aeiObjects.getWorks().stream().filter(o -> o != aeiObjects.getWork())
@@ -156,7 +156,7 @@ public class EndProcessor extends AbstractEndProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.endInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.endInquire(aeiObjects.getWork().getActivityToken()));
 		return new ArrayList<>();
 	}
 

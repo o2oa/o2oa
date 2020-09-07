@@ -30,7 +30,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Cancel cancel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.cancelArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.cancelArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -42,7 +42,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 	@Override
 	public List<Work> executing(AeiObjects aeiObjects, Cancel cancel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.cancelExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.cancelExecute(aeiObjects.getWork().getActivityToken()));
 		// 唯一work处理
 		if (aeiObjects.getWorks().size() > 1) {
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
@@ -84,7 +84,7 @@ public class CancelProcessor extends AbstractCancelProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Cancel cancel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.cancelInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.cancelInquire(aeiObjects.getWork().getActivityToken()));
 		return new ArrayList<>();
 	}
 

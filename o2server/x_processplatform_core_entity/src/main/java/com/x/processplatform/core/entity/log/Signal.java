@@ -31,8 +31,9 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal agentArrive() {
+	public static Signal agentArrive(String activityToken) {
 		Signal p = new Signal();
+		p.activityToken = activityToken;
 		AgentArrive s = new AgentArrive();
 		p.agentArrive = s;
 		return p;
@@ -42,10 +43,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal agentExecute() {
+	public static Signal agentExecute(String activityToken) {
 		Signal p = new Signal();
 		AgentExecute s = new AgentExecute();
 		p.agentExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -53,10 +55,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal agentInquire() {
+	public static Signal agentInquire(String activityToken) {
 		Signal p = new Signal();
 		AgentInquire s = new AgentInquire();
 		p.agentInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -84,10 +87,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal beginArrive() {
+	public static Signal beginArrive(String activityToken) {
 		Signal p = new Signal();
 		BeginArrive s = new BeginArrive();
 		p.beginArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -95,10 +99,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal beginExecute() {
+	public static Signal beginExecute(String activityToken) {
 		Signal p = new Signal();
 		BeginExecute s = new BeginExecute();
 		p.beginExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -106,10 +111,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal beginInquire() {
+	public static Signal beginInquire(String activityToken) {
 		Signal p = new Signal();
 		BeginInquire s = new BeginInquire();
 		p.beginInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -137,10 +143,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal cancelArrive() {
+	public static Signal cancelArrive(String activityToken) {
 		Signal p = new Signal();
 		CancelArrive s = new CancelArrive();
 		p.cancelArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -148,10 +155,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal cancelExecute() {
+	public static Signal cancelExecute(String activityToken) {
 		Signal p = new Signal();
 		CancelExecute s = new CancelExecute();
 		p.cancelExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -159,10 +167,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal cancelInquire() {
+	public static Signal cancelInquire(String activityToken) {
 		Signal p = new Signal();
 		CancelInquire s = new CancelInquire();
 		p.cancelInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -190,10 +199,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal choiceArrive() {
+	public static Signal choiceArrive(String activityToken) {
 		Signal p = new Signal();
 		ChoiceArrive s = new ChoiceArrive();
 		p.choiceArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -201,10 +211,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal choiceExecute() {
+	public static Signal choiceExecute(String activityToken) {
 		Signal p = new Signal();
 		ChoiceExecute s = new ChoiceExecute();
 		p.choiceExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -212,10 +223,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal choiceInquire() {
+	public static Signal choiceInquire(String activityToken) {
 		Signal p = new Signal();
 		ChoiceInquire s = new ChoiceInquire();
 		p.choiceInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -243,10 +255,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal delayArrive() {
+	public static Signal delayArrive(String activityToken) {
 		Signal p = new Signal();
 		DelayArrive s = new DelayArrive();
 		p.delayArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -254,10 +267,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal delayExecute() {
+	public static Signal delayExecute(String activityToken) {
 		Signal p = new Signal();
 		DelayExecute s = new DelayExecute();
 		p.delayExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -265,10 +279,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal delayInquire() {
+	public static Signal delayInquire(String activityToken) {
 		Signal p = new Signal();
 		DelayInquire s = new DelayInquire();
 		p.delayInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -296,10 +311,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal embedArrive() {
+	public static Signal embedArrive(String activityToken) {
 		Signal p = new Signal();
 		EmbedArrive s = new EmbedArrive();
 		p.embedArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -307,10 +323,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal embedExecute() {
+	public static Signal embedExecute(String activityToken) {
 		Signal p = new Signal();
 		EmbedExecute s = new EmbedExecute();
 		p.embedExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -318,10 +335,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal embedInquire() {
+	public static Signal embedInquire(String activityToken) {
 		Signal p = new Signal();
 		EmbedInquire s = new EmbedInquire();
 		p.embedInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -349,10 +367,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal endArrive() {
+	public static Signal endArrive(String activityToken) {
 		Signal p = new Signal();
 		EndArrive s = new EndArrive();
 		p.endArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -360,10 +379,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal endExecute() {
+	public static Signal endExecute(String activityToken) {
 		Signal p = new Signal();
 		EndExecute s = new EndExecute();
 		p.endExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -371,10 +391,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal endInquire() {
+	public static Signal endInquire(String activityToken) {
 		Signal p = new Signal();
 		EndInquire s = new EndInquire();
 		p.endInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -402,10 +423,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal invokeArrive() {
+	public static Signal invokeArrive(String activityToken) {
 		Signal p = new Signal();
 		InvokeArrive s = new InvokeArrive();
 		p.invokeArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -413,10 +435,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal invokeExecute() {
+	public static Signal invokeExecute(String activityToken) {
 		Signal p = new Signal();
 		InvokeExecute s = new InvokeExecute();
 		p.invokeExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -424,10 +447,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal invokeInquire() {
+	public static Signal invokeInquire(String activityToken) {
 		Signal p = new Signal();
 		InvokeInquire s = new InvokeInquire();
 		p.invokeInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -455,10 +479,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal manualArrive() {
+	public static Signal manualArrive(String activityToken) {
 		Signal p = new Signal();
 		ManualArrive s = new ManualArrive();
 		p.manualArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -477,12 +502,13 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal manualExecute(String type, List<String> identities) {
+	public static Signal manualExecute(String activityToken, String type, List<String> identities) {
 		Signal p = new Signal();
 		ManualExecute s = new ManualExecute();
 		s.type = type;
 		s.identities = identities;
 		p.manualExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -490,10 +516,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal manualInquire() {
+	public static Signal manualInquire(String activityToken) {
 		Signal p = new Signal();
 		ManualInquire s = new ManualInquire();
 		p.manualInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -521,10 +548,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal mergeArrive() {
+	public static Signal mergeArrive(String activityToken) {
 		Signal p = new Signal();
 		MergeArrive s = new MergeArrive();
 		p.mergeArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -532,10 +560,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal mergeExecute() {
+	public static Signal mergeExecute(String activityToken) {
 		Signal p = new Signal();
 		MergeExecute s = new MergeExecute();
 		p.mergeExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -543,10 +572,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal mergeInquire() {
+	public static Signal mergeInquire(String activityToken) {
 		Signal p = new Signal();
 		MergeInquire s = new MergeInquire();
 		p.mergeInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -574,10 +604,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal messageArrive() {
+	public static Signal messageArrive(String activityToken) {
 		Signal p = new Signal();
 		MessageArrive s = new MessageArrive();
 		p.messageArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -585,10 +616,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal messageExecute() {
+	public static Signal messageExecute(String activityToken) {
 		Signal p = new Signal();
 		MessageExecute s = new MessageExecute();
 		p.messageExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -596,10 +628,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal messageInquire() {
+	public static Signal messageInquire(String activityToken) {
 		Signal p = new Signal();
 		MessageInquire s = new MessageInquire();
 		p.messageInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -627,10 +660,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal parallelArrive() {
+	public static Signal parallelArrive(String activityToken) {
 		Signal p = new Signal();
 		ParallelArrive s = new ParallelArrive();
 		p.parallelArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -638,10 +672,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal parallelExecute() {
+	public static Signal parallelExecute(String activityToken) {
 		Signal p = new Signal();
 		ParallelExecute s = new ParallelExecute();
 		p.parallelExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -649,10 +684,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal parallelInquire() {
+	public static Signal parallelInquire(String activityToken) {
 		Signal p = new Signal();
 		ParallelInquire s = new ParallelInquire();
 		p.parallelInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -680,10 +716,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal serviceArrive() {
+	public static Signal serviceArrive(String activityToken) {
 		Signal p = new Signal();
 		ServiceArrive s = new ServiceArrive();
 		p.serviceArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -691,10 +728,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal serviceExecute() {
+	public static Signal serviceExecute(String activityToken) {
 		Signal p = new Signal();
 		ServiceExecute s = new ServiceExecute();
 		p.serviceExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -702,10 +740,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal serviceInquire() {
+	public static Signal serviceInquire(String activityToken) {
 		Signal p = new Signal();
 		ServiceInquire s = new ServiceInquire();
 		p.serviceInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -733,10 +772,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal splitArrive() {
+	public static Signal splitArrive(String activityToken) {
 		Signal p = new Signal();
 		SplitArrive s = new SplitArrive();
 		p.splitArrive = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -750,11 +790,12 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal splitExecute(List<String> splitValues) {
+	public static Signal splitExecute(String activityToken, List<String> splitValues) {
 		Signal p = new Signal();
 		SplitExecute s = new SplitExecute();
 		s.splitValueList = splitValues;
 		p.splitExecute = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -762,10 +803,11 @@ public class Signal extends GsonPropertyObject {
 
 	}
 
-	public static Signal splitInquire() {
+	public static Signal splitInquire(String activityToken) {
 		Signal p = new Signal();
 		SplitInquire s = new SplitInquire();
 		p.splitInquire = s;
+		p.activityToken = activityToken;
 		return p;
 	}
 
@@ -774,10 +816,10 @@ public class Signal extends GsonPropertyObject {
 		this.stamp = this.time.getTime();
 	}
 
-	private String type;
+	private String activityToken;
 
-	public String getType() {
-		return type;
+	public String getActivityToken() {
+		return activityToken;
 	}
 
 	private Long stamp;
