@@ -27,17 +27,4 @@ public class ProcessingToProcessingSignalStack extends ConcurrentHashMap<String,
 		return work + SPLIT + series;
 	}
 
-//	@Test
-//	public void test() {
-//		ProcessingToProcessingSignalMapping m = new ProcessingToProcessingSignalMapping();
-//		Signal s1 = m.open("111", "222");
-//		System.out.println(s1);
-//		Signal s2 = m.open("111", "222");
-//		System.out.println(s2);
-//		System.out.println(s2==s1);		
-//		m.close("111", "222");
-//		m.close("111", "222");
-//		System.out.println(m.size());
-//	}
-
 }
