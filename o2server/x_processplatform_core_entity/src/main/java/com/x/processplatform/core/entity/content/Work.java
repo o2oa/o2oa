@@ -1268,9 +1268,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.workCreateType = workCreateType;
 	}
 
-	public void setProperties(WorkProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;

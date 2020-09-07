@@ -1049,9 +1049,7 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.merged = merged;
 	}
 
-	public void setProperties(WorkCompletedProperties properties) {
-		this.properties = properties;
-	}
+ 
 
 	public String getActivity() {
 		return activity;

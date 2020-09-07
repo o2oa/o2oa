@@ -194,7 +194,7 @@ public class Form extends SliceJpaObject {
 	public static final String data_FIELDNAME = "data";
 	@FieldDescribe("文本内容.")
 	@Lob
-@Basic(fetch = FetchType.EAGER)
+	@Basic(fetch = FetchType.EAGER)
 //	@Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -203,8 +203,8 @@ public class Form extends SliceJpaObject {
 	public static final String mobileData_FIELDNAME = "mobileData";
 	@FieldDescribe("移动端文本内容.")
 	@Lob
-	 @Basic(fetch = FetchType.EAGER)
-	//@Persistent(fetch = FetchType.EAGER)
+	@Basic(fetch = FetchType.EAGER)
+	// @Persistent(fetch = FetchType.EAGER)
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String mobileData;
@@ -305,10 +305,6 @@ public class Form extends SliceJpaObject {
 
 	public void setHasMobile(Boolean hasMobile) {
 		this.hasMobile = hasMobile;
-	}
-
-	public void setProperties(FormProperties properties) {
-		this.properties = properties;
 	}
 
 }

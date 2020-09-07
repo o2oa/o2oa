@@ -956,8 +956,5 @@ public class Review extends SliceJpaObject implements ProjectionInterface {
 		return stringValue01_FIELDNAME;
 	}
 
-	public void setProperties(ReviewProperties properties) {
-		this.properties = properties;
-	}
-
+ 
 }
