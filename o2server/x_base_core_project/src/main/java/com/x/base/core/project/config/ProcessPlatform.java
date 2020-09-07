@@ -50,7 +50,7 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
 
-	public static final Integer DEFAULT_PROCESSINGSIGNALTHRESHOLD = 1000;
+	public static final Integer DEFAULT_PROCESSINGSIGNALTHRESHOLD = 500;
 
 	public static final Boolean DEFAULT_PROCESSINGSIGNALPERSISTENABLE = false;
 
@@ -169,7 +169,7 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
-	@FieldDescribe("工作处理异步返回阈值,默认1000毫秒.")
+	@FieldDescribe("工作处理异步返回阈值,默认500毫秒.")
 	private Integer processingSignalThreshold;
 
 	@FieldDescribe("是否保存工作处理信号内容,默认false.")

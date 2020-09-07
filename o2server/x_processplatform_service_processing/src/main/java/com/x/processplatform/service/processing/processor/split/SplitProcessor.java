@@ -32,7 +32,7 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Split split) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.splitArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.splitArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -54,7 +54,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 					aeiObjects.getWork().getId(), aeiObjects.getWork().getJob());
 		}
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.splitExecute(splitValues));
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.splitExecute(aeiObjects.getWork().getActivityToken(), splitValues));
 		// 先将当前文档标志拆分值
 		aeiObjects.getWork().setSplitValue(splitValues.get(0));
 		aeiObjects.getWork().getSplitValueList().add(splitValues.get(0));
@@ -99,7 +100,7 @@ public class SplitProcessor extends AbstractSplitProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Split split) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.splitInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.splitInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

@@ -36,7 +36,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Begin begin) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.beginArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.beginArrive(aeiObjects.getWork().getActivityToken()));
 		// 创建创建者的review
 		String person = this.business().organization().person().get(aeiObjects.getWork().getCreatorPerson());
 		if (StringUtils.isNotEmpty(person)) {
@@ -53,7 +53,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Begin begin) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.beginExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.beginExecute(aeiObjects.getWork().getActivityToken()));
 		List<Work> list = new ArrayList<>();
 		// 如果是再次进入begin节点那么就不需要设置开始时间
 		if (aeiObjects.getWork().getStartTime() == null) {
@@ -78,7 +78,7 @@ public class BeginProcessor extends AbstractBeginProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Begin begin) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.beginInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.beginInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> list = new ArrayList<>();
 		Route o = aeiObjects.getRoutes().get(0);
 		list.add(o);
