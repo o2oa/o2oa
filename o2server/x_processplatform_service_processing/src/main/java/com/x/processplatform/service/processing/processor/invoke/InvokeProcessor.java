@@ -26,6 +26,7 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
@@ -41,11 +42,15 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.invokeArrive());
 		return aeiObjects.getWork();
 	}
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// 发送ProcessingSignal
+				aeiObjects.getProcessingAttributes().push(Signal.invokeExecute());
 		List<Work> results = new ArrayList<>();
 		switch (invoke.getInvokeMode()) {
 		case jaxws:
@@ -63,6 +68,8 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		// 发送ProcessingSignal
+				aeiObjects.getProcessingAttributes().push(Signal.invokeInquire());
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;
