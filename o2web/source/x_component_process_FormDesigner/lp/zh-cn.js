@@ -102,6 +102,17 @@ MWF.xApplication.process.FormDesigner.LP = {
             "delete_title": "取消加载脚本确认",
             "delete_text": "您确定要取消加载选择的脚本？"
         },
+        "dictionaryIncluder" : {
+            "selectDictionary" : "选择：",
+            "repeatAddDictionaryNotice" : "请不要重复添加数据字典",
+            "rootDictionaryExistNotice" : "已经添加了该数据字典的根路径，无需再添加",
+            "parentDictionaryExistNotice" : "已经添加了该数据字典的父路径，无需再添加",
+            "subDictionaryExistNotice" : "已经存在该数据字典的子路径，请先删除再添加",
+            "selectDictionaryNotice" : "请先选择数据字典",
+            "path" : "路径：",
+            "delete_title": "取消加载数据字典确认",
+            "delete_text": "您确定要取消加载选择的数据字典？"
+        },
         "validation": {
             "validation": "校验",
             "anytime": "任何时候",
