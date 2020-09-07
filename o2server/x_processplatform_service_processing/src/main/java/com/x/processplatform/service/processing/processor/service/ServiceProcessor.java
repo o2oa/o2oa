@@ -31,7 +31,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Service service) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.serviceArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.serviceArrive(aeiObjects.getWork().getActivityToken()));
 		// 清空上一次调用值
 		aeiObjects.getWork().getProperties().setServiceValue(new LinkedHashMap<>());
 		return aeiObjects.getWork();
@@ -45,7 +45,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Service service) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.parallelExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.parallelExecute(aeiObjects.getWork().getActivityToken()));
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
 		if (StringUtils.isNotEmpty(service.getScript()) || StringUtils.isNotEmpty(service.getScriptText())) {
@@ -73,7 +73,7 @@ public class ServiceProcessor extends AbstractServiceProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Service service) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.parallelInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;
