@@ -110,7 +110,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("{id}/series/{series}/activitytoken/{activityToken}/processing/signal")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void processing(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void processingSignal(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			@JaxrsParameterDescribe("串号") @PathParam("series") String series,
 			@JaxrsParameterDescribe("活动Token") @PathParam("activityToken") String activityToken) {

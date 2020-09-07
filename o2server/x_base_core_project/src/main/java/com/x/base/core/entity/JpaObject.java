@@ -82,28 +82,24 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String scratchInteger_FIELDNAME = "scratchInteger";
 
-	public static final String properties_FIELDNAME = "properties";
-
 	public static final String JsonPropertiesValueHandler = "com.x.base.core.entity.annotation.JsonPropertiesValueHandler";
 
-	public static final List<String> FieldsUnmodify = ListUtils
-			.unmodifiableList(Arrays.asList(id_FIELDNAME, distributeFactor_FIELDNAME, createTime_FIELDNAME,
-					updateTime_FIELDNAME, sequence_FIELDNAME, scratchString_FIELDNAME, scratchBoolean_FIELDNAME,
-					scratchDate_FIELDNAME, scratchInteger_FIELDNAME, properties_FIELDNAME));
+	public static final List<String> FieldsUnmodify = ListUtils.unmodifiableList(Arrays.asList(id_FIELDNAME,
+			distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME, sequence_FIELDNAME,
+			scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
-	public static final List<String> FieldsUnmodifyExcludeId = ListUtils
-			.unmodifiableList(Arrays.asList(distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME,
-					sequence_FIELDNAME, scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME,
-					scratchInteger_FIELDNAME, properties_FIELDNAME));
+	public static final List<String> FieldsUnmodifyExcludeId = ListUtils.unmodifiableList(Arrays.asList(
+			distributeFactor_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME, sequence_FIELDNAME,
+			scratchString_FIELDNAME, scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
 	public static final List<String> FieldsInvisible = ListUtils.unmodifiableList(
 			Arrays.asList(distributeFactor_FIELDNAME, sequence_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
-					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME, properties_FIELDNAME));
+					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
 	public static final List<String> FieldsDefault = ListUtils
 			.unmodifiableList(Arrays.asList(id_FIELDNAME, key_FIELDNAME, createTime_FIELDNAME, updateTime_FIELDNAME,
 					sequence_FIELDNAME, distributeFactor_FIELDNAME, password_FIELDNAME, scratchString_FIELDNAME,
-					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME, properties_FIELDNAME));
+					scratchBoolean_FIELDNAME, scratchDate_FIELDNAME, scratchInteger_FIELDNAME));
 
 	@FieldDescribe("创建时间,自动生成,索引创建在约束中.")
 	@Column(name = ColumnNamePrefix + createTime_FIELDNAME)
