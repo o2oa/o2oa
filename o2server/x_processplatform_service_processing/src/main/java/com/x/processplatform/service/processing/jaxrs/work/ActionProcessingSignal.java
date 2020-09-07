@@ -16,33 +16,45 @@ class ActionProcessingSignal extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String series, String activityToken)
 			throws Exception {
 
-		Wo wo = new Wo();
-
-		Thread.sleep(Config.processPlatform().getProcessingSignalThreshold());
-
-		Optional<SignalStack> optional = ThisApplication.getProcessingToProcessingSignalStack().find(id, series);
+		Wo wo = null;
 
 		int loop = 0;
 
-		while ((!optional.isPresent()) && (loop++ < 20)) {
-			Thread.sleep(200);
-			optional = ThisApplication.getProcessingToProcessingSignalStack().find(id, series);
+		Thread.sleep(Config.processPlatform().getProcessingSignalThreshold());
+
+		while ((null == wo) && (loop++ < 50)) {
+			wo = dataReady(activityToken, ThisApplication.getProcessingToProcessingSignalStack().find(id, series));
+			if (null == wo) {
+				Thread.sleep(200);
+			}
 		}
 
-		if (optional.isPresent()) {
-			optional.get().forEach(o -> {
-				if (((null != o.getManualExecute()) || (null != o.getSplitExecute()))
-						&& (!StringUtils.equals(activityToken, o.getActivityToken()))) {
-					wo.getSignalStack().add(o);
-				}
-			});
-		} else {
+		if (null == wo) {
+			wo = new Wo();
 			wo.setSignalStack(new SignalStack());
 		}
 
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
 		return result;
+	}
+
+	private Wo dataReady(String activityToken, Optional<SignalStack> optional) {
+		if (!optional.isPresent()) {
+			return null;
+		}
+		Wo wo = new Wo();
+		optional.get().forEach(o -> {
+			if (((null != o.getManualExecute()) || (null != o.getSplitExecute()))
+					&& (!StringUtils.equals(activityToken, o.getActivityToken()))) {
+				wo.getSignalStack().add(o);
+			}
+		});
+		if (wo.getSignalStack().isEmpty()) {
+			return null;
+		} else {
+			return wo;
+		}
 	}
 
 	public static class Wo extends ActionProcessingSignalWo {

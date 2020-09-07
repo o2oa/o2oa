@@ -114,10 +114,10 @@ class ActionProcessing extends BaseAction {
 			new Thread(() -> {
 				RespProcessingSignal resp = null;
 				try {
-					resp = ThisApplication
-							.context().applications().getQuery(effectivePerson.getDebugger(),
-									x_processplatform_service_processing.class, Applications.joinQueryUri("work",
-											task.getWork(), "series", series, "processing", "signal"),
+					resp = ThisApplication.context().applications()
+							.getQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+									Applications.joinQueryUri("work", task.getWork(), "series", series, "activitytoken",
+											this.task.getActivityToken(), "processing", "signal"),
 									task.getJob())
 							.getData(RespProcessingSignal.class);
 				} catch (Exception e) {
