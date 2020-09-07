@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -20,7 +21,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.executor.Signal;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -43,8 +43,9 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.SignalStack;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.ProcessingSignal;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
@@ -62,12 +63,12 @@ class ActionProcessing extends BaseAction {
 	private WorkLog workLog;
 	private Work work;
 	private String taskCompletedId;
-	private String type;
+	private String type = TYPE_TASK;
+	private Boolean asyncSupported = true;
 	private EffectivePerson effectivePerson;
 	private List<TaskCompleted> taskCompleteds = new ArrayList<>();
 	private List<Task> newTasks = new ArrayList<>();
 	private Exception exception = null;
-	private Signal signal = new Signal();
 
 	private Record record;
 	private String series = StringTools.uniqueToken();
@@ -76,108 +77,150 @@ class ActionProcessing extends BaseAction {
 	private static final String TYPE_TASK = "task";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
 		Audit audit = logger.audit(effectivePerson);
-		this.effectivePerson = effectivePerson;
-		wi = this.convertToWrapIn(jsonElement, Wi.class);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			this.task = emc.find(id, Task.class);
-			if (null == this.task) {
-				throw new ExceptionEntityNotExist(id, Task.class);
-			}
-			// 获取当前环节已经完成的待办
-			this.taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
-					task.getActivityToken());
-			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
-					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
-
-			if (null == workLog) {
-				throw new ExceptionEntityNotExist(WorkLog.class);
-			}
-			this.work = emc.find(this.task.getWork(), Work.class);
-			if (null == this.work) {
-				throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
-			}
-			if ((!effectivePerson.isCipher()) && effectivePerson.isNotPerson(this.task.getPerson())) {
-				throw new ExceptionAccessDenied(effectivePerson, this.task);
-			}
-			if (StringUtils.isNotEmpty(wi.getRouteName()) || StringUtils.isNotEmpty(wi.getOpinion())
-					|| (!StringUtils.equals(this.task.getMediaOpinion(), wi.getMediaOpinion()))) {
-				emc.beginTransaction(Task.class);
-				this.updateRouteNameOpinionMediaOpinion(task, wi);
-				emc.commit();
-			}
-			this.type = this.type(business, task, wi);
+			init(effectivePerson, business, id, jsonElement);
+			updateTaskIfNecessary(business);
+			seeManual(business);
 		}
+
+		LinkedBlockingQueue<Wo> responeQueue = new LinkedBlockingQueue<>();
+
 		new Thread(() -> {
-			if (StringUtils.equals(type, TYPE_APPENDTASK)) {
-				exception = processingAppendTask();
-			} else {
-				exception = processingTask();
+			Wo wo = new Wo();
+			try {
+				if (StringUtils.equals(type, TYPE_APPENDTASK)) {
+					processingAppendTask();
+				} else {
+					processingTask();
+				}
+				wo = Wo.copier.copy(record);
+			} catch (Exception e) {
+				exception = e;
+			} finally {
+				try {
+					responeQueue.put(wo);
+				} catch (Exception e) {
+					exception = e;
+				}
 			}
-			signal.close();
-		}, String.format("%s:%s", ActionProcessing.class.getName(), id)).start();
+		}, String.format("%s:processing:%s", ActionProcessing.class.getName(), id)).start();
+
+		if (BooleanUtils.isNotFalse(this.asyncSupported)) {
+			new Thread(() -> {
+				RespProcessingSignal resp = null;
+				try {
+					resp = ThisApplication
+							.context().applications().getQuery(effectivePerson.getDebugger(),
+									x_processplatform_service_processing.class, Applications.joinQueryUri("work",
+											task.getWork(), "series", series, "processing", "signal"),
+									task.getJob())
+							.getData(RespProcessingSignal.class);
+				} catch (Exception e) {
+					exception = e;
+				} finally {
+					Wo wo = new Wo();
+					if ((null != resp) && (null != resp.getSignalStack()) && (!resp.getSignalStack().isEmpty())) {
+						wo.setOccurSignalStack(true);
+						wo.setSignalStack(resp.getSignalStack());
+					} else {
+						wo.setOccurSignalStack(false);
+					}
+					try {
+						responeQueue.put(wo);
+					} catch (Exception e) {
+						exception = e;
+					}
+				}
+			}, String.format("%s:processingSignal:%s", ActionProcessing.class.getName(), id)).start();
+		}
+
+		Wo wo = responeQueue.take();
+
 		if (exception != null) {
 			throw exception;
 		}
-		String value = signal.read();
-		if (StringUtils.isNotBlank(value)) {
-			Wo wo = gson.fromJson(value, Wo.class);
-			result.setData(wo);
-			return result;
-		}
 		audit.log(null, "任务处理");
-		Wo wo = Wo.copier.copy(record);
 		result.setData(wo);
 		return result;
 	}
 
-	private void updateRouteNameOpinionMediaOpinion(Task task, Wi wi) {
-		/* 如果有输入新的路由决策覆盖原有决策 */
-		if (StringUtils.isNotEmpty(wi.getRouteName())) {
-			task.setRouteName(wi.getRouteName());
+	private void init(EffectivePerson effectivePerson, Business business, String id, JsonElement jsonElement)
+			throws Exception {
+		EntityManagerContainer emc = business.entityManagerContainer();
+		this.effectivePerson = effectivePerson;
+		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
+		this.task = emc.find(id, Task.class);
+		if (null == this.task) {
+			throw new ExceptionEntityNotExist(id, Task.class);
 		}
-		/* 如果有新的流程意见那么覆盖原有流程意见 */
-		if (StringUtils.isNotEmpty(wi.getOpinion())) {
-			task.setOpinion(wi.getOpinion());
+		// 获取当前环节已经完成的待办
+		this.taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
+				task.getActivityToken());
+		this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
+				WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+
+		if (null == workLog) {
+			throw new ExceptionEntityNotExist(WorkLog.class);
 		}
-		/* 强制覆盖多媒体意见 */
-		task.setMediaOpinion(wi.getMediaOpinion());
+		this.work = emc.find(this.task.getWork(), Work.class);
+		if (null == this.work) {
+			throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
+		}
+		if ((!effectivePerson.isCipher()) && effectivePerson.isNotPerson(this.task.getPerson())) {
+			throw new ExceptionAccessDenied(effectivePerson, this.task);
+		}
 	}
 
-	private String type(Business business, Task task, Wi wi) throws Exception {
-		Manual manual = business.manual().pick(task.getActivity());
+	private void updateTaskIfNecessary(Business business) throws Exception {
+		if (StringUtils.isNotEmpty(this.wi.getRouteName()) || StringUtils.isNotEmpty(this.wi.getOpinion())
+				|| (!StringUtils.equals(this.task.getMediaOpinion(), this.wi.getMediaOpinion()))) {
+			business.entityManagerContainer().beginTransaction(Task.class);
+			// 如果有输入新的路由决策覆盖原有决策
+			if (StringUtils.isNotEmpty(this.wi.getRouteName())) {
+				this.task.setRouteName(this.wi.getRouteName());
+			}
+			// 如果有新的流程意见那么覆盖原有流程意见
+			if (StringUtils.isNotEmpty(this.wi.getOpinion())) {
+				this.task.setOpinion(this.wi.getOpinion());
+			}
+			// 强制覆盖多媒体意见
+			this.task.setMediaOpinion(this.wi.getMediaOpinion());
+			business.entityManagerContainer().commit();
+		}
+	}
+
+	private void seeManual(Business business) throws Exception {
+		Manual manual = business.manual().pick(this.task.getActivity());
 		if (null != manual) {
+			this.asyncSupported = BooleanUtils.isNotFalse(manual.getAsyncSupported());
 			Route route = null;
 			for (Route o : business.route().pick(manual.getRouteList())) {
-				if (StringUtils.equals(o.getName(), task.getRouteName())) {
+				if (StringUtils.equals(o.getName(), this.task.getRouteName())) {
 					route = o;
 					break;
 				}
 			}
 			if ((null != route) && (StringUtils.equals(route.getType(), Route.TYPE_APPENDTASK))
 					&& StringUtils.equals(manual.getId(), route.getActivity())) {
-				return TYPE_APPENDTASK;
+				this.type = TYPE_APPENDTASK;
 			}
 		}
-		return TYPE_TASK;
 	}
 
-	private Exception processingAppendTask() {
-		try {
-			this.processingAppendTask_append();
-			this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_APPENDTASK);
-			this.processing_processingWork(ProcessingAttributes.TYPE_APPENDTASK);
-			this.processing_record(Record.TYPE_APPENDTASK);
-			this.processing_updateTaskCompleted();
-			this.processing_updateTask();
-			return null;
-		} catch (Exception e) {
-			return e;
-		}
+	private void processingAppendTask() throws Exception {
+		this.processingAppendTaskAppend();
+		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_APPENDTASK);
+		this.processingProcessingWork(ProcessingAttributes.TYPE_APPENDTASK);
+		this.processingRecord(Record.TYPE_APPENDTASK);
+		this.processingUpdateTaskCompleted();
+		this.processingUpdateTask();
 	}
 
-	private void processingAppendTask_append() throws Exception {
+	private void processingAppendTaskAppend() throws Exception {
 		WrapAppend req = new WrapAppend();
 		req.setIdentityList(this.wi.getAppendTaskIdentityList());
 		ThisApplication.context().applications()
@@ -186,34 +229,29 @@ class ActionProcessing extends BaseAction {
 				.getData(WrapStringList.class);
 	}
 
-	private Exception processingTask() {
-		try {
-			this.taskCompletedId = this.processing_processingTask(TaskCompleted.PROCESSINGTYPE_TASK);
-			this.processing_processingWork(ProcessingAttributes.TYPE_TASK);
-			// 流程流转到取消环节，此时工作已被删除
-			boolean flag = true;
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
-						&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, task.getJob()) == 0)) {
-					flag = false;
-				}
+	private void processingTask() throws Exception {
+		this.taskCompletedId = this.processingProcessingTask(TaskCompleted.PROCESSINGTYPE_TASK);
+		this.processingProcessingWork(ProcessingAttributes.TYPE_TASK);
+		// 流程流转到取消环节，此时工作已被删除
+		boolean flag = true;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			if ((emc.countEqual(Work.class, Work.job_FIELDNAME, task.getJob()) == 0)
+					&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, task.getJob()) == 0)) {
+				flag = false;
 			}
-			if (flag) {
-				this.processing_record(Record.TYPE_TASK);
-				this.processing_updateTaskCompleted();
-				this.processing_updateTask();
-			} else {
-				record = new Record(workLog, task);
-				record.setCompleted(true);
-				record.setType(Record.TYPE_TASK);
-			}
-			return null;
-		} catch (Exception e) {
-			return e;
+		}
+		if (flag) {
+			this.processingRecord(Record.TYPE_TASK);
+			this.processingUpdateTaskCompleted();
+			this.processingUpdateTask();
+		} else {
+			record = new Record(workLog, task);
+			record.setCompleted(true);
+			record.setType(Record.TYPE_TASK);
 		}
 	}
 
-	private String processing_processingTask(String processType) throws Exception {
+	private String processingProcessingTask(String processType) throws Exception {
 		WrapProcessing req = new WrapProcessing();
 		req.setProcessingType(processType);
 		WoId resp = ThisApplication.context().applications()
@@ -228,26 +266,23 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private void processing_processingWork(String type) throws Exception {
+	private void processingProcessingWork(String workProcessingType) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
 		req.setIgnoreEmpowerIdentityList(wi.getIgnoreEmpowerIdentityList());
-		req.setType(ProcessingAttributes.TYPE_TASK);
+		req.setType(workProcessingType);
 		req.setSeries(this.series);
 		req.setPerson(task.getPerson());
 		req.setIdentity(task.getIdentity());
-		RespOfProcessWork resp = ThisApplication.context().applications()
+		WoId resp = ThisApplication.context().applications()
 				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
 						Applications.joinQueryUri("work", task.getWork(), "processing"), req, task.getJob())
-				.getData(RespOfProcessWork.class);
-		if (BooleanUtils.isTrue(resp.getOccurProcessingSignal())) {
-			signal.write(gson.toJson(resp));
-		}
+				.getData(WoId.class);
 		if (StringUtils.isBlank(resp.getId())) {
 			throw new ExceptionWorkProcessing(task.getId());
 		}
 	}
 
-	private void processing_record(String type) throws Exception {
+	private void processingRecord(String type) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			final List<String> nextTaskIdentities = new ArrayList<>();
 			record = new Record(workLog, task);
@@ -301,7 +336,7 @@ class ActionProcessing extends BaseAction {
 		}
 	}
 
-	private void processing_updateTaskCompleted() throws Exception {
+	private void processingUpdateTaskCompleted() throws Exception {
 		// 记录下一处理人信息
 		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
 		req.getTaskCompletedList().add(taskCompletedId);
@@ -312,7 +347,7 @@ class ActionProcessing extends BaseAction {
 				.getData(WrapBoolean.class);
 	}
 
-	private void processing_updateTask() throws Exception {
+	private void processingUpdateTask() throws Exception {
 		// 记录上一处理人信息
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
@@ -413,31 +448,11 @@ class ActionProcessing extends BaseAction {
 		return o;
 	}
 
-	public static class Wo extends Record {
+	public static class Wo extends ActionProcessingWo {
 
 		private static final long serialVersionUID = -1771383649634969945L;
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
-
-		private ProcessingSignal processingSignal;
-
-		private Boolean occurProcessingSignal;
-
-		public ProcessingSignal getProcessingSignal() {
-			return processingSignal;
-		}
-
-		public void setProcessingSignal(ProcessingSignal processingSignal) {
-			this.processingSignal = processingSignal;
-		}
-
-		public Boolean getOccurProcessingSignal() {
-			return occurProcessingSignal;
-		}
-
-		public void setOccurProcessingSignal(Boolean occurProcessingSignal) {
-			this.occurProcessingSignal = occurProcessingSignal;
-		}
 
 	}
 
@@ -452,34 +467,16 @@ class ActionProcessing extends BaseAction {
 
 	}
 
-	public static class RespOfProcessWork {
+	public static class RespProcessingSignal {
 
-		private String id;
-		private Boolean occurProcessingSignal;
-		private ProcessingSignal processingSignal;
+		private SignalStack signalStack;
 
-		public Boolean getOccurProcessingSignal() {
-			return occurProcessingSignal;
+		public SignalStack getSignalStack() {
+			return signalStack;
 		}
 
-		public void setOccurProcessingSignal(Boolean occurProcessingSignal) {
-			this.occurProcessingSignal = occurProcessingSignal;
-		}
-
-		public ProcessingSignal getProcessingSignal() {
-			return processingSignal;
-		}
-
-		public void setProcessingSignal(ProcessingSignal processingSignal) {
-			this.processingSignal = processingSignal;
-		}
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
+		public void setSignalStack(SignalStack signalStack) {
+			this.signalStack = signalStack;
 		}
 
 	}

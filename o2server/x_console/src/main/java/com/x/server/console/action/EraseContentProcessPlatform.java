@@ -14,6 +14,7 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.log.SignalStackLog;
 import com.x.query.core.entity.Item;
 
 public class EraseContentProcessPlatform extends EraseContent {
@@ -34,6 +35,7 @@ public class EraseContentProcessPlatform extends EraseContent {
 		addClass(WorkCompleted.class);
 		addClass(WorkLog.class);
 		addClass(Item.class);
+		addClass(SignalStackLog.class);
 		this.run();
 		return true;
 	}

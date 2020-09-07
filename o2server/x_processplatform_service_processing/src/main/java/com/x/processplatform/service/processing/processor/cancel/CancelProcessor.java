@@ -14,6 +14,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Cancel;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Processing;
 import com.x.processplatform.service.processing.processor.AeiObjects;
@@ -28,6 +29,8 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Cancel cancel) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.cancelArrive());
 		return aeiObjects.getWork();
 	}
 
@@ -38,7 +41,9 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	public List<Work> executing(AeiObjects aeiObjects, Cancel cancel) throws Exception {
-		/* 唯一work处理 */
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.cancelExecute());
+		// 唯一work处理
 		if (aeiObjects.getWorks().size() > 1) {
 			aeiObjects.getDeleteWorks().add(aeiObjects.getWork());
 			aeiObjects.getTasks().stream().filter(o -> StringUtils.equals(o.getWork(), aeiObjects.getWork().getId()))
@@ -78,7 +83,9 @@ public class CancelProcessor extends AbstractCancelProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Cancel cancel) throws Exception {
-		return new ArrayList<Route>();
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.cancelInquire());
+		return new ArrayList<>();
 	}
 
 	@Override
