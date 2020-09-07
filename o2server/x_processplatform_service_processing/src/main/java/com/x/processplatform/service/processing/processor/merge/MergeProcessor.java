@@ -13,6 +13,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class MergeProcessor extends AbstractMergeProcessor {
@@ -25,6 +26,8 @@ public class MergeProcessor extends AbstractMergeProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Merge merge) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.mergeArrive());
 		return aeiObjects.getWork();
 	}
 
@@ -34,6 +37,8 @@ public class MergeProcessor extends AbstractMergeProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Merge merge) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.mergeExecute());
 		List<Work> results = new ArrayList<>();
 		if (BooleanUtils.isNotTrue(aeiObjects.getWork().getSplitting())) {
 			/* 如果不是一个拆分文档,直接通过 */
@@ -214,6 +219,8 @@ public class MergeProcessor extends AbstractMergeProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Merge merge) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.mergeInquire());
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

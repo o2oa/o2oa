@@ -203,8 +203,8 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	}
 
 	public static class Log {
-		public static class ProcessingError {
-			public static final String table = "PP_L_PROCESSINGERROR";
+		public static class SignalStackLog {
+			public static final String table = "PP_L_SIGNALSTACKLOG";
 		}
 	}
 
