@@ -43,6 +43,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.SignalStack;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
@@ -123,11 +124,11 @@ class ActionProcessing extends BaseAction {
 					exception = e;
 				} finally {
 					Wo wo = new Wo();
+					wo.setOccurSignalStack(true);
 					if ((null != resp) && (null != resp.getSignalStack()) && (!resp.getSignalStack().isEmpty())) {
-						wo.setOccurSignalStack(true);
 						wo.setSignalStack(resp.getSignalStack());
 					} else {
-						wo.setOccurSignalStack(false);
+						wo.setSignalStack(new SignalStack());
 					}
 					try {
 						responeQueue.put(wo);
