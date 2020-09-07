@@ -75,6 +75,17 @@
                 <div class="MWFScriptText" name="appendTaskIdentityScriptText"></div><hr />
             </div>
         </div>
+
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">异步返回:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="asyncSupported" text{($.asyncSupported!==false)?'checked':''} type="radio" value="true"/>是
+                    <input class="editTableRadio" name="asyncSupported" text{($.asyncSupported===false)?'checked':''} type="radio" value="false"/>否
+                </td>
+            </tr>
+        </table>
     </div>
     <div title="扩展" class="MWFTab">
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
