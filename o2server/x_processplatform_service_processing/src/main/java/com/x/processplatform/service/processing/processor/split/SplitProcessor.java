@@ -17,7 +17,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.express.ProcessingSignal;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -31,6 +31,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Split split) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.splitArrive());
 		return aeiObjects.getWork();
 	}
 
@@ -51,10 +53,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 			throw new ExceptionSplitEmptySplitValue(split.getName(), aeiObjects.getWork().getTitle(),
 					aeiObjects.getWork().getId(), aeiObjects.getWork().getJob());
 		}
-		// 如果发送值超过阈值那么发送ProcessingSingal
-		if (splitValues.size() >= Config.processPlatform().getProcessingSignal().getSplitThreshold()) {
-			aeiObjects.getProcessingAttributes().signal().write(gson.toJson(ProcessingSignal.splitSignal(splitValues)));
-		}
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.splitExecute(splitValues));
 		// 先将当前文档标志拆分值
 		aeiObjects.getWork().setSplitValue(splitValues.get(0));
 		aeiObjects.getWork().getSplitValueList().add(splitValues.get(0));
@@ -98,6 +98,8 @@ public class SplitProcessor extends AbstractSplitProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Split split) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.splitInquire());
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

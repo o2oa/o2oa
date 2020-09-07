@@ -1,16 +1,20 @@
 package com.x.processplatform.service.processing;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.list.SetUniqueList;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.log.SignalStackLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
@@ -31,7 +35,7 @@ public class Processing extends BaseProcessing {
 			this.processingAttributes = processingAttributes;
 		}
 		if (this.processingAttributes.getLoop() > 64) {
-			throw new Exception("processing too many.");
+			throw new IllegalStateException("processing too many.");
 		}
 		this.entityManagerContainer = EntityManagerContainerFactory.instance().create();
 	}
@@ -41,10 +45,10 @@ public class Processing extends BaseProcessing {
 	}
 
 	public void processing(String workId, ProcessingConfigurator processingConfigurator) throws Exception {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!11" + Processing.class);
 		try {
 			Work work = null;
-			work = this.entityManagerContainer().fetch(workId, Work.class, ListTools.toList(Work.workStatus_FIELDNAME));
+			work = this.entityManagerContainer().fetch(workId, Work.class,
+					ListTools.toList(Work.workStatus_FIELDNAME, Work.job_FIELDNAME));
 			if (null != work) {
 				switch (work.getWorkStatus()) {
 				case start:
@@ -63,17 +67,17 @@ public class Processing extends BaseProcessing {
 			/* workStatus is processing */
 			List<String> nextLoops = SetUniqueList.setUniqueList(new ArrayList<String>());
 			/* 强制从arrived开始 */
-			if (processingAttributes.ifForceJoinAtArrive()) {
+			if (BooleanUtils.isTrue(processingAttributes.ifForceJoinAtArrive())) {
 				workId = this.arrive(workId, processingConfigurator, processingAttributes);
 			}
-			if (!processingConfigurator.getJoinAtExecute()) {
+			if (BooleanUtils.isFalse(processingConfigurator.getJoinAtExecute())) {
 				workId = this.arrive(workId, processingConfigurator, processingAttributes);
 			}
 			if (StringUtils.isEmpty(workId)) {
 				return;
 			}
 			List<String> executed = null;
-			if (!processingAttributes.ifForceJoinAtInquire()) {
+			if (BooleanUtils.isFalse(processingAttributes.ifForceJoinAtInquire())) {
 				executed = this.execute(workId, processingConfigurator, processingAttributes);
 			} else {
 				/* 强制从inquire开始 */
@@ -90,21 +94,15 @@ public class Processing extends BaseProcessing {
 			}
 			processingAttributes.increaseLoop();
 			for (String str : nextLoops) {
-				if (StringUtils.isNotEmpty(str)) {
-					if (processingConfigurator.getContinueLoop()) {
-//						new Processing(processingAttributes, this.entityManagerContainer()).processing(str);
-//						new Processing(XGsonBuilder.convert(processingAttributes, ProcessingAttributes.class))
-//								.processing(str);
-						// clone processingAttributes 对象
-						new Processing(processingAttributes.copyInstanceButSameSignal()).processing(str);
-					}
+				if (StringUtils.isNotEmpty(str) && BooleanUtils.isTrue(processingConfigurator.getContinueLoop())) {
+					// clone processingAttributes 对象
+					new Processing(processingAttributes.copyInstancePointToSingletonSignalStack()).processing(str);
 				}
 			}
 		} catch (Exception e) {
-			throw new Exception("processing fialure.", e);
+			throw new IllegalStateException("processing fialure.", e);
 		} finally {
 			this.entityManagerContainer().close();
-			processingAttributes.signal().close();
 		}
 	}
 
@@ -167,7 +165,7 @@ public class Processing extends BaseProcessing {
 			/** 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行 */
 			return id;
 		} catch (Exception e) {
-			throw new Exception("processing arrive failure.", e);
+			throw new IllegalStateException("processing arrive failure.", e);
 		}
 	}
 
@@ -227,11 +225,10 @@ public class Processing extends BaseProcessing {
 			default:
 				break;
 			}
-			/** 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行 */
-			// this.entityManagerContainer.commit();
+			// 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行
 			return executed;
 		} catch (Exception e) {
-			throw new Exception("processing execute failure.", e);
+			throw new IllegalStateException("processing execute failure.", e);
 		}
 	}
 
@@ -289,11 +286,10 @@ public class Processing extends BaseProcessing {
 			default:
 				break;
 			}
-			/** 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行 */
-			// this.entityManagerContainer.commit();
+			// 在内层的方法中进行提交,这里不需要再次进行提交,在内层提交是因为比如发送待办等要在提交后运行
 			return inquired;
 		} catch (Exception e) {
-			throw new Exception("processing inquire failure.", e);
+			throw new IllegalStateException("processing inquire failure.", e);
 		}
 	}
 }
