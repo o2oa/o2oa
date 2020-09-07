@@ -1643,37 +1643,12 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
 //    }
 //};
 // var dictLoaded = {};
-MWF.xScript.dictLoaded = {};
+if( !MWF.xScript.dictLoaded )MWF.xScript.dictLoaded = {};
 
 MWF.xScript.addDictToCache = function ( options, path, json ) {
-
-    debugger;
-
-    // if( !key ){
-    //     var name = options.name || options.id || options.alias;
-    //     var type = options.appType || "process";
-    //     var application = options.appName || options.appId || options.application || options.appAlias;
-    //     var enableAnonymous = options.enableAnonymous || false;
-    //     key = name+type+application+enableAnonymous;
-    // }
-
     if( !path )path = "root";
     if( path.indexOf("root") !== 0 )path = "root." + path ;
 
-    // if( MWF.xScript.dictLoaded[key] ){
-    //     var dicts = MWF.xScript.dictLoaded[key];
-    //     var arr = path.split(/\./g);
-    //     var p;
-    //     for( var i=0 ; i<arr.length; i++ ){
-    //         p = i === 0 ? arr[0] : ( p + "." + arr[i] );
-    //         if( dicts[ p ] )return; //如果上级路径存在，则返回
-    //     }
-    // }
-
-    // if( MWF.xScript.dictLoaded[key] && MWF.xScript.dictLoaded[key][path]){
-    //     MWF.xScript.dictLoaded[key][path] = json;
-    //     return;
-    // }
     var type = options.appType || "process";
     var enableAnonymous = options.enableAnonymous || false;
 
@@ -1718,9 +1693,6 @@ MWF.xScript.addDictToCache = function ( options, path, json ) {
 };
 
 MWF.xScript.getMatchedDict = function(key, path){
-
-    debugger;
-
     if( !path )path = "root";
     if( path.indexOf("root") !== 0 )path = "root." + path ;
 
@@ -1800,7 +1772,6 @@ MWF.xScript.setDictToCache = function(key, path, json){
 };
 
 MWF.xScript.getDictFromCache = function( key, path ){
-    debugger;
     var matchedDict = MWF.xScript.getMatchedDict( key, path );
     var dict = matchedDict.dict;
     var list = matchedDict.unmatchedPathList;
@@ -1815,8 +1786,6 @@ MWF.xScript.getDictFromCache = function( key, path ){
 };
 
 MWF.xScript.deleteDictToCache = function(key, path){
-
-    debugger;
     var matchedDict = MWF.xScript.getMatchedDict( key, path );
     var dict = matchedDict.dict;
     var list = matchedDict.unmatchedPathList;
