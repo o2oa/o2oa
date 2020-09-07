@@ -43,7 +43,6 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.log.SignalStack;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
@@ -51,6 +50,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProc
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 
 class ActionProcessing extends BaseAction {
 
@@ -469,17 +469,7 @@ class ActionProcessing extends BaseAction {
 
 	}
 
-	public static class RespProcessingSignal {
-
-		private SignalStack signalStack;
-
-		public SignalStack getSignalStack() {
-			return signalStack;
-		}
-
-		public void setSignalStack(SignalStack signalStack) {
-			this.signalStack = signalStack;
-		}
+	public static class RespProcessingSignal extends ActionProcessingSignalWo {
 
 	}
 
