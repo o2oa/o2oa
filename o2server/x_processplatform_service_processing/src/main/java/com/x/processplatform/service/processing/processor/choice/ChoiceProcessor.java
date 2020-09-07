@@ -31,7 +31,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Choice choice) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.choiceArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.choiceArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -43,7 +43,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Choice choice) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.choiceExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.choiceExecute(aeiObjects.getWork().getActivityToken()));
 		List<Work> results = new ArrayList<>();
 		results.add(aeiObjects.getWork());
 		return results;
@@ -57,7 +57,7 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Choice choice) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.choiceInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.choiceInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		// 多条路由进行判断
 		for (Route o : aeiObjects.getRoutes()) {

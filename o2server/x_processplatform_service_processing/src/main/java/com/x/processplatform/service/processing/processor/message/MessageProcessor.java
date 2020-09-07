@@ -24,7 +24,7 @@ public class MessageProcessor extends AbstractMessageProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Message message) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.messageArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.messageArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -36,7 +36,7 @@ public class MessageProcessor extends AbstractMessageProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Message message) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.messageExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.messageExecute(aeiObjects.getWork().getActivityToken()));
 		MessageFactory.activity_message(aeiObjects.getWork(), null);
 		List<Work> results = new ArrayList<>();
 		results.add(aeiObjects.getWork());
@@ -51,7 +51,7 @@ public class MessageProcessor extends AbstractMessageProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Message message) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.messageInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.messageInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;

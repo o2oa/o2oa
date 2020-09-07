@@ -32,7 +32,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.delayArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.delayArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -43,7 +43,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.delayExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.delayExecute(aeiObjects.getWork().getActivityToken()));
 		List<Work> results = new ArrayList<>();
 		Date limit = null;
 		if (null != delay.getDelayMode() && Objects.equals(DelayMode.until, delay.getDelayMode())) {
@@ -122,7 +122,7 @@ public class DelayProcessor extends AbstractDelayProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Delay delay) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.delayInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.delayInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;
