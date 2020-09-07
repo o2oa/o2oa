@@ -12,6 +12,9 @@ public class ActionProcessingSignalWo extends WoId {
 	private SignalStack signalStack;
 
 	public SignalStack getSignalStack() {
+		if (null == this.signalStack) {
+			this.signalStack = new SignalStack();
+		}
 		return signalStack;
 	}
 
