@@ -18,6 +18,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -31,6 +32,8 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, End end) throws Exception {
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.endArrive());
 		return aeiObjects.getWork();
 	}
 
@@ -41,7 +44,8 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, End end) throws Exception {
-
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.endExecute());
 		List<Work> results = new ArrayList<>();
 
 		Work other = aeiObjects.getWorks().stream().filter(o -> {
@@ -152,7 +156,9 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, End end) throws Exception {
-		return new ArrayList<Route>();
+		// 发送ProcessingSignal
+		aeiObjects.getProcessingAttributes().push(Signal.endInquire());
+		return new ArrayList<>();
 	}
 
 	@Override

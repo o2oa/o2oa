@@ -5,10 +5,11 @@ import java.util.List;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.executor.Signal;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.StringTools;
+import com.x.processplatform.core.entity.log.Signal;
+import com.x.processplatform.core.entity.log.SignalStack;
 
 public class ProcessingAttributes extends GsonPropertyObject {
 
@@ -21,8 +22,6 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	public static final String TYPE_ROLLBACK = "rollback";
 	public static final String TYPE_SERVICE = "service";
 	private Integer loop = 1;
-
-	private transient Signal signal = null;
 
 	@FieldDescribe("强制从arrive开始")
 	private Boolean forceJoinAtArrive;
@@ -39,13 +38,20 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	@FieldDescribe("当前处理人身份")
 	private String identity;
 
-	public ProcessingAttributes() {
-		this.series = StringTools.uniqueToken();
-		this.signal = new Signal();
+	private SignalStack signalStack = new SignalStack();
+
+	
+	public SignalStack getSignalStack() {
+		return signalStack;
 	}
 
-	public Signal signal() {
-		return this.signal;
+	public void push(Signal signal) {
+		this.signalStack.push(signal);
+	}
+
+	public ProcessingAttributes() {
+		this.series = StringTools.uniqueToken();
+		this.signalStack = new SignalStack();
 	}
 
 	private Boolean debugger = false;
@@ -175,14 +181,10 @@ public class ProcessingAttributes extends GsonPropertyObject {
 		this.identity = identity;
 	}
 
-	public ProcessingAttributes copyInstanceButSameSignal() {
+	public ProcessingAttributes copyInstancePointToSingletonSignalStack() {
 		ProcessingAttributes p = XGsonBuilder.convert(this, ProcessingAttributes.class);
-		p.signal(this.signal);
+		p.signalStack = this.signalStack;
 		return p;
-	}
-
-	private void signal(Signal signal) {
-		this.signal = signal;
 	}
 
 }
