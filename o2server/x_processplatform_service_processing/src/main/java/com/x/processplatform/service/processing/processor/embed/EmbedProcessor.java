@@ -37,7 +37,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.embedArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.embedArrive(aeiObjects.getWork().getActivityToken()));
 		return aeiObjects.getWork();
 	}
 
@@ -48,7 +48,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.embedExecute());
+		aeiObjects.getProcessingAttributes().push(Signal.embedExecute(aeiObjects.getWork().getActivityToken()));
 		AssginData assginData = new AssginData();
 		String targetApplication = embed.getTargetApplication();
 		String targetProcess = embed.getTargetProcess();
@@ -113,7 +113,7 @@ public class EmbedProcessor extends AbstractEmbedProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Embed embed) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.embedInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.embedInquire(aeiObjects.getWork().getActivityToken()));
 		// 驱动上个环节新产生的work
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));

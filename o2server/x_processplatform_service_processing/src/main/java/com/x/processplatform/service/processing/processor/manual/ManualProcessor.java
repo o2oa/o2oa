@@ -60,7 +60,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Manual manual) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.manualArrive());
+		aeiObjects.getProcessingAttributes().push(Signal.manualArrive(aeiObjects.getWork().getActivityToken()));
 		// 根据manual计算出来的活动处理人
 		List<String> identities = calculateTaskIdentities(aeiObjects, manual);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
@@ -297,8 +297,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes()
-				.push(Signal.manualExecute(Objects.toString(manual.getManualMode(), ""), identities));
+		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(),
+				Objects.toString(manual.getManualMode(), ""), identities));
 
 		switch (manual.getManualMode()) {
 		case single:
@@ -331,7 +331,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Manual manual) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.manualInquire());
+		aeiObjects.getProcessingAttributes().push(Signal.manualInquire(aeiObjects.getWork().getActivityToken()));
 		List<Route> results = new ArrayList<>();
 		// 仅有单条路由
 		if (aeiObjects.getRoutes().size() == 1) {
