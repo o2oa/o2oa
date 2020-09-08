@@ -598,6 +598,24 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "由指定的工作拷贝附件.", action = ActionCopyToWorkCompleted.class)
+	@POST
+	@Path("copy/workcompleted/{workCompletedId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void copyToWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("已完成工作标识") @PathParam("workCompletedId") String workCompletedId, JsonElement jsonElement) {
+		ActionResult<List<ActionCopyToWorkCompleted.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCopyToWorkCompleted().execute(effectivePerson, workCompletedId, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "更新附件.", action = ActionChangeSite.class)
 	@GET
 	@Path("{id}/work/{workId}/change/site/{site}")
