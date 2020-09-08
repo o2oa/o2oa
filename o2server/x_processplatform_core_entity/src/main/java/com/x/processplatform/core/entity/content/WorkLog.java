@@ -103,6 +103,10 @@ public class WorkLog extends SliceJpaObject {
 		return this.properties;
 	}
 
+	public void setProperties(WorkLogProperties properties) {
+		this.properties = properties;
+	}
+
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务标识")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
@@ -648,10 +652,6 @@ public class WorkLog extends SliceJpaObject {
 
 	public static String getArrivedopiniongroupFieldname() {
 		return arrivedOpinionGroup_FIELDNAME;
-	}
-
-	public void setProperties(WorkLogProperties properties) {
-		this.properties = properties;
 	}
 
 }

@@ -85,6 +85,10 @@ public class Route extends SliceJpaObject {
 		return this.properties;
 	}
 
+	public void setProperties(RouteProperties properties) {
+		this.properties = properties;
+	}
+
 	public Boolean getAsyncSupported() {
 		return asyncSupported;
 	}
