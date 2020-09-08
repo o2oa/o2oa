@@ -230,8 +230,8 @@
     float:right;
 }
 .o2_appmarket_application{
-    width:285px;
-    height:452px;
+    width:240px;
+    height:462px;
     background:rgba(255,255,255,1);
     box-shadow:0px 0px 8px 0px rgba(0,0,0,0.25);
     border-radius:16px;
@@ -241,15 +241,14 @@
 
 }
 .o2_appmarket_application_icon{
-    height:70%;
+    height:65%;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
     background-size:cover;
 }
 .o2_appmarket_application_info{
-    height:30%;
     width:90%;
-    margin:20px 20px auto 20px;
+    margin:20px 10px auto 10px;
 }
 .o2_appmarket_application_info_name{
     width:100%;
