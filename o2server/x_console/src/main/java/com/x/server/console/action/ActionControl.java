@@ -1,6 +1,9 @@
 package com.x.server.console.action;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 /*
 @author zhourui
@@ -203,11 +207,18 @@ public class ActionControl extends ActionBase {
 			new EraseContentOrg().execute();
 			break;
 		default:
-			EraseContentEntity eraseContentEntity = new EraseContentEntity();
-			for (String str : StringUtils.split(type, ",")) {
-				eraseContentEntity.addClass(str);
+			List<String> names = Stream.of(StringUtils.split(type, ","))
+					.filter(((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES))::contains)
+					.collect(Collectors.toList());
+			if (names.isEmpty()) {
+				logger.print("unkown parameter:{}.", type);
+			} else {
+				EraseContentEntity eraseContentEntity = new EraseContentEntity();
+				for (String str : names) {
+					eraseContentEntity.addClass(str);
+				}
+				eraseContentEntity.execute();
 			}
-			eraseContentEntity.execute();
 			break;
 		}
 	}
