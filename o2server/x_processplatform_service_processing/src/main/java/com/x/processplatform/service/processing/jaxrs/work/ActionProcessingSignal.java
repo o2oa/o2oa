@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.core.entity.log.SignalStack;
@@ -20,13 +19,9 @@ class ActionProcessingSignal extends BaseAction {
 
 		int loop = 0;
 
-		Thread.sleep(Config.processPlatform().getProcessingSignalThreshold());
-
 		while ((null == wo) && (loop++ < 50)) {
+			Thread.sleep(200);
 			wo = dataReady(activityToken, ThisApplication.getProcessingToProcessingSignalStack().find(id, series));
-			if (null == wo) {
-				Thread.sleep(200);
-			}
 		}
 
 		if (null == wo) {
