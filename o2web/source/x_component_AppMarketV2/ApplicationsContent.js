@@ -189,11 +189,11 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         var appsdiv = this.content.appList;
         var appsdivwidth= appsdiv.clientWidth-80;
         //appwidth = (appsdivwidth-200)/7;
-        rowappnum = parseInt(appsdivwidth/285);
-        rowappmargin = (appsdivwidth/285-rowappnum)  * 285  / (rowappnum-1);
+        rowappnum = parseInt(appsdivwidth/240);
+        rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1);
         if (rowappmargin<10){
             rowappnum = rowappnum -1;
-            rowappmargin = (appsdivwidth/285-rowappnum)  * 285  / (rowappnum-1)
+            rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1)
         }
         debugger;
         //appsdiv.setStyle("width","calc("+appwidth+"px)");
