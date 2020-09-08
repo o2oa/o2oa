@@ -343,7 +343,7 @@ class ActionProcessing extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		}, String.format("%record:%s", ActionProcessing.class.getName(), this.task.getId())).start();
+		}, String.format("%s:record:%s", ActionProcessing.class.getName(), this.task.getId())).start();
 	}
 
 	private void processingUpdateTaskCompleted() throws Exception {

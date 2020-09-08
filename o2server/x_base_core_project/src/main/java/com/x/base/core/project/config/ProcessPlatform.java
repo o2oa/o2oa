@@ -75,7 +75,6 @@ public class ProcessPlatform extends ConfigObject {
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
-		this.processingSignalThreshold = DEFAULT_PROCESSINGSIGNALTHRESHOLD;
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 	}
 
@@ -169,9 +168,6 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
-	@FieldDescribe("工作处理异步返回阈值,默认500毫秒.")
-	private Integer processingSignalThreshold;
-
 	@FieldDescribe("是否保存工作处理信号内容,默认false.")
 	private Boolean processingSignalPersistEnable;
 
@@ -180,13 +176,6 @@ public class ProcessPlatform extends ConfigObject {
 			this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 		}
 		return processingSignalPersistEnable;
-	}
-
-	public Integer getProcessingSignalThreshold() {
-		if (processingSignalThreshold == null || processingSignalThreshold < 1) {
-			this.processingSignalThreshold = DEFAULT_PROCESSINGSIGNALTHRESHOLD;
-		}
-		return processingSignalThreshold;
 	}
 
 	public ExtensionEvents getExtensionEvents() {
