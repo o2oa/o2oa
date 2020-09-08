@@ -1358,24 +1358,51 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
         if (data.completed) {
             content += MWF.xApplication.process.Xform.LP.workCompleted;
         } else {
-            if (data.properties.nextManualList && data.properties.nextManualList.length) {
-                var activityUsers = [];
-                data.properties.nextManualList.each(function (a) {
-                    var ids = [];
-                    a.taskIdentityList.each(function (i) {
-                        ids.push(o2.name.cn(i))
-                    });
-                    var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
-                    activityUsers.push(t);
-                });
-                content += activityUsers.join("<br>");
-            } else {
-                if (data.arrivedActivityName) {
-                    content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
-                } else {
+            if (data.occurSignalStack){
+                if (data.signalStack && data.signalStack.length){
+                    var activityUsers = [];
+                    data.signalStack.each(function(stack){
+                        var ids = [];
+                        if (stack.splitExecute){
+                            ids = stack.splitExecute.splitValueList || [];
+                        }
+                        if (stack.manualExecute){
+                            ids = stack.manualExecute.identities || [];
+                        }
+                        var count = 0;
+                        if (ids.length>8){
+                            count = ids.length;
+                            ids = ids.slice(0,8);
+                        }
+                        ids = o2.name.cns(ids);
+                        var lp = MWF.xApplication.process.Xform.LP;
+                        var t = "<b>" + lp.nextActivity + "</b><span style='color: #ea621f'>" + stack.name + "</span>；<b>" + lp.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span> <b>"+ ((count) ? ","+lp.next_etc.replace("{count}", count) : "")+"</b>";
+                        activityUsers.push(t);
+                    }.bind(this));
+                    content += activityUsers.join("<br>");
+                }else{
                     content += MWF.xApplication.process.Xform.LP.taskCompleted;
                 }
+            }else{
+                if (data.properties.nextManualList && data.properties.nextManualList.length) {
+                    var activityUsers = [];
+                    data.properties.nextManualList.each(function (a) {
+                        var ids = [];
+                        a.taskIdentityList.each(function (i) {
+                            ids.push(o2.name.cn(i))
+                        });
+                        var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
+                        activityUsers.push(t);
+                    });
+                    content += activityUsers.join("<br>");
+                } else {
+                    if (data.arrivedActivityName) {
+                        content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
+                    } else {
+                        content += MWF.xApplication.process.Xform.LP.taskCompleted;
+                    }
 
+                }
             }
         }
         var title = this.businessData.data.title || this.businessData.data.subject || this.businessData.work.title
@@ -1548,7 +1575,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
             if (processor && processor.node) processor.node.unmask();
             return false;
         }
-        debugger;
+
         if (!this.formValidation(routeName, opinion, medias)) {
             this.app.content.unmask();
             //this.app.notice("", "error", target, where, offset);
