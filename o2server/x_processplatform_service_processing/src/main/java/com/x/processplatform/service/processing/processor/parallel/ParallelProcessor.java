@@ -33,7 +33,8 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Parallel parallel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.parallelArrive(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelArrive(aeiObjects.getWork().getActivityToken(), parallel));
 		logger.info(
 				"parallel arrvie processing, work title:{}, id:{}, actvity name:{}, id:{}, activityToken:{}, process name:{}, id{}.",
 				aeiObjects.getWork().getTitle(), aeiObjects.getWork().getId(), parallel.getName(), parallel.getId(),
@@ -50,7 +51,8 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Parallel parallel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.parallelExecute(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelExecute(aeiObjects.getWork().getActivityToken(), parallel));
 		List<Work> results = new ArrayList<>();
 		aeiObjects.getWork().setSplitting(true);
 		aeiObjects.getWork().setSplitToken(StringTools.uniqueToken());
@@ -110,7 +112,8 @@ public class ParallelProcessor extends AbstractParallelProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Parallel parallel) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes()
+				.push(Signal.parallelInquire(aeiObjects.getWork().getActivityToken(), parallel));
 		List<Route> results = new ArrayList<>();
 		aeiObjects.getRoutes().stream().forEach(o -> {
 			if (StringUtils.equals(o.getId(), aeiObjects.getWork().getDestinationRoute())) {

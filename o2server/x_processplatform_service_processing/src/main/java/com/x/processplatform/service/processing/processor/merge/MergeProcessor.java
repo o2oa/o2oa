@@ -27,7 +27,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	@Override
 	protected Work arriving(AeiObjects aeiObjects, Merge merge) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.mergeArrive(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes().push(Signal.mergeArrive(aeiObjects.getWork().getActivityToken(), merge));
 		return aeiObjects.getWork();
 	}
 
@@ -38,7 +38,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Merge merge) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.mergeExecute(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes().push(Signal.mergeExecute(aeiObjects.getWork().getActivityToken(), merge));
 		List<Work> results = new ArrayList<>();
 		if (BooleanUtils.isNotTrue(aeiObjects.getWork().getSplitting())) {
 			/* 如果不是一个拆分文档,直接通过 */
@@ -220,7 +220,7 @@ public class MergeProcessor extends AbstractMergeProcessor {
 	@Override
 	protected List<Route> inquiring(AeiObjects aeiObjects, Merge merge) throws Exception {
 		// 发送ProcessingSignal
-		aeiObjects.getProcessingAttributes().push(Signal.mergeInquire(aeiObjects.getWork().getActivityToken()));
+		aeiObjects.getProcessingAttributes().push(Signal.mergeInquire(aeiObjects.getWork().getActivityToken(), merge));
 		List<Route> results = new ArrayList<>();
 		results.add(aeiObjects.getRoutes().get(0));
 		return results;
