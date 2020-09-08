@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.FilePart;
@@ -26,6 +27,7 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
@@ -602,12 +604,35 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	}
 
 	public String describeApi(String name) throws Exception {
-		String applicationName = this.findApplicationName(name);
-		if (StringUtils.isEmpty(applicationName)) {
-			throw new Exception("getDescribe can not find application with name:" + name + ".");
+		String urlDescribeApiJson = "";
+		if(name.equalsIgnoreCase("x_program_center")|| name.equalsIgnoreCase(x_program_center.class.getName())) {
+			 Nodes nodes = Config.nodes();
+			for (String node : nodes.keySet()) {
+				if (nodes.get(node).getCenter().getEnable()) {
+					Integer port = nodes.get(node).getCenter().getPort();
+					StringBuffer buffer = new StringBuffer();
+					if (BooleanUtils.isTrue(nodes.get(node).getCenter().getSslEnable())) {
+						buffer.append("https://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
+								.append(":" + port);
+					} else {
+						buffer.append("http://").append(StringUtils.isNotEmpty(node) ? node : "127.0.0.1")
+								.append(":" + port);
+					}
+					buffer.append("x_program_center/describe/api.json");
+					urlDescribeApiJson = buffer.toString();
+					break;
+				}
+			}
+		}else {
+			String applicationName = this.findApplicationName(name);
+			if (StringUtils.isEmpty(applicationName)) {
+				throw new Exception("getDescribe can not find application with name:" + name + ".");
+			}
+			Application application = this.randomWithWeight(applicationName);
+			//return HttpConnection.getAsString(application.getUrlDescribeApiJson(), null);
+			urlDescribeApiJson = application.getUrlDescribeApiJson();
 		}
-		Application application = this.randomWithWeight(applicationName);
-		return HttpConnection.getAsString(application.getUrlDescribeApiJson(), null);
+		return HttpConnection.getAsString(urlDescribeApiJson, null);
 	}
 
 }
