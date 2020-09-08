@@ -68,7 +68,6 @@ public class Manual extends Activity {
 
 	@PostLoad
 	public void postLoad() {
-		// this.asyncSupported = this.getProperties().getAsyncSupported();
 	}
 
 	public Manual() {
@@ -82,17 +81,9 @@ public class Manual extends Activity {
 		return this.properties;
 	}
 
-//	public Boolean getAsyncSupported() {
-//		return asyncSupported;
-//	}
-//
-//	public void setAsyncSupported(Boolean asyncSupported) {
-//		this.asyncSupported = asyncSupported;
-//		this.getProperties().setAsyncSupported(asyncSupported);
-//	}
-//
-//	@Transient
-//	private Boolean asyncSupported;
+	public void setProperties(ManualProperties properties) {
+		this.properties = properties;
+	}
 
 	@FieldDescribe("分组")
 	@CheckPersist(allowEmpty = true)
@@ -635,8 +626,6 @@ public class Manual extends Activity {
 	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private ManualProperties properties;
-
- 
 
 	public String getDisplayLogScript() {
 		return displayLogScript;
