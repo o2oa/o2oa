@@ -129,6 +129,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		return this.properties;
 	}
 
+	public void setProperties(WorkProperties properties) {
+		this.properties = properties;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 		this.getProperties().setTitle(title);
@@ -1267,8 +1271,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
 	}
-
- 
 
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;
