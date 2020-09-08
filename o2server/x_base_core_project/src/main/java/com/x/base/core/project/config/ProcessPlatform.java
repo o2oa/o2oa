@@ -50,8 +50,6 @@ public class ProcessPlatform extends ConfigObject {
 
 	public static final Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
 
-	public static final Integer DEFAULT_PROCESSINGSIGNALTHRESHOLD = 500;
-
 	public static final Boolean DEFAULT_PROCESSINGSIGNALPERSISTENABLE = false;
 
 	public static ProcessPlatform defaultInstance() {
