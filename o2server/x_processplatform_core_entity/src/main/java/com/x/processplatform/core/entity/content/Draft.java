@@ -9,6 +9,11 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.Strategy;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
@@ -16,11 +21,6 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.Persistent;
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.apache.openjpa.persistence.jdbc.Strategy;
 
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -86,6 +86,10 @@ public class Draft extends SliceJpaObject {
 			this.properties = new DraftProperties();
 		}
 		return this.properties;
+	}
+
+	public void setProperties(DraftProperties properties) {
+		this.properties = properties;
 	}
 
 	public static final String title_FIELDNAME = "title";
@@ -237,7 +241,5 @@ public class Draft extends SliceJpaObject {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-
- 
 
 }

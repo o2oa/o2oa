@@ -169,6 +169,10 @@ public class ReadCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		return this.properties;
 	}
+	
+	public void setProperties(ReadCompletedProperties properties) {
+		this.properties = properties;
+	}
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务.")

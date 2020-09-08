@@ -137,6 +137,10 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		}
 		return this.properties;
 	}
+	
+	public void setProperties(WorkCompletedProperties properties) {
+		this.properties = properties;
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
