@@ -330,13 +330,20 @@ class ActionProcessing extends BaseAction {
 				record.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
 			}
 		}
-		WoId resp = ThisApplication.context().applications()
-				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("record", "job", this.work.getJob()), record, this.task.getJob())
-				.getData(WoId.class);
-		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionWorkProcessing(this.work.getId());
-		}
+		new Thread(() -> {
+			try {
+				WoId resp = ThisApplication.context().applications()
+						.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+								Applications.joinQueryUri("record", "job", this.work.getJob()), record,
+								this.task.getJob())
+						.getData(WoId.class);
+				if (StringUtils.isBlank(resp.getId())) {
+					throw new ExceptionWorkProcessing(this.work.getId());
+				}
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}, String.format("%record:%s", ActionProcessing.class.getName(), this.task.getId())).start();
 	}
 
 	private void processingUpdateTaskCompleted() throws Exception {
