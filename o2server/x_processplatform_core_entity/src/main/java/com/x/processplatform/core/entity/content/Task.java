@@ -178,6 +178,10 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		return this.properties;
 	}
 
+	public void setProperties(TaskProperties properties) {
+		this.properties = properties;
+	}
+
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("任务.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
@@ -1278,10 +1282,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setWorkCreateType(String workCreateType) {
 		this.workCreateType = workCreateType;
-	}
-
-	public void setProperties(TaskProperties properties) {
-		this.properties = properties;
 	}
 
 	public String getSeries() {

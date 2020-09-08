@@ -33,6 +33,7 @@ import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkLogProperties;
 
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
@@ -103,6 +104,10 @@ public class Form extends SliceJpaObject {
 			this.properties = new FormProperties();
 		}
 		return this.properties;
+	}
+	
+	public void setProperties(FormProperties properties) {
+		this.properties = properties;
 	}
 
 	public String getDataOrMobileData() {
