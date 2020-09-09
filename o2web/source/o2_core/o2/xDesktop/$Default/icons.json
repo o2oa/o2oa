@@ -63,6 +63,10 @@
     "icon": "market.png",
     "color": "#66CC80"
   },
+  "AppMarketV2": {
+    "icon": "market.png",
+    "color": "#66CC80"
+  },
   "Meeting": {
     "icon": "meeting.png",
     "color": "#F5A623"
