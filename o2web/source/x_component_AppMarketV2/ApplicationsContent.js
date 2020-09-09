@@ -158,6 +158,11 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         
         var categorydiv = new Element("span",{"text":d,"class":"o2_appmarket_appcategory"}).inject(categorysdiv);
         categorydiv.store("data",d);
+        if (_self.content.querydata["category"]){
+            if ((_self.content.querydata["category"]=="" && d=="全部")||(_self.content.querydata["category"]==d)){
+                categorydiv.removeClass("o2_appmarket_appcategory").addClass("mainColor_color").addClass("o2_appmarket_appcategory_current");
+            }
+        }
         categorydiv.addEvents({
             "mouseover":function(){
                 debugger;
