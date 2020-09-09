@@ -135,9 +135,9 @@ public class ProcessPlatformPlan extends Plan {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
-		cq.select(root.get(Work_.job)).distinct(true).where(this.where.workPredicate(cb, root));
+		cq.select(root.get(Work_.job)).where(this.where.workPredicate(cb, root));
 		List<String> jobs = em.createQuery(cq).getResultList();
-		return jobs;
+		return jobs.stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<String> listBundle_workCompleted(EntityManagerContainer emc) throws Exception {
@@ -145,9 +145,9 @@ public class ProcessPlatformPlan extends Plan {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<WorkCompleted> root = cq.from(WorkCompleted.class);
-		cq.select(root.get(WorkCompleted_.job)).distinct(true).where(this.where.workCompletedPredicate(cb, root));
+		cq.select(root.get(WorkCompleted_.job)).where(this.where.workCompletedPredicate(cb, root));
 		List<String> jobs = em.createQuery(cq).getResultList();
-		return jobs;
+		return jobs.stream().distinct().collect(Collectors.toList());
 	}
 
 	private List<String> listBundle_accessible(EntityManagerContainer emc, List<String> jobs, String person)
@@ -169,8 +169,9 @@ public class ProcessPlatformPlan extends Plan {
 					Expression<Set<String>> expression = cb.keys(map);
 					Predicate p = cb.isMember(root.get(Review_.job), expression);
 					p = cb.and(p, cb.equal(root.get(Review_.person), person));
-					cq.select(root.get(Review_.job)).distinct(true).where(p);
-					return em.createQuery(cq).getResultList();
+					cq.select(root.get(Review_.job)).where(p);
+					List<String> parts = em.createQuery(cq).getResultList();
+					return parts.stream().distinct().collect(Collectors.toList());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -206,8 +207,9 @@ public class ProcessPlatformPlan extends Plan {
 						Predicate p = f.toPredicate(cb, root, this.runtime, ItemCategory.pp);
 						logger.debug("predicate:{}.", p);
 						p = cb.and(p, cb.isMember(root.get(Item_.bundle), cb.literal(_batch)));
-						cq.select(root.get(Item_.bundle)).distinct(true).where(p);
-						return em.createQuery(cq).getResultList();
+						cq.select(root.get(Item_.bundle)).where(p);
+						List<String> parts = em.createQuery(cq).getResultList();
+						return parts.stream().distinct().collect(Collectors.toList());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

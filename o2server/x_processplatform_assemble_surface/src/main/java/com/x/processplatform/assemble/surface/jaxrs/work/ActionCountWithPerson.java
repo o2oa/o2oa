@@ -3,6 +3,12 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -18,6 +24,7 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.TaskCompleted_;
 
 class ActionCountWithPerson extends ActionComplex {
 
@@ -39,9 +46,16 @@ class ActionCountWithPerson extends ActionComplex {
 				});
 				/* 已办仅取latest */
 				CompletableFuture<Void> future_taskCompleted = CompletableFuture.runAsync(() -> {
+					EntityManager em;
 					try {
-						wo.setTaskCompleted(emc.countEqualAndNotEqual(TaskCompleted.class,
-								TaskCompleted.person_FIELDNAME, person, TaskCompleted.latest_FIELDNAME, false));
+						em = business.entityManagerContainer().get(TaskCompleted.class);
+						CriteriaBuilder cb = em.getCriteriaBuilder();
+						CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+						Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+						Predicate p = cb.equal(root.get(TaskCompleted_.person), person);
+						p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
+								cb.isNull(root.get(TaskCompleted_.latest))));
+						wo.setTaskCompleted(em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult());
 					} catch (Exception e) {
 						logger.error(e);
 					}
