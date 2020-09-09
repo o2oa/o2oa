@@ -192,7 +192,7 @@ MWF.xApplication.AppMarketV2.ApplicationsContent.Applications= new Class({
         //this.content.appCategory_count.empty();
         //new Element("div",{"text":this.content.currentcategory.name+"("+this.content.currentcategory.count+")"}).inject(this.content.appCategory_count);        
         var appsdiv = this.content.appList;
-        var appsdivwidth= appsdiv.clientWidth-70;
+        var appsdivwidth= appsdiv.clientWidth-30;
         //appwidth = (appsdivwidth-200)/7;
         rowappnum = parseInt(appsdivwidth/240);
         rowappmargin = (appsdivwidth/240-rowappnum)  * 240  / (rowappnum-1);
