@@ -10,7 +10,7 @@ public class SlicePropertiesBuilder {
 
 	public static String driver_db2 = "com.ibm.db2.jcc.DB2Driver";
 	public static String driver_oracle = "oracle.jdbc.OracleDriver";
-	public static String driver_mysql = "com.mysql.jdbc.Driver";
+	public static String driver_mysql = "com.mysql.cj.jdbc.Driver";
 	public static String driver_postgresql = "org.postgresql.Driver";
 	public static String driver_informix = "com.informix.jdbc.IfxDriver";
 	public static String driver_h2 = "org.h2.Driver";
