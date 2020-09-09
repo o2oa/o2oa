@@ -26,9 +26,11 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
         if (this.readonly || this.json.isReadonly){
-            var reg = new RegExp("\n","g");
-            var text = value.replace(reg,"<br/>");
-            this.node.set("html", text);
+                var reg = new RegExp("\n","g");
+                var reg2 = new RegExp("\u003c","g"); //尖括号转义，否则内容会截断
+                var reg3 = new RegExp("\u003e","g");
+                var text = value.replace(reg2,"&lt").replace(reg3,"&gt").replace(reg,"<br/>");
+                this.node.set("html", text);
         }
     },
     _resetNodeEdit: function(){
