@@ -61,7 +61,7 @@
 	"titleNodeMobile": {
         "height": "44px",
 	  	"font-size" : "18px",
-        "background-color": "#32AAFF",
+        "background-color": "#eaeeef",
 	  	"position" : "relative",
 	  	"text-align" : "center",
 	  	"padding" : "0px 15px"
@@ -73,13 +73,13 @@
 	  "height": "30px",
 	  "width": "40px",
 	  "color": "#FFF",
-	  "background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/back@2x.png) 15px center no-repeat",
+	  "background" : "url(../x_component_Selector/$Selector/red_flat_mobile/icon/back@2x.png) 15px center no-repeat",
 	  "background-size" : "8px 17px"
 	},
 	"titleTextNodeMobile": {
         "line-height": "44px",
         "height": "44px",
-        "color": "#FFF"
+        "color": "#444444"
     },
 
 	"contentNode": {
@@ -152,7 +152,7 @@
 	"okActionNode": {
 	  "height": "44px",
 	  "line-height": "44px",
-	  "background-color" : "#32AAFF",
+	  "background-color" : "#f06966",
 	  "color": "#FFF",
 	  "font-size": "16px",
 	  "margin-top" : "10px",
@@ -168,7 +168,7 @@
 	  "height": "44px",
 	  "line-height": "44px",
 	  "margin-top" : "10px",
-	  "background-color" : "#E6EBEE",
+	  "background-color" : "#d7d7d9",
 	  "color": "#333",
 	  "font-size": "16px",
 	  "border-radius": "4px",
@@ -216,21 +216,20 @@
 	  	"padding" : "0px 15px 5px 15px",
 		"height": "50px",
 		"color": "#999",
-        "background": "#fff",
-	  	"border-bottom": "1px solid #cccccc"
+        "background": "#fff"
 	},
 	"searchInput": {
 	  	//"width" : "calc(100% - 40px)",
 	  	"width": "100%",
 	  	"box-sizing":"border-box",
 		"height": "36px",
-		"border": "0px",
 		"margin-top": "6px",
 		"font-size": "15px",
-	  	"padding-left" : "15px",
-	  	"background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
-	  "background-size" : "20px 20px",
-	  	"border" : "1px solid #a1a1a1",
+	  	"padding-left" : "50%",
+		"background" : "url(../x_component_Selector/$Selector/red_flat_mobile/icon/search@2x.png) 45% center no-repeat #fdfbfa",
+		"background-size" : "16px 16px",
+		"border" : "1px solid #e2e2e2",
+		"padding-top" : "2px",
 	  	"border-radius" : "5px",
 		"outline": "none"
 	},
@@ -239,13 +238,14 @@
 	  "width": "100%",
 	  "box-sizing":"border-box",
 	  "height": "36px",
-	  "border": "0px",
+	  	"border": "0px",
 	  "margin-top": "6px",
 	  "font-size": "15px",
-	  "padding-left" : "15px",
-	  "background" : "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/search@2x.png) 96% center no-repeat rgb(255, 255, 255)",
-	  "background-size" : "20px 20px",
-	  "border" : "1px solid #a1a1a1",
+		"padding-left" : "50%",
+	  "background" : "url(../x_component_Selector/$Selector/red_flat_mobile/icon/search@2x.png) 45% center no-repeat #fdfbfa",
+	  "background-size" : "16px 16px",
+		"padding-top" : "2px",
+	  "border" : "1px solid #e2e2e2",
 	  "border-radius" : "5px",
 	  "outline": "none"
 	},
@@ -253,6 +253,7 @@
 		"overflow-x": "auto",
 	  	"overflow-y": "auto",
 		"background-color": "#fff",
+		"padding" : "0px 10px",
 		"height": "188px"
 	},
 	"itemAreaNode": {
@@ -261,7 +262,7 @@
 	"selectorItem": {
 		"height": "44px",
 		"line-height": "44px",
-		"padding": "0px 15px",
+		"padding": "0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"font-size": "16px",
@@ -272,7 +273,7 @@
 	"selectorItemCategory": {
 	    "height": "44px",
         "line-height": "44px",
-        "padding": "0px 15px",
+        "padding": "0px",
         "overflow": "hidden",
         "cursor": "pointer",
         "font-size": "16px",
@@ -283,7 +284,7 @@
 	"selectorItemCategory_department": {
         "height": "44px",
         "line-height": "44px",
-        "padding": "0px 15px",
+        "padding": "0px",
         "overflow": "hidden",
         "cursor": "pointer",
         "font-size": "16px",
@@ -297,7 +298,7 @@
 	"selectorItem_over": {
 		//"height": "28px",
 		"line-height": "44px",
-		"padding": "0px 15px",
+		"padding": "0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"background-color": "#fff",
@@ -309,7 +310,7 @@
 	"selectorItem_selected": {
 		//"height": "24px",
 		"line-height": "44px",
-		"padding": "0px 15px",
+		"padding": "0px",
 		"overflow": "hidden",
 		"cursor": "pointer",
 		"background-color": "#fff",
@@ -318,7 +319,7 @@
 	"selectorSelectedItem": {
 	  //"height": "24px",
 	  "line-height": "44px",
-	  "padding": "0px 15px",
+	  "padding": "0px",
 	  "overflow": "hidden",
 	  "cursor": "pointer",
 	  "background-color": "#fff",
@@ -330,19 +331,19 @@
         "float": "left"
 	},
 	"selectorItemLevelNode_expand":{
-        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
+        "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
 	  "background-size" : "13px 8px"
     },
 	"selectorItemLevelNode_expand_over":{
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_down@2x.png) no-repeat right center",
 	  "background-size" : "13px 8px"
 	},
 	"selectorItemLevelNode_collapse":{
-	    "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
+	    "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
 	  "background-size" : "8px 14px"
 	},
 	"selectorItemLevelNode_collapse_over":{
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_right@2x.png) no-repeat right center",
 	  "background-size" : "8px 14px"
 	},
   	"selectorItemCategoryIconNode" : {
@@ -361,55 +362,55 @@
 		"width": "16px",
 		"height": "44px",
 		"float": "right",
-	  	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
+	  	"background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
 	  	"background-size" : "16px 16px"
 	},
   	"selectorItemActionNode_single" : {
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/radio@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorItemActionNode_selected_over": {
 	  "width": "16px",
         "height": "44px",
         "float": "right",
-        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked2.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checked2.png) no-repeat center center",
 		"background-size" : "16px 16px"
     },
 	"selectorItemActionNode_single_selected_over" : {
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/radio@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorItemActionNode_over": {
 	  "width": "16px",
         "height": "44px",
         "float": "right",
-        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checkbox@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
     },
 	"selectorItemActionNode_single_over" : {
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/radio@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorItemActionNode_selected": {
 	  "width": "16px",
 		"height": "44px",
 		"float": "right",
-		"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
+		"background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checked@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorItemActionNode_single_selected" : {
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorSelectedItemActionNode": {
 	  "width": "16px",
 	  "height": "44px",
 	  "float": "right",
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checked@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 	"selectorSelectedItemActionNode_single" : {
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/radio_selected@2x.png) no-repeat center center",
 		"background-size" : "16px 16px"
 	},
 
@@ -418,7 +419,7 @@
         "height": "44px",
         "float": "left",
         "font-size": "16px",
-        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_down@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_down@2x.png) no-repeat center center",
 	  	"background-size" : "13px 8px"
 	},
 	"selectorItemCategoryActionNode_collapse": {
@@ -426,7 +427,7 @@
         "height": "44px",
         "font-size": "16px",
         "float": "left",
-        "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/arrow_right@2x.png) no-repeat center center",
+        "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/arrow_right@2x.png) no-repeat center center",
 	  	"background-size" : "8px 14px"
     },
 
@@ -434,14 +435,14 @@
 	  "width": "16px",
 	  "height": "44px",
 	  "float": "right",
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat left center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checkbox@2x.png) no-repeat left center",
 	  "background-size" : "16px 16px"
 	},
 	"selectorItemCategoryActionNode_selectAll_selected": {
 	  "width": "16px",
 	  "height": "44px",
 	  "float": "right",
-	  "background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat left center",
+	  "background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checked@2x.png) no-repeat left center",
 	  "background-size" : "16px 16px"
 	},
 
@@ -524,6 +525,7 @@
   "itemSearchAreaScrollNode": {
 	"overflow-x": "auto",
 	"overflow-y": "auto",
+	  "padding" : "0px 15px",
 	"background-color": "#fff"
   },
   "itemAreaScrollNode_flatCategory" : {
@@ -569,7 +571,7 @@
 	"height": "44px",
 	"line-height": "44px",
 	"float": "right",
-	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checkbox@2x.png) no-repeat right center",
+	"background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checkbox@2x.png) no-repeat right center",
 	"background-size" : "16px 16px"
   },
   "flatCategory_selectAll_selected": {
@@ -578,7 +580,7 @@
 	"height": "44px",
 	"line-height": "44px",
 	"float": "right",
-	"background": "url(../x_component_Selector/$Selector/blue_flat_mobile/icon/checked@2x.png) no-repeat right center",
+	"background": "url(../x_component_Selector/$Selector/red_flat_mobile/icon/checked@2x.png) no-repeat right center",
 	"background-size" : "16px 16px"
   }
 }
