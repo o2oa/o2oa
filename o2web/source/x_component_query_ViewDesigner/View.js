@@ -1795,7 +1795,7 @@ MWF.xApplication.query.ViewDesigner.View.Actionbar = new Class({
             "onRequestFailure": function(xhr){
                 this.view.designer.notice(xhr.responseText, "error");
             }.bind(this)
-        }, false);
+        });
     },
     setTemplateStyles: function(styles){
         this.json.style = styles.style;
