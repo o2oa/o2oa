@@ -624,7 +624,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 			ListOrderedMap<String, Collection<?>> notIns, ListOrderedMap<String, Object> members,
 			ListOrderedMap<String, Object> notMembers, boolean andJoin, String order) throws Exception {
 		EntityManager em = emc.get(cls);
-		String str = "SELECT count(distinct o) FROM " + cls.getCanonicalName() + " o";
+		String str = "SELECT count(o) FROM " + cls.getCanonicalName() + " o";
 		/* 预编译的SQL语句的参数序号，必须由1开始 */
 		Integer index = 1;
 		List<String> ps = new ArrayList<>();
@@ -695,80 +695,6 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 		}
 		return (Long) query.getSingleResult() + 1;
 	}
-
-	// private <T extends JpaObject> Long count(EntityManagerContainer emc, Class<T>
-	// cls, EqualsTerms equals,
-	// NotEqualsTerms notEquals, LikeTerms likes, InTerms ins, NotInTerms notIns,
-	// MemberTerms members,
-	// NotMemberTerms notMembers, boolean andJoin) throws Exception {
-	// EntityManager em = emc.get(cls);
-	// String str = "SELECT count(distinct o) FROM " + cls.getCanonicalName() + "
-	// o";
-	// /* 预编译的SQL语句的参数序号，必须由1开始 */
-	// Integer index = 1;
-	// List<String> ps = new ArrayList<>();
-	// List<Object> vs = new ArrayList<>();
-	// if (null != equals && (!equals.isEmpty())) {
-	// for (Entry<String, Object> en : equals.entrySet()) {
-	// ps.add("o." + en.getKey() + (" = ?" + index));
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (null != notEquals && (!notEquals.isEmpty())) {
-	// for (Entry<String, Object> en : notEquals.entrySet()) {
-	// ps.add("(o." + en.getKey() + (" <> ?" + index) + " or o." + en.getKey() + "
-	// is null)");
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (null != likes && (!likes.isEmpty())) {
-	// List<String> ors = new ArrayList<>();
-	// for (Entry<String, Object> en : likes.entrySet()) {
-	// ors.add("o." + en.getKey() + (" Like ?" + index));
-	// vs.add("%" + en.getValue() + "%");
-	// index++;
-	// }
-	// ps.add("(" + StringUtils.join(ors, " or ") + ")");
-	// }
-	// if (null != ins && (!ins.isEmpty())) {
-	// for (Entry<String, Collection<?>> en : ins.entrySet()) {
-	// ps.add("o." + en.getKey() + (" in ?" + index));
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (null != notIns && (!notIns.isEmpty())) {
-	// for (Entry<String, Collection<?>> en : notIns.entrySet()) {
-	// ps.add("o." + en.getKey() + (" not in ?" + index));
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (null != members && (!members.isEmpty())) {
-	// for (Entry<String, Object> en : members.entrySet()) {
-	// ps.add(("?" + index) + (" member of o." + en.getKey()));
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (null != notMembers && (!notMembers.isEmpty())) {
-	// for (Entry<String, Object> en : notMembers.entrySet()) {
-	// ps.add(("?" + index) + (" not member of o." + en.getKey()));
-	// vs.add(en.getValue());
-	// index++;
-	// }
-	// }
-	// if (!ps.isEmpty()) {
-	// str += " where " + StringUtils.join(ps, (andJoin ? " and " : " or "));
-	// }
-	// Query query = em.createQuery(str, cls);
-	// for (int i = 0; i < vs.size(); i++) {
-	// query.setParameter(i + 1, vs.get(i));
-	// }
-	// return (Long) query.getSingleResult();
-	// }
 
 	private <T extends JpaObject> Long count(EntityManagerContainer emc, Class<T> cls, EqualsTerms equals,
 			NotEqualsTerms notEquals, LikeTerms likes, InTerms ins, NotInTerms notIns, MemberTerms members,
@@ -1121,7 +1047,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				selections.add(root.get(field));
 			}
 
-			List<Tuple> os = em.createQuery(cq.multiselect(selections).distinct(true))
+			List<Tuple> os = em.createQuery(cq.multiselect(selections))
 					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 
 			List<W> ws = new ArrayList<W>();
@@ -1181,7 +1107,7 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				selections.add(root.get(field));
 			}
 
-			List<Tuple> os = em.createQuery(cq.multiselect(selections).distinct(true))
+			List<Tuple> os = em.createQuery(cq.multiselect(selections))
 					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
 
 			List<W> ws = new ArrayList<W>();
@@ -1236,8 +1162,8 @@ public abstract class StandardJaxrsAction extends AbstractJaxrsAction {
 				cq.orderBy(cb.asc(root.get(sequenceField)));
 			}
 
-			List<T> os = em.createQuery(cq.select(root).distinct(true))
-					.setMaxResults(Math.max(Math.min(count, list_max), list_min)).getResultList();
+			List<T> os = em.createQuery(cq.select(root)).setMaxResults(Math.max(Math.min(count, list_max), list_min))
+					.getResultList();
 
 			ActionResult<List<T>> result = new ActionResult<>();
 			result.setData(new ArrayList<T>(os));

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -244,7 +245,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			CriteriaQuery<T> cq = cb.createQuery(cls);
 			Root<T> root = cq.from(cls);
 			Predicate p = cb.equal(root.get(field.getName()), flag);
-			List<T> list = em.createQuery(cq.select(root).where(p).distinct(true)).setMaxResults(2).getResultList();
+			List<T> list = em.createQuery(cq.select(root).where(p)).setMaxResults(2).getResultList().stream().distinct()
+					.collect(Collectors.toList());
 			switch (list.size()) {
 			case 0:
 				break;
@@ -252,7 +254,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				t = list.get(0);
 				break out;
 			case 2:
-				throw new Exception("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
+				throw new IllegalStateException("flag get multiple entity flag:" + flag + ", class:" + cls.getName()
 						+ ", attribute:" + field.getName() + ".");
 			}
 		}
@@ -265,7 +267,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	private <T extends JpaObject> List<T> flag(List<String> FLAGS, Class<T> cls, List<Field> fields) throws Exception {
 		if (ListTools.isEmpty(fields)) {
-			throw new Exception("attributes can not be empty.");
+			throw new IllegalStateException("attributes can not be empty.");
 		}
 		List<T> list = new ArrayList<>();
 		if (ListTools.isEmpty(FLAGS)) {
@@ -582,9 +584,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<T> cq = cb.createQuery(cls);
 		Root<T> root = cq.from(cls);
 		cq.select(root).where(cb.isMember(root.get(attribute), cb.literal(values)));
-		List<T> os = em.createQuery(cq.distinct(true)).getResultList();
-		List<T> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
 	}
 
 	public <T extends JpaObject> List<T> listIsMember(Class<T> cls, String attribute, Object value) throws Exception {
@@ -888,9 +888,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.isMember(root.get(attribute), cb.literal(values)));
-		List<String> os = em.createQuery(cq.distinct(true)).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(
+				em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
 	}
 
 	public <T extends JpaObject, W extends Object> List<String> idsNotIn(Class<T> cls, String attribute,
@@ -900,9 +899,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.not(root.get(attribute).in(values)));
-		List<String> os = em.createQuery(cq.distinct(true)).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
 	}
 
 	public <T extends JpaObject, W extends Object> List<String> idsEqualAndNotIn(Class<T> cls, String attribute,
@@ -914,9 +911,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.not(root.get(attribute).in(values));
 		p = cb.and(p, cb.equal(root.get(otherAttribute), otherValue));
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(p);
-		List<String> os = em.createQuery(cq.distinct(true)).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList()));
 	}
 
 	public <T extends JpaObject> List<String> idsIsMember(Class<T> cls, String attribute, Object value)
