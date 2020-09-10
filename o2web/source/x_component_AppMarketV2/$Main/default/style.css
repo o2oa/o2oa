@@ -1,6 +1,5 @@
 .o2_appmarket_content {
-    margin: 40px 20px 0px 40px;
-    width:100%;
+    margin: 40px 0px 0px 40px;
     min-width: 1280px;
     min-height: 700px;
     font-size: 14px;
@@ -22,7 +21,7 @@
 }
 .o2_appmarket_recommendLeft {
     float: left;
-    width:65%;
+    width:63%;
     height:100%;
     border-radius:16px;
     border:1px solid rgba(151,151,151,1);
@@ -65,11 +64,9 @@
 }
 
 .o2_appmarket_recommendRight {
-    float: left;
     height: 100%;
-    width: 35%;
-    margin-left:10px;
-    margin-right:30px;
+    margin-left:64%;
+    margin-right:40px;
 }
 .o2_appmarket_recommendRightTop {
     height: 49%;
