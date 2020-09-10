@@ -217,16 +217,18 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
 
                 this.loadRelatedScript();
                 //this.loadResource( function () {
-                this.loadDictionaryList(function () {
-                    this.fireEvent("queryLoad");
-                    if (this.event_resolve) {
-                        this.event_resolve(function () {
-                            this.loadForm(callback)
-                        }.bind(this));
-                    } else {
-                        this.loadForm(callback);
-                    }
-                }.bind(this));
+                // this.loadDictionaryList(function () {
+
+                this.fireEvent("queryLoad");
+                if (this.event_resolve) {
+                    this.event_resolve(function () {
+                        this.loadForm(callback)
+                    }.bind(this));
+                } else {
+                    this.loadForm(callback);
+                }
+
+                // }.bind(this));
 
                 //}.bind(this));
 
@@ -258,41 +260,41 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class({
     //     // this.loadScriptList( cb );
     //     this.loadDictionaryList( cb );
     // },
-    loadDictionaryList: function (callback) {
-        this.dictionaryLoaded = false;
-        var loadedCount = 0;
-        if (this.json.includeDictionaries && this.json.includeDictionaries.length) {
-            var fun = function () {
-                loadedCount++;
-                if (this.json.includeDictionaries.length <= loadedCount) {
-                    this.dictionaryLoaded = true;
-                    if (callback) callback();
-                }
-            }.bind(this);
-
-            this.json.includeDictionaries.map(function (d) {
-                var action = MWF.Actions.get(d.dictionary.appType === "cms" ? "x_cms_assemble_control" : "x_processplatform_assemble_surface");
-                if (d.path && d.path !== "root") {
-                    action["getDictData"](d.dictionary.id, d.dictionary.appId, d.path, function (json) {
-                        MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
-                        fun();
-                    }.bind(this), function () {
-                        fun();
-                    }.bind(this), true);
-                } else {
-                    action["getDictRoot"](d.dictionary.id, d.dictionary.appId, function (json) {
-                        MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
-                        fun();
-                    }.bind(this), function () {
-                        fun();
-                    }.bind(this), true);
-                }
-            }.bind(this));
-        } else {
-            this.dictionaryLoaded = true;
-            if (callback) callback();
-        }
-    },
+    // loadDictionaryList: function (callback) {
+    //     this.dictionaryLoaded = false;
+    //     var loadedCount = 0;
+    //     if (this.json.includeDictionaries && this.json.includeDictionaries.length) {
+    //         var fun = function () {
+    //             loadedCount++;
+    //             if (this.json.includeDictionaries.length <= loadedCount) {
+    //                 this.dictionaryLoaded = true;
+    //                 if (callback) callback();
+    //             }
+    //         }.bind(this);
+    //
+    //         this.json.includeDictionaries.map(function (d) {
+    //             var action = MWF.Actions.get(d.dictionary.appType === "cms" ? "x_cms_assemble_control" : "x_processplatform_assemble_surface");
+    //             if (d.path && d.path !== "root") {
+    //                 action["getDictData"](d.dictionary.id, d.dictionary.appId, d.path, function (json) {
+    //                     MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
+    //                     fun();
+    //                 }.bind(this), function () {
+    //                     fun();
+    //                 }.bind(this), true);
+    //             } else {
+    //                 action["getDictRoot"](d.dictionary.id, d.dictionary.appId, function (json) {
+    //                     MWF.xScript.addDictToCache(d.dictionary, d.path, json.data);
+    //                     fun();
+    //                 }.bind(this), function () {
+    //                     fun();
+    //                 }.bind(this), true);
+    //             }
+    //         }.bind(this));
+    //     } else {
+    //         this.dictionaryLoaded = true;
+    //         if (callback) callback();
+    //     }
+    // },
     // loadScriptList : function( callback ){
     //     var asyncList = [];
     //     var syncList = [];
