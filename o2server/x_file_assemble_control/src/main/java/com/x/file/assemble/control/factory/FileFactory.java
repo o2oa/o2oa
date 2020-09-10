@@ -1,6 +1,7 @@
 package com.x.file.assemble.control.factory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,7 +29,7 @@ public class FileFactory extends AbstractFactory {
 		Root<File> root = cq.from(File.class);
 		Predicate p = cb.equal(root.get(File_.reference), reference);
 		p = cb.and(p, cb.equal(root.get(File_.referenceType), referenceType));
-		cq.select(root.get(File_.id)).where(p).distinct(true);
-		return em.createQuery(cq).getResultList();
+		cq.select(root.get(File_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 }
