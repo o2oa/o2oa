@@ -24,8 +24,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 //	protected Ehcache inputCache = ApplicationCache.instance().getCache(BaseAction.class.getName(), 100,
 //			ApplicationCache.MINUTES_20, ApplicationCache.MINUTES_20);
-	
-	protected CacheCategory cacheCategory= new CacheCategory(BaseAction.class);
+
+	protected CacheCategory cacheCategory = new CacheCategory(BaseAction.class);
 
 	public enum Method {
 		cover, create, ignore;
@@ -51,7 +51,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<Application> cq = cb.createQuery(Application.class);
 		Root<Application> root = cq.from(Application.class);
 		Predicate p = cb.equal(root.get(Application_.alias), alias);
-		List<Application> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Application> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {
@@ -68,7 +68,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<Application> cq = cb.createQuery(Application.class);
 		Root<Application> root = cq.from(Application.class);
 		Predicate p = cb.equal(root.get(Application_.name), name);
-		List<Application> os = em.createQuery(cq.select(root).where(p).distinct(true)).getResultList();
+		List<Application> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		if (os.size() == 1) {
 			return os.get(0);
 		} else {

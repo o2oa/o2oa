@@ -187,8 +187,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		cq.select(root.get(Task_.application)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Task_.application)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -232,8 +232,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		cq.select(root.get(Task_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Task_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -277,8 +277,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		cq.select(root.get(Task_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Task_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -316,8 +316,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		cq.select(root.get(Task_.activityName)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Task_.activityName)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -355,8 +355,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
 			p = cb.and(p, root.get(Task_.activityName).in(wi.getActivityNameList()));
 		}
-		cq.select(root.get(Task_.startTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Task_.startTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {

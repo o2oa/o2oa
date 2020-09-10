@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -68,8 +69,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		private List<NameValueCountPair> activityNameList = new ArrayList<>();
 
 		@FieldDescribe("可选择的工作状态")
-		@FieldTypeDescribe(fieldType="class",fieldValue="{name='',value='',count=0}",fieldTypeName = "com.x.base.core.project.bean.NameValueCountPair")
-		
+		@FieldTypeDescribe(fieldType = "class", fieldValue = "{name='',value='',count=0}", fieldTypeName = "com.x.base.core.project.bean.NameValueCountPair")
+
 		private List<NameValueCountPair> workStatusList = new ArrayList<>();
 
 		public List<NameValueCountPair> getProcessList() {
@@ -79,15 +80,6 @@ class ActionManageFilterAttribute extends BaseAction {
 		public void setProcessList(List<NameValueCountPair> processList) {
 			this.processList = processList;
 		}
-
-		// public List<NameValueCountPair> getCreatorTopUnitList() {
-		// return creatorTopUnitList;
-		// }
-		//
-		// public void setCreatorTopUnitList(List<NameValueCountPair>
-		// creatorTopUnitList) {
-		// this.creatorTopUnitList = creatorTopUnitList;
-		// }
 
 		public List<NameValueCountPair> getCreatorUnitList() {
 			return creatorUnitList;
@@ -130,8 +122,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), application.getId());
-		cq.select(root.get(Work_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Work_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (String str : os) {
 			NameValueCountPair o = new NameValueCountPair();
 			Process process = business.process().pick(str);
@@ -155,8 +147,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), application.getId());
-		cq.select(root.get(Work_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(Work_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (String str : os) {
 			NameValueCountPair o = new NameValueCountPair();
 			o.setValue(str);
@@ -174,8 +166,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), application.getId());
-		cq.select(root.get(Work_.activityName)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(Work_.activityName)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (String str : list) {
 			NameValueCountPair o = new NameValueCountPair();
 			o.setValue(str);
@@ -193,8 +185,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), application.getId());
-		cq.select(root.get(Work_.startTimeMonth)).where(p).distinct(true);
-		List<String> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(Work_.startTimeMonth)).where(p);
+		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (String str : list) {
 			NameValueCountPair o = new NameValueCountPair();
 			o.setValue(str);
@@ -212,8 +204,8 @@ class ActionManageFilterAttribute extends BaseAction {
 		CriteriaQuery<WorkStatus> cq = cb.createQuery(WorkStatus.class);
 		Root<Work> root = cq.from(Work.class);
 		Predicate p = cb.equal(root.get(Work_.application), application.getId());
-		cq.select(root.get(Work_.workStatus)).where(p).distinct(true);
-		List<WorkStatus> list = em.createQuery(cq).getResultList();
+		cq.select(root.get(Work_.workStatus)).where(p);
+		List<WorkStatus> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		for (WorkStatus status : list) {
 			NameValueCountPair o = new NameValueCountPair();
 			o.setValue(status);

@@ -242,8 +242,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.application)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.application)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -295,8 +295,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.process)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.process)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -348,8 +348,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.creatorUnit)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.creatorUnit)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -395,8 +395,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.activityName)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.activityName)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -442,8 +442,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.startTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.startTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -489,8 +489,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.completedTimeMonth)).where(p).distinct(true);
-		List<String> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.completedTimeMonth)).where(p);
+		List<String> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (String str : os) {
 			if (StringUtils.isNotEmpty(str)) {
@@ -536,8 +536,8 @@ class ActionFilterAttributeFilter extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getCompletedList())) {
 			p = cb.and(p, root.get(TaskCompleted_.completed).in(wi.getCompletedList()));
 		}
-		cq.select(root.get(TaskCompleted_.completed)).where(p).distinct(true);
-		List<Boolean> os = em.createQuery(cq).getResultList();
+		cq.select(root.get(TaskCompleted_.completed)).where(p);
+		List<Boolean> os = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		List<NameValueCountPair> wos = new ArrayList<>();
 		for (Boolean value : os) {
 			NameValueCountPair o = new NameValueCountPair();
